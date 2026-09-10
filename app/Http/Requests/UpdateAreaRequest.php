@@ -8,14 +8,14 @@ class UpdateAreaRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->hasRole('BOARD');
+        return $this->user()->can('organization.area.update');
     }
 
     public function rules(): array
     {
         return [
             'region_id' => ['required', 'exists:regions,id'],
-            'name'      => ['required', 'string', 'max:100', 'unique:areas,name,' . $this->route('area')->id],
+            'name' => ['required', 'string', 'max:100', 'unique:areas,name,'.$this->route('area')->id],
         ];
     }
 }

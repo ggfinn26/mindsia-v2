@@ -8,15 +8,15 @@ class UpdateInstitutionRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->hasRole('BOARD');
+        return $this->user()->can('organization.institution.update');
     }
 
     public function rules(): array
     {
         return [
-            'regions_id'          => ['required', 'exists:regions,id'],
+            'regions_id' => ['required', 'exists:regions,id'],
             'jenjang_institution' => ['required', 'in:SD,SMP,SMA,PERGURUAN TINGGI'],
-            'institution_name'    => ['required', 'string', 'max:255'],
+            'institution_name' => ['required', 'string', 'max:255'],
         ];
     }
 }

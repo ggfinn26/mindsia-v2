@@ -40,6 +40,8 @@ class AreaController extends Controller
 
     public function destroy(Area $area): RedirectResponse
     {
+        $this->authorize('organization.area.delete');
+
         $this->repository->delete($area);
 
         return redirect()->route('areas.index')->with('success', 'Area berhasil dihapus.');

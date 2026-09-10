@@ -40,6 +40,8 @@ class RegionController extends Controller
 
     public function destroy(Region $region): RedirectResponse
     {
+        $this->authorize('organization.region.delete');
+
         $this->repository->delete($region);
 
         return redirect()->route('regions.index')->with('success', 'Region berhasil dihapus.');

@@ -38,6 +38,8 @@ class ProvinceController extends Controller
 
     public function destroy(Province $province): RedirectResponse
     {
+        $this->authorize('organization.province.delete');
+
         $this->repository->delete($province);
 
         return redirect()->route('provinces.index')->with('success', 'Provinsi berhasil dihapus.');

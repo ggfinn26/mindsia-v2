@@ -44,7 +44,7 @@ class BranchController extends Controller
     {
         return view('organization.branch.edit', [
             'branch' => $branch,
-            'areas'  => $this->areaRepository->all(),
+            'areas' => $this->areaRepository->all(),
         ]);
     }
 
@@ -57,6 +57,8 @@ class BranchController extends Controller
 
     public function toggleActive(Branch $branch): RedirectResponse
     {
+        $this->authorize('organization.branch.toggle_active');
+
         $this->repository->toggleActive($branch);
 
         return redirect()->route('branches.index')->with('success', 'Status branch berhasil diubah.');
@@ -64,6 +66,8 @@ class BranchController extends Controller
 
     public function destroy(Branch $branch): RedirectResponse
     {
+        $this->authorize('organization.branch.delete');
+
         $this->repository->delete($branch);
 
         return redirect()->route('branches.index')->with('success', 'Branch berhasil dihapus.');

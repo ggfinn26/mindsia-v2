@@ -40,6 +40,8 @@ class InstitutionController extends Controller
 
     public function destroy(Institution $institution): RedirectResponse
     {
+        $this->authorize('organization.institution.delete');
+
         $this->repository->delete($institution);
 
         return redirect()->route('institutions.index')->with('success', 'Institusi berhasil dihapus.');

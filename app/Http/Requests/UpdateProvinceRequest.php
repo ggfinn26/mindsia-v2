@@ -8,13 +8,13 @@ class UpdateProvinceRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->hasRole('BOARD');
+        return $this->user()->can('organization.province.update');
     }
 
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:100', 'unique:provinces,name,' . $this->route('province')->id],
+            'name' => ['required', 'string', 'max:100', 'unique:provinces,name,'.$this->route('province')->id],
         ];
     }
 }
