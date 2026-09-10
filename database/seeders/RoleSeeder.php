@@ -13,40 +13,32 @@ class RoleSeeder extends Seeder
 
     public function run(): void
     {
-        $roles = [
-            'BOARD_OF_DIRECTORS' => 'Dewan Direksi',
-            'CEO' => 'Chief Executive Officer',
-            'COO' => 'Chief Operating Officer',
-            'CMO' => 'Chief Marketing Officer',
-            'CHRO' => 'Chief Human Resources Officer',
-            'OPS_DIRECTOR' => 'Direktur Operasional',
-            'FINANCE_DIRECTOR' => 'Direktur Keuangan',
-            'MANAGER_AREA' => 'Manager Area',
-            'PIC' => 'Person in Charge (Cabang)',
+        $roleNames = [
+            'CEO',
+            'COO',
+            'CMO',
+            'CHRO',
+            'HRR',
+            'HRP',
+            'DIR_OPS',
+            'FINANCE_DIRECTOR',
+            'FINANCE_GENERAL',
+            'MANAGER_AREA',
+            'PIC',
+            'MARKETING',
+            'REGULAR_TUTOR',
+            'OFFICIAL_TUTOR',
         ];
 
-        $createdRoles = [];
-        foreach ($roles as $name => $description) {
-            $createdRoles[$name] = Role::firstOrCreate(
-                ['name' => $name],
-                ['description' => $description]
-            );
+        foreach ($roleNames as $name) {
+            Role::firstOrCreate(['name' => $name]);
         }
 
-        $board = $createdRoles['BOARD_OF_DIRECTORS'];
-        $allOtherRoles = collect($createdRoles)->except('BOARD_OF_DIRECTORS')->values();
-
-        $allPermissions = Permission::pluck('name')->toArray();
-        $viewPermissions = array_filter($allPermissions, fn ($perm) => str_ends_with($perm, '.view'));
-
-        if (! empty($allPermissions)) {
-            $board->syncPermissions($allPermissions);
-        }
-
-        if (! empty($viewPermissions)) {
-            foreach ($allOtherRoles as $role) {
-                $role->syncPermissions($viewPermissions);
-            }
+        // Temp: CEO gets all permissions until Position domain implemented
+        $ceoRole = Role::where('name', 'CEO')->first();
+        if ($ceoRole) {
+            $allPermissions = Permission::pluck('name')->toArray();
+            $ceoRole->syncPermissions($allPermissions);
         }
     }
 }

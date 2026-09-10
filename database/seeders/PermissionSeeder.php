@@ -13,39 +13,31 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
-            // Organization domain
-            'organization.province.view' => 'Lihat provinsi',
-            'organization.province.create' => 'Buat provinsi',
-            'organization.province.update' => 'Ubah provinsi',
-            'organization.province.delete' => 'Hapus provinsi',
-
-            'organization.region.view' => 'Lihat region',
-            'organization.region.create' => 'Buat region',
-            'organization.region.update' => 'Ubah region',
-            'organization.region.delete' => 'Hapus region',
-
-            'organization.area.view' => 'Lihat area',
-            'organization.area.create' => 'Buat area',
-            'organization.area.update' => 'Ubah area',
-            'organization.area.delete' => 'Hapus area',
-
-            'organization.branch.view' => 'Lihat cabang',
-            'organization.branch.create' => 'Buat cabang',
-            'organization.branch.update' => 'Ubah cabang',
-            'organization.branch.delete' => 'Hapus cabang',
-            'organization.branch.toggle_active' => 'Aktifkan/nonaktifkan cabang',
-
-            'organization.institution.view' => 'Lihat institusi',
-            'organization.institution.create' => 'Buat institusi',
-            'organization.institution.update' => 'Ubah institusi',
-            'organization.institution.delete' => 'Hapus institusi',
+            'organization.province.view',
+            'organization.province.create',
+            'organization.province.update',
+            'organization.province.delete',
+            'organization.region.view',
+            'organization.region.create',
+            'organization.region.update',
+            'organization.region.delete',
+            'organization.area.view',
+            'organization.area.create',
+            'organization.area.update',
+            'organization.area.delete',
+            'organization.branch.view',
+            'organization.branch.create',
+            'organization.branch.update',
+            'organization.branch.delete',
+            'organization.branch.toggle_active',
+            'organization.institution.view',
+            'organization.institution.create',
+            'organization.institution.update',
+            'organization.institution.delete',
         ];
 
-        foreach ($permissions as $name => $description) {
-            Permission::firstOrCreate(
-                ['name' => $name],
-                ['description' => $description]
-            );
+        foreach ($permissions as $name) {
+            Permission::firstOrCreate(['name' => $name]);
         }
     }
 }
