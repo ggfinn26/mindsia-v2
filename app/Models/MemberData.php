@@ -1,0 +1,1 @@
+<?php namespace App\Models; use Illuminate\Database\Eloquent\Model; class MemberData extends Model { protected $fillable = ['full_name', 'email', 'whatsapp_number', 'institution_id', 'program_id', 'is_active']; }

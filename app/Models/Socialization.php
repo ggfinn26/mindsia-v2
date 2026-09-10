@@ -1,0 +1,1 @@
+<?php namespace App\Models; use Illuminate\Database\Eloquent\Model; class Socialization extends Model { protected $fillable = ['employee_id', 'institution_id', 'schedule_date', 'status']; }

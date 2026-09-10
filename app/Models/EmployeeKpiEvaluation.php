@@ -1,0 +1,1 @@
+<?php namespace App\Models; use Illuminate\Database\Eloquent\Model; class EmployeeKpiEvaluation extends Model { protected $fillable = ['employee_id', 'kpi_template_id', 'period', 'status']; }

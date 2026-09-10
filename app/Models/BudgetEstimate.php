@@ -1,0 +1,1 @@
+<?php namespace App\Models; use Illuminate\Database\Eloquent\Model; class BudgetEstimate extends Model { protected $fillable = ['employee_id', 'branch_id', 'description', 'total_amount', 'status']; }

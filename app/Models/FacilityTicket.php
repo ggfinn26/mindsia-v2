@@ -1,0 +1,1 @@
+<?php namespace App\Models; use Illuminate\Database\Eloquent\Model; class FacilityTicket extends Model { protected $fillable = ['employee_id', 'category', 'title', 'status']; }

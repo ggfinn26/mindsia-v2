@@ -1,0 +1,1 @@
+<?php namespace App\Models; use Illuminate\Database\Eloquent\Model; class BonusRule extends Model { protected $fillable = ['rule_name', 'rule_type', 'is_active']; }
