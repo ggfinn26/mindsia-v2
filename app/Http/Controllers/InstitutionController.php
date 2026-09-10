@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateInstitutionRequest;
 use App\Models\Institution;
 use App\Repositories\InstitutionRepository;
 use App\Repositories\RegionRepository;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -42,8 +43,12 @@ class InstitutionController extends Controller
     {
         $this->authorize('organization.institution.delete');
 
-        $this->repository->delete($institution);
+        try {
+            $this->repository->delete($institution);
 
-        return redirect()->route('institutions.index')->with('success', 'Institusi berhasil dihapus.');
+            return redirect()->route('institutions.index')->with('success', 'Institusi berhasil dihapus.');
+        } catch (\RuntimeException|QueryException $e) {
+            return redirect()->route('institutions.index')->with('error', $e->getMessage());
+        }
     }
 }
