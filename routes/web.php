@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\PositionController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\RolePermissionController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\AreaController;
@@ -85,6 +86,14 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('users/{user}/roles', [RolePermissionController::class, 'showUserRoles'])->name('users.roles');
     Route::post('users/{user}/assign-role', [RolePermissionController::class, 'assignRole'])->name('users.assign-role');
     Route::post('users/{user}/assign-permission', [RolePermissionController::class, 'assignPermission'])->name('users.assign-permission');
+
+    // Admin Routes — Role Management (Spatie Permission CRUD)
+    Route::get('roles', [RoleController::class, 'index'])->middleware('can:view roles')->name('roles.index');
+    Route::get('roles/create', [RoleController::class, 'create'])->middleware('can:create roles')->name('roles.create');
+    Route::post('roles', [RoleController::class, 'store'])->middleware('can:create roles')->name('roles.store');
+    Route::get('roles/{role}/edit', [RoleController::class, 'edit'])->middleware('can:update roles')->name('roles.edit');
+    Route::patch('roles/{role}', [RoleController::class, 'update'])->middleware('can:update roles')->name('roles.update');
+    Route::delete('roles/{role}', [RoleController::class, 'destroy'])->middleware('can:delete roles')->name('roles.destroy');
 
     // Admin Routes — Position Management (Employee Flow 1: position-management)
     Route::resource('positions', PositionController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
