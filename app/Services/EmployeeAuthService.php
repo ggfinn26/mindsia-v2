@@ -4,7 +4,8 @@ namespace App\Services;
 
 use App\Models\Employee;
 use App\Models\User;
-use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class EmployeeAuthService
 {
@@ -12,10 +13,14 @@ class EmployeeAuthService
     {
         $employee = Employee::where('employee_code', $employeeCode)
             ->where('is_active', true)
-            ->whereNull('user_id')
+            ->whereDoesntHave('user')
             ->first();
 
         if (!$employee) {
+            Log::warning('Employee code verification failed', [
+                'employee_code' => $employeeCode,
+                'ip' => request()->ip(),
+            ]);
             return null;
         }
 
@@ -24,27 +29,29 @@ class EmployeeAuthService
 
     public function createAccount(Employee $employee, array $data): User
     {
-        $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => $data['password'],
-            'employee_id' => $employee->id,
-        ]);
+        $employee->load('currentStatus.position');
 
-        $employee->update(['email' => $data['email']]);
+        $user = DB::transaction(function () use ($employee, $data) {
+            $user = User::create([
+                'name'        => $data['name'],
+                'email'       => $data['email'],
+                'password'    => $data['password'],
+                'employee_id' => $employee->id,
+                'is_active'   => true,
+            ]);
 
-        if ($employee->employment_status) {
-            $role = $employee->employment_status->position->role ?? null;
+            $employee->update(['email' => $data['email']]);
+
+            $role = $employee->currentStatus?->position?->role;
             if ($role) {
                 $user->assignRole($role);
             }
-        }
+
+            return $user;
+        });
+
+        $user->sendEmailVerificationNotification();
 
         return $user;
-    }
-
-    private function notifyDevTelegram(string $context, array $details): void
-    {
-        // TODO: Implement Telegram notification to dev channel
     }
 }

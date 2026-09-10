@@ -10,14 +10,6 @@ use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('can:view roles')->only(['index', 'show']);
-        $this->middleware('can:create roles')->only(['create', 'store']);
-        $this->middleware('can:update roles')->only(['edit', 'update']);
-        $this->middleware('can:delete roles')->only(['destroy']);
-    }
-
     public function index(): View
     {
         $roles = Role::with('permissions')->paginate(15);

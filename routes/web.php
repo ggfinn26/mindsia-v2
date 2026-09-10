@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\MemberLoginController;
 use App\Http\Controllers\Auth\MemberRegisterController;
+use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\BranchController;
@@ -62,7 +63,16 @@ Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink
 Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showForm'])->name('password.reset');
 Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 
+// Register success notification page
+Route::get('/daftar/sukses', function () {
+    return view('auth.register-success');
+})->name('register.success');
+
+// Authenticated routes
 Route::middleware(['auth:web'])->group(function () {
+    // Password change (authenticated users)
+    Route::get('/change-password', [PasswordController::class, 'showChangeForm'])->name('password.change');
+    Route::post('/change-password', [PasswordController::class, 'update'])->name('password.change.post');
     Route::resource('provinces', ProvinceController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::resource('regions', RegionController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::resource('areas', AreaController::class)->only(['index', 'store', 'update', 'destroy']);
