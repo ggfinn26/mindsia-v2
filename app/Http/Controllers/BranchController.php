@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AssignBranchPICRequest;
 use App\Http\Requests\StoreBranchRequest;
 use App\Http\Requests\UpdateBranchRequest;
 use App\Models\Branch;
 use App\Repositories\AreaRepository;
 use App\Repositories\BranchRepository;
 use App\Repositories\EmployeeRepository;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -64,12 +66,23 @@ class BranchController extends Controller
         return redirect()->route('branches.index')->with('success', 'Status branch berhasil diubah.');
     }
 
+    public function assignPic(AssignBranchPICRequest $request, Branch $branch): RedirectResponse
+    {
+        $this->repository->assignPic($branch, $request->input('ma_pic_employee_id'));
+
+        return redirect()->route('branches.index')->with('success', 'PIC branch berhasil diassign.');
+    }
+
     public function destroy(Branch $branch): RedirectResponse
     {
         $this->authorize('organization.branch.delete');
 
-        $this->repository->delete($branch);
+        try {
+            $this->repository->delete($branch);
 
-        return redirect()->route('branches.index')->with('success', 'Branch berhasil dihapus.');
+            return redirect()->route('branches.index')->with('success', 'Branch berhasil dihapus.');
+        } catch (\RuntimeException|QueryException $e) {
+            return redirect()->route('branches.index')->with('error', $e->getMessage());
+        }
     }
 }

@@ -46,6 +46,13 @@ class BranchRepository
         return $branch;
     }
 
+    public function assignPic(Branch $branch, int $employeeId): Branch
+    {
+        $branch->update(['ma_pic_employee_id' => $employeeId]);
+
+        return $branch;
+    }
+
     public function delete(Branch $branch): void
     {
         if ($branch->employees()->exists()) {
