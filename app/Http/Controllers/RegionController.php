@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateRegionRequest;
 use App\Models\Region;
 use App\Repositories\ProvinceRepository;
 use App\Repositories\RegionRepository;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -42,8 +43,12 @@ class RegionController extends Controller
     {
         $this->authorize('organization.region.delete');
 
-        $this->repository->delete($region);
+        try {
+            $this->repository->delete($region);
 
-        return redirect()->route('regions.index')->with('success', 'Region berhasil dihapus.');
+            return redirect()->route('regions.index')->with('success', 'Region berhasil dihapus.');
+        } catch (\RuntimeException|QueryException $e) {
+            return redirect()->route('regions.index')->with('error', $e->getMessage());
+        }
     }
 }

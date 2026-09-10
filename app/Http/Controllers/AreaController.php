@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateAreaRequest;
 use App\Models\Area;
 use App\Repositories\AreaRepository;
 use App\Repositories\RegionRepository;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -42,8 +43,12 @@ class AreaController extends Controller
     {
         $this->authorize('organization.area.delete');
 
-        $this->repository->delete($area);
+        try {
+            $this->repository->delete($area);
 
-        return redirect()->route('areas.index')->with('success', 'Area berhasil dihapus.');
+            return redirect()->route('areas.index')->with('success', 'Area berhasil dihapus.');
+        } catch (\RuntimeException|QueryException $e) {
+            return redirect()->route('areas.index')->with('error', $e->getMessage());
+        }
     }
 }

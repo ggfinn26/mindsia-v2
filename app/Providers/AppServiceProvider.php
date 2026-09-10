@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Area;
+use App\Models\Province;
+use App\Models\Region;
+use App\Observers\AuditObserver;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -21,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerGates();
+        $this->registerObservers();
     }
 
     private function registerGates(): void
@@ -30,5 +35,12 @@ class AppServiceProvider extends ServiceProvider
                 return true;
             }
         });
+    }
+
+    private function registerObservers(): void
+    {
+        foreach ([Province::class, Region::class, Area::class] as $model) {
+            $model::observe(AuditObserver::class);
+        }
     }
 }
