@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class EmploymentStatus extends Model
@@ -45,5 +46,10 @@ class EmploymentStatus extends Model
     public function extendOffer(): HasOne
     {
         return $this->hasOne(ContractExtendOffer::class);
+    }
+
+    public function terminationChecklist(): HasMany
+    {
+        return $this->hasMany(TerminationChecklist::class);
     }
 }
