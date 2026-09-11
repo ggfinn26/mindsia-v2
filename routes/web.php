@@ -28,6 +28,7 @@ use App\Http\Controllers\AreaController;
 use App\Http\Controllers\Auth\ApplicantForgotPasswordController;
 use App\Http\Controllers\Auth\ApplicantLoginController;
 use App\Http\Controllers\Auth\ApplicantPasswordController;
+use App\Http\Controllers\Auth\ApplicantRegisterController;
 use App\Http\Controllers\Auth\ApplicantResetPasswordController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
@@ -82,6 +83,10 @@ Route::post('/member/logout', [MemberLoginController::class, 'logout'])->name('m
 // Auth Routes — Member Register (public)
 Route::get('/daftar-member', [MemberRegisterController::class, 'showRegister'])->name('member.register');
 Route::post('/daftar-member', [MemberRegisterController::class, 'register'])->name('member.register.post');
+
+// Auth Routes — Applicant Register (public)
+Route::get('/karir/register', [ApplicantRegisterController::class, 'showRegister'])->name('applicant.register');
+Route::post('/karir/register', [ApplicantRegisterController::class, 'register'])->name('applicant.register.post');
 
 // Member authenticated routes
 Route::middleware(['auth:member', EnsureEmailIsVerified::class])->group(function () {

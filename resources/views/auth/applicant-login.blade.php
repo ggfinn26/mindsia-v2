@@ -68,11 +68,11 @@
     <div class="mt-6 space-y-4">
         <p class="text-center text-sm text-gray-600">
             Belum punya akun?
-            <a href="#" class="text-blue-600 hover:text-blue-800">Daftar di sini</a>
+            <a href="{{ route('applicant.register') }}" class="text-blue-600 hover:text-blue-800">Daftar di sini</a>
         </p>
 
         <p class="text-center text-sm text-gray-600">
-            <a href="{{ route('password.request') }}" class="text-blue-600 hover:text-blue-800">Lupa password?</a>
+            <a href="{{ route('applicant.password.request') }}" class="text-blue-600 hover:text-blue-800">Lupa password?</a>
         </p>
     </div>
 </div>
