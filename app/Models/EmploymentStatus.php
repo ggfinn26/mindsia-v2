@@ -17,12 +17,14 @@ class EmploymentStatus extends Model
         'contract_start_date',
         'contract_end_date',
         'position_id',
+        'setup_incomplete',
+        'contract_file_path',
     ];
 
     protected $casts = [
-        'join_date'            => 'date',
-        'contract_start_date'  => 'date',
-        'contract_end_date'    => 'date',
+        'join_date' => 'date',
+        'contract_start_date' => 'date',
+        'contract_end_date' => 'date',
     ];
 
     public function employee(): BelongsTo

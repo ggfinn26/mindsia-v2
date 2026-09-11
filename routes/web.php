@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\BudgetEstimateController;
 use App\Http\Controllers\Admin\ClassRoomController;
 use App\Http\Controllers\Admin\CurriculumController;
 use App\Http\Controllers\Admin\EmployeeKpiEvaluationController;
+use App\Http\Controllers\Admin\EmploymentStatusController;
 use App\Http\Controllers\Admin\FacilityTicketController;
 use App\Http\Controllers\Admin\JobRequisitionController;
 use App\Http\Controllers\Admin\KpiTemplateController;

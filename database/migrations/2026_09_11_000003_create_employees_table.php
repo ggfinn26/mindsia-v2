@@ -25,7 +25,6 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 
-            $table->foreign('area_id')->references('id')->on('areas')->onDelete('set null');
             $table->foreign('region_id')->references('id')->on('regions')->onDelete('set null');
         });
     }
