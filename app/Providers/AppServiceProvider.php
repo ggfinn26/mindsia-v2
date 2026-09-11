@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Area;
 use App\Models\Branch;
+use App\Models\Employee;
 use App\Models\Institution;
 use App\Models\Province;
 use App\Models\Region;
@@ -41,7 +42,7 @@ class AppServiceProvider extends ServiceProvider
 
     private function registerObservers(): void
     {
-        foreach ([Province::class, Region::class, Area::class, Branch::class, Institution::class] as $model) {
+        foreach ([Province::class, Region::class, Area::class, Branch::class, Institution::class, Employee::class] as $model) {
             $model::observe(AuditObserver::class);
         }
     }
