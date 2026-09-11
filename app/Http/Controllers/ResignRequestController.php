@@ -12,6 +12,8 @@ class ResignRequestController extends Controller
 {
     public function create(Employee $employee): View
     {
+        abort_unless(auth()->id() === $employee->user_id, 403);
+
         return view('admin.employees.resign-requests.create', compact('employee'));
     }
 
@@ -37,6 +39,8 @@ class ResignRequestController extends Controller
 
     public function show(ResignRequest $resignRequest): View
     {
+        $this->authorize('view', $resignRequest);
+
         return view('admin.resign-requests.show', compact('resignRequest'));
     }
 

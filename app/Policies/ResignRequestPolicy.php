@@ -7,6 +7,11 @@ use App\Models\User;
 
 class ResignRequestPolicy
 {
+    public function view(User $user, ResignRequest $resignRequest): bool
+    {
+        return $user->id === $resignRequest->employee->user_id || $user->hasRole('board-of-directors');
+    }
+
     public function approve(User $user, ResignRequest $resignRequest): bool
     {
         return $user->hasRole('board-of-directors');
