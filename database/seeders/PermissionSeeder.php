@@ -42,6 +42,18 @@ class PermissionSeeder extends Seeder
             'curriculum.quota.create',
             'curriculum.quota.update',
             'curriculum.quota.delete',
+            'curriculum.curriculum.view',
+            'curriculum.curriculum.create',
+            'curriculum.curriculum.update',
+            'curriculum.curriculum.delete',
+            'curriculum.session.view',
+            'curriculum.session.create',
+            'curriculum.session.update',
+            'curriculum.session.delete',
+            'curriculum.item.view',
+            'curriculum.item.create',
+            'curriculum.item.update',
+            'curriculum.item.delete',
         ];
 
         foreach ($permissions as $name) {

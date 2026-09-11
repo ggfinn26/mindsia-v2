@@ -242,6 +242,12 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class])->group(function ()
     Route::resource('programs', ProgramController::class);
     Route::resource('programs.quotas', BranchProgramQuotaController::class)->shallow();
     Route::resource('curriculums', CurriculumController::class);
+    Route::post('curriculums/{curriculum}/sessions', [CurriculumController::class, 'storeSession'])->name('curriculums.sessions.store');
+    Route::put('curriculum-sessions/{session}', [CurriculumController::class, 'updateSession'])->name('curriculum-sessions.update');
+    Route::delete('curriculum-sessions/{session}', [CurriculumController::class, 'destroySession'])->name('curriculum-sessions.destroy');
+    Route::post('curriculum-sessions/{session}/items', [CurriculumController::class, 'storeItem'])->name('curriculum-sessions.items.store');
+    Route::put('curriculum-items/{item}', [CurriculumController::class, 'updateItem'])->name('curriculum-items.update');
+    Route::delete('curriculum-items/{item}', [CurriculumController::class, 'destroyItem'])->name('curriculum-items.destroy');
 
     // Class Domain
     Route::resource('classrooms', ClassRoomController::class);
