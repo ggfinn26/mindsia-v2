@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class ApplicantAccount extends Authenticatable
+class ApplicantAccount extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
 
@@ -25,7 +26,7 @@ class ApplicantAccount extends Authenticatable
     protected function casts(): array
     {
         return [
-            'password'      => 'hashed',
+            'password' => 'hashed',
             'last_login_at' => 'datetime',
         ];
     }
