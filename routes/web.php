@@ -156,9 +156,13 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class])->group(function ()
 
     // Admin Routes — User Management (Auth Flow 8: employee-admin-auth)
     Route::resource('users', UserManagementController::class)->only(['index', 'show', 'edit', 'update']);
-    Route::get('users/{user}/roles', [RolePermissionController::class, 'showUserRoles'])->name('users.roles');
-    Route::post('users/{user}/assign-role', [RolePermissionController::class, 'assignRole'])->name('users.assign-role');
-    Route::post('users/{user}/assign-permission', [RolePermissionController::class, 'assignPermission'])->name('users.assign-permission');
+    Route::middleware('board-of-directors')->group(function () {
+        Route::get('users/{user}/roles', [RolePermissionController::class, 'showUserRoles'])->name('users.roles');
+        Route::post('users/{user}/assign-role', [RolePermissionController::class, 'assignRole'])->name('users.assign-role');
+        Route::post('users/{user}/assign-permission', [RolePermissionController::class, 'assignPermission'])->name('users.assign-permission');
+        Route::get('users/{user}/reset-password', [UserManagementController::class, 'showResetForm'])->name('users.reset-password.show');
+        Route::post('users/{user}/reset-password', [UserManagementController::class, 'reset'])->name('users.reset-password.update');
+    });
 
     // Admin Routes — Role Management (Spatie Permission CRUD)
     Route::get('roles', [RoleController::class, 'index'])->middleware('can:view roles')->name('roles.index');

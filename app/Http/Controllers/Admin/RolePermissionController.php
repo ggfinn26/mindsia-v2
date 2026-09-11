@@ -15,6 +15,7 @@ class RolePermissionController extends Controller
     {
         $user->load('roles', 'permissions');
         $allRoles = Role::all();
+
         return view('admin.users.roles', compact('user', 'allRoles'));
     }
 
