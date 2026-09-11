@@ -20,11 +20,7 @@ class ApplicantLoginController extends Controller
         if ($request->authenticate()) {
             $request->session()->regenerate();
 
-            // Per flow.md applicant-login (line 90): cek email_verified_at post-attempt
-            if (!auth('applicant')->user()->email_verified_at) {
-                return redirect()->route('verification.notice');
-            }
-
+            // Email verification checked via middleware
             return redirect()->route('applicant.dashboard');
         }
 

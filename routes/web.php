@@ -32,6 +32,7 @@ use App\Http\Controllers\Auth\MemberRegisterController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentController;
@@ -42,6 +43,7 @@ use App\Http\Controllers\Member\MemberDashboardController;
 use App\Http\Controllers\PdfTestController;
 use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\RegionController;
+use App\Http\Middleware\EnsureEmailIsVerified;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -75,7 +77,7 @@ Route::get('/daftar-member', [MemberRegisterController::class, 'showRegister'])-
 Route::post('/daftar-member', [MemberRegisterController::class, 'register'])->name('member.register.post');
 
 // Member authenticated routes
-Route::middleware(['auth:member'])->group(function () {
+Route::middleware(['auth:member', EnsureEmailIsVerified::class])->group(function () {
     Route::get('/member/dashboard', [MemberDashboardController::class, 'index'])->name('member.dashboard');
 });
 
@@ -95,8 +97,17 @@ Route::get('/daftar/sukses', function () {
     return view('auth.register-success');
 })->name('register.success');
 
+// Email Verification Routes
+Route::get('/email/verify', [VerificationController::class, 'notice'])->name('verification.notice');
+Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
+    ->middleware(['signed', 'throttle:6,1'])
+    ->name('verification.verify');
+Route::post('/email/resend', [VerificationController::class, 'send'])
+    ->middleware('throttle:6,1')
+    ->name('verification.send');
+
 // Authenticated routes
-Route::middleware(['auth:web'])->group(function () {
+Route::middleware(['auth:web', EnsureEmailIsVerified::class])->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
