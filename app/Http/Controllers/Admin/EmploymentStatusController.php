@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ContractChangePositionRequest;
+use App\Http\Requests\ContractExtendRequest;
 use App\Http\Requests\EmploymentStatusRequest;
 use App\Models\Employee;
 use App\Models\EmploymentStatus;
@@ -95,5 +97,54 @@ class EmploymentStatusController extends Controller
         $status->update($data);
 
         return back()->with('success', 'Kontrak karyawan berhasil diperbarui.');
+    }
+
+    public function extendCreate(EmploymentStatus $status): View
+    {
+        return view('admin.employees.employment-status.extend', compact('status'));
+    }
+
+    public function extendStore(ContractExtendRequest $request, EmploymentStatus $status): RedirectResponse
+    {
+        $validated = $request->validated();
+
+        $status->extendOffer()->updateOrCreate(
+            ['employment_status_id' => $status->id],
+            [
+                'current_end_date' => $status->contract_end_date,
+                'proposed_end_date' => $validated['proposed_end_date'],
+                'status' => 'pending',
+                'notes' => $validated['notes'],
+            ]
+        );
+
+        return redirect()
+            ->route('employees.show', $status->employee)
+            ->with('success', 'Penawaran perpanjangan kontrak telah dibuat.');
+    }
+
+    public function changePositionCreate(EmploymentStatus $status): View
+    {
+        $positions = $this->positionRepository->all();
+
+        return view('admin.employees.employment-status.change-position', compact('status', 'positions'));
+    }
+
+    public function changePositionStore(ContractChangePositionRequest $request, EmploymentStatus $status): RedirectResponse
+    {
+        $validated = $request->validated();
+
+        $status->employee->employmentStatuses()->create([
+            'type_employment' => $status->type_employment,
+            'join_date' => $status->join_date,
+            'position_id' => $validated['position_id'],
+            'contract_start_date' => $validated['effective_date'],
+            'contract_end_date' => $status->contract_end_date,
+            'setup_incomplete' => false,
+        ]);
+
+        return redirect()
+            ->route('employees.show', $status->employee)
+            ->with('success', 'Posisi karyawan berhasil diubah.');
     }
 }

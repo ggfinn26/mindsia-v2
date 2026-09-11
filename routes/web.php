@@ -179,6 +179,10 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class])->group(function ()
     // Employee Management (Employee Flow 2)
     Route::resource('employees', EmployeeController::class)->except(['destroy']);
     Route::resource('employment-statuses', EmploymentStatusController::class)->except(['show', 'index', 'destroy']);
+    Route::get('employment-statuses/{status}/extend', [EmploymentStatusController::class, 'extendCreate'])->name('employment-statuses.extend.create');
+    Route::post('employment-statuses/{status}/extend', [EmploymentStatusController::class, 'extendStore'])->name('employment-statuses.extend.store');
+    Route::get('employment-statuses/{status}/change-position', [EmploymentStatusController::class, 'changePositionCreate'])->name('employment-statuses.change-position.create');
+    Route::post('employment-statuses/{status}/change-position', [EmploymentStatusController::class, 'changePositionStore'])->name('employment-statuses.change-position.store');
 
     // Attendance Domain
     Route::resource('work-schedules', WorkScheduleController::class);

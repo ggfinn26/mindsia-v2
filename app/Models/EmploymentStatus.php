@@ -41,4 +41,9 @@ class EmploymentStatus extends Model
     {
         return $this->hasOne(OffBoardingStatus::class);
     }
+
+    public function extendOffer(): HasOne
+    {
+        return $this->hasOne(ContractExtendOffer::class);
+    }
 }
