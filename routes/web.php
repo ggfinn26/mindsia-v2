@@ -45,6 +45,7 @@ use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\EmployeeEducationHistoryController;
 use App\Http\Controllers\FileProxyController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\InstitutionController;
@@ -183,6 +184,11 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class])->group(function ()
     Route::post('employment-statuses/{status}/extend', [EmploymentStatusController::class, 'extendStore'])->name('employment-statuses.extend.store');
     Route::get('employment-statuses/{status}/change-position', [EmploymentStatusController::class, 'changePositionCreate'])->name('employment-statuses.change-position.create');
     Route::post('employment-statuses/{status}/change-position', [EmploymentStatusController::class, 'changePositionStore'])->name('employment-statuses.change-position.store');
+
+    // Employee Education History (inline in profile)
+    Route::post('employees/{employee}/educations', [EmployeeEducationHistoryController::class, 'store'])->name('employees.educations.store');
+    Route::patch('employees/{employee}/educations/{education}', [EmployeeEducationHistoryController::class, 'update'])->name('employees.educations.update');
+    Route::delete('employees/{employee}/educations/{education}', [EmployeeEducationHistoryController::class, 'destroy'])->name('employees.educations.destroy');
 
     // Attendance Domain
     Route::resource('work-schedules', WorkScheduleController::class);
