@@ -21,11 +21,12 @@ class CurriculumController extends Controller
 {
     public function __construct(
         private CurriculumContentService $service,
-    ) {}
+    ) {
+        $this->middleware('board-of-directors');
+    }
 
     public function index(): View
     {
-        abort_unless($this->user()->hasRole('BOARD'), 403);
 
         $curriculums = Curriculum::select('id', 'program_id', 'curriculum_name', 'description', 'is_active', 'created_at')
             ->with('program:id,program_name')
@@ -40,8 +41,6 @@ class CurriculumController extends Controller
 
     public function create(): View
     {
-        abort_unless($this->user()->hasRole('BOARD'), 403);
-
         $programs = Program::where('is_active', true)->get();
 
         return view('admin.curriculum.create', compact('programs'));
@@ -58,8 +57,6 @@ class CurriculumController extends Controller
 
     public function show(Curriculum $curriculum): View
     {
-        abort_unless($this->user()->hasRole('BOARD'), 403);
-
         $curriculum->load('sessions.items');
 
         return view('admin.curriculum.show', compact('curriculum'));
@@ -67,8 +64,6 @@ class CurriculumController extends Controller
 
     public function edit(Curriculum $curriculum): View
     {
-        abort_unless($this->user()->hasRole('BOARD'), 403);
-
         $curriculum->load('sessions.items');
         $programs = Program::where('is_active', true)->get();
 
@@ -86,8 +81,6 @@ class CurriculumController extends Controller
 
     public function destroy(Curriculum $curriculum): RedirectResponse
     {
-        abort_unless($this->user()->hasRole('BOARD'), 403);
-
         $curriculum->delete();
 
         return redirect()->route('curriculums.index')->with('success', 'Kurikulum berhasil dihapus');
@@ -113,8 +106,6 @@ class CurriculumController extends Controller
 
     public function destroySession(CurriculumSession $session): RedirectResponse
     {
-        abort_unless($this->user()->hasRole('BOARD'), 403);
-
         $curriculum = $session->curriculum;
         $session->delete();
 
@@ -143,8 +134,6 @@ class CurriculumController extends Controller
 
     public function destroyItem(CurriculumItem $item): RedirectResponse
     {
-        abort_unless($this->user()->hasRole('BOARD'), 403);
-
         $curriculum = $item->session->curriculum;
         $item->delete();
 

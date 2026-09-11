@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\BonusRuleController;
 use App\Http\Controllers\Admin\BranchTransferController;
 use App\Http\Controllers\Admin\BudgetEstimateController;
 use App\Http\Controllers\Admin\ClassRoomController;
+use App\Http\Controllers\Admin\MemberClassController;
 use App\Http\Controllers\Admin\CurriculumController;
 use App\Http\Controllers\Admin\EmployeeKpiEvaluationController;
 use App\Http\Controllers\Admin\EmploymentStatusController;
@@ -251,6 +252,9 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class])->group(function ()
 
     // Class Domain
     Route::resource('classrooms', ClassRoomController::class);
+    Route::post('classrooms/{classroom}/members', [MemberClassController::class, 'store'])->name('member-class.store');
+    Route::delete('member-class/{memberClass}', [MemberClassController::class, 'destroy'])->name('member-class.destroy');
+    Route::put('member-class/{memberClass}/transfer', [MemberClassController::class, 'transfer'])->name('member-class.transfer');
 
     // Finance Domain
     Route::resource('budget-estimates', BudgetEstimateController::class);

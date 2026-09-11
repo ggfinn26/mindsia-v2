@@ -4,11 +4,13 @@ namespace App\Providers;
 
 use App\Models\Area;
 use App\Models\Branch;
+use App\Models\ClassRoom;
 use App\Models\Employee;
 use App\Models\Institution;
 use App\Models\Province;
 use App\Models\Region;
 use App\Observers\AuditObserver;
+use App\Observers\ClassRoomObserver;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -45,5 +47,6 @@ class AppServiceProvider extends ServiceProvider
         foreach ([Province::class, Region::class, Area::class, Branch::class, Institution::class, Employee::class] as $model) {
             $model::observe(AuditObserver::class);
         }
+        ClassRoom::observe(ClassRoomObserver::class);
     }
 }

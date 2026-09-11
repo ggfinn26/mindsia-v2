@@ -1,1 +1,80 @@
-<?php namespace App\Models; use Illuminate\Database\Eloquent\Model; class ClassRoom extends Model { protected $table = 'classes'; protected $fillable = ['program_id', 'class_name', 'tutor_id', 'status']; }
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class ClassRoom extends Model
+{
+    protected $table = 'classes';
+
+    public const DAY_PAIRS = [
+        'Senin' => 'Kamis',
+        'Kamis' => 'Senin',
+        'Selasa' => 'Jumat',
+        'Jumat' => 'Selasa',
+        'Rabu' => 'Sabtu',
+        'Sabtu' => 'Rabu',
+    ];
+
+    public const PRIMARY_DAYS = ['Senin', 'Selasa', 'Rabu'];
+
+    protected $fillable = [
+        'program_id',
+        'branch_id',
+        'class_name',
+        'tutor_id',
+        'day_of_week',
+        'week_count',
+        'start_date',
+        'end_date',
+        'start_time_primary',
+        'end_time_primary',
+        'start_time_secondary',
+        'end_time_secondary',
+        'status',
+    ];
+
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date',
+        'week_count' => 'integer',
+    ];
+
+    public function getDayOfWeek2Attribute(): string
+    {
+        return self::DAY_PAIRS[$this->day_of_week];
+    }
+
+    public function program(): BelongsTo
+    {
+        return $this->belongsTo(Program::class);
+    }
+
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
+    }
+
+    public function tutor(): BelongsTo
+    {
+        return $this->belongsTo(Employee::class, 'tutor_id');
+    }
+
+    public function schedules(): HasMany
+    {
+        return $this->hasMany(ClassSchedule::class, 'class_id');
+    }
+
+    public function memberClasses(): HasMany
+    {
+        return $this->hasMany(MemberClass::class, 'class_id');
+    }
+
+    public function tutorChangeHistories(): HasMany
+    {
+        return $this->hasMany(ClassTutorChangeHistory::class, 'class_id');
+    }
+}
