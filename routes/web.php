@@ -44,6 +44,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\BranchController;
+use App\Http\Controllers\BranchProgramQuotaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\EmployeeEducationHistoryController;
@@ -53,6 +54,7 @@ use App\Http\Controllers\InstitutionController;
 use App\Http\Controllers\Member\MemberDashboardController;
 use App\Http\Controllers\OffBoardingController;
 use App\Http\Controllers\PdfTestController;
+use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\RegionController;
 use App\Http\Controllers\ResignRequestController;
@@ -237,6 +239,8 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class])->group(function ()
     Route::resource('members', MemberDataController::class);
 
     // Curriculum Domain
+    Route::resource('programs', ProgramController::class);
+    Route::resource('programs.quotas', BranchProgramQuotaController::class)->shallow();
     Route::resource('curriculums', CurriculumController::class);
 
     // Class Domain
