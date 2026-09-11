@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AttendanceLogController;
 use App\Http\Controllers\Admin\AttendanceRecapController;
 use App\Http\Controllers\Admin\BonusRuleController;
+use App\Http\Controllers\Admin\BranchTransferController;
 use App\Http\Controllers\Admin\BudgetEstimateController;
 use App\Http\Controllers\Admin\ClassRoomController;
 use App\Http\Controllers\Admin\CurriculumController;
@@ -198,6 +199,15 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class])->group(function ()
     Route::get('resign-requests/{resignRequest}', [ResignRequestController::class, 'show'])->name('resign-requests.show');
     Route::post('resign-requests/{resignRequest}/approve', [ResignRequestController::class, 'approve'])->name('resign-requests.approve');
     Route::post('resign-requests/{resignRequest}/reject', [ResignRequestController::class, 'reject'])->name('resign-requests.reject');
+
+    // Employee Branch Transfer (2 flows: self-service + direct)
+    Route::get('employees/{employee}/branch-transfer/request', [BranchTransferController::class, 'requestCreate'])->name('branch-transfers.request.create');
+    Route::post('employees/{employee}/branch-transfer/request', [BranchTransferController::class, 'requestStore'])->name('branch-transfers.request.store');
+    Route::get('branch-transfers/review', [BranchTransferController::class, 'reviewIndex'])->name('branch-transfers.review.index');
+    Route::get('branch-transfers/{transfer}', [BranchTransferController::class, 'reviewShow'])->name('branch-transfers.show');
+    Route::put('branch-transfers/{transfer}', [BranchTransferController::class, 'reviewUpdate'])->name('branch-transfers.update');
+    Route::get('employees/{employee}/branch-transfer/direct', [BranchTransferController::class, 'directEdit'])->name('branch-transfers.direct.edit');
+    Route::put('employees/{employee}/branch-transfer/direct', [BranchTransferController::class, 'directUpdate'])->name('branch-transfers.direct.update');
 
     // Attendance Domain
     Route::resource('work-schedules', WorkScheduleController::class);

@@ -44,6 +44,25 @@ class EmployeePolicy
         return $this->isInUserScope($user, $employee);
     }
 
+    public function requestBranchTransfer(User $user, Employee $employee): bool
+    {
+        return $user->id === $employee->user_id;
+    }
+
+    public function reviewBranchTransfer(User $user): bool
+    {
+        return $user->hasRole('board-of-directors');
+    }
+
+    public function directBranchTransfer(User $user, Employee $employee): bool
+    {
+        if (! $user->can('employees.update')) {
+            return false;
+        }
+
+        return $this->isInUserScope($user, $employee);
+    }
+
     private function isInUserScope(User $user, Employee $employee): bool
     {
         return Employee::inUserScope($user)->where('id', $employee->id)->exists();
