@@ -22,14 +22,16 @@ class MemberLoginController extends Controller
 
             $member = auth('member')->user();
 
-            // 3 kondisi redirect per flow.md member-login (line 862)
-            if (!$member->memberData->email_verified_at) {
+            // 3 kondisi redirect per flow.md member-login
+            if (! $member->email_verified_at) {
                 return redirect()->route('verification.notice');
             }
 
-            if (!$member->memberData->is_active) {
+            if (! $member->is_active) {
                 return redirect()->route('member.dashboard')->with('info', 'Akun sedang menunggu aktivasi admin.');
             }
+
+            $member->update(['last_login_at' => now()]);
 
             return redirect()->route('member.dashboard');
         }

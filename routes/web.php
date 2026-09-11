@@ -1,9 +1,28 @@
 <?php
 
+use App\Http\Controllers\Admin\AttendanceLogController;
+use App\Http\Controllers\Admin\AttendanceRecapController;
+use App\Http\Controllers\Admin\BonusRuleController;
+use App\Http\Controllers\Admin\BudgetEstimateController;
+use App\Http\Controllers\Admin\ClassRoomController;
+use App\Http\Controllers\Admin\CurriculumController;
+use App\Http\Controllers\Admin\EmployeeKpiEvaluationController;
+use App\Http\Controllers\Admin\FacilityTicketController;
+use App\Http\Controllers\Admin\JobRequisitionController;
+use App\Http\Controllers\Admin\KpiTemplateController;
+use App\Http\Controllers\Admin\LeaveRequestController;
+use App\Http\Controllers\Admin\LetterTemplateController;
+use App\Http\Controllers\Admin\MemberDataController;
+use App\Http\Controllers\Admin\NotificationTemplateController;
+use App\Http\Controllers\Admin\PayrollPeriodController;
 use App\Http\Controllers\Admin\PositionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\RolePermissionController;
+use App\Http\Controllers\Admin\SocializationController;
+use App\Http\Controllers\Admin\SurveyController;
+use App\Http\Controllers\Admin\ToeflTestController;
 use App\Http\Controllers\Admin\UserManagementController;
+use App\Http\Controllers\Admin\WorkScheduleController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\Auth\ApplicantLoginController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -14,10 +33,12 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\BranchController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\FileProxyController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\InstitutionController;
+use App\Http\Controllers\Member\MemberDashboardController;
 use App\Http\Controllers\PdfTestController;
 use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\RegionController;
@@ -53,6 +74,11 @@ Route::post('/member/logout', [MemberLoginController::class, 'logout'])->name('m
 Route::get('/daftar-member', [MemberRegisterController::class, 'showRegister'])->name('member.register');
 Route::post('/daftar-member', [MemberRegisterController::class, 'register'])->name('member.register.post');
 
+// Member authenticated routes
+Route::middleware(['auth:member'])->group(function () {
+    Route::get('/member/dashboard', [MemberDashboardController::class, 'index'])->name('member.dashboard');
+});
+
 // Auth Routes — Applicant (applicant guard)
 Route::get('/karir/login', [ApplicantLoginController::class, 'showLogin'])->name('applicant.login');
 Route::post('/karir/login', [ApplicantLoginController::class, 'login'])->name('applicant.login.post');
@@ -71,6 +97,9 @@ Route::get('/daftar/sukses', function () {
 
 // Authenticated routes
 Route::middleware(['auth:web'])->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
     // Password change (authenticated users)
     Route::get('/change-password', [PasswordController::class, 'showChangeForm'])->name('password.change');
     Route::post('/change-password', [PasswordController::class, 'update'])->name('password.change.post');
@@ -103,53 +132,53 @@ Route::middleware(['auth:web'])->group(function () {
     Route::resource('employment-statuses', EmploymentStatusController::class)->except(['show', 'index', 'destroy']);
 
     // Attendance Domain
-    Route::resource('work-schedules', \App\Http\Controllers\Admin\WorkScheduleController::class);
-    Route::resource('attendance-logs', \App\Http\Controllers\Admin\AttendanceLogController::class);
-    Route::resource('leave-requests', \App\Http\Controllers\Admin\LeaveRequestController::class);
-    Route::resource('attendance-recaps', \App\Http\Controllers\Admin\AttendanceRecapController::class)->only(['index', 'show']);
+    Route::resource('work-schedules', WorkScheduleController::class);
+    Route::resource('attendance-logs', AttendanceLogController::class);
+    Route::resource('leave-requests', LeaveRequestController::class);
+    Route::resource('attendance-recaps', AttendanceRecapController::class)->only(['index', 'show']);
 
     // KPI Domain
-    Route::resource('kpi-templates', \App\Http\Controllers\Admin\KpiTemplateController::class);
-    Route::resource('kpi-evaluations', \App\Http\Controllers\Admin\EmployeeKpiEvaluationController::class);
+    Route::resource('kpi-templates', KpiTemplateController::class);
+    Route::resource('kpi-evaluations', EmployeeKpiEvaluationController::class);
 
     // Marketing Domain
-    Route::resource('socializations', \App\Http\Controllers\Admin\SocializationController::class);
+    Route::resource('socializations', SocializationController::class);
 
     // Bonus Domain
-    Route::resource('bonus-rules', \App\Http\Controllers\Admin\BonusRuleController::class);
+    Route::resource('bonus-rules', BonusRuleController::class);
 
     // Payroll Domain
-    Route::resource('payroll-periods', \App\Http\Controllers\Admin\PayrollPeriodController::class);
+    Route::resource('payroll-periods', PayrollPeriodController::class);
 
     // Member Domain
-    Route::resource('members', \App\Http\Controllers\Admin\MemberDataController::class);
+    Route::resource('members', MemberDataController::class);
 
     // Curriculum Domain
-    Route::resource('curriculums', \App\Http\Controllers\Admin\CurriculumController::class);
+    Route::resource('curriculums', CurriculumController::class);
 
     // Class Domain
-    Route::resource('classrooms', \App\Http\Controllers\Admin\ClassRoomController::class);
+    Route::resource('classrooms', ClassRoomController::class);
 
     // Finance Domain
-    Route::resource('budget-estimates', \App\Http\Controllers\Admin\BudgetEstimateController::class);
+    Route::resource('budget-estimates', BudgetEstimateController::class);
 
     // Facility Domain
-    Route::resource('facility-tickets', \App\Http\Controllers\Admin\FacilityTicketController::class);
+    Route::resource('facility-tickets', FacilityTicketController::class);
 
     // Letter Domain
-    Route::resource('letter-templates', \App\Http\Controllers\Admin\LetterTemplateController::class);
+    Route::resource('letter-templates', LetterTemplateController::class);
 
     // Recruitment Domain
-    Route::resource('job-requisitions', \App\Http\Controllers\Admin\JobRequisitionController::class);
+    Route::resource('job-requisitions', JobRequisitionController::class);
 
     // Notification Domain
-    Route::resource('notification-templates', \App\Http\Controllers\Admin\NotificationTemplateController::class);
+    Route::resource('notification-templates', NotificationTemplateController::class);
 
     // Survey Domain
-    Route::resource('surveys', \App\Http\Controllers\Admin\SurveyController::class);
+    Route::resource('surveys', SurveyController::class);
 
     // TOEFL Domain
-    Route::resource('toefl-tests', \App\Http\Controllers\Admin\ToeflTestController::class);
+    Route::resource('toefl-tests', ToeflTestController::class);
 });
 
-require __DIR__ . '/webhook.php';
+require __DIR__.'/webhook.php';
