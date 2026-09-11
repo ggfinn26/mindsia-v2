@@ -25,11 +25,17 @@ use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\WorkScheduleController;
 use App\Http\Controllers\Applicant\ApplicantDashboardController;
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\Auth\ApplicantForgotPasswordController;
 use App\Http\Controllers\Auth\ApplicantLoginController;
+use App\Http\Controllers\Auth\ApplicantPasswordController;
+use App\Http\Controllers\Auth\ApplicantResetPasswordController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\MemberForgotPasswordController;
 use App\Http\Controllers\Auth\MemberLoginController;
+use App\Http\Controllers\Auth\MemberPasswordController;
 use App\Http\Controllers\Auth\MemberRegisterController;
+use App\Http\Controllers\Auth\MemberResetPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
@@ -80,6 +86,8 @@ Route::post('/daftar-member', [MemberRegisterController::class, 'register'])->na
 // Member authenticated routes
 Route::middleware(['auth:member', EnsureEmailIsVerified::class])->group(function () {
     Route::get('/member/dashboard', [MemberDashboardController::class, 'index'])->name('member.dashboard');
+    Route::get('/member/change-password', [MemberPasswordController::class, 'showChangeForm'])->name('member.password.change');
+    Route::post('/member/change-password', [MemberPasswordController::class, 'update'])->name('member.password.change.post');
 });
 
 // Auth Routes — Applicant (applicant guard)
@@ -90,13 +98,27 @@ Route::post('/karir/logout', [ApplicantLoginController::class, 'logout'])->name(
 // Applicant authenticated routes
 Route::middleware(['auth:applicant', EnsureEmailIsVerified::class])->group(function () {
     Route::get('/karir/dashboard', [ApplicantDashboardController::class, 'index'])->name('applicant.dashboard');
+    Route::get('/karir/change-password', [ApplicantPasswordController::class, 'showChangeForm'])->name('applicant.password.change');
+    Route::post('/karir/change-password', [ApplicantPasswordController::class, 'update'])->name('applicant.password.change.post');
 });
 
-// Auth Routes — Password Management (forgot + reset)
+// Auth Routes — Password Management (forgot + reset) — Employee (web guard)
 Route::get('/forgot-password', [ForgotPasswordController::class, 'showForm'])->name('password.request');
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])->name('password.email');
 Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showForm'])->name('password.reset');
 Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
+
+// Auth Routes — Password Management (forgot + reset) — Member
+Route::get('/member/forgot-password', [MemberForgotPasswordController::class, 'showForm'])->name('member.password.request');
+Route::post('/member/forgot-password', [MemberForgotPasswordController::class, 'sendResetLink'])->name('member.password.email');
+Route::get('/member/reset-password/{token}', [MemberResetPasswordController::class, 'showForm'])->name('member.password.reset');
+Route::post('/member/reset-password', [MemberResetPasswordController::class, 'reset'])->name('member.password.update');
+
+// Auth Routes — Password Management (forgot + reset) — Applicant
+Route::get('/karir/forgot-password', [ApplicantForgotPasswordController::class, 'showForm'])->name('applicant.password.request');
+Route::post('/karir/forgot-password', [ApplicantForgotPasswordController::class, 'sendResetLink'])->name('applicant.password.email');
+Route::get('/karir/reset-password/{token}', [ApplicantResetPasswordController::class, 'showForm'])->name('applicant.password.reset');
+Route::post('/karir/reset-password', [ApplicantResetPasswordController::class, 'reset'])->name('applicant.password.update');
 
 // Register success notification page
 Route::get('/daftar/sukses', function () {
