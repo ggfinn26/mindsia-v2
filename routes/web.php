@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\SurveyController;
 use App\Http\Controllers\Admin\ToeflTestController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\WorkScheduleController;
+use App\Http\Controllers\Applicant\ApplicantDashboardController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\Auth\ApplicantLoginController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -85,6 +86,11 @@ Route::middleware(['auth:member', EnsureEmailIsVerified::class])->group(function
 Route::get('/karir/login', [ApplicantLoginController::class, 'showLogin'])->name('applicant.login');
 Route::post('/karir/login', [ApplicantLoginController::class, 'login'])->name('applicant.login.post');
 Route::post('/karir/logout', [ApplicantLoginController::class, 'logout'])->name('applicant.logout');
+
+// Applicant authenticated routes
+Route::middleware(['auth:applicant', EnsureEmailIsVerified::class])->group(function () {
+    Route::get('/karir/dashboard', [ApplicantDashboardController::class, 'index'])->name('applicant.dashboard');
+});
 
 // Auth Routes — Password Management (forgot + reset)
 Route::get('/forgot-password', [ForgotPasswordController::class, 'showForm'])->name('password.request');

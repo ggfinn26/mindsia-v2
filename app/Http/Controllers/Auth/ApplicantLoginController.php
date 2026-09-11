@@ -20,7 +20,13 @@ class ApplicantLoginController extends Controller
         if ($request->authenticate()) {
             $request->session()->regenerate();
 
+            $applicant = auth('applicant')->user();
+
             // Email verification checked via middleware
+            if ($applicant) {
+                $applicant->update(['last_login_at' => now()]);
+            }
+
             return redirect()->route('applicant.dashboard');
         }
 
