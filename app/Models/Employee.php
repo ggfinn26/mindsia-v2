@@ -79,4 +79,25 @@ class Employee extends Model
     {
         return $query->where('is_active', true);
     }
+
+    public function scopeInUserScope(Builder $query, ?\Illuminate\Foundation\Auth\User $user): Builder
+    {
+        if (! $user || ! $user->employee) {
+            return $query;
+        }
+
+        if ($user->employee->branch_id) {
+            return $query->where('branch_id', $user->employee->branch_id);
+        }
+
+        if ($user->employee->area_id) {
+            return $query->where('area_id', $user->employee->area_id);
+        }
+
+        if ($user->employee->region_id) {
+            return $query->where('region_id', $user->employee->region_id);
+        }
+
+        return $query; // BOARD or global access
+    }
 }
