@@ -51,6 +51,7 @@ use App\Http\Controllers\FileProxyController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\InstitutionController;
 use App\Http\Controllers\Member\MemberDashboardController;
+use App\Http\Controllers\OffBoardingController;
 use App\Http\Controllers\PdfTestController;
 use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\RegionController;
@@ -199,6 +200,10 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class])->group(function ()
     Route::get('resign-requests/{resignRequest}', [ResignRequestController::class, 'show'])->name('resign-requests.show');
     Route::post('resign-requests/{resignRequest}/approve', [ResignRequestController::class, 'approve'])->name('resign-requests.approve');
     Route::post('resign-requests/{resignRequest}/reject', [ResignRequestController::class, 'reject'])->name('resign-requests.reject');
+
+    // Employee Offboarding (contract termination)
+    Route::get('employees/{employee}/off-boarding/create', [OffBoardingController::class, 'create'])->name('off-boarding.create');
+    Route::post('employees/{employee}/off-boarding', [OffBoardingController::class, 'store'])->name('off-boarding.store');
 
     // Employee Branch Transfer (2 flows: self-service + direct)
     Route::get('employees/{employee}/branch-transfer/request', [BranchTransferController::class, 'requestCreate'])->name('branch-transfers.request.create');

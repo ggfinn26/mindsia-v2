@@ -54,7 +54,8 @@ class ResignRequestController extends Controller
             'reviewed_at' => now(),
         ]);
 
-        return back()->with('success', 'Permintaan pengunduran diri disetujui.');
+        return redirect()->route('off-boarding.create', $resignRequest->employee_id)
+            ->with('success', 'Permintaan pengunduran diri disetujui. Lanjutkan offboarding.');
     }
 
     public function reject(ResignRequest $resignRequest): RedirectResponse

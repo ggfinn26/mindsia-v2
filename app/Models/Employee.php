@@ -63,6 +63,11 @@ class Employee extends Model
         return $this->hasMany(EmployeeWorkHistory::class);
     }
 
+    public function resignRequests(): HasMany
+    {
+        return $this->hasMany(ResignRequest::class);
+    }
+
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class);
