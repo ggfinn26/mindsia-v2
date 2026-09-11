@@ -31,4 +31,11 @@ class Position extends Model
     {
         return $this->hasMany(EmploymentStatus::class);
     }
+
+    public function canDelete(): bool
+    {
+        return $this->employmentStatuses()
+            ->whereDoesntHave('offBoarding')
+            ->doesntExist();
+    }
 }

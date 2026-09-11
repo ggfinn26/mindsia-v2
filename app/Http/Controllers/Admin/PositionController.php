@@ -12,9 +12,15 @@ use Spatie\Permission\Models\Role;
 
 class PositionController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('board-of-directors');
+    }
+
     public function index(): View
     {
         $positions = Position::with('role')->paginate(15);
+
         return view('admin.positions.index', compact('positions'));
     }
 
@@ -22,6 +28,7 @@ class PositionController extends Controller
     {
         $roles = Role::all();
         $permissions = Permission::orderBy('name')->get();
+
         return view('admin.positions.create', compact('roles', 'permissions'));
     }
 
@@ -45,6 +52,7 @@ class PositionController extends Controller
         $position->load('role', 'permissions');
         $roles = Role::all();
         $permissions = Permission::orderBy('name')->get();
+
         return view('admin.positions.edit', compact('position', 'roles', 'permissions'));
     }
 
@@ -65,7 +73,12 @@ class PositionController extends Controller
 
     public function destroy(Position $position): RedirectResponse
     {
+        if (! $position->canDelete()) {
+            return redirect()->route('positions.index')->with('error', 'Posisi tidak bisa dihapus karena masih ada karyawan aktif dengan posisi ini.');
+        }
+
         $position->delete();
+
         return redirect()->route('positions.index')->with('success', 'Posisi berhasil dihapus.');
     }
 }
