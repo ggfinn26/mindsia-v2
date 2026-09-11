@@ -53,6 +53,7 @@ use App\Http\Controllers\Member\MemberDashboardController;
 use App\Http\Controllers\PdfTestController;
 use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\RegionController;
+use App\Http\Controllers\ResignRequestController;
 use App\Http\Middleware\EnsureEmailIsVerified;
 use Illuminate\Support\Facades\Route;
 
@@ -189,6 +190,14 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class])->group(function ()
     Route::post('employees/{employee}/educations', [EmployeeEducationHistoryController::class, 'store'])->name('employees.educations.store');
     Route::patch('employees/{employee}/educations/{education}', [EmployeeEducationHistoryController::class, 'update'])->name('employees.educations.update');
     Route::delete('employees/{employee}/educations/{education}', [EmployeeEducationHistoryController::class, 'destroy'])->name('employees.educations.destroy');
+
+    // Employee Resign Requests (self-service initiate + BOARD approval)
+    Route::get('employees/{employee}/resign-requests/create', [ResignRequestController::class, 'create'])->name('resign-requests.create');
+    Route::post('employees/{employee}/resign-requests', [ResignRequestController::class, 'store'])->name('resign-requests.store');
+    Route::get('resign-requests', [ResignRequestController::class, 'index'])->middleware('board-of-directors')->name('resign-requests.index');
+    Route::get('resign-requests/{resignRequest}', [ResignRequestController::class, 'show'])->name('resign-requests.show');
+    Route::post('resign-requests/{resignRequest}/approve', [ResignRequestController::class, 'approve'])->name('resign-requests.approve');
+    Route::post('resign-requests/{resignRequest}/reject', [ResignRequestController::class, 'reject'])->name('resign-requests.reject');
 
     // Attendance Domain
     Route::resource('work-schedules', WorkScheduleController::class);
