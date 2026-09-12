@@ -9,6 +9,16 @@ use Illuminate\View\View;
 
 class ClassCurriculumController extends Controller
 {
+    private function validateStoragePath(string $relativePath): string
+    {
+        $base = realpath(storage_path('app'));
+        $full = realpath($base.DIRECTORY_SEPARATOR.$relativePath);
+
+        abort_if(! $full || strpos($full, $base.DIRECTORY_SEPARATOR) !== 0, 404);
+
+        return $full;
+    }
+
     public function index(ClassRoom $classroom): View
     {
         $this->authorize('viewCurriculum', $classroom);
@@ -44,6 +54,8 @@ class ClassCurriculumController extends Controller
 
         abort_if($item->material_type !== 'file' || ! $item->material_value, 404);
 
-        return response()->download(storage_path('app/'.$item->material_value));
+        $path = $this->validateStoragePath($item->material_value);
+
+        return response()->download($path);
     }
 }
