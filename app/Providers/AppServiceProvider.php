@@ -8,6 +8,7 @@ use App\Models\ClassRoom;
 use App\Models\Employee;
 use App\Models\EmployeeWorkAttendanceLog;
 use App\Models\Institution;
+use App\Models\JobPermintaan;
 use App\Models\KpiBonusRule;
 use App\Models\MarketingBonusRule;
 use App\Models\MemberSupportTicket;
@@ -18,6 +19,7 @@ use App\Observers\AuditObserver;
 use App\Observers\Bonus\BonusRuleObserver;
 use App\Observers\ClassRoomObserver;
 use App\Observers\EmployeeWorkAttendanceLogObserver;
+use App\Observers\JobPermintaanObserver;
 use App\Observers\Member\MemberSupportTicketObserver;
 use App\Repositories\Bonus\BonusRuleChangeHistoryRepository;
 use Illuminate\Support\Facades\Gate;
@@ -63,5 +65,7 @@ class AppServiceProvider extends ServiceProvider
         KpiBonusRule::observe(new BonusRuleObserver($historyRepo, 'kpi'));
         SpecialBonusRule::observe(new BonusRuleObserver($historyRepo, 'special'));
         MemberSupportTicket::observe(MemberSupportTicketObserver::class);
+        JobPermintaan::observe(JobPermintaanObserver::class);
+        // TODO: register JobPostingObserver once NotificationDispatchService (notification domain) is implemented
     }
 }

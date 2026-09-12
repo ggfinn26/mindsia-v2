@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -12,9 +12,9 @@ class ApplicantAccount extends Authenticatable implements MustVerifyEmail
     use Notifiable;
 
     protected $fillable = [
-        'applicant_data_id',
         'email',
         'password',
+        'is_active',
         'last_login_at',
     ];
 
@@ -27,12 +27,14 @@ class ApplicantAccount extends Authenticatable implements MustVerifyEmail
     {
         return [
             'password' => 'hashed',
+            'is_active' => 'boolean',
             'last_login_at' => 'datetime',
         ];
     }
 
-    public function applicantData(): BelongsTo
+    // FK is on applicants_master_data.applicant_account_id
+    public function applicantData(): HasOne
     {
-        return $this->belongsTo(ApplicantData::class, 'applicant_data_id');
+        return $this->hasOne(ApplicantMasterData::class, 'applicant_account_id');
     }
 }

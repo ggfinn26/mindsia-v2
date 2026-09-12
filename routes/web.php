@@ -8,29 +8,37 @@ use App\Http\Controllers\Admin\Bonus\BonusRuleChangeHistoryController;
 use App\Http\Controllers\Admin\Bonus\KpiBonusRuleController;
 use App\Http\Controllers\Admin\Bonus\MarketingBonusRuleController;
 use App\Http\Controllers\Admin\Bonus\SpecialBonusRuleController;
+use App\Http\Controllers\Admin\BranchTransferController;
+use App\Http\Controllers\Admin\BudgetEstimateController;
+use App\Http\Controllers\Admin\ClassRoomController;
+use App\Http\Controllers\Admin\CurriculumController;
+use App\Http\Controllers\Admin\EmployeeController;
+use App\Http\Controllers\Admin\EmployeeKpiEvaluationController;
+use App\Http\Controllers\Admin\EmploymentStatusController;
+use App\Http\Controllers\Admin\FacilityTicketController;
+use App\Http\Controllers\Admin\HolidayController;
+use App\Http\Controllers\Admin\KpiTemplateController;
+use App\Http\Controllers\Admin\LetterTemplateController;
 use App\Http\Controllers\Admin\Member\DiscountController;
+use App\Http\Controllers\Admin\Member\MemberDataController;
 use App\Http\Controllers\Admin\Member\MemberNpsResponseController;
 use App\Http\Controllers\Admin\Member\MemberPaymentController;
 use App\Http\Controllers\Admin\Member\MemberRegistrationController;
 use App\Http\Controllers\Admin\Member\MemberSupportTicketController;
 use App\Http\Controllers\Admin\Member\MemberSupportTicketReplyController;
-use App\Http\Controllers\Admin\BranchTransferController;
-use App\Http\Controllers\Admin\BudgetEstimateController;
-use App\Http\Controllers\Admin\ClassRoomController;
-use App\Http\Controllers\Admin\CurriculumController;
-use App\Http\Controllers\Admin\EmployeeKpiEvaluationController;
-use App\Http\Controllers\Admin\EmploymentStatusController;
-use App\Http\Controllers\Admin\FacilityTicketController;
-use App\Http\Controllers\Admin\HolidayController;
-use App\Http\Controllers\Admin\JobRequisitionController;
-use App\Http\Controllers\Admin\KpiTemplateController;
-use App\Http\Controllers\Admin\LetterTemplateController;
 use App\Http\Controllers\Admin\MemberClassController;
-use App\Http\Controllers\Admin\Member\MemberDataController;
 use App\Http\Controllers\Admin\NotificationTemplateController;
-// use App\Http\Controllers\Admin\PayrollPeriodController; // TODO: replace when payroll domain backend done
 use App\Http\Controllers\Admin\PositionController;
+use App\Http\Controllers\Admin\Recruitment\ApplicantInterviewEvaluationController;
+use App\Http\Controllers\Admin\Recruitment\ApplicantInterviewScheduleController;
+use App\Http\Controllers\Admin\Recruitment\ApplicantPsikotestController;
+use App\Http\Controllers\Admin\Recruitment\EmployeeOnboardingController;
+use App\Http\Controllers\Admin\Recruitment\JobApplicationController;
+use App\Http\Controllers\Admin\Recruitment\JobPermintaanController;
+use App\Http\Controllers\Admin\Recruitment\JobPostingController;
+use App\Http\Controllers\Admin\Recruitment\OfferingLetterController;
 use App\Http\Controllers\Admin\RoleController;
+// use App\Http\Controllers\Admin\PayrollPeriodController; // TODO: replace when payroll domain backend done
 use App\Http\Controllers\Admin\RolePermissionController;
 use App\Http\Controllers\Admin\SocializationController;
 use App\Http\Controllers\Admin\SurveyController;
@@ -38,6 +46,7 @@ use App\Http\Controllers\Admin\ToeflTestController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\WorkScheduleRuleController;
 use App\Http\Controllers\Applicant\ApplicantDashboardController;
+use App\Http\Controllers\Applicant\ApplicantProfileController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\Auth\ApplicantForgotPasswordController;
 use App\Http\Controllers\Auth\ApplicantLoginController;
@@ -57,6 +66,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\BranchProgramQuotaController;
+use App\Http\Controllers\CareerController;
 use App\Http\Controllers\ClassCurriculumController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentController;
@@ -86,6 +96,12 @@ Route::get('/file/{fileId}', [FileProxyController::class, 'serve'])->name('file.
 Route::get('/pdf-test', [PdfTestController::class, 'test'])->name('pdf.test');
 Route::get('/pdf-test/kop', [PdfTestController::class, 'testKopSurat'])->name('pdf.test.kop');
 Route::get('/documents/surat-keterangan', [DocumentController::class, 'suratKeterangan'])->name('document.surat-keterangan');
+
+// Career routes (public — no auth)
+Route::prefix('karir')->name('career.')->group(function () {
+    Route::get('/', [CareerController::class, 'index'])->name('index');
+    Route::get('{jobPosting}', [CareerController::class, 'show'])->name('show');
+});
 
 // Auth Routes — Employee (web guard)
 Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
@@ -128,6 +144,24 @@ Route::middleware(['auth:applicant', EnsureEmailIsVerified::class])->group(funct
     Route::get('/karir/dashboard', [ApplicantDashboardController::class, 'index'])->name('applicant.dashboard');
     Route::get('/karir/change-password', [ApplicantPasswordController::class, 'showChangeForm'])->name('applicant.password.change');
     Route::post('/karir/change-password', [ApplicantPasswordController::class, 'update'])->name('applicant.password.change.post');
+
+    // Applicant profile management
+    Route::get('/karir/profil', [ApplicantProfileController::class, 'show'])->name('applicant.profile.show');
+    Route::get('/karir/profil/edit', [ApplicantProfileController::class, 'edit'])->name('applicant.profile.edit');
+    Route::patch('/karir/profil', [ApplicantProfileController::class, 'update'])->name('applicant.profile.update');
+    Route::post('/karir/profil/education', [ApplicantProfileController::class, 'storeEducation'])->name('applicant.profile.education.store');
+    Route::put('/karir/profil/education/{education}', [ApplicantProfileController::class, 'updateEducation'])->name('applicant.profile.education.update');
+    Route::delete('/karir/profil/education/{education}', [ApplicantProfileController::class, 'destroyEducation'])->name('applicant.profile.education.destroy');
+    Route::post('/karir/profil/courses', [ApplicantProfileController::class, 'storeCourse'])->name('applicant.profile.course.store');
+    Route::put('/karir/profil/courses/{course}', [ApplicantProfileController::class, 'updateCourse'])->name('applicant.profile.course.update');
+    Route::delete('/karir/profil/courses/{course}', [ApplicantProfileController::class, 'destroyCourse'])->name('applicant.profile.course.destroy');
+    Route::post('/karir/profil/work-experiences', [ApplicantProfileController::class, 'storeWorkExperience'])->name('applicant.profile.work-experience.store');
+    Route::put('/karir/profil/work-experiences/{experience}', [ApplicantProfileController::class, 'updateWorkExperience'])->name('applicant.profile.work-experience.update');
+    Route::delete('/karir/profil/work-experiences/{experience}', [ApplicantProfileController::class, 'destroyWorkExperience'])->name('applicant.profile.work-experience.destroy');
+
+    // Apply for jobs
+    Route::post('/karir/apply/{jobPosting}', [JobApplicationController::class, 'store'])->name('applicant.apply');
+    Route::get('/karir/applications/{jobApplication}', [JobApplicationController::class, 'show'])->name('applicant.applications.show');
 });
 
 // Auth Routes — Password Management (forgot + reset) — Employee (web guard)
@@ -345,7 +379,53 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class])->group(function ()
     Route::resource('letter-templates', LetterTemplateController::class);
 
     // Recruitment Domain
-    Route::resource('job-requisitions', JobRequisitionController::class);
+    Route::prefix('recruitment')->name('recruitment.')->group(function () {
+        // Job Permintaan
+        Route::resource('permintaan', JobPermintaanController::class);
+        Route::post('permintaan/{jobPermintaan}/submit', [JobPermintaanController::class, 'submit'])->name('permintaan.submit');
+        Route::post('permintaan/{jobPermintaan}/hr-review', [JobPermintaanController::class, 'hrReview'])->name('permintaan.hr-review');
+        Route::post('permintaan/{jobPermintaan}/ops-approve', [JobPermintaanController::class, 'opsApprove'])->name('permintaan.ops-approve');
+        Route::post('permintaan/{jobPermintaan}/fulfill', [JobPermintaanController::class, 'markFulfilled'])->name('permintaan.fulfill');
+
+        // Job Posting
+        Route::resource('postings', JobPostingController::class);
+        Route::post('postings/{jobPosting}/publish', [JobPostingController::class, 'publish'])->name('postings.publish');
+        Route::post('postings/{jobPosting}/close', [JobPostingController::class, 'close'])->name('postings.close');
+
+        // Job Applications (HR view)
+        Route::get('applications', [JobApplicationController::class, 'index'])->name('application.index');
+        Route::get('applications/{jobApplication}', [JobApplicationController::class, 'show'])->name('application.show');
+        Route::post('applications/manual', [JobApplicationController::class, 'storeManual'])->name('application.manual');
+        Route::post('applications/{jobApplication}/reject', [JobApplicationController::class, 'reject'])->name('application.reject');
+        Route::post('applications/{jobApplication}/advance-reserve', [JobApplicationController::class, 'advanceReserve'])->name('application.advance-reserve');
+
+        // Psikotest
+        Route::post('applications/{jobApplication}/psikotest', [ApplicantPsikotestController::class, 'store'])->name('application.psikotest.store');
+        Route::patch('applications/{jobApplication}/psikotest', [ApplicantPsikotestController::class, 'update'])->name('application.psikotest.update');
+
+        // Interview Schedule
+        Route::post('applications/{jobApplication}/interviews', [ApplicantInterviewScheduleController::class, 'store'])->name('application.interviews.store');
+        Route::patch('interviews/{schedule}', [ApplicantInterviewScheduleController::class, 'update'])->name('interviews.update');
+        Route::delete('interviews/{schedule}', [ApplicantInterviewScheduleController::class, 'destroy'])->name('interviews.destroy');
+
+        // Interview Evaluation
+        Route::post('interviews/{schedule}/evaluation', [ApplicantInterviewEvaluationController::class, 'store'])->name('interviews.evaluation.store');
+
+        // Offering Letter
+        Route::post('applications/{jobApplication}/offering-letter', [OfferingLetterController::class, 'store'])->name('application.offering-letter.store');
+        Route::patch('offering-letters/{offeringLetter}', [OfferingLetterController::class, 'update'])->name('offering-letters.update');
+        Route::post('offering-letters/{offeringLetter}/negotiate', [OfferingLetterController::class, 'negotiate'])->name('offering-letters.negotiate');
+        Route::post('offering-letters/{offeringLetter}/accept', [OfferingLetterController::class, 'accept'])->name('offering-letters.accept');
+        Route::post('offering-letters/{offeringLetter}/decline', [OfferingLetterController::class, 'decline'])->name('offering-letters.decline');
+        Route::get('offering-letters/{offeringLetter}/download', [OfferingLetterController::class, 'downloadPdf'])->name('offering-letters.download');
+
+        // Employee Onboarding
+        Route::get('onboarding', [EmployeeOnboardingController::class, 'index'])->name('onboarding.index');
+        Route::get('onboarding/{employeeOnboarding}', [EmployeeOnboardingController::class, 'show'])->name('onboarding.show');
+        Route::post('applications/{jobApplication}/onboarding', [EmployeeOnboardingController::class, 'store'])->name('application.onboarding.store');
+        Route::post('onboarding/{employeeOnboarding}/review', [EmployeeOnboardingController::class, 'review'])->name('onboarding.review');
+        Route::post('onboarding/{employeeOnboarding}/complete', [EmployeeOnboardingController::class, 'complete'])->name('onboarding.complete');
+    });
 
     // Notification Domain
     Route::resource('notification-templates', NotificationTemplateController::class);
