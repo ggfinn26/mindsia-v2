@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\AttendanceLogController;
+use App\Http\Controllers\Admin\AttendancePolicyController;
 use App\Http\Controllers\Admin\AttendanceRecapController;
+use App\Http\Controllers\Admin\AttendanceRuleController;
 use App\Http\Controllers\Admin\BonusRuleController;
 use App\Http\Controllers\Admin\BranchTransferController;
 use App\Http\Controllers\Admin\BudgetEstimateController;
@@ -10,9 +12,9 @@ use App\Http\Controllers\Admin\CurriculumController;
 use App\Http\Controllers\Admin\EmployeeKpiEvaluationController;
 use App\Http\Controllers\Admin\EmploymentStatusController;
 use App\Http\Controllers\Admin\FacilityTicketController;
+use App\Http\Controllers\Admin\HolidayController;
 use App\Http\Controllers\Admin\JobRequisitionController;
 use App\Http\Controllers\Admin\KpiTemplateController;
-use App\Http\Controllers\Admin\LeaveRequestController;
 use App\Http\Controllers\Admin\LetterTemplateController;
 use App\Http\Controllers\Admin\MemberClassController;
 use App\Http\Controllers\Admin\MemberDataController;
@@ -25,9 +27,7 @@ use App\Http\Controllers\Admin\SocializationController;
 use App\Http\Controllers\Admin\SurveyController;
 use App\Http\Controllers\Admin\ToeflTestController;
 use App\Http\Controllers\Admin\UserManagementController;
-use App\Http\Controllers\Admin\WorkScheduleController;
 use App\Http\Controllers\Admin\WorkScheduleRuleController;
-use App\Http\Controllers\Admin\HolidayController;
 use App\Http\Controllers\Applicant\ApplicantDashboardController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\Auth\ApplicantForgotPasswordController;
@@ -55,6 +55,7 @@ use App\Http\Controllers\EmployeeEducationHistoryController;
 use App\Http\Controllers\FileProxyController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\InstitutionController;
+use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\Member\MemberDashboardController;
 use App\Http\Controllers\OffBoardingController;
 use App\Http\Controllers\PdfTestController;
@@ -62,6 +63,8 @@ use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\RegionController;
 use App\Http\Controllers\ResignRequestController;
+use App\Http\Controllers\SessionAttendanceController;
+use App\Http\Controllers\WorkAttendanceController;
 use App\Http\Middleware\EnsureEmailIsVerified;
 use Illuminate\Support\Facades\Route;
 
@@ -224,8 +227,28 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class])->group(function ()
     Route::resource('work-schedule-rules', WorkScheduleRuleController::class);
     Route::resource('holidays', HolidayController::class);
     Route::resource('attendance-logs', AttendanceLogController::class);
-    Route::resource('leave-requests', LeaveRequestController::class);
+    Route::resource('attendance-policies', AttendancePolicyController::class);
+    Route::resource('attendance-rules', AttendanceRuleController::class);
+    Route::resource('leave-requests', LeaveRequestController::class)->except(['edit', 'update', 'destroy']);
+    Route::post('leave-requests/{leaveRequest}/cancel', [LeaveRequestController::class, 'cancel'])->name('leave-requests.cancel');
+    Route::post('leave-requests/{leaveRequest}/approve', [LeaveRequestController::class, 'approve'])->name('leave-requests.approve');
+    Route::post('leave-requests/{leaveRequest}/reject', [LeaveRequestController::class, 'reject'])->name('leave-requests.reject');
+    Route::get('leave-requests/manage', [LeaveRequestController::class, 'manage'])->name('leave-requests.manage');
     Route::resource('attendance-recaps', AttendanceRecapController::class)->only(['index', 'show']);
+
+    // Work Attendance — check-in/out + manage
+    Route::get('work-attendance', [WorkAttendanceController::class, 'index'])->name('work-attendance.index');
+    Route::post('work-attendance/check-in', [WorkAttendanceController::class, 'checkIn'])->name('work-attendance.check-in');
+    Route::post('work-attendance/check-out', [WorkAttendanceController::class, 'checkOut'])->name('work-attendance.check-out');
+    Route::get('work-attendance/manage', [WorkAttendanceController::class, 'manage'])->name('work-attendance.manage');
+    Route::post('work-attendance/{attendanceLog}/verify', [WorkAttendanceController::class, 'verify'])->name('work-attendance.verify');
+    Route::post('work-attendance/{attendanceLog}/adjust', [WorkAttendanceController::class, 'adjust'])->name('work-attendance.adjust');
+
+    // Session Attendance — tutor check-in/out per sesi
+    Route::get('session-attendance', [SessionAttendanceController::class, 'index'])->name('session-attendance.index');
+    Route::post('session-attendance/{sessionSchedule}/check-in', [SessionAttendanceController::class, 'checkIn'])->name('session-attendance.check-in');
+    Route::post('session-attendance/{sessionSchedule}/check-out', [SessionAttendanceController::class, 'checkOut'])->name('session-attendance.check-out');
+    Route::post('session-attendance/{sessionLog}/verify', [SessionAttendanceController::class, 'verify'])->name('session-attendance.verify');
 
     // KPI Domain
     Route::resource('kpi-templates', KpiTemplateController::class);

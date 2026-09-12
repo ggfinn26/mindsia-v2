@@ -17,7 +17,6 @@ return new class extends Migration
             $table->date('holiday_start_date');
             $table->date('holiday_end_date');
             $table->timestamps();
-            $table->check('holiday_end_date >= holiday_start_date');
         });
     }
 

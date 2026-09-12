@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::dropIfExists('work_schedule_assignments');
         Schema::create('work_schedule_assignments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('work_schedule_rule_id')->constrained('work_schedule_rules')->cascadeOnDelete();
@@ -20,7 +21,7 @@ return new class extends Migration
             $table->date('effective_end_date')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
-            $table->unique(['work_schedule_rule_id', 'assignable_type', 'assignable_id', 'effective_start_date']);
+            $table->unique(['work_schedule_rule_id', 'assignable_type', 'assignable_id', 'effective_start_date'], 'wsa_rule_type_id_start_unique');
             $table->index(['assignable_type', 'assignable_id']);
         });
     }

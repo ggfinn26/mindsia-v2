@@ -8,6 +8,14 @@ return new class extends Migration
 {
     public function up(): void
     {
+        Schema::dropIfExists('member_session_assessments');
+        Schema::dropIfExists('member_attendance');
+        Schema::dropIfExists('member_curriculum_progress');
+        Schema::dropIfExists('class_tutor_change_histories');
+        Schema::dropIfExists('class_schedules');
+        Schema::dropIfExists('member_class');
+        Schema::dropIfExists('member_classes');
+        Schema::dropIfExists('classes');
         Schema::create('classes', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('program_id');
@@ -81,7 +89,7 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->timestamps();
 
-            $table->unique(['member_class_id', 'curriculum_item_id']);
+            $table->unique(['member_class_id', 'curriculum_item_id'], 'mcp_class_item_unique');
             $table->foreign('member_class_id')->references('id')->on('member_class')->cascadeOnDelete();
             $table->foreign('curriculum_item_id')->references('id')->on('curriculum_items')->cascadeOnDelete();
         });
@@ -95,7 +103,7 @@ return new class extends Migration
             $table->unsignedBigInteger('recorded_by_employee_id')->nullable();
             $table->timestamps();
 
-            $table->unique(['member_class_id', 'class_schedule_id']);
+            $table->unique(['member_class_id', 'class_schedule_id'], 'ma_class_schedule_unique');
             $table->foreign('member_class_id')->references('id')->on('member_class')->cascadeOnDelete();
             $table->foreign('class_schedule_id')->references('id')->on('class_schedules')->cascadeOnDelete();
             $table->foreign('recorded_by_employee_id')->references('id')->on('employees')->nullOnDelete();
@@ -110,7 +118,7 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->timestamps();
 
-            $table->unique(['member_class_id', 'class_schedule_id']);
+            $table->unique(['member_class_id', 'class_schedule_id'], 'msa_class_schedule_unique');
             $table->foreign('member_class_id')->references('id')->on('member_class')->cascadeOnDelete();
             $table->foreign('class_schedule_id')->references('id')->on('class_schedules')->cascadeOnDelete();
             $table->foreign('employee_id')->references('id')->on('employees');
