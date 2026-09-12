@@ -88,6 +88,11 @@ class Employee extends Model
         return $this->belongsTo(Region::class);
     }
 
+    public function compensations(): HasMany
+    {
+        return $this->hasMany(EmployeeCompensation::class);
+    }
+
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true);

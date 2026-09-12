@@ -5,22 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class AttendanceRulePayrollAction extends Model
+class EmployeeCompensation extends Model
 {
     protected $fillable = [
-        'attendance_rule_action_id',
+        'employee_id',
         'payroll_component_id',
-        'deduction_type',
-        'deduction_value',
+        'value',
+        'notes',
     ];
 
     protected $casts = [
-        'deduction_value' => 'decimal:2',
+        'value' => 'decimal:2',
     ];
 
-    public function ruleAction(): BelongsTo
+    public function employee(): BelongsTo
     {
-        return $this->belongsTo(AttendanceRuleAction::class, 'attendance_rule_action_id');
+        return $this->belongsTo(Employee::class);
     }
 
     public function payrollComponent(): BelongsTo
