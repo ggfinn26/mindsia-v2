@@ -26,6 +26,8 @@ use App\Http\Controllers\Admin\SurveyController;
 use App\Http\Controllers\Admin\ToeflTestController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\WorkScheduleController;
+use App\Http\Controllers\Admin\WorkScheduleRuleController;
+use App\Http\Controllers\Admin\HolidayController;
 use App\Http\Controllers\Applicant\ApplicantDashboardController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\Auth\ApplicantForgotPasswordController;
@@ -219,7 +221,8 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class])->group(function ()
     Route::put('employees/{employee}/branch-transfer/direct', [BranchTransferController::class, 'directUpdate'])->name('branch-transfers.direct.update');
 
     // Attendance Domain
-    Route::resource('work-schedules', WorkScheduleController::class);
+    Route::resource('work-schedule-rules', WorkScheduleRuleController::class);
+    Route::resource('holidays', HolidayController::class);
     Route::resource('attendance-logs', AttendanceLogController::class);
     Route::resource('leave-requests', LeaveRequestController::class);
     Route::resource('attendance-recaps', AttendanceRecapController::class)->only(['index', 'show']);
