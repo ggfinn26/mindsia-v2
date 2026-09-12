@@ -68,6 +68,11 @@ class Employee extends Model
         return $this->hasMany(ResignRequest::class);
     }
 
+    public function tutorClasses(): HasMany
+    {
+        return $this->hasMany(ClassRoom::class, 'tutor_id');
+    }
+
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class);

@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\ClassRoom;
+use App\Models\Employee;
 use Illuminate\Pagination\Paginator;
 
 class ClassRoomRepository
@@ -28,7 +29,8 @@ class ClassRoomRepository
     public function update(ClassRoom $classRoom, array $data): ClassRoom
     {
         $classRoom->update($data);
-        return $classRoom->fresh();
+
+        return $classRoom;
     }
 
     public function delete(ClassRoom $classRoom): bool
@@ -38,14 +40,10 @@ class ClassRoomRepository
 
     public function getAvailableTutors(): array
     {
-        return \DB::table('employees')
-            ->whereHas('tutorClasses', fn($q) => $q->whereIn('status', ['planned', 'active']))
-            ->selectRaw('employees.id, COUNT(classes.id) as active_class_count')
-            ->leftJoin('classes', 'employees.id', '=', 'classes.tutor_id')
-            ->groupBy('employees.id')
-            ->having('active_class_count', '<', 9)
-            ->get()
-            ->mapWithKeys(fn($t) => [$t->id => $t->name])
+        return Employee::whereHas('tutorClasses', fn ($q) => $q->whereIn('status', ['planned', 'active']))
+            ->withCount(['tutorClasses' => fn ($q) => $q->whereIn('status', ['planned', 'active'])])
+            ->having('tutor_classes_count', '<', 9)
+            ->pluck('full_name', 'id')
             ->toArray();
     }
 }

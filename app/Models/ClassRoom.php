@@ -10,6 +10,12 @@ class ClassRoom extends Model
 {
     protected $table = 'classes';
 
+    public const MAX_CLASS_NAME_LENGTH = 255;
+
+    public const MAX_WEEK_COUNT = 52;
+
+    public const MIN_WEEK_COUNT = 1;
+
     public const DAY_PAIRS = [
         'Senin' => 'Kamis',
         'Kamis' => 'Senin',
@@ -20,6 +26,8 @@ class ClassRoom extends Model
     ];
 
     public const PRIMARY_DAYS = ['Senin', 'Selasa', 'Rabu'];
+
+    public const VALID_DAYS = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 
     protected $fillable = [
         'program_id',
@@ -43,9 +51,14 @@ class ClassRoom extends Model
         'week_count' => 'integer',
     ];
 
-    public function getDayOfWeek2Attribute(): string
+    public function getDayOfWeek2Attribute(): ?string
     {
-        return self::DAY_PAIRS[$this->day_of_week];
+        return self::DAY_PAIRS[$this->day_of_week] ?? null;
+    }
+
+    public function canBeDeleted(): bool
+    {
+        return $this->status === 'planned' && ! $this->memberClasses()->exists();
     }
 
     public function program(): BelongsTo

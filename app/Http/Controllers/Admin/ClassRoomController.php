@@ -5,17 +5,17 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ClassRoom\StoreClassRoomRequest;
 use App\Http\Requests\ClassRoom\UpdateClassRoomRequest;
+use App\Models\Branch;
 use App\Models\ClassRoom;
 use App\Models\Program;
-use App\Models\Branch;
 use App\Repositories\ClassRoomRepository;
-use App\Services\ClassRoomService;
-use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class ClassRoomController extends Controller
 {
-    public function __construct(private ClassRoomRepository $repository) {
+    public function __construct(private ClassRoomRepository $repository)
+    {
         $this->middleware('board-of-directors');
     }
 
@@ -37,6 +37,7 @@ class ClassRoomController extends Controller
     public function store(StoreClassRoomRequest $request): RedirectResponse
     {
         $class = $this->repository->create($request->validated());
+
         return redirect()->route('classrooms.show', $class)->with('success', 'Kelas berhasil dibuat');
     }
 
@@ -59,15 +60,17 @@ class ClassRoomController extends Controller
     public function update(UpdateClassRoomRequest $request, ClassRoom $classroom): RedirectResponse
     {
         $this->repository->update($classroom, $request->validated());
+
         return redirect()->route('classrooms.show', $classroom)->with('success', 'Kelas berhasil diperbarui');
     }
 
     public function destroy(ClassRoom $classroom): RedirectResponse
     {
-        if ($classroom->status !== 'planned' || $classroom->memberClasses()->exists()) {
+        if (! $classroom->canBeDeleted()) {
             return back()->withErrors('Hanya kelas planned tanpa member yang boleh dihapus');
         }
         $this->repository->delete($classroom);
+
         return redirect()->route('classrooms.index')->with('success', 'Kelas berhasil dihapus');
     }
 }

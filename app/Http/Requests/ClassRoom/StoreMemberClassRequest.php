@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests\ClassRoom;
 
-use App\Models\ClassRoom;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateClassRoomRequest extends FormRequest
+class StoreMemberClassRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -15,8 +14,8 @@ class UpdateClassRoomRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'class_name' => 'required|string|max:'.ClassRoom::MAX_CLASS_NAME_LENGTH,
-            'tutor_id' => 'nullable|exists:employees,id',
+            'member_registration_id' => 'required|integer|exists:member_registrations,id',
+            'start_date' => 'required|date|after_or_equal:today',
         ];
     }
 }

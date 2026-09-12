@@ -6,7 +6,6 @@ use App\Http\Controllers\Admin\BonusRuleController;
 use App\Http\Controllers\Admin\BranchTransferController;
 use App\Http\Controllers\Admin\BudgetEstimateController;
 use App\Http\Controllers\Admin\ClassRoomController;
-use App\Http\Controllers\Admin\MemberClassController;
 use App\Http\Controllers\Admin\CurriculumController;
 use App\Http\Controllers\Admin\EmployeeKpiEvaluationController;
 use App\Http\Controllers\Admin\EmploymentStatusController;
@@ -15,6 +14,7 @@ use App\Http\Controllers\Admin\JobRequisitionController;
 use App\Http\Controllers\Admin\KpiTemplateController;
 use App\Http\Controllers\Admin\LeaveRequestController;
 use App\Http\Controllers\Admin\LetterTemplateController;
+use App\Http\Controllers\Admin\MemberClassController;
 use App\Http\Controllers\Admin\MemberDataController;
 use App\Http\Controllers\Admin\NotificationTemplateController;
 use App\Http\Controllers\Admin\PayrollPeriodController;
@@ -46,6 +46,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\BranchProgramQuotaController;
+use App\Http\Controllers\ClassCurriculumController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\EmployeeEducationHistoryController;
@@ -255,6 +256,11 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class])->group(function ()
     Route::post('classrooms/{classroom}/members', [MemberClassController::class, 'store'])->name('member-class.store');
     Route::delete('member-class/{memberClass}', [MemberClassController::class, 'destroy'])->name('member-class.destroy');
     Route::put('member-class/{memberClass}/transfer', [MemberClassController::class, 'transfer'])->name('member-class.transfer');
+
+    // Curriculum Scoped Access (by classroom)
+    Route::get('classrooms/{classroom}/curriculum', [ClassCurriculumController::class, 'index'])->name('class-curriculum.index');
+    Route::get('classrooms/{classroom}/curriculum/items/{item}', [ClassCurriculumController::class, 'show'])->name('class-curriculum.show');
+    Route::get('classrooms/{classroom}/curriculum/items/{item}/download', [ClassCurriculumController::class, 'downloadFile'])->name('class-curriculum.download');
 
     // Finance Domain
     Route::resource('budget-estimates', BudgetEstimateController::class);

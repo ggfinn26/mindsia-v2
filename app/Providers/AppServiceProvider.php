@@ -44,7 +44,7 @@ class AppServiceProvider extends ServiceProvider
 
     private function registerObservers(): void
     {
-        foreach ([Province::class, Region::class, Area::class, Branch::class, Institution::class, Employee::class] as $model) {
+        foreach ([Province::class, Region::class, Area::class, Branch::class, Institution::class, Employee::class, ClassRoom::class] as $model) {
             $model::observe(AuditObserver::class);
         }
         ClassRoom::observe(ClassRoomObserver::class);
