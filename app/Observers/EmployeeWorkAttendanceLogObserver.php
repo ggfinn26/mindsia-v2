@@ -12,12 +12,9 @@ class EmployeeWorkAttendanceLogObserver
 
     public function updated(EmployeeWorkAttendanceLog $log): void
     {
-        // Trigger recap only when status changes to a terminal state
-        if ($log->isDirty('status') || $log->isDirty('check_out') || $log->isDirty('late_minutes')) {
-            $this->recapRepo->upsertForEmployee(
-                $log->employee_id,
-                Carbon::parse($log->attendance_date),
-            );
-        }
+        $this->recapRepo->upsertForEmployee(
+            $log->employee_id,
+            Carbon::parse($log->attendance_date),
+        );
     }
 }

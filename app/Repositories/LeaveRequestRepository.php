@@ -10,8 +10,6 @@ use Illuminate\Support\Carbon;
 
 class LeaveRequestRepository
 {
-    public function __construct(private readonly AttendanceRecapRepository $recapRepo) {}
-
     public function paginateForEmployee(int $employeeId): LengthAwarePaginator
     {
         return EmployeeLeaveRequest::where('employee_id', $employeeId)
@@ -44,8 +42,9 @@ class LeaveRequestRepository
             'reviewed_at' => now(),
         ]);
 
+        // Each updateOrCreate below fires EmployeeWorkAttendanceLogObserver::updated
+        // which handles recap refresh automatically
         $this->applyLeaveToAttendanceLogs($request);
-        $this->refreshRecapForDateRange($request);
 
         return $request;
     }
@@ -89,22 +88,6 @@ class LeaveRequestRepository
             );
 
             $current->addDay();
-        }
-    }
-
-    private function refreshRecapForDateRange(EmployeeLeaveRequest $request): void
-    {
-        $months = collect();
-        $current = Carbon::parse($request->start_date)->startOfMonth();
-        $end = Carbon::parse($request->end_date)->startOfMonth();
-
-        while ($current->lte($end)) {
-            $months->push($current->copy());
-            $current->addMonth();
-        }
-
-        foreach ($months as $month) {
-            $this->recapRepo->upsertForEmployee($request->employee_id, $month);
         }
     }
 }

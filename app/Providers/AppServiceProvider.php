@@ -8,11 +8,18 @@ use App\Models\ClassRoom;
 use App\Models\Employee;
 use App\Models\EmployeeWorkAttendanceLog;
 use App\Models\Institution;
+use App\Models\KpiBonusRule;
+use App\Models\MarketingBonusRule;
+use App\Models\MemberSupportTicket;
 use App\Models\Province;
 use App\Models\Region;
+use App\Models\SpecialBonusRule;
 use App\Observers\AuditObserver;
+use App\Observers\Bonus\BonusRuleObserver;
 use App\Observers\ClassRoomObserver;
 use App\Observers\EmployeeWorkAttendanceLogObserver;
+use App\Observers\Member\MemberSupportTicketObserver;
+use App\Repositories\Bonus\BonusRuleChangeHistoryRepository;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -51,5 +58,10 @@ class AppServiceProvider extends ServiceProvider
         }
         ClassRoom::observe(ClassRoomObserver::class);
         EmployeeWorkAttendanceLog::observe(EmployeeWorkAttendanceLogObserver::class);
+        $historyRepo = app(BonusRuleChangeHistoryRepository::class);
+        MarketingBonusRule::observe(new BonusRuleObserver($historyRepo, 'marketing'));
+        KpiBonusRule::observe(new BonusRuleObserver($historyRepo, 'kpi'));
+        SpecialBonusRule::observe(new BonusRuleObserver($historyRepo, 'special'));
+        MemberSupportTicket::observe(MemberSupportTicketObserver::class);
     }
 }

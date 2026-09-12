@@ -4,7 +4,16 @@ use App\Http\Controllers\Admin\AttendanceLogController;
 use App\Http\Controllers\Admin\AttendancePolicyController;
 use App\Http\Controllers\Admin\AttendanceRecapController;
 use App\Http\Controllers\Admin\AttendanceRuleController;
-use App\Http\Controllers\Admin\BonusRuleController;
+use App\Http\Controllers\Admin\Bonus\BonusRuleChangeHistoryController;
+use App\Http\Controllers\Admin\Bonus\KpiBonusRuleController;
+use App\Http\Controllers\Admin\Bonus\MarketingBonusRuleController;
+use App\Http\Controllers\Admin\Bonus\SpecialBonusRuleController;
+use App\Http\Controllers\Admin\Member\DiscountController;
+use App\Http\Controllers\Admin\Member\MemberNpsResponseController;
+use App\Http\Controllers\Admin\Member\MemberPaymentController;
+use App\Http\Controllers\Admin\Member\MemberRegistrationController;
+use App\Http\Controllers\Admin\Member\MemberSupportTicketController;
+use App\Http\Controllers\Admin\Member\MemberSupportTicketReplyController;
 use App\Http\Controllers\Admin\BranchTransferController;
 use App\Http\Controllers\Admin\BudgetEstimateController;
 use App\Http\Controllers\Admin\ClassRoomController;
@@ -17,9 +26,9 @@ use App\Http\Controllers\Admin\JobRequisitionController;
 use App\Http\Controllers\Admin\KpiTemplateController;
 use App\Http\Controllers\Admin\LetterTemplateController;
 use App\Http\Controllers\Admin\MemberClassController;
-use App\Http\Controllers\Admin\MemberDataController;
+use App\Http\Controllers\Admin\Member\MemberDataController;
 use App\Http\Controllers\Admin\NotificationTemplateController;
-use App\Http\Controllers\Admin\PayrollPeriodController;
+// use App\Http\Controllers\Admin\PayrollPeriodController; // TODO: replace when payroll domain backend done
 use App\Http\Controllers\Admin\PositionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\RolePermissionController;
@@ -258,13 +267,51 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class])->group(function ()
     Route::resource('socializations', SocializationController::class);
 
     // Bonus Domain
-    Route::resource('bonus-rules', BonusRuleController::class);
+    Route::prefix('bonus')->name('bonus.')->group(function () {
+        Route::resource('marketing-rules', MarketingBonusRuleController::class)->except(['create', 'edit']);
+        Route::post('marketing-rules/{marketingRule}/tiers', [MarketingBonusRuleController::class, 'storeTier'])->name('marketing-rules.tiers.store');
+        Route::put('marketing-rules/{marketingRule}/tiers/{tier}', [MarketingBonusRuleController::class, 'updateTier'])->name('marketing-rules.tiers.update');
+        Route::delete('marketing-rules/{marketingRule}/tiers/{tier}', [MarketingBonusRuleController::class, 'destroyTier'])->name('marketing-rules.tiers.destroy');
+
+        Route::resource('kpi-rules', KpiBonusRuleController::class)->except(['create', 'edit']);
+        Route::post('kpi-rules/{kpiRule}/tiers', [KpiBonusRuleController::class, 'storeTier'])->name('kpi-rules.tiers.store');
+        Route::put('kpi-rules/{kpiRule}/tiers/{tier}', [KpiBonusRuleController::class, 'updateTier'])->name('kpi-rules.tiers.update');
+        Route::delete('kpi-rules/{kpiRule}/tiers/{tier}', [KpiBonusRuleController::class, 'destroyTier'])->name('kpi-rules.tiers.destroy');
+
+        Route::resource('special-rules', SpecialBonusRuleController::class)->except(['create', 'edit']);
+        Route::post('special-rules/{specialRule}/conditions', [SpecialBonusRuleController::class, 'storeCondition'])->name('special-rules.conditions.store');
+        Route::put('special-rules/{specialRule}/conditions/{condition}', [SpecialBonusRuleController::class, 'updateCondition'])->name('special-rules.conditions.update');
+        Route::delete('special-rules/{specialRule}/conditions/{condition}', [SpecialBonusRuleController::class, 'destroyCondition'])->name('special-rules.conditions.destroy');
+
+        Route::get('history', [BonusRuleChangeHistoryController::class, 'index'])->name('history.index');
+    });
 
     // Payroll Domain
     Route::resource('payroll-periods', PayrollPeriodController::class);
 
     // Member Domain
     Route::resource('members', MemberDataController::class);
+    Route::prefix('members/{member}')->name('members.')->group(function () {
+        Route::get('registrations/create', [MemberRegistrationController::class, 'create'])->name('registrations.create');
+        Route::post('registrations', [MemberRegistrationController::class, 'store'])->name('registrations.store');
+    });
+    Route::prefix('registrations')->name('registrations.')->group(function () {
+        Route::get('{registration}', [MemberRegistrationController::class, 'show'])->name('show');
+        Route::patch('{registration}/graduation', [MemberRegistrationController::class, 'updateGraduation'])->name('graduation.update');
+        Route::patch('{registration}/payment-status', [MemberRegistrationController::class, 'updatePaymentStatus'])->name('payment-status.update');
+    });
+    Route::patch('member-payments/{memberPayment}', [MemberPaymentController::class, 'update'])->name('member-payments.update');
+    Route::resource('discounts', DiscountController::class)->except(['create', 'edit']);
+    Route::put('discounts/{discount}/programs', [DiscountController::class, 'syncPrograms'])->name('discounts.programs.sync');
+    Route::prefix('support-tickets')->name('support-tickets.')->group(function () {
+        Route::get('/', [MemberSupportTicketController::class, 'index'])->name('index');
+        Route::post('/', [MemberSupportTicketController::class, 'store'])->name('store');
+        Route::get('{ticket}', [MemberSupportTicketController::class, 'show'])->name('show');
+        Route::post('{ticket}/status', [MemberSupportTicketController::class, 'changeStatus'])->name('status');
+        Route::post('{ticket}/assign', [MemberSupportTicketController::class, 'assign'])->name('assign');
+        Route::post('{ticket}/replies', [MemberSupportTicketReplyController::class, 'store'])->name('replies.store');
+    });
+    Route::get('nps-responses', [MemberNpsResponseController::class, 'index'])->name('nps-responses.index');
 
     // Curriculum Domain
     Route::resource('programs', ProgramController::class);

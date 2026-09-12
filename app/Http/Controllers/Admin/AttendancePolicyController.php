@@ -34,23 +34,7 @@ class AttendancePolicyController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $data = $request->validate([
-            'policy_name' => ['required', 'string', 'max:100'],
-            'attendance_scope' => ['required', 'in:branch,area,region'],
-            'branch_id' => ['nullable', 'exists:branches,id'],
-            'area_id' => ['nullable', 'exists:areas,id'],
-            'region_id' => ['nullable', 'exists:regions,id'],
-            'is_attendance_exempt' => ['boolean'],
-            'exemption_reason' => ['nullable', 'string', 'max:255'],
-            'is_active' => ['boolean'],
-            // Work schedule config
-            'work_is_required' => ['boolean'],
-            'work_late_tolerance_minutes' => ['nullable', 'integer', 'min:0'],
-            'work_early_leave_tolerance_minutes' => ['nullable', 'integer', 'min:0'],
-            // Session config
-            'session_is_required' => ['boolean'],
-            'session_late_tolerance_minutes' => ['nullable', 'integer', 'min:0'],
-        ]);
+        $data = $request->validate($this->policyRules());
 
         $policy = AttendancePolicy::create([
             'policy_name' => $data['policy_name'],
@@ -63,16 +47,8 @@ class AttendancePolicyController extends Controller
             'is_active' => $data['is_active'] ?? true,
         ]);
 
-        $policy->workScheduleConfig()->create([
-            'is_required' => $data['work_is_required'] ?? true,
-            'late_tolerance_minutes' => $data['work_late_tolerance_minutes'] ?? 0,
-            'early_leave_tolerance_minutes' => $data['work_early_leave_tolerance_minutes'] ?? 0,
-        ]);
-
-        $policy->sessionConfig()->create([
-            'is_required' => $data['session_is_required'] ?? true,
-            'late_tolerance_minutes' => $data['session_late_tolerance_minutes'] ?? 0,
-        ]);
+        $policy->workScheduleConfig()->create($this->workConfigData($data));
+        $policy->sessionConfig()->create($this->sessionConfigData($data));
 
         return redirect()->route('attendance-policies.index')
             ->with('success', 'Policy absensi berhasil dibuat.');
@@ -88,21 +64,7 @@ class AttendancePolicyController extends Controller
 
     public function update(Request $request, AttendancePolicy $attendancePolicy): RedirectResponse
     {
-        $data = $request->validate([
-            'policy_name' => ['required', 'string', 'max:100'],
-            'attendance_scope' => ['required', 'in:branch,area,region'],
-            'branch_id' => ['nullable', 'exists:branches,id'],
-            'area_id' => ['nullable', 'exists:areas,id'],
-            'region_id' => ['nullable', 'exists:regions,id'],
-            'is_attendance_exempt' => ['boolean'],
-            'exemption_reason' => ['nullable', 'string', 'max:255'],
-            'is_active' => ['boolean'],
-            'work_is_required' => ['boolean'],
-            'work_late_tolerance_minutes' => ['nullable', 'integer', 'min:0'],
-            'work_early_leave_tolerance_minutes' => ['nullable', 'integer', 'min:0'],
-            'session_is_required' => ['boolean'],
-            'session_late_tolerance_minutes' => ['nullable', 'integer', 'min:0'],
-        ]);
+        $data = $request->validate($this->policyRules());
 
         $attendancePolicy->update([
             'policy_name' => $data['policy_name'],
@@ -117,19 +79,12 @@ class AttendancePolicyController extends Controller
 
         $attendancePolicy->workScheduleConfig()->updateOrCreate(
             ['attendance_policy_id' => $attendancePolicy->id],
-            [
-                'is_required' => $data['work_is_required'] ?? true,
-                'late_tolerance_minutes' => $data['work_late_tolerance_minutes'] ?? 0,
-                'early_leave_tolerance_minutes' => $data['work_early_leave_tolerance_minutes'] ?? 0,
-            ],
+            $this->workConfigData($data),
         );
 
         $attendancePolicy->sessionConfig()->updateOrCreate(
             ['attendance_policy_id' => $attendancePolicy->id],
-            [
-                'is_required' => $data['session_is_required'] ?? true,
-                'late_tolerance_minutes' => $data['session_late_tolerance_minutes'] ?? 0,
-            ],
+            $this->sessionConfigData($data),
         );
 
         return redirect()->route('attendance-policies.index')
@@ -142,6 +97,42 @@ class AttendancePolicyController extends Controller
 
         return redirect()->route('attendance-policies.index')
             ->with('success', 'Policy absensi dihapus.');
+    }
+
+    private function policyRules(): array
+    {
+        return [
+            'policy_name' => ['required', 'string', 'max:100'],
+            'attendance_scope' => ['required', 'in:branch,area,region'],
+            'branch_id' => ['nullable', 'exists:branches,id'],
+            'area_id' => ['nullable', 'exists:areas,id'],
+            'region_id' => ['nullable', 'exists:regions,id'],
+            'is_attendance_exempt' => ['boolean'],
+            'exemption_reason' => ['nullable', 'string', 'max:255'],
+            'is_active' => ['boolean'],
+            'work_is_required' => ['boolean'],
+            'work_late_tolerance_minutes' => ['nullable', 'integer', 'min:0'],
+            'work_early_leave_tolerance_minutes' => ['nullable', 'integer', 'min:0'],
+            'session_is_required' => ['boolean'],
+            'session_late_tolerance_minutes' => ['nullable', 'integer', 'min:0'],
+        ];
+    }
+
+    private function workConfigData(array $data): array
+    {
+        return [
+            'is_required' => $data['work_is_required'] ?? true,
+            'late_tolerance_minutes' => $data['work_late_tolerance_minutes'] ?? 0,
+            'early_leave_tolerance_minutes' => $data['work_early_leave_tolerance_minutes'] ?? 0,
+        ];
+    }
+
+    private function sessionConfigData(array $data): array
+    {
+        return [
+            'is_required' => $data['session_is_required'] ?? true,
+            'late_tolerance_minutes' => $data['session_late_tolerance_minutes'] ?? 0,
+        ];
     }
 
     private function formData(): array

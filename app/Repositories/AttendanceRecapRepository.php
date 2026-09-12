@@ -8,43 +8,48 @@ use Illuminate\Support\Carbon;
 
 class AttendanceRecapRepository
 {
-    /**
-     * Recompute and UPSERT monthly recap for an employee after any attendance mutation.
-     */
     public function upsertForEmployee(int $employeeId, Carbon $date): EmployeeAttendanceMonthlyRecap
     {
         $year = $date->year;
         $month = $date->month;
 
-        $logs = EmployeeWorkAttendanceLog::where('employee_id', $employeeId)
+        $totals = EmployeeWorkAttendanceLog::where('employee_id', $employeeId)
             ->whereYear('attendance_date', $year)
             ->whereMonth('attendance_date', $month)
-            ->get();
+            ->selectRaw("
+                SUM(status = 'present')            AS total_present,
+                SUM(status = 'checked_in')         AS total_checked_in,
+                SUM(status = 'absent')             AS total_absent,
+                SUM(late_minutes > 0)              AS total_late,
+                COALESCE(SUM(late_minutes), 0)     AS total_late_minutes,
+                SUM(early_leave_minutes > 0)       AS total_early_leave,
+                SUM(status = 'sick')               AS total_sick,
+                SUM(status = 'permission')         AS total_permission,
+                SUM(status = 'leave')              AS total_leave,
+                SUM(status = 'holiday')            AS total_holiday
+            ")
+            ->first();
 
-        $totals = [
-            'total_present' => $logs->where('status', 'present')->count(),
-            'total_checked_in' => $logs->where('status', 'checked_in')->count(),
-            'total_absent' => $logs->where('status', 'absent')->count(),
-            'total_late' => $logs->where('late_minutes', '>', 0)->count(),
-            'total_late_minutes' => (int) $logs->sum('late_minutes'),
-            'total_early_leave' => $logs->where('early_leave_minutes', '>', 0)->count(),
-            'total_sick' => $logs->where('status', 'sick')->count(),
-            'total_permission' => $logs->where('status', 'permission')->count(),
-            'total_leave' => $logs->where('status', 'leave')->count(),
-            'total_holiday' => $logs->where('status', 'holiday')->count(),
-            'generated_at' => now(),
-        ];
+        $present = (int) ($totals->total_present ?? 0);
+        $checkedIn = (int) ($totals->total_checked_in ?? 0);
 
-        EmployeeAttendanceMonthlyRecap::updateOrCreate(
+        return EmployeeAttendanceMonthlyRecap::updateOrCreate(
             ['employee_id' => $employeeId, 'period_year' => $year, 'period_month' => $month],
-            array_merge($totals, [
+            [
                 'total_scheduled_working_days' => 0, // ponytail: defer scheduled days calc
-                'total_effective_working_days' => $totals['total_present'] + $totals['total_checked_in'],
-            ]),
+                'total_effective_working_days' => $present + $checkedIn,
+                'total_present' => $present,
+                'total_checked_in' => $checkedIn,
+                'total_absent' => (int) ($totals->total_absent ?? 0),
+                'total_late' => (int) ($totals->total_late ?? 0),
+                'total_late_minutes' => (int) ($totals->total_late_minutes ?? 0),
+                'total_early_leave' => (int) ($totals->total_early_leave ?? 0),
+                'total_sick' => (int) ($totals->total_sick ?? 0),
+                'total_permission' => (int) ($totals->total_permission ?? 0),
+                'total_leave' => (int) ($totals->total_leave ?? 0),
+                'total_holiday' => (int) ($totals->total_holiday ?? 0),
+                'generated_at' => now(),
+            ],
         );
-
-        return EmployeeAttendanceMonthlyRecap::where('employee_id', $employeeId)
-            ->forPeriod($year, $month)
-            ->firstOrFail();
     }
 }
