@@ -8,7 +8,7 @@ class StoreJobPermintaanRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('create job permintaan');
+        return $this->user()->can('recruitment.job_permintaan.create');
     }
 
     public function rules(): array

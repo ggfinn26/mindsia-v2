@@ -27,8 +27,9 @@ class ProcessPendingTelegramUpdatesCommand extends Command
 
             $data = $response->json();
 
-            if (!($data['ok'] ?? false)) {
+            if (! ($data['ok'] ?? false)) {
                 $this->error('Failed to fetch updates');
+
                 return 1;
             }
 
@@ -36,10 +37,11 @@ class ProcessPendingTelegramUpdatesCommand extends Command
 
             if (empty($updates)) {
                 $this->info('No pending updates');
+
                 return 0;
             }
 
-            $this->info('Found ' . count($updates) . ' updates');
+            $this->info('Found '.count($updates).' updates');
             $this->newLine();
 
             $processed = 0;
@@ -47,7 +49,7 @@ class ProcessPendingTelegramUpdatesCommand extends Command
             foreach ($updates as $update) {
                 $message = $update['message'] ?? null;
 
-                if (!$message || ($message['chat']['id'] ?? null) != $groupStorage) {
+                if (! $message || ($message['chat']['id'] ?? null) != $groupStorage) {
                     continue;
                 }
 
@@ -60,15 +62,15 @@ class ProcessPendingTelegramUpdatesCommand extends Command
                     $fileId = $document['file_id'];
                     $filename = $document['file_name'] ?? 'document';
                     $fileSize = $document['file_size'] ?? null;
-                    $this->line('📄 Document: ' . $filename);
+                    $this->line('📄 Document: '.$filename);
                 }
                 // Handle photos
                 elseif ($photos = $message['photo'] ?? null) {
                     $photo = end($photos);
                     $fileId = $photo['file_id'];
-                    $filename = 'photo_' . date('YmdHis') . '.jpg';
+                    $filename = 'photo_'.date('YmdHis').'.jpg';
                     $fileSize = $photo['file_size'] ?? null;
-                    $this->line('📸 Photo: ' . $filename);
+                    $this->line('📸 Photo: '.$filename);
                 } else {
                     continue;
                 }
@@ -85,7 +87,7 @@ class ProcessPendingTelegramUpdatesCommand extends Command
                     $this->line('   ✓ Logged to GROUP_LOG');
                     $processed++;
                 } catch (\Exception $e) {
-                    $this->error('   ✗ Log error: ' . $e->getMessage());
+                    $this->error('   ✗ Log error: '.$e->getMessage());
                 }
             }
 
@@ -94,7 +96,8 @@ class ProcessPendingTelegramUpdatesCommand extends Command
 
             return 0;
         } catch (\Exception $e) {
-            $this->error('Error: ' . $e->getMessage());
+            $this->error('Error: '.$e->getMessage());
+
             return 1;
         }
     }

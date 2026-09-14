@@ -8,7 +8,7 @@ class ReviewEmployeeOnboardingRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('review_onboarding') || $this->user()->hasRole('BOARD');
+        return $this->user()->can('recruitment.onboarding.review');
     }
 
     public function rules(): array

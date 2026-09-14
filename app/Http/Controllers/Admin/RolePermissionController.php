@@ -24,7 +24,7 @@ class RolePermissionController extends Controller
         $request->validate(['roles' => ['array', 'exists:roles,id']]);
 
         $user->syncRoles($request->input('roles', []));
-        auth()->user()->forgetCachedPermissions();
+        $user->forgetCachedPermissions();
 
         return back()->with('success', 'Role berhasil diperbarui.');
     }
@@ -34,7 +34,7 @@ class RolePermissionController extends Controller
         $request->validate(['permissions' => ['array', 'exists:permissions,id']]);
 
         $user->syncPermissions($request->input('permissions', []));
-        auth()->user()->forgetCachedPermissions();
+        $user->forgetCachedPermissions();
 
         return back()->with('success', 'Permission berhasil diperbarui.');
     }

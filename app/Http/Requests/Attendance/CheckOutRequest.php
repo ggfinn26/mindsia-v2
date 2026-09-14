@@ -16,7 +16,6 @@ class CheckOutRequest extends FormRequest
         return [
             'check_out_latitude' => ['required', 'numeric', 'between:-90,90'],
             'check_out_longitude' => ['required', 'numeric', 'between:-180,180'],
-            'check_out_distance_m' => ['required', 'integer', 'min:0'],
             'selfie' => ['nullable', 'image', 'max:5120'],
             'check_out_notes' => ['nullable', 'string', 'max:500'],
         ];

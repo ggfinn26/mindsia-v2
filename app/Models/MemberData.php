@@ -28,6 +28,7 @@ class MemberData extends Model
         'institution_id',
         'program_id',
         'referred_by_employee_id',
+        'activation_status',
     ];
 
     protected $casts = [
@@ -67,5 +68,10 @@ class MemberData extends Model
     public function npsResponses(): HasMany
     {
         return $this->hasMany(MemberNpsResponse::class, 'member_id');
+    }
+
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(MemberNotification::class, 'member_id');
     }
 }

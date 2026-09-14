@@ -9,7 +9,7 @@ class PublishJobPostingRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('manage job postings')
+        return $this->user()->can('recruitment.job_posting.publish')
             && $this->route('jobPosting')->status === JobPosting::STATUS_DRAFT;
     }
 

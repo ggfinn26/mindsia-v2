@@ -14,7 +14,7 @@ class UpdateInstitutionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'regions_id' => ['required', 'exists:regions,id'],
+            // regions_id immutable after create — tidak bisa diubah via update
             'jenjang_institution' => ['required', 'in:SD,SMP,SMA,PERGURUAN TINGGI'],
             'institution_name' => ['required', 'string', 'max:255'],
         ];

@@ -6,6 +6,7 @@ use App\Models\MemberData;
 use App\Models\MemberSupportTicket;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class MemberSupportTicketRepository
 {
@@ -21,11 +22,13 @@ class MemberSupportTicketRepository
 
     public function create(MemberData $member, array $data): MemberSupportTicket
     {
-        $data['member_id'] = $member->id;
-        $data['ticket_number'] = $this->generateTicketNumber();
-        $data['status'] = 'open';
+        return DB::transaction(function () use ($member, $data) {
+            $data['member_id'] = $member->id;
+            $data['ticket_number'] = $this->generateTicketNumber();
+            $data['status'] = 'open';
 
-        return MemberSupportTicket::create($data);
+            return MemberSupportTicket::create($data);
+        });
     }
 
     public function changeStatus(MemberSupportTicket $ticket, string $newStatus): void
@@ -47,7 +50,8 @@ class MemberSupportTicketRepository
     private function generateTicketNumber(): string
     {
         $today = Carbon::today()->format('Ymd');
-        $count = MemberSupportTicket::whereDate('created_at', today())->count() + 1;
+        // lockForUpdate prevents duplicate numbers under concurrent requests
+        $count = MemberSupportTicket::whereDate('created_at', today())->lockForUpdate()->count() + 1;
 
         return sprintf('TICK-%s-%03d', $today, $count);
     }

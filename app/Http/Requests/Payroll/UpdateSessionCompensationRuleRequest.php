@@ -9,7 +9,7 @@ class UpdateSessionCompensationRuleRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('session_compensation_rule.update');
+        return $this->user()->can('payroll.session_compensation_rule.update');
     }
 
     public function rules(): array

@@ -5,55 +5,75 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\VerifyEmployeeCodeRequest;
+use App\Models\Employee;
 use App\Services\EmployeeAuthService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
 
 class RegisterController extends Controller
 {
     public function __construct(private readonly EmployeeAuthService $service) {}
 
-    public function showStep1(): View
+    public function showStep1()
     {
-        return view('auth.register-step1');
+        return redirect()->route('employee.landing', ['view' => 'register1']);
     }
 
-    public function verifyCode(VerifyEmployeeCodeRequest $request): RedirectResponse
+    public function verifyCode(VerifyEmployeeCodeRequest $request): RedirectResponse|JsonResponse
     {
         $employee = $this->service->verifyEmployeeCode($request->validated('employee_code'));
 
-        if (!$employee) {
+        if (! $employee) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'errors' => ['employee_code' => ['Kode tidak valid atau akun sudah ada.']],
+                ], 422);
+            }
+
             return redirect()->back()->withErrors([
                 'employee_code' => 'Kode tidak valid atau akun sudah ada.',
             ])->onlyInput('employee_code');
         }
 
-        return redirect()->route('register.step2')
-            ->with('register_employee_id', $employee->id);
-    }
+        session()->put('register_employee_id', $employee->id);
 
-    public function showStep2(): View
-    {
-        if (!session()->has('register_employee_id')) {
-            return redirect()->route('register.step1');
+        if ($request->expectsJson()) {
+            return response()->json(['redirect' => route('register.step2')]);
         }
 
-        return view('auth.register-step2');
+        return redirect()->route('employee.landing', ['view' => 'register2']);
     }
 
-    public function register(RegisterRequest $request): RedirectResponse
+    public function showStep2()
+    {
+        if (! session()->has('register_employee_id')) {
+            return redirect()->route('employee.landing', ['view' => 'register1']);
+        }
+
+        return redirect()->route('employee.landing', ['view' => 'register2']);
+    }
+
+    public function register(RegisterRequest $request): RedirectResponse|JsonResponse
     {
         $employeeId = session()->get('register_employee_id');
 
-        if (!$employeeId) {
-            return redirect()->route('register.step1');
+        if (! $employeeId) {
+            if ($request->expectsJson()) {
+                return response()->json(['errors' => ['form' => ['Sesi habis, ulangi dari langkah 1.']]], 422);
+            }
+
+            return redirect()->route('employee.landing', ['view' => 'register1']);
         }
 
-        $employee = \App\Models\Employee::findOrFail($employeeId);
+        $employee = Employee::findOrFail($employeeId);
 
         $this->service->createAccount($employee, $request->validated());
 
         session()->forget('register_employee_id');
+
+        if ($request->expectsJson()) {
+            return response()->json(['redirect' => route('register.success')]);
+        }
 
         return redirect()->route('register.success');
     }

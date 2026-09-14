@@ -8,7 +8,7 @@ class UpdatePayrollPeriodRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('payroll_period.update');
+        return $this->user()->can('payroll.period.update');
     }
 
     public function rules(): array

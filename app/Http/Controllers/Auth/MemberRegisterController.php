@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\StoreMemberRequest;
 use App\Models\Employee;
 use App\Models\MemberAccount;
 use App\Models\MemberData;
+use App\Models\Province;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -15,7 +16,11 @@ class MemberRegisterController extends Controller
 {
     public function showRegister(): View
     {
-        return view('auth.member-register');
+        $provinces = Province::orderBy('name')->get(['id', 'name']);
+
+        return view('auth.member-register', [
+            'provinces' => $provinces,
+        ]);
     }
 
     public function register(StoreMemberRequest $request): RedirectResponse

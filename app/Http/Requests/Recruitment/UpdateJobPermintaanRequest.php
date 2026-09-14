@@ -10,7 +10,7 @@ class UpdateJobPermintaanRequest extends FormRequest
     public function authorize(): bool
     {
         // hanya bisa edit saat draft
-        return $this->user()->can('edit job permintaan')
+        return $this->user()->can('recruitment.job_permintaan.update')
             && $this->route('jobPermintaan')->status === JobPermintaan::STATUS_DRAFT;
     }
 

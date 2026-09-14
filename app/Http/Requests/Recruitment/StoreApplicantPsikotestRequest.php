@@ -8,7 +8,7 @@ class StoreApplicantPsikotestRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('manage recruitment stages');
+        return $this->user()->can('recruitment.psikotest.create');
     }
 
     public function rules(): array

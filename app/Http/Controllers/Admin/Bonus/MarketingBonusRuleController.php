@@ -8,6 +8,7 @@ use App\Http\Requests\Bonus\StoreMarketingBonusRuleTierRequest;
 use App\Http\Requests\Bonus\UpdateMarketingBonusRuleRequest;
 use App\Http\Requests\Bonus\UpdateMarketingBonusRuleTierRequest;
 use App\Models\MarketingBonusRule;
+use App\Models\MarketingBonusRuleTier;
 use App\Repositories\Bonus\MarketingBonusRuleRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -53,6 +54,13 @@ class MarketingBonusRuleController extends Controller
         return redirect()->route('bonus.marketing-rules.index')->with('success', 'Rule bonus marketing berhasil dihapus.');
     }
 
+    public function toggleActive(MarketingBonusRule $marketingRule): RedirectResponse
+    {
+        $marketingRule->update(['is_active' => ! $marketingRule->is_active]);
+
+        return back()->with('success', 'Status bonus rule berhasil diperbarui.');
+    }
+
     public function storeTier(StoreMarketingBonusRuleTierRequest $request, MarketingBonusRule $marketingRule): RedirectResponse
     {
         $this->repo->storeTier($marketingRule, $request->validated());
@@ -62,6 +70,8 @@ class MarketingBonusRuleController extends Controller
 
     public function updateTier(UpdateMarketingBonusRuleTierRequest $request, MarketingBonusRule $marketingRule, int $tier): RedirectResponse
     {
+        abort_unless(MarketingBonusRuleTier::where('id', $tier)->where('marketing_bonus_rule_id', $marketingRule->id)->exists(), 403);
+
         $this->repo->updateTier($tier, $request->validated());
 
         return redirect()->route('bonus.marketing-rules.show', $marketingRule)->with('success', 'Tier berhasil diperbarui.');
@@ -69,6 +79,8 @@ class MarketingBonusRuleController extends Controller
 
     public function destroyTier(MarketingBonusRule $marketingRule, int $tier): RedirectResponse
     {
+        abort_unless(MarketingBonusRuleTier::where('id', $tier)->where('marketing_bonus_rule_id', $marketingRule->id)->exists(), 403);
+
         $this->repo->deleteTier($tier);
 
         return redirect()->route('bonus.marketing-rules.show', $marketingRule)->with('success', 'Tier berhasil dihapus.');

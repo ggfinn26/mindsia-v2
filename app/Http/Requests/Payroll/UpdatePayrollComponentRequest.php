@@ -4,12 +4,13 @@ namespace App\Http\Requests\Payroll;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class UpdatePayrollComponentRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('payroll_component.update');
+        return $this->user()->can('payroll.component.update');
     }
 
     public function rules(): array
@@ -24,5 +25,15 @@ class UpdatePayrollComponentRequest extends FormRequest
             'is_taxable' => ['boolean'],
             'is_active' => ['boolean'],
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function ($v) {
+            $component = $this->route('component');
+            if ($this->has('calculation_method') && $component?->payrollItems()->exists()) {
+                $v->errors()->add('calculation_method', 'Metode kalkulasi tidak bisa diubah karena komponen sudah digunakan dalam payroll.');
+            }
+        });
     }
 }

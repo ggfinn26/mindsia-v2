@@ -4,22 +4,32 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 
 class LoginController extends Controller
 {
-    public function showLogin(): View
+    public function showLogin()
     {
-        return view('auth.login');
+        return redirect()->route('employee.landing', ['view' => 'login']);
     }
 
-    public function login(LoginRequest $request): RedirectResponse
+    public function login(LoginRequest $request): RedirectResponse|JsonResponse
     {
         if ($request->authenticate()) {
             $request->session()->regenerate();
+            auth()->user()->update(['last_login_at' => now()]);
+
+            if ($request->expectsJson()) {
+                return response()->json(['redirect' => route('dashboard')]);
+            }
+
             return redirect()->route('dashboard');
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json(['errors' => ['email' => ['Email atau password salah.']]], 422);
         }
 
         return back()->withErrors(['email' => 'Email atau password salah.'])->onlyInput('email');

@@ -8,7 +8,7 @@ class GeneratePayrollRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('payroll.generate');
+        return $this->user()->can('payroll.period.generate');
     }
 
     public function rules(): array

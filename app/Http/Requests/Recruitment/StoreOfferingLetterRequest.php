@@ -9,7 +9,7 @@ class StoreOfferingLetterRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('manage offering letters');
+        return $this->user()->can('recruitment.offering_letter.create');
     }
 
     public function rules(): array

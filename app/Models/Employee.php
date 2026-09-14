@@ -26,6 +26,7 @@ class Employee extends Model
         'branch_id',
         'area_id',
         'region_id',
+        'is_hq',
         'is_active',
     ];
 
@@ -33,6 +34,7 @@ class Employee extends Model
 
     protected $casts = [
         'birthdate' => 'date',
+        'is_hq' => 'boolean',
         'is_active' => 'boolean',
     ];
 
@@ -91,6 +93,11 @@ class Employee extends Model
     public function compensations(): HasMany
     {
         return $this->hasMany(EmployeeCompensation::class);
+    }
+
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(EmployeeNotification::class);
     }
 
     public function scopeActive(Builder $query): Builder

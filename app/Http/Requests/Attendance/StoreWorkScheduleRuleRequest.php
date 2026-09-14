@@ -8,7 +8,7 @@ class StoreWorkScheduleRuleRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->hasRole('board-of-directors');
+        return $this->user()->can('attendance.schedule_rule.manage');
     }
 
     public function rules(): array

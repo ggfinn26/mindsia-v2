@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['homeRoute' => route('careers.index')])
 
 @section('content')
 <div class="container mx-auto px-4 py-8 max-w-md">

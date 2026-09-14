@@ -40,11 +40,13 @@ class PayrollComponentController extends Controller
     public function destroy(PayrollComponent $component): RedirectResponse
     {
         if ($this->repo->hasPayrollHistory($component)) {
-            return back()->with('error', 'Komponen tidak bisa dihapus karena sudah dipakai di payroll.');
+            $this->repo->update($component, ['is_active' => false]);
+
+            return redirect()->route('payroll.components.index')->with('success', 'Komponen gaji dinonaktifkan (sudah digunakan di payroll).');
         }
 
-        $this->repo->update($component, ['is_active' => false]);
+        $component->delete();
 
-        return redirect()->route('payroll.components.index')->with('success', 'Komponen gaji dinonaktifkan.');
+        return redirect()->route('payroll.components.index')->with('success', 'Komponen gaji berhasil dihapus.');
     }
 }

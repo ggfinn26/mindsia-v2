@@ -8,7 +8,7 @@ class ApproveJobPermintaanRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('ops_approve_permintaan') || $this->user()->hasRole('BOARD');
+        return $this->user()->can('recruitment.job_permintaan.approve');
     }
 
     public function rules(): array

@@ -7,6 +7,7 @@ use App\Models\EmployeeLeaveRequest;
 use App\Models\EmployeeWorkAttendanceLog;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
+use Illuminate\Validation\ValidationException;
 
 class LeaveRequestRepository
 {
@@ -28,8 +29,21 @@ class LeaveRequestRepository
 
     public function create(Employee $employee, array $data): EmployeeLeaveRequest
     {
+        $overlapping = EmployeeLeaveRequest::where('employee_id', $employee->id)
+            ->whereIn('status', ['pending', 'approved'])
+            ->where('start_date', '<=', $data['end_date'])
+            ->where('end_date', '>=', $data['start_date'])
+            ->exists();
+
+        if ($overlapping) {
+            throw ValidationException::withMessages([
+                'start_date' => 'Sudah ada pengajuan izin aktif yang overlap pada tanggal tersebut.',
+            ]);
+        }
+
         return EmployeeLeaveRequest::create(array_merge($data, [
             'employee_id' => $employee->id,
+            'branch_id' => $employee->branch_id,
             'status' => 'pending',
         ]));
     }
@@ -73,9 +87,20 @@ class LeaveRequestRepository
         $leaveStatus = $request->leaveStatusForDate();
         $current = Carbon::parse($request->start_date);
         $end = Carbon::parse($request->end_date);
+        $checkedInStatuses = ['checked_in', 'late', 'present', 'present_late'];
 
         while ($current->lte($end)) {
             $date = $current->toDateString();
+
+            $existing = EmployeeWorkAttendanceLog::where('employee_id', $request->employee_id)
+                ->where('attendance_date', $date)
+                ->first();
+
+            if ($existing && in_array($existing->status, $checkedInStatuses)) {
+                $current->addDay();
+
+                continue; // preserve actual attendance — employee sudah check-in
+            }
 
             EmployeeWorkAttendanceLog::updateOrCreate(
                 ['employee_id' => $request->employee_id, 'attendance_date' => $date],

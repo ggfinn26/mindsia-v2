@@ -8,13 +8,13 @@ class ProcessPaymentRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('payroll.process_payment');
+        return $this->user()->can('payroll.period.pay');
     }
 
     public function rules(): array
     {
         return [
-            'payment_method' => ['required', 'in:bank_transfer,cash,other'],
+            'payment_method' => ['required', 'in:bank_transfer,cash'],
             'amount' => ['required', 'numeric', 'min:0.01'],
             'paid_at' => ['nullable', 'date'],
             'payment_reference' => ['nullable', 'string', 'max:255'],

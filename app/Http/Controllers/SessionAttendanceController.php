@@ -42,7 +42,7 @@ class SessionAttendanceController extends Controller
 
     public function verify(EmployeeSessionAttendanceLog $sessionLog): RedirectResponse
     {
-        abort_unless(auth()->user()->hasAnyRole(['BOARD', 'HRR', 'HRP']), 403);
+        abort_unless(auth()->user()->can('attendance.adjustment.create'), 403);
         $this->repository->verify($sessionLog, auth()->user()->employee_id);
 
         return back()->with('success', 'Kehadiran sesi diverifikasi.');

@@ -69,7 +69,7 @@ class JobApplicationController extends Controller
     // HR: reject lamaran di mana saja dalam flow
     public function reject(Request $request, JobApplication $jobApplication): RedirectResponse
     {
-        abort_unless($request->user()->can('manage job applications'), 403);
+        abort_unless($request->user()->can('recruitment.job_application.review'), 403);
 
         $this->stageService->reject($jobApplication, $request->string('reason'), $request->user()->employee->id);
 
@@ -79,7 +79,7 @@ class JobApplicationController extends Controller
     // HR: advance reserve → offering (tanpa buka lamaran baru)
     public function advanceReserve(Request $request, JobApplication $jobApplication): RedirectResponse
     {
-        abort_unless($request->user()->can('manage job applications'), 403);
+        abort_unless($request->user()->can('recruitment.job_application.review'), 403);
 
         $this->stageService->advanceReserveToOffering($jobApplication, $request->user()->employee->id);
 

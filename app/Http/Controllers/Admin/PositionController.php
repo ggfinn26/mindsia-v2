@@ -6,15 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Models\Position;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\View\View;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
-class PositionController extends Controller
+class PositionController extends Controller implements HasMiddleware
 {
-    public function __construct()
+    public static function middleware(): array
     {
-        $this->middleware('board-of-directors');
+        return [
+            new Middleware('can:position.manage'),
+        ];
     }
 
     public function index(): View
@@ -67,6 +71,9 @@ class PositionController extends Controller
 
         $position->update($validated);
         $position->permissions()->sync($request->input('permission_ids', []));
+
+        $position->load('role');
+        $position->role?->users->each->forgetCachedPermissions();
 
         return redirect()->route('positions.index')->with('success', 'Posisi berhasil diperbarui.');
     }

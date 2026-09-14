@@ -8,7 +8,7 @@ class StoreCurriculumItemRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->hasRole('BOARD');
+        return $this->user()->can('curriculum.item.create');
     }
 
     public function rules(): array

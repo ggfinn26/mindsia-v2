@@ -9,7 +9,7 @@ class StoreInterviewScheduleRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('manage recruitment stages');
+        return $this->user()->can('recruitment.interview.create');
     }
 
     public function rules(): array

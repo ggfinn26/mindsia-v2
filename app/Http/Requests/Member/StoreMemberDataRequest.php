@@ -8,7 +8,7 @@ class StoreMemberDataRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->hasAnyRole(['BOARD_OF_DIRECTORS', 'MARKETING']);
+        return $this->user()->can('member.manage');
     }
 
     public function rules(): array
@@ -30,6 +30,7 @@ class StoreMemberDataRequest extends FormRequest
             'institution_id' => ['required', 'integer', 'exists:institutions,id'],
             'program_id' => ['nullable', 'integer', 'exists:programs,id'],
             'referred_by_employee_id' => ['nullable', 'integer', 'exists:employees,id'],
+            'create_account' => ['nullable', 'boolean'],
         ];
     }
 }

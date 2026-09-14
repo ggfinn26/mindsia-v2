@@ -50,14 +50,19 @@
             <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
                 Password
             </label>
-            <input
-                type="password"
-                id="password"
-                name="password"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Minimal 8 karakter"
-                required
-            >
+            <div class="relative w-full">
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
+                    placeholder="Minimal 8 karakter"
+                    required
+                >
+                <button type="button" onclick="const input = this.previousElementSibling; input.type = input.type === 'password' ? 'text' : 'password'; this.innerHTML = input.type === 'password' ? '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility</span>' : '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility_off</span>';" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                    <span class="material-symbols-outlined text-[18px] text-gray-500">visibility</span>
+                </button>
+            </div>
             @error('password')
                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
             @enderror
@@ -70,14 +75,19 @@
             <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-2">
                 Konfirmasi Password
             </label>
-            <input
-                type="password"
-                id="password_confirmation"
-                name="password_confirmation"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Ulangi password"
-                required
-            >
+            <div class="relative w-full">
+                <input
+                    type="password"
+                    id="password_confirmation"
+                    name="password_confirmation"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
+                    placeholder="Ulangi password"
+                    required
+                >
+                <button type="button" onclick="const input = this.previousElementSibling; input.type = input.type === 'password' ? 'text' : 'password'; this.innerHTML = input.type === 'password' ? '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility</span>' : '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility_off</span>';" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                    <span class="material-symbols-outlined text-[18px] text-gray-500">visibility</span>
+                </button>
+            </div>
             @error('password_confirmation')
                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
             @enderror

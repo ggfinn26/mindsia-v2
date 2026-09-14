@@ -47,9 +47,20 @@ class DiscountController extends Controller
 
     public function destroy(Discount $discount): RedirectResponse
     {
+        abort_unless(auth()->user()->can('member.manage'), 403);
+
         $this->repo->delete($discount);
 
         return redirect()->route('discounts.index')->with('success', 'Diskon berhasil dihapus.');
+    }
+
+    public function toggleActive(Discount $discount): RedirectResponse
+    {
+        abort_unless(auth()->user()->can('member.manage'), 403);
+
+        $discount->update(['is_active' => ! $discount->is_active]);
+
+        return back()->with('success', 'Status diskon berhasil diperbarui.');
     }
 
     public function syncPrograms(SyncDiscountProgramsRequest $request, Discount $discount): RedirectResponse

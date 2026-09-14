@@ -36,8 +36,8 @@ class AreaRepository
 
     public function delete(Area $area): void
     {
-        if ($area->branches()->where('is_active', true)->exists()) {
-            throw new \RuntimeException('Tidak bisa hapus area yang masih memiliki branch aktif.');
+        if ($area->branches()->exists()) {
+            throw new \RuntimeException('Tidak bisa hapus area yang masih memiliki branch.');
         }
 
         $area->delete();

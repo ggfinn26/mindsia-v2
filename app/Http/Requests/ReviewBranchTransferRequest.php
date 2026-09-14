@@ -8,7 +8,7 @@ class ReviewBranchTransferRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return auth()->user()->can('reviewBranchTransfer');
+        return auth()->user()->can('organization.branch_transfer.review');
     }
 
     public function rules(): array

@@ -90,6 +90,8 @@ class EmployeePayrollRepository
 
         if ($totalPaid >= (float) $payroll->net_amount) {
             $this->updatePaymentStatus($payroll, 'paid');
+        } elseif ($totalPaid > 0) {
+            $this->updatePaymentStatus($payroll, 'partial');
         }
     }
 }

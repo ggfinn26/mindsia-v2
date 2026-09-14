@@ -8,7 +8,7 @@ class ReviewJobPermintaanRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('hrd_review_permintaan');
+        return $this->user()->can('recruitment.job_permintaan.review');
     }
 
     public function rules(): array

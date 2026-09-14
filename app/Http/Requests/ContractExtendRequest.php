@@ -8,7 +8,7 @@ class ContractExtendRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('contract.manage');
     }
 
     public function rules(): array

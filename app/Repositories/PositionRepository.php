@@ -25,6 +25,7 @@ class PositionRepository
     public function update(Position $position, array $data): Position
     {
         $position->update($data);
+
         return $position;
     }
 

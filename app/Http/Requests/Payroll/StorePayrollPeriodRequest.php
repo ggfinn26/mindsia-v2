@@ -9,7 +9,7 @@ class StorePayrollPeriodRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('payroll_period.create');
+        return $this->user()->can('payroll.period.create');
     }
 
     public function rules(): array

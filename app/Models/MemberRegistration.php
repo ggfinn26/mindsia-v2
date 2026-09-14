@@ -68,4 +68,9 @@ class MemberRegistration extends Model
     {
         return $this->hasOne(MemberReview::class);
     }
+
+    public function certificate(): HasOne
+    {
+        return $this->hasOne(MemberCertificate::class, 'member_registration_id');
+    }
 }

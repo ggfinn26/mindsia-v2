@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Payroll;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Payroll\GenerateSlipRequest;
+use App\Models\Employee;
 use App\Models\EmployeePayroll;
 use App\Models\PayrollPeriod;
 use App\Services\Payroll\PayrollNotificationService;
@@ -23,7 +24,9 @@ class PayrollSlipController extends Controller
     public function generate(GenerateSlipRequest $request, PayrollPeriod $period, EmployeePayroll $payroll): RedirectResponse
     {
         $generatedBy = auth()->user()->employee;
-        $slip = $this->slipService->generate($payroll, $generatedBy);
+        $signatoryId = $request->validated('signatory_employee_id');
+        $signatory = $signatoryId ? Employee::find($signatoryId) : null;
+        $slip = $this->slipService->generate($payroll, $generatedBy, $signatory);
         $this->notificationService->notifySlipReady($payroll);
 
         return redirect()->route('payroll.periods.payroll.show', [$period, $payroll])->with('success', 'Slip gaji berhasil digenerate.');

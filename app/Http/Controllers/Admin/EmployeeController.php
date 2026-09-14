@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreEmployeeRequest;
+use App\Http\Requests\UpdateEmployeeRequest;
 use App\Models\Employee;
 use App\Repositories\AreaRepository;
 use App\Repositories\BranchRepository;
@@ -23,7 +25,7 @@ class EmployeeController extends Controller
 
     public function index(Request $request): View
     {
-        $this->authorize('view', Employee::class);
+        $this->authorize('viewAny', Employee::class);
 
         $employees = $this->repository->paginate(
             $request->only('region_id', 'branch_id', 'is_active', 'search'),
@@ -45,21 +47,9 @@ class EmployeeController extends Controller
         return view('admin.employees.create', compact('regions', 'areas', 'branches'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreEmployeeRequest $request): RedirectResponse
     {
-        $this->authorize('create', Employee::class);
-
-        $validated = $request->validate([
-            'employee_code' => ['required', 'string', 'unique:employees'],
-            'full_name' => ['required', 'string', 'max:255'],
-            'gender' => ['required', 'in:M,F'],
-            'birthdate' => ['required', 'date'],
-            'email' => ['required', 'email', 'unique:employees'],
-            'whatsapp_number' => ['required', 'string'],
-            'branch_id' => ['required', 'exists:branches,id'],
-        ]);
-
-        $this->repository->create($validated);
+        $this->repository->create($request->validated());
 
         return redirect()->route('employees.index')->with('success', 'Employee berhasil ditambahkan.');
     }
@@ -85,20 +75,9 @@ class EmployeeController extends Controller
         return view('admin.employees.edit', compact('employee', 'regions', 'areas', 'branches'));
     }
 
-    public function update(Request $request, Employee $employee): RedirectResponse
+    public function update(UpdateEmployeeRequest $request, Employee $employee): RedirectResponse
     {
-        $this->authorize('update', $employee);
-
-        $validated = $request->validate([
-            'full_name' => ['required', 'string', 'max:255'],
-            'gender' => ['required', 'in:M,F'],
-            'birthdate' => ['required', 'date'],
-            'email' => ['required', 'email', 'unique:employees,email,'.$employee->id],
-            'whatsapp_number' => ['required', 'string'],
-            'branch_id' => ['required', 'exists:branches,id'],
-        ]);
-
-        $this->repository->update($employee, $validated);
+        $this->repository->update($employee, $request->validated());
 
         return redirect()->route('employees.show', $employee)->with('success', 'Employee berhasil diperbarui.');
     }

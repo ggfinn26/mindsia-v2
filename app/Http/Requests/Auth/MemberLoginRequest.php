@@ -18,7 +18,7 @@ class MemberLoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email'    => ['required', 'email'],
+            'email' => ['required', 'email'],
             'password' => ['required', 'string'],
         ];
     }
@@ -27,7 +27,7 @@ class MemberLoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (!Auth::guard('member')->attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        if (! Auth::guard('member')->attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
             throw ValidationException::withMessages([
                 'email' => 'Email atau password salah.',
@@ -35,12 +35,13 @@ class MemberLoginRequest extends FormRequest
         }
 
         RateLimiter::clear($this->throttleKey());
+
         return true;
     }
 
     public function ensureIsNotRateLimited(): void
     {
-        if (!RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
         }
 
@@ -54,6 +55,6 @@ class MemberLoginRequest extends FormRequest
 
     public function throttleKey(): string
     {
-        return strtolower($this->input('email')) . '|' . $this->ip();
+        return strtolower($this->input('email')).'|'.$this->ip();
     }
 }

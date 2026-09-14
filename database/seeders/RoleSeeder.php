@@ -14,6 +14,7 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         $roleNames = [
+            'Super Admin',
             'CEO',
             'COO',
             'CMO',
@@ -31,13 +32,20 @@ class RoleSeeder extends Seeder
         ];
 
         foreach ($roleNames as $name) {
-            Role::firstOrCreate(['name' => $name]);
+            Role::firstOrCreate(['name' => $name, 'guard_name' => 'web']);
         }
 
-        // Temp: CEO gets all permissions until Position domain implemented
+        $allPermissions = Permission::pluck('name')->toArray();
+
+        // Assign all permissions to Super Admin
+        $superAdminRole = Role::where('name', 'Super Admin')->first();
+        if ($superAdminRole) {
+            $superAdminRole->syncPermissions($allPermissions);
+        }
+
+        // Assign all permissions to CEO (temp until positions are implemented)
         $ceoRole = Role::where('name', 'CEO')->first();
         if ($ceoRole) {
-            $allPermissions = Permission::pluck('name')->toArray();
             $ceoRole->syncPermissions($allPermissions);
         }
     }

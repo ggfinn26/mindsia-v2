@@ -21,6 +21,27 @@ class Program extends Model
         'is_active' => 'boolean',
     ];
 
+    // Landing page accessors — map DB columns to view-expected properties
+    public function getCodeAttribute(): string
+    {
+        return $this->program_code;
+    }
+
+    public function getTaglineAttribute(): ?string
+    {
+        return $this->program_description;
+    }
+
+    public function getIsFeaturedAttribute(): bool
+    {
+        return false;
+    }
+
+    public function getLevelLabelAttribute(): ?string
+    {
+        return null;
+    }
+
     public function curriculum(): HasOne
     {
         return $this->hasOne(Curriculum::class);

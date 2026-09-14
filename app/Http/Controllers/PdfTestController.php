@@ -9,7 +9,7 @@ class PdfTestController extends Controller
 {
     public function test()
     {
-        return response("Test endpoint works");
+        return response('Test endpoint works');
     }
 
     public function testKopSurat()
@@ -21,12 +21,12 @@ class PdfTestController extends Controller
         $waPath = public_path('images/icon-wa.png');
         $webPath = public_path('images/icon-web.png');
 
-        $logoUrl = 'data:image/jpeg;base64,' . base64_encode(file_get_contents($logoPath));
-        $topRightUrl = 'data:image/png;base64,' . base64_encode(file_get_contents($topRightPath));
-        $bottomLeftUrl = 'data:image/png;base64,' . base64_encode(file_get_contents($bottomLeftPath));
-        $igUrl = 'data:image/png;base64,' . base64_encode(file_get_contents($igPath));
-        $waUrl = 'data:image/png;base64,' . base64_encode(file_get_contents($waPath));
-        $webUrl = 'data:image/png;base64,' . base64_encode(file_get_contents($webPath));
+        $logoUrl = 'data:image/jpeg;base64,'.base64_encode(file_get_contents($logoPath));
+        $topRightUrl = 'data:image/png;base64,'.base64_encode(file_get_contents($topRightPath));
+        $bottomLeftUrl = 'data:image/png;base64,'.base64_encode(file_get_contents($bottomLeftPath));
+        $igUrl = 'data:image/png;base64,'.base64_encode(file_get_contents($igPath));
+        $waUrl = 'data:image/png;base64,'.base64_encode(file_get_contents($waPath));
+        $webUrl = 'data:image/png;base64,'.base64_encode(file_get_contents($webPath));
 
         $html = '<!DOCTYPE html>
 <html>
@@ -109,31 +109,31 @@ class PdfTestController extends Controller
 <body>
     <div class="kop-container">
         <div class="kop-top-left">
-            <img src="' . $logoUrl . '" alt="Mindsia Logo">
+            <img src="'.$logoUrl.'" alt="Mindsia Logo">
         </div>
         <div class="kop-top-right">
-            <img src="' . $topRightUrl . '" alt="Top Right">
+            <img src="'.$topRightUrl.'" alt="Top Right">
         </div>
         <div class="kop-bottom-left">
-            <img src="' . $bottomLeftUrl . '" alt="Bottom Left">
+            <img src="'.$bottomLeftUrl.'" alt="Bottom Left">
         </div>
         <div class="kop-bottom-right">
-            <div class="kop-icon"><img src="' . $igUrl . '" alt="Instagram"></div>
-            <div class="kop-icon"><img src="' . $waUrl . '" alt="WhatsApp"></div>
-            <div class="kop-icon"><img src="' . $webUrl . '" alt="Website"></div>
+            <div class="kop-icon"><img src="'.$igUrl.'" alt="Instagram"></div>
+            <div class="kop-icon"><img src="'.$waUrl.'" alt="WhatsApp"></div>
+            <div class="kop-icon"><img src="'.$webUrl.'" alt="Website"></div>
         </div>
     </div>
 
     <div class="content">
         <h2>Test Dokumen dengan Kop Surat Mindsia</h2>
-        <p><strong>Tanggal:</strong> ' . date('d M Y') . '</p>
+        <p><strong>Tanggal:</strong> '.date('d M Y').'</p>
         <p>Kop surat dengan logo Mindsia dan elemen dekoratif.</p>
     </div>
 </body>
 </html>';
 
         try {
-            $options = new Options();
+            $options = new Options;
             $options->set([
                 'defaultFont' => 'Arial',
                 'isPhpEnabled' => false,
@@ -149,7 +149,7 @@ class PdfTestController extends Controller
                 ->header('Content-Type', 'application/pdf')
                 ->header('Content-Disposition', 'inline; filename="test-kop.pdf"');
         } catch (\Exception $e) {
-            return "Error: " . $e->getMessage();
+            return 'Error: '.$e->getMessage();
         }
     }
 }

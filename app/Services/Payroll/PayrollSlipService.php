@@ -2,32 +2,50 @@
 
 namespace App\Services\Payroll;
 
+use App\Models\DocumentSignatureSetting;
 use App\Models\Employee;
 use App\Models\EmployeePayroll;
 use App\Models\EmployeePayrollSlip;
+use App\Services\Letter\ConvertApiService;
 use App\Services\TelegramStorageService;
+use PhpOffice\PhpWord\TemplateProcessor;
 
 class PayrollSlipService
 {
     public function __construct(
         private readonly TelegramStorageService $telegramStorage,
+        private readonly ConvertApiService $convertApiService,
     ) {}
 
     public function generate(EmployeePayroll $payroll, ?Employee $generatedBy = null, ?Employee $signatory = null): EmployeePayrollSlip
     {
         $payroll->load(['employee', 'period', 'items']);
 
-        $signatory ??= Employee::whereHas('user.roles', fn ($q) => $q->where('name', 'BOARD_OF_DIRECTORS'))
-            ->where('is_active', true)
-            ->first();
+        $sigSetting = DocumentSignatureSetting::where('document_type', 'kwitansi')->first();
 
-        $content = $this->buildSlipContent($payroll, $signatory);
+        // Signatory override: if explicit signatory passed, use their data
+        $signatoryName = $signatory?->full_name ?? $sigSetting?->signer_name;
+        $signatoryTitle = $signatory ? ($signatory->currentStatus?->position?->position_name ?? '') : $sigSetting?->signer_title;
+
+        // 1. Generate temporary DOCX
+        $docxTmpPath = sys_get_temp_dir().'/'.uniqid('slip_', true).'.docx';
+        $this->buildDocx($payroll, $signatoryName, $signatoryTitle, $docxTmpPath);
+
+        // 2. Convert to PDF using API
+        $pdfContent = $this->convertApiService->docxToPdf($docxTmpPath);
+        @unlink($docxTmpPath);
+
+        if (! $pdfContent) {
+            throw new \RuntimeException('Gagal mengkonversi slip gaji ke PDF.');
+        }
+
+        // 3. Save PDF temporarily for upload
         $filename = $this->slipFilename($payroll);
-        $tmpPath = sys_get_temp_dir().'/'.$filename;
-        file_put_contents($tmpPath, $content);
+        $pdfTmpPath = sys_get_temp_dir().'/'.$filename;
+        file_put_contents($pdfTmpPath, $pdfContent);
 
-        $result = $this->telegramStorage->uploadFile($tmpPath, $filename, 'payroll_slip', $payroll->id);
-        @unlink($tmpPath);
+        $result = $this->telegramStorage->uploadFile($pdfTmpPath, $filename, 'payroll_slip', $payroll->id);
+        @unlink($pdfTmpPath);
 
         $telegramFileId = $result['file_id'];
 
@@ -36,8 +54,8 @@ class PayrollSlipService
             'generated_at' => now(),
             'generated_by_employee_id' => $generatedBy?->id,
             'signatory_employee_id' => $signatory?->id,
-            'signatory_name_snapshot' => $signatory?->full_name,
-            'signatory_position_snapshot' => $signatory?->currentStatus?->position?->position_name,
+            'signatory_name_snapshot' => $signatoryName,
+            'signatory_position_snapshot' => $signatoryTitle,
             'signed_at' => now(),
         ];
 
@@ -47,39 +65,61 @@ class PayrollSlipService
         );
     }
 
-    private function buildSlipContent(EmployeePayroll $payroll, ?Employee $signatory): string
+    private function buildDocx(EmployeePayroll $payroll, ?string $signerName, ?string $signerTitle, string $savePath): void
     {
-        // ponytail: plain text placeholder — replace with PhpWord when views are built
-        $lines = [
-            "SLIP GAJI — {$payroll->period->period_month}/{$payroll->period->period_year}",
-            "Karyawan : {$payroll->employee_name_snapshot}",
-            "Jabatan  : {$payroll->position_name_snapshot}",
-            "Cabang   : {$payroll->branch_name_snapshot}",
-            '',
-            'PENDAPATAN:',
-        ];
+        $templatePath = storage_path('app/templates/slip_gaji_template.docx');
 
-        foreach ($payroll->items->where('component_type_snapshot', 'earning') as $item) {
-            $lines[] = "  {$item->component_name_snapshot}: ".number_format((float) $item->total_amount, 0, ',', '.');
+        if (! file_exists($templatePath)) {
+            throw new \RuntimeException("Template slip gaji tidak ditemukan di: {$templatePath}");
         }
 
-        $lines[] = '';
-        $lines[] = 'POTONGAN:';
+        $template = new TemplateProcessor($templatePath);
 
-        foreach ($payroll->items->where('component_type_snapshot', 'deduction') as $item) {
-            $lines[] = "  {$item->component_name_snapshot}: ".number_format((float) $item->total_amount, 0, ',', '.');
+        // Replace general data
+        $template->setValue('period_month', $payroll->period->period_month);
+        $template->setValue('period_year', $payroll->period->period_year);
+        $template->setValue('employee_name', $payroll->employee_name_snapshot);
+        $template->setValue('position_name', $payroll->position_name_snapshot);
+        $template->setValue('branch_name', $payroll->branch_name_snapshot);
+        $template->setValue('net_amount', number_format((float) $payroll->net_amount, 0, ',', '.'));
+        $template->setValue('signer_name', $signerName ?? '');
+        $template->setValue('signer_title', $signerTitle ?? '');
+
+        // Replace Earnings
+        $earnings = $payroll->items->where('component_type_snapshot', 'earning')->values();
+        $earningCount = $earnings->count();
+        if ($earningCount > 0) {
+            $template->cloneRow('earning_name', $earningCount);
+            foreach ($earnings as $idx => $item) {
+                $rowNum = $idx + 1;
+                $template->setValue("earning_name#{$rowNum}", $item->component_name_snapshot);
+                $template->setValue("earning_amount#{$rowNum}", number_format((float) $item->total_amount, 0, ',', '.'));
+            }
+        } else {
+            $template->setValue('earning_name', '-');
+            $template->setValue('earning_amount', '0');
         }
 
-        $lines[] = '';
-        $lines[] = 'Total Gaji Bersih: '.number_format((float) $payroll->net_amount, 0, ',', '.');
-        $lines[] = '';
-        $lines[] = "TTD: {$signatory?->full_name}";
+        // Replace Deductions
+        $deductions = $payroll->items->where('component_type_snapshot', 'deduction')->values();
+        $deductionCount = $deductions->count();
+        if ($deductionCount > 0) {
+            $template->cloneRow('deduction_name', $deductionCount);
+            foreach ($deductions as $idx => $item) {
+                $rowNum = $idx + 1;
+                $template->setValue("deduction_name#{$rowNum}", $item->component_name_snapshot);
+                $template->setValue("deduction_amount#{$rowNum}", number_format((float) $item->total_amount, 0, ',', '.'));
+            }
+        } else {
+            $template->setValue('deduction_name', '-');
+            $template->setValue('deduction_amount', '0');
+        }
 
-        return implode("\n", $lines);
+        $template->saveAs($savePath);
     }
 
     private function slipFilename(EmployeePayroll $payroll): string
     {
-        return "slip_{$payroll->employee_code_snapshot}_{$payroll->period->period_year}_{$payroll->period->period_month}.txt";
+        return "slip_{$payroll->employee_code_snapshot}_{$payroll->period->period_year}_{$payroll->period->period_month}.pdf";
     }
 }

@@ -8,7 +8,7 @@ class StoreProgramRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->hasRole('BOARD');
+        return $this->user()->can('curriculum.program.create');
     }
 
     public function rules(): array

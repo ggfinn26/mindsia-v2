@@ -8,7 +8,7 @@ class StorePayrollComponentRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('payroll_component.create');
+        return $this->user()->can('payroll.component.create');
     }
 
     public function rules(): array

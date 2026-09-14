@@ -49,7 +49,14 @@ class AttendanceService
             ? $this->calculateLateMinutes(now(), $schedule, $today)
             : 0;
 
-        $distanceM = $data['check_in_distance_m'] ?? null;
+        $distanceM = $employee->branch
+            ? $this->haversineMeters(
+                $data['check_in_latitude'],
+                $data['check_in_longitude'],
+                $employee->branch->latitude,
+                $employee->branch->longitude,
+            )
+            : null;
         $isAnomaly = $employee->branch && $distanceM !== null
             ? $distanceM > $employee->branch->radius_meters
             : false;
@@ -92,6 +99,12 @@ class AttendanceService
             ? $this->calculateEarlyLeaveMinutes(now(), $schedule, $today)
             : 0;
 
+        if ($earlyLeaveMinutes > 0) {
+            throw ValidationException::withMessages([
+                'check_out' => "Belum waktunya check-out. {$earlyLeaveMinutes} menit lagi hingga jadwal selesai.",
+            ]);
+        }
+
         $telegramFileId = null;
         if (isset($data['selfie'])) {
             $uploaded = $this->telegramStorage->uploadFile(
@@ -107,7 +120,14 @@ class AttendanceService
             'check_out_latitude' => $data['check_out_latitude'],
             'check_out_longitude' => $data['check_out_longitude'],
             'check_out_selfie_telegram_file_id' => $telegramFileId,
-            'check_out_distance_m' => $data['check_out_distance_m'] ?? null,
+            'check_out_distance_m' => $employee->branch
+                ? $this->haversineMeters(
+                    $data['check_out_latitude'],
+                    $data['check_out_longitude'],
+                    $employee->branch->latitude,
+                    $employee->branch->longitude,
+                )
+                : null,
             'check_out_notes' => $data['check_out_notes'] ?? null,
             'early_leave_minutes' => $earlyLeaveMinutes,
         ]);
@@ -135,5 +155,15 @@ class AttendanceService
         }
 
         return (int) $checkOut->diffInMinutes($scheduledEnd);
+    }
+
+    private function haversineMeters(float $lat1, float $lng1, float $lat2, float $lng2): int
+    {
+        $r = 6371000;
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLng = deg2rad($lng2 - $lng1);
+        $a = sin($dLat / 2) ** 2 + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLng / 2) ** 2;
+
+        return (int) round($r * 2 * atan2(sqrt($a), sqrt(1 - $a)));
     }
 }

@@ -8,7 +8,7 @@ class UpdateCurriculumItemRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->hasRole('BOARD');
+        return $this->user()->can('curriculum.item.update');
     }
 
     public function rules(): array

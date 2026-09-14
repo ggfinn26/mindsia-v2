@@ -9,6 +9,7 @@ class Discount extends Model
 {
     protected $fillable = [
         'discount_code',
+        'is_active',
         'discount_type',
         'discount_nominal',
         'discount_quota',
@@ -17,6 +18,7 @@ class Discount extends Model
     ];
 
     protected $casts = [
+        'is_active' => 'boolean',
         'discount_nominal' => 'integer',
         'discount_quota' => 'integer',
         'starts_at' => 'datetime',

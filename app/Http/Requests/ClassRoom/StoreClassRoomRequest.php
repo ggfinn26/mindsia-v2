@@ -9,7 +9,7 @@ class StoreClassRoomRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->hasRole('board-of-directors');
+        return $this->user()->can('class.manage');
     }
 
     public function rules(): array

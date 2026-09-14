@@ -8,7 +8,7 @@ class StoreEmployeeCompensationRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('employee_compensation.create');
+        return $this->user()->can('payroll.employee_compensation.create');
     }
 
     public function rules(): array

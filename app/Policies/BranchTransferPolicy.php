@@ -9,11 +9,11 @@ class BranchTransferPolicy
 {
     public function view(User $user, BranchTransferRequest $transfer): bool
     {
-        return $user->id === $transfer->employee->user_id || $user->hasRole('board-of-directors');
+        return $user->id === $transfer->employee->user_id || $user->can('contract.manage');
     }
 
     public function review(User $user, BranchTransferRequest $transfer): bool
     {
-        return $user->hasRole('board-of-directors');
+        return $user->can('organization.branch_transfer.review');
     }
 }

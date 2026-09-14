@@ -15,7 +15,7 @@ class WebhookController extends Controller
 
         $message = $input['message'] ?? null;
 
-        if (!$message || ($message['chat']['id'] ?? null) != $groupStorage) {
+        if (! $message || ($message['chat']['id'] ?? null) != $groupStorage) {
             return response()->json(['ok' => true]);
         }
 
@@ -37,14 +37,14 @@ class WebhookController extends Controller
                 dispatch(new ProcessTelegramFileJob(
                     $photo['file_id'],
                     'photo',
-                    'photo_' . date('YmdHis') . '.jpg',
+                    'photo_'.date('YmdHis').'.jpg',
                     'image/jpeg',
                     $photo['file_size'] ?? null,
                     $message['caption'] ?? null
                 ));
             }
         } catch (\Exception $e) {
-            Log::error('Webhook dispatch error: ' . $e->getMessage());
+            Log::error('Webhook dispatch error: '.$e->getMessage());
         }
 
         return response()->json(['ok' => true]);

@@ -10,6 +10,14 @@ class EmployeeWorkAttendanceLogObserver
 {
     public function __construct(private readonly AttendanceRecapRepository $recapRepo) {}
 
+    public function created(EmployeeWorkAttendanceLog $log): void
+    {
+        $this->recapRepo->upsertForEmployee(
+            $log->employee_id,
+            Carbon::parse($log->attendance_date),
+        );
+    }
+
     public function updated(EmployeeWorkAttendanceLog $log): void
     {
         $this->recapRepo->upsertForEmployee(

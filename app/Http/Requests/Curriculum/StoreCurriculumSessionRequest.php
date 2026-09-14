@@ -8,7 +8,7 @@ class StoreCurriculumSessionRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->hasRole('BOARD');
+        return $this->user()->can('curriculum.session.create');
     }
 
     public function rules(): array

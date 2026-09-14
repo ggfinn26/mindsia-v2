@@ -17,7 +17,7 @@ class SyncTelegramFilesCommand extends Command
         $limit = (int) $this->option('limit');
 
         $this->info('Syncing Telegram files...');
-        $this->line('Limit: ' . $limit);
+        $this->line('Limit: '.$limit);
         $this->newLine();
 
         try {
@@ -29,33 +29,35 @@ class SyncTelegramFilesCommand extends Command
 
             if (empty($synced)) {
                 $this->info('✓ Sync completed (no new files)');
-                $this->line('Duration: ' . $duration . 'ms');
+                $this->line('Duration: '.$duration.'ms');
+
                 return 0;
             }
 
             $this->info('✓ Sync completed');
             $this->newLine();
             $this->line('Summary:');
-            $this->line('   Synced: ' . count($synced));
-            $this->line('   Duration: ' . $duration . 'ms');
+            $this->line('   Synced: '.count($synced));
+            $this->line('   Duration: '.$duration.'ms');
             $this->newLine();
 
             $this->line('Details:');
             foreach ($synced as $result) {
                 if ($result['status'] === 'synced') {
-                    $this->line('   ✓ ' . $result['filename'] . ' (ID: ' . $result['file_id'] . ')');
+                    $this->line('   ✓ '.$result['filename'].' (ID: '.$result['file_id'].')');
                 } else {
-                    $this->line('   - ' . $result['file_id'] . ' (skipped)');
+                    $this->line('   - '.$result['file_id'].' (skipped)');
                 }
             }
 
             return 0;
         } catch (\Exception $e) {
-            $this->error('✗ Sync failed: ' . $e->getMessage());
+            $this->error('✗ Sync failed: '.$e->getMessage());
             Log::error('Telegram sync error', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
+
             return 1;
         }
     }

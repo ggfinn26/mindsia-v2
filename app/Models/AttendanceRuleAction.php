@@ -27,4 +27,9 @@ class AttendanceRuleAction extends Model
     {
         return $this->hasOne(AttendanceRulePayrollAction::class);
     }
+
+    public function warningLetterAction(): HasOne
+    {
+        return $this->hasOne(AttendanceRuleWarningLetterAction::class, 'attendance_rule_action_id');
+    }
 }

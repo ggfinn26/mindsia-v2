@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Notifications\ApplicantResetPasswordNotification;
+use App\Notifications\GuardedVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -33,6 +35,16 @@ class ApplicantAccount extends Authenticatable implements MustVerifyEmail
     }
 
     // FK is on applicants_master_data.applicant_account_id
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new GuardedVerifyEmail('applicant'));
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ApplicantResetPasswordNotification($token));
+    }
+
     public function applicantData(): HasOne
     {
         return $this->hasOne(ApplicantMasterData::class, 'applicant_account_id');

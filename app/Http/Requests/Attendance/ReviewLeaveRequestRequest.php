@@ -8,13 +8,13 @@ class ReviewLeaveRequestRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->hasAnyRole(['BOARD', 'HRR', 'HRP']);
+        return $this->user()->can('attendance.leave.review');
     }
 
     public function rules(): array
     {
         return [
-            'rejection_reason' => ['required_if:_action,reject', 'nullable', 'string'],
+            'rejection_reason' => ['nullable', 'string'],
         ];
     }
 }

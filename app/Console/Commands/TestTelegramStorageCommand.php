@@ -31,7 +31,8 @@ class TestTelegramStorageCommand extends Command
                 $this->error('   ✗ Failed to log (logToGroup returned false)');
             }
         } catch (\Exception $e) {
-            $this->error('   ✗ Error: ' . $e->getMessage());
+            $this->error('   ✗ Error: '.$e->getMessage());
+
             return 1;
         }
 
@@ -39,7 +40,7 @@ class TestTelegramStorageCommand extends Command
         $this->info('\n2. Testing file upload...');
         try {
             $testFile = storage_path('app/test-upload.txt');
-            file_put_contents($testFile, "Test file created at " . date('Y-m-d H:i:s'));
+            file_put_contents($testFile, 'Test file created at '.date('Y-m-d H:i:s'));
 
             $result = $storage->uploadFile(
                 $testFile,
@@ -49,12 +50,13 @@ class TestTelegramStorageCommand extends Command
             );
 
             $this->line('   ✓ File uploaded successfully');
-            $this->line('   File ID: ' . $result['telegram_file_id']);
-            $this->line('   Size: ' . $result['file_size'] . ' bytes');
+            $this->line('   File ID: '.$result['telegram_file_id']);
+            $this->line('   Size: '.$result['file_size'].' bytes');
 
             unlink($testFile);
         } catch (\Exception $e) {
-            $this->error('   ✗ Error: ' . $e->getMessage());
+            $this->error('   ✗ Error: '.$e->getMessage());
+
             return 1;
         }
 
@@ -64,18 +66,18 @@ class TestTelegramStorageCommand extends Command
             if (isset($result['telegram_file_id'])) {
                 $fileInfo = $storage->getFileInfo($result['telegram_file_id']);
                 $this->line('   ✓ Retrieved file info');
-                $this->line('   File path: ' . ($fileInfo['file_path'] ?? 'N/A'));
-                $this->line('   File size: ' . ($fileInfo['file_size'] ?? 'N/A') . ' bytes');
+                $this->line('   File path: '.($fileInfo['file_path'] ?? 'N/A'));
+                $this->line('   File size: '.($fileInfo['file_size'] ?? 'N/A').' bytes');
             }
         } catch (\Exception $e) {
-            $this->error('   ✗ Error: ' . $e->getMessage());
+            $this->error('   ✗ Error: '.$e->getMessage());
         }
 
         // Test 4: Summary
         $this->info('\n4. Configuration Check');
-        $this->line('   Bot Token: ' . (env('TELEGRAM_BOT_TOKEN') ? '✓ Set' : '✗ Not set'));
-        $this->line('   Storage Group: ' . env('GROUP_STORAGE'));
-        $this->line('   Log Group: ' . env('GROUP_LOG'));
+        $this->line('   Bot Token: '.(env('TELEGRAM_BOT_TOKEN') ? '✓ Set' : '✗ Not set'));
+        $this->line('   Storage Group: '.env('GROUP_STORAGE'));
+        $this->line('   Log Group: '.env('GROUP_LOG'));
 
         $this->info('\n✓ Telegram storage tests completed!');
 

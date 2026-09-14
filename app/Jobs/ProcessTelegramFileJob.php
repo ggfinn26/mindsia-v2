@@ -19,8 +19,7 @@ class ProcessTelegramFileJob implements ShouldQueue
         private ?string $mimeType,
         private ?int $fileSize,
         private ?string $caption,
-    ) {
-    }
+    ) {}
 
     public function handle(TelegramStorageService $storage): void
     {
@@ -69,7 +68,7 @@ class ProcessTelegramFileJob implements ShouldQueue
                 'ERROR',
                 'telegram_file_job',
                 'file_error',
-                "Failed: {$this->filename} - " . $e->getMessage()
+                "Failed: {$this->filename} - ".$e->getMessage()
             );
 
             throw $e;

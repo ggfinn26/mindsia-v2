@@ -8,7 +8,7 @@ class StoreWalkInApplicationRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('manage job applications');
+        return $this->user()->can('recruitment.job_application.create');
     }
 
     public function rules(): array

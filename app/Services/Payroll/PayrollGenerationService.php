@@ -5,6 +5,7 @@ namespace App\Services\Payroll;
 use App\Models\AttendanceRuleViolation;
 use App\Models\Employee;
 use App\Models\EmployeeAttendanceMonthlyRecap;
+use App\Models\EmployeeKpiEvaluation;
 use App\Models\EmployeePayroll;
 use App\Models\EmployeeSessionAttendanceLog;
 use App\Models\PayrollBonusCalculation;
@@ -15,8 +16,10 @@ use App\Models\PayrollPeriod;
 use App\Models\SessionSchedule;
 use App\Repositories\Payroll\EmployeePayrollRepository;
 use App\Services\Bonus\BonusRuleResolverService;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use LogicException;
 
 class PayrollGenerationService
@@ -29,14 +32,37 @@ class PayrollGenerationService
 
     public function generate(PayrollPeriod $period): void
     {
-        if (! in_array($period->status, ['draft', 'review'])) {
-            throw new LogicException('Payroll hanya bisa di-generate saat status draft atau review.');
+        if ($period->status !== 'finalized') {
+            throw new LogicException('Payroll hanya bisa di-generate saat periode sudah finalized.');
         }
 
         DB::transaction(function () use ($period) {
-            if ($period->isReview()) {
-                $this->payrollRepo->deleteByPeriod($period);
+            $this->payrollRepo->deleteByPeriod($period);
+
+            $employees = Employee::active()->with(['user.roles', 'currentStatus.position', 'branch', 'compensations'])->get();
+
+            foreach ($employees as $employee) {
+                $this->generateForEmployee($period, $employee);
             }
+        });
+    }
+
+    /**
+     * Run full payroll calculation inside a rollback transaction — returns preview data without persisting.
+     * Ponytail: transactional preview reuses exact same code path, no duplication.
+     *
+     * @return array<int, array{employee_name: string, net_amount: float}>
+     */
+    public function preview(PayrollPeriod $period): array
+    {
+        if ($period->status !== 'finalized') {
+            throw new LogicException('Preview hanya bisa dilakukan saat periode sudah finalized.');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $this->payrollRepo->deleteByPeriod($period);
 
             $employees = Employee::active()->with(['user.roles', 'currentStatus.position', 'branch', 'compensations'])->get();
 
@@ -44,8 +70,24 @@ class PayrollGenerationService
                 $this->generateForEmployee($period, $employee);
             }
 
-            $period->update(['status' => 'review']);
-        });
+            $preview = $this->payrollRepo->allByPeriod($period)
+                ->map(fn ($p) => [
+                    'employee_code' => $p->employee_code_snapshot,
+                    'employee_name' => $p->employee_name_snapshot,
+                    'branch' => $p->branch_name_snapshot,
+                    'total_earnings' => (float) $p->total_earnings,
+                    'total_deductions' => (float) $p->total_deductions,
+                    'net_amount' => (float) $p->net_amount,
+                ])
+                ->toArray();
+
+            DB::rollBack();
+
+            return $preview;
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     private function generateForEmployee(PayrollPeriod $period, Employee $employee): void
@@ -59,7 +101,7 @@ class PayrollGenerationService
             throw new LogicException("Missing attendance snapshot for employee: {$employee->full_name} (ID: {$employee->id})");
         }
 
-        [$totalSessions, $attendedSessions] = $this->querySessionCounts($employee, $period);
+        [$totalSessions, $attendedSessions, $lateSessions] = $this->querySessionCounts($employee, $period);
 
         $payroll = $this->payrollRepo->create([
             'payroll_period_id' => $period->id,
@@ -80,7 +122,7 @@ class PayrollGenerationService
             'total_sessions' => $totalSessions,
             'attended_sessions' => $attendedSessions,
             'absent_sessions' => max(0, $totalSessions - $attendedSessions),
-            'late_sessions' => 0,
+            'late_sessions' => $lateSessions,
             'total_earnings' => 0,
             'total_deductions' => 0,
             'net_amount' => 0,
@@ -219,7 +261,7 @@ class PayrollGenerationService
 
         $bonuses = array_merge(
             $this->bonusResolver->resolveMarketingBonus($employee->id, $positionId, $roleId, $period->period_year, $period->period_month, $baseSalary, $tenureMonths),
-            $this->bonusResolver->resolveKpiBonus($employee->id, $positionId, $roleId, 0.0, $baseSalary),
+            $this->bonusResolver->resolveKpiBonus($employee->id, $positionId, $roleId, $this->resolveKpiScore($employee->id, $period), $baseSalary),
             $this->bonusResolver->resolveSpecialBonus($employee->id, $positionId, $roleId, $baseSalary, $period->period_year, $period->period_month),
         );
 
@@ -227,6 +269,12 @@ class PayrollGenerationService
             $bonusComponent = PayrollComponent::where('component_code', 'BONUS_'.strtoupper($bonus['type']))->active()->first();
 
             if (! $bonusComponent) {
+                Log::warning('PayrollGeneration: missing bonus component', [
+                    'expected_code' => 'BONUS_'.strtoupper($bonus['type']),
+                    'employee_id' => $employee->id,
+                    'period' => "{$period->period_year}-{$period->period_month}",
+                ]);
+
                 continue;
             }
 
@@ -276,7 +324,18 @@ class PayrollGenerationService
         }
     }
 
-    /** @return array{0: int, 1: int} [total, attended] */
+    private function resolveKpiScore(int $employeeId, PayrollPeriod $period): float
+    {
+        $periodEnd = Carbon::create($period->period_year, $period->period_month)->endOfMonth();
+
+        return (float) (EmployeeKpiEvaluation::where('employee_id', $employeeId)
+            ->where('status', 'finalized')
+            ->where('period_end_date', '<=', $periodEnd)
+            ->orderByDesc('period_end_date')
+            ->value('total_score') ?? 0.0);
+    }
+
+    /** @return array{0: int, 1: int, 2: int} [total, attended, late] */
     private function querySessionCounts(Employee $employee, PayrollPeriod $period): array
     {
         $total = SessionSchedule::where('employee_id', $employee->id)
@@ -285,13 +344,16 @@ class PayrollGenerationService
                 ->whereMonth('schedule_date', $period->period_month))
             ->count();
 
-        $attended = EmployeeSessionAttendanceLog::where('employee_id', $employee->id)
-            ->whereIn('status', ['present', 'late'])
+        $logs = EmployeeSessionAttendanceLog::where('employee_id', $employee->id)
+            ->whereIn('status', ['present', 'late', 'present_late'])
             ->whereHas('sessionSchedule.classSchedule', fn ($q) => $q
                 ->whereYear('schedule_date', $period->period_year)
                 ->whereMonth('schedule_date', $period->period_month))
-            ->count();
+            ->pluck('status');
 
-        return [$total, $attended];
+        $attended = $logs->count();
+        $late = $logs->filter(fn ($s) => $s === 'late')->count();
+
+        return [$total, $attended, $late];
     }
 }

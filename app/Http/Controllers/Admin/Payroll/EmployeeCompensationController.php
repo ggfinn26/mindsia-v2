@@ -45,6 +45,8 @@ class EmployeeCompensationController extends Controller
 
     public function destroy(Employee $employee, EmployeeCompensation $compensation): RedirectResponse
     {
+        abort_if($compensation->employee_id !== $employee->id, 403);
+
         $compensation->delete();
 
         return redirect()->route('payroll.compensations.index', $employee)->with('success', 'Kompensasi berhasil dihapus.');

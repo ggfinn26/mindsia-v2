@@ -5,21 +5,27 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Attendance\StoreWorkScheduleRuleRequest;
 use App\Http\Requests\Attendance\UpdateWorkScheduleRuleRequest;
+use App\Models\Holiday;
 use App\Models\WorkScheduleRule;
-use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\View\View;
 
-class WorkScheduleRuleController extends Controller
+class WorkScheduleRuleController extends Controller implements HasMiddleware
 {
-    public function __construct()
+    public static function middleware(): array
     {
-        $this->middleware('board-of-directors');
+        return [
+            new Middleware('can:attendance.schedule_rule.manage'),
+        ];
     }
 
     public function index(): View
     {
         return view('attendance.work-schedule.index', [
             'rules' => WorkScheduleRule::where('is_active', true)->latest()->paginate(15),
+            'holidays' => Holiday::orderBy('holiday_start_date')->paginate(10, ['*'], 'hpage'),
         ]);
     }
 

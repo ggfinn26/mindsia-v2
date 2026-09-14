@@ -8,7 +8,7 @@ class StoreEmployeeOnboardingRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('manage employee onboarding');
+        return $this->user()->can('recruitment.onboarding.create');
     }
 
     public function rules(): array

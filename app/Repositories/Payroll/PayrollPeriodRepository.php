@@ -45,7 +45,7 @@ class PayrollPeriodRepository
         $next = match ($period->status) {
             'draft' => 'review',
             'review' => 'finalized',
-            default => $period->status,
+            default => throw new \LogicException('Periode sudah finalized.'),
         };
 
         $update = ['status' => $next];
@@ -56,6 +56,17 @@ class PayrollPeriodRepository
         }
 
         $period->update($update);
+
+        return $period;
+    }
+
+    public function revertToDraft(PayrollPeriod $period): PayrollPeriod
+    {
+        $period->update([
+            'status' => 'draft',
+            'confirmed_by_employee_id' => null,
+            'confirmed_at' => null,
+        ]);
 
         return $period;
     }

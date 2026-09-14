@@ -9,12 +9,12 @@ class EmployeePolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->can('employees.view');
+        return $user->can('employee.view');
     }
 
     public function view(User $user, Employee $employee): bool
     {
-        if (! $user->can('employees.view')) {
+        if (! $user->can('employee.view')) {
             return false;
         }
 
@@ -23,12 +23,12 @@ class EmployeePolicy
 
     public function create(User $user): bool
     {
-        return $user->can('employees.create');
+        return $user->can('employee.create');
     }
 
     public function update(User $user, Employee $employee): bool
     {
-        if (! $user->can('employees.update')) {
+        if (! $user->can('employee.update')) {
             return false;
         }
 
@@ -37,7 +37,16 @@ class EmployeePolicy
 
     public function delete(User $user, Employee $employee): bool
     {
-        if (! $user->can('employees.delete')) {
+        if (! $user->can('employee.delete')) {
+            return false;
+        }
+
+        return $this->isInUserScope($user, $employee);
+    }
+
+    public function terminateContract(User $user, Employee $employee): bool
+    {
+        if (! $user->can('contract.manage')) {
             return false;
         }
 
@@ -51,12 +60,12 @@ class EmployeePolicy
 
     public function reviewBranchTransfer(User $user): bool
     {
-        return $user->hasRole('board-of-directors');
+        return $user->can('organization.branch_transfer.review');
     }
 
     public function directBranchTransfer(User $user, Employee $employee): bool
     {
-        if (! $user->can('employees.update')) {
+        if (! $user->can('employee.update')) {
             return false;
         }
 

@@ -50,7 +50,7 @@ class BranchTransferController extends Controller
 
     public function reviewIndex(): View
     {
-        $this->authorize('reviewBranchTransfer');
+        $this->authorize('organization.branch_transfer.review');
 
         $transfers = BranchTransferModel::with(['employee', 'fromBranch', 'toBranch'])
             ->where('status', 'review')
@@ -62,7 +62,7 @@ class BranchTransferController extends Controller
 
     public function reviewShow(BranchTransferModel $transfer): View
     {
-        $this->authorize('reviewBranchTransfer');
+        $this->authorize('organization.branch_transfer.review');
 
         $transfer->load(['employee', 'fromBranch', 'toBranch']);
 
@@ -71,7 +71,7 @@ class BranchTransferController extends Controller
 
     public function reviewUpdate(ReviewBranchTransferRequest $request, BranchTransferModel $transfer): RedirectResponse
     {
-        $this->authorize('reviewBranchTransfer');
+        $this->authorize('organization.branch_transfer.review');
 
         $validated = $request->validated();
 

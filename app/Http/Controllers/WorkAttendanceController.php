@@ -47,7 +47,7 @@ class WorkAttendanceController extends Controller
 
     public function manage(): View
     {
-        abort_unless(auth()->user()->hasAnyRole(['BOARD', 'HRR', 'HRP']), 403);
+        abort_unless(auth()->user()->can('attendance.adjustment.create'), 403);
 
         $branchId = request('branch_id');
         $date = request('date', now()->toDateString());
@@ -60,7 +60,7 @@ class WorkAttendanceController extends Controller
 
     public function verify(EmployeeWorkAttendanceLog $attendanceLog): RedirectResponse
     {
-        abort_unless(auth()->user()->hasAnyRole(['BOARD', 'HRR', 'HRP']), 403);
+        abort_unless(auth()->user()->can('attendance.adjustment.create'), 403);
         $this->repository->verify($attendanceLog, auth()->user()->employee_id);
 
         return back()->with('success', 'Kehadiran diverifikasi.');

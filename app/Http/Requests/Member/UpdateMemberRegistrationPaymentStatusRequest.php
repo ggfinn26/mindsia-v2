@@ -8,7 +8,7 @@ class UpdateMemberRegistrationPaymentStatusRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->hasAnyRole(['BOARD_OF_DIRECTORS', 'MARKETING']);
+        return $this->user()->can('member.payment.manage');
     }
 
     public function rules(): array

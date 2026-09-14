@@ -21,7 +21,7 @@ class BonusRuleChangeHistoryRepository
             'action' => $action,
             'old_values' => $oldValues,
             'new_values' => $newValues,
-            'changed_by_employee_id' => $changedByEmployeeId ?? auth('web')->id(),
+            'changed_by_employee_id' => $changedByEmployeeId ?? auth('web')->user()?->employee?->id,
         ]);
     }
 

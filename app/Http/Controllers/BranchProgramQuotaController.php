@@ -4,22 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreBranchProgramQuotaRequest;
 use App\Http\Requests\UpdateBranchProgramQuotaRequest;
+use App\Models\Branch;
 use App\Models\BranchProgramQuota;
 use App\Models\Program;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\View\View;
 
-class BranchProgramQuotaController extends Controller
+class BranchProgramQuotaController extends Controller implements HasMiddleware
 {
-    public function __construct()
+    public static function middleware(): array
     {
-        $this->middleware('board-of-directors');
+        return [
+            new Middleware('can:curriculum.quota.create'),
+        ];
     }
 
     public function index(Program $program): View
     {
         $quotas = $program->branchQuotas()->with('branch')->get();
-        $branches = \App\Models\Branch::active()->orderBy('branch_name')->get();
+        $branches = Branch::active()->orderBy('branch_name')->get();
 
         return view('program.quota.index', compact('program', 'quotas', 'branches'));
     }

@@ -14,6 +14,23 @@ class Kernel extends ConsoleKernel
             ->dailyAt('00:05')
             ->withoutOverlapping();
 
+        $schedule->command('notification:alert-contract-expiry')
+            ->dailyAt('09:00')
+            ->withoutOverlapping();
+
+        // GAP-116: pakai daily agar pay_date yang custom (bukan tanggal 3) tetap ter-trigger
+        $schedule->command('payroll:generate-monthly-slips')
+            ->dailyAt('06:00')
+            ->withoutOverlapping();
+
+        $schedule->command('facility:check-rent-overdue')
+            ->dailyAt('00:00')
+            ->withoutOverlapping();
+
+        $schedule->command('facility:send-rent-due-soon')
+            ->dailyAt('00:00')
+            ->withoutOverlapping();
+
         $schedule->command('telegram:sync --limit=50')
             ->everyFiveMinutes()
             ->withoutOverlapping()

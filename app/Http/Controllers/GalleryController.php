@@ -13,7 +13,7 @@ class GalleryController extends Controller
         $botToken = env('TELEGRAM_BOT_TOKEN');
 
         $files = DB::table('telegram_files')->orderBy('created_at', 'desc')->get();
-        Log::info('Gallery: Found ' . count($files) . ' files in DB');
+        Log::info('Gallery: Found '.count($files).' files in DB');
 
         $items = [];
         foreach ($files as $file) {
@@ -41,16 +41,16 @@ class GalleryController extends Controller
                         'created_at' => $file->created_at,
                     ];
 
-                    Log::info('Gallery: Added ' . $file->original_filename);
+                    Log::info('Gallery: Added '.$file->original_filename);
                 } else {
-                    Log::warning('Gallery: Failed to get file info for ' . $file->original_filename);
+                    Log::warning('Gallery: Failed to get file info for '.$file->original_filename);
                 }
             } catch (\Exception $e) {
-                Log::error('Gallery: Exception for ' . $file->original_filename . ': ' . $e->getMessage());
+                Log::error('Gallery: Exception for '.$file->original_filename.': '.$e->getMessage());
             }
         }
 
-        Log::info('Gallery: Rendering view with ' . count($items) . ' items');
+        Log::info('Gallery: Rendering view with '.count($items).' items');
 
         return view('gallery', ['items' => $items]);
     }
@@ -75,7 +75,7 @@ class GalleryController extends Controller
 
     private function formatFileSize(?int $bytes): string
     {
-        if (!$bytes || $bytes === 0) {
+        if (! $bytes || $bytes === 0) {
             return '0 Bytes';
         }
 
@@ -83,6 +83,6 @@ class GalleryController extends Controller
         $sizes = ['Bytes', 'KB', 'MB', 'GB'];
         $i = floor(log($bytes) / log($k));
 
-        return round($bytes / pow($k, $i), 2) . ' ' . $sizes[$i];
+        return round($bytes / pow($k, $i), 2).' '.$sizes[$i];
     }
 }

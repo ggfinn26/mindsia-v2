@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Log;
 
 class EmployeeAuthService
 {
+    public function __construct(private readonly TelegramLogService $telegramLog) {}
+
     public function verifyEmployeeCode(string $employeeCode): ?Employee
     {
         $employee = Employee::where('employee_code', $employeeCode)
@@ -16,11 +18,19 @@ class EmployeeAuthService
             ->whereDoesntHave('user')
             ->first();
 
-        if (!$employee) {
+        if (! $employee) {
             Log::warning('Employee code verification failed', [
                 'employee_code' => $employeeCode,
                 'ip' => request()->ip(),
             ]);
+
+            $this->telegramLog->log(
+                'warning',
+                'auth',
+                'register_verify_failed',
+                "Kode karyawan tidak valid atau sudah punya akun: {$employeeCode} | IP: ".request()->ip()
+            );
+
             return null;
         }
 
@@ -33,11 +43,11 @@ class EmployeeAuthService
 
         $user = DB::transaction(function () use ($employee, $data) {
             $user = User::create([
-                'name'        => $data['name'],
-                'email'       => $data['email'],
-                'password'    => $data['password'],
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => $data['password'],
                 'employee_id' => $employee->id,
-                'is_active'   => true,
+                'is_active' => true,
             ]);
 
             $employee->update(['email' => $data['email']]);

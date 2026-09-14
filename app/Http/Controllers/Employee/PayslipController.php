@@ -18,6 +18,7 @@ class PayslipController extends Controller
     public function index(): View
     {
         $employee = auth()->user()->employee;
+        abort_if(! $employee, 403);
 
         $payrolls = EmployeePayroll::with(['period', 'slip'])
             ->where('employee_id', $employee->id)
@@ -32,6 +33,7 @@ class PayslipController extends Controller
     public function download(EmployeePayroll $payroll): Response|RedirectResponse
     {
         $employee = auth()->user()->employee;
+        abort_if(! $employee, 403);
 
         abort_if($payroll->employee_id !== $employee->id, 403);
         abort_unless($payroll->period?->isFinalized(), 403);

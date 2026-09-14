@@ -46,7 +46,7 @@ class OfferingLetterController extends Controller
 
     public function accept(Request $request, OfferingLetter $offeringLetter): RedirectResponse
     {
-        abort_unless($request->user()->can('manage offering letters'), 403);
+        abort_unless($request->user()->can('recruitment.offering_letter.update'), 403);
 
         $this->stageService->acceptOffering($offeringLetter, $request->user()->employee->id);
 
@@ -55,7 +55,7 @@ class OfferingLetterController extends Controller
 
     public function decline(Request $request, OfferingLetter $offeringLetter): RedirectResponse
     {
-        abort_unless($request->user()->can('manage offering letters'), 403);
+        abort_unless($request->user()->can('recruitment.offering_letter.update'), 403);
 
         $this->stageService->declineOffering($offeringLetter, $request->user()->employee->id);
 
@@ -64,7 +64,7 @@ class OfferingLetterController extends Controller
 
     public function downloadPdf(Request $request, OfferingLetter $offeringLetter): Response
     {
-        abort_unless($request->user()->can('manage offering letters'), 403);
+        abort_unless($request->user()->can('recruitment.offering_letter.export'), 403);
         abort_unless($offeringLetter->pdf_path, 404);
 
         $real = realpath(storage_path((string) $offeringLetter->pdf_path));

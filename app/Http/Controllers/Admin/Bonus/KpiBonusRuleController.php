@@ -53,6 +53,13 @@ class KpiBonusRuleController extends Controller
         return redirect()->route('bonus.kpi-rules.index')->with('success', 'Rule bonus KPI berhasil dihapus.');
     }
 
+    public function toggleActive(KpiBonusRule $kpiRule): RedirectResponse
+    {
+        $kpiRule->update(['is_active' => ! $kpiRule->is_active]);
+
+        return back()->with('success', 'Status bonus rule berhasil diperbarui.');
+    }
+
     public function storeTier(StoreKpiBonusRuleTierRequest $request, KpiBonusRule $kpiRule): RedirectResponse
     {
         $this->repo->storeTier($kpiRule, $request->validated());

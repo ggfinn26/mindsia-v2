@@ -8,7 +8,7 @@ class GenerateSlipRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('payroll.generate_slip');
+        return $this->user()->can('payroll.slip.generate');
     }
 
     public function rules(): array

@@ -8,7 +8,7 @@ class StoreJobPostingRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('manage job postings');
+        return $this->user()->can('recruitment.job_posting.create');
     }
 
     public function rules(): array

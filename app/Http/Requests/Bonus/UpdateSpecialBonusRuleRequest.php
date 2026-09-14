@@ -8,7 +8,7 @@ class UpdateSpecialBonusRuleRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->hasRole('BOARD_OF_DIRECTORS');
+        return $this->user()->can('bonus.special-rule.update');
     }
 
     public function rules(): array

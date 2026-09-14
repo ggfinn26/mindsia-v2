@@ -8,7 +8,7 @@ class AssignMemberSupportTicketRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->hasAnyRole(['BOARD_OF_DIRECTORS', 'MANAGER_AREA']);
+        return $this->user()->can('member.support.manage');
     }
 
     public function rules(): array

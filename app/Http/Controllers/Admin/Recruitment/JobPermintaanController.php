@@ -89,7 +89,7 @@ class JobPermintaanController extends Controller
 
     public function markFulfilled(Request $request, JobPermintaan $jobPermintaan): RedirectResponse
     {
-        abort_unless($request->user()->hasRole('BOARD_OF_DIRECTORS'), 403);
+        abort_unless($request->user()->can('recruitment.job_permintaan.approve'), 403);
 
         $this->repository->markFulfilled($jobPermintaan);
 

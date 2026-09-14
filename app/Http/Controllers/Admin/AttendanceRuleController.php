@@ -6,13 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Models\AttendanceRule;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\View\View;
 
-class AttendanceRuleController extends Controller
+class AttendanceRuleController extends Controller implements HasMiddleware
 {
-    public function __construct()
+    public static function middleware(): array
     {
-        $this->middleware('can:attendance.rule.manage');
+        return [
+            new Middleware('can:attendance.rule.manage'),
+        ];
     }
 
     public function index(): View

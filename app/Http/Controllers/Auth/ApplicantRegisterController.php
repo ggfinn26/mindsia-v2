@@ -7,7 +7,6 @@ use App\Http\Requests\Auth\StoreApplicantRequest;
 use App\Models\ApplicantAccount;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
 class ApplicantRegisterController extends Controller
@@ -19,22 +18,26 @@ class ApplicantRegisterController extends Controller
 
     public function register(StoreApplicantRequest $request): RedirectResponse
     {
-        DB::transaction(function () use ($request) {
+        $validated = $request->validated();
+
+        $applicant = null;
+        DB::transaction(function () use ($validated, &$applicant) {
             $applicant = ApplicantAccount::create([
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'is_active' => false,
+                'email' => $validated['email'],
+                'password' => $validated['password'],
             ]);
 
             $applicant->applicantData()->create([
-                'full_name' => $request->full_name,
-                'whatsapp_number' => $request->whatsapp_number,
-                'birth_date' => $request->birth_date,
-                'gender' => $request->gender,
-                'address' => $request->address,
-                'city' => $request->city,
+                'full_name' => $validated['full_name'],
+                'whatsapp_number' => $validated['whatsapp_number'],
+                'birth_date' => $validated['birth_date'] ?? null,
+                'gender' => $validated['gender'] ?? null,
+                'address' => $validated['address'] ?? null,
+                'city' => $validated['city'] ?? null,
             ]);
         });
+
+        $applicant->sendEmailVerificationNotification();
 
         return redirect()->route('verification.notice')->with(
             'status',

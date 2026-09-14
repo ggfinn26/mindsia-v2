@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\ChangePasswordRequest;
+use App\Http\Requests\Auth\MemberChangePasswordRequest;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
 class MemberPasswordController extends Controller
@@ -15,10 +14,10 @@ class MemberPasswordController extends Controller
         return view('member.change-password');
     }
 
-    public function update(ChangePasswordRequest $request): RedirectResponse
+    public function update(MemberChangePasswordRequest $request): RedirectResponse
     {
         $request->user('member')->update([
-            'password' => Hash::make($request->password),
+            'password' => $request->validated('password'),
         ]);
 
         return back()->with('status', 'Password berhasil diubah.');

@@ -9,13 +9,17 @@ use App\Models\Branch;
 use App\Models\Region;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\View\View;
 
-class AttendancePolicyController extends Controller
+class AttendancePolicyController extends Controller implements HasMiddleware
 {
-    public function __construct()
+    public static function middleware(): array
     {
-        $this->middleware('can:attendance.policy.manage');
+        return [
+            new Middleware('can:attendance.policy.manage'),
+        ];
     }
 
     public function index(): View

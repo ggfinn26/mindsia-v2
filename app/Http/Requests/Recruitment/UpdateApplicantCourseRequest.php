@@ -8,7 +8,10 @@ class UpdateApplicantCourseRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user() !== null;
+        $course = $this->route('course');
+
+        return $this->user() !== null
+            && $course->applicant_id === $this->user()->applicantData?->id;
     }
 
     public function rules(): array

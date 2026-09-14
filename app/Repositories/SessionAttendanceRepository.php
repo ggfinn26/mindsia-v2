@@ -41,7 +41,7 @@ class SessionAttendanceRepository
 
         $log->update(array_merge($data, [
             'check_in' => now(),
-            'status' => 'checked_in',
+            'status' => ($data['late_minutes'] ?? 0) > 0 ? 'late' : 'checked_in',
         ]));
 
         return $log;
@@ -51,7 +51,7 @@ class SessionAttendanceRepository
     {
         $log->update(array_merge($data, [
             'check_out' => now(),
-            'status' => 'present',
+            'status' => $log->late_minutes > 0 ? 'present_late' : 'present',
         ]));
 
         return $log;

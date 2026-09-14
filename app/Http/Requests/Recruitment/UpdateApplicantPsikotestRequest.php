@@ -8,7 +8,7 @@ class UpdateApplicantPsikotestRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('manage recruitment stages');
+        return $this->user()->can('recruitment.psikotest.update');
     }
 
     public function rules(): array

@@ -19,6 +19,21 @@ class TelegramLogService
         $this->groupLogId = (int) env('GROUP_LOG');
     }
 
+    public function log(string $level, string $domain, string $action, string $detail): void
+    {
+        $timestamp = now()->format('Y-m-d H:i:s');
+        $actor = auth()->user()?->name ?? 'System';
+
+        $message = "📋 *{$level}* [{$domain}]\n".
+            "━━━━━━━━━━━━━━━━━━━━\n".
+            "*Action:* {$action}\n".
+            "*Actor:* {$actor}\n".
+            "*Time:* {$timestamp}\n".
+            "*Detail:* {$detail}";
+
+        $this->send($message);
+    }
+
     public function logCreated(string $model, array $data, int $id): void
     {
         $message = $this->formatMessage('CREATE', $model, $id, $data);

@@ -53,6 +53,13 @@ class SpecialBonusRuleController extends Controller
         return redirect()->route('bonus.special-rules.index')->with('success', 'Rule bonus spesial berhasil dihapus.');
     }
 
+    public function toggleActive(SpecialBonusRule $specialRule): RedirectResponse
+    {
+        $specialRule->update(['is_active' => ! $specialRule->is_active]);
+
+        return back()->with('success', 'Status bonus rule berhasil diperbarui.');
+    }
+
     public function storeCondition(StoreSpecialBonusRuleConditionRequest $request, SpecialBonusRule $specialRule): RedirectResponse
     {
         $this->repo->storeCondition($specialRule, $request->validated());

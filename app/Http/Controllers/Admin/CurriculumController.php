@@ -15,15 +15,20 @@ use App\Models\CurriculumSession;
 use App\Models\Program;
 use App\Services\CurriculumContentService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\View\View;
 
-class CurriculumController extends Controller
+class CurriculumController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [new Middleware('can:curriculum.curriculum.create')];
+    }
+
     public function __construct(
         private CurriculumContentService $service,
-    ) {
-        $this->middleware('board-of-directors');
-    }
+    ) {}
 
     public function index(): View
     {

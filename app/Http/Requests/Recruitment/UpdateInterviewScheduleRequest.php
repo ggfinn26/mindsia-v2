@@ -9,7 +9,7 @@ class UpdateInterviewScheduleRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('manage recruitment stages');
+        return $this->user()->can('recruitment.interview.update');
     }
 
     public function rules(): array

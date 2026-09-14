@@ -14,7 +14,7 @@ class MemberClassController extends Controller
 {
     public function __construct(private ClassRoomService $service)
     {
-        $this->middleware('board-of-directors');
+        $this->middleware('can:class.manage');
     }
 
     public function store(StoreMemberClassRequest $request, ClassRoom $classroom): RedirectResponse

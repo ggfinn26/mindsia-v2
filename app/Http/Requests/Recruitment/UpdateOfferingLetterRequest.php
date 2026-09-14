@@ -8,7 +8,7 @@ class UpdateOfferingLetterRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('manage offering letters');
+        return $this->user()->can('recruitment.offering_letter.update');
     }
 
     public function rules(): array

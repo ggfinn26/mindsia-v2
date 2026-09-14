@@ -4,22 +4,25 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Attendance\StoreHolidayRequest;
+use App\Http\Requests\Attendance\UpdateHolidayRequest;
 use App\Models\Holiday;
-use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\View\View;
 
-class HolidayController extends Controller
+class HolidayController extends Controller implements HasMiddleware
 {
-    public function __construct()
+    public static function middleware(): array
     {
-        $this->middleware('board-of-directors');
+        return [
+            new Middleware('can:attendance.holiday.manage'),
+        ];
     }
 
-    public function index(): View
+    public function index(): RedirectResponse
     {
-        return view('attendance.holidays.index', [
-            'holidays' => Holiday::latest()->paginate(15),
-        ]);
+        return redirect()->route('work-schedule-rules.index');
     }
 
     public function create(): View
@@ -31,15 +34,8 @@ class HolidayController extends Controller
     {
         Holiday::create($request->validated());
 
-        return redirect()->route('holidays.index')
+        return redirect()->route('work-schedule-rules.index')
             ->with('success', 'Hari libur berhasil ditambahkan');
-    }
-
-    public function show(Holiday $holiday): View
-    {
-        return view('attendance.holidays.show', [
-            'holiday' => $holiday,
-        ]);
     }
 
     public function edit(Holiday $holiday): View
@@ -49,11 +45,11 @@ class HolidayController extends Controller
         ]);
     }
 
-    public function update(StoreHolidayRequest $request, Holiday $holiday): RedirectResponse
+    public function update(UpdateHolidayRequest $request, Holiday $holiday): RedirectResponse
     {
         $holiday->update($request->validated());
 
-        return redirect()->route('holidays.show', $holiday)
+        return redirect()->route('work-schedule-rules.index')
             ->with('success', 'Hari libur berhasil diperbarui');
     }
 
@@ -61,7 +57,7 @@ class HolidayController extends Controller
     {
         $holiday->delete();
 
-        return redirect()->route('holidays.index')
+        return redirect()->route('work-schedule-rules.index')
             ->with('success', 'Hari libur berhasil dihapus');
     }
 }

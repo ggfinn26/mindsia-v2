@@ -8,7 +8,7 @@ class StoreMarketingBonusRuleTierRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->hasRole('BOARD_OF_DIRECTORS');
+        return $this->user()->can('bonus.marketing-rule.create');
     }
 
     public function rules(): array

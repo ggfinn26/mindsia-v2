@@ -8,7 +8,7 @@ class StoreWorkScheduleAssignmentRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->hasRole('board-of-directors');
+        return $this->user()->can('attendance.holiday.manage');
     }
 
     public function rules(): array
@@ -36,7 +36,7 @@ class StoreWorkScheduleAssignmentRequest extends FormRequest
             ];
 
             $table = $tableMap[$type] ?? null;
-            if ($table && !\DB::table($table)->where('id', $id)->exists()) {
+            if ($table && ! \DB::table($table)->where('id', $id)->exists()) {
                 $validator->errors()->add('assignable_id', "The selected $type does not exist.");
             }
         });

@@ -75,7 +75,7 @@ class JobPostingController extends Controller
 
     public function close(Request $request, JobPosting $jobPosting): RedirectResponse
     {
-        abort_unless($request->user()->can('manage job postings'), 403);
+        abort_unless($request->user()->can('recruitment.job_posting.update'), 403);
 
         $this->repository->close($jobPosting);
 

@@ -8,7 +8,7 @@ class StoreKpiBonusRuleTierRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->hasRole('BOARD_OF_DIRECTORS');
+        return $this->user()->can('bonus.kpi-rule.create');
     }
 
     public function rules(): array

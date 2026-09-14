@@ -8,7 +8,10 @@ class UpdateApplicantWorkExperienceRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user() !== null;
+        $experience = $this->route('experience');
+
+        return $this->user() !== null
+            && $experience->applicant_id === $this->user()->applicantData?->id;
     }
 
     public function rules(): array

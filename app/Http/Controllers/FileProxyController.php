@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Http;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileProxyController extends Controller
 {
@@ -18,7 +17,7 @@ class FileProxyController extends Controller
 
             $data = $response->json();
 
-            if (!($data['ok'] ?? false)) {
+            if (! ($data['ok'] ?? false)) {
                 abort(404, 'File not found');
             }
 
@@ -32,7 +31,8 @@ class FileProxyController extends Controller
             }
 
             $content = $fileResponse->body();
-            $mimeType = $this->detectMimeType($fileUrl, strlen($content));
+            $mimeType = $fileResponse->header('Content-Type')
+                ?: $this->detectMimeType($filePath);
 
             return response($content)
                 ->header('Content-Type', $mimeType)
@@ -40,11 +40,11 @@ class FileProxyController extends Controller
                 ->header('Cache-Control', 'public, max-age=3600')
                 ->header('Access-Control-Allow-Origin', '*');
         } catch (\Exception $e) {
-            abort(500, 'Error fetching file: ' . $e->getMessage());
+            abort(500, 'Error fetching file: '.$e->getMessage());
         }
     }
 
-    private function detectMimeType(string $url, int $size): string
+    private function detectMimeType(string $url): string
     {
         if (str_contains($url, '.pdf')) {
             return 'application/pdf';
@@ -57,6 +57,9 @@ class FileProxyController extends Controller
         }
         if (str_contains($url, '.png')) {
             return 'image/png';
+        }
+        if (str_contains($url, '.webp')) {
+            return 'image/webp';
         }
 
         return 'application/octet-stream';

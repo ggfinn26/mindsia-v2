@@ -10,15 +10,22 @@ use App\Models\Employee;
 use App\Models\EmploymentStatus;
 use App\Repositories\PositionRepository;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\View\View;
 
-class EmploymentStatusController extends Controller
+class EmploymentStatusController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('can:contract.manage'),
+        ];
+    }
+
     public function __construct(
         private readonly PositionRepository $positionRepository,
-    ) {
-        $this->middleware('board-of-directors');
-    }
+    ) {}
 
     public function create(Employee $employee): View
     {

@@ -4,7 +4,7 @@ namespace App\Observers;
 
 use App\Models\JobPosting;
 use App\Repositories\Recruitment\RecruitmentStageRepository;
-use App\Services\NotificationDispatchService;
+use App\Services\Notification\NotificationDispatchService;
 
 class JobPostingObserver
 {
@@ -23,16 +23,18 @@ class JobPostingObserver
             return;
         }
 
-        // cari semua reserve candidates untuk posisi yang sama
         $reserves = $this->stageRepo->findReserveCandidatesForPosition($posting->position_id);
 
         foreach ($reserves as $application) {
-            // kirim notif ke email pelamar + in-app dashboard
-            // template_key: reserve_new_posting_email
-            $this->notifService->dispatch('reserve_new_posting_email', [
-                'applicant' => $application->applicant,
-                'job_posting' => $posting,
-                'job_application' => $application,
+            $email = $application->applicant?->email;
+            if (! $email) {
+                continue;
+            }
+
+            $this->notifService->sendToEmail($email, 'reserve_new_posting_email', [
+                'applicant_name' => $application->applicant->full_name ?? '',
+                'job_title' => $posting->job_title ?? '',
+                'position' => $posting->position?->position_name ?? '',
             ]);
         }
     }

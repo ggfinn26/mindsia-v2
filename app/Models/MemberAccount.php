@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Notifications\GuardedVerifyEmail;
+use App\Notifications\MemberResetPasswordNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -29,6 +31,16 @@ class MemberAccount extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
             'last_login_at' => 'datetime',
         ];
+    }
+
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new GuardedVerifyEmail('member'));
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new MemberResetPasswordNotification($token));
     }
 
     public function memberData(): BelongsTo

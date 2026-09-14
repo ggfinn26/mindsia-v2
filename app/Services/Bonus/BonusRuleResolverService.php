@@ -5,6 +5,7 @@ namespace App\Services\Bonus;
 use App\Repositories\Bonus\KpiBonusRuleRepository;
 use App\Repositories\Bonus\MarketingBonusRuleRepository;
 use App\Repositories\Bonus\SpecialBonusRuleRepository;
+use Illuminate\Support\Facades\Log;
 
 class BonusRuleResolverService
 {
@@ -29,10 +30,26 @@ class BonusRuleResolverService
         int $tenureMonths,
     ): array {
         $rules = $this->marketingRepo->findActiveForEmployee($employeeId, $positionId, $roleId);
-        $achievement = $this->dataSourceService->resolveMarketingAchievement($employeeId, $periodYear, $periodMonth);
         $results = [];
 
         foreach ($rules as $rule) {
+            try {
+                $achievement = match ($rule->bonus_basis) {
+                    'achievement' => $this->dataSourceService->resolveMarketingAchievement($employeeId, $periodYear, $periodMonth),
+                    'revenue' => $this->dataSourceService->resolveRevenue($rule->bonus_basis, $employeeId, $periodYear, $periodMonth),
+                    default => $this->dataSourceService->resolveMarketingAchievement($employeeId, $periodYear, $periodMonth),
+                };
+            } catch (\LogicException $e) {
+                Log::warning('BonusRuleResolver: skip rule — data source not implemented', [
+                    'rule_id' => $rule->id,
+                    'bonus_basis' => $rule->bonus_basis,
+                    'employee_id' => $employeeId,
+                    'error' => $e->getMessage(),
+                ]);
+
+                continue;
+            }
+
             $tier = $rule->tiers->first(fn ($t) => $tenureMonths >= $t->minimum_tenure_months
                 && ($t->maximum_tenure_months === null || $tenureMonths <= $t->maximum_tenure_months)
                 && $achievement >= (float) $t->minimum_achievement_percentage
@@ -108,6 +125,10 @@ class BonusRuleResolverService
         $results = [];
 
         foreach ($rules as $rule) {
+            if ($rule->conditions->isEmpty()) {
+                continue; // rule tanpa kondisi apapun tidak eligible — mencegah vacuous truth
+            }
+
             $conditionResults = [];
 
             foreach ($rule->conditions as $cond) {

@@ -20,10 +20,13 @@ class MemberSupportTicket extends Model
         'priority',
         'assigned_employee_id',
         'resolved_at',
+        'rating',
+        'rating_notes',
     ];
 
     protected $casts = [
         'resolved_at' => 'datetime',
+        'rating' => 'integer',
     ];
 
     public function branch(): BelongsTo

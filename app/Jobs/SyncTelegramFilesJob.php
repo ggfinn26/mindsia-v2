@@ -11,9 +11,7 @@ class SyncTelegramFilesJob implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(private int $limit = 100)
-    {
-    }
+    public function __construct(private int $limit = 100) {}
 
     public function handle(TelegramStorageService $storage): void
     {
@@ -41,7 +39,7 @@ class SyncTelegramFilesJob implements ShouldQueue
                 'ERROR',
                 'telegram',
                 'sync_files',
-                'Sync failed: ' . $e->getMessage()
+                'Sync failed: '.$e->getMessage()
             );
 
             throw $e;

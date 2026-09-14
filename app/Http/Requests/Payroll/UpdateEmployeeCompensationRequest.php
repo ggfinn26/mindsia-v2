@@ -8,7 +8,7 @@ class UpdateEmployeeCompensationRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('employee_compensation.update');
+        return $this->user()->can('payroll.employee_compensation.update');
     }
 
     public function rules(): array

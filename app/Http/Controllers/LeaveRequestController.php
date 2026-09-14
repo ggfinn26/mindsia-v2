@@ -7,6 +7,7 @@ use App\Http\Requests\Attendance\StoreLeaveRequestRequest;
 use App\Models\EmployeeLeaveRequest;
 use App\Repositories\LeaveRequestRepository;
 use App\Services\AttendancePolicyService;
+use App\Services\TelegramStorageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -15,6 +16,7 @@ class LeaveRequestController extends Controller
     public function __construct(
         private readonly LeaveRequestRepository $repository,
         private readonly AttendancePolicyService $policyService,
+        private readonly TelegramStorageService $telegramStorage,
     ) {}
 
     public function index(): View
@@ -31,7 +33,20 @@ class LeaveRequestController extends Controller
 
     public function store(StoreLeaveRequestRequest $request): RedirectResponse
     {
-        $this->repository->create(auth()->user()->employee, $request->validated());
+        $data = $request->safe()->except('attachment');
+
+        if ($request->hasFile('attachment')) {
+            $file = $request->file('attachment');
+            $uploaded = $this->telegramStorage->uploadFile(
+                $file->getRealPath(),
+                $file->getClientOriginalName(),
+                'leave_attachment',
+                auth()->user()->employee->id,
+            );
+            $data['attachment_telegram_file_id'] = $uploaded['telegram_file_id'];
+        }
+
+        $this->repository->create(auth()->user()->employee, $data);
 
         return redirect()->route('leave-requests.index')->with('success', 'Pengajuan izin berhasil dikirim.');
     }
@@ -48,7 +63,7 @@ class LeaveRequestController extends Controller
 
     public function manage(): View
     {
-        abort_unless(auth()->user()->hasAnyRole(['BOARD', 'HRR', 'HRP']), 403);
+        abort_unless(auth()->user()->can('attendance.leave.review'), 403);
 
         return view('attendance.leave.manage', [
             'requests' => $this->repository->paginateGlobal(
@@ -75,6 +90,8 @@ class LeaveRequestController extends Controller
 
     public function reject(ReviewLeaveRequestRequest $request, EmployeeLeaveRequest $leaveRequest): RedirectResponse
     {
+        $request->validate(['rejection_reason' => ['required', 'string']]);
+
         $approver = auth()->user()->employee;
 
         abort_unless(

@@ -8,7 +8,7 @@ class AdjustPayrollItemRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('payroll.adjust');
+        return $this->user()->can('payroll.item.adjust');
     }
 
     public function rules(): array

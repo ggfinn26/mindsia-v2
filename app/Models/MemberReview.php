@@ -11,10 +11,14 @@ class MemberReview extends Model
         'member_registration_id',
         'rating',
         'review',
+        'is_approved',
+        'approved_at',
     ];
 
     protected $casts = [
         'rating' => 'integer',
+        'is_approved' => 'boolean',
+        'approved_at' => 'datetime',
     ];
 
     public function registration(): BelongsTo

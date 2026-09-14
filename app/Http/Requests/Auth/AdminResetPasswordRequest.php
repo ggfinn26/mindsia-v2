@@ -9,7 +9,7 @@ class AdminResetPasswordRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return auth()->user()?->hasRole('BOARD_OF_DIRECTORS') ?? false;
+        return auth()->user()?->can('auth.user.force_reset_password') ?? false;
     }
 
     public function rules(): array

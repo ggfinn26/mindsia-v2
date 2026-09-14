@@ -8,7 +8,7 @@ class NegotiateOfferingLetterRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('manage offering letters');
+        return $this->user()->can('recruitment.offering_letter.negotiate');
     }
 
     public function rules(): array

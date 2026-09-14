@@ -48,7 +48,7 @@ class ContractTerminateController extends Controller
 
     public function checklistShow(EmploymentStatus $status): View
     {
-        $this->authorize('reviewTerminationChecklist');
+        $this->authorize('employee.termination_checklist.review');
 
         $checklist = $status->terminationChecklist;
         $completedCount = $checklist->where('is_completed', true)->count();
@@ -58,7 +58,7 @@ class ContractTerminateController extends Controller
 
     public function checklistUpdate(Request $request, EmploymentStatus $status): RedirectResponse
     {
-        $this->authorize('reviewTerminationChecklist');
+        $this->authorize('employee.termination_checklist.review');
 
         $request->validate([
             'items' => ['required', 'array'],
@@ -94,14 +94,14 @@ class ContractTerminateController extends Controller
 
     public function completeConfirmation(EmploymentStatus $status): View
     {
-        $this->authorize('reviewTerminationChecklist');
+        $this->authorize('employee.termination_checklist.review');
 
         return view('admin.employees.contract-terminate.complete-confirmation', compact('status'));
     }
 
     public function complete(Request $request, EmploymentStatus $status): RedirectResponse
     {
-        $this->authorize('reviewTerminationChecklist');
+        $this->authorize('employee.termination_checklist.review');
         $this->authorize('terminateContract', $status->employee);
 
         $request->validate([

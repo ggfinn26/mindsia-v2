@@ -28,12 +28,17 @@ class EmployeePayrollController extends Controller
 
     public function adjust(AdjustPayrollItemRequest $request, PayrollPeriod $period, EmployeePayroll $payroll): RedirectResponse
     {
-        if (! $period->isReview()) {
-            return back()->with('error', 'Adjustment hanya bisa dilakukan saat periode status review.');
+        if (! $period->isFinalized()) {
+            return back()->with('error', 'Adjustment hanya bisa dilakukan saat periode sudah finalized.');
         }
 
         $itemId = $request->input('payroll_item_id');
         $item = $itemId ? PayrollItem::findOrFail($itemId) : null;
+
+        if ($item && $item->employee_payroll_id !== $payroll->id) {
+            abort(403, 'Item payroll bukan milik karyawan ini.');
+        }
+
         $previousAmount = $item ? (float) $item->total_amount : (float) $payroll->net_amount;
         $newAmount = (float) $request->input('new_amount');
 
@@ -44,15 +49,17 @@ class EmployeePayrollController extends Controller
             'previous_amount' => $previousAmount,
             'new_amount' => $newAmount,
             'adjustment_reason' => $request->input('adjustment_reason'),
-            'adjusted_by_employee_id' => auth()->user()->employee->id,
+            'adjusted_by_employee_id' => auth()->user()->employee?->id,
         ]);
 
         if ($item) {
             $item->update(['total_amount' => $newAmount]);
+            $this->repo->updateTotals($payroll);
+        } else {
+            // correction type: directly set net_amount, bypassing item recalc
+            $payroll->update(['net_amount' => $newAmount]);
         }
 
-        $this->repo->updateTotals($payroll);
-
-        return redirect()->route('payroll.periods.payroll.show', [$period, $payroll])->with('success', 'Adjustment berhasil disimpan.');
+        return redirect()->route('payroll.payrolls.show', [$period, $payroll])->with('success', 'Adjustment berhasil disimpan.');
     }
 }

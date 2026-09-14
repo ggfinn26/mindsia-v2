@@ -35,7 +35,7 @@ class ApplicantInterviewScheduleController extends Controller
 
     public function destroy(Request $request, ApplicantInterviewSchedule $schedule): RedirectResponse
     {
-        abort_unless($request->user()->can('manage recruitment stages'), 403);
+        abort_unless($request->user()->can('recruitment.interview.delete'), 403);
         abort_if($schedule->evaluation()->exists(), 422, 'Interview sudah memiliki evaluasi.');
         $schedule->delete();
 

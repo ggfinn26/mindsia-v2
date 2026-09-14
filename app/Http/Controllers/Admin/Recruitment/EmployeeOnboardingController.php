@@ -57,7 +57,7 @@ class EmployeeOnboardingController extends Controller
 
     public function complete(Request $request, EmployeeOnboarding $employeeOnboarding): RedirectResponse
     {
-        abort_unless($request->user()->can('manage employee onboarding'), 403);
+        abort_unless($request->user()->can('recruitment.onboarding.update'), 403);
 
         $this->onboardingService->complete($employeeOnboarding, $request->user()->employee->id);
 
