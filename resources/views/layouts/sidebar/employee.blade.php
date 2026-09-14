@@ -222,14 +222,25 @@
 @endcan
 
 <!-- 1.15 Finance -->
-@canany(['finance.budget_estimate.view', 'finance.reimbursement.view', 'finance.monthly_cost.view'])
-<x-dashboard.nav-group title="Keuangan" icon="account_balance_wallet" :active="request()->is('finance*')">
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Budget Estimate</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Reimbursement</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Biaya Operasional</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Lock Periode</x-dashboard.nav-item>
+@canany(['finance.budget_estimate.view', 'finance.reimbursement.view', 'finance.monthly_cost.view', 'finance.period.lock'])
+<x-dashboard.nav-group title="Keuangan" icon="account_balance_wallet" :active="request()->is('budget-estimates*') || request()->is('reimbursements*') || request()->is('branch-monthly-costs*') || request()->is('period-locks*')">
+    @can('finance.budget_estimate.view')
+    <x-dashboard.nav-item href="{{ route('budget-estimates.index') }}" :active="request()->routeIs('budget-estimates.*')" :isChild="true">Budget Estimate</x-dashboard.nav-item>
+    @endcan
+    @can('finance.reimbursement.view')
+    <x-dashboard.nav-item href="{{ route('reimbursements.index') }}" :active="request()->routeIs('reimbursements.*') && !request()->routeIs('reimbursements-review')" :isChild="true">Reimbursement Saya</x-dashboard.nav-item>
+    @endcan
+    @can('finance.reimbursement.review')
+    <x-dashboard.nav-item href="{{ route('reimbursements.review-list') }}" :active="request()->routeIs('reimbursements.review-list')" :isChild="true">Review Reimbursement</x-dashboard.nav-item>
+    @endcan
+    @can('finance.monthly_cost.view')
+    <x-dashboard.nav-item href="{{ route('branch-monthly-costs.index') }}" :active="request()->routeIs('branch-monthly-costs.*')" :isChild="true">Biaya Operasional</x-dashboard.nav-item>
+    @endcan
+    @can('finance.period.lock')
+    <x-dashboard.nav-item href="{{ route('period-locks.index') }}" :active="request()->routeIs('period-locks.*')" :isChild="true">Lock Periode</x-dashboard.nav-item>
+    @endcan
 </x-dashboard.nav-group>
-@endcan
+@endcanany
 
 <!-- 1.16 Letter -->
 @canany(['letter.template.create', 'letter.in.create', 'letter.generate.create'])
