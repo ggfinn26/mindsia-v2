@@ -113,15 +113,20 @@
 @endif
 
 <!-- 1.6 KPI -->
-@canany(['kpi.template.create', 'kpi.evaluation.create'])
+@canany(['kpi.template.create', 'kpi.evaluation.create', 'kpi.grade_rule.view'])
 <x-dashboard.nav-group title="KPI" icon="target" :active="request()->is('kpi*')">
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Template KPI</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Grade & Evaluator</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Buat Evaluasi KPI</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Isi & Finalize KPI</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Upload Dokumen KPI</x-dashboard.nav-item>
+    @can('kpi.template.create')
+    <x-dashboard.nav-item href="{{ route('kpi.templates.index') }}" :active="request()->routeIs('kpi.templates.*')" :isChild="true">Template KPI</x-dashboard.nav-item>
+    @endcan
+    @can('kpi.grade_rule.view')
+    <x-dashboard.nav-item href="{{ route('kpi.grade-rules.index') }}" :active="request()->routeIs('kpi.grade-rules.*')" :isChild="true">Grade KPI</x-dashboard.nav-item>
+    @endcan
+    @can('kpi.evaluation.create')
+    <x-dashboard.nav-item href="{{ route('kpi.evaluator-assignments.index') }}" :active="request()->routeIs('kpi.evaluator-assignments.*')" :isChild="true">Assignment Evaluator</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('kpi.evaluations.index') }}" :active="request()->routeIs('kpi.evaluations.*')" :isChild="true">Evaluasi KPI</x-dashboard.nav-item>
+    @endcan
 </x-dashboard.nav-group>
-@endcan
+@endcanany
 
 <!-- 1.7 Attendance & Employee -->
 @canany(['employee.create', 'employee.update'])
