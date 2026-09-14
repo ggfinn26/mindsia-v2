@@ -8,15 +8,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('employees', function (Blueprint $table) {
-            $table->foreign('branch_id')->references('id')->on('branches')->onDelete('restrict');
+        Schema::table('users', function (Blueprint $table) {
+            $table->boolean('must_change_password')->default(false)->after('is_active');
         });
     }
 
     public function down(): void
     {
-        Schema::table('employees', function (Blueprint $table) {
-            $table->dropForeign(['branch_id']);
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('must_change_password');
         });
     }
 };

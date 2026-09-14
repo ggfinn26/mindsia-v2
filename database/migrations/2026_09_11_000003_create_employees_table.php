@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -22,11 +23,14 @@ return new class extends Migration
             $table->unsignedBigInteger('branch_id')->nullable();
             $table->unsignedBigInteger('area_id')->nullable();
             $table->unsignedBigInteger('region_id')->nullable();
+            $table->boolean('is_hq')->default(false);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 
-            $table->foreign('region_id')->references('id')->on('regions')->onDelete('set null');
+            $table->foreign('region_id')->references('id')->on('regions')->onDelete('restrict');
         });
+
+        DB::statement('ALTER TABLE employees ADD CONSTRAINT chk_employee_location CHECK (is_hq = 1 OR (branch_id IS NOT NULL AND area_id IS NOT NULL AND region_id IS NOT NULL))');
     }
 
     public function down(): void

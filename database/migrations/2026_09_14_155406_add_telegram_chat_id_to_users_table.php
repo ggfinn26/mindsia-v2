@@ -8,15 +8,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('employees', function (Blueprint $table) {
-            $table->foreign('branch_id')->references('id')->on('branches')->onDelete('restrict');
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('telegram_chat_id', 50)->nullable()->after('email');
         });
     }
 
     public function down(): void
     {
-        Schema::table('employees', function (Blueprint $table) {
-            $table->dropForeign(['branch_id']);
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('telegram_chat_id');
         });
     }
 };

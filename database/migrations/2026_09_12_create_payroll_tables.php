@@ -146,7 +146,8 @@ return new class extends Migration
 
         Schema::create('payroll_bonus_condition_snapshots', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('payroll_bonus_calculation_id')->constrained('payroll_bonus_calculations')->cascadeOnDelete();
+            $table->unsignedBigInteger('payroll_bonus_calculation_id');
+            $table->foreign('payroll_bonus_calculation_id', 'pbcs_calc_fk')->references('id')->on('payroll_bonus_calculations')->cascadeOnDelete();
             $table->string('metric_code_snapshot', 100);
             $table->string('data_source_snapshot', 100);
             $table->string('period_type_snapshot', 50);
@@ -159,13 +160,15 @@ return new class extends Migration
 
         Schema::create('employee_payroll_adjustment_histories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employee_payroll_id')->constrained('employee_payrolls')->cascadeOnDelete();
+            $table->unsignedBigInteger('employee_payroll_id');
+            $table->foreign('employee_payroll_id', 'epah_payroll_fk')->references('id')->on('employee_payrolls')->cascadeOnDelete();
             $table->foreignId('payroll_item_id')->nullable()->constrained('payroll_items')->nullOnDelete();
             $table->enum('adjustment_type', ['earning', 'deduction', 'correction']);
             $table->decimal('previous_amount', 15, 2);
             $table->decimal('new_amount', 15, 2);
             $table->text('adjustment_reason');
-            $table->foreignId('adjusted_by_employee_id')->constrained('employees')->cascadeOnDelete();
+            $table->unsignedBigInteger('adjusted_by_employee_id');
+            $table->foreign('adjusted_by_employee_id', 'epah_adjuster_fk')->references('id')->on('employees')->cascadeOnDelete();
             $table->timestamps();
         });
 

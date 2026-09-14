@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('employees', function (Blueprint $table) {
-            $table->foreign('area_id')->references('id')->on('areas')->onDelete('set null');
+            $table->foreign('area_id')->references('id')->on('areas')->onDelete('restrict');
         });
     }
 
