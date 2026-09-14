@@ -128,16 +128,18 @@
 </x-dashboard.nav-group>
 @endcanany
 
-<!-- 1.7 Attendance & Employee -->
-@canany(['employee.create', 'employee.update'])
-<x-dashboard.nav-group title="Kelola Karyawan" icon="badge" :active="request()->is('employee/manage*') || request()->is('employee/contract*') || request()->is('employee/education*') || request()->is('employee/offboarding*')">
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Data Pegawai</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Kontrak Baru</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Perpanjang Kontrak</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Ubah Posisi / Cabang</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Resign / Offboarding</x-dashboard.nav-item>
+<!-- 1.7 Kelola Karyawan -->
+@canany(['employee.create', 'employee.update', 'employee.view'])
+<x-dashboard.nav-group title="Kelola Karyawan" icon="badge" :active="request()->is('employees*') || request()->is('employment-statuses*') || request()->is('resign-requests*') || request()->is('branch-transfers*')">
+    @canany(['employee.view', 'employee.create'])
+    <x-dashboard.nav-item href="{{ route('employees.index') }}" :active="request()->routeIs('employees.*')" :isChild="true">Data Pegawai</x-dashboard.nav-item>
+    @endcanany
+    @can('employee.update')
+    <x-dashboard.nav-item href="{{ route('resign-requests.index') }}" :active="request()->routeIs('resign-requests.*')" :isChild="true">Resign & Offboarding</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('branch-transfers.review') }}" :active="request()->routeIs('branch-transfers.*')" :isChild="true">Review Pindah Cabang</x-dashboard.nav-item>
+    @endcan
 </x-dashboard.nav-group>
-@endcan
+@endcanany
 
 <!-- 1.8 Curriculum -->
 @canany(['curriculum.program.create', 'curriculum.curriculum.create', 'curriculum.view'])
