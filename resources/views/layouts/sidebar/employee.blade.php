@@ -243,14 +243,25 @@
 @endcanany
 
 <!-- 1.16 Letter -->
-@canany(['letter.template.create', 'letter.in.create', 'letter.generate.create'])
-<x-dashboard.nav-group title="Surat" icon="drafts" :active="request()->is('letter*') && !request()->is('letter/my-letters*')">
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Template Surat</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Surat Keluar</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Surat Masuk</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Dokumen SOP</x-dashboard.nav-item>
+@canany(['letter.template.create', 'letter.template.update', 'letter.in.create', 'letter.generate.create', 'letter.out.create', 'letter.sop.create'])
+<x-dashboard.nav-group title="Surat" icon="drafts" :active="request()->is('letter-templates*') || request()->is('out-letters*') || request()->is('in-letters*') || request()->is('sop-documents*')">
+    @canany(['letter.template.create', 'letter.template.update'])
+    <x-dashboard.nav-item href="{{ route('letter-templates.index') }}" :active="request()->routeIs('letter-templates.*')" :isChild="true">Template Surat</x-dashboard.nav-item>
+    @endcanany
+    @can('letter.generate.create')
+    <x-dashboard.nav-item href="{{ route('out-letters-generate.index') }}" :active="request()->routeIs('out-letters-generate.*')" :isChild="true">Surat Keluar Generate</x-dashboard.nav-item>
+    @endcan
+    @can('letter.out.create')
+    <x-dashboard.nav-item href="{{ route('out-letters-upload.index') }}" :active="request()->routeIs('out-letters-upload.*')" :isChild="true">Surat Keluar Upload</x-dashboard.nav-item>
+    @endcan
+    @can('letter.in.create')
+    <x-dashboard.nav-item href="{{ route('in-letters.index') }}" :active="request()->routeIs('in-letters.*')" :isChild="true">Surat Masuk</x-dashboard.nav-item>
+    @endcan
+    @canany(['letter.sop.create', 'letter.sop.view'])
+    <x-dashboard.nav-item href="{{ route('sop-documents.index') }}" :active="request()->routeIs('sop-documents.*')" :isChild="true">Dokumen SOP</x-dashboard.nav-item>
+    @endcanany
 </x-dashboard.nav-group>
-@endcan
+@endcanany
 
 <!-- 1.17 Facility -->
 @canany(['facility.ticket.create', 'facility.inventory.create', 'facility.rent_contract.create'])
