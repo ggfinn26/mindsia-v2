@@ -22,7 +22,7 @@
 <div class="pt-4 pb-2">
     <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider font-jakarta">Personal Dashboard</p>
 </div>
-<x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" icon="receipt_long" :active="request()->is('employee/payslip*')">Slip Gaji Saya</x-dashboard.nav-item>
+<x-dashboard.nav-item href="{{ route('employee.payslips.index') }}" icon="receipt_long" :active="request()->routeIs('employee.payslips.*')">Slip Gaji Saya</x-dashboard.nav-item>
 <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" icon="track_changes" :active="request()->is('employee/my-kpi*')">KPI Saya</x-dashboard.nav-item>
 <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" icon="format_list_numbered" :active="request()->is('marketing/my-performance*')">Ranking MPI Saya</x-dashboard.nav-item>
 <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" icon="history" :active="request()->is('attendance/my-recap*')">Riwayat Absensi Saya</x-dashboard.nav-item>
@@ -173,7 +173,8 @@
     <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Sosialisasi & Lead</x-dashboard.nav-item>
     <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Template WA</x-dashboard.nav-item>
     <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Target & Performance</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Financial Statement</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('marketing.member-payment-statement') }}" :active="request()->routeIs('marketing.member-payment-statement')" :isChild="true">Financial Statement</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('marketing.monthly-revenue-data') }}" :active="request()->routeIs('marketing.monthly-revenue-data')" :isChild="true">Data Pendapatan Bulanan</x-dashboard.nav-item>
 </x-dashboard.nav-group>
 @endif
 
@@ -266,8 +267,8 @@
 <!-- 1.17 Facility -->
 @canany(['facility.ticket.create', 'facility.inventory.create', 'facility.rent_contract.create'])
 <x-dashboard.nav-group title="Fasilitas" icon="build" :active="request()->is('facility*') && !request()->is('facility/my-tickets*')">
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Tiket Fasilitas</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Inventaris</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Kontrak Sewa</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('facility.tickets.index') }}" :active="request()->routeIs('facility.tickets.*')" :isChild="true">Tiket Fasilitas</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('facility.inventory.index') }}" :active="request()->routeIs('facility.inventory.*')" :isChild="true">Inventaris</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('facility.rent-contracts.index') }}" :active="request()->routeIs('facility.rent-contracts.*')" :isChild="true">Kontrak Sewa</x-dashboard.nav-item>
 </x-dashboard.nav-group>
 @endcan
