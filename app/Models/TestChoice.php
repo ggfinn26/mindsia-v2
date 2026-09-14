@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class TestChoice extends Model
+{
+    protected $fillable = [
+        'test_question_id',
+        'choice_text',
+        'is_correct',
+    ];
+
+    protected $casts = [
+        'is_correct' => 'boolean',
+    ];
+
+    public function question()
+    {
+        return $this->belongsTo(TestQuestion::class, 'test_question_id');
+    }
+}
