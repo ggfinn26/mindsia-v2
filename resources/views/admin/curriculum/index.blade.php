@@ -1,74 +1,76 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
 @section('title', 'Kelola Kurikulum')
 
 @section('content')
-    <div class="container py-6">
-        <div class="flex items-center justify-between mb-6">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900">Kelola Kurikulum</h1>
-                <p class="text-gray-600 mt-2">Daftar semua kurikulum dan kontennya</p>
-            </div>
-            <a href="{{ route('curriculums.create') }}"
-               class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                Buat Kurikulum
-            </a>
-        </div>
-
-        @if ($curriculums->isEmpty())
-            <div class="bg-white rounded-lg shadow p-8 text-center">
-                <p class="text-gray-600">Belum ada kurikulum. Mulai buat kurikulum baru.</p>
-            </div>
-        @else
-            <div class="grid gap-6">
-                @foreach ($curriculums as $curriculum)
-                    <div class="bg-white rounded-lg shadow hover:shadow-lg transition">
-                        <div class="p-6">
-                            <div class="flex items-start justify-between mb-4">
-                                <div>
-                                    <h3 class="text-xl font-bold text-gray-900">{{ $curriculum->curriculum_name }}</h3>
-                                    <p class="text-sm text-gray-600 mt-1">Program: {{ $curriculum->program->program_name }}</p>
-                                </div>
-                                <span class="px-3 py-1 rounded-full text-sm font-medium {{ $curriculum->is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
-                                    {{ $curriculum->is_active ? 'Aktif' : 'Nonaktif' }}
-                                </span>
-                            </div>
-
-                            @if ($curriculum->description)
-                                <p class="text-gray-700 mb-4">{{ $curriculum->description }}</p>
-                            @endif
-
-                            <div class="flex items-center gap-4 text-sm text-gray-600 mb-4">
-                                <span>📚 {{ $curriculum->sessions->count() }} sesi</span>
-                                <span>📄 {{ $curriculum->sessions->sum(fn($s) => $s->items->count()) }} item</span>
-                            </div>
-
-                            <div class="flex gap-3 pt-4 border-t border-gray-200">
-                                <a href="{{ route('curriculums.show', $curriculum) }}"
-                                   class="px-3 py-2 text-blue-600 hover:bg-blue-50 rounded">
-                                    Lihat Detail
-                                </a>
-                                <a href="{{ route('curriculums.edit', $curriculum) }}"
-                                   class="px-3 py-2 text-blue-600 hover:bg-blue-50 rounded">
-                                    Edit
-                                </a>
-                                <form action="{{ route('curriculums.destroy', $curriculum) }}" method="POST" class="inline"
-                                      onsubmit="return confirm('Yakin ingin menghapus kurikulum ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="px-3 py-2 text-red-600 hover:bg-red-50 rounded">
-                                        Hapus
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-
-            <div class="mt-6">
-                {{ $curriculums->links() }}
-            </div>
-        @endif
+<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">Kelola Kurikulum</h1>
     </div>
+
+    @if (session('success'))
+        <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if($curriculums->isEmpty())
+        <div class="bg-white shadow sm:rounded-lg p-8 text-center">
+            <span class="material-symbols-outlined text-gray-300 text-5xl mb-3">menu_book</span>
+            <p class="text-gray-500">Belum ada kurikulum. Kurikulum dibuat dari halaman detail Program (relasi 1:1).</p>
+            <a href="{{ route('programs.index') }}" class="mt-4 inline-block text-blue-600 hover:text-blue-900 text-sm font-medium">Lihat daftar Program &rarr;</a>
+        </div>
+    @else
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kurikulum</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Program</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sesi Mingguan</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item Materi</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @forelse($curriculums as $curriculum)
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $curriculum->curriculum_name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $curriculum->program->program_name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $curriculum->sessions->count() }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $curriculum->sessions->sum(fn($s) => $s->items->count()) }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $curriculum->is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                                        {{ $curriculum->is_active ? 'Aktif' : 'Nonaktif' }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <a href="{{ route('curriculums.show', $curriculum) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Detail</a>
+                                    <a href="{{ route('curriculums.edit', $curriculum) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
+                                    <form action="{{ route('curriculums.destroy', $curriculum) }}" method="POST" class="inline"
+                                          onsubmit="return confirm('Yakin ingin menghapus kurikulum ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-600 hover:text-red-900">Hapus</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">Belum ada kurikulum.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+            @if($curriculums->hasPages())
+                <div class="px-6 py-4 border-t border-gray-200">
+                    {{ $curriculums->links() }}
+                </div>
+            @endif
+        </div>
+    @endif
+</div>
 @endsection

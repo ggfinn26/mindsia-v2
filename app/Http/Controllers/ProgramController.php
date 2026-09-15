@@ -65,6 +65,6 @@ class ProgramController extends Controller implements HasMiddleware
 
         $program->update(['is_active' => false]);
 
-        return redirect()->route('programs.index')->with('success', 'Program berhasil dihapus.');
+        return redirect()->route('programs.index')->with('success', 'Program berhasil dinonaktifkan.');
     }
 }

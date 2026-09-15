@@ -76,6 +76,7 @@
     <x-dashboard.nav-item href="{{ route('attendance-recaps.index') }}" :active="request()->routeIs('attendance-recaps.*')" :isChild="true">Rekap Absensi Pegawai</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('leave-requests.manage') }}" :active="request()->routeIs('leave-requests.manage')" :isChild="true">Review Izin/Sakit/Cuti</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('work-attendance.manage') }}" :active="request()->routeIs('work-attendance.manage')" :isChild="true">Verifikasi & Koreksi</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('work-schedule-rules.index') }}" :active="request()->routeIs('work-schedule-rules.*')" :isChild="true">Aturan Jadwal Kerja</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('attendance-rules.index') }}" :active="request()->routeIs('attendance-rules.*')" :isChild="true">Kelola Sanksi Absen</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('attendance.document-signature.index') }}" :active="request()->routeIs('attendance.document-signature.*')" :isChild="true">Pengaturan TTD</x-dashboard.nav-item>
 </x-dashboard.nav-group>
@@ -100,6 +101,7 @@
     <x-dashboard.nav-item href="{{ route('bonus.special-rules.index') }}" :active="request()->routeIs('bonus.special-rules.*')" :isChild="true">Special Bonus</x-dashboard.nav-item>
     @endcanany
     <x-dashboard.nav-item href="{{ route('bonus.history.index') }}" :active="request()->routeIs('bonus.history.*')" :isChild="true">Riwayat Bonus</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('payroll.session-rules.index') }}" :active="request()->routeIs('payroll.session-rules.*')" :isChild="true">Rules Sesi</x-dashboard.nav-item>
     @canany(['payroll.period.view', 'payroll.period.generate', 'payroll.period.update'])
     <x-dashboard.nav-item href="{{ route('payroll.periods.index') }}" :active="request()->routeIs('payroll.periods.*')" :isChild="true">Periode Payroll</x-dashboard.nav-item>
     @endcanany
@@ -136,19 +138,19 @@
     @endcanany
     @can('employee.update')
     <x-dashboard.nav-item href="{{ route('resign-requests.index') }}" :active="request()->routeIs('resign-requests.*')" :isChild="true">Resign & Offboarding</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="{{ route('branch-transfers.review') }}" :active="request()->routeIs('branch-transfers.*')" :isChild="true">Review Pindah Cabang</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('branch-transfers.review.index') }}" :active="request()->routeIs('branch-transfers.*')" :isChild="true">Review Pindah Cabang</x-dashboard.nav-item>
     @endcan
 </x-dashboard.nav-group>
 @endcanany
 
-<!-- 1.8 Curriculum -->
-@canany(['curriculum.program.create', 'curriculum.curriculum.create', 'curriculum.view'])
+<!-- 1.8 Akademik -->
+@canany(['curriculum.program.create', 'curriculum.curriculum.create', 'curriculum.quota.create', 'curriculum.view'])
 <div class="pt-4 pb-2">
     <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider font-jakarta">Akademik</p>
 </div>
-<x-dashboard.nav-group title="Program & Kurikulum" icon="menu_book" :active="request()->is('curriculum*')">
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Program & Kuota</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Kelola Kurikulum</x-dashboard.nav-item>
+<x-dashboard.nav-group title="Program & Kurikulum" icon="menu_book" :active="request()->is('program*') || request()->is('curriculum*')">
+    <x-dashboard.nav-item href="{{ route('programs.index') }}" :isChild="true" :active="request()->routeIs('programs.*')">Program & Kuota</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('curriculums.index') }}" :isChild="true" :active="request()->routeIs('curriculums.*')">Kelola Kurikulum</x-dashboard.nav-item>
 </x-dashboard.nav-group>
 @endcan
 

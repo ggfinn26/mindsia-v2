@@ -51,4 +51,9 @@ class Program extends Model
     {
         return $this->hasMany(BranchProgramQuota::class);
     }
+
+    public function classes(): HasMany
+    {
+        return $this->hasMany(ClassRoom::class);
+    }
 }
