@@ -49,7 +49,11 @@ class DiscountController extends Controller
     {
         abort_unless(auth()->user()->can('member.manage'), 403);
 
-        $this->repo->delete($discount);
+        try {
+            $this->repo->delete($discount);
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
+        }
 
         return redirect()->route('discounts.index')->with('success', 'Diskon berhasil dihapus.');
     }

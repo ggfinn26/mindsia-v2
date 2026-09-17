@@ -8,6 +8,7 @@ use App\Models\EmployeeAttendanceMonthlyRecap;
 use App\Models\EmployeeKpiEvaluation;
 use App\Models\EmployeePayroll;
 use App\Models\EmployeeSessionAttendanceLog;
+use App\Models\LeavePaySetting;
 use App\Models\PayrollBonusCalculation;
 use App\Models\PayrollBonusConditionSnapshot;
 use App\Models\PayrollComponent;
@@ -28,6 +29,7 @@ class PayrollGenerationService
         private readonly EmployeePayrollRepository $payrollRepo,
         private readonly SessionRateResolverService $sessionRateResolver,
         private readonly BonusRuleResolverService $bonusResolver,
+        private readonly PayrollNotificationService $notificationService,
     ) {}
 
     public function generate(PayrollPeriod $period): void
@@ -45,6 +47,8 @@ class PayrollGenerationService
                 $this->generateForEmployee($period, $employee);
             }
         });
+
+        $this->notificationService->notifyPayrollReady($period);
     }
 
     /**
@@ -98,7 +102,9 @@ class PayrollGenerationService
             ->first();
 
         if (! $recap) {
-            throw new LogicException("Missing attendance snapshot for employee: {$employee->full_name} (ID: {$employee->id})");
+            Log::warning("Skipping employee without attendance recap: {$employee->full_name} (ID: {$employee->id})");
+
+            return;
         }
 
         [$totalSessions, $attendedSessions, $lateSessions] = $this->querySessionCounts($employee, $period);
@@ -185,6 +191,7 @@ class PayrollGenerationService
         }
 
         $this->applyAttendanceDeductions($payroll, $employee, $period, $baseSalary);
+        $this->applyLeaveDeductions($payroll, $employee, $baseSalary);
         $this->applyBonuses($payroll, $employee, $period, $baseSalary);
 
         $this->payrollRepo->updateTotals($payroll);
@@ -202,6 +209,66 @@ class PayrollGenerationService
             'percentage' => null,
             'manual' => null,
         };
+    }
+
+    private function applyLeaveDeductions(EmployeePayroll $payroll, Employee $employee, float $baseSalary): void
+    {
+        // BOARD employees are always paid in full regardless of leave_pay_settings
+        $boardRoles = ['CEO', 'COO', 'CHRO', 'CPO', 'CFO', 'CMO'];
+        if ($employee->user?->hasAnyRole($boardRoles)) {
+            return;
+        }
+
+        $settings = LeavePaySetting::all()->keyBy('leave_type');
+        $scheduledDays = (int) $payroll->scheduled_working_days;
+
+        if ($scheduledDays === 0 || $baseSalary === 0.0) {
+            return;
+        }
+
+        $unpaidDays = 0;
+        foreach (['permission', 'sick', 'leave'] as $type) {
+            $setting = $settings->get($type);
+            if ($setting && ! $setting->is_paid) {
+                $unpaidDays += (int) match ($type) {
+                    'permission' => $payroll->days_permission,
+                    'sick' => $payroll->days_sick,
+                    'leave' => $payroll->days_leave,
+                };
+            }
+        }
+
+        if ($unpaidDays === 0) {
+            return;
+        }
+
+        // ponytail: non-tutor formula only; tutor session-based deduction needs absent_sessions_by_leave_type data not yet available
+        $deductionAmount = round($baseSalary / $scheduledDays * $unpaidDays, 2);
+
+        $component = PayrollComponent::where('component_code', 'LEAVE_DEDUCTION')->active()->first();
+
+        if (! $component) {
+            Log::warning('PayrollGeneration: missing LEAVE_DEDUCTION component', [
+                'employee_id' => $employee->id,
+                'unpaid_days' => $unpaidDays,
+                'deduction_amount' => $deductionAmount,
+            ]);
+
+            return;
+        }
+
+        PayrollItem::create([
+            'employee_payroll_id' => $payroll->id,
+            'payroll_component_id' => $component->id,
+            'component_code_snapshot' => $component->component_code,
+            'component_name_snapshot' => $component->component_name,
+            'component_type_snapshot' => 'deduction',
+            'quantity' => $unpaidDays,
+            'unit_value' => round($baseSalary / $scheduledDays, 2),
+            'total_amount' => $deductionAmount,
+            'source_type' => 'leave',
+            'description' => "Potongan izin tidak berbayar: {$unpaidDays} hari",
+        ]);
     }
 
     private function applyAttendanceDeductions(EmployeePayroll $payroll, Employee $employee, PayrollPeriod $period, float $baseSalary): void

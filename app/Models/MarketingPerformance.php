@@ -20,6 +20,9 @@ class MarketingPerformance extends Model
         'cash_collected_auto',
         'cash_collected_adjustment',
         'adjustment_notes',
+        'admin_fee_deducted',
+        'income_actual',
+        'achievement_percentage',
         'status',
     ];
 
@@ -28,6 +31,9 @@ class MarketingPerformance extends Model
         'cash_collected_actual' => 'decimal:2',
         'cash_collected_auto' => 'decimal:2',
         'cash_collected_adjustment' => 'decimal:2',
+        'admin_fee_deducted' => 'decimal:2',
+        'income_actual' => 'decimal:2',
+        'achievement_percentage' => 'decimal:2',
     ];
 
     public function employee(): BelongsTo

@@ -63,13 +63,10 @@ class AttendanceService
 
         $telegramFileId = null;
         if (isset($data['selfie'])) {
-            $uploaded = $this->telegramStorage->uploadFile(
-                $data['selfie']->getRealPath(),
-                $data['selfie']->getClientOriginalName(),
-                'attendance_checkin',
-                $employee->id,
+            $telegramFileId = $this->telegramStorage->uploadPhoto(
+                $data['selfie'],
+                "Check-in {$employee->full_name} ".now()->toDateTimeString(),
             );
-            $telegramFileId = $uploaded['telegram_file_id'];
         }
 
         return $this->attendanceRepo->checkIn($employee->id, $employee->branch_id, [
@@ -107,13 +104,10 @@ class AttendanceService
 
         $telegramFileId = null;
         if (isset($data['selfie'])) {
-            $uploaded = $this->telegramStorage->uploadFile(
-                $data['selfie']->getRealPath(),
-                $data['selfie']->getClientOriginalName(),
-                'attendance_checkout',
-                $employee->id,
+            $telegramFileId = $this->telegramStorage->uploadPhoto(
+                $data['selfie'],
+                "Check-out {$employee->full_name} ".now()->toDateTimeString(),
             );
-            $telegramFileId = $uploaded['telegram_file_id'];
         }
 
         return $this->attendanceRepo->checkOut($log, [
@@ -142,7 +136,10 @@ class AttendanceService
             return 0;
         }
 
-        return (int) $scheduledStart->diffInMinutes($checkIn);
+        // Late minutes count from the tolerance deadline, not from start_time.
+        // E.g. start=08:00, tolerance=15 → deadline=08:15.
+        // Check-in at 08:30 → late_minutes = 15 (not 30).
+        return (int) $deadline->diffInMinutes($checkIn);
     }
 
     private function calculateEarlyLeaveMinutes(Carbon $checkOut, WorkScheduleRule $schedule, string $date): int
@@ -154,7 +151,10 @@ class AttendanceService
             return 0;
         }
 
-        return (int) $checkOut->diffInMinutes($scheduledEnd);
+        // Early leave minutes count from the tolerance threshold, not from end_time.
+        // E.g. end=17:00, tolerance=15 → threshold=16:45.
+        // Check-out at 16:30 → early_leave_minutes = 15 (not 30).
+        return (int) $checkOut->diffInMinutes($threshold);
     }
 
     private function haversineMeters(float $lat1, float $lng1, float $lat2, float $lng2): int

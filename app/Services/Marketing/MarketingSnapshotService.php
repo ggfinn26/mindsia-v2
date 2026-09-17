@@ -23,6 +23,8 @@ class MarketingSnapshotService
 
         $classesActual = $this->resolveClassesActual($employee->id, $month, $year);
         $cashCollected = $this->resolveCashCollected($employee->id, $month, $year);
+        $adminFeeDeducted = $this->resolveAdminFeeDeducted($employee->id, $month, $year);
+        $incomeActual = max(0.0, $cashCollected - $adminFeeDeducted);
 
         $classesPct = $target['classes_target'] > 0
             ? round(($classesActual / $target['classes_target']) * 100, 2)
@@ -57,6 +59,8 @@ class MarketingSnapshotService
             'registration_value_percentage' => $cashPct,
             'cash_collected_actual' => $cashCollected,
             'cash_collected_percentage' => $cashPct,
+            'admin_fee_deducted' => $adminFeeDeducted,
+            'income_actual' => $incomeActual,
             'mpi_score' => $mpiScore,
             'rank_area' => $rankArea,
             'rank_region' => $rankRegion,
@@ -79,7 +83,6 @@ class MarketingSnapshotService
 
     private function resolveCashCollected(int $employeeId, int $month, int $year): float
     {
-        // SUM confirmed payments for registrations attributed to this marketing employee
         return (float) MemberPayment::whereHas(
             'registration',
             fn ($q) => $q->where('employee_id', $employeeId)
@@ -88,6 +91,52 @@ class MarketingSnapshotService
             ->whereYear('paid_at', $year)
             ->where('payment_status', 'confirmed')
             ->sum('amount');
+    }
+
+    private function resolveAdminFeeDeducted(int $employeeId, int $month, int $year): float
+    {
+        $total = 0.0;
+
+        // per_registration + on_registration: count registrations created in period
+        $total += (float) \DB::table('member_registrations as mr')
+            ->join('programs as p', 'mr.program_id', '=', 'p.id')
+            ->where('mr.employee_id', $employeeId)
+            ->whereYear('mr.created_at', $year)
+            ->whereMonth('mr.created_at', $month)
+            ->where('p.admin_fee_mode', 'per_registration')
+            ->where('p.admin_fee_timing', 'on_registration')
+            ->sum('p.admin_fee');
+
+        // per_registration + on_first_payment: count registrations whose first confirmed payment falls in period
+        $total += (float) \DB::table('member_registrations as mr')
+            ->join('programs as p', 'mr.program_id', '=', 'p.id')
+            ->joinSub(
+                \DB::table('member_payments')
+                    ->selectRaw('member_registration_id, MIN(paid_at) as first_paid')
+                    ->where('payment_status', 'confirmed')
+                    ->groupBy('member_registration_id'),
+                'fp',
+                'fp.member_registration_id', '=', 'mr.id'
+            )
+            ->where('mr.employee_id', $employeeId)
+            ->whereYear('fp.first_paid', $year)
+            ->whereMonth('fp.first_paid', $month)
+            ->where('p.admin_fee_mode', 'per_registration')
+            ->where('p.admin_fee_timing', 'on_first_payment')
+            ->sum('p.admin_fee');
+
+        // per_transaction: count each confirmed payment in period
+        $total += (float) \DB::table('member_payments as mp')
+            ->join('member_registrations as mr', 'mp.member_registration_id', '=', 'mr.id')
+            ->join('programs as p', 'mr.program_id', '=', 'p.id')
+            ->where('mr.employee_id', $employeeId)
+            ->whereYear('mp.paid_at', $year)
+            ->whereMonth('mp.paid_at', $month)
+            ->where('mp.payment_status', 'confirmed')
+            ->where('p.admin_fee_mode', 'per_transaction')
+            ->sum('p.admin_fee');
+
+        return $total;
     }
 
     private function resolveRanking(Employee $employee, int $month, int $year, float $mpiScore): array

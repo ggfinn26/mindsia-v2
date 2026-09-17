@@ -20,13 +20,17 @@ class SocializationController extends Controller
 
     public function index(Request $request): View
     {
+        abort_unless($request->user()->canAny(['marketing.socialization.create', 'marketing.socialization.update']), 403);
+
         return view('marketing.socialization.index', [
             'socializations' => $this->repository->paginate($request->only(['branch_id', 'area_id', 'status'])),
         ]);
     }
 
-    public function create(): View
+    public function create(Request $request): View
     {
+        abort_unless($request->user()->can('marketing.socialization.create'), 403);
+
         return view('marketing.socialization.create');
     }
 
@@ -40,15 +44,18 @@ class SocializationController extends Controller
         return redirect()->route('socializations.show', $socialization)->with('success', 'Sosialisasi berhasil dibuat.');
     }
 
-    public function show(Socialization $socialization): View
+    public function show(Request $request, Socialization $socialization): View
     {
+        abort_unless($request->user()->canAny(['marketing.socialization.create', 'marketing.socialization.update']), 403);
+
         return view('marketing.socialization.show', [
             'socialization' => $this->repository->find($socialization->id),
         ]);
     }
 
-    public function edit(Socialization $socialization): View
+    public function edit(Request $request, Socialization $socialization): View
     {
+        abort_unless($request->user()->can('marketing.socialization.update'), 403);
         abort_if($socialization->status === Socialization::STATUS_COMPLETED, 403);
 
         return view('marketing.socialization.edit', compact('socialization'));
@@ -84,6 +91,16 @@ class SocializationController extends Controller
         $this->repository->assignEmployee($socialization, $request->validated('employee_id'));
 
         return back()->with('success', 'Marketer berhasil ditugaskan.');
+    }
+
+    public function destroy(Request $request, Socialization $socialization): RedirectResponse
+    {
+        abort_unless($request->user()->can('marketing.socialization.delete'), 403);
+        abort_unless($socialization->status === 'draft', 422, 'Hanya sosialisasi draft yang bisa dihapus.');
+
+        $socialization->delete();
+
+        return redirect()->route('socializations.index')->with('success', 'Sosialisasi berhasil dihapus.');
     }
 
     public function updatePartnerFee(Request $request, Socialization $socialization): RedirectResponse

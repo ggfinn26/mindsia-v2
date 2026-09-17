@@ -26,6 +26,6 @@ class PayrollBonusConditionSnapshot extends Model
 
     public function bonusCalculation(): BelongsTo
     {
-        return $this->belongsTo(PayrollBonusCalculation::class);
+        return $this->belongsTo(PayrollBonusCalculation::class, 'payroll_bonus_calculation_id');
     }
 }

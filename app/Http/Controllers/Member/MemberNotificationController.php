@@ -11,7 +11,7 @@ class MemberNotificationController extends Controller
 {
     public function index(): View
     {
-        $memberId = auth('member')->id();
+        $memberId = auth('member')->user()->members_data_id;
 
         MemberNotification::where('member_id', $memberId)
             ->where('status', 'unread')
@@ -26,7 +26,7 @@ class MemberNotificationController extends Controller
 
     public function unreadCount(): JsonResponse
     {
-        $count = MemberNotification::where('member_id', auth('member')->id())
+        $count = MemberNotification::where('member_id', auth('member')->user()->members_data_id)
             ->where('status', 'unread')
             ->count();
 

@@ -3,10 +3,10 @@
 @section('title', 'Widget Dashboard Config')
 
 @section('content')
-<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8" x-data="{ showModal: false, showConfirmModal: false, confirmTitle: '', confirmMessage: '', confirmActionUrl: '', confirmMethod: 'DELETE', confirmActionText: 'Hapus', isEdit: false, formData: { id: '', position_id: '', widget_type: '', order: 0, is_active: 1 } }">
+<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8" x-data="{ showModal: false, showConfirmModal: false, confirmTitle: '', confirmMessage: '', confirmActionUrl: '', confirmMethod: 'DELETE', confirmActionText: 'Hapus', isEdit: false, formData: { id: '', position_id: '', widget_key: '', order: 0, is_enabled: 1 } }">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-900">Konfigurasi Widget Dashboard</h1>
-        <button @click="showModal = true; isEdit = false; formData = { id: '', position_id: '', widget_type: '', order: 0, is_active: 1 }" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
+        <button @click="showModal = true; isEdit = false; formData = { id: '', position_id: '', widget_key: '', order: 0, is_enabled: 1 }" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
             Tambah Widget
         </button>
     </div>
@@ -55,15 +55,18 @@
                                         {{ $config->position->position_name ?? 'Global' }}
                                     </td>
                                 @endif
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 border-b border-gray-100">{{ $config->widget_type }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 border-b border-gray-100">
+                                    {{ \App\Enums\WidgetKey::tryFrom($config->widget_key)?->label() ?? $config->widget_key }}
+                                    <span class="block text-xs text-gray-400">{{ $config->widget_key }}</span>
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 border-b border-gray-100">{{ $config->order }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm border-b border-gray-100">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $config->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                        {{ $config->is_active ? 'Aktif' : 'Nonaktif' }}
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $config->is_enabled ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                        {{ $config->is_enabled ? 'Aktif' : 'Nonaktif' }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium border-b border-gray-100">
-                                    <button @click="showModal = true; isEdit = true; formData = { id: '{{ $config->id }}', position_id: '{{ $config->position_id }}', widget_type: '{{ $config->widget_type }}', order: '{{ $config->order }}', is_active: '{{ $config->is_active }}' }" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</button>
+                                    <button @click="showModal = true; isEdit = true; formData = { id: '{{ $config->id }}', position_id: '{{ $config->position_id }}', widget_key: '{{ $config->widget_key }}', order: '{{ $config->order }}', is_enabled: '{{ $config->is_enabled ? 1 : 0 }}' }" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</button>
                                     <button type="button" @click="showConfirmModal = true; confirmTitle = 'Hapus Widget'; confirmMessage = 'Yakin ingin menghapus konfigurasi widget ini?'; confirmActionUrl = '{{ route('system.dashboard-widgets.destroy', $config->id) }}'; confirmMethod = 'DELETE'; confirmActionText = 'Hapus'" class="text-red-600 hover:text-red-900">Hapus</button>
                                 </td>
                             </tr>
@@ -106,9 +109,21 @@
                                 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Jenis Widget <span class="text-red-500">*</span></label>
-                                    <input type="text" name="widget_type" x-model="formData.widget_type" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="contoh: statistik_pegawai">
+                                    <select name="widget_key" x-model="formData.widget_key" required class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                        <option value="">Pilih Widget...</option>
+                                        @php
+                                            $grouped = collect($widgetKeys)->groupBy(fn (\App\Enums\WidgetKey $wk) => $wk->category());
+                                        @endphp
+                                        @foreach($grouped as $category => $keys)
+                                            <optgroup label="{{ ucfirst($category) }}">
+                                                @foreach($keys as $wk)
+                                                    <option value="{{ $wk->value }}">{{ $wk->label() }}</option>
+                                                @endforeach
+                                            </optgroup>
+                                        @endforeach
+                                    </select>
                                 </div>
-                                
+
                                 <div class="grid grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Urutan Tampil <span class="text-red-500">*</span></label>
@@ -116,7 +131,7 @@
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Status</label>
-                                        <select name="is_active" x-model="formData.is_active" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                        <select name="is_enabled" x-model="formData.is_enabled" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                                             <option value="1">Aktif</option>
                                             <option value="0">Nonaktif</option>
                                         </select>

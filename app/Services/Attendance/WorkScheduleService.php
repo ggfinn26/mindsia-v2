@@ -3,8 +3,6 @@
 namespace App\Services\Attendance;
 
 use App\Models\Employee;
-use App\Models\Position;
-use App\Models\Role;
 use App\Models\WorkScheduleAssignment;
 use App\Models\WorkScheduleRule;
 use Carbon\Carbon;
@@ -15,7 +13,7 @@ class WorkScheduleService
     {
         $date ??= today();
 
-        $assignment = WorkScheduleAssignment::where('assignable_type', Employee::class)
+        $assignment = WorkScheduleAssignment::where('assignable_type', 'employee')
             ->where('assignable_id', $employee->id)
             ->where('is_active', true)
             ->where('effective_start_date', '<=', $date)
@@ -33,7 +31,7 @@ class WorkScheduleService
 
         $position = $employee->currentStatus?->position;
         if ($position) {
-            $assignment = WorkScheduleAssignment::where('assignable_type', Position::class)
+            $assignment = WorkScheduleAssignment::where('assignable_type', 'position')
                 ->where('assignable_id', $position->id)
                 ->where('is_active', true)
                 ->where('effective_start_date', '<=', $date)
@@ -54,7 +52,7 @@ class WorkScheduleService
         if ($user) {
             $roleIds = $user->roles->pluck('id');
             if ($roleIds->isNotEmpty()) {
-                $assignment = WorkScheduleAssignment::where('assignable_type', Role::class)
+                $assignment = WorkScheduleAssignment::where('assignable_type', 'role')
                     ->whereIn('assignable_id', $roleIds)
                     ->where('is_active', true)
                     ->where('effective_start_date', '<=', $date)
@@ -79,7 +77,7 @@ class WorkScheduleService
     {
         return WorkScheduleAssignment::create([
             'work_schedule_rule_id' => $rule->id,
-            'assignable_type' => Employee::class,
+            'assignable_type' => 'employee',
             'assignable_id' => $employee->id,
             'effective_start_date' => $effectiveStartDate,
             'effective_end_date' => $effectiveEndDate,

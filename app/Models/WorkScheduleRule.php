@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class WorkScheduleRule extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'setting_name',
         'start_time',

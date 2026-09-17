@@ -26,7 +26,7 @@ class Region extends Model
 
     public function institutions(): HasMany
     {
-        return $this->hasMany(Institution::class);
+        return $this->hasMany(Institution::class, 'regions_id');
     }
 
     public function branches(): HasManyThrough

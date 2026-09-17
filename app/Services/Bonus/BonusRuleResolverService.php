@@ -36,7 +36,7 @@ class BonusRuleResolverService
             try {
                 $achievement = match ($rule->bonus_basis) {
                     'achievement' => $this->dataSourceService->resolveMarketingAchievement($employeeId, $periodYear, $periodMonth),
-                    'revenue' => $this->dataSourceService->resolveRevenue($rule->bonus_basis, $employeeId, $periodYear, $periodMonth),
+                    'revenue' => $this->dataSourceService->resolveRevenue($rule->revenue_basis, $employeeId, $periodYear, $periodMonth),
                     default => $this->dataSourceService->resolveMarketingAchievement($employeeId, $periodYear, $periodMonth),
                 };
             } catch (\LogicException $e) {

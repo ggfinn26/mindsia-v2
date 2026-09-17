@@ -51,6 +51,11 @@ class FacilityTicketController extends Controller
         return view('facility.ticket.show', compact('facilityTicket'));
     }
 
+    public function edit(FacilityTicket $facilityTicket): View
+    {
+        return view('facility.ticket.edit', compact('facilityTicket'));
+    }
+
     public function update(UpdateFacilityTicketRequest $request, FacilityTicket $facilityTicket): RedirectResponse
     {
         $this->repository->update($facilityTicket, $request->validated());

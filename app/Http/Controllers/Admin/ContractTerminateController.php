@@ -67,7 +67,7 @@ class ContractTerminateController extends Controller
         ]);
 
         $itemIds = array_column($request->input('items'), 'id');
-        $checklists = $status->terminationChecklist()->whereIn('id', $itemIds)->keyBy('id');
+        $checklists = $status->terminationChecklist()->whereIn('id', $itemIds)->get()->keyBy('id');
 
         abort_if($checklists->count() !== count($itemIds), 403);
 
@@ -85,7 +85,7 @@ class ContractTerminateController extends Controller
 
         if ($allCompleted) {
             return redirect()
-                ->route('contract-terminate.complete-confirmation', $status)
+                ->route('contract-terminate.complete.confirm', $status)
                 ->with('success', 'Semua item checklist telah diselesaikan. Siap untuk hard delete.');
         }
 

@@ -21,6 +21,14 @@ class LoginController extends Controller
             $request->session()->regenerate();
             auth()->user()->update(['last_login_at' => now()]);
 
+            if (! auth()->user()->hasVerifiedEmail()) {
+                if ($request->expectsJson()) {
+                    return response()->json(['redirect' => route('verification.notice')]);
+                }
+
+                return redirect()->route('verification.notice');
+            }
+
             if ($request->expectsJson()) {
                 return response()->json(['redirect' => route('dashboard')]);
             }

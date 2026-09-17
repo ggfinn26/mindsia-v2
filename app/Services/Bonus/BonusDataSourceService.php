@@ -3,6 +3,7 @@
 namespace App\Services\Bonus;
 
 use App\Models\EmployeeAttendanceMonthlyRecap;
+use App\Models\MarketingPerformance;
 use Illuminate\Support\Facades\DB;
 
 class BonusDataSourceService
@@ -26,8 +27,21 @@ class BonusDataSourceService
 
     public function resolveRevenue(string $revenueBasis, int $employeeId, int $periodYear, int $periodMonth): float
     {
-        // ponytail: not implemented — expand when marketing payment tables are stable
-        throw new \LogicException("resolveRevenue('{$revenueBasis}') not yet implemented.");
+        $performance = MarketingPerformance::where('employee_id', $employeeId)
+            ->where('period_year', $periodYear)
+            ->where('period_month', $periodMonth)
+            ->first();
+
+        if (! $performance) {
+            return 0.0;
+        }
+
+        return match ($revenueBasis) {
+            'cash_collected' => (float) $performance->cash_collected_actual,
+            'income' => (float) $performance->income_actual,
+            'registration_value' => (float) $performance->registration_value_actual,
+            default => throw new \LogicException("resolveRevenue: revenue_basis '{$revenueBasis}' tidak dikenali."),
+        };
     }
 
     public function resolveMetric(string $dataSource, int $employeeId, int $periodYear, int $periodMonth): ?float
@@ -42,10 +56,10 @@ class BonusDataSourceService
     private function resolveAttendanceDaysPresent(int $employeeId, int $periodYear, int $periodMonth): ?float
     {
         $recap = EmployeeAttendanceMonthlyRecap::where('employee_id', $employeeId)
-            ->where('recap_year', $periodYear)
-            ->where('recap_month', $periodMonth)
+            ->where('period_year', $periodYear)
+            ->where('period_month', $periodMonth)
             ->first();
 
-        return $recap ? (float) $recap->days_present : null;
+        return $recap ? (float) $recap->total_present : null;
     }
 }

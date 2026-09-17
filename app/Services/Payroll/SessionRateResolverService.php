@@ -9,10 +9,15 @@ class SessionRateResolverService
 {
     public function resolve(Employee $employee): float
     {
+        return (float) ($this->resolveRule($employee)?->amount_per_session ?? 0.0);
+    }
+
+    public function resolveRule(Employee $employee): ?SessionCompensationRule
+    {
         $roleId = $employee->user?->roles->first()?->id;
         $positionId = $employee->currentStatus?->position_id;
 
-        $rule = SessionCompensationRule::active()
+        return SessionCompensationRule::active()
             ->where(function ($q) use ($employee, $positionId, $roleId) {
                 $q->where(fn ($q) => $q->where('scope_type', 'employee')->where('employee_id', $employee->id))
                     ->orWhere(fn ($q) => $q->where('scope_type', 'position')->where('position_id', $positionId))
@@ -21,7 +26,5 @@ class SessionRateResolverService
             })
             ->orderByRaw("FIELD(scope_type, 'employee', 'position', 'role', 'global')")
             ->first();
-
-        return $rule ? (float) $rule->amount_per_session : 0.0;
     }
 }

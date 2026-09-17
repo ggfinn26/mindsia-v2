@@ -25,7 +25,7 @@ return new class extends Migration
             $table->foreign('employee_id')->references('id')->on('employees');
             $table->foreign('from_branch_id')->references('id')->on('branches');
             $table->foreign('to_branch_id')->references('id')->on('branches');
-            $table->foreign('reviewed_by')->references('id')->on('users');
+            $table->foreign('reviewed_by')->references('id')->on('employee_accounts');
         });
     }
 

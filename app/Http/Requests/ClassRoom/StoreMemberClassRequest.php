@@ -14,7 +14,7 @@ class StoreMemberClassRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'member_registration_id' => 'required|integer|exists:member_registrations,id',
+            'member_registration_id' => 'required|integer|exists:members_registration,id',
             'start_date' => 'required|date|after_or_equal:today',
         ];
     }

@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class MarketingBonusRuleTier extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'marketing_bonus_rule_id',
         'minimum_tenure_months',

@@ -8,6 +8,7 @@ use App\Http\Requests\Bonus\StoreKpiBonusRuleTierRequest;
 use App\Http\Requests\Bonus\UpdateKpiBonusRuleRequest;
 use App\Http\Requests\Bonus\UpdateKpiBonusRuleTierRequest;
 use App\Models\KpiBonusRule;
+use App\Models\KpiBonusRuleTier;
 use App\Repositories\Bonus\KpiBonusRuleRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -20,6 +21,8 @@ class KpiBonusRuleController extends Controller
 
     public function index(): View
     {
+        abort_unless(auth()->user()->can('bonus.kpi-rule.view'), 403);
+
         return view('admin.bonus.kpi-rules.index', [
             'rules' => $this->repo->all(),
         ]);
@@ -34,6 +37,8 @@ class KpiBonusRuleController extends Controller
 
     public function show(KpiBonusRule $kpiRule): View
     {
+        abort_unless(auth()->user()->can('bonus.kpi-rule.view'), 403);
+
         return view('admin.bonus.kpi-rules.show', [
             'rule' => $this->repo->findById($kpiRule->id),
         ]);
@@ -48,6 +53,7 @@ class KpiBonusRuleController extends Controller
 
     public function destroy(KpiBonusRule $kpiRule): RedirectResponse
     {
+        abort_unless(auth()->user()->can('bonus.kpi-rule.delete'), 403);
         $this->repo->delete($kpiRule);
 
         return redirect()->route('bonus.kpi-rules.index')->with('success', 'Rule bonus KPI berhasil dihapus.');
@@ -55,6 +61,7 @@ class KpiBonusRuleController extends Controller
 
     public function toggleActive(KpiBonusRule $kpiRule): RedirectResponse
     {
+        abort_unless(auth()->user()->can('bonus.kpi-rule.update'), 403);
         $kpiRule->update(['is_active' => ! $kpiRule->is_active]);
 
         return back()->with('success', 'Status bonus rule berhasil diperbarui.');
@@ -69,6 +76,7 @@ class KpiBonusRuleController extends Controller
 
     public function updateTier(UpdateKpiBonusRuleTierRequest $request, KpiBonusRule $kpiRule, int $tier): RedirectResponse
     {
+        abort_unless(KpiBonusRuleTier::where('id', $tier)->where('kpi_bonus_rule_id', $kpiRule->id)->exists(), 403);
         $this->repo->updateTier($tier, $request->validated());
 
         return redirect()->route('bonus.kpi-rules.show', $kpiRule)->with('success', 'Tier berhasil diperbarui.');
@@ -76,6 +84,7 @@ class KpiBonusRuleController extends Controller
 
     public function destroyTier(KpiBonusRule $kpiRule, int $tier): RedirectResponse
     {
+        abort_unless(KpiBonusRuleTier::where('id', $tier)->where('kpi_bonus_rule_id', $kpiRule->id)->exists(), 403);
         $this->repo->deleteTier($tier);
 
         return redirect()->route('bonus.kpi-rules.show', $kpiRule)->with('success', 'Tier berhasil dihapus.');

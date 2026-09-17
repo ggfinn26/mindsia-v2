@@ -87,6 +87,16 @@ class JobPermintaanController extends Controller
         return redirect()->route('recruitment.permintaan.show', $jobPermintaan)->with('success', 'Keputusan OPS dicatat.');
     }
 
+    public function destroy(Request $request, JobPermintaan $jobPermintaan): RedirectResponse
+    {
+        abort_unless($request->user()->can('recruitment.job_request.manage'), 403);
+        abort_unless($jobPermintaan->status === 'draft', 422, 'Hanya permintaan draft yang bisa dihapus.');
+
+        $jobPermintaan->delete();
+
+        return redirect()->route('recruitment.permintaan.index')->with('success', 'Permintaan berhasil dihapus.');
+    }
+
     public function markFulfilled(Request $request, JobPermintaan $jobPermintaan): RedirectResponse
     {
         abort_unless($request->user()->can('recruitment.job_permintaan.approve'), 403);

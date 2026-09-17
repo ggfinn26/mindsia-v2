@@ -155,23 +155,25 @@
 @endcan
 
 <!-- 1.9 Class -->
-@canany(['class.attendance.record', 'class.test.create', 'class.graduate'])
-<x-dashboard.nav-group title="Kelas" icon="school" :active="request()->is('class*') && !request()->is('class/my-classes*')">
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Buat Kelas Baru</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Daftarkan Member</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Sesi & Absensi</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Test & Sertifikat</x-dashboard.nav-item>
+@canany(['class.manage', 'class.attendance.record', 'class.test.create', 'class.graduate'])
+<x-dashboard.nav-group title="Kelas" icon="school" :active="request()->routeIs('classrooms.*') || request()->routeIs('class-schedules.*') || request()->routeIs('class-tests.*') || request()->routeIs('member-class.*')">
+    <x-dashboard.nav-item href="{{ route('classrooms.create') }}" :isChild="true" :active="request()->routeIs('classrooms.create')">Buat Kelas Baru</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('classrooms.index') }}" :isChild="true" :active="request()->routeIs('classrooms.index') || request()->routeIs('classrooms.show')">Daftarkan Member</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('class-schedules.index') }}" :isChild="true" :active="request()->routeIs('class-schedules.*')">Sesi & Absensi</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('class-tests.index') }}" :isChild="true" :active="request()->routeIs('class-tests.*')">Test & Sertifikat</x-dashboard.nav-item>
 </x-dashboard.nav-group>
 @endcan
 
 <!-- 1.10 Member & Marketing -->
-@if(auth()->user()->can('marketing.socialization.create') || auth()->user()->can('marketing.prospective_member.create'))
+@if(auth()->user()->can('member.manage') || auth()->user()->can('marketing.socialization.create') || auth()->user()->can('marketing.prospective_member.create'))
 <div class="pt-4 pb-2">
     <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider font-jakarta">Sales & Service</p>
 </div>
 <x-dashboard.nav-group title="Member & Marketing" icon="campaign" :active="request()->is('member*') || request()->is('marketing*')">
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Registrasi Member</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Profil Member</x-dashboard.nav-item>
+    @can('member.manage')
+    <x-dashboard.nav-item href="{{ route('members.create') }}" :isChild="true" :active="request()->routeIs('members.create')">Registrasi Member</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('members.index') }}" :isChild="true" :active="request()->routeIs('members.index') || request()->routeIs('members.show') || request()->routeIs('members.edit')">Data Member</x-dashboard.nav-item>
+    @endcan
     <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Sosialisasi & Lead</x-dashboard.nav-item>
     <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Template WA</x-dashboard.nav-item>
     <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Target & Performance</x-dashboard.nav-item>
@@ -186,11 +188,11 @@
     <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider font-jakarta">Rekrutmen</p>
 </div>
 <x-dashboard.nav-group title="Rekrutmen" icon="work" :active="request()->is('recruitment*')">
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Job Permintaan</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Job Posting</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Aplikasi Lowongan</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Psikotest & Interview</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Offering & Onboarding</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('recruitment.permintaan.index') }}" :isChild="true" :active="request()->routeIs('recruitment.permintaan.*')">Job Permintaan</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('recruitment.postings.index') }}" :isChild="true" :active="request()->routeIs('recruitment.postings.*')">Job Posting</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('recruitment.application.index') }}" :isChild="true" :active="request()->routeIs('recruitment.application.*') && !request()->has('status')">Aplikasi Lowongan</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('recruitment.application.index', ['status' => 'interview']) }}" :isChild="true" :active="request()->has('status') && request('status') == 'interview'">Psikotest & Interview</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('recruitment.onboarding.index') }}" :isChild="true" :active="request()->routeIs('recruitment.onboarding.*')">Offering & Onboarding</x-dashboard.nav-item>
 </x-dashboard.nav-group>
 @endcan
 
@@ -200,18 +202,18 @@
     <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider font-jakarta">Lainnya</p>
 </div>
 <x-dashboard.nav-group title="Survey" icon="poll" :active="request()->is('survey*')">
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Template Survey</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Assign Survey</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Hasil Survey</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('surveys.index') }}" :isChild="true" :active="request()->routeIs('surveys.*') && !request()->has('tab')">Template Survey</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('surveys.index', ['tab' => 'assign']) }}" :isChild="true" :active="request()->get('tab') == 'assign'">Assign Survey</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('surveys.index', ['tab' => 'results']) }}" :isChild="true" :active="request()->get('tab') == 'results'">Hasil Survey</x-dashboard.nav-item>
 </x-dashboard.nav-group>
 @endcan
 
 <!-- 1.13 TOEFL -->
 @canany(['toefl.test.create', 'toefl.test.update'])
 <x-dashboard.nav-group title="TOEFL" icon="language" :active="request()->is('toefl*')">
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Bank Test</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Session Member</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Lead Guest</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('toefl-tests.index') }}" :isChild="true" :active="request()->routeIs('toefl-tests.*')">Bank Test</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('toefl.member-session.index') }}" :isChild="true" :active="request()->routeIs('toefl.member-session.*')">Session Member</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('toefl.guest-lead.index') }}" :isChild="true" :active="request()->routeIs('toefl.guest-lead.*')">Lead Guest</x-dashboard.nav-item>
 </x-dashboard.nav-group>
 @endcan
 

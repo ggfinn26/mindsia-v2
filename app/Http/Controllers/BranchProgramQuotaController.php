@@ -29,6 +29,12 @@ class BranchProgramQuotaController extends Controller implements HasMiddleware
         return view('program.quota.index', compact('program', 'quotas', 'branches'));
     }
 
+    public function create(Program $program): RedirectResponse
+    {
+        // Quota creation is inline on the index page
+        return redirect()->route('programs.quotas.index', $program);
+    }
+
     public function store(StoreBranchProgramQuotaRequest $request, Program $program): RedirectResponse
     {
         BranchProgramQuota::updateOrCreate(
@@ -37,6 +43,16 @@ class BranchProgramQuotaController extends Controller implements HasMiddleware
         );
 
         return back()->with('success', 'Kuota berhasil disimpan.');
+    }
+
+    public function show(BranchProgramQuota $quota): RedirectResponse
+    {
+        return redirect()->route('programs.quotas.index', $quota->program_id);
+    }
+
+    public function edit(BranchProgramQuota $quota): RedirectResponse
+    {
+        return redirect()->route('programs.quotas.index', $quota->program_id);
     }
 
     public function update(UpdateBranchProgramQuotaRequest $request, Program $program, BranchProgramQuota $quota): RedirectResponse

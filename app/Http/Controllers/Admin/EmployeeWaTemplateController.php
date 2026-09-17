@@ -33,7 +33,7 @@ class EmployeeWaTemplateController extends Controller
 
     public function update(StoreEmployeeWaTemplateRequest $request, EmployeeWaTemplate $employeeWaTemplate): RedirectResponse
     {
-        abort_unless($employeeWaTemplate->employee_id === $request->user()->employee->id, 403);
+        abort_unless((int) $employeeWaTemplate->employee_id === (int) $request->user()->employee->id, 403);
 
         $employeeWaTemplate->update($request->validated());
 
@@ -42,7 +42,7 @@ class EmployeeWaTemplateController extends Controller
 
     public function destroy(Request $request, EmployeeWaTemplate $employeeWaTemplate): RedirectResponse
     {
-        abort_unless($employeeWaTemplate->employee_id === $request->user()->employee->id, 403);
+        abort_unless((int) $employeeWaTemplate->employee_id === (int) $request->user()->employee->id, 403);
 
         $employeeWaTemplate->delete();
 

@@ -2,28 +2,21 @@
 
 namespace App\Http\Requests\Finance;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ReviewReimbursementRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()->can('finance.reimbursement.review');
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            //
+            'action' => ['required', 'in:approve,reject'],
+            'review_notes' => ['nullable', 'string', 'max:1000'],
+            'rejection_notes' => ['required_if:action,reject', 'string', 'max:1000'],
         ];
     }
 }

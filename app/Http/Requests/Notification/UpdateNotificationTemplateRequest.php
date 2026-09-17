@@ -16,7 +16,7 @@ class UpdateNotificationTemplateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'template_key' => ['required', 'string', 'max:100', Rule::unique('notification_templates', 'template_key')->ignore($this->route('notificationTemplate'))],
+            'template_key' => ['required', 'string', 'max:100', Rule::unique('notification_templates', 'template_key')->ignore($this->route('notification_template'))],
             'type' => ['required', 'in:email,telegram,in-app'],
             'subject' => ['nullable', 'string', 'max:255'],
             'body' => ['required', 'string'],

@@ -3,7 +3,7 @@
 namespace App\Repositories\Letter;
 
 use App\Models\SopDocument;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class SopDocumentRepository
 {
@@ -12,16 +12,19 @@ class SopDocumentRepository
         return SopDocument::with(['branch', 'uploadedBy'])->findOrFail($id);
     }
 
-    public function visibleTo(string $roleName, ?int $branchId = null): Collection
+    public function visibleTo(string $roleName, ?int $branchId = null): LengthAwarePaginator
     {
         return SopDocument::where('is_active', true)
             ->where(fn ($q) => $q
                 ->whereNull('branch_id')
                 ->orWhere('branch_id', $branchId)
             )
-            ->get()
-            ->filter(fn ($sop) => $sop->isVisibleToRole($roleName))
-            ->values();
+            ->where(fn ($q) => $q
+                ->whereNull('visible_to')
+                ->orWhereJsonContains('visible_to', $roleName)
+            )
+            ->orderByDesc('created_at')
+            ->paginate(15);
     }
 
     public function create(array $data): SopDocument

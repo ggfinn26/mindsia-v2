@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class KpiBonusRuleTier extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'kpi_bonus_rule_id',
         'minimum_score',

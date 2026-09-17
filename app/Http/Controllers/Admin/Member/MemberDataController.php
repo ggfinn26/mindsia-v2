@@ -86,7 +86,11 @@ class MemberDataController extends Controller
     {
         abort_unless(auth()->user()->can('member.manage'), 403);
 
-        $this->repo->delete($member);
+        try {
+            $this->repo->delete($member);
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
+        }
 
         return redirect()->route('members.index')->with('success', 'Data member berhasil dihapus.');
     }

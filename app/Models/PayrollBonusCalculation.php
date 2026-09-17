@@ -41,6 +41,6 @@ class PayrollBonusCalculation extends Model
 
     public function conditionSnapshots(): HasMany
     {
-        return $this->hasMany(PayrollBonusConditionSnapshot::class);
+        return $this->hasMany(PayrollBonusConditionSnapshot::class, 'payroll_bonus_calculation_id');
     }
 }

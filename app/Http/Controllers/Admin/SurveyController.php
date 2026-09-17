@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Survey\StoreSurveyRequest;
 use App\Http\Requests\Survey\UpdateSurveyRequest;
+use App\Models\Employee;
+use App\Models\MemberData;
 use App\Models\Survey;
 use App\Repositories\Survey\SurveyRepository;
 use Illuminate\Http\RedirectResponse;
@@ -70,6 +72,8 @@ class SurveyController extends Controller
 
         return view('survey.show', [
             'survey' => $this->repository->findWithDetails($survey->id),
+            'members' => MemberData::orderBy('full_name')->get(['id', 'full_name']),
+            'employees' => Employee::orderBy('full_name')->get(['id', 'full_name']),
         ]);
     }
 
@@ -84,7 +88,11 @@ class SurveyController extends Controller
 
     public function update(UpdateSurveyRequest $request, Survey $survey): RedirectResponse
     {
-        $this->repository->update($survey, $request->validated());
+        try {
+            $this->repository->update($survey, $request->validated());
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
+        }
 
         return redirect()->route('surveys.show', $survey)->with('success', 'Survey berhasil diperbarui.');
     }

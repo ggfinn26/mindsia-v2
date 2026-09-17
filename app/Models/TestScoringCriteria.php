@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TestScoringCriteria extends Model
 {
+    protected $table = 'test_scoring_criteria';
+
     protected $fillable = [
         'test_id',
         'criteria_name',

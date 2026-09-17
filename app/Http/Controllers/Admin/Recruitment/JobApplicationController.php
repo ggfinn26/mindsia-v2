@@ -32,7 +32,7 @@ class JobApplicationController extends Controller
     public function store(StoreJobApplicationRequest $request, JobPosting $jobPosting): RedirectResponse
     {
         $application = $this->stageService->apply(
-            applicant: $request->user()->applicant,
+            applicant: $request->user()->applicantData,
             posting: $jobPosting,
             source: 'job_posting',
         );

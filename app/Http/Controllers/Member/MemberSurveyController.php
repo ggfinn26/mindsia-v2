@@ -42,7 +42,11 @@ class MemberSurveyController extends Controller
     {
         abort_unless($memberSurvey->member_id === auth('member')->id(), 403);
 
-        $this->service->submitMemberAnswers($memberSurvey, $request->validated('answers'));
+        try {
+            $this->service->submitMemberAnswers($memberSurvey, $request->validated('answers'));
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
+        }
 
         return redirect()->route('member.surveys.index')->with('success', 'Jawaban berhasil dikirim.');
     }

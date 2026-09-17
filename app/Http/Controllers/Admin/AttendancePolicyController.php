@@ -58,6 +58,11 @@ class AttendancePolicyController extends Controller implements HasMiddleware
             ->with('success', 'Policy absensi berhasil dibuat.');
     }
 
+    public function show(AttendancePolicy $attendancePolicy): RedirectResponse
+    {
+        return redirect()->route('attendance-policies.edit', $attendancePolicy);
+    }
+
     public function edit(AttendancePolicy $attendancePolicy): View
     {
         return view('attendance.policy.edit', array_merge(

@@ -26,12 +26,14 @@ return new class extends Migration
             $table->softDeletes();
         });
 
-        DB::statement("ALTER TABLE marketing_bonus_rules ADD CONSTRAINT chk_mktg_bonus_scope CHECK (
-            (scope_type = 'global' AND role_id IS NULL AND position_id IS NULL AND employee_id IS NULL)
-            OR (scope_type = 'role' AND role_id IS NOT NULL AND position_id IS NULL AND employee_id IS NULL)
-            OR (scope_type = 'position' AND role_id IS NULL AND position_id IS NOT NULL AND employee_id IS NULL)
-            OR (scope_type = 'employee' AND role_id IS NULL AND position_id IS NULL AND employee_id IS NOT NULL)
-        )");
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement("ALTER TABLE marketing_bonus_rules ADD CONSTRAINT chk_mktg_bonus_scope CHECK (
+                (scope_type = 'global' AND role_id IS NULL AND position_id IS NULL AND employee_id IS NULL)
+                OR (scope_type = 'role' AND role_id IS NOT NULL AND position_id IS NULL AND employee_id IS NULL)
+                OR (scope_type = 'position' AND role_id IS NULL AND position_id IS NOT NULL AND employee_id IS NULL)
+                OR (scope_type = 'employee' AND role_id IS NULL AND position_id IS NULL AND employee_id IS NOT NULL)
+            )");
+        }
 
         Schema::create('marketing_bonus_rule_tiers', function (Blueprint $table) {
             $table->id();
@@ -47,8 +49,10 @@ return new class extends Migration
             $table->unique(['marketing_bonus_rule_id', 'minimum_tenure_months', 'minimum_achievement_percentage'], 'mktg_tier_unique');
         });
 
-        DB::statement('ALTER TABLE marketing_bonus_rule_tiers ADD CONSTRAINT chk_mktg_tier_tenure CHECK (maximum_tenure_months IS NULL OR maximum_tenure_months >= minimum_tenure_months)');
-        DB::statement('ALTER TABLE marketing_bonus_rule_tiers ADD CONSTRAINT chk_mktg_tier_achiev CHECK (maximum_achievement_percentage IS NULL OR maximum_achievement_percentage >= minimum_achievement_percentage)');
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement('ALTER TABLE marketing_bonus_rule_tiers ADD CONSTRAINT chk_mktg_tier_tenure CHECK (maximum_tenure_months IS NULL OR maximum_tenure_months >= minimum_tenure_months)');
+            DB::statement('ALTER TABLE marketing_bonus_rule_tiers ADD CONSTRAINT chk_mktg_tier_achiev CHECK (maximum_achievement_percentage IS NULL OR maximum_achievement_percentage >= minimum_achievement_percentage)');
+        }
 
         Schema::create('kpi_bonus_rules', function (Blueprint $table) {
             $table->id();
@@ -65,12 +69,14 @@ return new class extends Migration
             $table->softDeletes();
         });
 
-        DB::statement("ALTER TABLE kpi_bonus_rules ADD CONSTRAINT chk_kpi_bonus_scope CHECK (
-            (scope_type = 'global' AND role_id IS NULL AND position_id IS NULL AND employee_id IS NULL)
-            OR (scope_type = 'role' AND role_id IS NOT NULL AND position_id IS NULL AND employee_id IS NULL)
-            OR (scope_type = 'position' AND role_id IS NULL AND position_id IS NOT NULL AND employee_id IS NULL)
-            OR (scope_type = 'employee' AND role_id IS NULL AND position_id IS NULL AND employee_id IS NOT NULL)
-        )");
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement("ALTER TABLE kpi_bonus_rules ADD CONSTRAINT chk_kpi_bonus_scope CHECK (
+                (scope_type = 'global' AND role_id IS NULL AND position_id IS NULL AND employee_id IS NULL)
+                OR (scope_type = 'role' AND role_id IS NOT NULL AND position_id IS NULL AND employee_id IS NULL)
+                OR (scope_type = 'position' AND role_id IS NULL AND position_id IS NOT NULL AND employee_id IS NULL)
+                OR (scope_type = 'employee' AND role_id IS NULL AND position_id IS NULL AND employee_id IS NOT NULL)
+            )");
+        }
 
         Schema::create('kpi_bonus_rule_tiers', function (Blueprint $table) {
             $table->id();
@@ -84,7 +90,9 @@ return new class extends Migration
             $table->unique(['kpi_bonus_rule_id', 'minimum_score'], 'kpi_tier_unique');
         });
 
-        DB::statement('ALTER TABLE kpi_bonus_rule_tiers ADD CONSTRAINT chk_kpi_tier_score CHECK (maximum_score IS NULL OR maximum_score >= minimum_score)');
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement('ALTER TABLE kpi_bonus_rule_tiers ADD CONSTRAINT chk_kpi_tier_score CHECK (maximum_score IS NULL OR maximum_score >= minimum_score)');
+        }
 
         Schema::create('special_bonus_rules', function (Blueprint $table) {
             $table->id();
@@ -104,13 +112,15 @@ return new class extends Migration
             $table->softDeletes();
         });
 
-        DB::statement("ALTER TABLE special_bonus_rules ADD CONSTRAINT chk_special_bonus_scope CHECK (
-            (scope_type = 'global' AND role_id IS NULL AND position_id IS NULL AND employee_id IS NULL)
-            OR (scope_type = 'role' AND role_id IS NOT NULL AND position_id IS NULL AND employee_id IS NULL)
-            OR (scope_type = 'position' AND role_id IS NULL AND position_id IS NOT NULL AND employee_id IS NULL)
-            OR (scope_type = 'employee' AND role_id IS NULL AND position_id IS NULL AND employee_id IS NOT NULL)
-        )");
-        DB::statement("ALTER TABLE special_bonus_rules ADD CONSTRAINT chk_special_bonus_mode CHECK (condition_mode IN ('all', 'any'))");
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement("ALTER TABLE special_bonus_rules ADD CONSTRAINT chk_special_bonus_scope CHECK (
+                (scope_type = 'global' AND role_id IS NULL AND position_id IS NULL AND employee_id IS NULL)
+                OR (scope_type = 'role' AND role_id IS NOT NULL AND position_id IS NULL AND employee_id IS NULL)
+                OR (scope_type = 'position' AND role_id IS NULL AND position_id IS NOT NULL AND employee_id IS NULL)
+                OR (scope_type = 'employee' AND role_id IS NULL AND position_id IS NULL AND employee_id IS NOT NULL)
+            )");
+            DB::statement("ALTER TABLE special_bonus_rules ADD CONSTRAINT chk_special_bonus_mode CHECK (condition_mode IN ('all', 'any'))");
+        }
 
         Schema::create('special_bonus_rule_conditions', function (Blueprint $table) {
             $table->id();

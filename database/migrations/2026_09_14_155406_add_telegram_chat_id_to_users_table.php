@@ -8,14 +8,14 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('employee_accounts', function (Blueprint $table) {
             $table->string('telegram_chat_id', 50)->nullable()->after('email');
         });
     }
 
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('employee_accounts', function (Blueprint $table) {
             $table->dropColumn('telegram_chat_id');
         });
     }

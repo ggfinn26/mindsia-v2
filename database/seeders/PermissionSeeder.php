@@ -21,6 +21,8 @@ class PermissionSeeder extends Seeder
             'system.permission.manage',
             'system.api_key.create',
             'system.api_key.update',
+            'system.api_key.view',
+            'system.api_key.delete',
             'system.webhook.manage',
             'system.bot.manage',
             'system.notification_routing.manage',
@@ -52,6 +54,7 @@ class PermissionSeeder extends Seeder
             'employee.update',
             'employee.delete',
             'employee.termination_checklist.review',
+            'contract.manage',
 
             // Recruitment
             'recruitment.job_permintaan.create',
@@ -81,6 +84,7 @@ class PermissionSeeder extends Seeder
             'attendance.document_signature.manage',
             'attendance.adjustment.create',
             'attendance.leave.review',
+            'attendance.leave.approve_hr_staff',
             'attendance.schedule_rule.manage',
             'attendance.holiday.manage',
             'attendance.policy.manage',
@@ -98,12 +102,16 @@ class PermissionSeeder extends Seeder
             'kpi.template.update',
             'kpi.grade_rule.create',
             'kpi.grade_rule.update',
+            'kpi.grade_rule.view',
+            'kpi.grade_rule.delete',
             'kpi.evaluator_assignment.create',
             'kpi.evaluator_assignment.update',
             'kpi.evaluation.create',
             'kpi.evaluation.update',
             'kpi.evaluation.finalize',
+            'kpi.evaluation.view_all',
             'kpi.document.create',
+            'kpi.document.delete',
 
             // Survey
             'survey.form.view',
@@ -113,16 +121,37 @@ class PermissionSeeder extends Seeder
             'survey.assignment.create',
             'survey.result.view',
 
+            // Bonus
+            'bonus.marketing-rule.create',
+            'bonus.marketing-rule.update',
+            'bonus.marketing-rule.delete',
+            'bonus.marketing-rule.view',
+            'bonus.kpi-rule.create',
+            'bonus.kpi-rule.update',
+            'bonus.kpi-rule.delete',
+            'bonus.kpi-rule.view',
+            'bonus.special-rule.create',
+            'bonus.special-rule.update',
+            'bonus.special-rule.delete',
+            'bonus.special-rule.view',
+            'bonus.rule.history.view',
+
             // Payroll
             'payroll.component.create',
             'payroll.component.update',
+            'payroll.component.delete',
             'payroll.employee_compensation.create',
             'payroll.employee_compensation.update',
+            'payroll.employee_compensation.delete',
             'payroll.session_compensation_rule.create',
             'payroll.session_compensation_rule.update',
+            'payroll.session_compensation_rule.delete',
+            'payroll.period.view',
             'payroll.period.create',
             'payroll.period.update',
+            'payroll.period.delete',
             'payroll.period.generate',
+            'payroll.period.revert',
             'payroll.period.pay',
             'payroll.slip.generate',
             'payroll.item.adjust',
@@ -137,6 +166,7 @@ class PermissionSeeder extends Seeder
             'finance.reimbursement.review',
             'finance.reimbursement.pay',
             'finance.monthly_cost.view',
+            'finance.monthly_cost.create',
             'finance.monthly_cost.delete',
             'finance.period.lock',
 
@@ -156,6 +186,7 @@ class PermissionSeeder extends Seeder
             // Letter
             'letter.template.create',
             'letter.template.update',
+            'letter.template.manage',
             'letter.generate.create',
             'letter.generate.update',
             'letter.generate.publish',
@@ -178,6 +209,7 @@ class PermissionSeeder extends Seeder
             'notification.send_manual',
 
             // Class
+            'class.manage',
             'class.attendance.record',
             'class.session.update',
             'class.assessment.record',
@@ -224,7 +256,22 @@ class PermissionSeeder extends Seeder
             'position.view',
             'position.manage',
             'member.view',
+            'member.manage',
+            'member.payment.manage',
+            'member.support.manage',
             'curriculum.view',
+
+            // Curriculum domain
+            'curriculum.curriculum.create',
+            'curriculum.curriculum.update',
+            'curriculum.session.create',
+            'curriculum.session.update',
+            'curriculum.item.create',
+            'curriculum.item.update',
+            'curriculum.program.create',
+            'curriculum.program.update',
+            'curriculum.quota.create',
+            'curriculum.quota.update',
         ];
 
         foreach ($permissions as $name) {

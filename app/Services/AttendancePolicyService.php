@@ -8,7 +8,8 @@ class AttendancePolicyService
 {
     /**
      * Approver harus punya hierarchy_order lebih kecil (jabatan lebih tinggi) dari pemohon.
-     * Jika pemohon adalah HRR/HRP (role), hanya BOARD yang bisa approve.
+     * Jika pemohon adalah HR staff (punya attendance.leave.review), hanya posisi dengan
+     * attendance.leave.approve_hr_staff yang bisa approve.
      */
     public function canApproveLeave(Employee $approver, Employee $requester): bool
     {
@@ -16,13 +17,9 @@ class AttendancePolicyService
             return false;
         }
 
-        $requesterRole = $requester->currentStatus?->position?->role?->role_name;
-
-        // HRR/HRP pemohon → hanya BOARD approver
-        if (in_array($requesterRole, ['HRR', 'HRP'])) {
-            $approverRole = $approver->currentStatus?->position?->role?->role_name;
-
-            return $approverRole === 'BOARD';
+        // HR staff leave → butuh approver dengan permission khusus
+        if ($requester->user?->can('attendance.leave.review')) {
+            return (bool) $approver->user?->can('attendance.leave.approve_hr_staff');
         }
 
         $approverOrder = $approver->currentStatus?->position?->hierarchy_order;

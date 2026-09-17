@@ -51,6 +51,11 @@ class AttendanceRuleController extends Controller implements HasMiddleware
             ->with('success', 'Aturan absensi berhasil dibuat.');
     }
 
+    public function show(AttendanceRule $attendanceRule): RedirectResponse
+    {
+        return redirect()->route('attendance-rules.edit', $attendanceRule);
+    }
+
     public function edit(AttendanceRule $attendanceRule): View
     {
         return view('attendance.rule.edit', [

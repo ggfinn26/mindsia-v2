@@ -2,28 +2,20 @@
 
 namespace App\Http\Requests\Finance;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ReviewBudgetEstimateRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()->can('finance.budget_estimate.ops_review');
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            //
+            'action' => ['required', 'in:accept,reject'],
+            'rejection_notes' => ['required_if:action,reject', 'string', 'max:1000'],
         ];
     }
 }

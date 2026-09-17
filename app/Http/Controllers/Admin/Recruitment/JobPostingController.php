@@ -73,6 +73,16 @@ class JobPostingController extends Controller
         return redirect()->route('recruitment.posting.show', $jobPosting)->with('success', 'Posting dipublikasikan.');
     }
 
+    public function destroy(Request $request, JobPosting $jobPosting): RedirectResponse
+    {
+        abort_unless($request->user()->can('recruitment.job_posting.manage'), 403);
+        abort_unless($jobPosting->status === 'draft', 422, 'Hanya posting draft yang bisa dihapus.');
+
+        $jobPosting->delete();
+
+        return redirect()->route('recruitment.posting.index')->with('success', 'Posting berhasil dihapus.');
+    }
+
     public function close(Request $request, JobPosting $jobPosting): RedirectResponse
     {
         abort_unless($request->user()->can('recruitment.job_posting.update'), 403);

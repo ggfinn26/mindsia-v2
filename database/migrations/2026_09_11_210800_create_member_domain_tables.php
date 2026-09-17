@@ -105,7 +105,9 @@ return new class extends Migration
             $table->foreign('member_id', 'mstr_member_fk')->references('id')->on('members_data')->restrictOnDelete();
         });
 
-        DB::statement('ALTER TABLE member_support_ticket_replies ADD CONSTRAINT chk_reply_actor CHECK ((employee_id IS NOT NULL AND member_id IS NULL) OR (employee_id IS NULL AND member_id IS NOT NULL))');
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement('ALTER TABLE member_support_ticket_replies ADD CONSTRAINT chk_reply_actor CHECK ((employee_id IS NOT NULL AND member_id IS NULL) OR (employee_id IS NULL AND member_id IS NOT NULL))');
+        }
 
         Schema::create('member_support_ticket_status_histories', function (Blueprint $table) {
             $table->id();
@@ -123,7 +125,9 @@ return new class extends Migration
             $table->index(['member_support_ticket_id', 'changed_at'], 'msth_ticket_changed_idx');
         });
 
-        DB::statement('ALTER TABLE member_support_ticket_status_histories ADD CONSTRAINT chk_status_history_actor CHECK ((changed_by_employee_id IS NOT NULL AND changed_by_member_id IS NULL) OR (changed_by_employee_id IS NULL AND changed_by_member_id IS NOT NULL))');
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement('ALTER TABLE member_support_ticket_status_histories ADD CONSTRAINT chk_status_history_actor CHECK ((changed_by_employee_id IS NOT NULL AND changed_by_member_id IS NULL) OR (changed_by_employee_id IS NULL AND changed_by_member_id IS NOT NULL))');
+        }
 
         Schema::create('member_nps_responses', function (Blueprint $table) {
             $table->id();
@@ -139,7 +143,9 @@ return new class extends Migration
             $table->index(['member_id', 'created_at']);
         });
 
-        DB::statement('ALTER TABLE member_nps_responses ADD CONSTRAINT chk_nps_score CHECK (score BETWEEN 0 AND 10)');
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement('ALTER TABLE member_nps_responses ADD CONSTRAINT chk_nps_score CHECK (score BETWEEN 0 AND 10)');
+        }
     }
 
     public function down(): void

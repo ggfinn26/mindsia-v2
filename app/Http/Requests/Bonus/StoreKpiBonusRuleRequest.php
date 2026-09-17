@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Bonus;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class StoreKpiBonusRuleRequest extends FormRequest
 {
@@ -24,5 +25,22 @@ class StoreKpiBonusRuleRequest extends FormRequest
             'is_active' => ['boolean'],
             'notes' => ['nullable', 'string'],
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function ($v) {
+            $scopeType = $this->input('scope_type');
+            $scopeFieldMap = ['role' => 'role_id', 'position' => 'position_id', 'employee' => 'employee_id'];
+
+            foreach ($scopeFieldMap as $scope => $field) {
+                if ($scopeType !== $scope && $this->filled($field)) {
+                    $v->errors()->add($field, "Field {$field} harus kosong jika scope_type bukan '{$scope}'.");
+                }
+                if ($scopeType === $scope && ! $this->filled($field)) {
+                    $v->errors()->add($field, "Field {$field} wajib diisi jika scope_type adalah '{$scope}'.");
+                }
+            }
+        });
     }
 }

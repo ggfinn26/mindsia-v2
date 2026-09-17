@@ -7,16 +7,20 @@ use App\Notifications\MemberResetPasswordNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 
 class MemberAccount extends Authenticatable implements MustVerifyEmail
 {
+    use HasFactory;
     use Notifiable;
 
     protected $fillable = [
         'members_data_id',
         'email',
         'password',
+        'email_verified_at',
+        'is_active',
         'last_login_at',
     ];
 
@@ -29,6 +33,8 @@ class MemberAccount extends Authenticatable implements MustVerifyEmail
     {
         return [
             'password' => 'hashed',
+            'email_verified_at' => 'datetime',
+            'is_active' => 'boolean',
             'last_login_at' => 'datetime',
         ];
     }

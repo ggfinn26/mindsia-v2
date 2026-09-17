@@ -42,7 +42,11 @@ class EmployeeSurveyController extends Controller
     {
         abort_unless($employeeSurvey->employee_id === $request->user()->employee->id, 403);
 
-        $this->service->submitEmployeeAnswers($employeeSurvey, $request->validated('answers'));
+        try {
+            $this->service->submitEmployeeAnswers($employeeSurvey, $request->validated('answers'));
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
+        }
 
         return redirect()->route('employee.surveys.index')->with('success', 'Jawaban berhasil dikirim.');
     }

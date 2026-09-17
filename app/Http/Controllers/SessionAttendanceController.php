@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Attendance\AdjustSessionAttendanceRequest;
 use App\Http\Requests\Attendance\SessionCheckInRequest;
 use App\Http\Requests\Attendance\SessionCheckOutRequest;
 use App\Models\EmployeeSessionAttendanceLog;
@@ -38,6 +39,17 @@ class SessionAttendanceController extends Controller
         $this->service->checkOut(auth()->user()->employee, $sessionScheduleId, $request->validated());
 
         return back()->with('success', 'Check-out sesi berhasil.');
+    }
+
+    public function adjust(AdjustSessionAttendanceRequest $request, EmployeeSessionAttendanceLog $sessionLog): RedirectResponse
+    {
+        $employee = auth()->user()->employee;
+
+        abort_if($employee === null, 403);
+
+        $this->repository->adjust($sessionLog, $request->validated(), $employee->id);
+
+        return back()->with('success', 'Absensi sesi berhasil dikoreksi.');
     }
 
     public function verify(EmployeeSessionAttendanceLog $sessionLog): RedirectResponse

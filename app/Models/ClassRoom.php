@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ClassRoom extends Model
 {
+    use HasFactory;
+
     protected $table = 'classes';
 
     public const MAX_CLASS_NAME_LENGTH = 255;
@@ -89,5 +92,10 @@ class ClassRoom extends Model
     public function tutorChangeHistories(): HasMany
     {
         return $this->hasMany(ClassTutorChangeHistory::class, 'class_id');
+    }
+
+    public function tests(): HasMany
+    {
+        return $this->hasMany(ClassTest::class, 'class_id');
     }
 }

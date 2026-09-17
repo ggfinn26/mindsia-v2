@@ -53,7 +53,7 @@
                 <label class="mb-1 block text-xs font-medium text-slate-700">Marketing</label>
                 <select name="employee_id" class="block border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
                     <option value="">Semua marketing</option>
-                    @foreach (\App\Models\Employee::whereHas('position', fn ($q) => $q->where('name', 'like', '%Marketing%'))->orderBy('full_name')->get() as $emp)
+                    @foreach (\App\Models\Employee::whereHas('employmentStatuses.position', fn ($q) => $q->where('position_name', 'like', '%Marketing%'))->orderBy('full_name')->get() as $emp)
                         <option value="{{ $emp->id }}" @selected(request('employee_id') == $emp->id)>{{ $emp->full_name }}</option>
                     @endforeach
                 </select>

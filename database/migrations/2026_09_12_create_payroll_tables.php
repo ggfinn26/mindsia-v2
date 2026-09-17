@@ -167,8 +167,8 @@ return new class extends Migration
             $table->decimal('previous_amount', 15, 2);
             $table->decimal('new_amount', 15, 2);
             $table->text('adjustment_reason');
-            $table->unsignedBigInteger('adjusted_by_employee_id');
-            $table->foreign('adjusted_by_employee_id', 'epah_adjuster_fk')->references('id')->on('employees')->cascadeOnDelete();
+            $table->unsignedBigInteger('adjusted_by_employee_id')->nullable();
+            $table->foreign('adjusted_by_employee_id', 'epah_adjuster_fk')->references('id')->on('employees')->nullOnDelete();
             $table->timestamps();
         });
 

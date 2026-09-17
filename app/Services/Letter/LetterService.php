@@ -16,23 +16,36 @@ class LetterService
 {
     private const AUTO_FILL_KEYS = [
         'generated' => [
-            'logo_src', 'company_name',
-            'employee_name', 'position', 'join_date',
-            'branch', 'branch_code', 'branch_address', 'branch_city', 'branch_province',
-            'branch_phone', 'branch_whatsapp', 'branch_instagram',
-            'signer_name', 'signer_title', 'signer_signature', 'today',
+            'nomor_surat', 'tanggal_surat', 'kota_cabang',
+            'nama_penandatangan', 'jabatan_penandatangan', 'email_penandatangan', 'ttd_penandatangan',
+            'nama_pegawai', 'jabatan_pegawai', 'divisi_pegawai', 'agama_pegawai',
+            'alamat_pegawai', 'email_pegawai', 'wa_pegawai', 'nomor_identitas_pegawai',
+            'tempat_tanggal_lahir_pegawai', 'laki_laki_atau_perempuan',
+            'tanggal_mulai_kontrak', 'tanggal_berakhir_kontrak', 'ttd_pegawai',
         ],
         'marketing' => [
-            'logo_src', 'company_name',
-            'branch', 'branch_code', 'branch_address', 'branch_city', 'branch_province',
-            'branch_phone', 'branch_whatsapp', 'branch_instagram',
-            'signer_name', 'signer_title', 'signer_signature', 'institution', 'today',
+            'nomor_surat', 'tanggal_surat', 'kota_cabang',
+            'nama_penandatangan', 'jabatan_penandatangan', 'email_penandatangan', 'ttd_penandatangan',
+            'nama_pegawai', 'jabatan_pegawai', 'divisi_pegawai', 'agama_pegawai',
+            'alamat_pegawai', 'email_pegawai', 'wa_pegawai', 'nomor_identitas_pegawai',
+            'tempat_tanggal_lahir_pegawai', 'laki_laki_atau_perempuan',
+            'tanggal_mulai_kontrak', 'tanggal_berakhir_kontrak', 'ttd_pegawai',
+            'institusi',
         ],
         'announcement' => [
-            'logo_src', 'company_name',
-            'branch', 'branch_code', 'branch_address', 'branch_city', 'branch_province',
-            'branch_phone', 'branch_whatsapp', 'branch_instagram',
-            'signer_name', 'signer_title', 'signer_signature', 'today',
+            'nomor_surat', 'tanggal_surat', 'kota_cabang',
+            'nama_penandatangan', 'jabatan_penandatangan', 'email_penandatangan', 'ttd_penandatangan',
+            'nama_pegawai', 'jabatan_pegawai',
+        ],
+        'member' => [
+            'nomor_surat', 'tanggal_surat',
+            'nama_member', 'alamat_member', 'tanggal_lahir_member', 'nama_instansi',
+            'wa_member', 'instagram_member',
+            'nama_ayah', 'pekerjaan_ayah', 'wa_ayah',
+            'nama_ibu', 'pekerjaan_ibu', 'wa_ibu',
+            'nomor_registrasi', 'tanggal_registrasi',
+            'nama_program', 'harga_program', 'harga_promo', 'status_promo',
+            'uang_muka', 'total_pembayaran', 'biaya_pelunasan',
         ],
     ];
 
@@ -58,7 +71,7 @@ class LetterService
             $context = array_merge(
                 $this->buildContext($template->letter_category, $ids),
                 $manualVars,
-                ['today' => now()->translatedFormat('d F Y')]
+                ['tanggal_surat' => now()->translatedFormat('d F Y')]
             );
 
             $letter = OutLetterViaGenerate::create([
@@ -109,9 +122,9 @@ class LetterService
             }
 
             $context = array_merge($letter->payload ?? [], [
-                'letter_number' => $letterNumber ?? '',
-                'signer_name' => $signer?->full_name ?? '',
-                'signer_title' => $signer?->position?->position_name ?? '',
+                'nomor_surat' => $letterNumber ?? '',
+                'nama_penandatangan' => $signer?->full_name ?? '',
+                'jabatan_penandatangan' => $signer?->currentStatus?->position?->position_name ?? '',
             ]);
 
             $pdfTelegramFileId = $this->fillConvertAndUploadPdf($template, $context, $letter->id);
@@ -121,7 +134,7 @@ class LetterService
                 'letter_number' => $letterNumber,
                 'telegram_file_id' => $pdfTelegramFileId ?? $letter->telegram_file_id,
                 'signer_name_snapshot' => $signer?->full_name,
-                'signer_title_snapshot' => $signer?->position?->position_name,
+                'signer_title_snapshot' => $signer?->currentStatus?->position?->position_name,
                 'published_by_employee_id' => $publishedByEmployeeId,
                 'published_at' => now(),
             ]);
@@ -179,11 +192,19 @@ class LetterService
             foreach ($context as $key => $value) {
                 $processor->setValue($key, htmlspecialchars((string) $value));
             }
+
+            if (! empty($context['ttd_penandatangan'])) {
+                $processor->setImageValue('ttd_penandatangan', $context['ttd_penandatangan']);
+            }
+            if (! empty($context['ttd_pegawai'])) {
+                $processor->setImageValue('ttd_pegawai', $context['ttd_pegawai']);
+            }
+
             $processor->saveAs($tmpOut);
 
             $uploaded = $this->telegramStorage->uploadFile($tmpOut, $label.'.docx', 'letter_draft', null);
 
-            return $uploaded['telegram_file_id'] ?? null;
+            return $uploaded['file_id'] ?? null;
         } catch (\Throwable $e) {
             Log::warning('fillAndUploadDocx failed: '.$e->getMessage());
 
@@ -214,6 +235,14 @@ class LetterService
             foreach ($context as $key => $value) {
                 $processor->setValue($key, htmlspecialchars((string) $value));
             }
+
+            if (! empty($context['ttd_penandatangan'])) {
+                $processor->setImageValue('ttd_penandatangan', $context['ttd_penandatangan']);
+            }
+            if (! empty($context['ttd_pegawai'])) {
+                $processor->setImageValue('ttd_pegawai', $context['ttd_pegawai']);
+            }
+
             $processor->saveAs($tmpOut);
 
             $pdfBinary = $this->convertApi->docxToPdf($tmpOut);
@@ -229,7 +258,7 @@ class LetterService
 
             unlink($tmpPdf);
 
-            return $uploaded['telegram_file_id'] ?? null;
+            return $uploaded['file_id'] ?? null;
         } catch (\Throwable $e) {
             Log::warning('fillConvertAndUploadPdf failed: '.$e->getMessage());
 
@@ -256,57 +285,81 @@ class LetterService
     private function branchVars(?Branch $branch): array
     {
         return [
-            'company_name' => 'PT. Mindset Edu Cendikia Indonesia',
-            'branch' => $branch?->branch_name ?? '',
-            'branch_code' => $branch?->code_branches ?? '',
-            'branch_address' => $branch?->address ?? '',
-            'branch_city' => $branch?->branch_name ?? '',
-            'branch_province' => '',
-            'branch_phone' => '',
-            'branch_whatsapp' => $branch?->whatsapp ?? '',
-            'branch_instagram' => $branch?->instagram ?? '',
+            'kota_cabang' => $branch?->branch_name ?? '',
         ];
     }
 
     private function generatedContext(array $ids): array
     {
-        $employee = Employee::with(['branch', 'position'])->findOrFail($ids['employee_id']);
-        $signer = isset($ids['signer_employee_id']) ? Employee::with('position')->find($ids['signer_employee_id']) : null;
+        $employee = Employee::with(['branch', 'currentStatus.position'])->findOrFail($ids['employee_id']);
+        $signer = isset($ids['signer_employee_id']) ? Employee::with('currentStatus.position')->find($ids['signer_employee_id']) : null;
 
         return array_merge($this->branchVars($employee->branch), [
-            'employee_name' => $employee->full_name,
-            'position' => $employee->position?->position_name ?? '',
-            'join_date' => $employee->join_date
-                ? Carbon::parse($employee->join_date)->translatedFormat('d F Y')
-                : '',
-            'signer_name' => $signer?->full_name ?? '',
-            'signer_title' => $signer?->position?->position_name ?? '',
-            'signer_signature' => '',
+            'nama_penandatangan' => $signer?->full_name ?? '',
+            'jabatan_penandatangan' => $signer?->currentStatus?->position?->position_name ?? '',
+            'email_penandatangan' => $signer?->email ?? '',
+            'ttd_penandatangan' => '', // $signer?->signature_image
+
+            'nama_pegawai' => $employee->full_name ?? '',
+            'jabatan_pegawai' => $employee->currentStatus?->position?->position_name ?? '',
+            'divisi_pegawai' => '', // $employee->division
+            'agama_pegawai' => '', // $employee->religion
+            'alamat_pegawai' => '', // $employee->address
+            'email_pegawai' => $employee->email ?? '',
+            'wa_pegawai' => $employee->whatsapp_number ?? '',
+            'nomor_identitas_pegawai' => $employee->employee_code ?? '',
+            'tempat_tanggal_lahir_pegawai' => $employee->birthdate ? Carbon::parse($employee->birthdate)->translatedFormat('d F Y') : '',
+            'laki_laki_atau_perempuan' => $employee->gender == 'L' ? 'Laki-Laki' : 'Perempuan',
+            'tanggal_mulai_kontrak' => $employee->currentStatus?->join_date ? Carbon::parse($employee->currentStatus->join_date)->translatedFormat('d F Y') : '',
+            'tanggal_berakhir_kontrak' => $employee->currentStatus?->contract_end_date ? Carbon::parse($employee->currentStatus->contract_end_date)->translatedFormat('d F Y') : '',
+            'ttd_pegawai' => '', // $employee->signature_image
         ]);
     }
 
     private function marketingContext(array $ids): array
     {
+        // For marketing contract, it's essentially a contract letter, so we also load employee data
+        $employee = isset($ids['employee_id']) ? Employee::with(['branch', 'currentStatus.position'])->find($ids['employee_id']) : null;
         $branch = Branch::find($ids['branch_id']);
-        $signer = isset($ids['signer_employee_id']) ? Employee::with('position')->find($ids['signer_employee_id']) : null;
+        $signer = isset($ids['signer_employee_id']) ? Employee::with('currentStatus.position')->find($ids['signer_employee_id']) : null;
 
         return array_merge($this->branchVars($branch), [
-            'institution' => $ids['institution'] ?? '',
-            'signer_name' => $signer?->full_name ?? '',
-            'signer_title' => $signer?->position?->position_name ?? '',
-            'signer_signature' => '',
+            'institusi' => $ids['institution'] ?? '',
+
+            'nama_penandatangan' => $signer?->full_name ?? '',
+            'jabatan_penandatangan' => $signer?->currentStatus?->position?->position_name ?? '',
+            'email_penandatangan' => $signer?->email ?? '',
+            'ttd_penandatangan' => '', // $signer?->signature_image
+
+            'nama_pegawai' => $employee?->full_name ?? '',
+            'jabatan_pegawai' => $employee?->currentStatus?->position?->position_name ?? '',
+            'divisi_pegawai' => '', // $employee->division
+            'agama_pegawai' => '', // $employee->religion
+            'alamat_pegawai' => '', // $employee->address
+            'email_pegawai' => $employee?->email ?? '',
+            'wa_pegawai' => $employee?->whatsapp_number ?? '',
+            'nomor_identitas_pegawai' => $employee?->employee_code ?? '',
+            'tempat_tanggal_lahir_pegawai' => $employee?->birthdate ? Carbon::parse($employee->birthdate)->translatedFormat('d F Y') : '',
+            'laki_laki_atau_perempuan' => $employee?->gender == 'L' ? 'Laki-Laki' : 'Perempuan',
+            'tanggal_mulai_kontrak' => $employee?->currentStatus?->join_date ? Carbon::parse($employee->currentStatus->join_date)->translatedFormat('d F Y') : '',
+            'tanggal_berakhir_kontrak' => $employee?->currentStatus?->contract_end_date ? Carbon::parse($employee->currentStatus->contract_end_date)->translatedFormat('d F Y') : '',
+            'ttd_pegawai' => '', // $employee->signature_image
         ]);
     }
 
     private function announcementContext(array $ids): array
     {
         $branch = isset($ids['branch_id']) ? Branch::find($ids['branch_id']) : null;
-        $signer = isset($ids['signer_employee_id']) ? Employee::with('position')->find($ids['signer_employee_id']) : null;
+        $signer = isset($ids['signer_employee_id']) ? Employee::with('currentStatus.position')->find($ids['signer_employee_id']) : null;
 
         return array_merge($this->branchVars($branch), [
-            'signer_name' => $signer?->full_name ?? '',
-            'signer_title' => $signer?->position?->position_name ?? '',
-            'signer_signature' => '',
+            'nama_penandatangan' => $signer?->full_name ?? '',
+            'jabatan_penandatangan' => $signer?->currentStatus?->position?->position_name ?? '',
+            'email_penandatangan' => $signer?->email ?? '',
+            'ttd_penandatangan' => '', // $signer?->signature_image
+
+            'nama_pegawai' => $signer?->full_name ?? '', // sender for announcement
+            'jabatan_pegawai' => $signer?->currentStatus?->position?->position_name ?? '',
         ]);
     }
 }

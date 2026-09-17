@@ -33,14 +33,14 @@ class EmployeeCompensationController extends Controller
             ['value' => $request->input('value'), 'notes' => $request->input('notes')],
         );
 
-        return redirect()->route('payroll.compensations.index', $employee)->with('success', 'Kompensasi berhasil disimpan.');
+        return redirect()->route('employees.payroll.compensations.index', $employee)->with('success', 'Kompensasi berhasil disimpan.');
     }
 
     public function update(UpdateEmployeeCompensationRequest $request, Employee $employee, EmployeeCompensation $compensation): RedirectResponse
     {
         $compensation->update($request->validated());
 
-        return redirect()->route('payroll.compensations.index', $employee)->with('success', 'Kompensasi berhasil diperbarui.');
+        return redirect()->route('employees.payroll.compensations.index', $employee)->with('success', 'Kompensasi berhasil diperbarui.');
     }
 
     public function destroy(Employee $employee, EmployeeCompensation $compensation): RedirectResponse
@@ -49,6 +49,6 @@ class EmployeeCompensationController extends Controller
 
         $compensation->delete();
 
-        return redirect()->route('payroll.compensations.index', $employee)->with('success', 'Kompensasi berhasil dihapus.');
+        return redirect()->route('employees.payroll.compensations.index', $employee)->with('success', 'Kompensasi berhasil dihapus.');
     }
 }

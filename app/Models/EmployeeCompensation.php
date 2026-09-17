@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EmployeeCompensation extends Model
 {
+    use HasFactory;
+
+    protected $table = 'employee_compensations';
+
     protected $fillable = [
         'employee_id',
         'payroll_component_id',

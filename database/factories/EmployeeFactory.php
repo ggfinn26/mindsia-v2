@@ -14,6 +14,7 @@ class EmployeeFactory extends Factory
     public function definition(): array
     {
         $region = Region::factory()->create();
+        $area = $region->areas()->first() ?? $region->areas()->create(['name' => 'Default Area']);
 
         return [
             'employee_code' => $this->faker->unique()->bothify('###??'),
@@ -23,7 +24,8 @@ class EmployeeFactory extends Factory
             'email' => $this->faker->unique()->safeEmail(),
             'whatsapp_number' => $this->faker->numerify('62###########'),
             'region_id' => $region->id,
-            'branch_id' => Branch::factory()->create(['areas_id' => $region->areas()->first()?->id ?? $region->areas()->create(['name' => 'Default Area'])->id]),
+            'area_id' => $area->id,
+            'branch_id' => Branch::factory()->create(['areas_id' => $area->id]),
             'is_active' => true,
         ];
     }

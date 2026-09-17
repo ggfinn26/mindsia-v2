@@ -114,7 +114,9 @@ return new class extends Migration
         });
 
         // Add XOR constraint manually
-        DB::statement('ALTER TABLE kpi_documents ADD CONSTRAINT kpi_documents_xor_check CHECK ((kpi_template_id IS NOT NULL AND employee_kpi_evaluation_id IS NULL) OR (kpi_template_id IS NULL AND employee_kpi_evaluation_id IS NOT NULL))');
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement('ALTER TABLE kpi_documents ADD CONSTRAINT kpi_documents_xor_check CHECK ((kpi_template_id IS NOT NULL AND employee_kpi_evaluation_id IS NULL) OR (kpi_template_id IS NULL AND employee_kpi_evaluation_id IS NOT NULL))');
+        }
     }
 
     public function down(): void

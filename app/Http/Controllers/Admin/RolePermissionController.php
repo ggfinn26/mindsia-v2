@@ -31,6 +31,12 @@ class RolePermissionController extends Controller
 
     public function assignPermission(Request $request, User $user): RedirectResponse
     {
+        // GAP-27b: hanya Super Admin (IT) yang boleh assign direct permission
+        abort_unless(auth()->user()->hasRole('Super Admin'), 403);
+
+        // GAP-29: tidak boleh assign ke diri sendiri
+        abort_if(auth()->id() === $user->id, 403);
+
         $request->validate(['permissions' => ['array', 'exists:permissions,id']]);
 
         $user->syncPermissions($request->input('permissions', []));

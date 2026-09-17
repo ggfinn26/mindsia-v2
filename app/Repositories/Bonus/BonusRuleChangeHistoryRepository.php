@@ -15,13 +15,19 @@ class BonusRuleChangeHistoryRepository
         ?array $newValues,
         ?int $changedByEmployeeId = null,
     ): void {
+        $employeeId = $changedByEmployeeId ?? auth('web')->user()?->employee?->id;
+
+        if ($employeeId === null) {
+            throw new \RuntimeException('User yang melakukan perubahan bonus rule harus memiliki employee record.');
+        }
+
         BonusRuleChangeHistory::create([
             'bonus_type' => $bonusType,
             'rule_id' => $ruleId,
             'action' => $action,
             'old_values' => $oldValues,
             'new_values' => $newValues,
-            'changed_by_employee_id' => $changedByEmployeeId ?? auth('web')->user()?->employee?->id,
+            'changed_by_employee_id' => $employeeId,
         ]);
     }
 

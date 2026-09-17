@@ -100,6 +100,16 @@ class LetterTemplateController extends Controller
         return redirect()->route('letter-templates.index')->with('success', 'Template berhasil diperbarui.');
     }
 
+    public function destroy(LetterTemplate $letterTemplate): RedirectResponse
+    {
+        abort_unless(auth()->user()->can('letter.template.manage'), 403);
+        abort_if($letterTemplate->generatedLetters()->exists(), 422, 'Template sudah digunakan, tidak bisa dihapus.');
+
+        $letterTemplate->delete();
+
+        return redirect()->route('letter-templates.index')->with('success', 'Template berhasil dihapus.');
+    }
+
     public function toggleActive(LetterTemplate $letterTemplate): RedirectResponse
     {
         $this->repository->toggleActive($letterTemplate);

@@ -93,7 +93,7 @@ class ClassRoomController extends Controller implements HasMiddleware
 
         $registrationIds = MemberClass::where('class_id', $classroom->id)
             ->where('status', 'active')
-            ->whereHas('registration', fn ($q) => $q->where('graduation_status', '!=', 'LULUS'))
+            ->whereHas('memberRegistration', fn ($q) => $q->where('graduation_status', '!=', 'LULUS'))
             ->pluck('member_registration_id');
 
         if ($registrationIds->isEmpty()) {

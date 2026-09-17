@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->boolean('is_completed')->default(false);
             $table->timestamp('completed_at')->nullable();
-            $table->foreignId('completed_by')->nullable()->constrained('users');
+            $table->foreignId('completed_by')->nullable()->constrained('employee_accounts');
             $table->timestamps();
         });
     }

@@ -25,7 +25,7 @@
     @endif
 
     {{-- Add Form --}}
-    <form method="POST" action="{{ route('payroll.compensations.store', $employee) }}" class="border border-slate-200 bg-white p-5">
+    <form method="POST" action="{{ route('employees.payroll.compensations.store', $employee) }}" class="border border-slate-200 bg-white p-5">
         @csrf
         <div class="mb-4 flex items-start gap-3">
             <span class="material-symbols-outlined mt-0.5 text-[#215aac]">add_circle</span>
@@ -95,7 +95,7 @@
                         <td class="px-5 py-4 text-right font-semibold text-slate-900">Rp {{ number_format($comp->value, 0, ',', '.') }}</td>
                         <td class="px-5 py-4 text-slate-500">{{ $comp->notes ?? '—' }}</td>
                         <td class="px-5 py-4 text-right">
-                            <form method="POST" action="{{ route('payroll.compensations.destroy', [$employee, $comp]) }}">
+                            <form method="POST" action="{{ route('employees.payroll.compensations.destroy', [$employee, $comp]) }}">
                                 @csrf @method('DELETE')
                                 <button type="submit" onclick="return confirm('Hapus kompensasi ini?')"
                                         class="inline-flex min-h-9 items-center border border-red-200 px-3 text-xs font-semibold text-red-700 hover:bg-red-50">

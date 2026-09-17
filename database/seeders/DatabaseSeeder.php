@@ -16,7 +16,12 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PermissionSeeder::class,
             RoleSeeder::class,
+            BranchDataSeeder::class,
+            PositionSeeder::class,
+            EmployeeSeeder::class,
             HQSeeder::class,
+            LeavePaySettingSeeder::class,
+            PayrollComponentSeeder::class,
         ]);
 
         $superAdmin = User::firstOrCreate(

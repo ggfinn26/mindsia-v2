@@ -44,7 +44,7 @@ class SessionAttendanceService
 
         $telegramFileId = null;
         if (isset($data['selfie'])) {
-            $uploaded = $this->telegramStorage->uploadFile(
+            $uploaded = $this->telegramStorage->uploadPhoto(
                 $data['selfie']->getRealPath(),
                 $data['selfie']->getClientOriginalName(),
                 'session_checkin',
@@ -77,7 +77,7 @@ class SessionAttendanceService
 
         $telegramFileId = null;
         if (isset($data['selfie'])) {
-            $uploaded = $this->telegramStorage->uploadFile(
+            $uploaded = $this->telegramStorage->uploadPhoto(
                 $data['selfie']->getRealPath(),
                 $data['selfie']->getClientOriginalName(),
                 'session_checkout',
@@ -90,7 +90,7 @@ class SessionAttendanceService
             'check_out_latitude' => $data['check_out_latitude'],
             'check_out_longitude' => $data['check_out_longitude'],
             'check_out_selfie_telegram_file_id' => $telegramFileId,
-            'check_out_distance_m' => ($branch = $log->session?->classSchedule?->classRoom?->branch)
+            'check_out_distance_m' => ($branch = $log->sessionSchedule?->classSchedule?->classRoom?->branch)
                 ? $this->haversineMeters(
                     $data['check_out_latitude'],
                     $data['check_out_longitude'],
@@ -118,11 +118,12 @@ class SessionAttendanceService
             $session->classSchedule->schedule_date->toDateString()
             .' '.$session->classSchedule->start_time
         );
+        $deadline = $scheduledStart->copy()->addMinutes($session->classSchedule->late_tolerance_minutes ?? 0);
 
-        if ($checkIn->lte($scheduledStart)) {
+        if ($checkIn->lte($deadline)) {
             return 0;
         }
 
-        return (int) $scheduledStart->diffInMinutes($checkIn);
+        return (int) $deadline->diffInMinutes($checkIn);
     }
 }

@@ -19,6 +19,13 @@ class ProspectiveMemberController extends Controller
 
     public function index(Request $request): View
     {
+        abort_unless($request->user()->canAny([
+            'marketing.prospective_member.create',
+            'marketing.prospective_member.update',
+            'marketing.prospective.view_area',
+            'marketing.prospective.view_national',
+        ]), 403);
+
         $filters = $request->only(['status', 'socialization_id', 'branch_id']);
 
         // scope: own / area / national per permission

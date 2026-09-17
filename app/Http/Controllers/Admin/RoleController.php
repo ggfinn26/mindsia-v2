@@ -51,6 +51,10 @@ class RoleController extends Controller
 
     public function destroy(Role $role): RedirectResponse
     {
+        if ($role->users()->exists()) {
+            return redirect()->route('roles.index')->with('error', 'Role tidak bisa dihapus karena masih ada pengguna terdaftar.');
+        }
+
         $role->delete();
 
         return redirect()->route('roles.index')->with('success', 'Role berhasil dihapus.');

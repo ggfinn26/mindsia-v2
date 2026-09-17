@@ -13,6 +13,18 @@ use Illuminate\View\View;
 
 class ClassTestController extends Controller
 {
+    public function index(): View
+    {
+        $this->authorize('class.test.create');
+
+        $tests = ClassTest::with('classRoom.program', 'classRoom.branch')
+            ->withCount('memberTestResults')
+            ->latest('date')
+            ->paginate(20);
+
+        return view('admin.class-test.index', compact('tests'));
+    }
+
     public function create(ClassRoom $classroom): View
     {
         $this->authorize('class.test.create');

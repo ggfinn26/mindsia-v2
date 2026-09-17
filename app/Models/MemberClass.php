@@ -16,7 +16,7 @@ class MemberClass extends Model
 
     public function memberRegistration(): BelongsTo
     {
-        return $this->belongsTo(Member::class, 'member_registration_id');
+        return $this->belongsTo(MemberRegistration::class, 'member_registration_id');
     }
 
     public function classRoom(): BelongsTo

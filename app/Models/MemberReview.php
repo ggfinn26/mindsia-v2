@@ -23,6 +23,7 @@ class MemberReview extends Model
 
     public function registration(): BelongsTo
     {
-        return $this->belongsTo(MemberRegistration::class);
+        // FK must be explicit: 'registration()' method name → auto-detect gives 'registration_id' (wrong)
+        return $this->belongsTo(MemberRegistration::class, 'member_registration_id');
     }
 }

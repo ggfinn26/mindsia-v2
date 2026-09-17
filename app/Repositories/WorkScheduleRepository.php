@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\Employee;
 use App\Models\WorkScheduleAssignment;
 use App\Models\WorkScheduleRule;
+use Spatie\Permission\Models\Role;
 
 class WorkScheduleRepository
 {
@@ -14,14 +15,14 @@ class WorkScheduleRepository
      */
     public function resolveForEmployee(int $employeeId, string $date): ?WorkScheduleRule
     {
-        $employee = Employee::with(['employmentStatus.position'])->find($employeeId);
+        $employee = Employee::with(['currentStatus.position'])->find($employeeId);
 
         if (! $employee) {
             return null;
         }
 
-        $positionId = $employee->employmentStatus?->position_id;
-        $roleId = $employee->employmentStatus?->position?->role_id;
+        $positionId = $employee->currentStatus?->position_id;
+        $roleId = $employee->currentStatus?->position?->role_id;
 
         // Employee-level
         $assignment = $this->findActiveAssignment('App\Models\Employee', $employeeId, $date);
@@ -33,7 +34,7 @@ class WorkScheduleRepository
 
         // Role-level fallback
         if (! $assignment && $roleId) {
-            $assignment = $this->findActiveAssignment('App\Models\Role', $roleId, $date);
+            $assignment = $this->findActiveAssignment(Role::class, $roleId, $date);
         }
 
         return $assignment?->workScheduleRule;

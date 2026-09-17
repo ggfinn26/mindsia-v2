@@ -19,7 +19,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('employee_id')->references('id')->on('employees')->cascadeOnDelete();
-            $table->foreign('reviewed_by')->references('id')->on('users')->nullOnDelete();
+            $table->foreign('reviewed_by')->references('id')->on('employee_accounts')->nullOnDelete();
         });
     }
 

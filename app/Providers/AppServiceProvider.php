@@ -38,6 +38,7 @@ use App\Observers\SurveyObserver;
 use App\Observers\ToeflMediaObserver;
 use App\Observers\ToeflTestObserver;
 use App\Repositories\Bonus\BonusRuleChangeHistoryRepository;
+use Closure;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -74,12 +75,28 @@ class AppServiceProvider extends ServiceProvider
         ClassRoom::observe(ClassRoomObserver::class);
         EmployeeWorkAttendanceLog::observe(EmployeeWorkAttendanceLogObserver::class);
         $historyRepo = app(BonusRuleChangeHistoryRepository::class);
-        MarketingBonusRule::observe(new BonusRuleObserver($historyRepo, 'marketing'));
-        KpiBonusRule::observe(new BonusRuleObserver($historyRepo, 'kpi'));
-        SpecialBonusRule::observe(new BonusRuleObserver($historyRepo, 'special'));
-        MarketingBonusRuleTier::observe(new BonusChildObserver($historyRepo, 'marketing', 'marketing_bonus_rule_id', 'tier'));
-        KpiBonusRuleTier::observe(new BonusChildObserver($historyRepo, 'kpi', 'kpi_bonus_rule_id', 'tier'));
-        SpecialBonusRuleCondition::observe(new BonusChildObserver($historyRepo, 'special', 'special_bonus_rule_id', 'condition'));
+
+        // Register bonus observers using direct event listeners since BonusRuleObserver
+        // has constructor parameters that Laravel's container can't auto-resolve.
+        $marketingObserver = new BonusRuleObserver($historyRepo, 'marketing');
+        $kpiObserver = new BonusRuleObserver($historyRepo, 'kpi');
+        $specialObserver = new BonusRuleObserver($historyRepo, 'special');
+
+        foreach (['created', 'updated', 'deleted'] as $event) {
+            MarketingBonusRule::registerModelEvent($event, Closure::fromCallable([$marketingObserver, $event]));
+            KpiBonusRule::registerModelEvent($event, Closure::fromCallable([$kpiObserver, $event]));
+            SpecialBonusRule::registerModelEvent($event, Closure::fromCallable([$specialObserver, $event]));
+        }
+
+        $marketingTierObserver = new BonusChildObserver($historyRepo, 'marketing', 'marketing_bonus_rule_id', 'tier');
+        $kpiTierObserver = new BonusChildObserver($historyRepo, 'kpi', 'kpi_bonus_rule_id', 'tier');
+        $specialCondObserver = new BonusChildObserver($historyRepo, 'special', 'special_bonus_rule_id', 'condition');
+
+        foreach (['created', 'updated', 'deleted'] as $event) {
+            MarketingBonusRuleTier::registerModelEvent($event, Closure::fromCallable([$marketingTierObserver, $event]));
+            KpiBonusRuleTier::registerModelEvent($event, Closure::fromCallable([$kpiTierObserver, $event]));
+            SpecialBonusRuleCondition::registerModelEvent($event, Closure::fromCallable([$specialCondObserver, $event]));
+        }
         MemberSupportTicket::observe(MemberSupportTicketObserver::class);
         JobPermintaan::observe(JobPermintaanObserver::class);
         Survey::observe(SurveyObserver::class);

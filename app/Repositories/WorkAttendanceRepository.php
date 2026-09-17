@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\EmployeeWorkAttendanceLog;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Validation\ValidationException;
 
 class WorkAttendanceRepository
 {
@@ -32,7 +33,7 @@ class WorkAttendanceRepository
             ->paginate(31);
     }
 
-    public function checkIn(int $employeeId, int $branchId, array $data): EmployeeWorkAttendanceLog
+    public function checkIn(int $employeeId, ?int $branchId, array $data): EmployeeWorkAttendanceLog
     {
         $today = now()->toDateString();
 
@@ -42,20 +43,23 @@ class WorkAttendanceRepository
             ['branch_id' => $branchId, 'status' => 'absent', 'late_minutes' => 0, 'early_leave_minutes' => 0],
         );
 
-        $log->update(array_merge($data, [
+        // Defaults first, then $data overrides — allows caller to set custom status
+        // (e.g. is_required=false passes status='present')
+        $log->update(array_merge([
             'check_in' => now(),
-            'status' => ($data['late_minutes'] ?? 0) > 0 ? 'late' : 'checked_in',
-        ]));
+            'status' => 'checked_in',
+        ], $data));
 
         return $log;
     }
 
     public function checkOut(EmployeeWorkAttendanceLog $log, array $data): EmployeeWorkAttendanceLog
     {
-        $log->update(array_merge($data, [
+        // Defaults first, then $data overrides — allows caller to set custom status
+        $log->update(array_merge([
             'check_out' => now(),
-            'status' => $log->late_minutes > 0 ? 'present_late' : 'present',
-        ]));
+            'status' => 'present',
+        ], $data));
 
         return $log;
     }
@@ -80,6 +84,12 @@ class WorkAttendanceRepository
 
     public function verify(EmployeeWorkAttendanceLog $log, int $verifierEmployeeId): EmployeeWorkAttendanceLog
     {
+        if ($log->verified_at !== null) {
+            throw ValidationException::withMessages([
+                'attendance_log' => 'Log absensi ini sudah diverifikasi sebelumnya.',
+            ]);
+        }
+
         $log->update([
             'verified_by_employee_id' => $verifierEmployeeId,
             'verified_at' => now(),

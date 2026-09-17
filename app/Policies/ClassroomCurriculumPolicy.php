@@ -34,6 +34,6 @@ class ClassroomCurriculumPolicy
             return false;
         }
 
-        return $item->session->curriculum_id === $classroom->program->curriculum_id;
+        return $item->session->curriculum_id === optional($classroom->program->curriculum)->id;
     }
 }

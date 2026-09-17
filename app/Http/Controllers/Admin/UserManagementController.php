@@ -7,7 +7,6 @@ use App\Http\Requests\Auth\AdminResetPasswordRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
 class UserManagementController extends Controller
@@ -37,7 +36,7 @@ class UserManagementController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email,'.$user->id],
+            'email' => ['required', 'email', 'max:255', 'unique:employee_accounts,email,'.$user->id],
         ]);
 
         $user->update($request->only('name', 'email'));
@@ -52,7 +51,10 @@ class UserManagementController extends Controller
 
     public function reset(AdminResetPasswordRequest $request, User $user): RedirectResponse
     {
-        $user->update(['password' => Hash::make($request->input('password'))]);
+        $user->update([
+            'password' => $request->validated('password'),
+            'must_change_password' => true,
+        ]);
 
         return redirect()->route('users.show', $user)->with('success', 'Password user berhasil direset.');
     }

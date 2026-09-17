@@ -9,13 +9,17 @@ use App\Models\ClassRoom;
 use App\Models\MemberClass;
 use App\Services\ClassRoomService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class MemberClassController extends Controller
+class MemberClassController extends Controller implements HasMiddleware
 {
-    public function __construct(private ClassRoomService $service)
+    public static function middleware(): array
     {
-        $this->middleware('can:class.manage');
+        return [new Middleware('can:class.manage')];
     }
+
+    public function __construct(private ClassRoomService $service) {}
 
     public function store(StoreMemberClassRequest $request, ClassRoom $classroom): RedirectResponse
     {

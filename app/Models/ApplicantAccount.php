@@ -5,17 +5,19 @@ namespace App\Models;
 use App\Notifications\ApplicantResetPasswordNotification;
 use App\Notifications\GuardedVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class ApplicantAccount extends Authenticatable implements MustVerifyEmail
 {
-    use Notifiable;
+    use HasFactory, Notifiable;
 
     protected $fillable = [
         'email',
         'password',
+        'email_verified_at',
         'is_active',
         'last_login_at',
     ];
@@ -29,6 +31,7 @@ class ApplicantAccount extends Authenticatable implements MustVerifyEmail
     {
         return [
             'password' => 'hashed',
+            'email_verified_at' => 'datetime',
             'is_active' => 'boolean',
             'last_login_at' => 'datetime',
         ];

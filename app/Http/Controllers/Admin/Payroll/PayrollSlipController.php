@@ -29,7 +29,7 @@ class PayrollSlipController extends Controller
         $slip = $this->slipService->generate($payroll, $generatedBy, $signatory);
         $this->notificationService->notifySlipReady($payroll);
 
-        return redirect()->route('payroll.periods.payroll.show', [$period, $payroll])->with('success', 'Slip gaji berhasil digenerate.');
+        return redirect()->route('payroll.payrolls.show', [$period, $payroll])->with('success', 'Slip gaji berhasil digenerate.');
     }
 
     public function download(PayrollPeriod $period, EmployeePayroll $payroll): Response|RedirectResponse
@@ -43,8 +43,8 @@ class PayrollSlipController extends Controller
         $content = $this->telegramStorage->downloadFile($slip->telegram_file_id);
 
         return response($content, 200, [
-            'Content-Type' => 'text/plain',
-            'Content-Disposition' => "attachment; filename=\"slip_{$payroll->employee_code_snapshot}_{$period->period_year}_{$period->period_month}.txt\"",
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => "attachment; filename=\"slip_{$payroll->employee_code_snapshot}_{$period->period_year}_{$period->period_month}.pdf\"",
         ]);
     }
 }

@@ -15,6 +15,8 @@ class BonusRuleChangeHistoryController extends Controller
 
     public function index(Request $request): View
     {
+        abort_unless($request->user()->can('bonus.rule.history.view'), 403);
+
         $filters = $request->only(['bonus_type', 'rule_id']);
 
         return view('admin.bonus.history.index', [

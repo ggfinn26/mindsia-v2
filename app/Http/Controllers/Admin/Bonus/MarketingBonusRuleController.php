@@ -21,6 +21,8 @@ class MarketingBonusRuleController extends Controller
 
     public function index(): View
     {
+        abort_unless(auth()->user()->can('bonus.marketing-rule.view'), 403);
+
         return view('admin.bonus.marketing-rules.index', [
             'rules' => $this->repo->all(),
         ]);
@@ -35,6 +37,8 @@ class MarketingBonusRuleController extends Controller
 
     public function show(MarketingBonusRule $marketingRule): View
     {
+        abort_unless(auth()->user()->can('bonus.marketing-rule.view'), 403);
+
         return view('admin.bonus.marketing-rules.show', [
             'rule' => $this->repo->findById($marketingRule->id),
         ]);
@@ -49,6 +53,7 @@ class MarketingBonusRuleController extends Controller
 
     public function destroy(MarketingBonusRule $marketingRule): RedirectResponse
     {
+        abort_unless(auth()->user()->can('bonus.marketing-rule.delete'), 403);
         $this->repo->delete($marketingRule);
 
         return redirect()->route('bonus.marketing-rules.index')->with('success', 'Rule bonus marketing berhasil dihapus.');
@@ -56,6 +61,7 @@ class MarketingBonusRuleController extends Controller
 
     public function toggleActive(MarketingBonusRule $marketingRule): RedirectResponse
     {
+        abort_unless(auth()->user()->can('bonus.marketing-rule.update'), 403);
         $marketingRule->update(['is_active' => ! $marketingRule->is_active]);
 
         return back()->with('success', 'Status bonus rule berhasil diperbarui.');

@@ -13,7 +13,7 @@ return new class extends Migration
             $table->id();
             $table->string('employee_code', 50)->unique();
             $table->string('full_name', 150);
-            $table->enum('gender', ['M', 'F']);
+            $table->enum('gender', ['L', 'P']);
             $table->date('birthdate');
             $table->string('email', 255)->unique();
             $table->string('whatsapp_number', 20);
@@ -30,7 +30,10 @@ return new class extends Migration
             $table->foreign('region_id')->references('id')->on('regions')->onDelete('restrict');
         });
 
-        DB::statement('ALTER TABLE employees ADD CONSTRAINT chk_employee_location CHECK (is_hq = 1 OR (branch_id IS NOT NULL AND area_id IS NOT NULL AND region_id IS NOT NULL))');
+        // CHECK constraint via ALTER TABLE only works on MySQL, not SQLite
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement('ALTER TABLE employees ADD CONSTRAINT chk_employee_location CHECK (is_hq = 1 OR (branch_id IS NOT NULL AND area_id IS NOT NULL AND region_id IS NOT NULL))');
+        }
     }
 
     public function down(): void

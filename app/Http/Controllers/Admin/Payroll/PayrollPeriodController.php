@@ -26,9 +26,18 @@ class PayrollPeriodController extends Controller
 
     public function index(): View
     {
+        abort_unless(auth()->user()->can('payroll.period.view'), 403);
+
         return view('admin.payroll.periods.index', [
             'periods' => $this->repo->all(),
         ]);
+    }
+
+    public function create(): View
+    {
+        abort_unless(auth()->user()->can('payroll.period.create'), 403);
+
+        return view('admin.payroll.periods.create');
     }
 
     public function store(StorePayrollPeriodRequest $request): RedirectResponse
@@ -46,6 +55,14 @@ class PayrollPeriodController extends Controller
         ]);
     }
 
+    public function edit(PayrollPeriod $period): View
+    {
+        abort_unless(auth()->user()->can('payroll.period.update'), 403);
+        abort_if($period->isFinalized(), 403, 'Periode sudah finalized, tidak bisa diedit.');
+
+        return view('admin.payroll.periods.edit', compact('period'));
+    }
+
     public function update(UpdatePayrollPeriodRequest $request, PayrollPeriod $period): RedirectResponse
     {
         if ($period->isFinalized()) {
@@ -55,6 +72,19 @@ class PayrollPeriodController extends Controller
         $this->repo->update($period, $request->validated());
 
         return redirect()->route('payroll.periods.show', $period)->with('success', 'Periode berhasil diperbarui.');
+    }
+
+    public function destroy(PayrollPeriod $period): RedirectResponse
+    {
+        abort_unless(auth()->user()->can('payroll.period.delete'), 403);
+
+        if (! $period->isDraft()) {
+            return back()->with('error', 'Hanya periode draft yang bisa dihapus.');
+        }
+
+        $period->delete();
+
+        return redirect()->route('payroll.periods.index')->with('success', 'Periode berhasil dihapus.');
     }
 
     public function previewGenerate(Request $request, PayrollPeriod $period): JsonResponse
@@ -83,12 +113,18 @@ class PayrollPeriodController extends Controller
 
     public function advanceStatus(PayrollPeriod $period): RedirectResponse
     {
-        if ($period->isFinalized()) {
-            return back()->with('error', 'Periode sudah dalam status finalized.');
-        }
+        abort_unless(auth()->user()->can('payroll.period.update'), 403);
 
-        $confirmedBy = auth()->user()->employee ?? null;
-        $this->repo->advanceStatus($period, $confirmedBy);
+        try {
+            if ($period->isFinalized()) {
+                return back()->with('error', 'Periode sudah dalam status finalized.');
+            }
+
+            $confirmedBy = auth()->user()->employee ?? null;
+            $this->repo->advanceStatus($period, $confirmedBy);
+        } catch (LogicException $e) {
+            return back()->with('error', $e->getMessage());
+        }
 
         return redirect()->route('payroll.periods.show', $period)->with('success', 'Status periode berhasil diperbarui.');
     }
@@ -115,6 +151,8 @@ class PayrollPeriodController extends Controller
 
     public function revert(PayrollPeriod $period): RedirectResponse
     {
+        abort_unless(auth()->user()->can('payroll.period.revert'), 403);
+
         if (! $period->isFinalized()) {
             return back()->with('error', 'Hanya periode finalized yang bisa di-revert.');
         }

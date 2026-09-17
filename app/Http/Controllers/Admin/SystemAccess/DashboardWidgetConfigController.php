@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\SystemAccess;
 
+use App\Enums\WidgetKey;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SystemAccess\StoreDashboardWidgetConfigRequest;
 use App\Http\Requests\SystemAccess\UpdateDashboardWidgetConfigRequest;
@@ -27,6 +28,7 @@ class DashboardWidgetConfigController extends Controller
         return view('system-access.dashboard-widget.index', [
             'configs' => $configs,
             'positions' => $this->positionRepository->all(),
+            'widgetKeys' => WidgetKey::cases(),
         ]);
     }
 

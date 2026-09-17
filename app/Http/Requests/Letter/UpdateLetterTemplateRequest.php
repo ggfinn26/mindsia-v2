@@ -13,7 +13,7 @@ class UpdateLetterTemplateRequest extends FormRequest
 
     public function rules(): array
     {
-        $id = $this->route('letterTemplate')->id;
+        $id = $this->route('letter_template')?->id;
 
         return [
             'template_code' => ['required', 'string', 'max:50', "unique:letter_templates,template_code,{$id}"],

@@ -4,11 +4,11 @@ namespace App\Repositories;
 
 use App\Models\ClassRoom;
 use App\Models\Employee;
-use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ClassRoomRepository
 {
-    public function all(): Paginator
+    public function all(): LengthAwarePaginator
     {
         return ClassRoom::with('program', 'branch', 'tutor')
             ->latest()
@@ -17,7 +17,7 @@ class ClassRoomRepository
 
     public function findWithDetails(int $id): ClassRoom
     {
-        return ClassRoom::with('program', 'branch', 'tutor', 'schedules', 'memberClasses', 'tutorChangeHistories')
+        return ClassRoom::with('program', 'branch', 'tutor', 'schedules', 'memberClasses', 'tutorChangeHistories', 'tests')
             ->findOrFail($id);
     }
 

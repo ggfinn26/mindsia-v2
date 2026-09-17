@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Permission\Models\Role;
 
 class SessionCompensationRule extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'rule_code',
         'rule_name',
@@ -17,12 +20,14 @@ class SessionCompensationRule extends Model
         'position_id',
         'employee_id',
         'amount_per_session',
+        'sessions_per_month_basis',
         'is_active',
         'notes',
     ];
 
     protected $casts = [
         'amount_per_session' => 'decimal:2',
+        'sessions_per_month_basis' => 'integer',
         'is_active' => 'boolean',
     ];
 

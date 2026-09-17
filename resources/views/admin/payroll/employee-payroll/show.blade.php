@@ -168,7 +168,7 @@
 
     {{-- Adjustment (finalized only) --}}
     @if ($period->isFinalized())
-    @can('payroll.adjustment.create')
+    @can('payroll.item.adjust')
     <div class="border border-amber-200 bg-amber-50 p-5">
         <h3 class="font-jakarta text-sm font-bold text-amber-900 mb-3">Adjustment Manual</h3>
         <form method="POST" action="{{ route('payroll.payrolls.adjust', [$period, $payroll]) }}" class="space-y-3">

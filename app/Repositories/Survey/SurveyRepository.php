@@ -4,6 +4,7 @@ namespace App\Repositories\Survey;
 
 use App\Models\Survey;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 
 class SurveyRepository
 {
@@ -37,7 +38,32 @@ class SurveyRepository
             throw new \RuntimeException('Tidak bisa edit survey yang sudah ada jawaban.');
         }
 
-        $survey->update($data);
+        DB::transaction(function () use ($survey, $data) {
+            $survey->update([
+                'survey_name' => $data['survey_name'],
+                'survey_description' => $data['survey_description'] ?? null,
+                'deadline_at' => $data['deadline_at'] ?? null,
+            ]);
+
+            // Delete existing questions and choices, then recreate
+            $survey->questions()->each(fn ($q) => $q->choices()->delete());
+            $survey->questions()->delete();
+
+            foreach ($data['questions'] as $qData) {
+                $question = $survey->questions()->create([
+                    'question_text' => $qData['question_text'],
+                    'question_type' => $qData['question_type'],
+                    'scale_min' => $qData['scale_min'] ?? null,
+                    'scale_max' => $qData['scale_max'] ?? null,
+                    'scale_min_label' => $qData['scale_min_label'] ?? null,
+                    'scale_max_label' => $qData['scale_max_label'] ?? null,
+                ]);
+
+                foreach ($qData['choices'] ?? [] as $choiceData) {
+                    $question->choices()->create(['choice_text' => $choiceData['choice_text']]);
+                }
+            }
+        });
 
         return $survey;
     }

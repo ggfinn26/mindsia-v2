@@ -9,8 +9,9 @@ class UpdateToeflTestRequest extends FormRequest
 {
     public function authorize(): bool
     {
+        $test = $this->route('toefl_test') ?? $this->route('toeflTest');
         return $this->user()->can('toefl.test.update')
-            && $this->route('toeflTest')->status === ToeflTest::STATUS_DRAFT;
+            && $test->status === ToeflTest::STATUS_DRAFT;
     }
 
     public function rules(): array

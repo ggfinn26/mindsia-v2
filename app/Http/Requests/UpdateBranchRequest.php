@@ -24,7 +24,7 @@ class UpdateBranchRequest extends FormRequest
             'latitude' => ['required', 'numeric', 'between:-90,90'],
             'longitude' => ['required', 'numeric', 'between:-180,180'],
             'radius_meters' => ['required', 'integer', 'min:1'],
-            'ma_pic_employee_id' => ['nullable', 'exists:employees,id'],
+            // GAP-17: ma_pic_employee_id removed — PIC assignment harus via AssignBranchPICRequest (organization.branch.assign_pic)
         ];
     }
 }

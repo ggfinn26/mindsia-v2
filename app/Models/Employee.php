@@ -95,6 +95,8 @@ class Employee extends Model
         return $this->hasMany(EmployeeCompensation::class);
     }
 
+    public function getTelegramChatIdAttribute() { return $this->user?->telegram_chat_id; }
+
     public function notifications(): HasMany
     {
         return $this->hasMany(EmployeeNotification::class);

@@ -87,7 +87,7 @@ class LeaveRequestRepository
         $leaveStatus = $request->leaveStatusForDate();
         $current = Carbon::parse($request->start_date);
         $end = Carbon::parse($request->end_date);
-        $checkedInStatuses = ['checked_in', 'late', 'present', 'present_late'];
+        $checkedInStatuses = ['checked_in', 'present'];
 
         while ($current->lte($end)) {
             $date = $current->toDateString();

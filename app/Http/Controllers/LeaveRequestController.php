@@ -37,7 +37,7 @@ class LeaveRequestController extends Controller
 
         if ($request->hasFile('attachment')) {
             $file = $request->file('attachment');
-            $uploaded = $this->telegramStorage->uploadFile(
+            $uploaded = $this->telegramStorage->uploadPhoto(
                 $file->getRealPath(),
                 $file->getClientOriginalName(),
                 'leave_attachment',
