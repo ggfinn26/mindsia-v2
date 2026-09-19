@@ -61,9 +61,9 @@ class AttendanceService
             ? $distanceM > $employee->branch->radius_meters
             : false;
 
-        $telegramFileId = null;
+        $selfiePath = null;
         if (isset($data['selfie'])) {
-            $telegramFileId = $this->telegramStorage->uploadPhoto(
+            $selfiePath = $this->telegramStorage->uploadPhoto(
                 $data['selfie'],
                 "Check-in {$employee->full_name} ".now()->toDateTimeString(),
             );
@@ -72,7 +72,8 @@ class AttendanceService
         return $this->attendanceRepo->checkIn($employee->id, $employee->branch_id, [
             'check_in_latitude' => $data['check_in_latitude'],
             'check_in_longitude' => $data['check_in_longitude'],
-            'check_in_selfie_telegram_file_id' => $telegramFileId,
+            'check_in_selfie_telegram_file_id' => $selfiePath,
+            'check_in_selfie_path' => $selfiePath,
             'check_in_distance_m' => $distanceM,
             'check_in_notes' => $data['check_in_notes'] ?? null,
             'late_minutes' => $lateMinutes,
@@ -102,9 +103,9 @@ class AttendanceService
             ]);
         }
 
-        $telegramFileId = null;
+        $selfiePath = null;
         if (isset($data['selfie'])) {
-            $telegramFileId = $this->telegramStorage->uploadPhoto(
+            $selfiePath = $this->telegramStorage->uploadPhoto(
                 $data['selfie'],
                 "Check-out {$employee->full_name} ".now()->toDateTimeString(),
             );
@@ -113,7 +114,8 @@ class AttendanceService
         return $this->attendanceRepo->checkOut($log, [
             'check_out_latitude' => $data['check_out_latitude'],
             'check_out_longitude' => $data['check_out_longitude'],
-            'check_out_selfie_telegram_file_id' => $telegramFileId,
+            'check_out_selfie_telegram_file_id' => $selfiePath,
+            'check_out_selfie_path' => $selfiePath,
             'check_out_distance_m' => $employee->branch
                 ? $this->haversineMeters(
                     $data['check_out_latitude'],

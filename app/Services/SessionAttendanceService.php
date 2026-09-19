@@ -42,21 +42,22 @@ class SessionAttendanceService
             ? $distanceM > $branch->radius_meters
             : false;
 
-        $telegramFileId = null;
+        $selfiePath = null;
         if (isset($data['selfie'])) {
-            $uploaded = $this->telegramStorage->uploadPhoto(
+            $uploaded = $this->telegramStorage->uploadFile(
                 $data['selfie']->getRealPath(),
                 $data['selfie']->getClientOriginalName(),
                 'session_checkin',
                 $employee->id,
             );
-            $telegramFileId = $uploaded['telegram_file_id'];
+            $selfiePath = $uploaded['file_id'];
         }
 
         return $this->repo->checkIn($session, [
             'check_in_latitude' => $data['check_in_latitude'],
             'check_in_longitude' => $data['check_in_longitude'],
-            'check_in_selfie_telegram_file_id' => $telegramFileId,
+            'check_in_selfie_telegram_file_id' => $selfiePath,
+            'check_in_selfie_path' => $selfiePath,
             'check_in_distance_m' => $distanceM,
             'check_in_notes' => $data['check_in_notes'] ?? null,
             'late_minutes' => $lateMinutes,
@@ -75,21 +76,22 @@ class SessionAttendanceService
             throw ValidationException::withMessages(['check_out' => 'Belum check-in untuk sesi ini.']);
         }
 
-        $telegramFileId = null;
+        $selfiePath = null;
         if (isset($data['selfie'])) {
-            $uploaded = $this->telegramStorage->uploadPhoto(
+            $uploaded = $this->telegramStorage->uploadFile(
                 $data['selfie']->getRealPath(),
                 $data['selfie']->getClientOriginalName(),
                 'session_checkout',
                 $employee->id,
             );
-            $telegramFileId = $uploaded['telegram_file_id'];
+            $selfiePath = $uploaded['file_id'];
         }
 
         return $this->repo->checkOut($log, [
             'check_out_latitude' => $data['check_out_latitude'],
             'check_out_longitude' => $data['check_out_longitude'],
-            'check_out_selfie_telegram_file_id' => $telegramFileId,
+            'check_out_selfie_telegram_file_id' => $selfiePath,
+            'check_out_selfie_path' => $selfiePath,
             'check_out_distance_m' => ($branch = $log->sessionSchedule?->classSchedule?->classRoom?->branch)
                 ? $this->haversineMeters(
                     $data['check_out_latitude'],

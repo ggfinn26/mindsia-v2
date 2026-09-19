@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\TelegramFile;
 use App\Services\TelegramStorageService;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
@@ -50,8 +51,7 @@ class TestTelegramStorageCommand extends Command
             );
 
             $this->line('   ✓ File uploaded successfully');
-            $this->line('   File ID: '.$result['telegram_file_id']);
-            $this->line('   Size: '.$result['file_size'].' bytes');
+            $this->line('   Local path: '.$result['file_id']);
 
             unlink($testFile);
         } catch (\Exception $e) {
@@ -60,14 +60,17 @@ class TestTelegramStorageCommand extends Command
             return 1;
         }
 
-        // Test 3: Get file info
+        // Test 3: Get file info from latest pending backup record
         $this->info('\n3. Testing getFileInfo...');
         try {
-            if (isset($result['telegram_file_id'])) {
-                $fileInfo = $storage->getFileInfo($result['telegram_file_id']);
+            $latestFile = TelegramFile::where('storage_path', $result['file_id'])->first();
+            if ($latestFile?->telegram_file_id && ! str_starts_with($latestFile->telegram_file_id, 'pending_')) {
+                $fileInfo = $storage->getFileInfo($latestFile->telegram_file_id);
                 $this->line('   ✓ Retrieved file info');
                 $this->line('   File path: '.($fileInfo['file_path'] ?? 'N/A'));
                 $this->line('   File size: '.($fileInfo['file_size'] ?? 'N/A').' bytes');
+            } else {
+                $this->line('   ⊘ Backup still pending — getFileInfo skipped (will work once backup uploads)');
             }
         } catch (\Exception $e) {
             $this->error('   ✗ Error: '.$e->getMessage());
