@@ -33,8 +33,7 @@ class VerificationController extends Controller
             return $user->hasVerifiedEmail() ? redirect()->route('applicant.dashboard') : view('auth.verify-email');
         }
 
-        // Not logged in — show notice with auto-redirect countdown to login
-        return view('auth.verify-email', ['redirectToLogin' => true]);
+        return view('auth.verify-email');
     }
 
     public function verify(Request $request, int $id, string $hash): RedirectResponse
