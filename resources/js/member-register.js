@@ -63,8 +63,9 @@ window.memberRegisterPortal = function () {
             if (!provinceId) return;
 
             try {
-                const response = await fetch(`/api/regions/${provinceId}/institutions`);
-                this.institutions = await response.json();
+                const response = await fetch(`/api/public/institutions?province_id=${provinceId}`);
+                const data = await response.json();
+                this.institutions = Array.isArray(data) ? data : [];
             } catch (e) {
                 console.error("Failed to fetch institutions:", e);
             }
