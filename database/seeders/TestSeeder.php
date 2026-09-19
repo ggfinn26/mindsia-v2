@@ -11,6 +11,8 @@ class TestSeeder extends Seeder
         $this->call([
             PermissionSeeder::class,
             RoleSeeder::class,
+            BranchDataSeeder::class,
+            PositionSeeder::class,
         ]);
     }
 }

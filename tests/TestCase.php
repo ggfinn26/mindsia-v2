@@ -7,6 +7,7 @@ use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Http;
 use Spatie\Permission\PermissionRegistrar;
 
@@ -14,13 +15,18 @@ abstract class TestCase extends BaseTestCase
 {
     use DatabaseTransactions;
 
-    protected string $seeder = TestSeeder::class;
-
-    protected bool $seed = true;
+    private static bool $seeded = false;
 
     protected function setUp(): void
     {
         parent::setUp();
+
+        // Seed once per process, outside the per-test transaction, so roles/permissions
+        // survive DatabaseTransactions rollbacks between tests.
+        if (! static::$seeded) {
+            Artisan::call('db:seed', ['--class' => TestSeeder::class]);
+            static::$seeded = true;
+        }
 
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 

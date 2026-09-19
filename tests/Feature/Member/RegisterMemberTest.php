@@ -8,7 +8,7 @@ use App\Models\MemberAccount;
 use App\Models\MemberData;
 use App\Models\Program;
 use App\Models\User;
-use App\Notifications\GuardedVerifyEmail;
+use App\Notifications\OtpVerifyEmail;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification as NotificationFacade;
@@ -176,7 +176,7 @@ class RegisterMemberTest extends TestCase
         $account = MemberAccount::where('email', 'verif@test.com')->first();
         $this->assertNotNull($account);
 
-        NotificationFacade::assertSentTo($account, GuardedVerifyEmail::class);
+        NotificationFacade::assertSentTo($account, OtpVerifyEmail::class);
     }
 
     // RM-08: delete member — tidak ada registrasi berhasil
