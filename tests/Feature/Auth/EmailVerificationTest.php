@@ -3,10 +3,8 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\ApplicantAccount;
-use App\Models\MemberAccount;
 use App\Models\User;
 use Illuminate\Auth\Events\Verified;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\URL;
 use Tests\Support\CreatesMember;
@@ -14,7 +12,7 @@ use Tests\TestCase;
 
 class EmailVerificationTest extends TestCase
 {
-    use CreatesMember, RefreshDatabase;
+    use CreatesMember;
 
     // ─── Employee ─────────────────────────────────────────────────────────────
 
@@ -50,7 +48,7 @@ class EmailVerificationTest extends TestCase
 
         $this->actingAs($user, 'web')
             ->get($verificationUrl)
-            ->assertRedirect(route('dashboard'));
+            ->assertRedirect(route('register.success'));
 
         $this->assertNotNull($user->fresh()->email_verified_at);
         Event::assertDispatched(Verified::class);

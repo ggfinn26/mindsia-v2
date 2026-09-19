@@ -6,8 +6,8 @@ use App\Models\ApplicantAccount;
 use App\Models\MemberAccount;
 use App\Models\MemberData;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 
 /**
@@ -18,7 +18,11 @@ use Tests\TestCase;
  */
 class PasswordHashTest extends TestCase
 {
-    use RefreshDatabase;
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Permission::firstOrCreate(['name' => 'auth.user.force_reset_password', 'guard_name' => 'web']);
+    }
 
     public function test_user_password_stored_as_single_hash(): void
     {
@@ -82,7 +86,6 @@ class PasswordHashTest extends TestCase
 
     public function test_admin_reset_stores_single_hash(): void
     {
-        
 
         $admin = User::factory()->create(['password' => 'AdminPass@123']);
         $admin->givePermissionTo('auth.user.force_reset_password');

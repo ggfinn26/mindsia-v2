@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Storage;
 
 class Program extends Model
 {
@@ -19,6 +20,7 @@ class Program extends Model
         'admin_fee_mode',
         'admin_fee_timing',
         'program_description',
+        'image_path',
         'is_active',
     ];
 
@@ -32,6 +34,11 @@ class Program extends Model
     public function getCodeAttribute(): string
     {
         return $this->program_code;
+    }
+
+    public function getImageUrlAttribute(): string
+    {
+        return $this->image_path ? Storage::url($this->image_path) : 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=800&auto=format&fit=crop';
     }
 
     public function getTaglineAttribute(): ?string

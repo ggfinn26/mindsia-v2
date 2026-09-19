@@ -14,14 +14,27 @@ use Illuminate\View\View;
 class VerificationController extends Controller
 {
     private const GUARD_MAP = [
-        'web'       => [User::class, 'dashboard'],
-        'member'    => [MemberAccount::class, 'member.dashboard'],
+        'web' => [User::class, 'dashboard'],
+        'member' => [MemberAccount::class, 'member.dashboard'],
         'applicant' => [ApplicantAccount::class, 'applicant.dashboard'],
     ];
 
-    public function notice(): View
+    public function notice(): View|RedirectResponse
     {
-        return view('auth.verify-email');
+        if ($user = auth('web')->user()) {
+            return $user->hasVerifiedEmail() ? redirect()->route('dashboard') : view('auth.verify-email');
+        }
+
+        if ($user = auth('member')->user()) {
+            return $user->hasVerifiedEmail() ? redirect()->route('member.dashboard') : view('auth.verify-email');
+        }
+
+        if ($user = auth('applicant')->user()) {
+            return $user->hasVerifiedEmail() ? redirect()->route('applicant.dashboard') : view('auth.verify-email');
+        }
+
+        // Not logged in — show notice with auto-redirect countdown to login
+        return view('auth.verify-email', ['redirectToLogin' => true]);
     }
 
     public function verify(Request $request, int $id, string $hash): RedirectResponse
@@ -54,7 +67,7 @@ class VerificationController extends Controller
 
         auth($guard)->login($account);
 
-        return redirect()->intended(route($redirectRoute))->with('success', 'Email berhasil diverifikasi!');
+        return redirect()->route('register.success')->with('success', 'Email berhasil diverifikasi!');
     }
 
     public function send(Request $request): RedirectResponse

@@ -3,12 +3,13 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\ApplicantAccount;
-use App\Models\MemberAccount;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Notifications\MemberResetPasswordNotification;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
+use Spatie\Permission\Models\Permission;
 use Tests\Support\CreatesMember;
 use Tests\TestCase;
 
@@ -19,7 +20,13 @@ use Tests\TestCase;
  */
 class PasswordManagementTest extends TestCase
 {
-    use CreatesMember, RefreshDatabase;
+    use CreatesMember;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Permission::firstOrCreate(['name' => 'auth.user.force_reset_password', 'guard_name' => 'web']);
+    }
 
     // ─── Employee: ganti password sendiri ─────────────────────────────────────
 
@@ -95,7 +102,7 @@ class PasswordManagementTest extends TestCase
         $this->post(route('password.email'), ['email' => $user->email])
             ->assertSessionHasNoErrors();
 
-        Notification::assertSentTo($user, \Illuminate\Auth\Notifications\ResetPassword::class);
+        Notification::assertSentTo($user, ResetPassword::class);
     }
 
     public function test_employee_forgot_password_email_tidak_ada_returns_error(): void
@@ -138,7 +145,6 @@ class PasswordManagementTest extends TestCase
 
     public function test_admin_force_reset_berhasil_password_baru_bisa_digunakan(): void
     {
-        
 
         $admin = User::factory()->create([
             'password' => 'AdminPass@123',
@@ -165,7 +171,6 @@ class PasswordManagementTest extends TestCase
 
     public function test_admin_force_reset_current_password_salah_returns_error(): void
     {
-        
 
         $admin = User::factory()->create([
             'password' => 'AdminPass@123',
@@ -186,7 +191,6 @@ class PasswordManagementTest extends TestCase
 
     public function test_admin_force_reset_tanpa_permission_returns_403(): void
     {
-        
 
         $nonAdmin = User::factory()->create(['email_verified_at' => now()]);
         $target = User::factory()->create(['email_verified_at' => now()]);
@@ -236,7 +240,7 @@ class PasswordManagementTest extends TestCase
         $this->post(route('member.password.email'), ['email' => $member->email])
             ->assertSessionHasNoErrors();
 
-        Notification::assertSentTo($member, \App\Notifications\MemberResetPasswordNotification::class);
+        Notification::assertSentTo($member, MemberResetPasswordNotification::class);
     }
 
     // ─── Applicant: ganti password ─────────────────────────────────────────────

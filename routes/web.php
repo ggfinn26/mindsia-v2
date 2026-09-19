@@ -1,6 +1,7 @@
 <?php
 
 // use App\Http\Controllers\Admin\AttendanceLogController;
+use App\Http\Controllers\Admin\Attendance\LeavePaySettingController;
 use App\Http\Controllers\Admin\AttendancePolicyController;
 use App\Http\Controllers\Admin\AttendanceRecapController;
 use App\Http\Controllers\Admin\AttendanceRuleController;
@@ -14,6 +15,8 @@ use App\Http\Controllers\Admin\ClassScheduleController;
 use App\Http\Controllers\Admin\ClassTestController;
 use App\Http\Controllers\Admin\ContractTerminateController;
 use App\Http\Controllers\Admin\CurriculumController;
+use App\Http\Controllers\Admin\CurriculumInteractiveController;
+use App\Http\Controllers\Admin\CurriculumInteractiveResultController;
 use App\Http\Controllers\Admin\DocumentSignatureSettingController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\EmployeeWaTemplateController;
@@ -94,9 +97,11 @@ use App\Http\Controllers\Admin\SystemAccess\BotManagementController;
 use App\Http\Controllers\Admin\SystemAccess\DashboardWidgetConfigController;
 use App\Http\Controllers\Admin\SystemAccess\ForceResetPasswordController;
 use App\Http\Controllers\Admin\SystemAccess\NotificationRoutingController;
+use App\Http\Controllers\Admin\SystemAccess\TelegramBackupController;
 use App\Http\Controllers\Admin\SystemAccess\WebhookStatusController;
 use App\Http\Controllers\Admin\TestQuestionController;
 use App\Http\Controllers\Admin\ToeflMediaController;
+use App\Http\Controllers\Admin\ToeflMemberSessionController;
 use App\Http\Controllers\Admin\ToeflPassageController;
 use App\Http\Controllers\Admin\ToeflQuestionController;
 use App\Http\Controllers\Admin\ToeflTestController;
@@ -127,6 +132,7 @@ use App\Http\Controllers\BranchProgramQuotaController;
 use App\Http\Controllers\CareerController;
 use App\Http\Controllers\ClassCurriculumController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DashboardWidgetExportController;
 use App\Http\Controllers\Employee\EmployeeProfileController;
 use App\Http\Controllers\Employee\EmployeeSurveyController;
 use App\Http\Controllers\Employee\PayslipController;
@@ -138,6 +144,7 @@ use App\Http\Controllers\InstitutionController;
 use App\Http\Controllers\Landing\CompanyController;
 use App\Http\Controllers\Landing\HomeController;
 use App\Http\Controllers\LeaveRequestController;
+use App\Http\Controllers\Member\CurriculumInteractiveController as MemberCurriculumInteractiveController;
 use App\Http\Controllers\Member\MemberDashboardController;
 use App\Http\Controllers\Member\MemberNotificationController;
 use App\Http\Controllers\Member\MemberProfileController;
@@ -211,6 +218,10 @@ Route::get('/employee', function () {
     return view('employee');
 })->name('employee.landing');
 
+Route::get('/member', function () {
+    return view('member');
+})->name('member.landing');
+
 Route::get('/daftar', function (Request $request) {
     $branches = collect([
         (object) ['id' => 1, 'name' => 'MINDSIA Jakarta'],
@@ -282,6 +293,7 @@ Route::middleware(['auth:member', EnsureEmailIsVerified::class])->group(function
     Route::get('/member/dashboard', [MemberDashboardController::class, 'index'])->name('member.dashboard');
     Route::get('/member/profile', [MemberProfileController::class, 'show'])->name('member.profile.show');
     Route::put('/member/profile', [MemberProfileController::class, 'update'])->name('member.profile.update');
+    Route::post('/member/profile/avatar', [MemberProfileController::class, 'uploadAvatar'])->name('member.profile.avatar');
     Route::get('/member/change-password', [MemberPasswordController::class, 'showChangeForm'])->name('member.password.change');
     Route::post('/member/change-password', [MemberPasswordController::class, 'update'])->name('member.password.change.post');
 
@@ -311,6 +323,12 @@ Route::middleware(['auth:member', EnsureEmailIsVerified::class])->group(function
     Route::post('/toefl/session/{session}/answer', [ToeflSessionController::class, 'saveAnswer'])->name('toefl.session.answer');
     Route::post('/toefl/session/{session}/submit-section', [ToeflSessionController::class, 'submitSection'])->name('toefl.session.submit-section');
     Route::get('/toefl/session/{session}/result', [ToeflSessionController::class, 'result'])->name('toefl.session.result');
+
+    // Curriculum Interactive Module
+    Route::get('/classrooms/{classroom}/curriculum/items/{item}/interactive', [MemberCurriculumInteractiveController::class, 'show'])->name('member.curriculum.interactive.show');
+    Route::post('/classrooms/{classroom}/curriculum/items/{item}/interactive/submit', [MemberCurriculumInteractiveController::class, 'submit'])->name('member.curriculum.interactive.submit');
+    Route::get('/classrooms/{classroom}/curriculum/items/{item}/interactive/result', [MemberCurriculumInteractiveController::class, 'result'])->name('member.curriculum.interactive.result');
+    Route::get('/classrooms/{classroom}/curriculum/items/{item}/interactive/history', [MemberCurriculumInteractiveController::class, 'history'])->name('member.curriculum.interactive.history');
 });
 
 // Auth Routes — Applicant (applicant guard)
@@ -361,8 +379,14 @@ Route::post('/applicant/forgot-password', [ApplicantForgotPasswordController::cl
 Route::get('/applicant/reset-password/{token}', [ApplicantResetPasswordController::class, 'showForm'])->name('applicant.password.reset');
 Route::post('/applicant/reset-password', [ApplicantResetPasswordController::class, 'reset'])->name('applicant.password.update');
 
-// Register success notification page
+// Register success notification page — requires authenticated + verified user
 Route::get('/daftar/sukses', function () {
+    $user = auth('web')->user() ?? auth('member')->user() ?? auth('applicant')->user();
+
+    if (! $user || ! $user->hasVerifiedEmail()) {
+        return redirect()->route('login');
+    }
+
     return view('auth.register-success');
 })->name('register.success');
 
@@ -388,6 +412,9 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed']
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/widget/{widgetKey}/export/{format}', [DashboardWidgetExportController::class, 'export'])->name('dashboard.widget-export');
+    Route::post('/dashboard/widget-order', [DashboardController::class, 'updateWidgetOrder'])->name('dashboard.widget-order');
+    Route::post('/dashboard/widget-toggle', [DashboardController::class, 'toggleWidget'])->name('dashboard.widget-toggle');
     Route::get('/employee/profile', [EmployeeProfileController::class, 'show'])->name('employee.profile.show');
     Route::get('/employee/profile/edit', [EmployeeProfileController::class, 'edit'])->name('employee.profile.edit');
     Route::patch('/employee/profile', [EmployeeProfileController::class, 'update'])->name('employee.profile.update');
@@ -430,8 +457,13 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed']
     // Employee Management (Employee Flow 2)
     Route::resource('employees', EmployeeController::class)->except(['destroy']);
     Route::resource('employment-statuses', EmploymentStatusController::class)->except(['show', 'index', 'destroy']);
+    // GAP-212: Override resource store+create routes to include {employee} param for route model binding
+    Route::get('employment-statuses/create/{employee}', [EmploymentStatusController::class, 'create'])->name('employment-statuses.create');
+    Route::post('employment-statuses/{employee}', [EmploymentStatusController::class, 'store'])->name('employment-statuses.store');
     Route::get('employment-statuses/{status}/extend', [EmploymentStatusController::class, 'extendCreate'])->name('employment-statuses.extend.create');
     Route::post('employment-statuses/{status}/extend', [EmploymentStatusController::class, 'extendStore'])->name('employment-statuses.extend.store');
+    Route::post('employment-statuses/{status}/extend/accept', [EmploymentStatusController::class, 'extendAccept'])->name('employment-statuses.extend.accept');
+    Route::post('employment-statuses/{status}/extend/reject', [EmploymentStatusController::class, 'extendReject'])->name('employment-statuses.extend.reject');
     Route::get('employment-statuses/{status}/change-position', [EmploymentStatusController::class, 'changePositionCreate'])->name('employment-statuses.change-position.create');
     Route::post('employment-statuses/{status}/change-position', [EmploymentStatusController::class, 'changePositionStore'])->name('employment-statuses.change-position.store');
 
@@ -479,6 +511,7 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed']
     // Route::resource('attendance-logs', AttendanceLogController::class);
     Route::resource('attendance-policies', AttendancePolicyController::class);
     Route::resource('attendance-rules', AttendanceRuleController::class);
+    Route::resource('leave-pay-settings', LeavePaySettingController::class)->only(['index', 'update']);
     Route::resource('leave-requests', LeaveRequestController::class)->only(['index', 'create', 'store']);
     Route::post('leave-requests/{leaveRequest}/cancel', [LeaveRequestController::class, 'cancel'])->name('leave-requests.cancel');
     Route::post('leave-requests/{leaveRequest}/approve', [LeaveRequestController::class, 'approve'])->name('leave-requests.approve');
@@ -501,11 +534,12 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed']
     Route::post('session-attendance/{sessionSchedule}/check-in', [SessionAttendanceController::class, 'checkIn'])->name('session-attendance.check-in');
     Route::post('session-attendance/{sessionSchedule}/check-out', [SessionAttendanceController::class, 'checkOut'])->name('session-attendance.check-out');
     Route::post('session-attendance/{sessionLog}/verify', [SessionAttendanceController::class, 'verify'])->name('session-attendance.verify');
+    Route::post('session-attendance/{sessionLog}/adjust', [SessionAttendanceController::class, 'adjust'])->name('session-attendance.adjust');
 
     // KPI Domain
     Route::prefix('kpi')->name('kpi.')->group(function () {
         // Templates
-        Route::resource('templates', KpiTemplateController::class)->except(['destroy']);
+        Route::resource('templates', KpiTemplateController::class)->except(['destroy'])->parameter('templates', 'kpiTemplate');
         Route::prefix('templates/{kpiTemplate}')->name('templates.')->group(function () {
             Route::get('indicators/create', [KpiTemplateIndicatorController::class, 'create'])->name('indicators.create');
             Route::post('indicators', [KpiTemplateIndicatorController::class, 'store'])->name('indicators.store');
@@ -539,7 +573,7 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed']
     Route::resource('prospective-members', ProspectiveMemberController::class)->only(['index', 'create', 'store', 'show']);
     Route::patch('prospective-members/{prospectiveMember}/status', [ProspectiveMemberController::class, 'updateStatus'])->name('prospective-members.update-status');
     Route::post('prospective-members/{prospectiveMember}/follow-ups', [ProspectiveMemberController::class, 'storeFollowUp'])->name('prospective-members.follow-ups.store');
-    Route::resource('wa-templates', EmployeeWaTemplateController::class)->only(['index', 'store', 'update', 'destroy']);
+    Route::resource('wa-templates', EmployeeWaTemplateController::class)->only(['index', 'store', 'update', 'destroy'])->parameters(['wa-templates' => 'employeeWaTemplate']);
     Route::get('marketing-target', [MarketingTargetController::class, 'index'])->name('marketing-target.index');
     Route::post('marketing-target/employee', [MarketingTargetController::class, 'setEmployeeTarget'])->name('marketing-target.employee');
     Route::post('marketing-target/position-default', [MarketingTargetController::class, 'setPositionDefault'])->name('marketing-target.position-default');
@@ -554,19 +588,19 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed']
 
     // Bonus Domain
     Route::prefix('bonus')->name('bonus.')->group(function () {
-        Route::resource('marketing-rules', MarketingBonusRuleController::class)->except(['create', 'edit']);
+        Route::resource('marketing-rules', MarketingBonusRuleController::class)->except(['create', 'edit'])->parameter('marketing-rules', 'marketingRule');
         Route::patch('marketing-rules/{marketingRule}/toggle-active', [MarketingBonusRuleController::class, 'toggleActive'])->name('marketing-rules.toggle-active');
         Route::post('marketing-rules/{marketingRule}/tiers', [MarketingBonusRuleController::class, 'storeTier'])->name('marketing-rules.tiers.store');
         Route::put('marketing-rules/{marketingRule}/tiers/{tier}', [MarketingBonusRuleController::class, 'updateTier'])->name('marketing-rules.tiers.update');
         Route::delete('marketing-rules/{marketingRule}/tiers/{tier}', [MarketingBonusRuleController::class, 'destroyTier'])->name('marketing-rules.tiers.destroy');
 
-        Route::resource('kpi-rules', KpiBonusRuleController::class)->except(['create', 'edit']);
+        Route::resource('kpi-rules', KpiBonusRuleController::class)->except(['create', 'edit'])->parameter('kpi-rules', 'kpiRule');
         Route::patch('kpi-rules/{kpiRule}/toggle-active', [KpiBonusRuleController::class, 'toggleActive'])->name('kpi-rules.toggle-active');
         Route::post('kpi-rules/{kpiRule}/tiers', [KpiBonusRuleController::class, 'storeTier'])->name('kpi-rules.tiers.store');
         Route::put('kpi-rules/{kpiRule}/tiers/{tier}', [KpiBonusRuleController::class, 'updateTier'])->name('kpi-rules.tiers.update');
         Route::delete('kpi-rules/{kpiRule}/tiers/{tier}', [KpiBonusRuleController::class, 'destroyTier'])->name('kpi-rules.tiers.destroy');
 
-        Route::resource('special-rules', SpecialBonusRuleController::class)->except(['create', 'edit']);
+        Route::resource('special-rules', SpecialBonusRuleController::class)->except(['create', 'edit'])->parameter('special-rules', 'specialRule');
         Route::patch('special-rules/{specialRule}/toggle-active', [SpecialBonusRuleController::class, 'toggleActive'])->name('special-rules.toggle-active');
         Route::post('special-rules/{specialRule}/conditions', [SpecialBonusRuleController::class, 'storeCondition'])->name('special-rules.conditions.store');
         Route::put('special-rules/{specialRule}/conditions/{condition}', [SpecialBonusRuleController::class, 'updateCondition'])->name('special-rules.conditions.update');
@@ -576,26 +610,28 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed']
     });
 
     // Payroll Domain — GAP-92/100/103/114/120/126
-    Route::resource('payroll-periods', PayrollPeriodController::class)->names([
-        'index' => 'payroll.periods.index',
-        'create' => 'payroll.periods.create',
-        'store' => 'payroll.periods.store',
-        'show' => 'payroll.periods.show',
-        'edit' => 'payroll.periods.edit',
-        'update' => 'payroll.periods.update',
-        'destroy' => 'payroll.periods.destroy',
-    ]);
-    Route::get('payroll-periods/{payrollPeriod}/preview-generate', [PayrollPeriodController::class, 'previewGenerate'])->name('payroll.periods.preview-generate');
-    Route::post('payroll-periods/{payrollPeriod}/generate', [PayrollPeriodController::class, 'generate'])->name('payroll.periods.generate');
-    Route::patch('payroll-periods/{payrollPeriod}/advance-status', [PayrollPeriodController::class, 'advanceStatus'])->name('payroll.periods.advance-status');
-    Route::patch('payroll-periods/{payrollPeriod}/revert', [PayrollPeriodController::class, 'revert'])->name('payroll.periods.revert');
+    Route::resource('payroll-periods', PayrollPeriodController::class)
+        ->parameters(['payroll-periods' => 'period'])
+        ->names([
+            'index' => 'payroll.periods.index',
+            'create' => 'payroll.periods.create',
+            'store' => 'payroll.periods.store',
+            'show' => 'payroll.periods.show',
+            'edit' => 'payroll.periods.edit',
+            'update' => 'payroll.periods.update',
+            'destroy' => 'payroll.periods.destroy',
+        ]);
+    Route::get('payroll-periods/{period}/preview-generate', [PayrollPeriodController::class, 'previewGenerate'])->name('payroll.periods.preview-generate');
+    Route::post('payroll-periods/{period}/generate', [PayrollPeriodController::class, 'generate'])->name('payroll.periods.generate');
+    Route::patch('payroll-periods/{period}/advance-status', [PayrollPeriodController::class, 'advanceStatus'])->name('payroll.periods.advance-status');
+    Route::patch('payroll-periods/{period}/revert', [PayrollPeriodController::class, 'revert'])->name('payroll.periods.revert');
     Route::post('payroll-periods/auto-create', [PayrollPeriodController::class, 'autoCreate'])->name('payroll.periods.auto-create');
 
     Route::resource('payroll/component', PayrollComponentController::class)
         ->except(['create', 'edit', 'show'])
         ->parameters(['component' => 'component'])
         ->names('payroll.components');
-    Route::resource('session-compensation-rules', SessionCompensationRuleController::class)->except(['create', 'edit', 'show'])->names([
+    Route::resource('session-compensation-rules', SessionCompensationRuleController::class)->except(['create', 'edit', 'show'])->parameters(['session-compensation-rules' => 'sessionRule'])->names([
         'index' => 'payroll.session-rules.index',
         'store' => 'payroll.session-rules.store',
         'update' => 'payroll.session-rules.update',
@@ -610,7 +646,7 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed']
         Route::post('payrolls/{payroll}/slip', [PayrollSlipController::class, 'generate'])->name('payrolls.slip.generate');
         Route::get('payrolls/{payroll}/slip/download', [PayrollSlipController::class, 'download'])->name('payrolls.slip.download');
         Route::post('payrolls/{payroll}/payment', [PayrollPaymentController::class, 'store'])->name('payrolls.payment.store');
-        Route::patch('payrolls/{payroll}/payment/failed', [PayrollPaymentController::class, 'markFailed'])->name('payrolls.payment.failed');
+        Route::patch('payrolls/{payroll}/payment/{payment}/failed', [PayrollPaymentController::class, 'markFailed'])->name('payrolls.payment.failed');
     });
 
     Route::prefix('employees/{employee}')->name('employees.')->group(function () {
@@ -625,6 +661,8 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed']
     // Employee self-service payslip portal — GAP-132
     Route::get('my-payslips', [PayslipController::class, 'index'])->name('employee.payslips.index');
     Route::get('my-payslips/{payroll}/download', [PayslipController::class, 'download'])->name('employee.payslips.download');
+    Route::get('my-payslips/{payroll}/preview', [PayslipController::class, 'preview'])->name('employee.payslips.preview');
+    Route::post('my-payslips/{payroll}/share', [PayslipController::class, 'share'])->name('employee.payslips.share');
 
     // Member Domain
     Route::post('members/import', [MemberDataController::class, 'import'])->name('members.import');
@@ -671,6 +709,10 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed']
     Route::post('curriculum-sessions/{session}/items', [CurriculumController::class, 'storeItem'])->name('curriculum-sessions.items.store');
     Route::put('curriculum-items/{item}', [CurriculumController::class, 'updateItem'])->name('curriculum-items.update');
     Route::delete('curriculum-items/{item}', [CurriculumController::class, 'destroyItem'])->name('curriculum-items.destroy');
+    Route::get('curriculum-items/{item}/interactive', [CurriculumInteractiveController::class, 'show'])->name('curriculum-items.interactive.show');
+    Route::post('curriculum-items/{item}/interactive', [CurriculumInteractiveController::class, 'store'])->name('curriculum-items.interactive.store');
+    Route::get('classrooms/{classroom}/curriculum/items/{item}/interactive/results', [CurriculumInteractiveResultController::class, 'index'])->name('curriculum.interactive.results');
+    Route::get('classrooms/{classroom}/curriculum/items/{item}/interactive/results/{memberClass}', [CurriculumInteractiveResultController::class, 'show'])->name('curriculum.interactive.results.member');
 
     // Class Domain
     Route::resource('classrooms', ClassRoomController::class);
@@ -680,6 +722,7 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed']
     Route::put('member-class/{memberClass}/transfer', [MemberClassController::class, 'transfer'])->name('member-class.transfer');
 
     // Class Session — material + attendance + assessment + progress
+    Route::get('class-schedules', [ClassScheduleController::class, 'index'])->name('class-schedules.index');
     Route::patch('class-schedules/{schedule}/material', [ClassScheduleController::class, 'update'])->name('class-schedules.material');
     Route::post('class-schedules/{schedule}/attendance', [MemberAttendanceController::class, 'store'])->name('member-attendance.store');
     Route::patch('member-attendance/{memberAttendance}', [MemberAttendanceController::class, 'update'])->name('member-attendance.update');
@@ -688,6 +731,7 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed']
     Route::patch('curriculum-progress/{progress}', [MemberCurriculumProgressController::class, 'update'])->name('curriculum-progress.update');
 
     // Class Test
+    Route::get('class-tests', [ClassTestController::class, 'index'])->name('class-tests.index');
     Route::get('classrooms/{classroom}/tests/create', [ClassTestController::class, 'create'])->name('class-tests.create');
     Route::post('classrooms/{classroom}/tests', [ClassTestController::class, 'store'])->name('class-tests.store');
     Route::get('classrooms/{classroom}/tests/{classTest}/edit', [ClassTestController::class, 'edit'])->name('class-tests.edit');
@@ -746,7 +790,7 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed']
         Route::post('inventory/{inventoryItem}/dispose', [InventoryItemController::class, 'dispose'])->name('inventory.dispose');
 
         // Rent Contracts
-        Route::resource('rent-contracts', BranchRentContractController::class);
+        Route::resource('rent-contracts', BranchRentContractController::class)->parameter('rent-contracts', 'branchRentContract');
         Route::post('rent-contracts/{branchRentContract}/termins/{termin}/mark-paid', [BranchRentTerminController::class, 'markPaid'])->name('rent-contracts.termins.mark-paid');
     });
 
@@ -763,6 +807,11 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed']
         // Route::post('force-reset', [ForceResetPasswordController::class, 'reset'])->name('force-reset.reset');
         Route::resource('api-keys', ApiKeyController::class)->except(['show']);
         Route::post('api-keys/{apiKey}/toggle', [ApiKeyController::class, 'toggleActive'])->name('api-keys.toggle');
+
+        Route::get('telegram-backup', [TelegramBackupController::class, 'index'])->name('telegram-backup.index')->middleware('can:system.telegram_backup.view');
+        Route::post('telegram-backup/retry-all', [TelegramBackupController::class, 'retryAll'])->name('telegram-backup.retry-all')->middleware('can:system.telegram_backup.retry');
+        Route::post('telegram-backup/{telegramFile}/retry', [TelegramBackupController::class, 'retry'])->name('telegram-backup.retry')->middleware('can:system.telegram_backup.retry');
+        Route::delete('telegram-backup/{telegramFile}', [TelegramBackupController::class, 'destroy'])->name('telegram-backup.destroy')->middleware('can:system.telegram_backup.delete');
     });
 
     // Letter Domain
@@ -870,6 +919,7 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed']
     Route::get('toefl-media', [ToeflMediaController::class, 'index'])->name('toefl.media.index');
     Route::post('toefl-media', [ToeflMediaController::class, 'store'])->name('toefl.media.store');
     Route::delete('toefl-media/{toeflMedia}', [ToeflMediaController::class, 'destroy'])->name('toefl.media.destroy');
+    Route::get('toefl-member-sessions', [ToeflMemberSessionController::class, 'index'])->name('toefl.member-session.index');
     Route::get('toefl-guest-leads', [GuestToeflLeadController::class, 'index'])->name('toefl.guest-lead.index');
 });
 

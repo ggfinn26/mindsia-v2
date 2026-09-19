@@ -4,22 +4,17 @@ namespace Tests\Feature\Auth;
 
 use App\Models\Employee;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Notifications\AnonymousNotifiable;
+use App\Notifications\GuardedVerifyEmail;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class EmployeeRegisterTest extends TestCase
 {
-    use RefreshDatabase;
-
     private Employee $employee;
 
     protected function setUp(): void
     {
         parent::setUp();
-
-        
 
         $this->employee = Employee::factory()->create([
             'employee_code' => 'TEST-REG',
@@ -87,12 +82,12 @@ class EmployeeRegisterTest extends TestCase
             'email' => 'newemployee@mindsia.test',
             'password' => 'Test@12345',
             'password_confirmation' => 'Test@12345',
-        ])->assertRedirect(route('register.success'));
+        ])->assertRedirect(route('verification.notice'));
 
         $this->assertDatabaseHas('employee_accounts', ['email' => 'newemployee@mindsia.test']);
         Notification::assertSentToTimes(
             User::where('email', 'newemployee@mindsia.test')->first(),
-            \App\Notifications\GuardedVerifyEmail::class,
+            GuardedVerifyEmail::class,
             1
         );
     }

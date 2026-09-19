@@ -8,6 +8,7 @@ use App\Models\Program;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProgramController extends Controller implements HasMiddleware
@@ -33,7 +34,13 @@ class ProgramController extends Controller implements HasMiddleware
 
     public function store(StoreProgramRequest $request): RedirectResponse
     {
-        Program::create($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('image')) {
+            $data['image_path'] = $request->file('image')->store('programs', 'public');
+        }
+
+        Program::create($data);
 
         return redirect()->route('programs.index')->with('success', 'Program berhasil dibuat.');
     }
@@ -52,7 +59,16 @@ class ProgramController extends Controller implements HasMiddleware
 
     public function update(UpdateProgramRequest $request, Program $program): RedirectResponse
     {
-        $program->update($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('image')) {
+            if ($program->image_path) {
+                Storage::disk('public')->delete($program->image_path);
+            }
+            $data['image_path'] = $request->file('image')->store('programs', 'public');
+        }
+
+        $program->update($data);
 
         return redirect()->route('programs.show', $program)->with('success', 'Program berhasil diperbarui.');
     }
