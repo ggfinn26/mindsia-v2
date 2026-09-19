@@ -50,13 +50,14 @@ class VerificationController extends Controller
         }
 
         $cacheKey = "email_otp_{$guard}_{$account->getKey()}";
-        $stored = Cache::get($cacheKey);
+
+        // pull() = get + delete in one call; prevents two concurrent requests
+        // from both reading the same OTP before either deletes it (TOCTOU).
+        $stored = Cache::pull($cacheKey);
 
         if (! $stored || ! hash_equals($stored, $request->input('otp'))) {
             return back()->withErrors(['otp' => 'Kode OTP tidak valid atau sudah kedaluwarsa.']);
         }
-
-        Cache::forget($cacheKey);
         $account->markEmailAsVerified();
         event(new Verified($account));
         auth($guard)->login($account);
