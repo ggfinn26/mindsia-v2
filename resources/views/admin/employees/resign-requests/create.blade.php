@@ -19,11 +19,11 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('employees.resign-requests.store', $employee) }}" class="border border-slate-200 bg-white p-6 space-y-4">
+    <form method="POST" action="{{ route('resign-requests.store', $employee) }}" class="border border-slate-200 bg-white p-6 space-y-4">
         @csrf
         <div>
             <label class="mb-1.5 block text-sm font-medium text-slate-700">Tanggal efektif pengunduran</label>
-            <input type="date" name="effective_date" value="{{ old('effective_date') }}" required min="{{ today()->addDays(30)->toDateString() }}" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+            <input type="date" name="resign_date" value="{{ old('resign_date') }}" required min="{{ today()->addDays(30)->toDateString() }}" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
             <p class="mt-1 text-xs text-slate-400">Minimal 30 hari dari hari ini.</p>
         </div>
         <div>

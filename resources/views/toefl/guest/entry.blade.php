@@ -13,7 +13,8 @@
 
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-            <form action="{{ route('toefl.guest.listening') }}" method="GET" class="space-y-6">
+            <form action="{{ route('toefl.guest.start', $toeflTest) }}" method="POST" class="space-y-6">
+                @csrf
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
                     <input name="name" type="text" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">

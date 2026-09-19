@@ -16,7 +16,7 @@
             </div>
 
             <div class="mt-8 flex justify-end">
-                <a href="{{ route('system-access.api-keys.index') }}" class="btn bg-white border-gray-200 hover:border-gray-300 text-gray-600 mr-3">Batal</a>
+                <a href="{{ route('system.api-keys.index') }}" class="btn bg-white border-gray-200 hover:border-gray-300 text-gray-600 mr-3">Batal</a>
                 <button type="submit" class="btn bg-indigo-500 hover:bg-indigo-600 text-white">Generate Token</button>
             </div>
         </form>

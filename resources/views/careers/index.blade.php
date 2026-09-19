@@ -53,7 +53,7 @@
 </section>
 
 <!-- Job Openings Section -->
-<main class="flex-grow w-full pt-16 pb-32 bg-ky-surface">
+<main id="lowongan" class="flex-grow w-full pt-16 pb-32 bg-ky-surface">
     <div class="max-w-[1000px] mx-auto px-6">
         <!-- Heading -->
         <div class="mb-12 border-l-[4px] border-gold pl-6">

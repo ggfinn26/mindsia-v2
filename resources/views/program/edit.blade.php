@@ -19,7 +19,7 @@
         </div>
     @endif
 
-    <form action="{{ route('programs.update', $program) }}" method="POST" class="bg-white shadow sm:rounded-lg">
+    <form action="{{ route('programs.update', $program) }}" method="POST" enctype="multipart/form-data" class="bg-white shadow sm:rounded-lg">
         @csrf
         @method('PUT')
         <div class="p-6 space-y-6">
@@ -49,6 +49,21 @@
                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                        value="{{ old('program_price', $program->program_price) }}" />
                 @error('program_price')
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Foto Program (Opsional)</label>
+                @if($program->image_path)
+                    <div class="mb-2">
+                        <img src="{{ \Illuminate\Support\Facades\Storage::url($program->image_path) }}" alt="Foto Program" class="h-32 object-contain border border-gray-200 rounded">
+                    </div>
+                @endif
+                <input type="file" name="image" accept="image/*"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ingin mengubah foto.</p>
+                @error('image')
                     <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                 @enderror
             </div>

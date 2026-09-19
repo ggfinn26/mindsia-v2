@@ -22,17 +22,28 @@
 
 {{-- Nav --}}
 <nav id="lp-nav" x-data="{ mobileMenuOpen: false }" class="fixed top-0 w-full z-40 bg-white/90 backdrop-blur-md border-b border-ky-border/50 transition-all duration-300 shadow-sm" aria-label="Navigasi utama">
-    <div class="max-w-[1100px] mx-auto px-6 flex items-center justify-between h-[68px]">
+    <div class="max-w-[1100px] mx-auto px-6 flex items-center justify-between h-[68px] md:h-[100px]">
         <a href="{{ url('/') }}" class="hover:opacity-80 transition-opacity" title="MINDSIA">
             <!-- Normal logo (not inverted) -->
-            <img src="/img/logo/mindsia-logo.webp" alt="MINDSIA" class="h-12 w-auto object-contain drop-shadow-sm">
+            <img src="/img/logo/mindsia-logo.webp" alt="MINDSIA" class="h-12 md:h-20 w-auto object-contain drop-shadow-sm py-2">
         </a>
         <div class="hidden md:flex gap-4 items-center">
-            <a href="#konsep" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Konsep</a>
-            <a href="#program" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Program</a>
-            <a href="#cabang" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Cabang</a>
-            <a href="#testimoni" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Testimoni</a>
-            <a href="/karir" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Karir</a>
+            @if(request()->is('karir*') || request()->is('applicant*'))
+                <a href="{{ url('/') }}" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Beranda</a>
+                <a href="{{ route('careers.index') }}#lowongan" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Lowongan Pekerjaan</a>
+            @elseif(request()->routeIs('company.landing'))
+                <a href="{{ url('/') }}" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Beranda</a>
+                <a href="#tentang" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Tentang Kami</a>
+                <a href="#visi-misi" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Visi & Misi</a>
+                <a href="#wilayah" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Wilayah</a>
+                <a href="#galeri" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Galeri</a>
+            @else
+                <a href="#konsep" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Konsep</a>
+                <a href="#program" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Program</a>
+                <a href="#cabang" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Cabang</a>
+                <a href="#testimoni" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Testimoni</a>
+                <a href="/karir" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Karir</a>
+            @endif
         </div>
         @if(!request()->routeIs('company.landing'))
         <div class="hidden md:flex items-center gap-3">
@@ -45,21 +56,37 @@
             @endif
         </div>
         @endif
-        <button id="nav-ham" @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden flex flex-col gap-1.5 bg-transparent border-none p-1.5" aria-label="Menu">
-            <span class="block w-6 h-0.5 bg-ky-text rounded-full"></span>
-            <span class="block w-6 h-0.5 bg-ky-text rounded-full"></span>
-            <span class="block w-6 h-0.5 bg-ky-text rounded-full"></span>
+        <button id="nav-ham" @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden flex items-center justify-center bg-transparent border-none p-1.5 text-ky-text transition-colors" aria-label="Menu">
+            <!-- Hamburger Icon -->
+            <svg x-show="!mobileMenuOpen" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-8 h-8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+            <!-- Close Icon -->
+            <svg x-show="mobileMenuOpen" x-cloak xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-8 h-8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
         </button>
     </div>
 
     <!-- Mobile Menu -->
     <div x-show="mobileMenuOpen" x-cloak class="md:hidden bg-white border-t border-gray-100 shadow-lg absolute w-full left-0 top-[68px]">
         <div class="flex flex-col px-6 py-4 gap-4">
-            <a href="#konsep" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Konsep</a>
-            <a href="#program" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Program</a>
-            <a href="#cabang" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Cabang</a>
-            <a href="#testimoni" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Testimoni</a>
-            <a href="/karir" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Karir</a>
+            @if(request()->is('karir*') || request()->is('applicant*'))
+                <a href="{{ url('/') }}" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Beranda</a>
+                <a href="{{ route('careers.index') }}#lowongan" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Lowongan Pekerjaan</a>
+            @elseif(request()->routeIs('company.landing'))
+                <a href="{{ url('/') }}" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Beranda</a>
+                <a href="#tentang" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Tentang Kami</a>
+                <a href="#visi-misi" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Visi & Misi</a>
+                <a href="#wilayah" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Wilayah</a>
+                <a href="#galeri" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Galeri</a>
+            @else
+                <a href="#konsep" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Konsep</a>
+                <a href="#program" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Program</a>
+                <a href="#cabang" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Cabang</a>
+                <a href="#testimoni" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Testimoni</a>
+                <a href="/karir" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Karir</a>
+            @endif
             @if(!request()->routeIs('company.landing'))
             <div class="h-[1px] bg-gray-100 w-full my-1"></div>
             @if(request()->is('karir*') || request()->is('applicant*'))
@@ -74,14 +101,16 @@
     </div>
 </nav>
 
-@yield('content')
+<main class="overflow-x-hidden">
+    @yield('content')
+</main>
 
 {{-- Footer --}}
 <footer class="bg-ky-card border-t border-ky-border mt-20" aria-label="Footer">
     <div class="max-w-[1100px] mx-auto px-6 pt-14 pb-8">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 mb-12">
             <div class="md:col-span-1">
-                <img src="/img/logo/mindsia-logo.webp" alt="MINDSIA" class="h-8 w-auto object-contain mb-4">
+                <img src="/img/logo/mindsia-logo.webp" alt="MINDSIA" class="w-24 md:w-44 h-auto object-contain mb-4 md:mb-8">
                 <p class="text-[14px] text-ky-text/70 leading-relaxed">Lembaga kursus bahasa Inggris terpadu dengan fasilitas asrama wajib bahasa Inggris.</p>
             </div>
             <div>
@@ -91,10 +120,23 @@
             <div>
                 <div class="text-[12px] font-semibold text-ky-text mb-4">Navigasi</div>
                 <ul class="list-none flex flex-col gap-3 m-0 p-0">
-                    <li><a href="#konsep" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Konsep HESA</a></li>
-                    <li><a href="#program" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Program</a></li>
-                    <li><a href="#cabang" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Cabang</a></li>
-                    <li><a href="/karir" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Karir</a></li>
+                    @if(request()->is('karir*') || request()->is('applicant*'))
+                        <li><a href="{{ url('/') }}" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Beranda</a></li>
+                        <li><a href="{{ route('careers.index') }}#lowongan" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Lowongan Pekerjaan</a></li>
+                        <li><a href="{{ route('company.landing') }}" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Tentang Kami</a></li>
+                    @elseif(request()->routeIs('company.landing'))
+                        <li><a href="{{ url('/') }}" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Beranda</a></li>
+                        <li><a href="#tentang" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Tentang Kami</a></li>
+                        <li><a href="#visi-misi" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Visi & Misi</a></li>
+                        <li><a href="#wilayah" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Wilayah Cabang</a></li>
+                        <li><a href="/karir" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Karir</a></li>
+                    @else
+                        <li><a href="#konsep" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Konsep HESA</a></li>
+                        <li><a href="#program" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Program</a></li>
+                        <li><a href="#cabang" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Cabang</a></li>
+                        <li><a href="{{ route('company.landing') }}" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Company Profile</a></li>
+                        <li><a href="/karir" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Karir</a></li>
+                    @endif
                 </ul>
             </div>
             <div>

@@ -34,8 +34,7 @@
              :class="{ 'h-full md:w-full': view === 'landing', 'h-[15vh] md:h-full md:w-[40%] lg:w-[45%]': view !== 'landing' }">
 
             <div class="absolute inset-0 bg-gradient-to-br from-[#5586DB] to-[#00AACC]"></div>
-            <div class="absolute inset-0 opacity-[0.06]"
-                 style="background-image: url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fill-rule=%22evenodd%22%3E%3Cg fill=%22%23ffffff%22 fill-opacity=%221%22%3E%3Cpath d=%22M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+            <div class="absolute inset-0 animated-pattern pointer-events-none"></div>
 
             <!-- Landing Content -->
             <div class="relative z-10 w-full max-w-3xl px-6 flex flex-col items-center transition-all duration-500"
@@ -69,7 +68,7 @@
             </div>
 
             <!-- Split Content (shown when form is active) -->
-            <div class="relative z-10 w-full flex flex-col items-center md:items-start transition-all duration-500"
+            <div class="relative z-10 w-full flex flex-col items-center md:items-center transition-all duration-500"
                  x-show="view !== 'landing'"
                  x-transition:enter="transition ease-out duration-700 delay-500"
                  x-transition:enter-start="opacity-0 -translate-y-4 md:translate-y-0 md:-translate-x-12"
@@ -81,7 +80,7 @@
 
                 <div class="max-w-md px-10 text-left w-full">
                     <img src="/img/logo/mindsia-logo.webp" alt="Mindsia Logo"
-                         class="h-10 md:h-20 w-auto mb-2 md:mb-8 ml-0 md:ml-10 filter brightness-0 invert opacity-90 cursor-pointer hover:opacity-80 transition drop-shadow-md"
+                         class="h-10 md:h-20 w-auto mb-2 md:mb-8 filter brightness-0 invert opacity-90 cursor-pointer hover:opacity-80 transition drop-shadow-md"
                          @click="view = 'landing'" title="Kembali ke awal">
                     <h2 class="hidden md:block font-jakarta font-extrabold text-[36px] md:text-[48px] tracking-tight text-white mb-6 leading-[1.1]">
                         Portal <br><span class="text-[#F8FAFC]/90">Karyawan</span>
@@ -122,9 +121,6 @@
                      x-transition:enter-end="opacity-100 translate-y-0"
                      {!! $initialView !== 'login' ? 'style="display: none;"' : '' !!}>
 
-                    <div class="inline-block py-1 px-3 bg-[#F8FAFC] border border-[#E5E7EB] rounded-lg text-[#5586DB] text-[11px] font-bold tracking-widest uppercase mb-6 font-jakarta mt-2 md:mt-0">
-                        Masuk
-                    </div>
 
                     <h1 class="font-jakarta font-extrabold text-[24px] md:text-[28px] text-[#111827] mb-2 tracking-tight">Selamat datang di MINDSIA</h1>
                     <p class="text-[14px] text-[#4B5563] mb-6 font-medium">Silakan masuk untuk mengakses sistem perusahaan.</p>
@@ -149,13 +145,13 @@
                                 <label for="password" class="block text-[12px] font-bold text-[#4B5563]">Password</label>
                                 <a href="{{ route('password.request') }}" class="text-[12px] font-bold text-[#5586DB] hover:text-[#00AACC] transition-colors">Lupa kata sandi?</a>
                             </div>
-                            <div class="relative" x-data="{ show: false }">
-                                <input :type="show ? 'text' : 'password'" id="password" name="password"
+                            <div class="relative">
+                                <input type="password" id="password" name="password"
                                        class="pr-12 w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-[#E5E7EB] rounded-xl text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-2 focus:ring-[#5586DB]/20 transition-all shadow-sm"
                                        required>
-                                <button type="button" @click="show = !show"
-                                        class="absolute inset-y-0 right-0 px-4 flex items-center text-[#4B5563] hover:text-[#5586DB] transition-colors focus:outline-none">
-                                    <span class="material-symbols-outlined text-[16px]" x-text="show ? 'visibility_off' : 'visibility'">visibility</span>
+                                <button type="button" onclick="const type = this.previousElementSibling.type === 'password' ? 'text' : 'password'; document.querySelectorAll('input[type=password], input[data-is-pwd]').forEach(i => { i.type = type; i.setAttribute('data-is-pwd', '1'); }); document.querySelectorAll('button.pwd-toggle').forEach(b => { if(b.innerHTML.includes('material-symbols-outlined')) { b.innerHTML = type === 'password' ? '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility</span>' : '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility_off</span>'; } else { const eye = b.querySelector('.eye'); const eyeOff = b.querySelector('.eye-off'); if(eye && eyeOff) { eye.classList.toggle('hidden', type === 'text'); eyeOff.classList.toggle('hidden', type === 'password'); } } });"
+                                        class="absolute inset-y-0 right-0 px-4 flex items-center text-[#4B5563] hover:text-[#5586DB] transition-colors focus:outline-none pwd-toggle">
+                                    <span class="material-symbols-outlined text-[16px]">visibility</span>
                                 </button>
                             </div>
                         </div>
@@ -182,7 +178,7 @@
                         <button type="submit"
                                 :disabled="loginLoading"
                                 class="w-full bg-[#5586DB] text-white font-bold py-2.5 px-4 rounded-xl hover:bg-[#00AACC] disabled:opacity-60 transition-all shadow-[0_4px_12px_-2px_rgba(85,134,219,0.3)] flex justify-center items-center gap-2">
-                            <span x-show="!loginLoading">Masuk <span class="material-symbols-outlined text-[16px]">login</span></span>
+                            <span x-show="!loginLoading" class="flex justify-center items-center gap-2">Masuk <span class="material-symbols-outlined text-[18px]">login</span></span>
                             <span x-show="loginLoading">Memeriksa...</span>
                         </button>
                     </form>
@@ -203,9 +199,6 @@
                      x-transition:enter-end="opacity-100 translate-y-0"
                      {!! $initialView !== 'register1' ? 'style="display: none;"' : '' !!}>
 
-                    <div class="inline-block py-1 px-3 bg-[#F8FAFC] border border-[#E5E7EB] rounded-lg text-[#5586DB] text-[11px] font-bold tracking-widest uppercase mb-6 font-jakarta mt-2 md:mt-0">
-                        Daftar — Langkah 1 dari 2
-                    </div>
 
                     <h1 class="font-jakarta font-extrabold text-[24px] md:text-[28px] text-[#111827] mb-2 tracking-tight">Verifikasi Data</h1>
                     <p class="text-[14px] text-[#4B5563] mb-6 font-medium">Masukkan kode karyawan untuk memulai aktivasi akun.</p>
@@ -234,7 +227,7 @@
                         <button type="submit"
                                 :disabled="verifyLoading"
                                 class="w-full bg-[#5586DB] text-white font-bold py-2.5 px-4 rounded-xl hover:bg-[#00AACC] disabled:opacity-60 transition-all shadow-[0_4px_12px_-2px_rgba(85,134,219,0.3)] flex justify-center items-center gap-2">
-                            <span x-show="!verifyLoading">Lanjut <span class="material-symbols-outlined text-[16px]">arrow_forward</span></span>
+                            <span x-show="!verifyLoading" class="flex justify-center items-center gap-2">Lanjut <span class="material-symbols-outlined text-[18px]">arrow_forward</span></span>
                             <span x-show="verifyLoading">Memeriksa...</span>
                         </button>
                     </form>
@@ -254,10 +247,6 @@
                      x-transition:enter-start="opacity-0 translate-y-8"
                      x-transition:enter-end="opacity-100 translate-y-0"
                      {!! $initialView !== 'register2' ? 'style="display: none;"' : '' !!}>
-
-                    <div class="inline-block py-1 px-3 bg-[#F8FAFC] border border-[#E5E7EB] rounded-lg text-[#5586DB] text-[11px] font-bold tracking-widest uppercase mb-6 font-jakarta mt-2 md:mt-0">
-                        Daftar — Langkah 2 dari 2
-                    </div>
 
                     <h1 class="font-jakarta font-extrabold text-[24px] md:text-[28px] text-[#111827] mb-2 tracking-tight">Buat Akun</h1>
                     <p class="text-[14px] text-[#4B5563] mb-6 font-medium">Lengkapi data akun Anda untuk masuk ke sistem.</p>
@@ -283,14 +272,14 @@
 
                         <div>
                             <label for="reg_password" class="block mb-1 text-[12px] font-bold text-[#4B5563]">Password</label>
-                            <div class="relative" x-data="{ show: false }">
-                                <input :type="show ? 'text' : 'password'" id="reg_password" name="password"
+                            <div class="relative">
+                                <input type="password" id="reg_password" name="password"
                                        x-model="regPassword"
                                        class="pr-12 w-full px-3.5 py-2.5 border rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all shadow-sm"
                                        :class="(registerErrors.password || hasError(2, 'reg_password')) ? 'border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200' : inputClass(2, 'reg_password')" required>
-                                <button type="button" @click="show = !show"
-                                        class="absolute inset-y-0 right-0 px-4 flex items-center text-[#4B5563] hover:text-[#5586DB] transition-colors focus:outline-none">
-                                    <span class="material-symbols-outlined text-[16px]" x-text="show ? 'visibility_off' : 'visibility'">visibility</span>
+                                <button type="button" onclick="const type = this.previousElementSibling.type === 'password' ? 'text' : 'password'; document.querySelectorAll('input[type=password], input[data-is-pwd]').forEach(i => { i.type = type; i.setAttribute('data-is-pwd', '1'); }); document.querySelectorAll('button.pwd-toggle').forEach(b => { if(b.innerHTML.includes('material-symbols-outlined')) { b.innerHTML = type === 'password' ? '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility</span>' : '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility_off</span>'; } else { const eye = b.querySelector('.eye'); const eyeOff = b.querySelector('.eye-off'); if(eye && eyeOff) { eye.classList.toggle('hidden', type === 'text'); eyeOff.classList.toggle('hidden', type === 'password'); } } });"
+                                        class="absolute inset-y-0 right-0 px-4 flex items-center text-[#4B5563] hover:text-[#5586DB] transition-colors focus:outline-none pwd-toggle">
+                                    <span class="material-symbols-outlined text-[16px]">visibility</span>
                                 </button>
                             </div>
                             <p x-show="hasError(2, 'reg_password')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium" x-text="passwordErrorText()"></p>
@@ -300,14 +289,14 @@
 
                         <div>
                             <label for="password_confirmation" class="block mb-1 text-[12px] font-bold text-[#4B5563]">Konfirmasi Password</label>
-                            <div class="relative" x-data="{ show: false }">
-                                <input :type="show ? 'text' : 'password'" id="password_confirmation" name="password_confirmation"
+                            <div class="relative">
+                                <input type="password" id="password_confirmation" name="password_confirmation"
                                        x-model="regPasswordConfirm"
                                        class="pr-12 w-full px-3.5 py-2.5 border rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all shadow-sm"
                                        :class="hasError(2, 'password_confirmation') ? 'border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200' : inputClass(2, 'password_confirmation')" required>
-                                <button type="button" @click="show = !show"
-                                        class="absolute inset-y-0 right-0 px-4 flex items-center text-[#4B5563] hover:text-[#5586DB] transition-colors focus:outline-none">
-                                    <span class="material-symbols-outlined text-[16px]" x-text="show ? 'visibility_off' : 'visibility'">visibility</span>
+                                <button type="button" onclick="const type = this.previousElementSibling.type === 'password' ? 'text' : 'password'; document.querySelectorAll('input[type=password], input[data-is-pwd]').forEach(i => { i.type = type; i.setAttribute('data-is-pwd', '1'); }); document.querySelectorAll('button.pwd-toggle').forEach(b => { if(b.innerHTML.includes('material-symbols-outlined')) { b.innerHTML = type === 'password' ? '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility</span>' : '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility_off</span>'; } else { const eye = b.querySelector('.eye'); const eyeOff = b.querySelector('.eye-off'); if(eye && eyeOff) { eye.classList.toggle('hidden', type === 'text'); eyeOff.classList.toggle('hidden', type === 'password'); } } });"
+                                        class="absolute inset-y-0 right-0 px-4 flex items-center text-[#4B5563] hover:text-[#5586DB] transition-colors focus:outline-none pwd-toggle">
+                                    <span class="material-symbols-outlined text-[16px]">visibility</span>
                                 </button>
                             </div>
                             <p x-show="hasError(2, 'password_confirmation')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium" x-text="passwordConfirmErrorText()"></p>
@@ -327,14 +316,14 @@
                         <button type="submit"
                                 :disabled="registerLoading"
                                 class="w-full bg-[#5586DB] text-white font-bold py-2.5 px-4 rounded-xl hover:bg-[#00AACC] disabled:opacity-60 transition-all shadow-[0_4px_12px_-2px_rgba(85,134,219,0.3)] flex justify-center items-center gap-2">
-                            <span x-show="!registerLoading">Simpan Akun <span class="material-symbols-outlined text-[16px]">person_add</span></span>
+                            <span x-show="!registerLoading" class="flex justify-center items-center gap-2">Simpan Akun <span class="material-symbols-outlined text-[18px]">person_add</span></span>
                             <span x-show="registerLoading">Menyimpan...</span>
                         </button>
                     </form>
 
-                    <div class="mt-8 text-center border-t border-[#E5E7EB] pt-6 pb-4">
-                        <button @click="view = 'register1'"
-                                class="text-[13px] font-bold text-[#4B5563] hover:text-[#5586DB] transition-colors">
+                    <div class="mt-4">
+                        <button type="button" @click="view = 'register1'"
+                                class="w-full bg-white border border-[#E5E7EB] text-[#4B5563] font-bold py-2.5 px-4 rounded-xl hover:bg-[#F8FAFC] hover:text-[#111827] transition-all flex justify-center items-center shadow-sm">
                             Kembali ke Langkah 1
                         </button>
                     </div>

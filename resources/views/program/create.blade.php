@@ -21,7 +21,7 @@
         </div>
     @endif
 
-    <form action="{{ route('programs.store') }}" method="POST" class="bg-white shadow sm:rounded-lg">
+    <form action="{{ route('programs.store') }}" method="POST" enctype="multipart/form-data" class="bg-white shadow sm:rounded-lg">
         @csrf
         <div class="p-6 space-y-6">
             <div>
@@ -50,6 +50,15 @@
                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                        value="{{ old('program_price') }}" placeholder="0" />
                 @error('program_price')
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Foto Program (Opsional)</label>
+                <input type="file" name="image" accept="image/*"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                @error('image')
                     <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                 @enderror
             </div>

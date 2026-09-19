@@ -230,6 +230,11 @@
     50% { transform: translateY(-6px); }
 }
 
+@keyframes movePattern {
+    0% { background-position: 0 0, 10px 0; }
+    100% { background-position: 40px 0, 50px 0; }
+}
+
 @layer base {
     body {
         background-color: var(--color-background);
@@ -252,6 +257,14 @@
             transform: translateY(-8px) scale(1.02);
             box-shadow: 0 30px 60px rgba(37, 99, 235, 0.15);
         }
+    }
+    
+    .animated-pattern {
+        opacity: 0.8;
+        background-image: radial-gradient(circle at 10px 100%, transparent 9px, #444CF7 9px, #444CF7 10px, transparent 10px), radial-gradient(circle at 10px 0%, transparent 9px, #444CF7 9px, #444CF7 10px, transparent 10px);
+        background-size: 20px 10px;
+        animation: movePattern 4s linear infinite;
+        mix-blend-mode: overlay;
     }
     
     .hero-gradient {

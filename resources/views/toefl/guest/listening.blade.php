@@ -47,7 +47,7 @@
             </div>
             
             <div class="flex justify-end border-t pt-4">
-                <a href="{{ route('toefl.guest.structure') }}" class="btn bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-md font-medium">Lanjut ke Section 2</a>
+                <a href="{{ route('toefl.guest.structure', $session) }}" class="btn bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-md font-medium">Lanjut ke Section 2</a>
             </div>
         </div>
     </div>

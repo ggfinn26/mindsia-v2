@@ -6,11 +6,11 @@
 @section('content')
 
 {{-- HERO --}}
-<section class="relative bg-navy pt-32 pb-20 border-b border-white/5" id="hero">
+<section class="relative bg-navy pt-28 md:pt-32 pb-16 md:pb-20 border-b border-white/5" id="hero">
     <div class="max-w-[1100px] mx-auto px-6">
         <div class="max-w-[800px] mb-20">
             
-            <h1 class="font-sans font-black text-5xl md:text-6xl lg:text-7xl text-white leading-[1.1] mb-6 tracking-tight">
+            <h1 class="font-sans font-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white leading-[1.1] mb-6 tracking-tight">
                 Interactive Learning.<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-gold to-yellow-200">Real Confidence.</span>
             </h1>
             <p class="text-xl text-white/70 leading-relaxed max-w-[650px] mb-10">
@@ -19,7 +19,7 @@
 
         </div>
         
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 pt-12 border-t border-white/10">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 pt-12 border-t border-white/10">
             <div>
                 <div class="text-xs font-semibold text-white/40 tracking-widest uppercase mb-2">Berdiri Sejak</div>
                 <div class="text-4xl font-bold text-white">2019</div>
@@ -35,7 +35,7 @@
             <div class="flex items-center md:justify-end">
                 <a href="{{ url('/') }}#program" class="group inline-flex items-center gap-3 text-white font-semibold hover:text-gold transition-colors">
                     Lihat Program
-                    <span class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center group-hover:border-gold transition-colors">
+                    <span class="w-10 h-10 shrink-0 rounded-full border border-white/20 flex items-center justify-center group-hover:border-gold transition-colors">
                         <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                     </span>
                 </a>
@@ -45,7 +45,7 @@
 </section>
 
 {{-- TENTANG --}}
-<section class="py-24 px-6 bg-ky-surface" id="tentang">
+<section class="py-16 md:py-24 px-6 bg-ky-surface" id="tentang">
     <div class="max-w-[1100px] mx-auto">
         <div class="grid md:grid-cols-12 gap-16 items-start">
             <div class="md:col-span-4 sticky top-24">
@@ -87,7 +87,7 @@
 </section>
 
 {{-- VISI & MISI --}}
-<section class="py-24 px-6 bg-white border-t border-ky-border/50" id="visi-misi">
+<section class="py-16 md:py-24 px-6 bg-white border-t border-ky-border/50" id="visi-misi">
     <div class="max-w-[1100px] mx-auto">
         <div class="mb-24 text-center max-w-[850px] mx-auto">
             <span class="material-symbols-outlined text-ky-primary/20 text-5xl mb-6">visibility</span>
@@ -121,7 +121,7 @@
 </section>
 
 {{-- FILOSOFI LOGO --}}
-<section class="py-24 px-6 bg-ky-surface border-t border-ky-border/50" id="filosofi">
+<section class="py-16 md:py-24 px-6 bg-ky-surface border-t border-ky-border/50" id="filosofi">
     <div class="max-w-[1100px] mx-auto">
         <div class="grid md:grid-cols-12 gap-16 items-center">
             <div class="md:col-span-5 flex justify-center p-12 bg-white rounded-[2rem] border border-ky-border/50 shadow-sm">
@@ -184,12 +184,12 @@
 </section>
 
 {{-- KODE ETIK --}}
-<section class="py-24 px-6 bg-white border-t border-ky-border/50" id="kode-etik">
+<section class="py-16 md:py-24 px-6 bg-white border-t border-ky-border/50" id="kode-etik">
     <div class="max-w-[1100px] mx-auto text-center">
         <h2 class="font-sans font-black text-sm text-ky-primary tracking-widest uppercase mb-3">Nilai Inti</h2>
         <h3 class="font-sans font-bold text-3xl md:text-4xl text-[#06122B] tracking-tight mb-16">Kode Etik Perusahaan</h3>
         
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-12 max-w-[900px] mx-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-12 max-w-[900px] mx-auto">
             @foreach(['Religiusitas', 'Profesional', 'Integritas & Transparansi', 'Kreatif', 'Inovatif', 'Mengadaptasi Perubahan', 'Kolaboratif', 'Inisiatif', 'Berbagi dan Peduli'] as $index => $etik)
             <div class="flex flex-col items-center">
                 <span class="text-4xl font-black text-ky-primary/15 mb-3">0{{ $index + 1 }}</span>
@@ -201,13 +201,13 @@
 </section>
 
 {{-- STRUKTUR KEPEMIMPINAN --}}
-<section class="py-24 px-6 bg-ky-surface border-t border-ky-border/50" id="struktur">
+<section class="py-16 md:py-24 px-6 bg-ky-surface border-t border-ky-border/50" id="struktur">
     <div class="max-w-[1100px] mx-auto">
         <div class="mb-16 text-center">
             <h2 class="font-sans font-black text-sm text-ky-primary tracking-widest uppercase mb-3">Manajemen</h2>
             <h3 class="font-sans font-bold text-3xl md:text-4xl text-[#06122B] tracking-tight">Struktur Kepemimpinan</h3>
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
             @forelse($leaders as $leader)
             <div class="bg-white p-6 rounded-2xl border border-ky-border/50 text-center shadow-sm hover:border-ky-primary/30 transition-colors">
                 <div class="w-14 h-14 mx-auto rounded-full bg-ky-primary/5 flex items-center justify-center mb-4 overflow-hidden border border-ky-primary/10">
@@ -228,7 +228,7 @@
 </section>
 
 {{-- PETA WILAYAH --}}
-<section class="py-24 px-6 bg-navy" id="wilayah">
+<section class="py-16 md:py-24 px-6 bg-navy" id="wilayah">
     <div class="max-w-[1100px] mx-auto">
         <div class="grid md:grid-cols-12 gap-12 items-end mb-16">
             <div class="md:col-span-8">
@@ -249,7 +249,7 @@
 </section>
 
 {{-- GALERI --}}
-<section class="py-24 px-6 bg-white" id="galeri">
+<section class="py-16 md:py-24 px-6 bg-white" id="galeri">
     <div class="max-w-[1100px] mx-auto">
         <div class="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
@@ -290,7 +290,7 @@
 </section>
 
 {{-- OUR HEADQUARTER --}}
-<section class="py-24 px-6 bg-white border-t border-ky-border/50" id="headquarter">
+<section class="py-16 md:py-24 px-6 bg-white border-t border-ky-border/50" id="headquarter">
     <div class="max-w-[1100px] mx-auto">
         <div class="grid md:grid-cols-12 gap-12 items-center">
             <div class="md:col-span-5">
@@ -475,7 +475,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         const list = document.getElementById('branch-list');
         branches.forEach(b => {
-            const citiesHtml = b.cities.map(c => `<span class="text-white/60">${c}</span>`).join('<span class="text-white/20 mx-1.5">•</span>');
+            const citiesHtml = b.cities.map(c => `<span class="text-white/60">${c}</span>`).join(' <span class="text-white/20 mx-1.5">•</span> ');
             list.innerHTML += `
                 <div class="py-4 border-t border-white/10">
                     <div class="flex justify-between items-baseline mb-3">

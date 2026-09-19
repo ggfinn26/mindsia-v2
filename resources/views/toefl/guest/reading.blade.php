@@ -49,7 +49,7 @@
                 </div>
                 
                 <div class="flex justify-end border-t pt-4">
-                    <a href="{{ route('toefl.guest.result') }}" class="btn bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md font-medium">Selesai Ujian</a>
+                    <a href="{{ route('toefl.guest.result', $session) }}" class="btn bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md font-medium">Selesai Ujian</a>
                 </div>
             </div>
         </div>

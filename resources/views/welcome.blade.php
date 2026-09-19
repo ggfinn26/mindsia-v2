@@ -2,62 +2,81 @@
 
 @section('content')
 
-{{-- ═══ HERO (Image Background) ═══ --}}
-<section class="min-h-[90vh] relative flex items-center pt-24 pb-20 overflow-hidden" id="hero" aria-label="Hero">
-    <!-- Background Image with Overlay -->
-    <div class="absolute inset-0 z-0">
-        <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2070&auto=format&fit=crop" alt="Students learning" class="w-full h-full object-cover">
-        <div class="absolute inset-0 bg-[#06122B]/85"></div>
-    </div>
+    <style>
+        html { scroll-behavior: smooth; }
+        .font-jakarta { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-inter { font-family: 'Inter', sans-serif; }
+        
+        /* Sembunyikan navbar di awal khusus halaman ini */
+        #lp-nav {
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+        }
+        #lp-nav.scrolled-down {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    </style>
 
-    <div class="relative z-10 w-full max-w-[1200px] mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
-        <!-- Left Content -->
-        <div>
-            <div class="inline-flex items-center gap-2 px-3 py-1 bg-gold/10 border border-gold/30 rounded-full mb-6">
-                <span class="w-2 h-2 rounded-full bg-gold"></span>
-                <span class="text-[12px] font-bold text-gold tracking-widest uppercase">MINDSIA English Course</span>
-            </div>
+    <!-- ==================== FULL SCREEN BLUE ==================== -->
+    <section id="hero" class="relative w-full min-h-screen flex flex-col items-center justify-center text-center overflow-hidden z-20 font-inter">
+
+        <!-- Background Gradient and Pattern -->
+        <div class="absolute inset-0 bg-gradient-to-br from-[#5586DB] to-[#00AACC]"></div>
+        <div class="absolute inset-0 animated-pattern pointer-events-none"></div>
+
+        <!-- Main Content -->
+        <div class="relative z-10 w-full max-w-6xl px-6 flex flex-col items-center mt-12 md:mt-0">
+
+            <img src="/img/logo/mindsia-logo.webp" alt="Mindsia Logo"
+                 class="h-16 md:h-28 w-auto mb-4 md:mb-6 filter brightness-0 invert drop-shadow-lg">
             
-            <h1 class="font-sans font-black text-[42px] md:text-[56px] lg:text-[72px] leading-[1.05] tracking-tight text-white mb-6">
-                Gateway to <br><span class="text-gold">Global Excellence</span>
+            <h1 class="font-jakarta font-extrabold text-[36px] md:text-[64px] tracking-tight text-white mb-4 md:mb-6 leading-[1.1] drop-shadow-md text-center">
+                Selamat Datang di <br><span class="text-white/90">MINDSIA</span>
             </h1>
             
-            <p class="text-[16px] md:text-[18px] leading-relaxed text-white/80 max-w-[500px] mb-10">
-                Pusat kursus bahasa Inggris terpadu dengan fasilitas asrama. Praktik 24 jam untuk penguasaan bahasa yang aplikatif.
+            <p class="text-[16px] md:text-[20px] text-white/85 leading-relaxed font-medium mb-8 md:mb-12 max-w-2xl mx-auto text-center">
+                Pusat pembelajaran bahasa Inggris terpadu dan pengembangan sumber daya manusia profesional.
             </p>
+            
+            <!-- Call To Actions -->
+            <div class="flex flex-col md:flex-row justify-center items-center gap-4 w-full">
+                
+                <!-- 1. Jelajahi Program -->
+                <a href="#konsep"
+                   class="w-full md:w-auto bg-white text-[#5586DB] font-bold text-[16px] py-3 px-8 rounded-xl hover:bg-[#F8FAFC] transition shadow-xl hover:shadow-2xl transform hover:-translate-y-1 flex justify-center items-center text-center">
+                    Jelajahi Program
+                </a>
+                
+                <!-- 2. Portal Member -->
+                <a href="{{ route('member.landing') }}"
+                   class="w-full md:w-auto bg-transparent border-2 border-white/80 text-white font-bold text-[16px] py-3 px-8 rounded-xl hover:bg-white/10 transition hover:border-white flex justify-center items-center text-center">
+                    Portal Member
+                </a>
 
-            <div class="flex flex-col sm:flex-row gap-4">
-                <a href="/member/register" class="inline-flex items-center justify-center gap-2 bg-gold text-[#06122B] font-bold text-[15px] py-4 px-8 rounded-none transition-all duration-300 hover:bg-gold-d">
-                    Daftar Sekarang
-                    <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                <!-- 3. Lihat Lowongan -->
+                <a href="{{ route('careers.index') }}"
+                   class="w-full md:w-auto bg-transparent border-2 border-white/80 text-white font-bold text-[16px] py-3 px-8 rounded-xl hover:bg-white/10 transition hover:border-white flex justify-center items-center text-center">
+                    Lihat Lowongan
                 </a>
-                <a href="#program" class="inline-flex items-center justify-center gap-2 bg-transparent text-white font-bold text-[15px] py-4 px-8 rounded-none border border-white/30 transition-all duration-300 hover:border-gold hover:text-gold">
-                    Lihat Program
+
+                <!-- 4. Company Profile -->
+                <a href="{{ route('company.landing') }}"
+                   class="w-full md:w-auto bg-transparent border-2 border-white/80 text-white font-bold text-[16px] py-3 px-8 rounded-xl hover:bg-white/10 transition hover:border-white flex justify-center items-center text-center">
+                    Company Profile
                 </a>
+
             </div>
         </div>
 
-        <!-- Right Stats -->
-        <div class="hidden md:grid grid-cols-2 gap-4">
-            <div class="bg-white/5 backdrop-blur-md border border-white/10 p-8 flex flex-col justify-center items-center text-center">
-                <div class="text-[48px] font-black text-white leading-none mb-2">{{ $totalCabang }}</div>
-                <div class="text-[12px] font-semibold text-white/60 tracking-widest uppercase">Cabang</div>
-            </div>
-            <div class="bg-white/5 backdrop-blur-md border border-white/10 p-8 flex flex-col justify-center items-center text-center mt-8">
-                <div class="text-[48px] font-black text-white leading-none mb-2">{{ round($totalMembers/1000) }}K+</div>
-                <div class="text-[12px] font-semibold text-white/60 tracking-widest uppercase">Siswa Aktif</div>
-            </div>
-            <div class="bg-gold p-8 flex flex-col justify-center items-center text-center -mt-8">
-                <div class="text-[48px] font-black text-[#06122B] leading-none mb-2">{{ count($landingPrograms) }}</div>
-                <div class="text-[12px] font-bold text-[#06122B]/70 tracking-widest uppercase">Program</div>
-            </div>
-            <div class="bg-white/5 backdrop-blur-md border border-white/10 p-8 flex flex-col justify-center items-center text-center">
-                <div class="text-[48px] font-black text-white leading-none mb-2">24/7</div>
-                <div class="text-[12px] font-semibold text-white/60 tracking-widest uppercase">English Area</div>
-            </div>
-        </div>
-    </div>
-</section>
+        <!-- Footer Note & Scroll Indicator -->
+        <a href="#konsep" class="absolute bottom-10 flex flex-col items-center text-white/50 hover:text-white transition-colors cursor-pointer group">
+            <span class="text-[12px] font-bold uppercase tracking-widest font-jakarta mb-2 group-hover:scale-105 transition-transform">Scroll Down</span>
+            <span class="material-symbols-outlined animate-bounce">keyboard_arrow_down</span>
+        </a>
+    </section>
+
 
 {{-- ═══ KONSEP HESA (Symmetrical Corporate Grid) ═══ --}}
 <section class="py-24 px-6 bg-ky-surface" id="konsep" aria-label="Sistem 24 HESA">
@@ -115,7 +134,7 @@
             <div class="group bg-white rounded-2xl shadow-[0_10px_30px_-15px_rgba(0,0,0,0.1)] hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] flex flex-col relative overflow-hidden transition-all duration-500 border border-ky-border/50">
                 <!-- Image Header -->
                 <div class="h-48 w-full overflow-hidden relative bg-ky-surface">
-                    <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=800&auto=format&fit=crop" alt="Program" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <img src="{{ $lp->image_url }}" alt="Program {{ $lp->program_name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                     <div class="absolute inset-0 bg-[#06122B]/10 group-hover:bg-transparent transition-colors"></div>
                     @if($lp->is_featured)
                     <div class="absolute top-4 right-4 bg-gold text-[#06122B] text-[10px] font-black uppercase tracking-wider py-1.5 px-3 rounded-full shadow-md">
@@ -161,8 +180,8 @@
             @foreach($galleries as $index => $gallery)
             <div class="scroll-reveal opacity-0 translate-y-16 transition-all duration-1000 ease-out flex flex-col md:flex-row {{ $index % 2 == 1 ? 'md:flex-row-reverse' : '' }} gap-10 md:gap-16 items-center mb-32 last:mb-0">
                 
-                <div class="w-full md:w-7/12 rounded-3xl overflow-hidden bg-white border border-ky-border/40 p-4 shadow-sm group aspect-[4/3]">
-                    <img src="{{ $gallery->image }}" alt="{{ $gallery->title }}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-1000">
+                <div class="w-full md:w-7/12 rounded-3xl overflow-hidden shadow-lg group">
+                    <img src="{{ $gallery->image }}" alt="{{ $gallery->title }}" class="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-1000">
                 </div>
                 
                 <div class="w-full md:w-5/12 px-2 text-center md:text-left">
@@ -192,9 +211,7 @@
                     
                     @if($testi->type === 'image')
                         <!-- Image/Flyer Testimonial -->
-                        <div class="h-full relative group overflow-hidden rounded-2xl shadow-[0_15px_40px_-15px_rgba(0,0,0,0.2)] bg-white flex items-center justify-center">
-                            <img src="{{ $testi->image_url }}" alt="Testimoni {{ $testi->name }}" class="h-full w-auto object-contain">
-                        </div>
+                        <img src="{{ $testi->image_url }}" alt="Testimoni" class="max-w-[90vw] max-h-[600px] md:max-h-[750px] w-auto h-auto object-contain rounded-2xl shadow-[0_15px_40px_-15px_rgba(0,0,0,0.2)] bg-white">
                     @else
                         <!-- Text Testimonial -->
                         <div class="max-w-[700px] w-full bg-white p-10 rounded-2xl shadow-[0_15px_40px_-15px_rgba(0,0,0,0.15)] relative text-left mx-auto">
@@ -278,6 +295,77 @@ document.addEventListener("DOMContentLoaded", () => {
 @push('scripts')
 <script>
 document.addEventListener("DOMContentLoaded", () => {
+    // Navbar visibility logic
+    const nav = document.getElementById('lp-nav');
+    if (nav) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > window.innerHeight * 0.3) {
+                nav.classList.add('scrolled-down');
+            } else {
+                nav.classList.remove('scrolled-down');
+            }
+        });
+    }
+
+    // Smooth scroll for all anchor links (e.g. Jelajahi Program, Scroll Down)
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                e.preventDefault();
+                targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Testimonial Carousel
+    const slides = document.querySelectorAll('.testi-slide');
+    const dots = document.querySelectorAll('.testi-dot');
+    let currentSlide = 0;
+
+    function showSlide(index) {
+        slides.forEach((slide, i) => {
+            slide.classList.remove('opacity-100', 'pointer-events-auto');
+            slide.classList.add('opacity-0', 'pointer-events-none');
+            slide.style.transform = 'translateY(80px)';
+            
+            if (i === index) {
+                slide.classList.add('opacity-100', 'pointer-events-auto');
+                slide.classList.remove('opacity-0', 'pointer-events-none');
+                slide.style.transform = 'translateY(0)';
+            }
+        });
+        
+        dots.forEach((dot, i) => {
+            dot.classList.toggle('w-8', i === index);
+            dot.classList.toggle('bg-[#06122B]', i === index);
+            dot.classList.toggle('w-2', i !== index);
+            dot.classList.toggle('bg-ky-text/30', i !== index);
+        });
+    }
+
+    if (slides.length > 0) {
+        showSlide(0);
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }, 5000);
+        
+        dots.forEach((dot, i) => {
+            dot.addEventListener('click', () => {
+                currentSlide = i;
+                showSlide(currentSlide);
+            });
+        });
+    }
+
+    // Existing Intersection Observer for Scroll Reveal
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
