@@ -5,6 +5,7 @@ namespace Tests\Feature\Auth;
 use App\Models\Employee;
 use App\Models\User;
 use App\Notifications\OtpVerifyEmail;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
@@ -157,5 +158,49 @@ class EmployeeRegisterTest extends TestCase
         $user = User::where('email', 'withrole@mindsia.test')->first();
         $this->assertNotNull($user);
         // Role assignment bergantung pada position — jika tidak ada position, user dibuat tanpa role
+    }
+
+    // ER-12 — Bug: OTP verification notice shows OTP form even when different user is logged in
+    public function test_notice_shows_otp_form_when_pending_verification_exists_despite_logged_in_user(): void
+    {
+        // Simulate another user already logged in (e.g., first registration completed)
+        $otherUser = User::factory()->create(['email_verified_at' => now()]);
+        $this->actingAs($otherUser, 'web');
+
+        // New registration pending for a different employee
+        $pendingUser = User::factory()->create([
+            'email_verified_at' => null,
+            'employee_id' => $this->employee->id,
+        ]);
+
+        $this->withSession(['pending_verification' => ['guard' => 'web', 'id' => $pendingUser->id]])
+            ->get(route('verification.notice'))
+            ->assertOk()
+            ->assertViewIs('auth.verify-email');
+    }
+
+    // ER-13 — Bug: OTP submission resolves to logged-in user instead of pending user
+    public function test_otp_submission_uses_pending_verification_not_logged_in_user(): void
+    {
+        $otherUser = User::factory()->create(['email_verified_at' => now()]);
+        $this->actingAs($otherUser, 'web');
+
+        $pendingUser = User::factory()->create([
+            'email_verified_at' => null,
+            'employee_id' => $this->employee->id,
+        ]);
+
+        $otp = '123456';
+        Cache::put("email_otp_web_{$pendingUser->id}", $otp, now()->addMinutes(15));
+
+        $this->withSession(['pending_verification' => ['guard' => 'web', 'id' => $pendingUser->id]])
+            ->post(route('verification.submit'), ['otp' => $otp])
+            ->assertRedirect(route('register.success'));
+
+        $pendingUser->refresh();
+        $this->assertNotNull($pendingUser->email_verified_at);
+        // other user must not be affected
+        $otherUser->refresh();
+        $this->assertNotNull($otherUser->email_verified_at);
     }
 }

@@ -22,16 +22,18 @@ class VerificationController extends Controller
 
     public function notice(): View|RedirectResponse
     {
+        // pending_verification takes priority: a new registration must be able to verify
+        // even if a different user is already authenticated in the same session.
+        if ($this->hasPendingUnverified()) {
+            return view('auth.verify-email');
+        }
+
         foreach (self::GUARD_MAP as $guard => [, $redirectRoute]) {
             if ($user = auth($guard)->user()) {
                 return $user->hasVerifiedEmail()
                     ? redirect()->route($redirectRoute)
                     : view('auth.verify-email');
             }
-        }
-
-        if (session()->has('pending_verification')) {
-            return view('auth.verify-email');
         }
 
         return redirect()->route('login');
@@ -86,12 +88,8 @@ class VerificationController extends Controller
 
     private function resolveAccount(): array
     {
-        foreach (self::GUARD_MAP as $guard => [$modelClass]) {
-            if ($user = auth($guard)->user()) {
-                return [$user, $guard];
-            }
-        }
-
+        // pending_verification takes priority over authenticated user — a new registration
+        // must be verifiable even when a different user is already logged in.
         $pending = session('pending_verification');
 
         if (
@@ -108,6 +106,26 @@ class VerificationController extends Controller
             }
         }
 
+        foreach (self::GUARD_MAP as $guard => [$modelClass]) {
+            if ($user = auth($guard)->user()) {
+                return [$user, $guard];
+            }
+        }
+
         return [null, null];
+    }
+
+    private function hasPendingUnverified(): bool
+    {
+        $pending = session('pending_verification');
+
+        if (! $pending || ! isset($pending['guard'], $pending['id']) || ! isset(self::GUARD_MAP[$pending['guard']])) {
+            return false;
+        }
+
+        [$modelClass] = self::GUARD_MAP[$pending['guard']];
+        $account = $modelClass::find($pending['id']);
+
+        return $account !== null && ! $account->hasVerifiedEmail();
     }
 }
