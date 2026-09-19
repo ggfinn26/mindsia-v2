@@ -13,28 +13,34 @@ class EmployeeAuthService
 
     public function verifyEmployeeCode(string $employeeCode): ?Employee
     {
-        $employee = Employee::where('employee_code', $employeeCode)
-            ->where('is_active', true)
-            ->whereDoesntHave('user')
-            ->first();
+        $employee = Employee::where('employee_code', $employeeCode)->first();
 
         if (! $employee) {
-            Log::warning('Employee code verification failed', [
-                'employee_code' => $employeeCode,
-                'ip' => request()->ip(),
-            ]);
-
-            $this->telegramLog->log(
-                'warning',
-                'auth',
-                'register_verify_failed',
-                "Kode karyawan tidak valid atau sudah punya akun: {$employeeCode} | IP: ".request()->ip()
-            );
-
-            return null;
+            $reason = 'kode tidak ditemukan';
+        } elseif (! $employee->is_active) {
+            $reason = 'karyawan tidak aktif';
+            $employee = null;
+        } elseif ($employee->user) {
+            $reason = 'akun sudah terdaftar';
+            $employee = null;
+        } else {
+            return $employee;
         }
 
-        return $employee;
+        Log::warning('Employee code verification failed', [
+            'employee_code' => $employeeCode,
+            'reason' => $reason,
+            'ip' => request()->ip(),
+        ]);
+
+        $this->telegramLog->log(
+            'warning',
+            'auth',
+            'register_verify_failed',
+            "Gagal verifikasi kode karyawan ({$reason}): {$employeeCode} | IP: ".request()->ip()
+        );
+
+        return null;
     }
 
     public function createAccount(Employee $employee, array $data): User

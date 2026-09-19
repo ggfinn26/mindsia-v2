@@ -105,7 +105,6 @@ class EmployeeSeeder extends Seeder
 
     public function run(): void
     {
-        $today = Carbon::today();
         $positions = Position::all()->keyBy('position_name');
         $areas = Area::with('region')->get()->keyBy('name');
 
@@ -126,8 +125,8 @@ class EmployeeSeeder extends Seeder
 
             $joinDate = $this->parseDate($onBoarding) ?? '2024-01-01';
             $contractEnd = $this->parseDate($offBoarding);
-            $isActive = $contractEnd === null || Carbon::parse($contractEnd)->greaterThan($today);
 
+            // ponytail: always active when seeded; contract deactivation via app flows (ContractTerminateController)
             $employee = Employee::firstOrCreate(
                 ['employee_code' => $code],
                 [
@@ -140,9 +139,13 @@ class EmployeeSeeder extends Seeder
                     'area_id' => $areaId,
                     'region_id' => $regionId,
                     'is_hq' => $isHq,
-                    'is_active' => $isActive,
+                    'is_active' => true,
                 ]
             );
+
+            if (! $employee->is_active) {
+                $employee->update(['is_active' => true]);
+            }
 
             EmploymentStatus::firstOrCreate(
                 ['employees_id' => $employee->id, 'position_id' => $position->id],

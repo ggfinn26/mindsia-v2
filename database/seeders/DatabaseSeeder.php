@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -32,5 +33,34 @@ class DatabaseSeeder extends Seeder
             ]
         );
         $superAdmin->assignRole('Super Admin');
+
+        // Create accounts for permanent HQ employees so they can log in without registering.
+        // SUPERADMIN is intentionally excluded — reserved for testing the register flow.
+        foreach (['CEO', 'COO', 'CHRO', 'CFO', 'CMO'] as $code) {
+            $employee = Employee::where('employee_code', $code)->first();
+            if (! $employee) {
+                continue;
+            }
+
+            $user = User::firstOrCreate(
+                ['email' => strtolower($code).'@mindsia.id'],
+                [
+                    'name' => $employee->full_name,
+                    'password' => Hash::make('password'),
+                    'employee_id' => $employee->id,
+                    'is_active' => true,
+                ]
+            );
+
+            if (! $user->employee_id) {
+                $user->update(['employee_id' => $employee->id]);
+            }
+
+            $employee->load('currentStatus.position.role');
+            $role = $employee->currentStatus?->position?->role;
+            if ($role) {
+                $user->syncRoles([$role]);
+            }
+        }
     }
 }
