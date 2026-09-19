@@ -1,13 +1,9 @@
 <?php
 
 use App\Models\Employee;
-use App\Models\MemberData;
 use App\Models\NotificationTemplate;
 use App\Models\User;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Spatie\Permission\Models\Permission;
-
-uses(DatabaseTransactions::class);
 
 beforeEach(function () {
     $this->user = User::factory()->create();
@@ -24,16 +20,16 @@ it('can view manual send page', function () {
 it('can dispatch manual notification to employee', function () {
     $template = NotificationTemplate::factory()->create([
         'template_key' => 'manual-test',
-        'type' => 'in-app'
+        'type' => 'in-app',
     ]);
-    
+
     $employee = Employee::factory()->create();
 
     $data = [
         'template_key' => 'manual-test',
         'recipient_type' => 'employee',
         'recipient_id' => $employee->id,
-        'payload' => ['name' => 'John']
+        'payload' => ['name' => 'John'],
     ];
 
     $this->actingAs($this->user)

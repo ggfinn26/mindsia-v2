@@ -1,17 +1,14 @@
 <?php
 
-use App\Models\ToeflTest;
-use App\Models\ToeflQuestion;
-use App\Models\User;
 use App\Models\Employee;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\ToeflQuestion;
+use App\Models\ToeflTest;
+use App\Models\User;
 use Illuminate\Support\Facades\Gate;
+
 use function Pest\Laravel\actingAs;
 
-uses(RefreshDatabase::class);
-
 beforeEach(function () {
-    \App\Models\Employee::factory()->create(['id' => 1]);
     $this->employee = Employee::factory()->create();
     $this->admin = User::factory()->create(['employee_id' => $this->employee->id]);
     Gate::before(fn ($user, $ability) => true);
@@ -23,7 +20,7 @@ it('can list toefl tests', function () {
 
 it('can create a toefl test', function () {
     actingAs($this->admin)->post(route('toefl-tests.store'), [
-        'created_by_employee_id' => 1,
+        'created_by_employee_id' => $this->employee->id,
         'test_name' => 'Test 1',
         'listening_time_limit' => 30,
         'structure_time_limit' => 25,
@@ -35,7 +32,7 @@ it('can create a toefl test', function () {
 
 it('can update a toefl test', function () {
     $test = ToeflTest::create([
-        'created_by_employee_id' => 1,
+        'created_by_employee_id' => $this->employee->id,
         'test_name' => 'Test 1',
         'listening_time_limit' => 30,
         'structure_time_limit' => 25,
@@ -44,7 +41,7 @@ it('can update a toefl test', function () {
     ]);
 
     actingAs($this->admin)->put(route('toefl-tests.update', $test), [
-        'created_by_employee_id' => 1,
+        'created_by_employee_id' => $this->employee->id,
         'test_name' => 'Test 1 Updated',
         'listening_time_limit' => 35,
         'structure_time_limit' => 30,
@@ -56,7 +53,7 @@ it('can update a toefl test', function () {
 
 it('can publish a toefl test', function () {
     $test = ToeflTest::create([
-        'created_by_employee_id' => 1,
+        'created_by_employee_id' => $this->employee->id,
         'test_name' => 'Test 1',
         'listening_time_limit' => 30,
         'structure_time_limit' => 25,
@@ -86,7 +83,7 @@ it('can publish a toefl test', function () {
 
 it('can delete a toefl test', function () {
     $test = ToeflTest::create([
-        'created_by_employee_id' => 1,
+        'created_by_employee_id' => $this->employee->id,
         'test_name' => 'Test 1',
         'listening_time_limit' => 30,
         'structure_time_limit' => 25,

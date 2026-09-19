@@ -8,7 +8,7 @@ use App\Models\Program;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
-function insertMtEmployee(string $prefix = 'MT'): array
+function insertCmtEmployee(string $prefix = 'MT'): array
 {
     $provinceId = DB::table('provinces')->insertGetId(['name' => "Prov {$prefix}", 'created_at' => now(), 'updated_at' => now()]);
     $regionId = DB::table('regions')->insertGetId(['province_id' => $provinceId, 'name' => "Reg {$prefix}", 'created_at' => now(), 'updated_at' => now()]);
@@ -39,7 +39,7 @@ function insertMtEmployee(string $prefix = 'MT'): array
     return ['employee_id' => $employeeId, 'branch_id' => $branchId];
 }
 
-function insertMtMemberRegistration(int $programId, int $employeeId): int
+function insertCmtMemberRegistration(int $programId, int $employeeId): int
 {
     $memberDataId = DB::table('members_data')->insertGetId([
         'full_name' => 'Member '.uniqid(),
@@ -67,7 +67,7 @@ function insertMtMemberRegistration(int $programId, int $employeeId): int
 }
 
 beforeEach(function () {
-    $data = insertMtEmployee('MTB'.uniqid());
+    $data = insertCmtEmployee('MTB'.uniqid());
     $this->employee = Employee::find($data['employee_id']);
     $this->branch = Branch::find($data['branch_id']);
 
@@ -98,7 +98,7 @@ beforeEach(function () {
         'status' => 'active',
     ]);
 
-    $this->regId = insertMtMemberRegistration($this->program->id, $this->employee->id);
+    $this->regId = insertCmtMemberRegistration($this->program->id, $this->employee->id);
 });
 
 // ── MT-01 ── enroll member ────────────────────────────────────────────────────

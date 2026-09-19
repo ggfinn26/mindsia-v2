@@ -4,7 +4,6 @@ namespace Tests\Feature\Facility;
 
 use App\Models\InventoryItem;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -12,8 +11,6 @@ use Tests\TestCase;
 // SKENARIO-TESTING.md: Inventory CRUD, adjust quantity, dispose, history
 class InventoryManagementTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $boardUser;
 
     private User $regularUser;

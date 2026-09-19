@@ -6,7 +6,6 @@ use App\Models\Branch;
 use App\Models\BudgetEstimate;
 use App\Models\User;
 use App\Repositories\Finance\BudgetEstimateRepository;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -14,8 +13,6 @@ use Tests\TestCase;
 // SKENARIO-TESTING.md: Budget estimate lifecycle, multi-step approval, observer total_amount
 class BudgetEstimateTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $boardUser;
 
     private User $regularUser;

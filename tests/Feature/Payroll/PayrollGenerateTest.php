@@ -2,16 +2,25 @@
 
 namespace Tests\Feature\Payroll;
 
+use App\Models\AttendanceRule;
+use App\Models\AttendanceRuleAction;
+use App\Models\AttendanceRuleActionExecution;
+use App\Models\AttendanceRulePayrollAction;
+use App\Models\AttendanceRuleViolation;
 use App\Models\Employee;
 use App\Models\EmployeeAttendanceMonthlyRecap;
 use App\Models\EmployeeCompensation;
 use App\Models\EmployeePayroll;
 use App\Models\EmploymentStatus;
+use App\Models\MarketingBonusRule;
 use App\Models\PayrollComponent;
 use App\Models\PayrollItem;
 use App\Models\PayrollPeriod;
+use App\Models\Position;
+use App\Models\SessionCompensationRule;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
@@ -21,45 +30,95 @@ class PayrollGenerateTest extends TestCase
 
     private User $adminUser;
 
-    private Employee $adminEmployee;
+    private int $adminEmployeeId;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        // Admin employee is NOT a payroll target — set is_active=false
-        // so PayrollGenerationService doesn't require attendance recap for them
-        $this->adminEmployee = Employee::factory()->create(['is_active' => false]);
-        $this->adminUser = User::factory()->create(['employee_id' => $this->adminEmployee->id]);
+        // Admin employee via direct DB insert to avoid FK deadlock chain
+        // Set is_active=false so PayrollGenerationService doesn't require attendance recap for them
+        $this->adminEmployeeId = $this->insertEmployee('GP-ADMIN', hq: true, active: false);
+        $this->adminUser = User::factory()->create(['employee_id' => $this->adminEmployeeId]);
         $this->adminUser->givePermissionTo([
             'payroll.period.view',
             'payroll.period.generate',
         ]);
     }
 
+    /** Direct DB insert for employee — bypasses factory FK deadlock chain */
+    private function insertEmployee(string $prefix = 'EMP', bool $hq = false, bool $active = true): int
+    {
+        $email = strtolower($prefix).uniqid().'@test.example';
+
+        if ($hq) {
+            return DB::table('employees')->insertGetId([
+                'employee_code' => 'EC-'.substr(md5(uniqid($prefix)), 0, 8),
+                'full_name' => "Employee {$prefix}",
+                'gender' => 'L',
+                'birthdate' => '1990-01-01',
+                'email' => $email,
+                'whatsapp_number' => '62'.fake()->numerify('###########'),
+                'is_hq' => true,
+                'is_active' => $active,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        $provinceId = DB::table('provinces')->insertGetId(['name' => "Prov {$prefix}", 'created_at' => now(), 'updated_at' => now()]);
+        $regionId = DB::table('regions')->insertGetId(['province_id' => $provinceId, 'name' => "Reg {$prefix}", 'created_at' => now(), 'updated_at' => now()]);
+        $areaId = DB::table('areas')->insertGetId(['region_id' => $regionId, 'name' => "Area {$prefix}", 'created_at' => now(), 'updated_at' => now()]);
+        $branchId = DB::table('branches')->insertGetId([
+            'areas_id' => $areaId,
+            'branch_name' => "Branch {$prefix}",
+            'code_branches' => 'BR'.substr(md5(uniqid($prefix)), 0, 6),
+            'address' => 'Address',
+            'whatsapp' => '62'.fake()->numerify('###########'),
+            'latitude' => -6.0, 'longitude' => 106.0, 'radius_meters' => 500, 'is_active' => true,
+            'created_at' => now(), 'updated_at' => now(),
+        ]);
+
+        return DB::table('employees')->insertGetId([
+            'employee_code' => 'EC-'.substr(md5(uniqid($prefix)), 0, 8),
+            'full_name' => "Employee {$prefix}",
+            'gender' => 'L',
+            'birthdate' => '1990-01-01',
+            'email' => $email,
+            'whatsapp_number' => '62'.fake()->numerify('###########'),
+            'branch_id' => $branchId,
+            'area_id' => $areaId,
+            'region_id' => $regionId,
+            'is_active' => $active,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    }
+
     /** Helper: create an active employee with user, role, employment status, and attendance recap */
     private function createActiveEmployeeWithRecap(int $periodYear, int $periodMonth, array $recapOverrides = []): Employee
     {
-        $employee = Employee::factory()->create(['is_active' => true]);
-        $user = User::factory()->create(['employee_id' => $employee->id]);
+        $employeeId = $this->insertEmployee('GP-ACT', hq: false, active: true);
+        $employee = Employee::find($employeeId);
+        $user = User::factory()->create(['employee_id' => $employeeId]);
 
         $role = Role::firstOrCreate(['name' => 'tutor', 'guard_name' => 'web']);
         $user->assignRole($role);
 
-        $position = \App\Models\Position::firstOrCreate(
+        $position = Position::firstOrCreate(
             ['id' => 1],
             ['position_name' => 'Default Position', 'hierarchy_order' => 1]
         );
 
         EmploymentStatus::create([
-            'employees_id' => $employee->id,
+            'employees_id' => $employeeId,
             'position_id' => $position->id,
             'type_employment' => 'part_time',
             'join_date' => now()->subMonths(3),
         ]);
 
         EmployeeAttendanceMonthlyRecap::create(array_merge([
-            'employee_id' => $employee->id,
+            'employee_id' => $employeeId,
             'period_year' => $periodYear,
             'period_month' => $periodMonth,
             'total_scheduled_working_days' => 22,
@@ -223,20 +282,26 @@ class PayrollGenerateTest extends TestCase
     // Attendance Snapshot — GP-06, GP-07
     // ============================================================
 
-    /** GP-06: Employee without attendance snapshot causes LogicException */
-    public function test_gp06_employee_without_recap_causes_error(): void
+    /** GP-06: Employee without attendance snapshot is silently skipped — no error */
+    public function test_gp06_employee_without_recap_is_skipped(): void
     {
         $period = $this->createFinalizedPeriod();
 
         // Active employee WITHOUT a recap
-        Employee::factory()->create(['is_active' => true]);
+        $noRecapEmployeeId = $this->insertEmployee('GP-NO-RECAP', hq: false, active: true);
 
         $response = $this->actingAs($this->adminUser)
             ->post(route('payroll.periods.generate', $period));
 
-        // LogicException should cause redirect with flash error
-        $response->assertRedirect();
-        $response->assertSessionHas('error');
+        // Service logs warning and skips employee — generation succeeds
+        $response->assertRedirect(route('payroll.periods.show', $period));
+        $response->assertSessionHas('success');
+
+        // Employee without recap should NOT have a payroll record
+        $this->assertDatabaseMissing('employee_payrolls', [
+            'payroll_period_id' => $period->id,
+            'employee_id' => $noRecapEmployeeId,
+        ]);
     }
 
     /** GP-07: Employee with attendance snapshot — snapshot data used in payroll */
@@ -339,7 +404,7 @@ class PayrollGenerateTest extends TestCase
         $employee = $this->createActiveEmployeeWithRecap($period->period_year, $period->period_month);
 
         // Need a session compensation rule for session rate
-        \App\Models\SessionCompensationRule::create([
+        SessionCompensationRule::create([
             'rule_code' => 'SESS_GLOBAL_01',
             'rule_name' => 'Global Session Rate',
             'scope_type' => 'global',
@@ -560,7 +625,7 @@ class PayrollGenerateTest extends TestCase
         ]);
 
         // Create an attendance rule with payroll deduction action
-        $rule = \App\Models\AttendanceRule::create([
+        $rule = AttendanceRule::create([
             'rule_name' => 'Late Rule',
             'attendance_type' => 'work_schedule',
             'trigger_type' => 'monthly_late_count',
@@ -570,20 +635,20 @@ class PayrollGenerateTest extends TestCase
             'is_active' => true,
         ]);
 
-        $action = \App\Models\AttendanceRuleAction::create([
+        $action = AttendanceRuleAction::create([
             'attendance_rule_id' => $rule->id,
             'action_type' => 'payroll_deduction',
             'action_order' => 1,
         ]);
 
-        \App\Models\AttendanceRulePayrollAction::create([
+        AttendanceRulePayrollAction::create([
             'attendance_rule_action_id' => $action->id,
             'payroll_component_id' => $deductionComponent->id,
             'deduction_type' => 'fixed_amount',
             'deduction_value' => 50000,
         ]);
 
-        $violation = \App\Models\AttendanceRuleViolation::create([
+        $violation = AttendanceRuleViolation::create([
             'employee_id' => $employee->id,
             'attendance_rule_id' => $rule->id,
             'trigger_value' => 30,
@@ -591,7 +656,7 @@ class PayrollGenerateTest extends TestCase
             'period_end_date' => Carbon::create($period->period_year, $period->period_month, 1)->endOfMonth(),
         ]);
 
-        \App\Models\AttendanceRuleActionExecution::create([
+        AttendanceRuleActionExecution::create([
             'attendance_rule_violation_id' => $violation->id,
             'attendance_rule_action_id' => $action->id,
             'status' => 'processed',
@@ -625,7 +690,7 @@ class PayrollGenerateTest extends TestCase
             'value' => 5000000,
         ]);
 
-        $rule = \App\Models\AttendanceRule::create([
+        $rule = AttendanceRule::create([
             'rule_name' => 'Per Minute Late',
             'attendance_type' => 'work_schedule',
             'trigger_type' => 'monthly_late_minutes',
@@ -635,20 +700,20 @@ class PayrollGenerateTest extends TestCase
             'is_active' => true,
         ]);
 
-        $action = \App\Models\AttendanceRuleAction::create([
+        $action = AttendanceRuleAction::create([
             'attendance_rule_id' => $rule->id,
             'action_type' => 'payroll_deduction',
             'action_order' => 1,
         ]);
 
-        \App\Models\AttendanceRulePayrollAction::create([
+        AttendanceRulePayrollAction::create([
             'attendance_rule_action_id' => $action->id,
             'payroll_component_id' => $deductionComponent->id,
             'deduction_type' => 'per_minute',
             'deduction_value' => 1000,
         ]);
 
-        $violation = \App\Models\AttendanceRuleViolation::create([
+        $violation = AttendanceRuleViolation::create([
             'employee_id' => $employee->id,
             'attendance_rule_id' => $rule->id,
             'trigger_value' => 30, // 30 minutes late
@@ -656,7 +721,7 @@ class PayrollGenerateTest extends TestCase
             'period_end_date' => Carbon::create($period->period_year, $period->period_month, 1)->endOfMonth(),
         ]);
 
-        \App\Models\AttendanceRuleActionExecution::create([
+        AttendanceRuleActionExecution::create([
             'attendance_rule_violation_id' => $violation->id,
             'attendance_rule_action_id' => $action->id,
             'status' => 'processed',
@@ -721,8 +786,9 @@ class PayrollGenerateTest extends TestCase
             'value' => 5000000,
         ]);
 
-        // Create marketing bonus rule
-        \App\Models\MarketingBonusRule::create([
+        // Create marketing bonus rule while authenticated — observer requires auth user with employee record
+        $this->actingAs($this->adminUser);
+        MarketingBonusRule::create([
             'rule_code' => 'MKT_BONUS_01',
             'rule_name' => 'Marketing Achievement Bonus',
             'scope_type' => 'global',
@@ -734,8 +800,7 @@ class PayrollGenerateTest extends TestCase
         // (achievement_percentage, recap_year/days_present). This causes
         // QueryException or LogicException, not a successful generate.
         // Record the gap and skip the assertion.
-        $response = $this->actingAs($this->adminUser)
-            ->post(route('payroll.periods.generate', $period));
+        $response = $this->post(route('payroll.periods.generate', $period));
 
         // Check if generate succeeded (redirect to show) or failed
         $redirectTarget = $response->headers->get('Location') ?? '';

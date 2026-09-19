@@ -3,7 +3,6 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\MemberAccount;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\RateLimiter;
 use Tests\Support\CreatesMember;
 use Tests\TestCase;
@@ -11,7 +10,6 @@ use Tests\TestCase;
 class MemberLoginTest extends TestCase
 {
     use CreatesMember;
-    use RefreshDatabase;
 
     private MemberAccount $activeMember;
 
@@ -119,7 +117,7 @@ class MemberLoginTest extends TestCase
         for ($i = 0; $i < 5; $i++) {
             $this->post(route('member.login.post'), [
                 'email' => 'active.member@mindsia.test',
-                'password' => 'WrongPass' . $i,
+                'password' => 'WrongPass'.$i,
             ]);
         }
 
@@ -139,7 +137,7 @@ class MemberLoginTest extends TestCase
         for ($i = 0; $i < 4; $i++) {
             $this->post(route('member.login.post'), [
                 'email' => 'active.member@mindsia.test',
-                'password' => 'WrongPass' . $i,
+                'password' => 'WrongPass'.$i,
             ]);
         }
 

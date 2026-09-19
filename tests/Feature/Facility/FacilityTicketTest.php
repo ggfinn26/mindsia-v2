@@ -4,7 +4,6 @@ namespace Tests\Feature\Facility;
 
 use App\Models\FacilityTicket;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -12,8 +11,6 @@ use Tests\TestCase;
 // SKENARIO-TESTING.md: Create ticket, status management, assign, review, resolve
 class FacilityTicketTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $boardUser;
 
     private User $regularUser;

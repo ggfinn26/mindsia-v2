@@ -8,22 +8,20 @@ use App\Models\Position;
 use App\Models\User;
 use App\Models\UserDashboardWidgetCustomization;
 use App\Services\Dashboard\DashboardWidgetService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
-
-uses(RefreshDatabase::class);
 
 // Helper: buat Position tanpa factory
 function makePosition(): Position
 {
-    return Position::create(['position_name' => 'Test Position ' . uniqid()]);
+    return Position::create(['position_name' => 'Test Position '.uniqid()]);
 }
 
 // Helper: bind user → employee → employmentStatus → position
 function bindUserPosition(User $user, Position $position): void
 {
-    $employee = Employee::factory()->create(['user_id' => $user->id]);
-    EmploymentStatus::create(['employees_id' => $employee->id, 'position_id' => $position->id]);
+    $employee = Employee::factory()->create(['email' => $user->email]);
+    $user->update(['employee_id' => $employee->id]);
+    EmploymentStatus::create(['employees_id' => $employee->id, 'position_id' => $position->id, 'type_employment' => 'Tetap', 'join_date' => now()]);
 }
 
 // DW-01: Unauthenticated redirect
@@ -94,9 +92,9 @@ it('POST widget-order saves user-level order', function () {
         ->assertRedirect();
 
     $this->assertDatabaseHas('user_dashboard_widget_customizations', [
-        'user_id'    => $user->id,
+        'user_id' => $user->id,
         'widget_key' => 'revenue',
-        'order'      => 3,
+        'order' => 3,
     ]);
 });
 
@@ -109,7 +107,7 @@ it('POST widget-toggle saves user-level is_enabled', function () {
         ->assertRedirect();
 
     $this->assertDatabaseHas('user_dashboard_widget_customizations', [
-        'user_id'    => $user->id,
+        'user_id' => $user->id,
         'widget_key' => 'revenue',
         'is_enabled' => false,
     ]);
@@ -162,7 +160,7 @@ it('all WidgetKey enum cases have a registered data provider', function () {
         ->values()
         ->all();
 
-    expect($missing)->toBeEmpty('Missing providers: ' . implode(', ', $missing));
+    expect($missing)->toBeEmpty('Missing providers: '.implode(', ', $missing));
 })->skip('Requires fully migrated test DB with all columns (run with production-like DB)');
 
 // DW-13: toggleWidget upsert — second call updates existing row

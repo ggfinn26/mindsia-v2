@@ -8,7 +8,6 @@ use App\Models\Employee;
 use App\Models\MemberData;
 use App\Models\Program;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -16,8 +15,6 @@ use Tests\TestCase;
 // SKENARIO-TESTING.md: Discount CRUD, program eligibility, quota management
 class DiscountManagementTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $boardUser;
 
     private User $regularUser;

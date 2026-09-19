@@ -1,19 +1,15 @@
 <?php
 
-use App\Models\ToeflTest;
-use App\Models\ToeflSession;
-use App\Models\MemberAccount;
 use App\Models\Employee;
+use App\Models\MemberAccount;
 use App\Models\MemberData;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use function Pest\Laravel\actingAs;
-use function Pest\Laravel\get;
-use function Pest\Laravel\post;
+use App\Models\ToeflSession;
+use App\Models\ToeflTest;
 
-uses(RefreshDatabase::class);
+use function Pest\Laravel\actingAs;
 
 beforeEach(function () {
-    \App\Models\Employee::factory()->create(['id' => 1]);
+    $employee = Employee::factory()->create();
     $this->memberData = MemberData::create([
         'full_name' => 'Member User',
         'whatsapp_number' => '08123456789',
@@ -27,7 +23,7 @@ beforeEach(function () {
         'is_active' => true,
     ]);
     $this->toeflTest = ToeflTest::create([
-        'created_by_employee_id' => 1,
+        'created_by_employee_id' => $employee->id,
         'test_name' => 'Member Test',
         'listening_time_limit' => 30,
         'structure_time_limit' => 25,
@@ -46,7 +42,7 @@ it('can start a member session', function () {
     ])->assertRedirect();
 
     expect(ToeflSession::count())->toBe(1);
-    
+
     $session = ToeflSession::first();
     expect($session->members_data_id)->toBe($this->memberData->id);
     expect($session->status)->toBe(ToeflSession::STATUS_IN_PROGRESS);

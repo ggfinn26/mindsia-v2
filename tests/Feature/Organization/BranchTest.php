@@ -6,13 +6,11 @@ use App\Models\Area;
 use App\Models\Branch;
 use App\Models\Employee;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 class BranchTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $ceoUser;
 
     private User $regularUser;
@@ -25,10 +23,7 @@ class BranchTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
-
-
-        
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $this->ceoUser = User::factory()->create();
         $this->ceoUser->assignRole('CEO');

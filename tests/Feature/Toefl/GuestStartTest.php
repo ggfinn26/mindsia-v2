@@ -1,19 +1,18 @@
 <?php
 
-use App\Models\ToeflTest;
+use App\Models\Employee;
 use App\Models\ToeflSession;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\ToeflTest;
+
 use function Pest\Laravel\get;
 use function Pest\Laravel\post;
 
-uses(RefreshDatabase::class);
-
 beforeEach(function () {
-    \App\Models\Employee::factory()->create(['id' => 1]);
+    $employee = Employee::factory()->create();
     $this->toeflTest = ToeflTest::create([
-        'created_by_employee_id' => 1,
+        'created_by_employee_id' => $employee->id,
         'test_name' => 'Guest Trial Test',
-                'listening_time_limit' => 30,
+        'listening_time_limit' => 30,
         'structure_time_limit' => 25,
         'reading_time_limit' => 55,
         'status' => ToeflTest::STATUS_PUBLISHED,
@@ -37,19 +36,18 @@ it('cannot view entry page for non-trial test', function () {
 
 it('can start a guest session', function () {
     post(route('toefl.guest.start', $this->toeflTest), [
-        'name' => 'Guest User',
-        'email' => 'guest@example.com',
-        'phone' => '08123456789',
-        'school' => 'High School',
-        'goal' => 'Improve english',
+        'guest_name' => 'Guest User',
+        'guest_email' => 'guest@example.com',
+        'guest_whatsapp' => '08123456789',
+        'guest_city' => 'Jakarta',
     ])->assertRedirect();
 
     expect(ToeflSession::count())->toBe(1);
-    
+
     $session = ToeflSession::first();
     expect($session->guest_name)->toBe('Guest User');
     expect($session->status)->toBe(ToeflSession::STATUS_IN_PROGRESS);
-    
+
     // Test that the session was put into guest_toefl_session_id
     expect(session('guest_toefl_session_id'))->toBe($session->id);
 });

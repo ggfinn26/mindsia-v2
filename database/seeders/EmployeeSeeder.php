@@ -132,7 +132,7 @@ class EmployeeSeeder extends Seeder
                 ['employee_code' => $code],
                 [
                     'full_name' => $name,
-                    'gender' => $gender,
+                    'gender' => $gender === 'M' ? 'L' : ($gender === 'F' ? 'P' : $gender),
                     'birthdate' => '1990-01-01',
                     'email' => strtolower($code).'@mindsia.id',
                     'whatsapp_number' => '08000000000',

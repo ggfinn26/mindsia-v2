@@ -1,15 +1,10 @@
 <?php
 
-use App\Models\Webhook;
 use App\Models\User;
-use Database\Seeders\PermissionSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\Webhook;
 use Illuminate\Support\Facades\Http;
 
-uses(RefreshDatabase::class);
-
 beforeEach(function () {
-    $this->seed(PermissionSeeder::class);
     $this->admin = User::factory()->create();
     $this->admin->givePermissionTo('system.webhook.manage');
 });

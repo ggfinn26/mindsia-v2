@@ -6,13 +6,10 @@ use App\Models\Institution;
 use App\Models\MemberData;
 use App\Models\Region;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class InstitutionTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $ceoUser;
 
     private User $regularUser;
@@ -22,9 +19,6 @@ class InstitutionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-
-        
 
         $this->ceoUser = User::factory()->create();
         $this->ceoUser->assignRole('CEO');

@@ -9,9 +9,9 @@ use App\Models\Employee;
 use App\Models\EmploymentStatus;
 use App\Models\Position;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 // Flow: contract-branch-transfer (BT-01 → BT-07)
@@ -19,17 +19,18 @@ use Tests\TestCase;
 //         direct transfer, approve/reject flow
 class BranchTransferTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $employeeUser;
+
     private Employee $employee;
+
     private Branch $currentBranch;
+
     private Branch $otherBranch;
 
     protected function setUp(): void
     {
         parent::setUp();
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         // Employee with branch via cascade
         $this->employee = Employee::factory()->create();
@@ -156,7 +157,7 @@ class BranchTransferTest extends TestCase
 
         $this->actingAs($admin)
             ->put(route('branch-transfers.direct.update', $this->employee), [
-                'branch_id' => $this->otherBranch->id,
+                'to_branch_id' => $this->otherBranch->id,
             ])
             ->assertRedirect();
 

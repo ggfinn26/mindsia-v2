@@ -5,7 +5,6 @@ namespace Tests\Feature\Member;
 use App\Models\MemberAccount;
 use App\Models\MemberData;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Support\CreatesMember;
 use Tests\TestCase;
 
@@ -14,7 +13,6 @@ use Tests\TestCase;
 class MemberProfileManagementTest extends TestCase
 {
     use CreatesMember;
-    use RefreshDatabase;
 
     private MemberAccount $memberAccount;
 
@@ -82,12 +80,12 @@ class MemberProfileManagementTest extends TestCase
         ]);
     }
 
-    // MP-04: Upload avatar — endpoint belum ada (GAP-144 belum diperbaiki)
-    public function test_avatar_upload_endpoint_not_yet_implemented(): void
+    // MP-04: Upload avatar — endpoint exists, requires avatar file
+    public function test_avatar_upload_requires_file(): void
     {
         $this->actingAs($this->memberAccount, 'member')
             ->post('/member/profile/avatar', [])
-            ->assertStatus(404);
+            ->assertStatus(302); // validation redirect: avatar field required
     }
 
     // MP-05: Ganti password berhasil — old password benar

@@ -6,16 +6,11 @@ use App\Models\AttendancePolicy;
 use App\Models\AttendanceRule;
 use App\Models\AttendanceRuleAction;
 use App\Models\AttendanceRuleViolation;
-use App\Models\Branch;
-use App\Models\Employee;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class AttendancePolicyRulesTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $admin;
 
     protected function setUp(): void
@@ -281,9 +276,7 @@ class AttendancePolicyRulesTest extends TestCase
         $action = AttendanceRuleAction::where('action_type', 'warning_letter')->first();
         $this->assertNotNull($action);
 
-        // GAP-8: No execution pipeline — warning letter action is stored but never executed
-        // The warningLetterAction relationship points to AttendanceRuleWarningLetterAction model,
-        // but the migration table doesn't exist → will throw if accessed
-        $this->assertFalse(\Schema::hasTable('attendance_rule_warning_letter_actions'));
+        // GAP-8 resolved: migration table now exists
+        $this->assertTrue(\Schema::hasTable('attendance_rule_warning_letter_actions'));
     }
 }

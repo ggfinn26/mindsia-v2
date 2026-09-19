@@ -7,24 +7,23 @@ use App\Models\EmploymentStatus;
 use App\Models\Position;
 use App\Models\ResignRequest;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 // Flow: employee-offboarding / resign-request (EO-01 → EO-06)
 // Covers: submit resign, index auth, approve/reject, resign_date validation, ownership
 class ResignRequestTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $employeeUser;
+
     private Employee $employee;
 
     protected function setUp(): void
     {
         parent::setUp();
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $this->employee = Employee::factory()->create();
         $this->employeeUser = User::factory()->create([

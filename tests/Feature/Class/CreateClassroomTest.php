@@ -3,7 +3,6 @@
 use App\Models\Branch;
 use App\Models\ClassRoom;
 use App\Models\Employee;
-use App\Models\MemberClass;
 use App\Models\Program;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;

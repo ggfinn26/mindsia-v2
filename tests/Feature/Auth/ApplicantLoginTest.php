@@ -3,7 +3,6 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\ApplicantAccount;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\RateLimiter;
 use Tests\TestCase;
 
@@ -11,8 +10,6 @@ use Tests\TestCase;
 // Scenarios: AL-01 to AL-08
 class ApplicantLoginTest extends TestCase
 {
-    use RefreshDatabase;
-
     private ApplicantAccount $verifiedApplicant;
 
     private ApplicantAccount $unverifiedApplicant;
@@ -113,7 +110,7 @@ class ApplicantLoginTest extends TestCase
     // AL-06: Login — rate limit (5 attempts then lockout)
     public function test_al06_login_rate_limit(): void
     {
-        $throttleKey = strtolower('verified.applicant@mindsia.test') . '|127.0.0.1';
+        $throttleKey = strtolower('verified.applicant@mindsia.test').'|127.0.0.1';
 
         // Attempt 5 failed logins
         for ($i = 0; $i < 5; $i++) {

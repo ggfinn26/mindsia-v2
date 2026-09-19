@@ -5,7 +5,6 @@ namespace Tests\Feature\Kpi;
 use App\Models\KpiTemplate;
 use App\Models\KpiTemplateIndicator;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -13,8 +12,6 @@ use Tests\TestCase;
 // SKENARIO-TESTING.md: KPI template CRUD, indicators, access control
 class KpiTemplateManagementTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $boardUser;
 
     private User $regularUser;
@@ -98,7 +95,7 @@ class KpiTemplateManagementTest extends TestCase
             ->assertRedirect();
 
         $this->assertDatabaseHas('kpi_templates', [
-            'id'            => $template->id,
+            'id' => $template->id,
             'template_name' => 'Updated Name',
         ]);
     }
@@ -112,12 +109,12 @@ class KpiTemplateManagementTest extends TestCase
             ->put("/kpi/templates/{$template->id}", [
                 'template_code' => 'KPI-ACTIVE-001',
                 'template_name' => $template->template_name,
-                'is_active'     => 0,
+                'is_active' => 0,
             ])
             ->assertRedirect();
 
         $this->assertDatabaseHas('kpi_templates', [
-            'id'        => $template->id,
+            'id' => $template->id,
             'is_active' => false,
         ]);
     }

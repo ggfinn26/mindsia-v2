@@ -6,7 +6,6 @@ use App\Models\KpiEvaluatorAssignment;
 use App\Models\KpiGradeRule;
 use App\Models\KpiTemplate;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -14,8 +13,6 @@ use Tests\TestCase;
 // SKENARIO-TESTING.md: Grade rule CRUD, evaluator assignment, validation
 class KpiGradeAndAssignmentTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $boardUser;
 
     private User $regularUser;

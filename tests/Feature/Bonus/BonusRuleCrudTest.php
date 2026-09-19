@@ -12,8 +12,6 @@ use App\Models\Position;
 use App\Models\SpecialBonusRule;
 use App\Models\SpecialBonusRuleCondition;
 use App\Models\User;
-use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -21,8 +19,6 @@ use Tests\TestCase;
 
 class BonusRuleCrudTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $adminUser;
 
     private User $unauthorizedUser;
@@ -196,7 +192,7 @@ class BonusRuleCrudTest extends TestCase
 
         $this->actingAs($this->adminUser)
             ->put(route('bonus.marketing-rules.update', $rule), [
-                'rule_code' => 'MKT-UPD-' . $rule->id,
+                'rule_code' => 'MKT-UPD-'.$rule->id,
                 'rule_name' => 'New Name',
                 'scope_type' => 'global',
                 'bonus_basis' => 'marketing_mpi',
@@ -651,7 +647,7 @@ class BonusRuleCrudTest extends TestCase
         // GAP-92: Use different rule_code due to route param mismatch (see BM-06)
         $this->actingAs($this->adminUser)
             ->put(route('bonus.marketing-rules.update', $rule), [
-                'rule_code' => 'MKT-HIST-' . $rule->id,
+                'rule_code' => 'MKT-HIST-'.$rule->id,
                 'rule_name' => 'New Name',
                 'scope_type' => 'global',
                 'bonus_basis' => 'marketing_mpi',

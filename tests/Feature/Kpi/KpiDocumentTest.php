@@ -8,7 +8,6 @@ use App\Models\KpiEvaluatorAssignment;
 use App\Models\KpiTemplate;
 use App\Models\User;
 use App\Services\TelegramStorageService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
@@ -17,8 +16,6 @@ use Tests\TestCase;
 // SKENARIO-TESTING.md: Upload dokumen ke template/evaluasi, access control, delete
 class KpiDocumentTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $uploaderUser;
 
     private User $otherUser;
@@ -103,7 +100,7 @@ class KpiDocumentTest extends TestCase
     {
         $this->mock(TelegramStorageService::class, fn ($m) => $m->shouldReceive('uploadFile')
             ->once()
-            ->andReturn(['telegram_file_id' => $fileId])
+            ->andReturn(['file_id' => "kpi/{$fileId}.pdf"])
         );
     }
 

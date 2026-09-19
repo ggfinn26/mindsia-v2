@@ -2,21 +2,21 @@
 
 namespace Tests\Feature\Employee;
 
+use App\Models\ContractExtendOffer;
 use App\Models\Employee;
 use App\Models\EmploymentStatus;
 use App\Models\Position;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 // Flow: contract-new, contract-extend, contract-change-position
 // GAP-212: EmploymentStatusController::store expects Employee $employee tapi resource route tidak punya {employee} param
 class ContractManagementTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $hrUser;
 
     private Employee $employee;
@@ -30,10 +30,7 @@ class ContractManagementTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
-
-
-        
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $role = Role::where('name', 'HRR')->first();
 
@@ -75,7 +72,7 @@ class ContractManagementTest extends TestCase
     public function test_route_contract_extend_terdaftar(): void
     {
         $this->assertTrue(
-            \Illuminate\Support\Facades\Route::has('employment-statuses.extend.store'),
+            Route::has('employment-statuses.extend.store'),
             'Route employment-statuses.extend.store harus terdaftar'
         );
     }
@@ -182,7 +179,7 @@ class ContractManagementTest extends TestCase
         // Dokumentasi bug: POST /employment-statuses tidak membawa {employee}
         // sehingga EmploymentStatusController::store(Employee $employee) akan error
         $this->assertTrue(
-            \Illuminate\Support\Facades\Route::has('employment-statuses.store'),
+            Route::has('employment-statuses.store'),
             'Route employment-statuses.store harus terdaftar'
         );
 
@@ -196,5 +193,131 @@ class ContractManagementTest extends TestCase
     {
         $this->get(route('employment-statuses.extend.create', $this->activeStatus))
             ->assertRedirect(route('login'));
+    }
+
+    // EA-01: Route accept/reject terdaftar
+    public function test_route_extend_accept_reject_terdaftar(): void
+    {
+        $this->assertTrue(Route::has('employment-statuses.extend.accept'));
+        $this->assertTrue(Route::has('employment-statuses.extend.reject'));
+    }
+
+    private function buatPendingOffer(): ContractExtendOffer
+    {
+        return ContractExtendOffer::create([
+            'employment_status_id' => $this->activeStatus->id,
+            'current_end_date' => $this->activeStatus->contract_end_date,
+            'proposed_end_date' => now()->addYear()->format('Y-m-d'),
+            'status' => 'pending',
+        ]);
+    }
+
+    // EA-02: Accept offer → status=accepted, contract_end_date terupdate
+    public function test_accept_extend_offer_updates_contract_end_date(): void
+    {
+        $offer = $this->buatPendingOffer();
+        $proposedDate = $offer->proposed_end_date->format('Y-m-d');
+
+        $this->actingAs($this->hrUser)
+            ->post(route('employment-statuses.extend.accept', $this->activeStatus))
+            ->assertRedirect(route('employees.show', $this->employee));
+
+        $this->assertDatabaseHas('contract_extend_offers', [
+            'id' => $offer->id,
+            'status' => 'accepted',
+        ]);
+        $this->assertDatabaseHas('employment_status', [
+            'id' => $this->activeStatus->id,
+            'contract_end_date' => $proposedDate,
+        ]);
+    }
+
+    // EA-03: Reject offer → status=rejected, contract_end_date tidak berubah
+    public function test_reject_extend_offer_keeps_contract_end_date(): void
+    {
+        $offer = $this->buatPendingOffer();
+        $originalDate = $this->activeStatus->contract_end_date->format('Y-m-d');
+
+        $this->actingAs($this->hrUser)
+            ->post(route('employment-statuses.extend.reject', $this->activeStatus))
+            ->assertRedirect(route('employees.show', $this->employee));
+
+        $this->assertDatabaseHas('contract_extend_offers', [
+            'id' => $offer->id,
+            'status' => 'rejected',
+        ]);
+        $this->assertDatabaseHas('employment_status', [
+            'id' => $this->activeStatus->id,
+            'contract_end_date' => $originalDate,
+        ]);
+    }
+
+    // EA-04: Accept offer yang sudah accepted → 404
+    public function test_accept_nonpending_offer_returns_404(): void
+    {
+        ContractExtendOffer::create([
+            'employment_status_id' => $this->activeStatus->id,
+            'current_end_date' => $this->activeStatus->contract_end_date,
+            'proposed_end_date' => now()->addYear()->format('Y-m-d'),
+            'status' => 'accepted',
+        ]);
+
+        $this->actingAs($this->hrUser)
+            ->post(route('employment-statuses.extend.accept', $this->activeStatus))
+            ->assertNotFound();
+    }
+
+    // EA-05: Accept tanpa permission → 403
+    public function test_accept_extend_tanpa_permission_ditolak(): void
+    {
+        $this->buatPendingOffer();
+        $userTanpaPermission = User::factory()->create();
+
+        $this->actingAs($userTanpaPermission)
+            ->post(route('employment-statuses.extend.accept', $this->activeStatus))
+            ->assertStatus(403);
+    }
+
+    // EA-06: Accept tanpa offer sama sekali → 404
+    public function test_accept_tanpa_offer_returns_404(): void
+    {
+        $this->actingAs($this->hrUser)
+            ->post(route('employment-statuses.extend.accept', $this->activeStatus))
+            ->assertNotFound();
+    }
+
+    // CP-04: Ganti posisi → Spatie role user ter-sync ke role posisi baru
+    public function test_ganti_posisi_sync_spatie_role_ke_posisi_baru(): void
+    {
+        $roleA = Role::where('name', 'HRR')->first();
+        $roleB = Role::firstOrCreate(['name' => 'Staff', 'guard_name' => 'web']);
+
+        $posisiAwal = Position::create(['position_name' => 'Staff Lama', 'role_id' => $roleA->id, 'hierarchy_order' => 9]);
+        $posisiBaru = Position::create(['position_name' => 'Staff Baru', 'role_id' => $roleB->id, 'hierarchy_order' => 10]);
+
+        $employee = Employee::factory()->create();
+        $user = User::factory()->create(['employee_id' => $employee->id]);
+        $user->assignRole($roleA);
+
+        $status = EmploymentStatus::create([
+            'employees_id' => $employee->id,
+            'type_employment' => 'Kontrak',
+            'join_date' => now()->subYear(),
+            'position_id' => $posisiAwal->id,
+            'contract_start_date' => now()->subYear(),
+            'contract_end_date' => now()->addMonths(6),
+            'setup_incomplete' => false,
+        ]);
+
+        $this->actingAs($this->hrUser)
+            ->post(route('employment-statuses.change-position.store', $status), [
+                'position_id' => $posisiBaru->id,
+                'effective_date' => now()->format('Y-m-d'),
+            ])
+            ->assertRedirect(route('employees.show', $employee));
+
+        $user->refresh();
+        $this->assertTrue($user->hasRole($roleB), 'User harus punya role posisi baru setelah ganti posisi');
+        $this->assertFalse($user->hasRole($roleA), 'Role lama harus tidak ada setelah ganti posisi');
     }
 }

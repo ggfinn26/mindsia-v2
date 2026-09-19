@@ -6,16 +6,14 @@ use App\Models\Employee;
 use App\Models\EmploymentStatus;
 use App\Models\Position;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 // Flow: position-management (POS-01 to POS-06)
 class PositionTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $userWithPermission;
 
     private User $userWithoutPermission;
@@ -25,10 +23,7 @@ class PositionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
-
-
-        
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $this->role = Role::where('name', 'HRR')->first();
 

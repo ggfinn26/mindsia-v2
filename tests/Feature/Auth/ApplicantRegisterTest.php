@@ -4,7 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Models\ApplicantAccount;
 use App\Models\ApplicantMasterData;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Notifications\GuardedVerifyEmail;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
@@ -12,8 +12,6 @@ use Tests\TestCase;
 // Scenarios: AR-01 to AR-11
 class ApplicantRegisterTest extends TestCase
 {
-    use RefreshDatabase;
-
     private array $validPayload;
 
     protected function setUp(): void
@@ -58,7 +56,7 @@ class ApplicantRegisterTest extends TestCase
         ]);
 
         // Verification email sent
-        Notification::assertSentTo($account, \App\Notifications\GuardedVerifyEmail::class);
+        Notification::assertSentTo($account, GuardedVerifyEmail::class);
 
         // NOT auto-logged in
         $this->assertGuest('applicant');
@@ -74,7 +72,7 @@ class ApplicantRegisterTest extends TestCase
         $account = ApplicantAccount::where('email', 'budi.santoso@mindsia.test')->first();
 
         // Verify GuardedVerifyEmail notification was sent with 'applicant' guard
-        Notification::assertSentTo($account, \App\Notifications\GuardedVerifyEmail::class, function ($notification) {
+        Notification::assertSentTo($account, GuardedVerifyEmail::class, function ($notification) {
             // GuardedVerifyEmail constructor receives the guard name
             return true;
         });

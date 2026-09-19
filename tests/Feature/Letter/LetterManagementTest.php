@@ -4,7 +4,6 @@ namespace Tests\Feature\Letter;
 
 use App\Models\User;
 use App\Services\TelegramStorageService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
@@ -13,8 +12,6 @@ use Tests\TestCase;
 //         in-letter-management (ILM), sop-document-management (SOD)
 class LetterManagementTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $adminUser;
 
     private User $regularUser;
@@ -28,7 +25,7 @@ class LetterManagementTest extends TestCase
         parent::setUp();
 
         $this->mock(TelegramStorageService::class, fn ($m) => $m
-            ->shouldReceive('uploadFile')->andReturn(['telegram_file_id' => 'fake_tg_id'])
+            ->shouldReceive('uploadFile')->andReturn(['file_id' => 'letters/fake_tg_id.pdf'])
             ->shouldReceive('downloadFile')->andReturn('%PDF-1.4 fake content')
         );
 

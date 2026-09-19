@@ -9,14 +9,12 @@ use App\Models\User;
 use App\Models\WorkScheduleAssignment;
 use App\Models\WorkScheduleRule;
 use App\Services\TelegramStorageService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Mockery\MockInterface;
 use Tests\TestCase;
 
 class CheckOutTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $user;
 
     private Employee $employee;
@@ -26,9 +24,6 @@ class CheckOutTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-
-        
 
         $this->branch = Branch::factory()->create([
             'latitude' => -6.2088,
@@ -219,7 +214,7 @@ class CheckOutTest extends TestCase
 
         $this->actingAs($this->user)
             ->post(route('work-attendance.check-out'), array_merge($this->validCheckOutData(), [
-                'selfie' => \Illuminate\Http\UploadedFile::fake()->image('selfie_out.jpg', 640, 480),
+                'selfie' => UploadedFile::fake()->image('selfie_out.jpg', 640, 480),
             ]))
             ->assertRedirect();
 

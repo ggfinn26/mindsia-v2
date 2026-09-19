@@ -3,10 +3,7 @@
 use App\Models\NotificationTemplate;
 use App\Models\NotificationVariable;
 use App\Models\User;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Spatie\Permission\Models\Permission;
-
-uses(DatabaseTransactions::class);
 
 beforeEach(function () {
     $this->user = User::factory()->create();
@@ -26,11 +23,11 @@ beforeEach(function () {
 
 it('can list notification templates', function () {
     NotificationTemplate::factory()->create(['template_key' => 'template-a']);
-    
+
     $this->actingAs($this->user)
         ->get(route('notification-templates.index'))
         ->assertStatus(200);
-        
+
 });
 
 it('can store a notification template', function () {
@@ -51,7 +48,7 @@ it('can store a notification template', function () {
 
 it('can update a notification template', function () {
     $template = NotificationTemplate::factory()->create(['template_key' => 'old-template', 'type' => 'email', 'subject' => 'old', 'body' => 'old']);
-    
+
     $data = [
         'template_key' => $template->template_key,
         'type' => $template->type,
@@ -104,7 +101,7 @@ it('can delete a variable from a template', function () {
         'notification_template_id' => $template->id,
         'variable_name' => 'name',
         'variable_type' => 'string',
-        'variable_description' => 'Desc'
+        'variable_description' => 'Desc',
     ]);
 
     $this->actingAs($this->user)

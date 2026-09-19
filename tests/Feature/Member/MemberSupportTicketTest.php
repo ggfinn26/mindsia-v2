@@ -6,7 +6,6 @@ use App\Models\Branch;
 use App\Models\MemberData;
 use App\Models\MemberSupportTicket;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -14,8 +13,6 @@ use Tests\TestCase;
 // SKENARIO-TESTING.md: Create ticket, status management, assign, reply, XOR validation
 class MemberSupportTicketTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $boardUser;
 
     private User $regularUser;
@@ -120,7 +117,7 @@ class MemberSupportTicketTest extends TestCase
             ])
             ->assertRedirect();
 
-        $this->assertNotNull(\App\Models\MemberSupportTicket::find($ticket->id)->resolved_at);
+        $this->assertNotNull(MemberSupportTicket::find($ticket->id)->resolved_at);
     }
 
     // ST-06: change status ke 'closed' → 422 (Fix Bug #97: 'closed' dihapus dari validation)

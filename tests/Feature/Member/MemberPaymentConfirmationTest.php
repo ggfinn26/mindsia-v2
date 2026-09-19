@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Permission;
 
 /** Direct DB insert for employee — bypasses factory FK deadlock chain with RefreshDatabase */
-function insertEmployee(string $prefix = 'MC'): int
+function insertMcEmployee(string $prefix = 'MC'): int
 {
     $provinceId = DB::table('provinces')->insertGetId(['name' => "Prov {$prefix}", 'created_at' => now(), 'updated_at' => now()]);
     $regionId = DB::table('regions')->insertGetId(['province_id' => $provinceId, 'name' => "Reg {$prefix}", 'created_at' => now(), 'updated_at' => now()]);
@@ -31,7 +31,7 @@ function insertEmployee(string $prefix = 'MC'): int
 }
 
 /** Direct DB insert for institution — avoids Institution::factory() chained Region::factory() deadlock */
-function insertInstitution(int $regionId, string $prefix = 'MC'): int
+function insertMcInstitution(int $regionId, string $prefix = 'MC'): int
 {
     return DB::table('institutions')->insertGetId([
         'regions_id' => $regionId,
@@ -45,7 +45,7 @@ beforeEach(function () {
     // Create permission and assign to admin user
     Permission::firstOrCreate(['name' => 'member.payment.manage', 'guard_name' => 'web']);
 
-    $employeeId = insertEmployee('MC'.uniqid());
+    $employeeId = insertMcEmployee('MC'.uniqid());
     $this->adminUser = User::factory()->create([
         'employee_id' => $employeeId,
         'email_verified_at' => now(),
@@ -54,7 +54,7 @@ beforeEach(function () {
     $this->adminUser->givePermissionTo('member.payment.manage');
 
     // Regular user without payment permission
-    $regEmpId = insertEmployee('MCR'.uniqid());
+    $regEmpId = insertMcEmployee('MCR'.uniqid());
     $this->regularUser = User::factory()->create([
         'employee_id' => $regEmpId,
         'email_verified_at' => now(),
@@ -68,7 +68,7 @@ beforeEach(function () {
     $employee = DB::table('employees')->where('id', $employeeId)->first();
     $provinceId = DB::table('provinces')->insertGetId(['name' => 'Prov MC-Mem', 'created_at' => now(), 'updated_at' => now()]);
     $regionId = DB::table('regions')->insertGetId(['province_id' => $provinceId, 'name' => 'Reg MC-Mem', 'created_at' => now(), 'updated_at' => now()]);
-    $institutionId = insertInstitution($regionId, 'MC-MEM');
+    $institutionId = insertMcInstitution($regionId, 'MC-MEM');
 
     $memberDataId = DB::table('members_data')->insertGetId([
         'full_name' => 'Member Test '.uniqid(),

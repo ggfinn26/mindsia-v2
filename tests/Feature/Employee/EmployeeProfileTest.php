@@ -5,14 +5,12 @@ namespace Tests\Feature\Employee;
 use App\Models\Branch;
 use App\Models\Employee;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 // Flow: employee-profile (EP-01 to EP-06)
 class EmployeeProfileTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $globalViewer;
 
     private User $noPermissionUser;
@@ -22,10 +20,7 @@ class EmployeeProfileTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
-
-
-        
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         // User dengan employee.view global (tidak punya linked employee → scope global)
         $this->globalViewer = User::factory()->create();

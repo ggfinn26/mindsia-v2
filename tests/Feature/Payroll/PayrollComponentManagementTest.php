@@ -4,11 +4,13 @@ namespace Tests\Feature\Payroll;
 
 use App\Models\Employee;
 use App\Models\EmployeeCompensation;
+use App\Models\EmployeePayroll;
 use App\Models\PayrollComponent;
 use App\Models\PayrollItem;
 use App\Models\PayrollPeriod;
 use App\Models\SessionCompensationRule;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
@@ -21,6 +23,7 @@ class PayrollComponentManagementTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->user = User::factory()->create();
         $this->user->givePermissionTo([
             'payroll.component.create',
@@ -32,6 +35,35 @@ class PayrollComponentManagementTest extends TestCase
             'payroll.session_compensation_rule.create',
             'payroll.session_compensation_rule.update',
             'payroll.session_compensation_rule.delete',
+        ]);
+    }
+
+    /** Direct DB insert for employee — bypasses factory FK deadlock chain */
+    private function insertEmployee(string $prefix = 'EMP'): int
+    {
+        $provinceId = DB::table('provinces')->insertGetId(['name' => "Prov {$prefix}", 'created_at' => now(), 'updated_at' => now()]);
+        $regionId = DB::table('regions')->insertGetId(['province_id' => $provinceId, 'name' => "Reg {$prefix}", 'created_at' => now(), 'updated_at' => now()]);
+        $areaId = DB::table('areas')->insertGetId(['region_id' => $regionId, 'name' => "Area {$prefix}", 'created_at' => now(), 'updated_at' => now()]);
+        $branchId = DB::table('branches')->insertGetId([
+            'areas_id' => $areaId,
+            'branch_name' => "Branch {$prefix}",
+            'code_branches' => 'BR'.substr(md5(uniqid($prefix)), 0, 6),
+            'address' => 'Address',
+            'whatsapp' => '62'.fake()->numerify('###########'),
+            'latitude' => -6.0, 'longitude' => 106.0, 'radius_meters' => 500, 'is_active' => true,
+            'created_at' => now(), 'updated_at' => now(),
+        ]);
+
+        return DB::table('employees')->insertGetId([
+            'employee_code' => 'EC-'.substr(md5(uniqid($prefix)), 0, 8),
+            'full_name' => "Employee {$prefix}",
+            'gender' => 'L',
+            'birthdate' => '1990-01-01',
+            'email' => strtolower($prefix).'_'.uniqid().'@test.com',
+            'whatsapp_number' => '62'.fake()->numerify('###########'),
+            'region_id' => $regionId, 'area_id' => $areaId, 'branch_id' => $branchId,
+            'is_active' => true,
+            'created_at' => now(), 'updated_at' => now(),
         ]);
     }
 
@@ -54,7 +86,7 @@ class PayrollComponentManagementTest extends TestCase
      */
     public function test_pc02_create_component_earning_type(): void
     {
-        $code = 'TEST-E' . str_pad(++self::$testCodeSeq, 4, '0', STR_PAD_LEFT);
+        $code = 'TEST-E'.str_pad(++self::$testCodeSeq, 4, '0', STR_PAD_LEFT);
 
         $response = $this->actingAs($this->user)->post(route('payroll.components.store'), [
             'component_code' => $code,
@@ -80,7 +112,7 @@ class PayrollComponentManagementTest extends TestCase
      */
     public function test_pc03_create_component_duplicate_code(): void
     {
-        $code = 'TEST-D' . str_pad(++self::$testCodeSeq, 4, '0', STR_PAD_LEFT);
+        $code = 'TEST-D'.str_pad(++self::$testCodeSeq, 4, '0', STR_PAD_LEFT);
 
         PayrollComponent::factory()->create(['component_code' => $code]);
 
@@ -101,7 +133,7 @@ class PayrollComponentManagementTest extends TestCase
     {
         $unauthorized = User::factory()->create();
 
-        $code = 'TEST-U' . str_pad(++self::$testCodeSeq, 4, '0', STR_PAD_LEFT);
+        $code = 'TEST-U'.str_pad(++self::$testCodeSeq, 4, '0', STR_PAD_LEFT);
 
         $response = $this->actingAs($unauthorized)->post(route('payroll.components.store'), [
             'component_code' => $code,
@@ -137,9 +169,11 @@ class PayrollComponentManagementTest extends TestCase
     public function test_pc06_update_component_calculation_method_blocked_when_payroll_items_exist(): void
     {
         $component = PayrollComponent::factory()->create(['calculation_method' => 'fixed']);
+        $employeeId = $this->insertEmployee('PC06');
         $period = PayrollPeriod::factory()->create();
-        $payroll = \App\Models\EmployeePayroll::factory()->create([
+        $payroll = EmployeePayroll::factory()->create([
             'payroll_period_id' => $period->id,
+            'employee_id' => $employeeId,
         ]);
         PayrollItem::factory()->create([
             'employee_payroll_id' => $payroll->id,
@@ -191,9 +225,11 @@ class PayrollComponentManagementTest extends TestCase
     public function test_pc09_delete_component_with_payroll_history_soft_deactivates(): void
     {
         $component = PayrollComponent::factory()->create(['is_active' => true]);
+        $employeeId = $this->insertEmployee('PC09');
         $period = PayrollPeriod::factory()->create();
-        $payroll = \App\Models\EmployeePayroll::factory()->create([
+        $payroll = EmployeePayroll::factory()->create([
             'payroll_period_id' => $period->id,
+            'employee_id' => $employeeId,
         ]);
         PayrollItem::factory()->create([
             'employee_payroll_id' => $payroll->id,
@@ -232,7 +268,7 @@ class PayrollComponentManagementTest extends TestCase
      */
     public function test_pc11_access_employee_compensation_page(): void
     {
-        $employee = Employee::factory()->create();
+        $employee = Employee::find($this->insertEmployee('PC11'));
 
         $response = $this->actingAs($this->user)->get(route('employees.payroll.compensations.index', $employee));
 
@@ -244,7 +280,7 @@ class PayrollComponentManagementTest extends TestCase
      */
     public function test_pc12_assign_compensation_successfully(): void
     {
-        $employee = Employee::factory()->create();
+        $employee = Employee::find($this->insertEmployee('PC12'));
         $component = PayrollComponent::factory()->earning()->fixed()->create(['is_active' => true]);
 
         $response = $this->actingAs($this->user)->post(route('employees.payroll.compensations.store', $employee), [
@@ -267,7 +303,7 @@ class PayrollComponentManagementTest extends TestCase
      */
     public function test_pc13_assign_compensation_upsert_updates_existing(): void
     {
-        $employee = Employee::factory()->create();
+        $employee = Employee::find($this->insertEmployee('PC13'));
         $component = PayrollComponent::factory()->earning()->fixed()->create(['is_active' => true]);
 
         EmployeeCompensation::factory()->create([
@@ -301,7 +337,7 @@ class PayrollComponentManagementTest extends TestCase
     public function test_pc14_assign_compensation_without_permission(): void
     {
         $unauthorized = User::factory()->create();
-        $employee = Employee::factory()->create();
+        $employee = Employee::find($this->insertEmployee('PC14'));
         $component = PayrollComponent::factory()->earning()->create(['is_active' => true]);
 
         $response = $this->actingAs($unauthorized)->post(route('employees.payroll.compensations.store', $employee), [
@@ -317,7 +353,7 @@ class PayrollComponentManagementTest extends TestCase
      */
     public function test_pc15_assign_compensation_inactive_component_allowed(): void
     {
-        $employee = Employee::factory()->create();
+        $employee = Employee::find($this->insertEmployee('PC15'));
         $inactiveComponent = PayrollComponent::factory()->inactive()->create();
 
         $response = $this->actingAs($this->user)->post(route('employees.payroll.compensations.store', $employee), [
@@ -340,8 +376,8 @@ class PayrollComponentManagementTest extends TestCase
      */
     public function test_pc16_delete_compensation_ownership_check_blocks_wrong_employee(): void
     {
-        $employee = Employee::factory()->create();
-        $otherEmployee = Employee::factory()->create();
+        $employee = Employee::find($this->insertEmployee('PC16A'));
+        $otherEmployee = Employee::find($this->insertEmployee('PC16B'));
         $component = PayrollComponent::factory()->earning()->create(['is_active' => true]);
 
         $compensation = EmployeeCompensation::factory()->create([
@@ -360,7 +396,7 @@ class PayrollComponentManagementTest extends TestCase
      */
     public function test_pc17_delete_compensation_without_permission_allowed(): void
     {
-        $employee = Employee::factory()->create();
+        $employee = Employee::find($this->insertEmployee('PC17'));
         $component = PayrollComponent::factory()->earning()->create(['is_active' => true]);
 
         $compensation = EmployeeCompensation::factory()->create([
@@ -437,7 +473,7 @@ class PayrollComponentManagementTest extends TestCase
      */
     public function test_pc23_create_session_rule_global_scope_with_role_id_errors(): void
     {
-        $role = Role::create(['name' => 'test-role-scope-' . uniqid()]);
+        $role = Role::create(['name' => 'test-role-scope-'.uniqid()]);
 
         $response = $this->actingAs($this->user)->post(route('payroll.session-rules.store'), [
             'rule_code' => 'SESS-CROSS-001',
@@ -486,7 +522,7 @@ class PayrollComponentManagementTest extends TestCase
      */
     public function test_pc24b_update_session_rule_scope_cross_field_not_validated(): void
     {
-        $role = Role::create(['name' => 'test-role-update-' . uniqid()]);
+        $role = Role::create(['name' => 'test-role-update-'.uniqid()]);
         $rule = SessionCompensationRule::factory()->globalScope()->create();
 
         $response = $this->actingAs($this->user)->put(route('payroll.session-rules.update', $rule), [
@@ -520,7 +556,7 @@ class PayrollComponentManagementTest extends TestCase
 
         $this->assertFalse(
             (bool) $dbValue?->is_active,
-            "Session rule is_active should be false. DB row: " . json_encode($dbValue) . " All rules count: " . $allRules->count()
+            'Session rule is_active should be false. DB row: '.json_encode($dbValue).' All rules count: '.$allRules->count()
         );
     }
 

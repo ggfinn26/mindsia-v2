@@ -3,8 +3,8 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\ApplicantAccount;
+use App\Models\MemberAccount;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Support\CreatesMember;
 use Tests\TestCase;
 
@@ -13,11 +13,11 @@ use Tests\TestCase;
  */
 class GuardIsolationTest extends TestCase
 {
-    use CreatesMember, RefreshDatabase;
+    use CreatesMember;
 
     private User $employee;
 
-    private \App\Models\MemberAccount $member;
+    private MemberAccount $member;
 
     private ApplicantAccount $applicant;
 

@@ -1,19 +1,17 @@
 <?php
 
-use App\Models\ToeflTest;
+use App\Models\Employee;
 use App\Models\ToeflSession;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use function Pest\Laravel\get;
+use App\Models\ToeflTest;
+
 use function Pest\Laravel\withSession;
 
-uses(RefreshDatabase::class);
-
 beforeEach(function () {
-    \App\Models\Employee::factory()->create(['id' => 1]);
+    $employee = Employee::factory()->create();
     $this->toeflTest = ToeflTest::create([
-        'created_by_employee_id' => 1,
+        'created_by_employee_id' => $employee->id,
         'test_name' => 'Guest Trial Test',
-                'listening_time_limit' => 30,
+        'listening_time_limit' => 30,
         'structure_time_limit' => 25,
         'reading_time_limit' => 55,
         'status' => ToeflTest::STATUS_PUBLISHED,

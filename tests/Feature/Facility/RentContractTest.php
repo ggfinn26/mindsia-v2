@@ -5,7 +5,6 @@ namespace Tests\Feature\Facility;
 use App\Models\BranchRentContract;
 use App\Models\BranchRentTermin;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -13,8 +12,6 @@ use Tests\TestCase;
 // SKENARIO-TESTING.md: Rent contract CRUD, termin generation, mark paid
 class RentContractTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $boardUser;
 
     private User $regularUser;

@@ -6,7 +6,6 @@ use App\Models\Branch;
 use App\Models\BranchMonthlyCost;
 use App\Models\User;
 use App\Services\Finance\BranchPeriodLockService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -16,8 +15,6 @@ use Tests\TestCase;
 // Tests document: skeleton GAPs + what WORKS (controller-level auth)
 class BranchCostAndPeriodLockTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $boardUser;
 
     private User $regularUser;

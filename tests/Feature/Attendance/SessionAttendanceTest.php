@@ -3,24 +3,21 @@
 namespace Tests\Feature\Attendance;
 
 use App\Models\Branch;
-use App\Models\ClassSchedule;
 use App\Models\ClassRoom;
+use App\Models\ClassSchedule;
 use App\Models\Employee;
 use App\Models\EmployeeSessionAttendanceLog;
-use App\Models\EmploymentStatus;
 use App\Models\Program;
 use App\Models\SessionSchedule;
 use App\Models\User;
 use App\Services\TelegramStorageService;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Mockery\MockInterface;
 use Tests\TestCase;
 
 class SessionAttendanceTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $user;
 
     private Employee $employee;
@@ -51,7 +48,7 @@ class SessionAttendanceTest extends TestCase
         ]);
 
         $this->mock(TelegramStorageService::class, function (MockInterface $mock) {
-            $mock->shouldReceive('uploadPhoto')->andReturn(['telegram_file_id' => 'fake_file_id_123']);
+            $mock->shouldReceive('uploadFile')->andReturn(['file_id' => 'fake_file_id_123']);
         });
 
         $this->session = $this->createSessionForToday($this->employee);
@@ -195,13 +192,18 @@ class SessionAttendanceTest extends TestCase
             'branch_id' => $this->branch->id,
             'tutor_id' => $this->employee->id,
         ]);
-        $classSchedule = ClassSchedule::factory()->create([
+
+        // Use a schedule for yesterday with a start_time that won't collide
+        // with the observer-generated schedules (observer uses start_time_primary)
+        $classSchedule = ClassSchedule::create([
             'class_id' => $classRoom->id,
             'schedule_date' => now()->subDay()->toDateString(),
-            'start_time' => '09:00',
-            'end_time' => '11:00',
+            'start_time' => '15:00',
+            'end_time' => '17:00',
+            'late_tolerance_minutes' => 15,
+            'material_taught' => 'Test session not today',
         ]);
-        $yesterdaySession = SessionSchedule::factory()->create([
+        $yesterdaySession = SessionSchedule::create([
             'class_schedule_id' => $classSchedule->id,
             'employee_id' => $this->employee->id,
         ]);
@@ -265,7 +267,7 @@ class SessionAttendanceTest extends TestCase
         $response = $this->post(
             route('session-attendance.check-in', $this->session->id),
             array_merge($this->validCheckInData(), [
-                'selfie' => \Illuminate\Http\UploadedFile::fake()->image('selfie.jpg'),
+                'selfie' => UploadedFile::fake()->image('selfie.jpg'),
             ]),
         );
 
@@ -400,17 +402,11 @@ class SessionAttendanceTest extends TestCase
         $verifier = User::factory()->create(['employee_id' => null]);
         $verifier->givePermissionTo('attendance.adjustment.create');
 
-        // This should throw TypeError because employee_id is null but verify() expects int
         $this->actingAs($verifier);
+        $response = $this->post(route('session-attendance.verify', $log->id));
 
-        try {
-            $this->post(route('session-attendance.verify', $log->id));
-            // If no exception, the code has been fixed — mark as passing
-            $this->fail('Expected TypeError was not thrown — code may have been fixed');
-        } catch (\TypeError $e) {
-            // Expected: TypeError: Argument #1 ($verifierEmployeeId) of type int, null given
-            $this->assertStringContainsString('int', $e->getMessage());
-        }
+        // TypeError: verify() expects int, null given — controller doesn't guard null employee_id
+        $response->assertStatus(500);
     }
 
     // ── SA-14: Verify — tanpa role ──

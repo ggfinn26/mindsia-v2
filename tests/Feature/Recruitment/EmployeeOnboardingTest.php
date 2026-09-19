@@ -4,23 +4,21 @@ use App\Models\ApplicantAccount;
 use App\Models\ApplicantMasterData;
 use App\Models\Branch;
 use App\Models\Employee;
-use App\Models\JobPosting;
-use App\Models\JobPermintaan;
-use App\Models\Position;
-use App\Models\JobApplication;
-use App\Models\OfferingLetter;
 use App\Models\EmployeeOnboarding;
+use App\Models\JobApplication;
+use App\Models\JobPermintaan;
+use App\Models\JobPermintaanDetail;
+use App\Models\JobPosting;
+use App\Models\OfferingLetter;
+use App\Models\Position;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->branch = Branch::factory()->create();
     $this->employee = Employee::factory()->create(['branch_id' => $this->branch->id]);
     $this->user = User::factory()->create(['employee_id' => $this->employee->id]);
     $this->user->assignRole('Super Admin');
-    
+
     $this->account = ApplicantAccount::create([
         'email' => 'pelamar@example.com',
         'password' => bcrypt('password'),
@@ -33,13 +31,26 @@ beforeEach(function () {
         'full_name' => 'Budi Pelamar',
         'email' => 'pelamar@example.com',
         'whatsapp_number' => '08123456789',
+        'gender' => 'male',
+        'birth_date' => now()->subYears(25)->format('Y-m-d'),
     ]);
-    
-    $this->position = Position::create(['code' => 'POS-05', 'name' => 'Tutor', 'is_active' => true]);
+
+    $this->position = Position::firstOrCreate(['position_name' => 'Tutor']);
     $this->permintaan = JobPermintaan::create([
         'branch_id' => $this->branch->id,
         'requested_by_employee_id' => $this->employee->id,
-        'status' => 'approved'
+        'status' => 'approved',
+    ]);
+
+    JobPermintaanDetail::create([
+        'job_permintaan_id' => $this->permintaan->id,
+        'position_id' => $this->position->id,
+        'employment_type' => 'Kontrak',
+        'request_type' => 'new_position',
+        'headcount' => 1,
+        'current_headcount' => 0,
+        'job_description' => 'Tutor for branch',
+        'target_start_date' => now()->addDays(7)->format('Y-m-d'),
     ]);
     $this->posting = JobPosting::create([
         'job_permintaan_id' => $this->permintaan->id,
@@ -48,12 +59,16 @@ beforeEach(function () {
         'title' => 'Tutor',
         'status' => 'published',
         'created_by_employee_id' => $this->employee->id,
-        'closing_date' => now()->addDays(10)->format('Y-m-d')
+        'job_description' => 'Test job description for this posting.',
+        'job_responsibilities' => 'Test responsibilities.',
+        'job_requirements_text' => 'Test requirements.',
+        'closing_date' => now()->addDays(10)->format('Y-m-d'),
     ]);
     $this->application = JobApplication::create([
         'applicant_id' => $this->applicant->id,
         'job_posting_id' => $this->posting->id,
-        'status' => 'offering_accepted'
+        'status' => 'hired',
+        'applied_at' => now(),
     ]);
     $this->offering = OfferingLetter::create([
         'job_application_id' => $this->application->id,
@@ -69,14 +84,13 @@ it('can store onboarding', function () {
     $data = [
         'branch_id' => $this->branch->id,
         'position_id' => $this->position->id,
-        'onboarding_start_date' => now()->format('Y-m-d'),
-        'onboarding_end_date' => now()->addDays(14)->format('Y-m-d'),
-        'notes' => 'Onboarding awal'
+        'employment_type' => 'Kontrak',
+        'start_date' => now()->addDays(3)->format('Y-m-d'),
     ];
     $this->actingAs($this->user)
-         ->post(route('recruitment.application.onboarding.store', $this->application), $data)
-         ->assertSessionHasNoErrors();
-         
+        ->post(route('recruitment.application.onboarding.store', $this->application), $data)
+        ->assertSessionHasNoErrors();
+
     $this->assertDatabaseHas('employee_onboardings', [
         'job_application_id' => $this->application->id,
     ]);
@@ -88,24 +102,22 @@ it('can review onboarding', function () {
         'offering_letter_id' => $this->offering->id,
         'branch_id' => $this->branch->id,
         'position_id' => $this->position->id,
-        'onboarding_start_date' => now()->format('Y-m-d'),
-        'onboarding_end_date' => now()->addDays(14)->format('Y-m-d'),
-        'status' => 'pending_review'
+        'employment_type' => 'Kontrak',
+        'start_date' => now()->addDays(3)->format('Y-m-d'),
+        'status' => 'pending_review',
     ]);
 
     $this->actingAs($this->user)
-         ->post(route('recruitment.onboarding.review', $onboarding), [
-             'status' => 'approved',
-             'review_notes' => 'Lanjut'
-         ])
-         ->assertSessionHasNoErrors();
-         
+        ->post(route('recruitment.onboarding.review', $onboarding), [
+            'decision' => 'approved',
+        ])
+        ->assertSessionHasNoErrors();
+
     $this->assertDatabaseHas('employee_onboardings', [
         'id' => $onboarding->id,
-        'status' => 'approved'
+        'status' => 'approved',
     ]);
 });
-
 
 it('can complete onboarding', function () {
     $onboarding = EmployeeOnboarding::create([
@@ -115,16 +127,17 @@ it('can complete onboarding', function () {
         'position_id' => $this->position->id,
         'onboarding_start_date' => now()->format('Y-m-d'),
         'onboarding_end_date' => now()->addDays(14)->format('Y-m-d'),
-        'status' => 'approved'
+        'employment_type' => 'Kontrak',
+        'start_date' => now()->addDays(3)->format('Y-m-d'),
+        'status' => 'approved',
     ]);
 
     $this->actingAs($this->user)
-         ->post(route('recruitment.onboarding.complete', $onboarding))
-         ->assertSessionHasNoErrors();
-         
+        ->post(route('recruitment.onboarding.complete', $onboarding))
+        ->assertRedirect();
+
     $this->assertDatabaseHas('employee_onboardings', [
         'id' => $onboarding->id,
-        'status' => 'completed'
+        'status' => 'completed',
     ]);
 });
-

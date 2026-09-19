@@ -7,10 +7,12 @@ use App\Models\EmploymentStatus;
 use App\Models\Position;
 use App\Models\TerminationChecklist;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 // Flow: contract-terminate (CT-01 → CT-06)
@@ -19,10 +21,10 @@ use Tests\TestCase;
 // This will FAIL at runtime — silent column ignore or DB error
 class ContractTerminateTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $hrUser;
+
     private Employee $employee;
+
     private EmploymentStatus $activeStatus;
 
     private array $warnings = [];
@@ -30,7 +32,7 @@ class ContractTerminateTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $contractPerm = Permission::firstOrCreate(['name' => 'contract.manage', 'guard_name' => 'web']);
         $checklistPerm = Permission::firstOrCreate(['name' => 'employee.termination_checklist.review', 'guard_name' => 'web']);
@@ -123,19 +125,19 @@ class ContractTerminateTest extends TestCase
     public function test_terminate_routes_registered(): void
     {
         $this->assertTrue(
-            \Illuminate\Support\Facades\Route::has('contract-terminate.initiate'),
+            Route::has('contract-terminate.initiate'),
             'Route contract-terminate.initiate harus terdaftar'
         );
         $this->assertTrue(
-            \Illuminate\Support\Facades\Route::has('contract-terminate.initiate.store'),
+            Route::has('contract-terminate.initiate.store'),
             'Route contract-terminate.initiate.store harus terdaftar'
         );
         $this->assertTrue(
-            \Illuminate\Support\Facades\Route::has('contract-terminate.checklist'),
+            Route::has('contract-terminate.checklist'),
             'Route contract-terminate.checklist harus terdaftar'
         );
         $this->assertTrue(
-            \Illuminate\Support\Facades\Route::has('contract-terminate.complete'),
+            Route::has('contract-terminate.complete'),
             'Route contract-terminate.complete harus terdaftar'
         );
     }
@@ -187,7 +189,7 @@ class ContractTerminateTest extends TestCase
     // This silently fails because the column doesn't exist
     public function test_gap_employment_status_missing_status_column(): void
     {
-        $hasColumn = \Illuminate\Support\Facades\Schema::hasColumn('employment_status', 'status');
+        $hasColumn = Schema::hasColumn('employment_status', 'status');
         $this->assertFalse($hasColumn, 'GAP: employment_status table has NO `status` column — terminate flow will fail silently');
 
         // Attempt to set status — will be silently ignored by Eloquent
@@ -196,7 +198,7 @@ class ContractTerminateTest extends TestCase
         // Refresh and check — status won't be saved
         $this->activeStatus->refresh();
         $this->assertFalse(
-            \Illuminate\Support\Facades\Schema::hasColumn('employment_status', 'status'),
+            Schema::hasColumn('employment_status', 'status'),
             'Confirmed: status column does not exist in DB'
         );
 

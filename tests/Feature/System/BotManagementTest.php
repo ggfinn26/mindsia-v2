@@ -2,13 +2,8 @@
 
 use App\Models\Bot;
 use App\Models\User;
-use Database\Seeders\PermissionSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->seed(PermissionSeeder::class);
     $this->admin = User::factory()->create();
     $this->admin->givePermissionTo('system.bot.manage');
 });

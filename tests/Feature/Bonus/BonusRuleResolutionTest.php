@@ -11,15 +11,13 @@ use App\Models\MarketingPerformance;
 use App\Models\SpecialBonusRule;
 use App\Models\SpecialBonusRuleCondition;
 use App\Models\User;
+use App\Services\Bonus\BonusDataSourceService;
 use App\Services\Bonus\BonusRuleResolverService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class BonusRuleResolutionTest extends TestCase
 {
-    use RefreshDatabase;
-
     private BonusRuleResolverService $resolver;
 
     private int $employeeId;
@@ -540,7 +538,7 @@ class BonusRuleResolutionTest extends TestCase
     public function test_br12_resolve_special_bonus_unknown_data_source(): void
     {
         // Verify that unknown data_source returns null (fail-safe behavior)
-        $dataSource = app(\App\Services\Bonus\BonusDataSourceService::class);
+        $dataSource = app(BonusDataSourceService::class);
         $result = $dataSource->resolveMetric('unknown_metric_xyz', $this->employeeId, 2026, 9);
 
         $this->assertNull($result, 'Unknown data_source should return null (fail-safe)');

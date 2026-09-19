@@ -194,7 +194,7 @@ test('PML-08 updateStatus on own lead updates status and appends history row', f
         ->count();
 
     $response = $this->actingAs($this->regularUser)
-        ->patch(route('prospective-members.update-status',$lead), [
+        ->patch(route('prospective-members.update-status', $lead), [
             'status' => ProspectiveMember::STATUS_YES,
             'change_reason' => 'Sudah konfirmasi',
         ]);
@@ -227,7 +227,7 @@ test('PML-09 updateStatus on other employee lead without area permission returns
     $otherLead = createLead($otherEmployeeId);
 
     $this->actingAs($this->regularUser)
-        ->patch(route('prospective-members.update-status',$otherLead), [
+        ->patch(route('prospective-members.update-status', $otherLead), [
             'status' => ProspectiveMember::STATUS_NO,
         ])
         ->assertForbidden();
@@ -242,7 +242,7 @@ test('PML-10 storeFollowUp on own lead stores follow-up note as change_reason', 
     $lead = createLead($this->regularEmployee->id);
 
     $response = $this->actingAs($this->regularUser)
-        ->post(route('prospective-members.follow-ups.store',$lead), [
+        ->post(route('prospective-members.follow-ups.store', $lead), [
             'note' => 'Calon sudah dihubungi via WhatsApp',
         ]);
 

@@ -6,15 +6,12 @@ use App\Models\Branch;
 use App\Models\Employee;
 use App\Models\EmployeeAttendanceMonthlyRecap;
 use App\Models\EmployeeWorkAttendanceLog;
-use App\Models\EmploymentStatus;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Carbon\Carbon;
 use Tests\TestCase;
 
 class MonthlyAttendanceRecapTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $user;
 
     private Employee $employee;
@@ -165,10 +162,10 @@ class MonthlyAttendanceRecapTest extends TestCase
     {
         $year = now()->year;
         $month = now()->month;
-        $date = now()->toDateString();
 
-        // Create 3 present logs
+        // Create 3 present logs on different dates (unique constraint: employee_id + attendance_date)
         for ($i = 0; $i < 3; $i++) {
+            $date = now()->subDays($i)->toDateString();
             $this->createWorkLog($this->employee, $date, 'present');
         }
 
@@ -185,12 +182,9 @@ class MonthlyAttendanceRecapTest extends TestCase
 
     public function test_mr06_total_late_calculated_correctly(): void
     {
-        $date = now()->toDateString();
-
-        // Create 2 logs with late_minutes > 0
-        // Note: work attendance ENUM has 'late' status (valid for work, unlike session)
-        $this->createWorkLog($this->employee, $date, 'late', lateMinutes: 30);
-        $this->createWorkLog($this->employee, $date, 'late', lateMinutes: 15);
+        // Create 2 present logs with late_minutes > 0 on different dates
+        $this->createWorkLog($this->employee, now()->subDays(1)->toDateString(), 'present', lateMinutes: 30);
+        $this->createWorkLog($this->employee, now()->subDays(2)->toDateString(), 'present', lateMinutes: 15);
 
         $recap = EmployeeAttendanceMonthlyRecap::where('employee_id', $this->employee->id)
             ->where('period_year', now()->year)
@@ -220,7 +214,7 @@ class MonthlyAttendanceRecapTest extends TestCase
 
         // Verify it's a weekday count (not 0 and not total days)
         $expectedWeekdays = collect(range(1, now()->daysInMonth))
-            ->filter(fn ($day) => \Carbon\Carbon::create(now()->year, now()->month, $day)->isWeekday())
+            ->filter(fn ($day) => Carbon::create(now()->year, now()->month, $day)->isWeekday())
             ->count();
 
         $this->assertEquals($expectedWeekdays, $recap->total_scheduled_working_days,

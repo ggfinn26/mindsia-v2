@@ -7,10 +7,7 @@ use App\Models\MemberData;
 use App\Models\NotificationTemplate;
 use App\Models\User;
 use App\Services\Notification\NotificationDispatchService;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Queue;
-
-uses(DatabaseTransactions::class);
 
 it('dispatches in-app notification', function () {
     $service = app(NotificationDispatchService::class);
@@ -20,7 +17,7 @@ it('dispatches in-app notification', function () {
         'subject' => 'Hello {{name}}',
         'body' => 'Welcome {{name}}',
     ]);
-    
+
     $employee = Employee::factory()->create();
 
     $service->send('test-in-app', $employee, ['name' => 'John Doe']);
@@ -36,7 +33,7 @@ it('dispatches in-app notification', function () {
         'notification_template_id' => $template->id,
         'employee_id' => $employee->id,
         'notification_type' => 'in-app',
-        'notification_status' => 'sent', 
+        'notification_status' => 'sent',
     ]);
 });
 
@@ -50,7 +47,7 @@ it('dispatches email notification job', function () {
         'subject' => 'Hello {{name}}',
         'body' => 'Welcome {{name}}',
     ]);
-    
+
     $member = MemberData::factory()->create(['email' => 'test@example.com']);
 
     $service->send('test-email', $member, ['name' => 'Jane Doe']);
@@ -76,11 +73,11 @@ it('dispatches telegram notification job', function () {
         'subject' => 'Subject',
         'body' => 'Welcome {{name}}',
     ]);
-    
+
     $employee = Employee::factory()->create();
     $user = User::factory()->create([
         'employee_id' => $employee->id,
-        'telegram_chat_id' => '123456789'
+        'telegram_chat_id' => '123456789',
     ]);
     // Refresh employee to load relation or ensure accessor works
     $employee->load('user');

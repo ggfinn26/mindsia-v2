@@ -9,7 +9,6 @@ use App\Models\KpiGradeRule;
 use App\Models\KpiTemplate;
 use App\Models\KpiTemplateIndicator;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -17,8 +16,6 @@ use Tests\TestCase;
 // SKENARIO-TESTING.md: Create evaluation, update items, finalize with grade lookup
 class KpiEvaluationTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $evaluatorUser;
 
     private User $otherUser;

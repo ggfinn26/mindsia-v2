@@ -5,23 +5,22 @@ namespace Tests\Feature\Employee;
 use App\Models\Employee;
 use App\Models\EmployeeEducation;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 // Flow: employee-education-history (EH-01 → EH-05)
 // Covers: self-add, authorization gaps, self-edit, others-edit, level validation
 class EmployeeEducationHistoryTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $employeeUser;
+
     private Employee $employee;
 
     protected function setUp(): void
     {
         parent::setUp();
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $this->employee = Employee::factory()->create();
         $this->employeeUser = User::factory()->create([
@@ -55,9 +54,9 @@ class EmployeeEducationHistoryTest extends TestCase
     // permission can add education for ANY employee (not just self)
     public function test_gap211_admin_can_add_education_for_any_employee(): void
     {
-        $updatePerm = Permission::firstOrCreate(['name' => 'employee.update', 'guard_name' => 'web']);
         $admin = User::factory()->create();
-        $admin->givePermissionTo($updatePerm);
+        $admin->givePermissionTo('employee.update');
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         // Admin adds education for an employee they don't own
         $this->actingAs($admin)

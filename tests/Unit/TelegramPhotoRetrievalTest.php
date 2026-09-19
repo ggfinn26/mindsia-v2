@@ -3,6 +3,10 @@
 use Telegram\Bot\Api;
 
 it('retrieves photo from storage group and logs to log group', function () {
+    if (! env('RUN_TELEGRAM_INTEGRATION_TESTS')) {
+        $this->markTestSkipped('Set RUN_TELEGRAM_INTEGRATION_TESTS=true to run integration tests');
+    }
+
     $botToken = env('TELEGRAM_BOT_TOKEN');
     $groupStorage = (int) env('GROUP_STORAGE');
     $groupLog = (int) env('GROUP_LOG');

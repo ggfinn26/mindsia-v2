@@ -8,7 +8,6 @@ use App\Models\MemberData;
 use App\Models\MemberReview;
 use App\Models\Program;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
@@ -20,7 +19,6 @@ use Tests\TestCase;
 class MemberReviewNpsTest extends TestCase
 {
     use CreatesMember;
-    use RefreshDatabase;
 
     private MemberAccount $memberAccount;
 
@@ -352,5 +350,4 @@ class MemberReviewNpsTest extends TestCase
             'member_id' => $this->memberData->id,
         ]);
     }
-
 }

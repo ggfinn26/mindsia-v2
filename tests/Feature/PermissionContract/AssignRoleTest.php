@@ -3,15 +3,13 @@
 namespace Tests\Feature\PermissionContract;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 class AssignRoleTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $superAdmin;
 
     private User $targetUser;
@@ -21,10 +19,7 @@ class AssignRoleTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
-
-
-        
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $this->superAdmin = User::factory()->create();
         $this->superAdmin->assignRole('Super Admin');

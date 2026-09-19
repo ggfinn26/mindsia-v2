@@ -9,14 +9,11 @@ use App\Models\User;
 use App\Models\WorkScheduleAssignment;
 use App\Models\WorkScheduleRule;
 use App\Services\Attendance\WorkScheduleService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class WorkScheduleAssignmentTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $authorizedUser;
 
     private User $unauthorizedUser;
@@ -24,9 +21,6 @@ class WorkScheduleAssignmentTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-
-        
 
         $this->authorizedUser = User::factory()->create();
         $this->authorizedUser->assignRole('Super Admin');

@@ -22,6 +22,7 @@ class PayrollSlipGenerationTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->createSlipTemplates();
     }
 

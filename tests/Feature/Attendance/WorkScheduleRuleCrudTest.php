@@ -4,13 +4,10 @@ namespace Tests\Feature\Attendance;
 
 use App\Models\User;
 use App\Models\WorkScheduleRule;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class WorkScheduleRuleCrudTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $authorizedUser;
 
     private User $unauthorizedUser;
@@ -18,9 +15,6 @@ class WorkScheduleRuleCrudTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-
-        
 
         $this->authorizedUser = User::factory()->create();
         $this->authorizedUser->assignRole('Super Admin');

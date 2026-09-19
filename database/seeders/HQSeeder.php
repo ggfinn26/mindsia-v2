@@ -13,7 +13,7 @@ class HQSeeder extends Seeder
             ['employee_code' => 'SUPERADMIN'],
             [
                 'full_name' => 'Admin CEO',
-                'gender' => 'M',
+                'gender' => 'L',
                 'birthdate' => '1990-01-01',
                 'email' => 'admin@mindsia.test',
                 'whatsapp_number' => '08000000000',

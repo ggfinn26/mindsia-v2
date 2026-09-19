@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Finance;
 
+use App\Models\Branch;
 use App\Models\Reimbursement;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -14,8 +14,6 @@ use Tests\TestCase;
 // Tests document actual behavior: FormRequest-based routes → 403, controller-level auth routes → work
 class ReimbursementTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $boardUser;
 
     private User $regularUser;
@@ -62,7 +60,7 @@ class ReimbursementTest extends TestCase
     // GAP FIXED: StoreReimbursementRequest now has proper authorize() + rules()
     public function test_store_reimbursement_succeeds(): void
     {
-        $branch = \App\Models\Branch::factory()->create();
+        $branch = Branch::factory()->create();
 
         $this->actingAs($this->boardUser)
             ->post('/reimbursements', [

@@ -8,15 +8,12 @@ use App\Models\OutLetterViaGenerate;
 use App\Services\Letter\ConvertApiService;
 use App\Services\Letter\LetterService;
 use App\Services\TelegramStorageService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 use ZipArchive;
 
 class LetterGenerationTest extends TestCase
 {
-    use RefreshDatabase;
-
     private string $fakeTelegramTemplateId = 'tpl_telegram_001';
 
     private string $fakeDocxContent;

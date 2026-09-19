@@ -6,13 +6,10 @@ use App\Models\Area;
 use App\Models\Branch;
 use App\Models\Region;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class AreaTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $ceoUser;
 
     private User $regularUser;
@@ -22,9 +19,6 @@ class AreaTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-
-        
 
         $this->ceoUser = User::factory()->create();
         $this->ceoUser->assignRole('CEO');

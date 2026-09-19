@@ -6,9 +6,6 @@ use App\Models\MemberAccount;
 use App\Models\MemberData;
 use App\Models\MemberNotification;
 use App\Models\User;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-
-uses(DatabaseTransactions::class);
 
 it('shows employee notifications and marks as read', function () {
     $employee = Employee::factory()->create();

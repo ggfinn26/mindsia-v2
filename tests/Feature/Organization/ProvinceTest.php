@@ -1,129 +1,94 @@
 <?php
 
-namespace Tests\Feature\Organization;
-
 use App\Models\Province;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
-class ProvinceTest extends TestCase
-{
-    use RefreshDatabase;
+beforeEach(function () {
+    $this->boardUser = User::factory()->create();
+    $this->boardUser->assignRole('CEO');
 
-    private User $boardUser;
+    $this->nonBoardUser = User::factory()->create();
+    $this->nonBoardUser->assignRole('HRR');
+});
 
-    private User $nonBoardUser;
+it('board can create province', function () {
+    $this->actingAs($this->boardUser)
+        ->post('/provinces', ['name' => 'Jawa Barat'])
+        ->assertRedirect('/provinces');
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+    $this->assertDatabaseHas('provinces', ['name' => 'Jawa Barat']);
+});
 
+it('board can update province', function () {
+    $province = Province::factory()->create(['name' => 'Jawa Tengah']);
 
-        // Run seeders to create roles and permissions
-        
+    $this->actingAs($this->boardUser)
+        ->patch("/provinces/{$province->id}", ['name' => 'Jawa Tengah Updated'])
+        ->assertRedirect('/provinces');
 
-        // Create test users
-        $this->boardUser = User::factory()->create();
-        $this->boardUser->assignRole('CEO');
+    $this->assertDatabaseHas('provinces', ['name' => 'Jawa Tengah Updated']);
+});
 
-        $this->nonBoardUser = User::factory()->create();
-        $this->nonBoardUser->assignRole('HRR');
-    }
+it('board can delete province without regions', function () {
+    $province = Province::factory()->create();
 
-    public function test_board_can_create_province()
-    {
-        $response = $this->actingAs($this->boardUser)
-            ->post('/provinces', ['name' => 'Jawa Barat']);
+    $this->actingAs($this->boardUser)
+        ->delete("/provinces/{$province->id}")
+        ->assertRedirect('/provinces');
 
-        $response->assertRedirect('/provinces');
-        $this->assertDatabaseHas('provinces', ['name' => 'Jawa Barat']);
-    }
+    $this->assertDatabaseMissing('provinces', ['id' => $province->id]);
+});
 
-    public function test_board_can_update_province()
-    {
-        $province = Province::factory()->create(['name' => 'Jawa Tengah']);
+it('non-board cannot create province', function () {
+    $this->actingAs($this->nonBoardUser)
+        ->post('/provinces', ['name' => 'Jawa Timur'])
+        ->assertStatus(403);
+});
 
-        $response = $this->actingAs($this->boardUser)
-            ->patch("/provinces/{$province->id}", ['name' => 'Jawa Tengah Updated']);
+it('non-board cannot update province', function () {
+    $province = Province::factory()->create();
 
-        $response->assertRedirect('/provinces');
-        $this->assertDatabaseHas('provinces', ['name' => 'Jawa Tengah Updated']);
-    }
+    $this->actingAs($this->nonBoardUser)
+        ->patch("/provinces/{$province->id}", ['name' => 'Updated'])
+        ->assertStatus(403);
+});
 
-    public function test_board_can_delete_province_without_regions()
-    {
-        $province = Province::factory()->create();
+it('non-board cannot delete province', function () {
+    $province = Province::factory()->create();
 
-        $response = $this->actingAs($this->boardUser)
-            ->delete("/provinces/{$province->id}");
+    $this->actingAs($this->nonBoardUser)
+        ->delete("/provinces/{$province->id}")
+        ->assertStatus(403);
+});
 
-        $response->assertRedirect('/provinces');
-        $this->assertDatabaseMissing('provinces', ['id' => $province->id]);
-    }
+it('cannot create duplicate province', function () {
+    Province::factory()->create(['name' => 'Bali']);
 
-    public function test_non_board_cannot_create_province()
-    {
-        $response = $this->actingAs($this->nonBoardUser)
-            ->post('/provinces', ['name' => 'Jawa Timur']);
+    $this->actingAs($this->boardUser)
+        ->post('/provinces', ['name' => 'Bali'])
+        ->assertRedirect()
+        ->assertSessionHasErrors('name');
+});
 
-        $response->assertStatus(403);
-    }
+it('cannot create province without name', function () {
+    $this->actingAs($this->boardUser)
+        ->post('/provinces', [])
+        ->assertRedirect()
+        ->assertSessionHasErrors('name');
+});
 
-    public function test_non_board_cannot_update_province()
-    {
-        $province = Province::factory()->create();
+it('cannot delete province with regions', function () {
+    $province = Province::factory()->create();
+    $province->regions()->create(['name' => 'Jakarta']);
 
-        $response = $this->actingAs($this->nonBoardUser)
-            ->patch("/provinces/{$province->id}", ['name' => 'Updated']);
+    $this->actingAs($this->boardUser)
+        ->delete("/provinces/{$province->id}")
+        ->assertRedirect();
 
-        $response->assertStatus(403);
-    }
+    $this->assertDatabaseHas('provinces', ['id' => $province->id]);
+});
 
-    public function test_non_board_cannot_delete_province()
-    {
-        $province = Province::factory()->create();
-
-        $response = $this->actingAs($this->nonBoardUser)
-            ->delete("/provinces/{$province->id}");
-
-        $response->assertStatus(403);
-    }
-
-    public function test_cannot_create_duplicate_province()
-    {
-        Province::factory()->create(['name' => 'Bali']);
-
-        $this->actingAs($this->boardUser)
-            ->post('/provinces', ['name' => 'Bali'])
-            ->assertRedirect()
-            ->assertSessionHasErrors('name');
-    }
-
-    public function test_cannot_create_province_without_name()
-    {
-        $this->actingAs($this->boardUser)
-            ->post('/provinces', [])
-            ->assertRedirect()
-            ->assertSessionHasErrors('name');
-    }
-
-    public function test_cannot_delete_province_with_regions()
-    {
-        $province = Province::factory()->create();
-        $province->regions()->create(['name' => 'Jakarta']);
-
-        $this->actingAs($this->boardUser)
-            ->delete("/provinces/{$province->id}")
-            ->assertRedirect();
-
-        $this->assertDatabaseHas('provinces', ['id' => $province->id]);
-    }
-
-    public function test_unauthenticated_user_redirected_to_login()
-    {
-        $this->post('/provinces', ['name' => 'Test'])
-            ->assertRedirect(route('login'));
-    }
-}
+it('unauthenticated user redirected to login', function () {
+    $this->post('/provinces', ['name' => 'Test'])
+        ->assertRedirect(route('login'));
+});

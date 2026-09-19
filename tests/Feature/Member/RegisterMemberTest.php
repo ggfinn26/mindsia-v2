@@ -9,7 +9,6 @@ use App\Models\MemberData;
 use App\Models\Program;
 use App\Models\User;
 use App\Notifications\GuardedVerifyEmail;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification as NotificationFacade;
@@ -21,8 +20,6 @@ use Tests\TestCase;
 // SKENARIO-TESTING.md: Admin-side member data creation, account creation, CSV import
 class RegisterMemberTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $boardUser;
 
     private User $regularUser;

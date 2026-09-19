@@ -25,6 +25,9 @@ class PermissionSeeder extends Seeder
             'system.api_key.delete',
             'system.webhook.manage',
             'system.bot.manage',
+            'system.telegram_backup.view',
+            'system.telegram_backup.retry',
+            'system.telegram_backup.delete',
             'system.notification_routing.manage',
             'auth.user.force_reset_password',
 
@@ -272,6 +275,8 @@ class PermissionSeeder extends Seeder
             'curriculum.program.update',
             'curriculum.quota.create',
             'curriculum.quota.update',
+            'curriculum.interactive.manage',
+            'curriculum.interactive.result.view',
         ];
 
         foreach ($permissions as $name) {

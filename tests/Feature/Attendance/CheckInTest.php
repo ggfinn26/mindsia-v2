@@ -5,21 +5,17 @@ namespace Tests\Feature\Attendance;
 use App\Models\Branch;
 use App\Models\Employee;
 use App\Models\EmployeeWorkAttendanceLog;
-use App\Models\EmploymentStatus;
 use App\Models\Holiday;
-use App\Models\Position;
 use App\Models\User;
 use App\Models\WorkScheduleAssignment;
 use App\Models\WorkScheduleRule;
 use App\Services\TelegramStorageService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Mockery\MockInterface;
 use Tests\TestCase;
 
 class CheckInTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $user;
 
     private Employee $employee;
@@ -29,9 +25,6 @@ class CheckInTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-
-        
 
         $this->branch = Branch::factory()->create([
             'latitude' => -6.2088,
@@ -324,7 +317,7 @@ class CheckInTest extends TestCase
 
         $this->actingAs($this->user)
             ->post(route('work-attendance.check-in'), array_merge($this->validCheckInData(), [
-                'selfie' => \Illuminate\Http\UploadedFile::fake()->image('selfie.jpg', 640, 480),
+                'selfie' => UploadedFile::fake()->image('selfie.jpg', 640, 480),
             ]))
             ->assertRedirect();
 

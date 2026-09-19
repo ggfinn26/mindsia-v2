@@ -3,14 +3,11 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\RateLimiter;
 use Tests\TestCase;
 
 class EmployeeLoginTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $verifiedUser;
 
     private User $unverifiedUser;

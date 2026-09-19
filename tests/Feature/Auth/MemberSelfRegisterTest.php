@@ -6,7 +6,7 @@ use App\Models\Employee;
 use App\Models\Institution;
 use App\Models\MemberAccount;
 use App\Models\MemberData;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Notifications\GuardedVerifyEmail;
 use Illuminate\Support\Facades\Notification;
 use Tests\Support\CreatesMember;
 use Tests\TestCase;
@@ -14,7 +14,6 @@ use Tests\TestCase;
 class MemberSelfRegisterTest extends TestCase
 {
     use CreatesMember;
-    use RefreshDatabase;
 
     private Institution $institution;
 
@@ -33,7 +32,7 @@ class MemberSelfRegisterTest extends TestCase
             'gender' => 'L',
             'birthdate' => '2000-01-15',
             'whatsapp_number' => '081234567890',
-            'email' => 'budi.' . uniqid() . '@mindsia.test',
+            'email' => 'budi.'.uniqid().'@mindsia.test',
             'instagram' => 'budi_santoso',
             'father_name' => 'Ayah Budi',
             'mother_name' => 'Ibu Budi',
@@ -78,7 +77,7 @@ class MemberSelfRegisterTest extends TestCase
 
         // Email verifikasi terkirim
         $member = MemberAccount::where('email', $email)->first();
-        Notification::assertSentTo($member, \App\Notifications\GuardedVerifyEmail::class);
+        Notification::assertSentTo($member, GuardedVerifyEmail::class);
     }
 
     // MR-02 — Register berhasil dengan referral valid

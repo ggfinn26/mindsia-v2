@@ -1,16 +1,11 @@
 <?php
 
 use App\Models\User;
-use Database\Seeders\PermissionSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 
-uses(RefreshDatabase::class);
-
 beforeEach(function () {
-    $this->seed(PermissionSeeder::class);
     $this->admin = User::factory()->create([
-        'password' => Hash::make('AdminPassword123!')
+        'password' => Hash::make('AdminPassword123!'),
     ]);
     $this->admin->givePermissionTo('auth.user.force_reset_password');
 });
@@ -40,7 +35,7 @@ test('it can force reset user password', function () {
         ->assertSessionHas('success');
 
     $targetUser->refresh();
-    
+
     expect(Hash::check('NewSecurePassword123!', $targetUser->password))->toBeTrue();
     expect($targetUser->must_change_password)->toBeTrue();
 });

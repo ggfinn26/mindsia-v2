@@ -8,8 +8,6 @@ use App\Models\EmployeeWorkAttendanceLog;
 use App\Models\EmploymentStatus;
 use App\Models\Position;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mockery\MockInterface;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
@@ -18,8 +16,6 @@ use Tests\TestCase;
 // Scenarios: VA-01 to VA-12
 class AttendanceVerificationAdjustmentTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $user;
 
     private Employee $employee;
@@ -75,7 +71,7 @@ class AttendanceVerificationAdjustmentTest extends TestCase
         $user->givePermissionTo($permission);
     }
 
-    private function createCheckedInLog(Employee $employee, string $date = null): EmployeeWorkAttendanceLog
+    private function createCheckedInLog(Employee $employee, ?string $date = null): EmployeeWorkAttendanceLog
     {
         return EmployeeWorkAttendanceLog::factory()->checkedIn()->create([
             'employee_id' => $employee->id,
@@ -156,10 +152,10 @@ class AttendanceVerificationAdjustmentTest extends TestCase
         $this->actingAs($otherUser)
             ->post(route('work-attendance.verify', $log));
 
-        // GAP: verifier is overwritten — should probably prevent re-verification
+        // Re-verification does NOT overwrite the original verifier
         $this->assertDatabaseHas('employee_work_attendance_logs', [
             'id' => $log->id,
-            'verified_by_employee_id' => $otherEmployee->id,
+            'verified_by_employee_id' => $this->employee->id,
         ]);
     }
 
@@ -278,12 +274,9 @@ class AttendanceVerificationAdjustmentTest extends TestCase
                 'adjustment_reason' => 'Koreksi status',
             ]);
 
-        // FormRequest validation passes (present_late is in the in: rule)
-        // But DB will reject it — this is a GAP
-        // Expect either validation error or DB error depending on MySQL strict mode
-        // Since AdjustAttendanceRequest allows it, we expect redirect (success from controller)
-        // but DB will throw a PDOException for invalid enum value
-        $response->assertStatus(500);
+        // AdjustAttendanceRequest validation now rejects 'present_late'
+        $response->assertRedirect();
+        $response->assertSessionHasErrors('status');
     }
 
     // VA-08: Adjust without permission → 403

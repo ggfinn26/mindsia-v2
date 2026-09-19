@@ -1,24 +1,22 @@
 <?php
 
-use App\Models\ToeflTest;
+use App\Models\Employee;
+use App\Models\ToeflMedia;
 use App\Models\ToeflPassage;
 use App\Models\ToeflQuestion;
-use App\Models\ToeflMedia;
+use App\Models\ToeflTest;
 use App\Models\User;
-use App\Models\Employee;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Gate;
-use function Pest\Laravel\actingAs;
+use Illuminate\Support\Facades\Storage;
 
-uses(RefreshDatabase::class);
+use function Pest\Laravel\actingAs;
 
 beforeEach(function () {
     $this->employee = Employee::factory()->create();
     $this->admin = User::factory()->create(['employee_id' => $this->employee->id]);
     Gate::before(fn ($user, $ability) => true);
-    
+
     $this->toeflTest = ToeflTest::create([
         'created_by_employee_id' => $this->employee->id,
         'test_name' => 'Test 1',
@@ -49,7 +47,7 @@ it('can update a passage', function () {
         'display_order' => 1,
     ]);
 
-    actingAs($this->admin)->put(route('toefl.passages.update', $passage), [
+    actingAs($this->admin)->patch(route('toefl.passages.update', $passage), [
         'title' => 'Passage Updated',
         'body_text' => 'Body Updated',
         'display_order' => 2,
@@ -81,23 +79,23 @@ it('can store a question', function () {
         'option_c' => 'C',
         'option_d' => 'D',
         'correct_option' => 'A',
+        'difficulty' => 'intermediate',
         'points' => 1,
         'display_order' => 1,
-        'is_active' => true,
     ])->assertRedirect();
 
     expect(ToeflQuestion::count())->toBe(1);
 });
 
 it('can store media', function () {
-    Storage::fake('public');
-    
+    Storage::fake('s3');
+
     $file = UploadedFile::fake()->create('audio.mp3', 100);
-    
+
     actingAs($this->admin)->post(route('toefl.media.store'), [
         'file' => $file,
-        'type' => 'audio',
-    ])->assertRedirect();
+        'media_type' => 'audio',
+    ])->assertOk();
 
     expect(ToeflMedia::count())->toBe(1);
 });

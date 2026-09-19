@@ -1,19 +1,21 @@
 <?php
 
-use App\Models\User;
 use App\Models\EmployeePayroll;
 use App\Models\PayrollPeriod;
+use App\Models\User;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Support\Facades\DB;
 
 test('POST to payroll adjust route without CSRF bypass', function () {
     $adminEmployeeId = DB::table('employees')->insertGetId([
-        'nip' => 'PROBE1',
-        'name' => 'Probe Admin',
+        'employee_code' => 'PROBE1',
+        'full_name' => 'Probe Admin',
         'gender' => 'L',
+        'birthdate' => '1990-01-01',
+        'email' => 'probe1@test.example',
+        'whatsapp_number' => '6281000000001',
         'is_hq' => 1,
-        'status' => 'active',
-        'join_date' => now(),
+        'is_active' => 1,
         'created_at' => now(),
         'updated_at' => now(),
     ]);
@@ -33,18 +35,20 @@ test('POST to payroll adjust route without CSRF bypass', function () {
             'adjustment_reason' => 'Test',
         ]);
 
-    echo "Status: " . $response->getStatusCode() . "\n";
-    echo "Content: " . substr($response->getContent(), 0, 500) . "\n";
+    echo 'Status: '.$response->getStatusCode()."\n";
+    echo 'Content: '.substr($response->getContent(), 0, 500)."\n";
 })->todo('Diagnostic test');
 
 test('POST to payroll adjust route WITH CSRF bypass', function () {
     $adminEmployeeId = DB::table('employees')->insertGetId([
-        'nip' => 'PROBE2',
-        'name' => 'Probe Admin 2',
+        'employee_code' => 'PROBE2',
+        'full_name' => 'Probe Admin 2',
         'gender' => 'L',
+        'birthdate' => '1990-01-01',
+        'email' => 'probe2@test.example',
+        'whatsapp_number' => '6281000000002',
         'is_hq' => 1,
-        'status' => 'active',
-        'join_date' => now(),
+        'is_active' => 1,
         'created_at' => now(),
         'updated_at' => now(),
     ]);
@@ -65,6 +69,6 @@ test('POST to payroll adjust route WITH CSRF bypass', function () {
             'adjustment_reason' => 'Test',
         ]);
 
-    echo "Status: " . $response->getStatusCode() . "\n";
-    echo "Content: " . substr($response->getContent(), 0, 500) . "\n";
+    echo 'Status: '.$response->getStatusCode()."\n";
+    echo 'Content: '.substr($response->getContent(), 0, 500)."\n";
 });

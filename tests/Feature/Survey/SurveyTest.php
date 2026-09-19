@@ -12,7 +12,6 @@ use App\Models\SurveyQuestion;
 use App\Models\SurveyQuestionChoice;
 use App\Models\User;
 use App\Services\TelegramLogService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -21,8 +20,6 @@ use Tests\TestCase;
 //         survey-result-access (SRA)
 class SurveyTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $adminUser;
 
     private User $regularUser;
@@ -297,9 +294,7 @@ class SurveyTest extends TestCase
         $choice = $data['choices'][0];
 
         $member = $this->createMemberWithAccount();
-        // member_id in MemberSurvey = MemberData.id; auth('member')->id() = MemberAccount.id
-        // IDs match if MemberData.id === MemberAccount.id (first records in fresh DB)
-        $memberSurvey = MemberSurvey::create(['survey_id' => $survey->id, 'member_id' => $member['account']->id]);
+        $memberSurvey = MemberSurvey::create(['survey_id' => $survey->id, 'member_id' => $member['data']->id]);
 
         $this->actingAs($member['account'], 'member')
             ->post("/member/surveys/{$memberSurvey->id}/submit", [
@@ -321,7 +316,7 @@ class SurveyTest extends TestCase
         $choice = $data['choices'][0];
 
         $member = $this->createMemberWithAccount();
-        $memberSurvey = MemberSurvey::create(['survey_id' => $survey->id, 'member_id' => $member['account']->id]);
+        $memberSurvey = MemberSurvey::create(['survey_id' => $survey->id, 'member_id' => $member['data']->id]);
 
         // SurveyAnswerService throws RuntimeException, controller does not catch → 500
         $this->actingAs($member['account'], 'member')
@@ -342,7 +337,7 @@ class SurveyTest extends TestCase
         $question = $this->addTextQuestion($survey);
 
         $member = $this->createMemberWithAccount();
-        $memberSurvey = MemberSurvey::create(['survey_id' => $survey->id, 'member_id' => $member['account']->id]);
+        $memberSurvey = MemberSurvey::create(['survey_id' => $survey->id, 'member_id' => $member['data']->id]);
 
         // Pre-create answer to simulate already submitted
         MemberSurveyAnswer::create([
@@ -371,7 +366,7 @@ class SurveyTest extends TestCase
         $choices = $data['choices'];
 
         $member = $this->createMemberWithAccount();
-        $memberSurvey = MemberSurvey::create(['survey_id' => $survey->id, 'member_id' => $member['account']->id]);
+        $memberSurvey = MemberSurvey::create(['survey_id' => $survey->id, 'member_id' => $member['data']->id]);
 
         $this->actingAs($member['account'], 'member')
             ->post("/member/surveys/{$memberSurvey->id}/submit", [
@@ -396,7 +391,7 @@ class SurveyTest extends TestCase
         $choice3 = SurveyQuestionChoice::create(['survey_question_id' => $question->id, 'choice_text' => 'C']);
 
         $member = $this->createMemberWithAccount();
-        $memberSurvey = MemberSurvey::create(['survey_id' => $survey->id, 'member_id' => $member['account']->id]);
+        $memberSurvey = MemberSurvey::create(['survey_id' => $survey->id, 'member_id' => $member['data']->id]);
 
         $this->actingAs($member['account'], 'member')
             ->post("/member/surveys/{$memberSurvey->id}/submit", [

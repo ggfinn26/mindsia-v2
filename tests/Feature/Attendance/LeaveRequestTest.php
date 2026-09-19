@@ -10,18 +10,16 @@ use App\Models\EmploymentStatus;
 use App\Models\Position;
 use App\Models\User;
 use App\Services\TelegramStorageService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery\MockInterface;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 // Flow: leave-request (submit, cancel, approve, reject)
 // Scenarios: LR-01 to LR-17 from SKENARIO-TESTING.md
 class LeaveRequestTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $user;
 
     private Employee $employee;
@@ -31,7 +29,7 @@ class LeaveRequestTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $this->branch = Branch::factory()->create();
 
@@ -45,8 +43,8 @@ class LeaveRequestTest extends TestCase
 
         // Mock TelegramStorageService — leave attachment upload
         $this->mock(TelegramStorageService::class, function (MockInterface $mock) {
-            $mock->shouldReceive('uploadPhoto')->andReturn([
-                'telegram_file_id' => 'fake_leave_file_id_123',
+            $mock->shouldReceive('uploadFile')->andReturn([
+                'file_id' => 'leave/fake_leave_file_id_123.pdf',
             ]);
         });
     }

@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 /** Direct DB insert for employee — bypasses factory FK deadlock chain with RefreshDatabase */
-function insertEmployee(string $prefix = 'SM'): int
+function insertSmEmployee(string $prefix = 'SM'): int
 {
     $provinceId = DB::table('provinces')->insertGetId(['name' => "Prov {$prefix}", 'created_at' => now(), 'updated_at' => now()]);
     $regionId = DB::table('regions')->insertGetId(['province_id' => $provinceId, 'name' => "Reg {$prefix}", 'created_at' => now(), 'updated_at' => now()]);
@@ -38,7 +38,7 @@ function insertEmployee(string $prefix = 'SM'): int
 }
 
 /** Direct DB insert for institution — bypasses Institution::factory() which chains Region::factory() → deadlock */
-function insertInstitution(int $regionId, string $prefix = 'INST'): int
+function insertSmInstitution(int $regionId, string $prefix = 'INST'): int
 {
     return DB::table('institutions')->insertGetId([
         'regions_id' => $regionId,
@@ -49,7 +49,7 @@ function insertInstitution(int $regionId, string $prefix = 'INST'): int
 }
 
 beforeEach(function () {
-    $employeeId = insertEmployee('SM'.uniqid());
+    $employeeId = insertSmEmployee('SM'.uniqid());
     $this->employee = Employee::find($employeeId);
     $this->user = User::factory()->create([
         'employee_id' => $employeeId,
@@ -58,7 +58,7 @@ beforeEach(function () {
         'must_change_password' => false,
     ]);
     $this->branch = Branch::find($this->employee->branch_id);
-    $this->institutionId = insertInstitution($this->employee->region_id, 'SM'.uniqid());
+    $this->institutionId = insertSmInstitution($this->employee->region_id, 'SM'.uniqid());
 });
 
 /** Helper: create a socialization using direct data (avoids factory chained FK deadlocks) */
@@ -271,7 +271,7 @@ test('SM-09 assign employee to socialization', function () {
     $this->user->givePermissionTo('marketing.socialization.assign');
 
     $socialization = createSocialization();
-    $marketingEmpId = insertEmployee('SM09'.uniqid());
+    $marketingEmpId = insertSmEmployee('SM09'.uniqid());
 
     $response = $this->actingAs($this->user)
         ->post(route('socializations.assign-employee', $socialization), [
@@ -302,7 +302,7 @@ test('SM-29 assign employee twice should not create duplicate or throw error saf
     $this->user->givePermissionTo('marketing.socialization.assign');
 
     $socialization = createSocialization();
-    $marketingEmpId = insertEmployee('SM29'.uniqid());
+    $marketingEmpId = insertSmEmployee('SM29'.uniqid());
 
     $countBefore = DB::table('employee_socializations')
         ->where('socialization_id', $socialization->id)
@@ -335,7 +335,7 @@ test('SM-29 assign employee twice should not create duplicate or throw error saf
         ->where('socialization_id', $socialization->id)
         ->where('employee_id', $marketingEmpId)
         ->count();
-    expect($countAfterSecond)->toBe($countBefore + 1, "Duplicate employee_socializations created for same employee+socialization");
+    expect($countAfterSecond)->toBe($countBefore + 1, 'Duplicate employee_socializations created for same employee+socialization');
 });
 
 test('SM-10 update partner fee status to paid', function () {
