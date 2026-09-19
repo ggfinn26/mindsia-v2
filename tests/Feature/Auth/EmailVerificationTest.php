@@ -5,8 +5,8 @@ namespace Tests\Feature\Auth;
 use App\Models\ApplicantAccount;
 use App\Models\User;
 use Illuminate\Auth\Events\Verified;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\URL;
 use Tests\Support\CreatesMember;
 use Tests\TestCase;
 
@@ -34,37 +34,81 @@ class EmailVerificationTest extends TestCase
             ->assertOk();
     }
 
-    public function test_employee_email_verified_via_signed_url(): void
+    public function test_employee_email_verified_via_otp(): void
     {
         Event::fake();
 
         $user = User::factory()->unverified()->create();
-
-        $verificationUrl = URL::temporarySignedRoute(
-            'verification.verify',
-            now()->addMinutes(60),
-            ['id' => $user->id, 'hash' => sha1($user->email), 'guard' => 'web']
-        );
+        Cache::put("email_otp_web_{$user->id}", '123456', now()->addMinutes(15));
 
         $this->actingAs($user, 'web')
-            ->get($verificationUrl)
+            ->post(route('verification.submit'), ['otp' => '123456'])
             ->assertRedirect(route('register.success'));
 
         $this->assertNotNull($user->fresh()->email_verified_at);
         Event::assertDispatched(Verified::class);
     }
 
-    public function test_employee_email_verification_requires_valid_signature(): void
+    public function test_employee_email_verification_rejects_invalid_otp(): void
     {
         $user = User::factory()->unverified()->create();
+        Cache::put("email_otp_web_{$user->id}", '123456', now()->addMinutes(15));
 
-        // URL tanpa signature yang valid
         $this->actingAs($user, 'web')
-            ->get(route('verification.verify', [
-                'id' => $user->id,
-                'hash' => 'invalid-hash',
-            ]))
-            ->assertStatus(403);
+            ->post(route('verification.submit'), ['otp' => '999999'])
+            ->assertSessionHasErrors('otp');
+
+        $this->assertNull($user->fresh()->email_verified_at);
+    }
+
+    public function test_employee_otp_expired_rejected(): void
+    {
+        $user = User::factory()->unverified()->create();
+        // no cache entry = expired
+
+        $this->actingAs($user, 'web')
+            ->post(route('verification.submit'), ['otp' => '123456'])
+            ->assertSessionHasErrors('otp');
+
+        $this->assertNull($user->fresh()->email_verified_at);
+    }
+
+    public function test_employee_otp_cannot_be_used_twice(): void
+    {
+        Event::fake();
+
+        $user = User::factory()->unverified()->create();
+        Cache::put("email_otp_web_{$user->id}", '123456', now()->addMinutes(5));
+
+        // first submit — ok
+        $this->actingAs($user, 'web')
+            ->post(route('verification.submit'), ['otp' => '123456'])
+            ->assertRedirect(route('register.success'));
+
+        // second submit same OTP — cache already forgotten
+        $this->actingAs($user->fresh(), 'web')
+            ->post(route('verification.submit'), ['otp' => '123456'])
+            ->assertRedirect(); // redirects away (already verified → dashboard)
+    }
+
+    public function test_otp_unauthenticated_with_session_resolves_account(): void
+    {
+        Event::fake();
+
+        $user = User::factory()->unverified()->create();
+        Cache::put("email_otp_web_{$user->id}", '654321', now()->addMinutes(5));
+
+        $this->withSession(['pending_verification' => ['guard' => 'web', 'id' => $user->id]])
+            ->post(route('verification.submit'), ['otp' => '654321'])
+            ->assertRedirect(route('register.success'));
+
+        $this->assertNotNull($user->fresh()->email_verified_at);
+    }
+
+    public function test_otp_unauthenticated_without_session_redirects_login(): void
+    {
+        $this->post(route('verification.submit'), ['otp' => '123456'])
+            ->assertRedirect(route('login'));
     }
 
     public function test_employee_resend_verification_email(): void

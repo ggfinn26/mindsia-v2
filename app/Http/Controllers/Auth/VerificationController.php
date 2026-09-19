@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 class VerificationController extends Controller
@@ -21,68 +22,92 @@ class VerificationController extends Controller
 
     public function notice(): View|RedirectResponse
     {
-        if ($user = auth('web')->user()) {
-            return $user->hasVerifiedEmail() ? redirect()->route('dashboard') : view('auth.verify-email');
+        foreach (self::GUARD_MAP as $guard => [, $redirectRoute]) {
+            if ($user = auth($guard)->user()) {
+                return $user->hasVerifiedEmail()
+                    ? redirect()->route($redirectRoute)
+                    : view('auth.verify-email');
+            }
         }
 
-        if ($user = auth('member')->user()) {
-            return $user->hasVerifiedEmail() ? redirect()->route('member.dashboard') : view('auth.verify-email');
+        if (session()->has('pending_verification')) {
+            return view('auth.verify-email');
         }
 
-        if ($user = auth('applicant')->user()) {
-            return $user->hasVerifiedEmail() ? redirect()->route('applicant.dashboard') : view('auth.verify-email');
-        }
-
-        return view('auth.verify-email');
+        return redirect()->route('login');
     }
 
-    public function verify(Request $request, int $id, string $hash): RedirectResponse
+    public function submitOtp(Request $request): RedirectResponse
     {
-        if (! $request->hasValidSignature()) {
-            abort(401, 'Link verifikasi tidak valid atau sudah kedaluwarsa.');
+        $request->validate(['otp' => 'required|digits:6']);
+
+        [$account, $guard] = $this->resolveAccount();
+
+        if (! $account) {
+            return redirect()->route('login');
         }
 
-        $guard = $request->query('guard');
+        $cacheKey = "email_otp_{$guard}_{$account->getKey()}";
+        $stored = Cache::get($cacheKey);
 
-        if (! isset(self::GUARD_MAP[$guard])) {
-            abort(404, 'Link verifikasi tidak valid.');
+        if (! $stored || ! hash_equals($stored, $request->input('otp'))) {
+            return back()->withErrors(['otp' => 'Kode OTP tidak valid atau sudah kedaluwarsa.']);
         }
 
-        [$modelClass, $redirectRoute] = self::GUARD_MAP[$guard];
-
-        $account = $modelClass::find($id);
-
-        if (! $account || ! hash_equals(sha1($account->getEmailForVerification()), $hash)) {
-            abort(404, 'Akun tidak ditemukan untuk link verifikasi ini.');
-        }
-
-        if ($account->hasVerifiedEmail()) {
-            return redirect()->intended(route($redirectRoute))->with('success', 'Email sudah diverifikasi sebelumnya.');
-        }
-
-        if ($account->markEmailAsVerified()) {
-            event(new Verified($account));
-        }
-
+        Cache::forget($cacheKey);
+        $account->markEmailAsVerified();
+        event(new Verified($account));
         auth($guard)->login($account);
+        session()->forget('pending_verification');
 
         return redirect()->route('register.success')->with('success', 'Email berhasil diverifikasi!');
     }
 
     public function send(Request $request): RedirectResponse
     {
-        $user = auth('web')->user() ?? auth('member')->user() ?? auth('applicant')->user();
+        [$account, $guard] = $this->resolveAccount();
 
-        if (! $user) {
-            abort(403, 'Anda harus login untuk mengirim ulang link verifikasi.');
+        if (! $account) {
+            return redirect()->route('login');
         }
 
-        if ($user->hasVerifiedEmail()) {
+        if ($account->hasVerifiedEmail()) {
             return back()->with('success', 'Email sudah diverifikasi.');
         }
 
-        $user->sendEmailVerificationNotification();
+        $account->sendEmailVerificationNotification();
 
-        return back()->with('success', 'Link verifikasi telah dikirim ke email Anda.');
+        if (! auth($guard)->check()) {
+            session(['pending_verification' => ['guard' => $guard, 'id' => $account->getKey()]]);
+        }
+
+        return back()->with('status', 'verification-link-sent');
+    }
+
+    private function resolveAccount(): array
+    {
+        foreach (self::GUARD_MAP as $guard => [$modelClass]) {
+            if ($user = auth($guard)->user()) {
+                return [$user, $guard];
+            }
+        }
+
+        $pending = session('pending_verification');
+
+        if (
+            $pending &&
+            isset($pending['guard'], $pending['id']) &&
+            isset(self::GUARD_MAP[$pending['guard']])
+        ) {
+            $guard = $pending['guard'];
+            [$modelClass] = self::GUARD_MAP[$guard];
+            $account = $modelClass::find($pending['id']);
+
+            if ($account && ! $account->hasVerifiedEmail()) {
+                return [$account, $guard];
+            }
+        }
+
+        return [null, null];
     }
 }

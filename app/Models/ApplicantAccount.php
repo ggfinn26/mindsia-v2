@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use App\Notifications\ApplicantResetPasswordNotification;
-use App\Notifications\GuardedVerifyEmail;
+use App\Notifications\OtpVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Cache;
 
 class ApplicantAccount extends Authenticatable implements MustVerifyEmail
 {
@@ -40,7 +41,9 @@ class ApplicantAccount extends Authenticatable implements MustVerifyEmail
     // FK is on applicants_master_data.applicant_account_id
     public function sendEmailVerificationNotification(): void
     {
-        $this->notify(new GuardedVerifyEmail('applicant'));
+        $otp = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        Cache::put("email_otp_applicant_{$this->id}", $otp, now()->addMinutes(5));
+        $this->notify(new OtpVerifyEmail($otp));
     }
 
     public function sendPasswordResetNotification($token)

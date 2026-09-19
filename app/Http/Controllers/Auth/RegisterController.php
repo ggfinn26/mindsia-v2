@@ -67,9 +67,10 @@ class RegisterController extends Controller
 
         $employee = Employee::findOrFail($employeeId);
 
-        $this->service->createAccount($employee, $request->validated());
+        $user = $this->service->createAccount($employee, $request->validated());
 
         session()->forget('register_employee_id');
+        session(['pending_verification' => ['guard' => 'web', 'id' => $user->id]]);
 
         if ($request->expectsJson()) {
             return response()->json(['redirect' => route('verification.notice')]);

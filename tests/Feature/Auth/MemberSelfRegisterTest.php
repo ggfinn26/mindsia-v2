@@ -6,7 +6,7 @@ use App\Models\Employee;
 use App\Models\Institution;
 use App\Models\MemberAccount;
 use App\Models\MemberData;
-use App\Notifications\GuardedVerifyEmail;
+use App\Notifications\OtpVerifyEmail;
 use Illuminate\Support\Facades\Notification;
 use Tests\Support\CreatesMember;
 use Tests\TestCase;
@@ -77,7 +77,7 @@ class MemberSelfRegisterTest extends TestCase
 
         // Email verifikasi terkirim
         $member = MemberAccount::where('email', $email)->first();
-        Notification::assertSentTo($member, GuardedVerifyEmail::class);
+        Notification::assertSentTo($member, OtpVerifyEmail::class);
     }
 
     // MR-02 — Register berhasil dengan referral valid

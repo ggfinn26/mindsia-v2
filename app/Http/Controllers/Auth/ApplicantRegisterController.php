@@ -38,6 +38,7 @@ class ApplicantRegisterController extends Controller
         });
 
         $applicant->sendEmailVerificationNotification();
+        session(['pending_verification' => ['guard' => 'applicant', 'id' => $applicant->id]]);
 
         return redirect()->route('verification.notice')->with(
             'status',

@@ -4,7 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Models\ApplicantAccount;
 use App\Models\ApplicantMasterData;
-use App\Notifications\GuardedVerifyEmail;
+use App\Notifications\OtpVerifyEmail;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
@@ -56,7 +56,7 @@ class ApplicantRegisterTest extends TestCase
         ]);
 
         // Verification email sent
-        Notification::assertSentTo($account, GuardedVerifyEmail::class);
+        Notification::assertSentTo($account, OtpVerifyEmail::class);
 
         // NOT auto-logged in
         $this->assertGuest('applicant');
@@ -72,7 +72,7 @@ class ApplicantRegisterTest extends TestCase
         $account = ApplicantAccount::where('email', 'budi.santoso@mindsia.test')->first();
 
         // Verify GuardedVerifyEmail notification was sent with 'applicant' guard
-        Notification::assertSentTo($account, GuardedVerifyEmail::class, function ($notification) {
+        Notification::assertSentTo($account, OtpVerifyEmail::class, function ($notification) {
             // GuardedVerifyEmail constructor receives the guard name
             return true;
         });

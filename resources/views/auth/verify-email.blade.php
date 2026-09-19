@@ -46,64 +46,76 @@
 
                 <div class="max-w-[400px] w-full mx-auto">
 
-            <h1 class="font-jakarta font-extrabold text-[28px] md:text-[32px] text-[#111827] mb-2 tracking-tight">Cek Kotak Masuk</h1>
-            <p class="text-[15px] text-[#4B5563] mb-8 font-medium">Tautan verifikasi telah dikirim ke email Anda.</p>
+            <h1 class="font-jakarta font-extrabold text-[28px] md:text-[32px] text-[#111827] mb-2 tracking-tight">Masukkan Kode OTP</h1>
+            <p class="text-[15px] text-[#4B5563] mb-8 font-medium">Kode 6 digit telah dikirim ke email Anda. Berlaku 15 menit.</p>
 
             @if (session('status') == 'verification-link-sent')
                 <div class="mb-6 p-4 bg-[#ECFDF5] border border-[#A7F3D0] rounded-xl flex items-start gap-3">
                     <span class="material-symbols-outlined text-[#10B981]">check_circle</span>
-                    <p class="text-[13px] text-[#047857] font-medium pt-0.5">Tautan verifikasi baru telah berhasil dikirim ulang ke alamat email Anda.</p>
+                    <p class="text-[13px] text-[#047857] font-medium pt-0.5">Kode OTP baru telah dikirim ulang ke email Anda.</p>
                 </div>
             @endif
 
-            <div class="bg-[#F8FAFC] border border-[#E5E7EB] rounded-xl p-5 mb-8 shadow-sm">
-                <p class="text-[13px] font-bold text-[#111827] mb-3">Langkah selanjutnya:</p>
-                <ol class="space-y-3">
-                    <li class="flex items-center gap-3 text-[13px] text-[#4B5563] font-medium">
-                        <div class="w-6 h-6 rounded-full bg-white border border-[#E5E7EB] flex items-center justify-center text-[#5586DB] font-bold text-[11px] shadow-sm">1</div>
-                        Buka email Anda
-                    </li>
-                    <li class="flex items-center gap-3 text-[13px] text-[#4B5563] font-medium">
-                        <div class="w-6 h-6 rounded-full bg-white border border-[#E5E7EB] flex items-center justify-center text-[#5586DB] font-bold text-[11px] shadow-sm">2</div>
-                        Cek folder Inbox atau Spam
-                    </li>
-                    <li class="flex items-center gap-3 text-[13px] text-[#4B5563] font-medium">
-                        <div class="w-6 h-6 rounded-full bg-white border border-[#E5E7EB] flex items-center justify-center text-[#5586DB] font-bold text-[11px] shadow-sm">3</div>
-                        Klik tombol "Verifikasi Email"
-                    </li>
-                </ol>
-            </div>
+            @if ($errors->has('otp'))
+                <div class="mb-6 p-4 bg-[#FEF2F2] border border-[#FECACA] rounded-xl flex items-start gap-3">
+                    <span class="material-symbols-outlined text-[#EF4444] mt-0.5">error</span>
+                    <p class="text-[13px] text-[#B91C1C] font-medium">{{ $errors->first('otp') }}</p>
+                </div>
+            @endif
 
-            <div class="space-y-4">
+            <form action="{{ route('verification.submit') }}" method="POST" class="mb-6">
+                @csrf
+                <div class="flex gap-2 justify-center mb-6" id="otp-boxes">
+                    @for ($i = 0; $i < 6; $i++)
+                        <input
+                            type="text"
+                            maxlength="1"
+                            inputmode="numeric"
+                            pattern="[0-9]"
+                            class="w-12 h-14 text-center text-[22px] font-bold border-2 border-[#E5E7EB] rounded-xl focus:border-[#5586DB] focus:outline-none transition-colors"
+                            data-otp-index="{{ $i }}"
+                        >
+                    @endfor
+                </div>
+                <input type="hidden" name="otp" id="otp-hidden">
+                <button
+                    type="submit"
+                    id="otp-submit"
+                    class="w-full bg-[#5586DB] text-white font-bold py-3.5 px-4 rounded-xl hover:bg-[#00AACC] transition-all shadow-[0_4px_12px_-2px_rgba(85,134,219,0.3)] flex justify-center items-center gap-2"
+                >
+                    Verifikasi <span class="material-symbols-outlined text-[18px]">verified</span>
+                </button>
+            </form>
+
+            <div class="space-y-3">
                 <form action="{{ route('verification.send') }}" method="POST">
                     @csrf
                     <button
                         type="submit"
-                        class="w-full bg-[#5586DB] text-white font-bold py-3.5 px-4 rounded-xl hover:bg-[#00AACC] transition-all shadow-[0_4px_12px_-2px_rgba(85,134,219,0.3)] flex justify-center items-center gap-2"
+                        class="w-full bg-white border border-[#E5E7EB] text-[#4B5563] font-bold py-3 px-4 rounded-xl hover:bg-[#F3F4F6] hover:text-[#111827] transition-all flex justify-center items-center gap-2 text-[14px]"
                     >
-                        Kirim Ulang Email <span class="material-symbols-outlined text-[18px]">forward_to_inbox</span>
+                        Kirim Ulang Kode <span class="material-symbols-outlined text-[16px]">forward_to_inbox</span>
                     </button>
                 </form>
 
+                @if (auth('web')->check() || auth('member')->check() || auth('applicant')->check())
                 @php
                     $logoutRoute = route('logout');
-                    if (auth('member')->check()) {
-                        $logoutRoute = route('member.logout');
-                    } elseif (auth('applicant')->check()) {
-                        $logoutRoute = route('applicant.logout');
-                    }
+                    if (auth('member')->check()) { $logoutRoute = route('member.logout'); }
+                    elseif (auth('applicant')->check()) { $logoutRoute = route('applicant.logout'); }
                 @endphp
-
                 <form action="{{ $logoutRoute }}" method="POST">
                     @csrf
                     <button
                         type="submit"
-                        class="w-full bg-white border border-[#E5E7EB] text-[#4B5563] font-bold py-3.5 px-4 rounded-xl hover:bg-[#F3F4F6] hover:text-[#111827] transition-all flex justify-center items-center gap-2"
+                        class="w-full bg-white border border-[#E5E7EB] text-[#9CA3AF] font-medium py-3 px-4 rounded-xl hover:bg-[#F3F4F6] transition-all flex justify-center items-center gap-2 text-[13px]"
                     >
                         Masuk dengan akun lain
                     </button>
                 </form>
+                @endif
             </div>
+
 
         </div>
         </div>

@@ -4,3 +4,5 @@ import "./member-register";
 window.Alpine = Alpine;
 Alpine.start();
 import "./password-toggle";
+import "./otp-input";
+import "./redirect-countdown";

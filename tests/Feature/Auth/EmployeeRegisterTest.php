@@ -4,7 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Models\Employee;
 use App\Models\User;
-use App\Notifications\GuardedVerifyEmail;
+use App\Notifications\OtpVerifyEmail;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
@@ -87,7 +87,7 @@ class EmployeeRegisterTest extends TestCase
         $this->assertDatabaseHas('employee_accounts', ['email' => 'newemployee@mindsia.test']);
         Notification::assertSentToTimes(
             User::where('email', 'newemployee@mindsia.test')->first(),
-            GuardedVerifyEmail::class,
+            OtpVerifyEmail::class,
             1
         );
     }

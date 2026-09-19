@@ -66,8 +66,8 @@ class MemberRegisterController extends Controller
                     'is_active' => false,
                 ]);
 
-                // Kirim email verifikasi
                 $member->sendEmailVerificationNotification();
+                session(['pending_verification' => ['guard' => 'member', 'id' => $member->id]]);
 
                 return redirect()->route('verification.notice')
                     ->with('success', 'Pendaftaran berhasil! Silakan verifikasi email untuk melanjutkan.');

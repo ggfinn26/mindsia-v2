@@ -390,11 +390,11 @@ Route::get('/daftar/sukses', function () {
     return view('auth.register-success');
 })->name('register.success');
 
-// Email Verification Routes
+// Email Verification Routes (OTP-based)
 Route::get('/email/verify', [VerificationController::class, 'notice'])->name('verification.notice');
-Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
-    ->middleware(['signed', 'throttle:6,1'])
-    ->name('verification.verify');
+Route::post('/email/verify', [VerificationController::class, 'submitOtp'])
+    ->middleware('throttle:6,1')
+    ->name('verification.submit');
 Route::post('/email/resend', [VerificationController::class, 'send'])
     ->middleware('throttle:6,1')
     ->name('verification.send');
