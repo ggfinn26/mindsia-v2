@@ -43,7 +43,7 @@ class MemberAccount extends Authenticatable implements MustVerifyEmail
     public function sendEmailVerificationNotification(): void
     {
         $otp = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-        Cache::put("email_otp_member_{$this->id}", $otp, now()->addMinutes(5));
+        Cache::put("email_otp_member_{$this->id}", $otp, now()->addMinutes(15));
         $this->notify(new OtpVerifyEmail($otp));
     }
 

@@ -21,7 +21,7 @@ class OtpVerifyEmail extends Notification
             ->greeting('Halo!')
             ->line('Gunakan kode berikut untuk memverifikasi email Anda:')
             ->line('## '.$this->otp)
-            ->line('Kode berlaku selama **5 menit**.')
+            ->line('Kode berlaku selama **15 menit**.')
             ->line('Jika Anda tidak mendaftar di MINDSIA, abaikan email ini.');
     }
 }

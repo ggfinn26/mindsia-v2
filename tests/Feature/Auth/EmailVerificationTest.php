@@ -78,7 +78,7 @@ class EmailVerificationTest extends TestCase
         Event::fake();
 
         $user = User::factory()->unverified()->create();
-        Cache::put("email_otp_web_{$user->id}", '123456', now()->addMinutes(5));
+        Cache::put("email_otp_web_{$user->id}", '123456', now()->addMinutes(15));
 
         // first submit — ok
         $this->actingAs($user, 'web')
@@ -96,7 +96,7 @@ class EmailVerificationTest extends TestCase
         Event::fake();
 
         $user = User::factory()->unverified()->create();
-        Cache::put("email_otp_web_{$user->id}", '654321', now()->addMinutes(5));
+        Cache::put("email_otp_web_{$user->id}", '654321', now()->addMinutes(15));
 
         $this->withSession(['pending_verification' => ['guard' => 'web', 'id' => $user->id]])
             ->post(route('verification.submit'), ['otp' => '654321'])
