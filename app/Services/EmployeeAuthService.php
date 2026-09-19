@@ -64,4 +64,19 @@ class EmployeeAuthService
 
         return $user;
     }
+
+    public function syncRoleFromCurrentStatus(Employee $employee): void
+    {
+        $user = $employee->user;
+        if (! $user) {
+            return;
+        }
+
+        $employee->load('currentStatus.position.role');
+        $role = $employee->currentStatus?->position?->role;
+
+        if ($role) {
+            $user->syncRoles([$role]);
+        }
+    }
 }

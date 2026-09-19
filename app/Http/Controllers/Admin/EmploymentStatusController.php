@@ -9,9 +9,11 @@ use App\Http\Requests\EmploymentStatusRequest;
 use App\Models\Employee;
 use App\Models\EmploymentStatus;
 use App\Repositories\PositionRepository;
+use App\Services\EmployeeAuthService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class EmploymentStatusController extends Controller implements HasMiddleware
@@ -25,6 +27,7 @@ class EmploymentStatusController extends Controller implements HasMiddleware
 
     public function __construct(
         private readonly PositionRepository $positionRepository,
+        private readonly EmployeeAuthService $employeeAuthService,
     ) {}
 
     public function create(Employee $employee): View
@@ -60,6 +63,8 @@ class EmploymentStatusController extends Controller implements HasMiddleware
             'contract_end_date' => $validated['contract_end_date'] ?? null,
             'setup_incomplete' => false,
         ]);
+
+        $this->employeeAuthService->syncRoleFromCurrentStatus($employee);
     }
 
     private function storeCepat(EmploymentStatusRequest $request, Employee $employee, array $validated): void
@@ -77,6 +82,8 @@ class EmploymentStatusController extends Controller implements HasMiddleware
             'contract_file_path' => $path,
             'setup_incomplete' => true,
         ]);
+
+        $this->employeeAuthService->syncRoleFromCurrentStatus($employee);
     }
 
     public function edit(EmploymentStatus $status): View
@@ -130,6 +137,33 @@ class EmploymentStatusController extends Controller implements HasMiddleware
             ->with('success', 'Penawaran perpanjangan kontrak telah dibuat.');
     }
 
+    public function extendAccept(EmploymentStatus $status): RedirectResponse
+    {
+        $offer = $status->extendOffer;
+        abort_if(! $offer || $offer->status !== 'pending', 404);
+
+        DB::transaction(function () use ($status, $offer) {
+            $offer->update(['status' => 'accepted']);
+            $status->update(['contract_end_date' => $offer->proposed_end_date]);
+        });
+
+        return redirect()
+            ->route('employees.show', $status->employee)
+            ->with('success', 'Perpanjangan kontrak disetujui.');
+    }
+
+    public function extendReject(EmploymentStatus $status): RedirectResponse
+    {
+        $offer = $status->extendOffer;
+        abort_if(! $offer || $offer->status !== 'pending', 404);
+
+        $offer->update(['status' => 'rejected']);
+
+        return redirect()
+            ->route('employees.show', $status->employee)
+            ->with('success', 'Penawaran perpanjangan ditolak.');
+    }
+
     public function changePositionCreate(EmploymentStatus $status): View
     {
         $positions = $this->positionRepository->all();
@@ -141,7 +175,9 @@ class EmploymentStatusController extends Controller implements HasMiddleware
     {
         $validated = $request->validated();
 
-        $status->employee->employmentStatuses()->create([
+        $employee = $status->employee;
+
+        $employee->employmentStatuses()->create([
             'type_employment' => $status->type_employment,
             'join_date' => $status->join_date,
             'position_id' => $validated['position_id'],
@@ -150,8 +186,10 @@ class EmploymentStatusController extends Controller implements HasMiddleware
             'setup_incomplete' => false,
         ]);
 
+        $this->employeeAuthService->syncRoleFromCurrentStatus($employee);
+
         return redirect()
-            ->route('employees.show', $status->employee)
+            ->route('employees.show', $employee)
             ->with('success', 'Posisi karyawan berhasil diubah.');
     }
 }
