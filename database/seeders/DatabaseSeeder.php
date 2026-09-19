@@ -25,14 +25,18 @@ class DatabaseSeeder extends Seeder
             PayrollComponentSeeder::class,
         ]);
 
+        $defaultPassword = Hash::make(env('SEEDER_DEFAULT_PASSWORD', 'password'));
+
         $superAdmin = User::firstOrCreate(
             ['email' => 'superadmin@gmail.com'],
             [
                 'name' => 'Super Admin',
-                'password' => Hash::make('password'),
+                'password' => $defaultPassword,
             ]
         );
-        $superAdmin->assignRole('Super Admin');
+        if ($superAdmin->roles->isEmpty()) {
+            $superAdmin->assignRole('Super Admin');
+        }
 
         // Create accounts for permanent HQ employees so they can log in without registering.
         // SUPERADMIN is intentionally excluded — reserved for testing the register flow.
@@ -46,7 +50,7 @@ class DatabaseSeeder extends Seeder
                 ['email' => strtolower($code).'@mindsia.id'],
                 [
                     'name' => $employee->full_name,
-                    'password' => Hash::make('password'),
+                    'password' => $defaultPassword,
                     'employee_id' => $employee->id,
                     'is_active' => true,
                 ]
@@ -56,10 +60,13 @@ class DatabaseSeeder extends Seeder
                 $user->update(['employee_id' => $employee->id]);
             }
 
-            $employee->load('currentStatus.position.role');
-            $role = $employee->currentStatus?->position?->role;
-            if ($role) {
-                $user->syncRoles([$role]);
+            // Only assign role on first seed — preserve manually changed roles on re-seed.
+            if ($user->roles->isEmpty()) {
+                $employee->load('currentStatus.position.role');
+                $role = $employee->currentStatus?->position?->role;
+                if ($role) {
+                    $user->assignRole($role);
+                }
             }
         }
     }

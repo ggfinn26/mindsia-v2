@@ -143,7 +143,8 @@ class EmployeeSeeder extends Seeder
                 ]
             );
 
-            if (! $employee->is_active) {
+            // Only force-activate in non-production; production deactivation is intentional.
+            if (! $employee->is_active && ! app()->isProduction()) {
                 $employee->update(['is_active' => true]);
             }
 
