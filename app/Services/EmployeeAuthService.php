@@ -49,7 +49,7 @@ class EmployeeAuthService
 
         $user = DB::transaction(function () use ($employee, $data) {
             $user = User::create([
-                'name' => $data['name'],
+                'name' => $employee->full_name,
                 'email' => $data['email'],
                 'password' => $data['password'],
                 'employee_id' => $employee->id,
