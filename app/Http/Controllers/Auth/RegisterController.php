@@ -72,9 +72,9 @@ class RegisterController extends Controller
         session()->forget('register_employee_id');
 
         if ($request->expectsJson()) {
-            return response()->json(['redirect' => route('register.success')]);
+            return response()->json(['redirect' => route('verification.notice')]);
         }
 
-        return redirect()->route('register.success');
+        return redirect()->route('verification.notice')->with('status', 'Pendaftaran berhasil! Silakan verifikasi email Anda untuk melanjutkan.');
     }
 }

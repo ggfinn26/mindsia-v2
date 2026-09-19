@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Middleware\EnsureBoardOfDirectors;
 use App\Http\Middleware\EnsurePasswordChanged;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -16,9 +15,21 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'board-of-directors' => EnsureBoardOfDirectors::class,
             'password.changed' => EnsurePasswordChanged::class,
         ]);
+        $middleware->redirectGuestsTo(function (Request $request): string {
+            $guards = $request->route()?->gatherMiddleware() ?? [];
+            foreach ($guards as $m) {
+                if (str_starts_with((string) $m, 'auth:member')) {
+                    return route('member.login');
+                }
+                if (str_starts_with((string) $m, 'auth:applicant')) {
+                    return route('applicant.login');
+                }
+            }
+
+            return route('login');
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
