@@ -104,12 +104,12 @@ class EmployeeLoginTest extends TestCase
         $this->assertGuest('web');
     }
 
-    // EL-07 — redirect ke /
+    // EL-07 — redirect ke employee landing
     public function test_logout_redirects_to_root(): void
     {
         $this->actingAs($this->verifiedUser, 'web')
             ->post(route('logout'))
-            ->assertRedirect('/');
+            ->assertRedirect(route('employee.landing'));
     }
 
     // EL-09

@@ -146,7 +146,7 @@ class ApplicantLoginTest extends TestCase
         // Logout
         $response = $this->post(route('applicant.logout'));
 
-        $response->assertRedirect('/karir');
+        $response->assertRedirect(route('applicant.login'));
         $this->assertGuest('applicant');
     }
 

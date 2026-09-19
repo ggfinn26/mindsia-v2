@@ -289,7 +289,7 @@ Route::get('/applicant/register', [ApplicantRegisterController::class, 'showRegi
 Route::post('/applicant/register', [ApplicantRegisterController::class, 'register'])->name('applicant.register.post');
 
 // Member authenticated routes
-Route::middleware(['auth:member', EnsureEmailIsVerified::class])->group(function () {
+Route::middleware(['auth:member', EnsureEmailIsVerified::class, 'no.back'])->group(function () {
     Route::get('/member/dashboard', [MemberDashboardController::class, 'index'])->name('member.dashboard');
     Route::get('/member/profile', [MemberProfileController::class, 'show'])->name('member.profile.show');
     Route::put('/member/profile', [MemberProfileController::class, 'update'])->name('member.profile.update');
@@ -337,7 +337,7 @@ Route::post('/applicant/login', [ApplicantLoginController::class, 'login'])->nam
 Route::post('/applicant/logout', [ApplicantLoginController::class, 'logout'])->name('applicant.logout');
 
 // Applicant authenticated routes
-Route::middleware(['auth:applicant', EnsureEmailIsVerified::class])->group(function () {
+Route::middleware(['auth:applicant', EnsureEmailIsVerified::class, 'no.back'])->group(function () {
     Route::get('/applicant/dashboard', [ApplicantDashboardController::class, 'index'])->name('applicant.dashboard');
     Route::get('/applicant/change-password', [ApplicantPasswordController::class, 'showChangeForm'])->name('applicant.password.change');
     Route::post('/applicant/change-password', [ApplicantPasswordController::class, 'update'])->name('applicant.password.change.post');
@@ -400,7 +400,7 @@ Route::post('/email/resend', [VerificationController::class, 'send'])
     ->name('verification.send');
 
 // Authenticated routes
-Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed'])->group(function () {
+Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed', 'no.back'])->group(function () {
     // Landing Page Management
     Route::prefix('admin/landing')->name('admin.landing.')->group(function () {
         Route::patch('photos/reorder', [LandingPhotoController::class, 'reorder'])->name('photos.reorder');

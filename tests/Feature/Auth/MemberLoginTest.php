@@ -172,7 +172,7 @@ class MemberLoginTest extends TestCase
         $this->assertAuthenticated('member');
 
         $this->post(route('member.logout'))
-            ->assertRedirect('/');
+            ->assertRedirect(route('member.landing'));
 
         $this->assertGuest('member');
     }

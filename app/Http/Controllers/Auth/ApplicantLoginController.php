@@ -39,6 +39,6 @@ class ApplicantLoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/karir');
+        return redirect()->route('applicant.login');
     }
 }
