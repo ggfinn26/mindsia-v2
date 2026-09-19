@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Member;
 
 use App\Http\Controllers\Controller;
-use App\Services\Telegram\TelegramStorageService;
+use App\Services\TelegramStorageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -67,12 +67,12 @@ class MemberProfileController extends Controller
         ]);
 
         $file = $request->file('avatar');
-        $uploaded = app(TelegramStorageService::class)->uploadPhoto(
-            $file->getRealPath(),
-            $file->getClientOriginalName()
+        $storagePath = app(TelegramStorageService::class)->uploadPhoto(
+            $file,
+            'Avatar '.$memberData->full_name,
         );
 
-        $memberData->update(['telegram_photo_id' => $uploaded['file_id'] ?? null]);
+        $memberData->update(['telegram_photo_id' => $storagePath]);
 
         return back()->with('success', 'Foto profil berhasil diperbarui.');
     }

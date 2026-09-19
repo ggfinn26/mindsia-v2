@@ -12,6 +12,7 @@ class FacilityTicketAttachment extends Model
     protected $fillable = [
         'facility_ticket_id',
         'telegram_file_id',
+        'storage_path',
         'original_name',
         'mime_type',
         'uploaded_by_employee_id',

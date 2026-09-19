@@ -14,6 +14,7 @@ class SopDocument extends Model
         'document_code',
         'version',
         'telegram_file_id',
+        'storage_path',
         'effective_date',
         'visible_to',
         'is_active',

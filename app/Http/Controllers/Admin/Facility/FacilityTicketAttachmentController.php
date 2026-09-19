@@ -26,7 +26,8 @@ class FacilityTicketAttachmentController extends Controller
         );
 
         $facilityTicket->attachments()->create([
-            'telegram_file_id' => $uploaded['telegram_file_id'],
+            'telegram_file_id' => $uploaded['file_id'],
+            'storage_path' => $uploaded['file_id'],
             'original_name' => $file->getClientOriginalName(),
             'mime_type' => $file->getMimeType(),
             'uploaded_by_employee_id' => $request->user()->employee->id,

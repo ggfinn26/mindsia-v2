@@ -20,7 +20,7 @@ class MemberSurveyController extends Controller
     {
         $member = auth('member')->user();
 
-        $surveys = MemberSurvey::where('member_id', $member->id)
+        $surveys = MemberSurvey::where('member_id', $member->members_data_id)
             ->with('survey')
             ->withExists('answers')
             ->orderByDesc('created_at')
@@ -31,7 +31,7 @@ class MemberSurveyController extends Controller
 
     public function show(Request $request, MemberSurvey $memberSurvey): View
     {
-        abort_unless($memberSurvey->member_id === auth('member')->id(), 403);
+        abort_unless($memberSurvey->member_id === auth('member')->user()->members_data_id, 403);
 
         $memberSurvey->load('survey.questions.choices');
 
@@ -40,7 +40,7 @@ class MemberSurveyController extends Controller
 
     public function store(SubmitSurveyAnswerRequest $request, MemberSurvey $memberSurvey): RedirectResponse
     {
-        abort_unless($memberSurvey->member_id === auth('member')->id(), 403);
+        abort_unless($memberSurvey->member_id === auth('member')->user()->members_data_id, 403);
 
         try {
             $this->service->submitMemberAnswers($memberSurvey, $request->validated('answers'));

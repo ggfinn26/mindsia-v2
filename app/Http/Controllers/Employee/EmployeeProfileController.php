@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Storage;
 
 class EmployeeProfileController extends Controller
 {
+    public function __construct(
+        private readonly TelegramStorageService $telegramStorage,
+    ) {}
+
     public function show()
     {
         $user = Auth::user();
@@ -21,8 +25,7 @@ class EmployeeProfileController extends Controller
             if (str_starts_with($employee->image_path, 'telegram:')) {
                 $fileId = str_replace('telegram:', '', $employee->image_path);
                 try {
-                    $telegramService = new TelegramStorageService;
-                    $photoUrl = $telegramService->getFileUrl($fileId);
+                    $photoUrl = $this->telegramStorage->getFileUrl($fileId);
                 } catch (\Exception $e) {
                     Log::error('Failed to get telegram photo: '.$e->getMessage());
                 }
@@ -51,7 +54,7 @@ class EmployeeProfileController extends Controller
             'name' => 'required|string|max:255',
             'telegram_chat_id' => 'nullable|string|max:50',
             'whatsapp_number' => 'nullable|string|max:20',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Batas 2MB dan MIME type
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $user->update([
@@ -66,10 +69,11 @@ class EmployeeProfileController extends Controller
 
             if ($request->hasFile('photo')) {
                 try {
-                    $telegramService = new TelegramStorageService;
-                    // Upload ke Telegram
-                    $fileId = $telegramService->uploadPhoto($request->file('photo'), "Foto Profil {$employee->full_name} ({$employee->employee_code})");
-                    $employeeData['image_path'] = 'telegram:'.$fileId;
+                    $storagePath = $this->telegramStorage->uploadPhoto(
+                        $request->file('photo'),
+                        "Foto Profil {$employee->full_name} ({$employee->employee_code})",
+                    );
+                    $employeeData['image_path'] = $storagePath;
                 } catch (\Exception $e) {
                     return redirect()->back()->withErrors(['photo' => $e->getMessage()]);
                 }

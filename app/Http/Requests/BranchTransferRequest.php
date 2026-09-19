@@ -10,7 +10,8 @@ class BranchTransferRequest extends FormRequest
     {
         $employee = $this->route('employee');
 
-        return $this->user()->can('requestBranchTransfer', $employee);
+        return $this->user()->can('requestBranchTransfer', $employee)
+            || $this->user()->can('employee.update');
     }
 
     public function rules(): array
@@ -21,7 +22,7 @@ class BranchTransferRequest extends FormRequest
             'to_branch_id' => [
                 'required',
                 'exists:branches,id',
-                "different:{$employee->branch_id}",
+                "not_in:{$employee->branch_id}",
             ],
         ];
     }

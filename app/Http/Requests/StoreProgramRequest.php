@@ -18,6 +18,7 @@ class StoreProgramRequest extends FormRequest
             'program_code' => ['required', 'string', 'max:50', 'unique:programs,program_code'],
             'program_price' => ['required', 'numeric', 'min:0'],
             'program_description' => ['nullable', 'string'],
+            'image' => ['nullable', 'image', 'max:2048'],
             'is_active' => ['boolean'],
         ];
     }

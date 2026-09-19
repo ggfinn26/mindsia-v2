@@ -21,6 +21,7 @@ class UpdateProgramRequest extends FormRequest
             'program_code' => ['required', 'string', 'max:50', Rule::unique('programs', 'program_code')->ignore($programId)],
             'program_price' => ['required', 'numeric', 'min:0'],
             'program_description' => ['nullable', 'string'],
+            'image' => ['nullable', 'image', 'max:2048'],
             'is_active' => ['boolean'],
         ];
     }

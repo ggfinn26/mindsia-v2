@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CurriculumItem extends Model
 {
@@ -25,5 +26,10 @@ class CurriculumItem extends Model
     public function session(): BelongsTo
     {
         return $this->belongsTo(CurriculumSession::class, 'curriculum_session_id');
+    }
+
+    public function interactiveBlocks(): HasMany
+    {
+        return $this->hasMany(CurriculumInteractiveBlock::class)->orderBy('sort_order');
     }
 }

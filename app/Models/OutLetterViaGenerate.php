@@ -18,6 +18,7 @@ class OutLetterViaGenerate extends Model
         'recipient',
         'subject',
         'telegram_file_id',
+        'storage_path',
         'payload',
         'status',
         'signer_employee_id',

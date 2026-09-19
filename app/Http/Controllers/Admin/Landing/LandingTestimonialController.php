@@ -40,7 +40,7 @@ class LandingTestimonialController extends Controller
                 'landing_testimonial',
                 null
             );
-            $data['telegram_file_id'] = $result['telegram_file_id'];
+            $data['file_path'] = $result['file_id'];
         }
 
         LandingTestimonial::create($data);
@@ -67,7 +67,7 @@ class LandingTestimonialController extends Controller
                 'landing_testimonial',
                 $testimonial->id
             );
-            $data['telegram_file_id'] = $result['telegram_file_id'];
+            $data['file_path'] = $result['file_id'];
         }
 
         $testimonial->update($data);

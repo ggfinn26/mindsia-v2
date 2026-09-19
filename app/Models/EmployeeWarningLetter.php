@@ -13,6 +13,7 @@ class EmployeeWarningLetter extends Model
         'sp_level',
         'letter_number',
         'telegram_file_id',
+        'storage_path',
         'issued_at',
         'expires_at',
         'is_active',

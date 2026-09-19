@@ -10,6 +10,7 @@ class EmployeePayrollSlip extends Model
     protected $fillable = [
         'employee_payroll_id',
         'telegram_file_id',
+        'storage_path',
         'generated_at',
         'generated_by_employee_id',
         'signatory_employee_id',

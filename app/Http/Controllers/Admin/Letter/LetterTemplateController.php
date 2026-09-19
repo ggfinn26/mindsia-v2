@@ -47,7 +47,7 @@ class LetterTemplateController extends Controller
                 'letter_template',
                 null,
             );
-            $telegramFileId = $uploaded['telegram_file_id'];
+            $telegramFileId = $uploaded['file_id'];
         }
 
         $this->repository->create([
@@ -56,6 +56,7 @@ class LetterTemplateController extends Controller
             'letter_category' => $data['letter_category'],
             'letter_number_format' => $data['letter_number_format'] ?? null,
             'telegram_file_id' => $telegramFileId,
+            'storage_path' => $telegramFileId,
             'is_active' => $data['is_active'] ?? true,
             'created_by_employee_id' => $request->user()->employee->id,
         ]);
@@ -92,7 +93,8 @@ class LetterTemplateController extends Controller
                 'letter_template',
                 $letterTemplate->id,
             );
-            $updates['telegram_file_id'] = $uploaded['telegram_file_id'];
+            $updates['telegram_file_id'] = $uploaded['file_id'];
+            $updates['storage_path'] = $uploaded['file_id'];
         }
 
         $this->repository->update($letterTemplate, $updates);

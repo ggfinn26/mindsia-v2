@@ -17,6 +17,7 @@ class InLetter extends Model
         'letter_number',
         'subject',
         'telegram_file_id',
+        'storage_path',
         'original_name',
         'mime_type',
         'pic_employee_id',

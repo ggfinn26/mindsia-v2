@@ -22,17 +22,32 @@ class EmployeeOnboardingService
     {
         abort_unless($onboarding->status === 'approved', 422, 'Onboarding belum diapprove.');
 
-        $onboarding->loadMissing(['application.posting.permintaan']);
+        $onboarding->loadMissing(['application.applicant', 'application.posting.permintaan', 'branch.area.region']);
 
         return DB::transaction(function () use ($onboarding, $completedByEmployeeId) {
-            // buat employee baru dari data onboarding
-            // field minimal — sisanya diisi HR via domain employee
+            $applicant = $onboarding->application->applicant;
+
+            // map applicant gender (male/female) → employee gender (L/P)
+            $genderMap = ['male' => 'L', 'female' => 'P'];
+            $gender = $genderMap[$applicant->gender] ?? 'L';
+
+            // derive location from branch hierarchy
+            $branch = $onboarding->branch;
+            $area = $branch->area;
+            $region = $area?->region;
+
+            // buat employee baru dari data onboarding + applicant
             $employee = Employee::create([
+                'employee_code' => 'EMP-'.str_pad((string) (Employee::max('id') + 1), 5, '0', STR_PAD_LEFT),
+                'full_name' => $applicant->full_name,
+                'gender' => $gender,
+                'birthdate' => $applicant->birth_date ?? now()->subYears(25),
+                'email' => $applicant->email,
+                'whatsapp_number' => $applicant->whatsapp_number,
                 'branch_id' => $onboarding->branch_id,
-                'position_id' => $onboarding->position_id,
-                'employment_type' => $onboarding->employment_type,
-                'start_date' => $onboarding->start_date,
-                // full_name, NIK, dll diisi via EmployeeController setelah ini
+                'area_id' => $area?->id,
+                'region_id' => $region?->id,
+                'is_active' => true,
             ]);
 
             $onboarding->update([

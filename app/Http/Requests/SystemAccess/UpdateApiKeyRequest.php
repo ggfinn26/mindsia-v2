@@ -14,6 +14,7 @@ class UpdateApiKeyRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'type' => ['sometimes', 'string', 'in:telegram,wa,email'],
             'label' => ['sometimes', 'string', 'max:100'],
             'key_value' => ['sometimes', 'string', 'max:500'],
             'is_active' => ['boolean'],

@@ -6,6 +6,7 @@ use App\Enums\TestimonialType;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
 class LandingTestimonial extends Model
 {
@@ -18,6 +19,7 @@ class LandingTestimonial extends Model
         'program',
         'city',
         'telegram_file_id',
+        'file_path',
         'member_review_id',
         'is_active',
         'sort_order',
@@ -45,6 +47,10 @@ class LandingTestimonial extends Model
 
     public function getImageUrlAttribute(): ?string
     {
+        if ($this->file_path) {
+            return Storage::url($this->file_path);
+        }
+
         return $this->telegram_file_id
             ? route('file.serve', $this->telegram_file_id)
             : null;

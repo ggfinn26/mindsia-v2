@@ -81,6 +81,7 @@ class WarningLetterGenerationService
             'sp_level' => $spLevel,
             'letter_number' => $letterNumber,
             'telegram_file_id' => $result['file_id'],
+            'storage_path' => $result['file_id'],
             'issued_at' => now(),
             'expires_at' => now()->addMonths(6), // SP usually valid for 6 months
             'is_active' => true,

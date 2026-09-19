@@ -16,6 +16,7 @@ class KpiDocument extends Model
         'title',
         'description',
         'telegram_file_id',
+        'storage_path',
         'original_name',
         'uploaded_by_employee_id',
         'uploaded_at',

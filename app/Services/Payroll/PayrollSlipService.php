@@ -64,6 +64,7 @@ class PayrollSlipService
             [
                 'employee_payroll_id' => $payroll->id,
                 'telegram_file_id' => $result['file_id'],
+                'storage_path' => $result['file_id'],
                 'generated_at' => now(),
                 'generated_by_employee_id' => $generatedBy?->id,
                 'signatory_employee_id' => $signatory?->id,

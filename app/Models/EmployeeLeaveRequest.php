@@ -18,6 +18,7 @@ class EmployeeLeaveRequest extends Model
         'end_date',
         'reason',
         'attachment_telegram_file_id',
+        'attachment_path',
         'status',
         'reviewed_by_employee_id',
         'reviewed_at',

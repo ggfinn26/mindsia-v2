@@ -18,6 +18,7 @@ class EmployeePayrollPayment extends Model
         'paid_at',
         'payment_reference',
         'telegram_proof_id',
+        'proof_path',
         'failure_reason',
         'paid_by_employee_id',
         'notes',

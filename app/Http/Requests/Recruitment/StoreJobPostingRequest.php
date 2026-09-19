@@ -15,6 +15,7 @@ class StoreJobPostingRequest extends FormRequest
     {
         return [
             'job_permintaan_id' => ['required', 'exists:job_permintaan,id'],
+            'position_id' => ['required', 'exists:positions,id'],
             'title' => ['required', 'string', 'max:255'],
             'job_description' => ['required', 'string'],
             'job_responsibilities' => ['required', 'string'],

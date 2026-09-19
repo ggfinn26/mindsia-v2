@@ -37,13 +37,14 @@ class LeaveRequestController extends Controller
 
         if ($request->hasFile('attachment')) {
             $file = $request->file('attachment');
-            $uploaded = $this->telegramStorage->uploadPhoto(
+            $uploaded = $this->telegramStorage->uploadFile(
                 $file->getRealPath(),
                 $file->getClientOriginalName(),
                 'leave_attachment',
                 auth()->user()->employee->id,
             );
-            $data['attachment_telegram_file_id'] = $uploaded['telegram_file_id'];
+            $data['attachment_telegram_file_id'] = $uploaded['file_id'];
+            $data['attachment_path'] = $uploaded['file_id'];
         }
 
         $this->repository->create(auth()->user()->employee, $data);

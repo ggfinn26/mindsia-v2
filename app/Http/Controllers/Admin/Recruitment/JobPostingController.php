@@ -37,7 +37,10 @@ class JobPostingController extends Controller
 
     public function store(StoreJobPostingRequest $request): RedirectResponse
     {
+        $permintaan = JobPermintaan::findOrFail($request->validated('job_permintaan_id'));
+
         $posting = $this->repository->create(array_merge($request->validated(), [
+            'branch_id' => $permintaan->branch_id,
             'created_by_employee_id' => $request->user()->employee->id,
         ]));
 

@@ -14,6 +14,7 @@ class LetterTemplate extends Model
         'letter_category',
         'letter_number_format',
         'telegram_file_id',
+        'storage_path',
         'is_active',
         'created_by_employee_id',
     ];

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ClassRoom;
 use App\Models\CurriculumItem;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
 
@@ -33,9 +34,13 @@ class ClassCurriculumController extends Controller
         ]);
     }
 
-    public function show(ClassRoom $classroom, CurriculumItem $item): View
+    public function show(ClassRoom $classroom, CurriculumItem $item): View|RedirectResponse
     {
         $this->authorize('viewItem', [$classroom, $item]);
+
+        if ($item->material_type === 'interactive') {
+            return redirect()->route('member.curriculum.interactive.show', [$classroom, $item]);
+        }
 
         $session = $item->session;
         $curriculum = $session->curriculum;

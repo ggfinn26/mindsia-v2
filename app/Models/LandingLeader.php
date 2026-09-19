@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class LandingLeader extends Model
 {
@@ -13,6 +14,7 @@ class LandingLeader extends Model
         'name',
         'title',
         'telegram_file_id',
+        'storage_path',
         'is_active',
         'sort_order',
     ];
@@ -26,6 +28,10 @@ class LandingLeader extends Model
 
     public function getPhotoUrlAttribute(): ?string
     {
+        if ($this->storage_path) {
+            return Storage::url($this->storage_path);
+        }
+
         if (! $this->telegram_file_id) {
             return null;
         }

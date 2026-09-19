@@ -14,6 +14,7 @@ class ActivityPhoto extends Model
         'caption',
         'telegram_file_id',
         'file_path',
+        'storage_path',
         'is_active',
         'sort_order',
     ];
@@ -32,6 +33,10 @@ class ActivityPhoto extends Model
 
     public function getPhotoUrlAttribute(): string
     {
+        if ($this->storage_path) {
+            return Storage::url($this->storage_path);
+        }
+
         if ($this->telegram_file_id) {
             return route('file.serve', $this->telegram_file_id);
         }

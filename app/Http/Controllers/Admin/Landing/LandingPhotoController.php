@@ -47,7 +47,7 @@ class LandingPhotoController extends Controller
             'section' => $request->section,
             'title' => $request->title,
             'caption' => $request->caption,
-            'telegram_file_id' => $result['telegram_file_id'],
+            'storage_path' => $result['file_id'],
             'is_active' => $request->boolean('is_active', true),
             'sort_order' => $request->input('sort_order', 0),
         ]);
@@ -74,7 +74,7 @@ class LandingPhotoController extends Controller
                 'landing_photo',
                 $photo->id
             );
-            $data['telegram_file_id'] = $result['telegram_file_id'];
+            $data['storage_path'] = $result['file_id'];
         }
 
         $photo->update($data);

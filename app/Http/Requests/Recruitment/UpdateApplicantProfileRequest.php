@@ -19,7 +19,7 @@ class UpdateApplicantProfileRequest extends FormRequest
             'email' => ['nullable', 'email', 'max:255'],
             'whatsapp_number' => ['sometimes', 'string', 'max:50'],
             'birth_date' => ['nullable', 'date'],
-            'gender' => ['nullable', 'in:L,P'],
+            'gender' => ['nullable', 'in:male,female'],
             'address' => ['nullable', 'string'],
             'city' => ['nullable', 'string', 'max:100'],
             'cv_path' => ['nullable', 'string', 'max:500'],

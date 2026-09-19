@@ -12,7 +12,7 @@ class EmployeeEducationRequest extends FormRequest
 
         return $employee && (
             auth()->user()->id === $employee->user_id ||
-            auth()->user()->can('view', $employee)
+            auth()->user()->can('employee.update')
         );
     }
 

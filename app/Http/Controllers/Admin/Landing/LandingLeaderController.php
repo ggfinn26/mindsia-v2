@@ -39,7 +39,7 @@ class LandingLeaderController extends Controller
                 'landing_leader',
                 null
             );
-            $data['telegram_file_id'] = $result['telegram_file_id'];
+            $data['storage_path'] = $result['file_id'];
         }
 
         LandingLeader::create($data);
@@ -66,7 +66,7 @@ class LandingLeaderController extends Controller
                 'landing_leader',
                 $leader->id
             );
-            $data['telegram_file_id'] = $result['telegram_file_id'];
+            $data['storage_path'] = $result['file_id'];
         }
 
         $leader->update($data);
