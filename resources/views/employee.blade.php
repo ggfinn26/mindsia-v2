@@ -249,17 +249,21 @@
                      {!! $initialView !== 'register2' ? 'style="display: none;"' : '' !!}>
 
                     <h1 class="font-jakarta font-extrabold text-[24px] md:text-[28px] text-[#111827] mb-2 tracking-tight">Buat Akun</h1>
-                    <p class="text-[14px] text-[#4B5563] mb-6 font-medium">Lengkapi data akun Anda untuk masuk ke sistem.</p>
+                    <p class="text-[14px] text-[#4B5563] mb-4 font-medium">Lengkapi data akun Anda untuk masuk ke sistem.</p>
+
+                    <div x-show="employeeName" x-cloak 
+                         x-transition:enter="transition ease-out duration-300 delay-200"
+                         x-transition:enter-start="opacity-0 translate-y-2"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         class="mb-6 p-4 bg-[#5586DB]/10 border border-[#5586DB]/20 rounded-xl flex items-start gap-3">
+                        <span class="material-symbols-outlined text-[#5586DB] mt-0.5">waving_hand</span>
+                        <p class="text-[13px] text-[#111827] font-medium leading-relaxed">
+                            Halo, selamat datang <span class="font-bold text-[#5586DB]" x-text="employeeName"></span>, silakan isi data akun Anda.
+                        </p>
+                    </div>
 
                     <form @submit.prevent="submitRegister()" class="space-y-5">
-                        <div>
-                            <label for="name" class="block mb-1 text-[12px] font-bold text-[#4B5563]">Nama Lengkap</label>
-                            <input type="text" id="name" name="name"
-                                   class="w-full px-3.5 py-2.5 border rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all shadow-sm"
-                                   :class="(registerErrors.name || hasError(2, 'name')) ? 'border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200' : inputClass(2, 'name')" required>
-                            <p x-show="hasError(2, 'name')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium">Bagian ini wajib diisi.</p>
-                            <p x-show="registerErrors.name" x-cloak class="mt-1 text-[11px] text-red-600 font-medium" x-text="registerErrors.name?.[0]"></p>
-                        </div>
+
 
                         <div>
                             <label for="reg_email" class="block mb-1 text-[12px] font-bold text-[#4B5563]">Email</label>

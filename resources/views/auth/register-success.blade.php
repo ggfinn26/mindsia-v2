@@ -74,12 +74,12 @@
                     <div class="mb-6 p-4 bg-[#EFF6FF] border border-[#BFDBFE] rounded-xl flex items-start gap-3">
                         <span class="material-symbols-outlined text-[#3B82F6] mt-0.5">info</span>
                         <p class="text-[13px] text-[#1D4ED8] font-medium">
-                            Anda akan diarahkan ke halaman login dalam <span id="countdown" data-href="{{ route('login') }}" class="font-bold">5</span> detik...
+                            Anda akan diarahkan ke halaman login dalam <span id="countdown" data-href="{{ $loginUrl }}" class="font-bold">5</span> detik...
                         </p>
                     </div>
 
                     <div class="space-y-4">
-                        <a href="{{ route('login') }}" class="w-full bg-[#5586DB] text-white font-bold py-3.5 px-4 rounded-xl hover:bg-[#00AACC] transition-all shadow-[0_4px_12px_-2px_rgba(85,134,219,0.3)] flex justify-center items-center gap-2">
+                        <a href="{{ $loginUrl }}" class="w-full bg-[#5586DB] text-white font-bold py-3.5 px-4 rounded-xl hover:bg-[#00AACC] transition-all shadow-[0_4px_12px_-2px_rgba(85,134,219,0.3)] flex justify-center items-center gap-2">
                             Login Sekarang <span class="material-symbols-outlined text-[18px]">login</span>
                         </a>
                     </div>

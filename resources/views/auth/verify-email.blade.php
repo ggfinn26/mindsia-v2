@@ -38,7 +38,27 @@
         <div class="absolute left-0 md:left-auto right-0 bottom-0 w-full md:w-[60%] lg:w-[55%] bg-white shadow-[-10px_0_30px_rgba(17,24,39,0.02)] z-30 flex flex-col h-[85vh] md:h-full">
             <div class="relative w-full h-full overflow-y-auto overflow-x-hidden p-6 md:p-16 lg:p-24 flex flex-col justify-start md:justify-center pt-20 md:pt-16">
                 <!-- Back Button -->
-                <a href="{{ url('/') }}"
+                @php
+                    $backRoute = url('/');
+                    
+                    if (auth('web')->check()) {
+                        $backRoute = route('employee.landing', ['view' => 'login']);
+                    } elseif (auth('member')->check()) {
+                        $backRoute = route('member.landing', ['view' => 'login']);
+                    } elseif (auth('applicant')->check()) {
+                        $backRoute = route('applicant.login');
+                    } elseif (session()->has('pending_verification')) {
+                        $guard = session('pending_verification.guard');
+                        if ($guard === 'web') {
+                            $backRoute = route('employee.landing', ['view' => 'login']);
+                        } elseif ($guard === 'member') {
+                            $backRoute = route('member.landing', ['view' => 'login']);
+                        } elseif ($guard === 'applicant') {
+                            $backRoute = route('applicant.login');
+                        }
+                    }
+                @endphp
+                <a href="{{ $backRoute }}"
                         class="absolute top-6 left-6 md:top-10 md:left-10 text-[#4B5563] hover:text-[#111827] transition-colors flex items-center gap-1.5 font-bold text-sm z-40">
                     <span class="material-symbols-outlined text-[16px]">arrow_back</span>
                     <span class="hidden md:inline">Kembali</span>
@@ -88,15 +108,18 @@
             </form>
 
             <div class="space-y-3">
-                <form action="{{ route('verification.send') }}" method="POST">
+                <form action="{{ route('verification.send') }}" method="POST" id="resend-form" data-link-sent="{{ session('status') == 'verification-link-sent' ? 'true' : 'false' }}">
                     @csrf
                     <button
                         type="submit"
-                        class="w-full bg-white border border-[#E5E7EB] text-[#4B5563] font-bold py-3 px-4 rounded-xl hover:bg-[#F3F4F6] hover:text-[#111827] transition-all flex justify-center items-center gap-2 text-[14px]"
+                        id="resend-btn"
+                        class="w-full bg-white border border-[#E5E7EB] text-[#4B5563] font-bold py-3 px-4 rounded-xl hover:bg-[#F3F4F6] hover:text-[#111827] transition-all flex justify-center items-center gap-2 text-[14px] disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Kirim Ulang Kode <span class="material-symbols-outlined text-[16px]">forward_to_inbox</span>
+                        <span>Kirim Ulang Kode</span> <span class="material-symbols-outlined text-[16px]">forward_to_inbox</span>
                     </button>
                 </form>
+
+                
 
                 @if (auth('web')->check() || auth('member')->check() || auth('applicant')->check())
                 @php

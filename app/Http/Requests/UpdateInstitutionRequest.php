@@ -15,7 +15,7 @@ class UpdateInstitutionRequest extends FormRequest
     {
         return [
             // regions_id immutable after create — tidak bisa diubah via update
-            'jenjang_institution' => ['required', 'in:SD,SMP,SMA,PERGURUAN TINGGI'],
+            'jenjang_institution' => ['required', 'in:SD,SMP,MTS,SMA,SMK,MA,PERGURUAN TINGGI'],
             'institution_name' => ['required', 'string', 'max:255'],
         ];
     }

@@ -38,7 +38,7 @@
         <div class="absolute left-0 md:left-auto right-0 bottom-0 w-full md:w-[60%] lg:w-[55%] bg-white shadow-[-10px_0_30px_rgba(17,24,39,0.02)] z-30 flex flex-col h-[85vh] md:h-full">
             <div class="relative w-full h-full overflow-y-auto overflow-x-hidden p-6 md:p-16 lg:p-24 flex flex-col justify-start md:justify-center pt-20 md:pt-16">
                 <!-- Back Button -->
-                <a href="{{ route('home') }}"
+                <a href="{{ route('member.landing') }}?transition=back"
                         class="absolute top-6 left-6 md:top-10 md:left-10 text-[#4B5563] hover:text-[#111827] transition-colors flex items-center gap-1.5 font-bold text-sm z-40">
                     <span class="material-symbols-outlined text-[16px]">arrow_back</span>
                     <span class="hidden md:inline">Kembali</span>
@@ -47,8 +47,8 @@
                 <div class="max-w-[400px] w-full mx-auto">
 
 
-            <h1 class="font-jakarta font-extrabold text-[28px] md:text-[32px] text-[#111827] mb-2 tracking-tight">Selamat datang di MINDSIA</h1>
-            <p class="text-[15px] text-[#4B5563] mb-10 font-medium">Silakan masuk untuk mengakses portal belajar Anda.</p>
+            <h1 class="font-jakarta font-extrabold text-[28px] md:text-[32px] text-[#111827] mb-2 tracking-tight">Welcome to MINDSIA</h1>
+            <p class="text-[15px] text-[#4B5563] mb-10 font-medium">Log in to start learning</p>
 
             @if (session('error'))
                 <div class="mb-6 p-3 bg-red-50 border border-red-200 rounded-xl text-[13px] text-red-600 font-medium">

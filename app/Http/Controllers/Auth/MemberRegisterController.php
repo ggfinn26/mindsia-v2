@@ -55,6 +55,7 @@ class MemberRegisterController extends Controller
                     'mother_whatsapp' => $request->validated('mother_whatsapp'),
                     'address' => $request->validated('address'),
                     'institution_id' => $request->validated('institution_id'),
+                    'institution_name_custom' => $request->validated('institution_name_custom'),
                     'program_id' => $request->validated('program_id'),
                     'referred_by_employee_id' => $referredByEmployeeId,
                 ]);

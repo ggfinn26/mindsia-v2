@@ -381,13 +381,19 @@ Route::post('/applicant/reset-password', [ApplicantResetPasswordController::clas
 
 // Register success notification page — requires authenticated + verified user
 Route::get('/daftar/sukses', function () {
-    $user = auth('web')->user() ?? auth('member')->user() ?? auth('applicant')->user();
+    $loginRoutes = [
+        'member'    => route('member.landing', ['view' => 'login']),
+        'applicant' => route('applicant.login'),
+        'web'       => route('login'),
+    ];
 
-    if (! $user || ! $user->hasVerifiedEmail()) {
-        return redirect()->route('login');
+    foreach ($loginRoutes as $guard => $loginUrl) {
+        if (auth($guard)->user()?->hasVerifiedEmail()) {
+            return view('auth.register-success', compact('loginUrl'));
+        }
     }
 
-    return view('auth.register-success');
+    return redirect()->route('login');
 })->name('register.success');
 
 // Email Verification Routes (OTP-based)

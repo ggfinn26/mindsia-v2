@@ -15,7 +15,7 @@ class StoreInstitutionRequest extends FormRequest
     {
         return [
             'regions_id' => ['required', 'exists:regions,id'],
-            'jenjang_institution' => ['required', 'in:SD,SMP,SMA,PERGURUAN TINGGI'],
+            'jenjang_institution' => ['required', 'in:SD,SMP,MTS,SMA,SMK,MA,PERGURUAN TINGGI'],
             'institution_name' => ['required', 'string', 'max:255'],
         ];
     }

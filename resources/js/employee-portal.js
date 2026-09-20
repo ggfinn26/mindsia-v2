@@ -23,6 +23,7 @@ window.employeePortal = function (serverView) {
         loginLoading: false,
         regPassword: "",
         regPasswordConfirm: "",
+        employeeName: "",
 
         init() {
             this.$nextTick(() => this.checkValidities());
@@ -50,6 +51,8 @@ window.employeePortal = function (serverView) {
             try {
                 const res = await this._post(routes.registerVerify, { employee_code: getVal("employee_code") });
                 if (res.ok) {
+                    const data = await res.json();
+                    this.employeeName = data.employee_name || "";
                     this.view = "register2";
                 } else {
                     const data = await res.json();
@@ -71,7 +74,6 @@ window.employeePortal = function (serverView) {
             this.registerLoading = true;
             try {
                 const res = await this._post(routes.register, {
-                    name: getVal("name"),
                     email: getVal("reg_email"),
                     password: this.regPassword,
                     password_confirmation: this.regPasswordConfirm,
@@ -118,7 +120,6 @@ window.employeePortal = function (serverView) {
         checkValidities() {
             this.step1Valid = !!getVal("employee_code");
             this.step2Valid = !!(
-                getVal("name") &&
                 getVal("reg_email") &&
                 this.regPassword &&
                 this.regPasswordConfirm &&

@@ -38,7 +38,10 @@ class RegisterController extends Controller
         session()->put('register_employee_id', $employee->id);
 
         if ($request->expectsJson()) {
-            return response()->json(['redirect' => route('register.step2')]);
+            return response()->json([
+                'redirect' => route('register.step2'),
+                'employee_name' => $employee->full_name,
+            ]);
         }
 
         return redirect()->route('employee.landing', ['view' => 'register2']);

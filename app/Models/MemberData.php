@@ -29,6 +29,7 @@ class MemberData extends Model
         'mother_whatsapp',
         'address',
         'institution_id',
+        'institution_name_custom',
         'program_id',
         'referred_by_employee_id',
         'activation_status',

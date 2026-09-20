@@ -39,7 +39,7 @@
         <div class="absolute left-0 md:left-auto right-0 bottom-0 w-full md:w-[60%] lg:w-[55%] bg-white shadow-[-10px_0_30px_rgba(17,24,39,0.02)] z-30 flex flex-col h-[85vh] md:h-full">
             <div class="relative w-full h-full overflow-y-auto overflow-x-hidden p-6 md:p-16 lg:p-24 flex flex-col justify-start md:justify-center pt-20 md:pt-16">
                 <!-- Back Button -->
-                <a href="{{ route('home') }}"
+                <a href="{{ route('member.landing') }}?transition=back"
                         class="absolute top-6 left-6 md:top-10 md:left-10 text-[#4B5563] hover:text-[#111827] transition-colors flex items-center gap-1.5 font-bold text-sm z-40">
                     <span class="material-symbols-outlined text-[16px]">arrow_back</span>
                     <span class="hidden md:inline">Kembali</span>
@@ -89,7 +89,7 @@
                             </label>
                             <input type="text" id="full_name" name="full_name" value="{{ old('full_name') }}"
                                    class="w-full px-3.5 py-2.5 border rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all shadow-sm"
-                                   :class="inputClass(1, 'full_name')" required>
+                                   :class="inputClass(1, 'full_name')">
                             <p x-show="hasError(1, 'full_name')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium">Bagian ini wajib diisi.</p>
                             @error('full_name')
                                 <p class="mt-1 text-[11px] text-red-600 font-medium">{{ $message }}</p>
@@ -101,7 +101,7 @@
                             </label>
                             <select id="gender" name="gender"
                                     class="w-full px-3.5 py-2.5 border rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all shadow-sm"
-                                    :class="inputClass(1, 'gender')" required>
+                                    :class="inputClass(1, 'gender')">
                                 <option value="">Pilih...</option>
                                 <option value="L" {{ old('gender') == 'L' ? 'selected' : '' }}>Laki-laki</option>
                                 <option value="P" {{ old('gender') == 'P' ? 'selected' : '' }}>Perempuan</option>
@@ -118,11 +118,11 @@
                             <label for="birthdate" class="block mb-1 text-[12px] font-bold text-[#4B5563]">
                                 Tanggal Lahir <span class="text-red-600">*</span>
                             </label>
-                            <input type="date" id="birthdate" name="birthdate" value="{{ old('birthdate') }}"
-                                   max="{{ \Carbon\Carbon::now()->subYears(5)->format('Y-m-d') }}"
+                            <input type="date" id="birthdate" name="birthdate"
+                                   x-model="form.birthdate"
                                    class="w-full px-3.5 py-2.5 border rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all shadow-sm"
-                                   :class="inputClass(1, 'birthdate')" required>
-                            <p x-show="hasError(1, 'birthdate')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium">Bagian ini wajib diisi.</p>
+                                   :class="inputClass(1, 'birthdate')">
+                            <p x-show="hasError(1, 'birthdate')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium" x-text="birthdateErrorText()"></p>
                             @error('birthdate')
                                 <p class="mt-1 text-[11px] text-red-600 font-medium">{{ $message }}</p>
                             @enderror
@@ -137,7 +137,7 @@
                                        value="{{ old('whatsapp_number') }}" placeholder="8xxxxxxxxxx" maxlength="13"
                                        @input="$el.value = $el.value.replace(/[^0-9]/g, '').replace(/^0+/, ''); checkValidities()"
                                        class="w-full px-3.5 py-2.5 border border-l-0 rounded-r-xl text-[13px] focus:outline-none focus:ring-2 transition-all shadow-sm"
-                                       :class="inputClass(1, 'whatsapp_number')" required>
+                                       :class="inputClass(1, 'whatsapp_number')">
                             </div>
                             <p x-show="hasError(1, 'whatsapp_number')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium">Minimal 9 digit.</p>
                             @error('whatsapp_number')
@@ -153,7 +153,7 @@
                             </label>
                             <input type="email" id="email" name="email" value="{{ old('email') }}"
                                    class="w-full px-3.5 py-2.5 border rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all shadow-sm"
-                                   :class="inputClass(1, 'email')" required>
+                                   :class="inputClass(1, 'email')">
                             <p x-show="hasError(1, 'email')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium">Bagian ini wajib diisi.</p>
                             @error('email')
                                 <p class="mt-1 text-[11px] text-red-600 font-medium">{{ $message }}</p>
@@ -178,7 +178,7 @@
                                 x-model="form.province_id"
                                 @change="fetchInstitutions(); checkValidities()"
                                 class="w-full px-3.5 py-2.5 border rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all shadow-sm"
-                                :class="inputClass(1, 'province_id')" required>
+                                :class="inputClass(1, 'province_id')">
                             <option value="">Pilih Provinsi</option>
                             <template x-for="prov in provinces" :key="prov.id">
                                 <option :value="prov.id" x-text="prov.name"></option>
@@ -193,7 +193,7 @@
                         </label>
                         <textarea id="address" name="address" rows="2"
                                   class="w-full px-3.5 py-2.5 border rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all shadow-sm"
-                                  :class="inputClass(1, 'address')" required>{{ old('address') }}</textarea>
+                                  :class="inputClass(1, 'address')">{{ old('address') }}</textarea>
                         <p x-show="hasError(1, 'address')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium">Bagian ini wajib diisi.</p>
                         @error('address')
                             <p class="mt-1 text-[11px] text-red-600 font-medium">{{ $message }}</p>
@@ -249,6 +249,18 @@
                                 </ul>
                             </div>
                         </div>
+                        <p class="mt-2 text-[11px] text-[#6B7280] leading-relaxed">
+                            Jika institusi tidak ditemukan, ketik <span class="font-semibold text-[#374151]">"tidak ditemukan"</span> pada kolom pencarian.<br>
+                            Jika sudah lulus, tidak bersekolah, atau tidak berkuliah, pilih <span class="font-semibold text-[#374151]">"Tidak Sekolah/Sudah Lulus"</span>.
+                        </p>
+                        <div x-show="showCustomInstitution" x-cloak class="mt-3">
+                            <label class="block mb-1 text-[12px] font-bold text-[#4B5563]">
+                                Nama Institusimu <span class="text-red-600">*</span>
+                            </label>
+                            <input type="text" id="institution_name_custom" name="institution_name_custom"
+                                   placeholder="Tulis nama sekolah/kampusmu..."
+                                   class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-[#E5E7EB] rounded-xl text-[13px] focus:outline-none focus:ring-2 focus:ring-[#5586DB]/20 focus:border-[#5586DB] transition-all shadow-sm">
+                        </div>
                         <input type="hidden" id="institution_id" name="institution_id" x-model="form.institution_id">
                         <p x-show="hasError(2, 'institution_id')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium">Bagian ini wajib diisi.</p>
                         @error('institution_id')
@@ -256,52 +268,53 @@
                         @enderror
                     </div>
 
-                    <div>
-                        <label for="referred_by_code" class="block mb-1 text-[12px] font-bold text-[#4B5563]">
-                            Kode Referral <span class="text-[#9CA3AF] font-normal">(Opsional)</span>
-                        </label>
-                        <input type="text" id="referred_by_code" name="referred_by_code"
-                               value="{{ old('referred_by_code') }}"
-                               placeholder="Kode karyawan yang mereferensikan Anda"
-                               class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-[#E5E7EB] rounded-xl text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-2 focus:ring-[#5586DB]/20 transition-all shadow-sm">
-                        @error('referred_by_code')
-                            <p class="mt-1 text-[11px] text-red-600 font-medium">{{ $message }}</p>
-                        @enderror
-                    </div>
+
 
                     <div class="border-t border-[#E5E7EB] pt-5">
-                        <h3 class="font-jakarta font-bold text-[14px] text-[#111827] mb-4">Data Orang Tua <span class="text-[#9CA3AF] font-normal">(Opsional)</span></h3>
+                        <h3 class="font-jakarta font-bold text-[14px] text-[#111827] mb-4">Data Orang Tua</h3>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label for="father_name" class="block mb-1 text-[12px] font-bold text-[#4B5563]">Nama Ayah</label>
+                                <label for="father_name" class="block mb-1 text-[12px] font-bold text-[#4B5563]">Nama Ayah <span class="text-red-600">*</span></label>
                                 <input type="text" id="father_name" name="father_name" value="{{ old('father_name') }}"
-                                       class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-[#E5E7EB] rounded-xl text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-2 focus:ring-[#5586DB]/20 transition-all shadow-sm">
+                                       class="w-full px-3.5 py-2.5 border rounded-xl text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-2 focus:ring-[#5586DB]/20 transition-all shadow-sm"
+                                       :class="hasError(2,'father_name') ? 'border-red-500 bg-red-50' : 'bg-[#F8FAFC] border-[#E5E7EB]'">
+                                <p x-show="hasError(2,'father_name')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium">Bagian ini wajib diisi.</p>
                             </div>
                             <div>
-                                <label for="mother_name" class="block mb-1 text-[12px] font-bold text-[#4B5563]">Nama Ibu</label>
+                                <label for="mother_name" class="block mb-1 text-[12px] font-bold text-[#4B5563]">Nama Ibu <span class="text-red-600">*</span></label>
                                 <input type="text" id="mother_name" name="mother_name" value="{{ old('mother_name') }}"
-                                       class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-[#E5E7EB] rounded-xl text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-2 focus:ring-[#5586DB]/20 transition-all shadow-sm">
+                                       class="w-full px-3.5 py-2.5 border rounded-xl text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-2 focus:ring-[#5586DB]/20 transition-all shadow-sm"
+                                       :class="hasError(2,'mother_name') ? 'border-red-500 bg-red-50' : 'bg-[#F8FAFC] border-[#E5E7EB]'">
+                                <p x-show="hasError(2,'mother_name')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium">Bagian ini wajib diisi.</p>
                             </div>
                             <div>
-                                <label for="father_occupation" class="block mb-1 text-[12px] font-bold text-[#4B5563]">Pekerjaan Ayah</label>
+                                <label for="father_occupation" class="block mb-1 text-[12px] font-bold text-[#4B5563]">Pekerjaan Ayah <span class="text-red-600">*</span></label>
                                 <input type="text" id="father_occupation" name="father_occupation" value="{{ old('father_occupation') }}"
-                                       class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-[#E5E7EB] rounded-xl text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-2 focus:ring-[#5586DB]/20 transition-all shadow-sm">
+                                       class="w-full px-3.5 py-2.5 border rounded-xl text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-2 focus:ring-[#5586DB]/20 transition-all shadow-sm"
+                                       :class="hasError(2,'father_occupation') ? 'border-red-500 bg-red-50' : 'bg-[#F8FAFC] border-[#E5E7EB]'">
+                                <p x-show="hasError(2,'father_occupation')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium">Bagian ini wajib diisi.</p>
                             </div>
                             <div>
-                                <label for="mother_occupation" class="block mb-1 text-[12px] font-bold text-[#4B5563]">Pekerjaan Ibu</label>
+                                <label for="mother_occupation" class="block mb-1 text-[12px] font-bold text-[#4B5563]">Pekerjaan Ibu <span class="text-red-600">*</span></label>
                                 <input type="text" id="mother_occupation" name="mother_occupation" value="{{ old('mother_occupation') }}"
-                                       class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-[#E5E7EB] rounded-xl text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-2 focus:ring-[#5586DB]/20 transition-all shadow-sm">
+                                       class="w-full px-3.5 py-2.5 border rounded-xl text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-2 focus:ring-[#5586DB]/20 transition-all shadow-sm"
+                                       :class="hasError(2,'mother_occupation') ? 'border-red-500 bg-red-50' : 'bg-[#F8FAFC] border-[#E5E7EB]'">
+                                <p x-show="hasError(2,'mother_occupation')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium">Bagian ini wajib diisi.</p>
                             </div>
                             <div>
-                                <label for="father_whatsapp" class="block mb-1 text-[12px] font-bold text-[#4B5563]">WhatsApp Ayah</label>
+                                <label for="father_whatsapp" class="block mb-1 text-[12px] font-bold text-[#4B5563]">WhatsApp Ayah <span class="text-red-600">*</span></label>
                                 <input type="text" id="father_whatsapp" name="father_whatsapp" value="{{ old('father_whatsapp') }}"
-                                       class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-[#E5E7EB] rounded-xl text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-2 focus:ring-[#5586DB]/20 transition-all shadow-sm">
+                                       class="w-full px-3.5 py-2.5 border rounded-xl text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-2 focus:ring-[#5586DB]/20 transition-all shadow-sm"
+                                       :class="hasError(2,'father_whatsapp') ? 'border-red-500 bg-red-50' : 'bg-[#F8FAFC] border-[#E5E7EB]'">
+                                <p x-show="hasError(2,'father_whatsapp')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium">Bagian ini wajib diisi.</p>
                             </div>
                             <div>
-                                <label for="mother_whatsapp" class="block mb-1 text-[12px] font-bold text-[#4B5563]">WhatsApp Ibu</label>
+                                <label for="mother_whatsapp" class="block mb-1 text-[12px] font-bold text-[#4B5563]">WhatsApp Ibu <span class="text-red-600">*</span></label>
                                 <input type="text" id="mother_whatsapp" name="mother_whatsapp" value="{{ old('mother_whatsapp') }}"
-                                       class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-[#E5E7EB] rounded-xl text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-2 focus:ring-[#5586DB]/20 transition-all shadow-sm">
+                                       class="w-full px-3.5 py-2.5 border rounded-xl text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-2 focus:ring-[#5586DB]/20 transition-all shadow-sm"
+                                       :class="hasError(2,'mother_whatsapp') ? 'border-red-500 bg-red-50' : 'bg-[#F8FAFC] border-[#E5E7EB]'">
+                                <p x-show="hasError(2,'mother_whatsapp')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium">Bagian ini wajib diisi.</p>
                             </div>
                         </div>
                     </div>
@@ -333,7 +346,7 @@
                         <div class="relative w-full">
                             <input type="password" id="password" name="password"
                                    class="w-full px-3.5 py-2.5 border rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all shadow-sm pr-10"
-                                   :class="inputClass(3, 'password')" required>
+                                   :class="inputClass(3, 'password')">
                             <button type="button" onclick="const type = this.previousElementSibling.type === 'password' ? 'text' : 'password'; document.querySelectorAll('input[type=password], input[data-is-pwd]').forEach(i => { i.type = type; i.setAttribute('data-is-pwd', '1'); }); document.querySelectorAll('button.pwd-toggle').forEach(b => { if(b.innerHTML.includes('material-symbols-outlined')) { b.innerHTML = type === 'password' ? '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility</span>' : '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility_off</span>'; } else { const eye = b.querySelector('.eye'); const eyeOff = b.querySelector('.eye-off'); if(eye && eyeOff) { eye.classList.toggle('hidden', type === 'text'); eyeOff.classList.toggle('hidden', type === 'password'); } } });" class="absolute inset-y-0 right-0 pr-3 flex items-center pwd-toggle pwd-toggle">
                             <span class="material-symbols-outlined text-[18px] text-gray-500">visibility</span>
                         </button>
@@ -352,7 +365,7 @@
                         <div class="relative w-full">
                             <input type="password" id="password_confirmation" name="password_confirmation"
                                    class="w-full px-3.5 py-2.5 border rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all shadow-sm pr-10"
-                                   :class="inputClass(3, 'password_confirmation')" required>
+                                   :class="inputClass(3, 'password_confirmation')">
                             <button type="button" onclick="const type = this.previousElementSibling.type === 'password' ? 'text' : 'password'; document.querySelectorAll('input[type=password], input[data-is-pwd]').forEach(i => { i.type = type; i.setAttribute('data-is-pwd', '1'); }); document.querySelectorAll('button.pwd-toggle').forEach(b => { if(b.innerHTML.includes('material-symbols-outlined')) { b.innerHTML = type === 'password' ? '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility</span>' : '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility_off</span>'; } else { const eye = b.querySelector('.eye'); const eyeOff = b.querySelector('.eye-off'); if(eye && eyeOff) { eye.classList.toggle('hidden', type === 'text'); eyeOff.classList.toggle('hidden', type === 'password'); } } });" class="absolute inset-y-0 right-0 pr-3 flex items-center pwd-toggle pwd-toggle">
                             <span class="material-symbols-outlined text-[18px] text-gray-500">visibility</span>
                         </button>
@@ -379,15 +392,28 @@
             <div class="mt-8 text-center border-t border-[#E5E7EB] pt-6 pb-4">
                 <p class="text-[14px] text-[#4B5563]">
                     Sudah punya akun?
-                    <a href="{{ route('member.login') }}" class="font-bold text-[#5586DB] hover:text-[#00AACC] transition-colors">Masuk</a>
+                    <a href="{{ route('member.landing', ['view' => 'login', 'transition' => 'back']) }}" class="font-bold text-[#5586DB] hover:text-[#00AACC] transition-colors">Masuk di sini</a>
                 </p>
             </div>
             </div>
         </div>
     </div>
 
+    @php
+        $errorStep = $errors->hasAny(['password','password_confirmation']) ? 3
+            : ($errors->hasAny(['institution_id','institution_name_custom','father_name','mother_name','father_occupation','mother_occupation','father_whatsapp','mother_whatsapp']) ? 2
+            : ($errors->any() ? 1 : 0));
+    @endphp
     <script>
-        window.__memberRegisterConfig = { provinces: @json($provinces ?? []) };
+        window.__memberRegisterConfig = {
+            provinces: @json($provinces ?? []),
+            old: {
+                province_id: @json(old('province_id', '')),
+                institution_id: @json(old('institution_id', '')),
+                birthdate: @json(old('birthdate', '')),
+            },
+            errorStep: @json($errorStep),
+        };
         // memberRegisterPortal() defined in resources/js/member-register.js
     </script>
 </body>
