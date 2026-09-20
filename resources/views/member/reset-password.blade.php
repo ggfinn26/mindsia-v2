@@ -1,103 +1,176 @@
-@extends('layouts.app', ['homeRoute' => url('/')])
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Student Portal - MINDSIA</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0&display=swap" rel="stylesheet"></noscript>
+    <style>
+        .font-jakarta { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-inter { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="w-full h-screen overflow-hidden bg-[#F8FAFC] text-[#111827] font-inter antialiased">
+    <div class="relative w-full h-full overflow-hidden">
+        <!-- Left Cover -->
+        <div class="absolute left-0 top-0 w-full flex flex-col items-center justify-center text-center overflow-hidden z-20 h-[15vh] md:h-full md:w-[40%] lg:w-[45%] bg-[#5586DB]">
+            <div class="absolute inset-0 bg-gradient-to-br from-[#5586DB]/90 to-[#00AACC]/90"></div>
+            <div class="absolute inset-0 animated-pattern pointer-events-none"></div>
 
-@section('content')
-<div class="container mx-auto px-4 py-8 max-w-md">
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold">Reset Password</h1>
-        <p class="text-gray-600">Masukkan password baru Anda</p>
+            <div class="relative z-10 w-full flex flex-col items-center md:items-center">
+                <div class="max-w-md px-10 text-left w-full">
+                    <img src="/img/logo/mindsia-logo.webp" alt="Mindsia Logo" class="h-10 md:h-20 w-auto mb-2 md:mb-8 filter brightness-0 invert opacity-90 drop-shadow-md">
+                    <h2 class="hidden md:block font-jakarta font-extrabold text-[36px] md:text-[48px] tracking-tight text-white mb-6 leading-[1.1]">Student <br><span class="text-[#F8FAFC]/90">Portal</span></h2>
+                    <p class="hidden md:block text-[16px] text-white/80 leading-relaxed font-medium">Akses materi belajar, pantau progress akademik, dan kelola pendaftaran program MINDSIA Anda di sini.</p>
+                    <h2 class="md:hidden font-jakarta font-extrabold text-[22px] tracking-tight text-white leading-tight">Student Portal</h2>
+                </div>
+            </div>
+
+            <div class="hidden md:block absolute bottom-10 left-10 text-[12px] font-bold text-white/40 uppercase tracking-widest font-jakarta">
+                Student Access Only
+            </div>
+        </div>
+
+        <!-- Right Form -->
+        <div class="absolute left-0 md:left-auto right-0 bottom-0 w-full md:w-[60%] lg:w-[55%] bg-white shadow-[-10px_0_30px_rgba(17,24,39,0.02)] z-30 flex flex-col h-[85vh] md:h-full">
+            <div class="relative w-full h-full overflow-y-auto overflow-x-hidden p-6 md:p-16 lg:p-24 flex flex-col justify-start md:justify-center pt-20 md:pt-16">
+                <!-- Back Button -->
+                <a href="{{ route('member.landing') }}?transition=back"
+                        class="absolute top-6 left-6 md:top-10 md:left-10 text-[#4B5563] hover:text-[#111827] transition-colors flex items-center gap-1.5 font-bold text-sm z-40">
+                    <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                    <span class="hidden md:inline">Kembali</span>
+                </a>
+
+                <div class="max-w-[400px] w-full mx-auto">
+
+            <h1 class="font-jakarta font-extrabold text-[28px] md:text-[32px] text-[#111827] mb-2 tracking-tight">Reset Password</h1>
+            <p class="text-[15px] text-[#4B5563] mb-10 font-medium">Masukkan password baru untuk akun Anda.</p>
+
+            @if ($errors->any())
+                <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-[13px] text-red-700 font-medium flex gap-3 items-start">
+                    <span class="material-symbols-outlined text-[18px] text-red-600">error</span>
+                    <ul class="list-disc list-inside">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form action="{{ route('member.password.update') }}" method="POST" class="space-y-5" x-data="resetPasswordForm()" @submit="submit($event)">
+                @csrf
+                <input type="hidden" name="token" value="{{ $token }}">
+                <input type="hidden" name="email" value="{{ request()->query('email') ?? old('email') }}">
+
+                <div>
+                    <label for="password" class="block mb-1.5 text-[13px] font-bold text-[#4B5563]">Password Baru</label>
+                    <div class="relative w-full">
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            x-model="password"
+                            @input="checkPassword"
+                            class="w-full px-4 py-3 bg-[#F8FAFC] border rounded-xl text-[14px] focus:outline-none focus:ring-2 transition-all shadow-sm pr-10"
+                            :class="passwordError ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-[#E5E7EB] focus:border-[#5586DB] focus:ring-[#5586DB]/20'"
+                            placeholder="••••••••"
+                            required
+                            autofocus
+                        >
+                        <button type="button" onclick="const type = this.previousElementSibling.type === 'password' ? 'text' : 'password'; document.querySelectorAll('input[type=password], input[data-is-pwd]').forEach(i => { i.type = type; i.setAttribute('data-is-pwd', '1'); }); document.querySelectorAll('button.pwd-toggle').forEach(b => { if(b.innerHTML.includes('material-symbols-outlined')) { b.innerHTML = type === 'password' ? '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility</span>' : '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility_off</span>'; } else { const eye = b.querySelector('.eye'); const eyeOff = b.querySelector('.eye-off'); if(eye && eyeOff) { eye.classList.toggle('hidden', type === 'text'); eyeOff.classList.toggle('hidden', type === 'password'); } } });" class="absolute inset-y-0 right-0 pr-3 flex items-center pwd-toggle pwd-toggle">
+                            <span class="material-symbols-outlined text-[18px] text-gray-500">visibility</span>
+                        </button>
+                    </div>
+                    <p x-show="passwordError" x-cloak class="mt-1.5 text-[11px] text-red-600 font-medium" x-text="passwordErrorMsg"></p>
+                    <p x-show="!passwordError" class="mt-1.5 text-[11px] text-gray-500">Minimal 8 karakter, mengandung huruf besar, angka, dan simbol.</p>
+                </div>
+
+                <div>
+                    <label for="password_confirmation" class="block mb-1.5 text-[13px] font-bold text-[#4B5563]">Konfirmasi Password</label>
+                    <div class="relative w-full">
+                        <input
+                            type="password"
+                            id="password_confirmation"
+                            name="password_confirmation"
+                            x-model="passwordConfirmation"
+                            @input="checkPassword"
+                            class="w-full px-4 py-3 bg-[#F8FAFC] border rounded-xl text-[14px] focus:outline-none focus:ring-2 transition-all shadow-sm pr-10"
+                            :class="confirmError ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-[#E5E7EB] focus:border-[#5586DB] focus:ring-[#5586DB]/20'"
+                            placeholder="••••••••"
+                            required
+                        >
+                        <button type="button" onclick="const type = this.previousElementSibling.type === 'password' ? 'text' : 'password'; document.querySelectorAll('input[type=password], input[data-is-pwd]').forEach(i => { i.type = type; i.setAttribute('data-is-pwd', '1'); }); document.querySelectorAll('button.pwd-toggle').forEach(b => { if(b.innerHTML.includes('material-symbols-outlined')) { b.innerHTML = type === 'password' ? '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility</span>' : '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility_off</span>'; } else { const eye = b.querySelector('.eye'); const eyeOff = b.querySelector('.eye-off'); if(eye && eyeOff) { eye.classList.toggle('hidden', type === 'text'); eyeOff.classList.toggle('hidden', type === 'password'); } } });" class="absolute inset-y-0 right-0 pr-3 flex items-center pwd-toggle pwd-toggle">
+                            <span class="material-symbols-outlined text-[18px] text-gray-500">visibility</span>
+                        </button>
+                    </div>
+                    <p x-show="confirmError" x-cloak class="mt-1.5 text-[11px] text-red-600 font-medium">Password tidak cocok.</p>
+                </div>
+
+                <button
+                    type="submit"
+                    :disabled="!isValid"
+                    class="w-full text-white font-bold py-3.5 px-4 rounded-xl transition-all flex justify-center items-center gap-2 mt-2"
+                    :class="isValid ? 'bg-[#5586DB] hover:bg-[#00AACC] shadow-[0_4px_12px_-2px_rgba(85,134,219,0.3)]' : 'bg-gray-300 cursor-not-allowed'"
+                >
+                    Simpan Password Baru <span class="material-symbols-outlined text-[18px]">lock_reset</span>
+                </button>
+            </form>
+
+            <div class="mt-12 text-center border-t border-[#E5E7EB] pt-8">
+                <p class="text-[14px] text-[#4B5563]">
+                    Batal mereset?
+                    <a href="{{ route('member.landing', ['view' => 'login', 'transition' => 'back']) }}" class="font-bold text-[#5586DB] hover:text-[#00AACC] transition-colors">Masuk kembali</a>
+                </p>
+            </div>
+            
+            </div>
+        </div>
     </div>
 
-    <form action="{{ route('member.password.update') }}" method="POST" class="space-y-6">
-        @csrf
+    <script>
+        function resetPasswordForm() {
+            return {
+                password: '',
+                passwordConfirmation: '',
+                passwordError: false,
+                passwordErrorMsg: '',
+                confirmError: false,
+                isValid: false,
 
-        <input type="hidden" name="token" value="{{ $token }}">
+                checkPassword() {
+                    const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+                    
+                    if (this.password.length > 0 && !passRegex.test(this.password)) {
+                        this.passwordError = true;
+                        this.passwordErrorMsg = 'Password minimal 8 karakter, mengandung huruf besar, angka, dan simbol.';
+                    } else {
+                        this.passwordError = false;
+                        this.passwordErrorMsg = '';
+                    }
 
-        <div>
-            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-                Email
-            </label>
-            <input
-                type="email"
-                id="email"
-                name="email"
-                value="{{ old('email') }}"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Email Anda"
-                required
-            >
-            @error('email')
-                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-            @enderror
-        </div>
+                    if (this.passwordConfirmation.length > 0 && this.password !== this.passwordConfirmation) {
+                        this.confirmError = true;
+                    } else {
+                        this.confirmError = false;
+                    }
 
-        <div>
-            <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
-                Password Baru
-            </label>
-            <div class="relative">
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Password baru"
-                    required
-                >
-                <button type="button" onclick="const type = this.previousElementSibling.type === 'password' ? 'text' : 'password'; document.querySelectorAll('input[type=password], input[data-is-pwd]').forEach(i => { i.type = type; i.setAttribute('data-is-pwd', '1'); }); document.querySelectorAll('button.pwd-toggle').forEach(b => { if(b.innerHTML.includes('material-symbols-outlined')) { b.innerHTML = type === 'password' ? '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility</span>' : '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility_off</span>'; } else { const eye = b.querySelector('.eye'); const eyeOff = b.querySelector('.eye-off'); if(eye && eyeOff) { eye.classList.toggle('hidden', type === 'text'); eyeOff.classList.toggle('hidden', type === 'password'); } } });" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none pwd-toggle pwd-toggle">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 eye" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 eye-off hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                    </svg>
-                </button>
-            </div>
-            @error('password')
-                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-            @enderror
-        </div>
+                    this.isValid = this.password.length > 0 && 
+                                   this.passwordConfirmation.length > 0 && 
+                                   !this.passwordError && 
+                                   !this.confirmError;
+                },
 
-        <div>
-            <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-2">
-                Konfirmasi Password
-            </label>
-            <div class="relative">
-                <input
-                    type="password"
-                    id="password_confirmation"
-                    name="password_confirmation"
-                    class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Konfirmasi password"
-                    required
-                >
-                <button type="button" onclick="const type = this.previousElementSibling.type === 'password' ? 'text' : 'password'; document.querySelectorAll('input[type=password], input[data-is-pwd]').forEach(i => { i.type = type; i.setAttribute('data-is-pwd', '1'); }); document.querySelectorAll('button.pwd-toggle').forEach(b => { if(b.innerHTML.includes('material-symbols-outlined')) { b.innerHTML = type === 'password' ? '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility</span>' : '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility_off</span>'; } else { const eye = b.querySelector('.eye'); const eyeOff = b.querySelector('.eye-off'); if(eye && eyeOff) { eye.classList.toggle('hidden', type === 'text'); eyeOff.classList.toggle('hidden', type === 'password'); } } });" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none pwd-toggle pwd-toggle">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 eye" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 eye-off hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                    </svg>
-                </button>
-            </div>
-            @error('password_confirmation')
-                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-            @enderror
-        </div>
-
-        <button
-            type="submit"
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition"
-        >
-            Reset Password
-        </button>
-    </form>
-
-    <div class="mt-6 text-center text-sm text-gray-600">
-        <p>
-            Kembali ke <a href="{{ route('member.login') }}" class="text-blue-600 hover:text-blue-800">login</a>
-        </p>
-    </div>
-</div>
-@endsection
+                submit(e) {
+                    this.checkPassword();
+                    if (!this.isValid) {
+                        e.preventDefault();
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
