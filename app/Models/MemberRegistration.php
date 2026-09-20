@@ -26,6 +26,8 @@ class MemberRegistration extends Model
         'graduation_status',
         'payment_status',
         'installment_type',
+        'payment_plan_id',
+        'receipt_payment_plan_label',
     ];
 
     protected $casts = [
@@ -33,6 +35,24 @@ class MemberRegistration extends Model
         'discount_amount' => 'integer',
         'final_price' => 'integer',
     ];
+
+    public function getStatusLabelAttribute(): string
+    {
+        return match ($this->payment_status) {
+            'paid_full' => 'Lunas',
+            'installments' => 'Cicilan',
+            default => 'Belum Bayar',
+        };
+    }
+
+    public function getStatusColorAttribute(): string
+    {
+        return match ($this->payment_status) {
+            'paid_full' => 'bg-green-100 text-green-700',
+            'installments' => 'bg-blue-100 text-blue-700',
+            default => 'bg-red-100 text-red-700',
+        };
+    }
 
     public function memberData(): BelongsTo
     {
@@ -52,6 +72,11 @@ class MemberRegistration extends Model
     public function discount(): BelongsTo
     {
         return $this->belongsTo(Discount::class);
+    }
+
+    public function paymentPlan(): BelongsTo
+    {
+        return $this->belongsTo(ProgramPaymentPlan::class);
     }
 
     public function payments(): HasMany

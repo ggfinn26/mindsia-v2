@@ -9,7 +9,7 @@ class MemberRegistrationRepository
 {
     public function findWithDetails(int $id): MemberRegistration
     {
-        return MemberRegistration::with(['memberData', 'program', 'employee', 'discount', 'payments', 'review'])
+        return MemberRegistration::with(['memberData.account', 'program', 'paymentPlan', 'employee', 'discount', 'payments', 'review'])
             ->findOrFail($id);
     }
 
@@ -31,12 +31,12 @@ class MemberRegistrationRepository
     public function syncPaymentStatus(MemberRegistration $registration): void
     {
         $payments = $registration->payments;
-        $allPaid = $payments->every(fn ($p) => $p->payment_status === 'paid');
-        $anyPaid = $payments->contains(fn ($p) => $p->payment_status === 'paid');
+        $paidCount = $payments->where('payment_status', 'paid')->count();
+        $expectedCount = $registration->paymentPlan?->installment_count ?? 1;
 
         $status = match (true) {
-            $allPaid => 'paid_full',
-            $anyPaid => 'installments',
+            $paidCount >= $expectedCount && $paidCount > 0 => 'paid_full',
+            $paidCount > 0 => 'installments',
             default => 'unpaid',
         };
 

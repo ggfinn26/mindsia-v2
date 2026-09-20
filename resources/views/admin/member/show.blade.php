@@ -180,8 +180,8 @@
                             <td class="px-5 py-4 text-slate-900 font-medium">{{ $registration->program?->program_name ?? '—' }}</td>
                             <td class="px-5 py-4 text-slate-600">{{ $registration->created_at?->format('d M Y') ?? '—' }}</td>
                             <td class="px-5 py-4">
-                                <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $registration->payment_status === 'paid' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800' }}">
-                                    {{ ucfirst($registration->payment_status ?? 'pending') }}
+                                <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $registration->status_color }}">
+                                    {{ $registration->status_label }}
                                 </span>
                             </td>
                             <td class="px-5 py-4 text-slate-600">{{ ucfirst($registration->graduation_status ?? '—') }}</td>

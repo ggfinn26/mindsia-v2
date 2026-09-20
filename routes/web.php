@@ -330,12 +330,22 @@ Route::middleware(['auth:member', EnsureEmailIsVerified::class, 'no.back'])->gro
         })->name('member.attendance.index');
     });
 
-    // Administrasi & Pembayaran (Placeholder Views)
+    // Administrasi & Pembayaran
     Route::get('/member/registration', function () {
-        return view('member.registration.index');
+        $memberData = auth('member')->user()->memberData;
+        $registrations = $memberData
+            ? $memberData->registrations()->with('program')->orderByDesc('created_at')->get()
+            : collect();
+
+        return view('member.registration.index', compact('registrations'));
     })->name('member.registration.index');
     Route::get('/member/payment/installments', function () {
-        return view('member.payment.installments');
+        $memberData = auth('member')->user()->memberData;
+        $registrations = $memberData
+            ? $memberData->registrations()->with(['program', 'payments'])->orderByDesc('created_at')->get()
+            : collect();
+
+        return view('member.payment.installments', compact('registrations'));
     })->name('member.payment.installments');
     Route::get('/member/payment/upload', function () {
         return view('member.payment.upload');

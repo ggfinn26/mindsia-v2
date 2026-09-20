@@ -63,25 +63,19 @@ class MemberPaymentController extends Controller
 
             $memberPayment->update($data);
 
-            $membersDataId = $memberPayment->registration->members_data_id;
+            $registration = $memberPayment->registration;
+            $membersDataId = $registration->members_data_id;
 
-            // Cicilan pertama dibayar → aktifkan login akun
-            if ($memberPayment->installment_number === 1 && $memberPayment->payment_status === 'paid') {
+            $this->registrationRepo->syncPaymentStatus($registration);
+            $registration->refresh();
+
+            if ($registration->payment_status !== 'unpaid') {
                 MemberAccount::where('members_data_id', $membersDataId)
                     ->update(['is_active' => true]);
-            }
 
-            // Pembayaran apapun dikonfirmasi → pulihkan akses jika ditangguhkan atau pending
-            if ($memberPayment->payment_status === 'paid') {
                 MemberData::where('id', $membersDataId)
-                    ->whereIn('activation_status', [
-                        ActivationStatus::Pending->value,
-                        ActivationStatus::Ditangguhkan->value,
-                    ])
                     ->update(['activation_status' => ActivationStatus::Aktif->value]);
             }
-
-            $this->registrationRepo->syncPaymentStatus($memberPayment->registration);
         });
 
         if (($data['payment_status'] ?? null) === 'paid') {
