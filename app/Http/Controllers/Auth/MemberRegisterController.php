@@ -44,6 +44,7 @@ class MemberRegisterController extends Controller
                     'full_name' => $request->validated('full_name'),
                     'gender' => $request->validated('gender'),
                     'birthdate' => $request->validated('birthdate'),
+                    'birth_place' => $request->validated('birth_place'),
                     'whatsapp_number' => $request->validated('whatsapp_number'),
                     'email' => $request->validated('email'),
                     'instagram' => $request->validated('instagram'),
@@ -56,8 +57,11 @@ class MemberRegisterController extends Controller
                     'address' => $request->validated('address'),
                     'institution_id' => $request->validated('institution_id'),
                     'institution_name_custom' => $request->validated('institution_name_custom'),
+                    'branch_id' => $request->validated('branch_id'),
                     'program_id' => $request->validated('program_id'),
                     'referred_by_employee_id' => $referredByEmployeeId,
+                    'education_level' => $request->validated('education_level'),
+                    'class_or_faculty' => $request->validated('class_or_faculty'),
                 ]);
 
                 $member = MemberAccount::create([

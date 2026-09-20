@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureMemberIsActive;
 use App\Http\Middleware\EnsurePasswordChanged;
 use App\Http\Middleware\PreventBackHistory;
 use Illuminate\Foundation\Application;
@@ -18,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'password.changed' => EnsurePasswordChanged::class,
             'no.back' => PreventBackHistory::class,
+            'member.active' => EnsureMemberIsActive::class,
         ]);
         $middleware->redirectGuestsTo(function (Request $request): string {
             $guards = $request->route()?->gatherMiddleware() ?? [];

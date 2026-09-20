@@ -317,16 +317,18 @@ Route::middleware(['auth:member', EnsureEmailIsVerified::class, 'no.back'])->gro
     Route::get('/member/program/{program}/register', [ProgramRegistrationController::class, 'create'])->name('member.program.register');
     Route::post('/member/program/{program}/register', [ProgramRegistrationController::class, 'store'])->name('member.program.register.post');
 
-    // Akademik (Placeholder Views)
-    Route::get('/member/class', function () {
-        return view('member.class.index');
-    })->name('member.class.index');
-    Route::get('/member/curriculum', function () {
-        return view('member.curriculum.index');
-    })->name('member.curriculum.index');
-    Route::get('/member/attendance', function () {
-        return view('member.attendance.index');
-    })->name('member.attendance.index');
+    // Akademik — hanya member aktif
+    Route::middleware('member.active')->group(function () {
+        Route::get('/member/class', function () {
+            return view('member.class.index');
+        })->name('member.class.index');
+        Route::get('/member/curriculum', function () {
+            return view('member.curriculum.index');
+        })->name('member.curriculum.index');
+        Route::get('/member/attendance', function () {
+            return view('member.attendance.index');
+        })->name('member.attendance.index');
+    });
 
     // Administrasi & Pembayaran (Placeholder Views)
     Route::get('/member/registration', function () {
@@ -364,21 +366,22 @@ Route::middleware(['auth:member', EnsureEmailIsVerified::class, 'no.back'])->gro
     Route::post('/member/nps-responses', [MemberNpsResponseController::class, 'store'])->name('member.nps-responses.store');
     Route::put('/member/reviews/{review}', [MemberNpsResponseController::class, 'updateReview'])->name('member.reviews.update');
 
-    // TOEFL
-    Route::get('/toefl', [ToeflSessionController::class, 'index'])->name('toefl.session.index');
-    Route::post('/toefl/{toeflTest}/start', [ToeflSessionController::class, 'start'])->name('toefl.session.start');
-    Route::get('/toefl/session/{session}/listening', [ToeflSessionController::class, 'showListening'])->name('toefl.session.listening');
-    Route::get('/toefl/session/{session}/structure', [ToeflSessionController::class, 'showStructure'])->name('toefl.session.structure');
-    Route::get('/toefl/session/{session}/reading', [ToeflSessionController::class, 'showReading'])->name('toefl.session.reading');
-    Route::post('/toefl/session/{session}/answer', [ToeflSessionController::class, 'saveAnswer'])->name('toefl.session.answer');
-    Route::post('/toefl/session/{session}/submit-section', [ToeflSessionController::class, 'submitSection'])->name('toefl.session.submit-section');
-    Route::get('/toefl/session/{session}/result', [ToeflSessionController::class, 'result'])->name('toefl.session.result');
+    // TOEFL + Curriculum Interactive — hanya member aktif
+    Route::middleware('member.active')->group(function () {
+        Route::get('/toefl', [ToeflSessionController::class, 'index'])->name('toefl.session.index');
+        Route::post('/toefl/{toeflTest}/start', [ToeflSessionController::class, 'start'])->name('toefl.session.start');
+        Route::get('/toefl/session/{session}/listening', [ToeflSessionController::class, 'showListening'])->name('toefl.session.listening');
+        Route::get('/toefl/session/{session}/structure', [ToeflSessionController::class, 'showStructure'])->name('toefl.session.structure');
+        Route::get('/toefl/session/{session}/reading', [ToeflSessionController::class, 'showReading'])->name('toefl.session.reading');
+        Route::post('/toefl/session/{session}/answer', [ToeflSessionController::class, 'saveAnswer'])->name('toefl.session.answer');
+        Route::post('/toefl/session/{session}/submit-section', [ToeflSessionController::class, 'submitSection'])->name('toefl.session.submit-section');
+        Route::get('/toefl/session/{session}/result', [ToeflSessionController::class, 'result'])->name('toefl.session.result');
 
-    // Curriculum Interactive Module
-    Route::get('/classrooms/{classroom}/curriculum/items/{item}/interactive', [MemberCurriculumInteractiveController::class, 'show'])->name('member.curriculum.interactive.show');
-    Route::post('/classrooms/{classroom}/curriculum/items/{item}/interactive/submit', [MemberCurriculumInteractiveController::class, 'submit'])->name('member.curriculum.interactive.submit');
-    Route::get('/classrooms/{classroom}/curriculum/items/{item}/interactive/result', [MemberCurriculumInteractiveController::class, 'result'])->name('member.curriculum.interactive.result');
-    Route::get('/classrooms/{classroom}/curriculum/items/{item}/interactive/history', [MemberCurriculumInteractiveController::class, 'history'])->name('member.curriculum.interactive.history');
+        Route::get('/classrooms/{classroom}/curriculum/items/{item}/interactive', [MemberCurriculumInteractiveController::class, 'show'])->name('member.curriculum.interactive.show');
+        Route::post('/classrooms/{classroom}/curriculum/items/{item}/interactive/submit', [MemberCurriculumInteractiveController::class, 'submit'])->name('member.curriculum.interactive.submit');
+        Route::get('/classrooms/{classroom}/curriculum/items/{item}/interactive/result', [MemberCurriculumInteractiveController::class, 'result'])->name('member.curriculum.interactive.result');
+        Route::get('/classrooms/{classroom}/curriculum/items/{item}/interactive/history', [MemberCurriculumInteractiveController::class, 'history'])->name('member.curriculum.interactive.history');
+    });
 });
 
 // Auth Routes — Applicant (applicant guard)
@@ -723,6 +726,7 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     // Member Domain
     Route::post('members/import', [MemberDataController::class, 'import'])->name('members.import');
     Route::post('members/{member}/activate', [MemberDataController::class, 'activate'])->name('members.activate');
+    Route::post('members/{member}/suspend', [MemberDataController::class, 'suspend'])->name('members.suspend');
     Route::resource('members', MemberDataController::class);
     Route::prefix('members/{member}')->name('members.')->group(function () {
         Route::get('registrations/create', [MemberRegistrationController::class, 'create'])->name('registrations.create');

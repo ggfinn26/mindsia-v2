@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Member;
 
+use App\Enums\Member\ActivationStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Member\StoreMemberDataRequest;
 use App\Http\Requests\Member\UpdateMemberDataRequest;
@@ -77,9 +78,18 @@ class MemberDataController extends Controller
     {
         abort_unless(auth()->user()->can('member.manage'), 403);
 
-        $member->update(['activation_status' => 'active']);
+        $member->update(['activation_status' => ActivationStatus::Aktif]);
 
         return back()->with('success', 'Member berhasil diaktifkan.');
+    }
+
+    public function suspend(MemberData $member): RedirectResponse
+    {
+        abort_unless(auth()->user()->can('member.payment.manage'), 403);
+
+        $member->update(['activation_status' => ActivationStatus::Ditangguhkan]);
+
+        return back()->with('success', 'Akun member ditangguhkan.');
     }
 
     public function destroy(MemberData $member): RedirectResponse

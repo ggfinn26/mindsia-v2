@@ -14,10 +14,11 @@ class UpdateMemberPaymentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'payment_status' => ['required', 'in:paid,unpaid'],
-            'payment_method' => ['nullable', 'string', 'max:50'],
+            'payment_status' => ['sometimes', 'required', 'in:paid,unpaid'],
+            'payment_method' => ['nullable', 'in:transfer_bank,cash,qris,e_wallet,lainnya'],
             'telegram_payment_proof_id' => ['nullable', 'string', 'max:500'],
             'notes' => ['nullable', 'string'],
+            'due_date' => ['sometimes', 'nullable', 'date'],
         ];
     }
 }

@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Member;
 
+use App\Models\ProgramPaymentPlan;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class StoreMemberRegistrationRequest extends FormRequest
 {
@@ -15,11 +17,24 @@ class StoreMemberRegistrationRequest extends FormRequest
     {
         return [
             'program_id' => ['required', 'integer', 'exists:programs,id'],
-            'employee_id' => ['required', 'integer', 'exists:employees,id'],
-            'receipt_program_name' => ['required', 'string', 'max:255'],
-            'original_price' => ['required', 'integer', 'min:0'],
+            'payment_plan_id' => ['required', 'integer', 'exists:program_payment_plans,id'],
             'discount_code' => ['nullable', 'string', 'exists:discounts,discount_code'],
-            'installment_type' => ['required', 'in:1,2,3,4,5'],
+        ];
+    }
+
+    public function after(): array
+    {
+        return [
+            function (Validator $validator) {
+                if ($validator->errors()->has('payment_plan_id') || $validator->errors()->has('program_id')) {
+                    return;
+                }
+
+                $plan = ProgramPaymentPlan::find($this->payment_plan_id);
+                if (! $plan || ! $plan->is_active || (int) $plan->program_id !== (int) $this->program_id) {
+                    $validator->errors()->add('payment_plan_id', 'Skema pembayaran tidak valid untuk program ini.');
+                }
+            },
         ];
     }
 }

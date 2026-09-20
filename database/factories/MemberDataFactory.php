@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\Member\ActivationStatus;
 use App\Models\Institution;
 use App\Models\MemberData;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -25,7 +26,7 @@ class MemberDataFactory extends Factory
             'whatsapp_number' => $this->faker->numerify('62###########'),
             'email' => $this->faker->unique()->safeEmail(),
             'institution_id' => Institution::factory(),
-            'activation_status' => 'active',
+            'activation_status' => ActivationStatus::Aktif,
         ];
     }
 }

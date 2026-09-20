@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers\Admin\Member;
 
+use App\Enums\Member\ActivationStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Member\UpdateMemberPaymentRequest;
+use App\Jobs\SendPaymentReceiptJob;
 use App\Models\MemberAccount;
+use App\Models\MemberData;
 use App\Models\MemberPayment;
 use App\Models\MemberRegistration;
 use App\Repositories\Member\MemberRegistrationRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
 class MemberPaymentController extends Controller
@@ -61,24 +63,29 @@ class MemberPaymentController extends Controller
 
             $memberPayment->update($data);
 
-            // Cicilan pertama dibayar → aktifkan akun member
+            $membersDataId = $memberPayment->registration->members_data_id;
+
+            // Cicilan pertama dibayar → aktifkan login akun
             if ($memberPayment->installment_number === 1 && $memberPayment->payment_status === 'paid') {
-                MemberAccount::where('members_data_id', $memberPayment->registration->members_data_id)
+                MemberAccount::where('members_data_id', $membersDataId)
                     ->update(['is_active' => true]);
+            }
+
+            // Pembayaran apapun dikonfirmasi → pulihkan akses jika ditangguhkan atau pending
+            if ($memberPayment->payment_status === 'paid') {
+                MemberData::where('id', $membersDataId)
+                    ->whereIn('activation_status', [
+                        ActivationStatus::Pending->value,
+                        ActivationStatus::Ditangguhkan->value,
+                    ])
+                    ->update(['activation_status' => ActivationStatus::Aktif->value]);
             }
 
             $this->registrationRepo->syncPaymentStatus($memberPayment->registration);
         });
 
         if (($data['payment_status'] ?? null) === 'paid') {
-            $memberData = $memberPayment->registration->memberData;
-            if ($memberData?->email) {
-                $installment = $memberPayment->installment_number;
-                Mail::raw(
-                    "Pembayaran cicilan ke-{$installment} Anda telah dikonfirmasi. Anda kini dapat mengakses program.",
-                    fn ($m) => $m->to($memberData->email)->subject('Konfirmasi Pembayaran')
-                );
-            }
+            dispatch(new SendPaymentReceiptJob($memberPayment));
         }
 
         return redirect()->back()->with('success', 'Data pembayaran berhasil diperbarui.');

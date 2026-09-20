@@ -3,13 +3,7 @@
 @section('title', 'Data Member')
 
 @section('content')
-@php
-    $statusBadge = [
-        'pending_activation' => 'bg-amber-100 text-amber-800',
-        'active'             => 'bg-emerald-100 text-emerald-800',
-        'inactive'           => 'bg-slate-100 text-slate-600',
-    ];
-@endphp
+@php use App\Enums\Member\ActivationStatus; @endphp
 
 <div class="max-w-7xl mx-auto space-y-6">
     <div class="flex items-start justify-between gap-4">
@@ -33,14 +27,30 @@
 
     <!-- Filters -->
     <form method="GET" action="{{ route('members.index') }}" class="flex flex-wrap items-end gap-3">
-        <div>
+        <div x-data="adminInstitutionFilter()" class="relative z-20">
             <label class="block text-xs font-semibold text-slate-500 mb-1">Institusi</label>
-            <select name="institution_id" class="border border-slate-300 bg-white px-3 py-2 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]">
-                <option value="">Semua</option>
-                @foreach(\App\Models\Institution::orderBy('institution_name')->get() as $inst)
-                    <option value="{{ $inst->id }}" {{ request('institution_id') == $inst->id ? 'selected' : '' }}>{{ $inst->institution_name }}</option>
-                @endforeach
-            </select>
+            
+            <div @click="open = !open" @click.away="open = false" 
+                 class="border border-slate-300 bg-white px-3 py-2 text-sm focus-within:border-[#215aac] focus-within:ring-1 focus-within:ring-[#215aac] min-w-[200px] max-w-[250px] flex justify-between items-center cursor-pointer h-[38px]">
+                <span x-text="selectedName" class="truncate block pr-4"></span>
+                <span class="material-symbols-outlined text-[16px] text-gray-400">expand_more</span>
+            </div>
+            
+            <div x-show="open" x-cloak 
+                 class="absolute left-0 w-[300px] mt-1 bg-white border border-gray-200 shadow-lg max-h-[300px] flex flex-col z-50">
+                <div class="p-2 bg-gray-50 border-b border-gray-100">
+                    <input type="text" x-model="search" placeholder="Cari institusi..." 
+                           class="w-full px-2 py-1.5 text-xs border border-gray-300 focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]">
+                </div>
+                <ul class="overflow-y-auto flex-1 py-1 max-h-[250px]">
+                    <li @click="select('', 'Semua')" class="px-3 py-2 text-xs text-gray-700 hover:bg-[#215aac] hover:text-white cursor-pointer">Semua</li>
+                    <template x-for="inst in filtered" :key="inst.id">
+                        <li @click="select(inst.id, inst.institution_name)" class="px-3 py-2 text-xs text-gray-700 hover:bg-[#215aac] hover:text-white cursor-pointer" x-text="inst.institution_name"></li>
+                    </template>
+                    <li x-show="filtered.length === 0" class="px-3 py-2 text-xs text-gray-500 text-center">Tidak ditemukan</li>
+                </ul>
+            </div>
+            <input type="hidden" name="institution_id" :value="selectedId">
         </div>
         <div>
             <label class="block text-xs font-semibold text-slate-500 mb-1">Program</label>
@@ -101,8 +111,9 @@
                             <td class="px-5 py-4 text-slate-600">{{ $member->institution?->name ?? '—' }}</td>
                             <td class="px-5 py-4 text-slate-600">{{ $member->program?->program_name ?? '—' }}</td>
                             <td class="px-5 py-4">
-                                <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $statusBadge[$member->activation_status ?? 'inactive'] ?? 'bg-slate-100 text-slate-600' }}">
-                                    {{ str_replace('_', ' ', ucfirst($member->activation_status ?? 'inactive')) }}
+                                @php $status = $member->activation_status; @endphp
+                                <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $status instanceof ActivationStatus ? $status->badgeClass() : 'bg-slate-100 text-slate-600' }}">
+                                    {{ $status instanceof ActivationStatus ? $status->label() : '—' }}
                                 </span>
                             </td>
                             <td class="px-5 py-4">
@@ -117,7 +128,7 @@
                             <td class="px-5 py-4 text-right">
                                 <a href="{{ route('members.show', $member) }}" class="inline-flex min-h-9 items-center border border-slate-300 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50">Detail</a>
                                 <a href="{{ route('members.edit', $member) }}" class="inline-flex min-h-9 items-center border border-slate-300 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50 ml-1">Edit</a>
-                                @if($member->activation_status !== 'active')
+                                @if($member->activation_status !== ActivationStatus::Aktif)
                                     <form method="POST" action="{{ route('members.activate', $member) }}" class="inline-block ml-1">
                                         @csrf @method('PATCH')
                                         <button type="submit" class="inline-flex min-h-9 items-center border border-emerald-300 bg-emerald-50 px-3 text-xs font-semibold text-emerald-700 hover:bg-emerald-100">Aktifkan</button>
@@ -141,4 +152,35 @@
         @endif
     </div>
 </div>
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('adminInstitutionFilter', () => ({
+            open: false,
+            search: '',
+            selectedId: '{{ request('institution_id') }}',
+            institutions: @json(\App\Models\Institution::select('id', 'institution_name')->orderBy('institution_name')->get()),
+            
+            get selectedName() {
+                if (!this.selectedId) return 'Semua';
+                const found = this.institutions.find(i => i.id == this.selectedId);
+                return found ? found.institution_name : 'Semua';
+            },
+            
+            get filtered() {
+                if (this.search.trim() === '') {
+                    return this.institutions.slice(0, 100);
+                }
+                const q = this.search.toLowerCase();
+                return this.institutions.filter(i => i.institution_name.toLowerCase().includes(q)).slice(0, 100);
+            },
+            
+            select(id, name) {
+                this.selectedId = id;
+                this.open = false;
+                this.search = '';
+            }
+        }));
+    });
+</script>
 @endsection

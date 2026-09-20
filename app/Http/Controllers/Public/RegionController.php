@@ -66,7 +66,15 @@ class RegionController extends Controller
             return response()->json([]);
         }
 
-        $institutions = $query->get(['id', 'institution_name']);
+        $jenjangParam = $request->query('jenjang');
+        if ($jenjangParam) {
+            $jenjangList = array_filter(array_map('trim', explode(',', $jenjangParam)));
+            if ($jenjangList) {
+                $query->whereIn('jenjang_institution', $jenjangList);
+            }
+        }
+
+        $institutions = $query->orderBy('institution_name')->get(['id', 'institution_name']);
 
         return response()->json($institutions);
     }

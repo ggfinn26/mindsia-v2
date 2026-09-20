@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Member\ActivationStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,6 +18,7 @@ class MemberData extends Model
     protected $fillable = [
         'full_name',
         'gender',
+        'birth_place',
         'birthdate',
         'whatsapp_number',
         'email',
@@ -30,18 +32,31 @@ class MemberData extends Model
         'address',
         'institution_id',
         'institution_name_custom',
+        'branch_id',
         'program_id',
         'referred_by_employee_id',
         'activation_status',
+        'education_level',
+        'class_or_faculty',
+    ];
+
+    protected $attributes = [
+        'activation_status' => 'pending',
     ];
 
     protected $casts = [
         'birthdate' => 'date',
+        'activation_status' => ActivationStatus::class,
     ];
 
     public function institution(): BelongsTo
     {
         return $this->belongsTo(Institution::class);
+    }
+
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
     }
 
     public function program(): BelongsTo

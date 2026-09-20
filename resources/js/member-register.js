@@ -16,6 +16,20 @@ window.memberRegisterPortal = function () {
     }
 
     const PASSWORD_RE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
+    const EDUCATION_TO_JENJANG = {
+        SD: "SD",
+        SMP: "SMP,MTS",
+        SMA: "SMA,MA",
+        SMK: "SMK",
+        D1: "PERGURUAN TINGGI",
+        D2: "PERGURUAN TINGGI",
+        D3: "PERGURUAN TINGGI",
+        D4: "PERGURUAN TINGGI",
+        S1: "PERGURUAN TINGGI",
+        S2: "PERGURUAN TINGGI",
+        S3: "PERGURUAN TINGGI",
+    };
     const PARENT_FIELDS = [
         "father_name",
         "mother_name",
@@ -34,16 +48,143 @@ window.memberRegisterPortal = function () {
         showErrors2: false,
         showErrors3: false,
         provinces,
+        indoProvinces: [],
+        indoCities: [],
         institutions: [],
-        form: { province_id: "", institution_id: "", birthdate: oldData.birthdate ?? "" },
+        branches: [],
+        form: {
+            province_id: "",
+            institution_id: "",
+            branch_id: "",
+            birthdate: oldData.birthdate ?? "",
+            birth_place_province_id: oldData.birth_place_province_id ?? "",
+            birth_place: oldData.birth_place ?? "",
+            education_level: oldData.education_level ?? "",
+            class_or_faculty: oldData.class_or_faculty ?? "",
+        },
         institutionSearch: "",
+        branchSearch: "",
+        indoProvinceSearch: "",
+        indoCitySearch: "",
+        provinceSearch: "",
         showInstitutionDropdown: false,
+        showBranchDropdown: false,
+        showIndoProvinceDropdown: false,
+        showIndoCityDropdown: false,
+        showProvinceDropdown: false,
         showCustomInstitution: false,
+        showEducationDropdown: false,
+
+        educationOptions: [
+            { group: "Sekolah", items: ["SD", "SMP", "SMA", "SMK"] },
+            { group: "Perguruan Tinggi", items: ["D1", "D2", "D3", "D4", "S1", "S2", "S3"] },
+            { group: "Lainnya", items: ["Umum"] },
+        ],
+
+        get selectedEducationLabel() {
+            return this.form.education_level || "Pilih Jenjang...";
+        },
+
+        get classOrFacultyLabel() {
+            return ["SD", "SMP", "SMA", "SMK"].includes(this.form.education_level) ? "Kelas" : "Jurusan / Fakultas";
+        },
+
+        get classOrFacultyPlaceholder() {
+            return ["SD", "SMP", "SMA", "SMK"].includes(this.form.education_level)
+                ? "Contoh: Kelas 10 IPA"
+                : "Contoh: Teknik Informatika";
+        },
+
+        selectEducationLevel(level) {
+            this.form.education_level = level;
+            this.form.class_or_faculty = "";
+            this.showEducationDropdown = false;
+
+            if (level === "Umum") {
+                // Umum = tidak sekolah/kuliah — skip institution picker
+                this.form.institution_id = "";
+                this.institutions = [];
+                this.showCustomInstitution = true;
+                const custom = document.getElementById("institution_name_custom");
+                if (custom && !custom.value) custom.value = "Tidak Kuliah/Sekolah";
+                this.checkValidities();
+            } else {
+                this.showCustomInstitution = false;
+                const custom = document.getElementById("institution_name_custom");
+                if (custom) custom.value = "";
+                this.fetchInstitutions();
+            }
+        },
 
         get filteredInstitutions() {
             if (this.institutionSearch.trim() === "") return this.institutions.slice(0, 100);
             const q = this.institutionSearch.toLowerCase();
             return this.institutions.filter((i) => i.institution_name.toLowerCase().includes(q)).slice(0, 100);
+        },
+
+        get filteredBranches() {
+            if (this.branchSearch.trim() === "") return this.branches;
+            const q = this.branchSearch.toLowerCase();
+            return this.branches.filter((b) => b.branch_name.toLowerCase().includes(q));
+        },
+
+        get filteredProvinces() {
+            if (this.provinceSearch.trim() === "") return this.provinces;
+            const q = this.provinceSearch.toLowerCase();
+            return this.provinces.filter((p) => p.name.toLowerCase().includes(q));
+        },
+
+        get filteredIndoProvinces() {
+            if (this.indoProvinceSearch.trim() === "") return this.indoProvinces;
+            const q = this.indoProvinceSearch.toLowerCase();
+            return this.indoProvinces.filter((p) => p.nama.toLowerCase().includes(q));
+        },
+
+        get filteredIndoCities() {
+            if (this.indoCitySearch.trim() === "") return this.indoCities;
+            const q = this.indoCitySearch.toLowerCase();
+            return this.indoCities.filter((c) => c.nama.toLowerCase().includes(q));
+        },
+
+        async fetchIndonesianProvinces() {
+            try {
+                const response = await fetch("/api/public/indonesia-provinces");
+                const data = await response.json();
+                this.indoProvinces = Array.isArray(data) ? data : [];
+            } catch (e) {
+                console.error("Failed to fetch indo provinces:", e);
+            }
+        },
+
+        async fetchIndonesianCities() {
+            this.indoCities = [];
+            this.form.birth_place = "";
+            this.checkValidities();
+
+            if (!this.form.birth_place_province_id) return;
+
+            try {
+                const response = await fetch(
+                    `/api/public/indonesia-cities?province_id=${this.form.birth_place_province_id}`,
+                );
+                const data = await response.json();
+                this.indoCities = Array.isArray(data) ? data : [];
+            } catch (e) {
+                console.error("Failed to fetch indo cities:", e);
+            }
+        },
+
+        selectBranch(id) {
+            this.form.branch_id = id;
+            this.showBranchDropdown = false;
+            this.branchSearch = "";
+            this.checkValidities();
+        },
+
+        getSelectedBranchName() {
+            if (!this.form.branch_id) return "Pilih Cabang MINDSIA...";
+            const b = this.branches.find((b) => b.id == this.form.branch_id);
+            return b ? b.branch_name : "Pilih Cabang MINDSIA...";
         },
 
         selectInstitution(id) {
@@ -67,15 +208,75 @@ window.memberRegisterPortal = function () {
             return inst ? inst.institution_name : "Pilih Institusi...";
         },
 
+        selectProvince(id) {
+            this.form.province_id = id;
+            this.showProvinceDropdown = false;
+            this.provinceSearch = "";
+            const el = document.getElementById("province_id");
+            if (el) el.value = id;
+            this.fetchBranches();
+            this.fetchInstitutions();
+            this.checkValidities();
+        },
+
+        getSelectedProvinceName() {
+            if (!this.form.province_id) return "Pilih Provinsi...";
+            const p = this.provinces.find((p) => p.id == this.form.province_id);
+            return p ? p.name : "Pilih Provinsi...";
+        },
+
+        selectIndoProvince(id) {
+            this.form.birth_place_province_id = id;
+            this.showIndoProvinceDropdown = false;
+            this.indoProvinceSearch = "";
+            const el = document.getElementById("birth_place_province_id");
+            if (el) el.value = id;
+            this.fetchIndonesianCities();
+            this.checkValidities();
+        },
+
+        getSelectedIndoProvinceName() {
+            if (!this.form.birth_place_province_id) return "Pilih Provinsi...";
+            const p = this.indoProvinces.find((p) => p.id == this.form.birth_place_province_id);
+            return p ? p.nama : "Pilih Provinsi...";
+        },
+
+        selectIndoCity(nama) {
+            this.form.birth_place = nama;
+            this.showIndoCityDropdown = false;
+            this.indoCitySearch = "";
+            const el = document.getElementById("birth_place");
+            if (el) el.value = nama;
+            this.checkValidities();
+        },
+
+        getSelectedIndoCityName() {
+            if (!this.form.birth_place) return "Pilih Kota/Kabupaten...";
+            return this.form.birth_place;
+        },
+
         async init() {
             this.$watch("step", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+
+            await this.fetchIndonesianProvinces();
+
+            if (oldData.birth_place_province_id) {
+                this.form.birth_place_province_id = oldData.birth_place_province_id;
+                await this.fetchIndonesianCities();
+                if (oldData.birth_place) {
+                    this.form.birth_place = oldData.birth_place;
+                }
+            }
 
             // Restore state after server validation error
             if (oldData.province_id) {
                 this.form.province_id = oldData.province_id;
                 const sel = document.getElementById("province_id");
                 if (sel) sel.value = oldData.province_id;
-                await this.fetchInstitutions();
+                await Promise.all([this.fetchBranches(), this.fetchInstitutions()]);
+                if (oldData.branch_id) {
+                    this.form.branch_id = oldData.branch_id;
+                }
                 if (oldData.institution_id) {
                     this.form.institution_id = oldData.institution_id;
                     const el = document.getElementById("institution_id");
@@ -97,6 +298,24 @@ window.memberRegisterPortal = function () {
 
         getVal,
 
+        async fetchBranches() {
+            this.branches = [];
+            this.form.branch_id = "";
+            this.branchSearch = "";
+            this.checkValidities();
+
+            const provinceId = document.getElementById("province_id")?.value;
+            if (!provinceId) return;
+
+            try {
+                const response = await fetch(`/api/public/branches?province_id=${provinceId}`);
+                const data = await response.json();
+                this.branches = Array.isArray(data) ? data : [];
+            } catch (e) {
+                console.error("Failed to fetch branches:", e);
+            }
+        },
+
         async fetchInstitutions() {
             this.institutions = [];
             this.form.institution_id = "";
@@ -106,11 +325,14 @@ window.memberRegisterPortal = function () {
             if (el) el.value = "";
             this.checkValidities();
 
-            const provinceId = document.getElementById("province_id").value;
+            const provinceId = document.getElementById("province_id")?.value;
             if (!provinceId) return;
 
             try {
-                const response = await fetch(`/api/public/institutions?province_id=${provinceId}`);
+                const jenjang = EDUCATION_TO_JENJANG[this.form.education_level] ?? "";
+                const params = new URLSearchParams({ province_id: provinceId });
+                if (jenjang) params.set("jenjang", jenjang);
+                const response = await fetch(`/api/public/institutions?${params}`);
                 const data = await response.json();
                 this.institutions = Array.isArray(data) ? data : [];
             } catch (e) {
@@ -124,13 +346,19 @@ window.memberRegisterPortal = function () {
                 getVal("full_name") &&
                 getVal("gender") &&
                 bdValid &&
+                this.form.birth_place_province_id &&
+                this.form.birth_place &&
                 getVal("whatsapp_number").length >= 9 &&
                 getVal("email") &&
-                getVal("address") &&
-                getVal("province_id")
+                getVal("address")
             );
             const parentsValid = PARENT_FIELDS.every((f) => getVal(f) !== "");
-            this.step2Valid = !!(getVal("institution_id") && parentsValid);
+            this.step2Valid = !!(
+                getVal("province_id") &&
+                this.form.branch_id &&
+                getVal("institution_id") &&
+                parentsValid
+            );
             const pass = getVal("password");
             const conf = getVal("password_confirmation");
             this.step3Valid = !!(pass && conf && pass === conf && PASSWORD_RE.test(pass));
@@ -151,6 +379,10 @@ window.memberRegisterPortal = function () {
             if (stepNum === 1 && !this.showErrors1) return false;
             if (stepNum === 2 && !this.showErrors2) return false;
             if (stepNum === 3 && !this.showErrors3) return false;
+            if (id === "branch_id") return !this.form.branch_id;
+            if (id === "birth_place_province_id") return !this.form.birth_place_province_id;
+            if (id === "birth_place") return !this.form.birth_place;
+            if (id === "province_id") return !this.form.province_id;
             if (id === "whatsapp_number") return getVal(id).length < 9;
             if (id === "birthdate") {
                 const bd = this.form.birthdate;

@@ -14,12 +14,15 @@ class MemberPayment extends Model
         'payment_status',
         'payment_method',
         'telegram_payment_proof_id',
+        'due_date',
         'paid_at',
         'notes',
     ];
 
     protected $casts = [
         'amount' => 'integer',
+        'installment_number' => 'integer',
+        'due_date' => 'date',
         'paid_at' => 'datetime',
     ];
 

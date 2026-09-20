@@ -170,22 +170,88 @@
                         </div>
                     </div>
 
-                    <div>
-                        <label for="province_id" class="block mb-1 text-[12px] font-bold text-[#4B5563]">
-                            Provinsi <span class="text-red-600">*</span>
-                        </label>
-                        <select id="province_id" name="province_id"
-                                x-model="form.province_id"
-                                @change="fetchInstitutions(); checkValidities()"
-                                class="w-full px-3.5 py-2.5 border rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all shadow-sm"
-                                :class="inputClass(1, 'province_id')">
-                            <option value="">Pilih Provinsi</option>
-                            <template x-for="prov in provinces" :key="prov.id">
-                                <option :value="prov.id" x-text="prov.name"></option>
-                            </template>
-                        </select>
-                        <p x-show="hasError(1, 'province_id')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium">Bagian ini wajib diisi.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block mb-1 text-[12px] font-bold text-[#4B5563]">
+                                Provinsi Lahir <span class="text-red-600">*</span>
+                            </label>
+                            <div class="relative" @click.away="showIndoProvinceDropdown = false">
+                                <div @click="showIndoProvinceDropdown = !showIndoProvinceDropdown"
+                                     class="w-full px-3.5 py-2.5 bg-white border rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all shadow-sm flex justify-between items-center cursor-pointer"
+                                     :class="hasError(1, 'birth_place_province_id') && showErrors1 ? 'border-red-500 bg-red-50' : 'border-[#E5E7EB]'">
+                                    <span x-text="getSelectedIndoProvinceName()" class="truncate block pr-4"
+                                          :class="form.birth_place_province_id ? 'text-[#111827]' : 'text-[#9CA3AF]'"></span>
+                                    <span class="material-symbols-outlined text-[16px] text-gray-400">expand_more</span>
+                                </div>
+
+                                <div x-show="showIndoProvinceDropdown" x-transition x-cloak
+                                     class="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
+                                    <div class="p-2 bg-gray-50 border-b border-gray-100">
+                                        <div class="relative">
+                                            <span class="material-symbols-outlined absolute left-3 top-2.5 text-gray-400 text-[16px]">search</span>
+                                            <input type="text" x-model="indoProvinceSearch"
+                                                   placeholder="Cari provinsi..."
+                                                   class="w-full pl-9 pr-3 py-2 bg-white border border-gray-200 rounded-lg text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB] transition-all">
+                                        </div>
+                                    </div>
+                                    <ul class="max-h-48 overflow-y-auto py-1">
+                                        <li x-show="filteredIndoProvinces.length === 0" class="px-4 py-3 text-[12px] text-gray-500 text-center">Tidak ditemukan</li>
+                                        <template x-for="p in filteredIndoProvinces" :key="p.id">
+                                            <li @click="selectIndoProvince(p.id)"
+                                                class="px-4 py-2 text-[12px] text-gray-700 hover:bg-[#5586DB] hover:text-white cursor-pointer transition-colors"
+                                                :class="form.birth_place_province_id == p.id ? 'bg-[#EFF6FF] font-semibold' : ''"
+                                                x-text="p.nama"></li>
+                                        </template>
+                                    </ul>
+                                </div>
+                            </div>
+                            <p x-show="hasError(1, 'birth_place_province_id')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium">Bagian ini wajib diisi.</p>
+                            <input type="hidden" id="birth_place_province_id" name="birth_place_province_id" :value="form.birth_place_province_id">
+                        </div>
+                        <div>
+                            <label class="block mb-1 text-[12px] font-bold text-[#4B5563]">
+                                Tempat Lahir <span class="text-red-600">*</span>
+                            </label>
+                            <div class="relative" @click.away="showIndoCityDropdown = false">
+                                <div @click="if (form.birth_place_province_id) showIndoCityDropdown = !showIndoCityDropdown"
+                                     class="w-full px-3.5 py-2.5 bg-white border rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all shadow-sm flex justify-between items-center cursor-pointer"
+                                     :class="[!form.birth_place_province_id ? 'bg-gray-50 cursor-not-allowed' : '', hasError(1, 'birth_place') && showErrors1 ? 'border-red-500 bg-red-50' : 'border-[#E5E7EB]']">
+                                    <span x-text="getSelectedIndoCityName()" class="truncate block pr-4"
+                                          :class="form.birth_place ? 'text-[#111827]' : 'text-[#9CA3AF]'"></span>
+                                    <span class="material-symbols-outlined text-[16px] text-gray-400">expand_more</span>
+                                </div>
+
+                                <div x-show="showIndoCityDropdown" x-transition x-cloak
+                                     class="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
+                                    <div class="p-2 bg-gray-50 border-b border-gray-100">
+                                        <div class="relative">
+                                            <span class="material-symbols-outlined absolute left-3 top-2.5 text-gray-400 text-[16px]">search</span>
+                                            <input type="text" x-model="indoCitySearch"
+                                                   placeholder="Cari kota/kabupaten..."
+                                                   class="w-full pl-9 pr-3 py-2 bg-white border border-gray-200 rounded-lg text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB] transition-all">
+                                        </div>
+                                    </div>
+                                    <ul class="max-h-48 overflow-y-auto py-1">
+                                        <li x-show="indoCities.length === 0" class="px-4 py-3 text-[12px] text-gray-500 text-center">Pilih Provinsi terlebih dahulu</li>
+                                        <li x-show="indoCities.length > 0 && filteredIndoCities.length === 0" class="px-4 py-3 text-[12px] text-gray-500 text-center">Tidak ditemukan</li>
+                                        <template x-for="c in filteredIndoCities" :key="c.id">
+                                            <li @click="selectIndoCity(c.nama)"
+                                                class="px-4 py-2 text-[12px] text-gray-700 hover:bg-[#5586DB] hover:text-white cursor-pointer transition-colors"
+                                                :class="form.birth_place == c.nama ? 'bg-[#EFF6FF] font-semibold' : ''"
+                                                x-text="c.nama"></li>
+                                        </template>
+                                    </ul>
+                                </div>
+                            </div>
+                            <p x-show="hasError(1, 'birth_place')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium">Bagian ini wajib diisi.</p>
+                            <input type="hidden" id="birth_place" name="birth_place" :value="form.birth_place">
+                            @error('birth_place')
+                                <p class="mt-1 text-[11px] text-red-600 font-medium">{{ $message }}</p>
+                            @enderror
+                        </div>
                     </div>
+
+
 
                     <div>
                         <label for="address" class="block mb-1 text-[12px] font-bold text-[#4B5563]">
@@ -217,6 +283,128 @@
                      class="space-y-4">
 
                     <div>
+                        <label class="block mb-1 text-[12px] font-bold text-[#4B5563]">
+                            Provinsi <span class="text-red-600">*</span>
+                        </label>
+                        <div class="relative" @click.away="showProvinceDropdown = false">
+                            <div @click="showProvinceDropdown = !showProvinceDropdown"
+                                 class="w-full px-3.5 py-2.5 bg-white border rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all shadow-sm flex justify-between items-center cursor-pointer"
+                                 :class="hasError(2, 'province_id') && showErrors2 ? 'border-red-500 bg-red-50' : 'border-[#E5E7EB]'">
+                                <span x-text="getSelectedProvinceName()" class="truncate block pr-4"
+                                      :class="form.province_id ? 'text-[#111827]' : 'text-[#9CA3AF]'"></span>
+                                <span class="material-symbols-outlined text-[16px] text-gray-400">expand_more</span>
+                            </div>
+
+                            <div x-show="showProvinceDropdown" x-transition x-cloak
+                                 class="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
+                                <div class="p-2 bg-gray-50 border-b border-gray-100">
+                                    <div class="relative">
+                                        <span class="material-symbols-outlined absolute left-3 top-2.5 text-gray-400 text-[16px]">search</span>
+                                        <input type="text" x-model="provinceSearch"
+                                               placeholder="Cari provinsi..."
+                                               class="w-full pl-9 pr-3 py-2 bg-white border border-gray-200 rounded-lg text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB] transition-all">
+                                    </div>
+                                </div>
+                                <ul class="max-h-48 overflow-y-auto py-1">
+                                    <li x-show="filteredProvinces.length === 0" class="px-4 py-3 text-[12px] text-gray-500 text-center">Tidak ditemukan</li>
+                                    <template x-for="p in filteredProvinces" :key="p.id">
+                                        <li @click="selectProvince(p.id)"
+                                            class="px-4 py-2 text-[12px] text-gray-700 hover:bg-[#5586DB] hover:text-white cursor-pointer transition-colors"
+                                            :class="form.province_id == p.id ? 'bg-[#EFF6FF] font-semibold' : ''"
+                                            x-text="p.name"></li>
+                                    </template>
+                                </ul>
+                            </div>
+                        </div>
+                        <p x-show="hasError(2, 'province_id')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium">Bagian ini wajib diisi.</p>
+                        <input type="hidden" id="province_id" name="province_id" :value="form.province_id">
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-[12px] font-bold text-[#4B5563]">
+                            Cabang MINDSIA <span class="text-red-600">*</span>
+                        </label>
+                        <div class="relative" @click.away="showBranchDropdown = false">
+                            <div @click="showBranchDropdown = !showBranchDropdown"
+                                 class="w-full px-3.5 py-2.5 bg-white border rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all shadow-sm flex justify-between items-center cursor-pointer"
+                                 :class="hasError(2, 'branch_id') && showErrors2 ? 'border-red-500 bg-red-50' : 'border-[#E5E7EB]'">
+                                <span x-text="getSelectedBranchName()" class="truncate block pr-4"
+                                      :class="form.branch_id ? 'text-[#111827]' : 'text-[#9CA3AF]'"></span>
+                                <span class="material-symbols-outlined text-[16px] text-gray-400">expand_more</span>
+                            </div>
+
+                            <div x-show="showBranchDropdown" x-transition x-cloak
+                                 class="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
+                                <div class="p-2 bg-gray-50 border-b border-gray-100">
+                                    <div class="relative">
+                                        <span class="material-symbols-outlined absolute left-3 top-2.5 text-gray-400 text-[16px]">search</span>
+                                        <input type="text" x-model="branchSearch"
+                                               placeholder="Cari cabang..."
+                                               class="w-full pl-9 pr-3 py-2 bg-white border border-gray-200 rounded-lg text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB] transition-all">
+                                    </div>
+                                </div>
+                                <ul class="max-h-48 overflow-y-auto py-1">
+                                    <li x-show="branches.length === 0" class="px-4 py-3 text-[12px] text-gray-500 text-center">Pilih Provinsi terlebih dahulu</li>
+                                    <li x-show="branches.length > 0 && filteredBranches.length === 0" class="px-4 py-3 text-[12px] text-gray-500 text-center">Tidak ditemukan</li>
+                                    <template x-for="b in filteredBranches" :key="b.id">
+                                        <li @click="selectBranch(b.id)"
+                                            class="px-4 py-2 text-[12px] text-gray-700 hover:bg-[#5586DB] hover:text-white cursor-pointer transition-colors"
+                                            :class="form.branch_id == b.id ? 'bg-[#EFF6FF] font-semibold' : ''"
+                                            x-text="b.branch_name"></li>
+                                    </template>
+                                </ul>
+                            </div>
+                        </div>
+                        <p x-show="hasError(2, 'branch_id')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium">Bagian ini wajib diisi.</p>
+                        <input type="hidden" name="branch_id" :value="form.branch_id">
+                        @error('branch_id')
+                            <p class="mt-1 text-[11px] text-red-600 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Jenjang Pendidikan --}}
+                    <div>
+                        <label class="block mb-1 text-[12px] font-bold text-[#4B5563]">Jenjang Pendidikan <span class="text-[#9CA3AF] font-normal">(Opsional)</span></label>
+                        <div class="relative" @click.away="showEducationDropdown = false">
+                            <div @click="showEducationDropdown = !showEducationDropdown"
+                                 class="w-full px-3.5 py-2.5 bg-white border border-[#E5E7EB] rounded-xl text-[13px] shadow-sm flex justify-between items-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#5586DB]/20 focus:border-[#5586DB] transition-all">
+                                <span x-text="selectedEducationLabel" :class="form.education_level ? 'text-[#111827]' : 'text-[#9CA3AF]'" class="truncate block pr-4"></span>
+                                <span class="material-symbols-outlined text-[16px] text-gray-400">expand_more</span>
+                            </div>
+                            <div x-show="showEducationDropdown" x-transition x-cloak
+                                 class="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
+                                <ul class="max-h-56 overflow-y-auto py-1">
+                                    <template x-for="group in educationOptions" :key="group.group">
+                                        <li>
+                                            <div class="px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-400 bg-gray-50" x-text="group.group"></div>
+                                            <template x-for="item in group.items" :key="item">
+                                                <div @click="selectEducationLevel(item)"
+                                                     class="px-4 py-2 text-[12px] text-gray-700 hover:bg-[#5586DB] hover:text-white cursor-pointer transition-colors"
+                                                     :class="form.education_level === item ? 'bg-[#EFF6FF] font-semibold' : ''"
+                                                     x-text="item"></div>
+                                            </template>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </div>
+                        </div>
+                        <input type="hidden" name="education_level" :value="form.education_level">
+                    </div>
+
+                    {{-- Kelas / Jurusan (kondisional) --}}
+                    <div x-show="form.education_level && form.education_level !== 'Umum'" x-cloak>
+                        <label class="block mb-1 text-[12px] font-bold text-[#4B5563]">
+                            <span x-text="classOrFacultyLabel"></span>
+                            <span class="text-[#9CA3AF] font-normal ml-1">(Opsional)</span>
+                        </label>
+                        <input type="text" name="class_or_faculty" x-model="form.class_or_faculty"
+                               :placeholder="classOrFacultyPlaceholder"
+                               maxlength="100"
+                               class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-[#E5E7EB] rounded-xl text-[13px] focus:outline-none focus:ring-2 focus:ring-[#5586DB]/20 focus:border-[#5586DB] transition-all shadow-sm">
+                    </div>
+
+                    {{-- Institusi (disembunyikan saat Umum) --}}
+                    <div x-show="form.education_level !== 'Umum'" x-cloak>
                         <label class="block mb-1 text-[12px] font-bold text-[#4B5563]">
                             Institusi <span class="text-red-600">*</span>
                         </label>
@@ -268,7 +456,16 @@
                         @enderror
                     </div>
 
-
+                    {{-- Badge Umum --}}
+                    <div x-show="form.education_level === 'Umum'" x-cloak>
+                        <div class="flex items-center gap-3 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl">
+                            <span class="material-symbols-outlined text-[20px] text-blue-500 shrink-0">check_circle</span>
+                            <div>
+                                <p class="text-[13px] font-medium text-gray-900">Tidak Kuliah/Sekolah</p>
+                                <p class="text-[11px] text-gray-400">Dipilih otomatis untuk jenjang Umum</p>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="border-t border-[#E5E7EB] pt-5">
                         <h3 class="font-jakarta font-bold text-[14px] text-[#111827] mb-4">Data Orang Tua</h3>
@@ -409,8 +606,11 @@
             provinces: @json($provinces ?? []),
             old: {
                 province_id: @json(old('province_id', '')),
+                branch_id: @json(old('branch_id', '')),
                 institution_id: @json(old('institution_id', '')),
                 birthdate: @json(old('birthdate', '')),
+                education_level: @json(old('education_level', '')),
+                class_or_faculty: @json(old('class_or_faculty', '')),
             },
             errorStep: @json($errorStep),
         };

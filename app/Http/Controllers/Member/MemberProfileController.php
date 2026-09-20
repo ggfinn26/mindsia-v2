@@ -25,6 +25,9 @@ class MemberProfileController extends Controller
 
         $validated = $request->validate([
             'full_name' => ['required', 'string', 'max:255'],
+            'birth_place_province_id' => ['nullable', 'string', 'max:2'],
+            'birth_place' => ['nullable', 'string', 'max:255'],
+            'birthdate' => ['nullable', 'date'],
             'whatsapp_number' => ['required', 'string', 'max:20'],
             'instagram' => ['nullable', 'string', 'max:100'],
             'address' => ['nullable', 'string'],
@@ -35,6 +38,8 @@ class MemberProfileController extends Controller
             'father_occupation' => ['nullable', 'string', 'max:255'],
             'mother_occupation' => ['nullable', 'string', 'max:255'],
             'email' => ['nullable', 'email', Rule::unique('members_data', 'email')->ignore($memberData->id)],
+            'education_level' => ['nullable', 'string', 'in:SD,SMP,SMA,SMK,D1,D2,D3,D4,S1,S2,S3,Umum'],
+            'class_or_faculty' => ['nullable', 'string', 'max:100'],
         ]);
 
         // GAP-145: If email is being changed, require re-verification
@@ -55,6 +60,18 @@ class MemberProfileController extends Controller
         }
 
         return back()->with('success', 'Profil berhasil diperbarui.');
+    }
+
+    public function updateBranch(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'branch_id' => ['required', 'integer', 'exists:branches,id'],
+        ]);
+
+        $memberData = auth('member')->user()->memberData;
+        $memberData->update(['branch_id' => $request->branch_id]);
+
+        return redirect()->route('member.dashboard')->with('success', 'Cabang berhasil dipilih. Selamat bergabung!');
     }
 
     // GAP-144: Avatar upload endpoint

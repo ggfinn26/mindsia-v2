@@ -77,7 +77,7 @@ beforeEach(function () {
         'whatsapp_number' => '62'.fake()->numerify('###########'),
         'email' => 'member'.uniqid().'@test.example',
         'institution_id' => $institutionId,
-        'activation_status' => 'active',
+        'activation_status' => 'aktif',
         'created_at' => now(), 'updated_at' => now(),
     ]);
     $this->memberDataId = $memberDataId;
@@ -167,6 +167,102 @@ test('MC-01b confirm first installment activates member account', function () {
     $this->assertDatabaseHas('member_accounts', [
         'id' => $account->id,
         'is_active' => true,
+    ]);
+});
+
+// MC-01c: cicilan pertama dibayar → MemberData.activation_status = 'active'
+test('MC-01c confirm first installment sets activation_status to active', function () {
+    Mail::fake();
+
+    MemberAccount::create([
+        'members_data_id' => $this->memberDataId,
+        'email' => 'member'.uniqid().'@test.example',
+        'password' => Hash::make('password'),
+        'is_active' => false,
+    ]);
+
+    $payment = createPayment(['installment_number' => 1]);
+
+    $this->actingAs($this->adminUser)
+        ->patch("/member-payments/{$payment->id}", [
+            'payment_status' => 'paid',
+        ]);
+
+    $this->assertDatabaseHas('members_data', [
+        'id' => $this->memberDataId,
+        'activation_status' => 'aktif',
+    ]);
+});
+
+// MC-13: update due_date berhasil
+test('MC-13 can update due_date without payment_status', function () {
+    $payment = createPayment(['installment_number' => 1]);
+
+    $this->actingAs($this->adminUser)
+        ->patch("/member-payments/{$payment->id}", [
+            'due_date' => '2026-12-01',
+        ])
+        ->assertRedirect();
+
+    $this->assertDatabaseHas('member_payments', [
+        'id' => $payment->id,
+        'due_date' => '2026-12-01',
+    ]);
+});
+
+// MC-14: update due_date ke null diperbolehkan
+test('MC-14 can clear due_date', function () {
+    $payment = createPayment(['installment_number' => 1]);
+    MemberPayment::where('id', $payment->id)->update(['due_date' => '2026-11-01']);
+
+    $this->actingAs($this->adminUser)
+        ->patch("/member-payments/{$payment->id}", [
+            'due_date' => null,
+        ])
+        ->assertRedirect();
+
+    $this->assertDatabaseHas('member_payments', [
+        'id' => $payment->id,
+        'due_date' => null,
+    ]);
+});
+
+// MC-15: admin manual suspend → activation_status = ditangguhkan
+test('MC-15 admin can manually suspend member account', function () {
+    Permission::firstOrCreate(['name' => 'member.payment.manage', 'guard_name' => 'web']);
+
+    $this->actingAs($this->adminUser)
+        ->post("/members/{$this->memberDataId}/suspend")
+        ->assertRedirect();
+
+    $this->assertDatabaseHas('members_data', [
+        'id' => $this->memberDataId,
+        'activation_status' => 'ditangguhkan',
+    ]);
+});
+
+// MC-16: user tanpa payment.manage tidak bisa suspend → 403
+test('MC-16 user without payment.manage cannot suspend', function () {
+    $this->actingAs($this->regularUser)
+        ->post("/members/{$this->memberDataId}/suspend")
+        ->assertForbidden();
+});
+
+// MC-17: konfirmasi bayar cicilan saat ditangguhkan → aktif kembali
+test('MC-17 confirming payment when suspended restores access', function () {
+    Mail::fake();
+
+    MemberData::where('id', $this->memberDataId)
+        ->update(['activation_status' => 'ditangguhkan']);
+
+    $payment = createPayment(['installment_number' => 1]);
+
+    $this->actingAs($this->adminUser)
+        ->patch("/member-payments/{$payment->id}", ['payment_status' => 'paid']);
+
+    $this->assertDatabaseHas('members_data', [
+        'id' => $this->memberDataId,
+        'activation_status' => 'aktif',
     ]);
 });
 

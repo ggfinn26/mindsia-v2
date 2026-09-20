@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Member;
 
+use App\Enums\Member\ActivationStatus;
 use App\Models\Employee;
 use App\Models\Institution;
 use App\Models\MemberAccount;
@@ -109,8 +110,7 @@ class RegisterMemberTest extends TestCase
     }
 
     // RM-05: member baru — activation_status saat store
-    // DB column has DEFAULT 'pending_activation' → new member gets that even without explicit store
-    // GAP-137 was wrong: field EXISTS and defaults to 'pending_activation'
+    // DB column has DEFAULT 'pending' → new member gets that even without explicit store
     public function test_created_member_gets_pending_activation_status_by_db_default(): void
     {
         $this->actingAs($this->boardUser)
@@ -118,8 +118,8 @@ class RegisterMemberTest extends TestCase
 
         $member = MemberData::where('email', 'budi@test.com')->first();
         $this->assertNotNull($member);
-        // DB default kicks in → activation_status = 'pending_activation'
-        $this->assertEquals('pending_activation', $member->activation_status);
+        // DB default kicks in → activation_status = 'pending'
+        $this->assertEquals(ActivationStatus::Pending, $member->activation_status);
     }
 
     // RM-05b: activate endpoint sets activation_status = 'active'
@@ -127,17 +127,17 @@ class RegisterMemberTest extends TestCase
     {
         $member = MemberData::factory()->create([
             'institution_id' => $this->institution->id,
-            'activation_status' => 'pending_activation',
+            'activation_status' => 'pending',
         ]);
 
         $this->actingAs($this->boardUser)
             ->post("/members/{$member->id}/activate")
             ->assertRedirect();
 
-        $this->assertDatabaseHas('members_data', [
-            'id' => $member->id,
-            'activation_status' => 'active',
-        ]);
+        $this->assertEquals(
+            ActivationStatus::Aktif,
+            $member->fresh()->activation_status
+        );
     }
 
     // RM-06: create member + buat akun login

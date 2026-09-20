@@ -108,7 +108,7 @@ class SurveyTest extends TestCase
             'email' => "sv.member.{$uid}@test.com",
             'whatsapp_number' => '628100002222',
             'institution_id' => $institutionId,
-            'activation_status' => 'active',
+            'activation_status' => 'aktif',
         ]);
 
         $account = MemberAccount::create([
