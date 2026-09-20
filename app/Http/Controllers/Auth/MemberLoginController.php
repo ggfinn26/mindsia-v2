@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\MemberLoginRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -15,19 +16,27 @@ class MemberLoginController extends Controller
         return view('auth.member-login');
     }
 
-    public function login(MemberLoginRequest $request): RedirectResponse
+    public function login(MemberLoginRequest $request): RedirectResponse|JsonResponse
     {
         if ($request->authenticate()) {
             $request->session()->regenerate();
 
             $member = auth('member')->user();
 
-            // Per flow.md member-login: cek is_active, email_verified_at via middleware
             if (! $member->is_active) {
-                return redirect()->route('member.dashboard')->with('info', 'Akun sedang menunggu aktivasi admin.');
+                $message = 'Akun sedang menunggu aktivasi admin.';
+                if ($request->expectsJson()) {
+                    return response()->json(['redirect' => route('member.dashboard'), 'info' => $message]);
+                }
+
+                return redirect()->route('member.dashboard')->with('info', $message);
             }
 
             $member->update(['last_login_at' => now()]);
+
+            if ($request->expectsJson()) {
+                return response()->json(['redirect' => route('member.dashboard')]);
+            }
 
             return redirect()->route('member.dashboard');
         }
