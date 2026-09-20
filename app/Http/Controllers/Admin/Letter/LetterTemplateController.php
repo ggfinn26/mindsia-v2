@@ -58,7 +58,7 @@ class LetterTemplateController extends Controller
             'telegram_file_id' => $telegramFileId,
             'storage_path' => $telegramFileId,
             'is_active' => $data['is_active'] ?? true,
-            'created_by_employee_id' => $request->user()->employee->id,
+            'created_by_employee_id' => $request->user()->employee?->id,
         ]);
 
         return redirect()->route('letter-templates.index')->with('success', 'Template berhasil disimpan.');
@@ -125,6 +125,15 @@ class LetterTemplateController extends Controller
 
         return response()->json([
             'manual_vars' => $this->letterService->extractManualPlaceholders($template),
+        ]);
+    }
+
+    public function templateVars(Request $request): JsonResponse
+    {
+        $template = $this->repository->find($request->integer('template_id'));
+
+        return response()->json([
+            'vars' => $template ? $this->letterService->classifyTemplateVars($template) : [],
         ]);
     }
 }

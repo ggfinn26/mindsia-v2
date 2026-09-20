@@ -149,10 +149,12 @@ use App\Http\Controllers\Member\MemberDashboardController;
 use App\Http\Controllers\Member\MemberNotificationController;
 use App\Http\Controllers\Member\MemberProfileController;
 use App\Http\Controllers\Member\MemberSurveyController;
+use App\Http\Controllers\Member\ProgramRegistrationController;
 use App\Http\Controllers\Member\ToeflSessionController;
 use App\Http\Controllers\OffBoardingController;
 use App\Http\Controllers\PdfTestController;
 use App\Http\Controllers\ProgramController;
+use App\Http\Controllers\ProgramPaymentPlanController;
 use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\Public\OnlineTestController;
 use App\Http\Controllers\RegionController;
@@ -161,6 +163,7 @@ use App\Http\Controllers\SessionAttendanceController;
 use App\Http\Controllers\WorkAttendanceController;
 use App\Http\Middleware\EnsureEmailIsVerified;
 use App\Models\Branch;
+use App\Models\Program;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -294,8 +297,55 @@ Route::middleware(['auth:member', EnsureEmailIsVerified::class, 'no.back'])->gro
     Route::get('/member/profile', [MemberProfileController::class, 'show'])->name('member.profile.show');
     Route::put('/member/profile', [MemberProfileController::class, 'update'])->name('member.profile.update');
     Route::post('/member/profile/avatar', [MemberProfileController::class, 'uploadAvatar'])->name('member.profile.avatar');
+    Route::post('/member/branch', [MemberProfileController::class, 'updateBranch'])->name('member.branch.update');
     Route::get('/member/change-password', [MemberPasswordController::class, 'showChangeForm'])->name('member.password.change');
     Route::post('/member/change-password', [MemberPasswordController::class, 'update'])->name('member.password.change.post');
+
+    // Program (Placeholder Views)
+    Route::get('/member/program/my', function () {
+        $memberData = auth('member')->user()->memberData;
+        $registrations = $memberData ? $memberData->registrations()->with('program')->get() : collect();
+
+        return view('member.program.my', compact('registrations'));
+    })->name('member.program.my');
+    Route::get('/member/program/browse', function () {
+        $programs = Program::where('is_active', true)->get();
+
+        return view('member.program.browse', compact('programs'));
+    })->name('member.program.browse');
+
+    Route::get('/member/program/{program}/register', [ProgramRegistrationController::class, 'create'])->name('member.program.register');
+    Route::post('/member/program/{program}/register', [ProgramRegistrationController::class, 'store'])->name('member.program.register.post');
+
+    // Akademik (Placeholder Views)
+    Route::get('/member/class', function () {
+        return view('member.class.index');
+    })->name('member.class.index');
+    Route::get('/member/curriculum', function () {
+        return view('member.curriculum.index');
+    })->name('member.curriculum.index');
+    Route::get('/member/attendance', function () {
+        return view('member.attendance.index');
+    })->name('member.attendance.index');
+
+    // Administrasi & Pembayaran (Placeholder Views)
+    Route::get('/member/registration', function () {
+        return view('member.registration.index');
+    })->name('member.registration.index');
+    Route::get('/member/payment/installments', function () {
+        return view('member.payment.installments');
+    })->name('member.payment.installments');
+    Route::get('/member/payment/upload', function () {
+        return view('member.payment.upload');
+    })->name('member.payment.upload');
+
+    // Survei & Review (Placeholder Views)
+    Route::get('/member/reviews', function () {
+        return view('member.reviews.index');
+    })->name('member.reviews.index');
+    Route::get('/member/nps', function () {
+        return view('member.nps.index');
+    })->name('member.nps.index');
 
     // Notifications
     Route::get('/member/notifications', [MemberNotificationController::class, 'index'])->name('member.notifications.index');
@@ -382,9 +432,9 @@ Route::post('/applicant/reset-password', [ApplicantResetPasswordController::clas
 // Register success notification page — requires authenticated + verified user
 Route::get('/daftar/sukses', function () {
     $loginRoutes = [
-        'member'    => route('member.landing', ['view' => 'login']),
+        'member' => route('member.landing', ['view' => 'login']),
         'applicant' => route('applicant.login'),
-        'web'       => route('login'),
+        'web' => route('login'),
     ];
 
     foreach ($loginRoutes as $guard => $loginUrl) {
@@ -708,6 +758,9 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     // Curriculum Domain
     Route::resource('programs', ProgramController::class);
     Route::resource('programs.quotas', BranchProgramQuotaController::class)->shallow();
+    Route::post('programs/{program}/payment-plans', [ProgramPaymentPlanController::class, 'store'])->name('programs.payment-plans.store');
+    Route::patch('programs/payment-plans/{plan}', [ProgramPaymentPlanController::class, 'update'])->name('programs.payment-plans.update');
+    Route::delete('programs/payment-plans/{plan}', [ProgramPaymentPlanController::class, 'destroy'])->name('programs.payment-plans.destroy');
     Route::resource('curriculums', CurriculumController::class);
     Route::post('curriculums/{curriculum}/sessions', [CurriculumController::class, 'storeSession'])->name('curriculums.sessions.store');
     Route::put('curriculum-sessions/{session}', [CurriculumController::class, 'updateSession'])->name('curriculum-sessions.update');
@@ -821,9 +874,10 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     });
 
     // Letter Domain
+    Route::get('letter-templates/manual-vars', [LetterTemplateController::class, 'manualVars'])->name('letter-templates.manual-vars');
+    Route::get('letter-templates/template-vars', [LetterTemplateController::class, 'templateVars'])->name('letter-templates.template-vars');
     Route::resource('letter-templates', LetterTemplateController::class);
     Route::post('letter-templates/{letterTemplate}/toggle-active', [LetterTemplateController::class, 'toggleActive'])->name('letter-templates.toggle-active');
-    Route::get('letter-templates/manual-vars', [LetterTemplateController::class, 'manualVars'])->name('letter-templates.manual-vars');
 
     Route::resource('out-letters-generate', OutLetterViaGenerateController::class)->except(['destroy']);
     Route::post('out-letters-generate/{outLetterViaGenerate}/publish', [OutLetterViaGenerateController::class, 'publish'])->name('out-letters-generate.publish');
@@ -934,4 +988,10 @@ require __DIR__.'/webhook.php';
 // Public Data API for Registration
 Route::get('/api/public/provinces', [App\Http\Controllers\Public\RegionController::class, 'getActiveProvinces'])->name('api.public.provinces');
 Route::get('/api/public/regions', [App\Http\Controllers\Public\RegionController::class, 'getActiveRegions'])->name('api.public.regions');
+Route::get('/api/public/branches', [App\Http\Controllers\Public\RegionController::class, 'getBranches'])->name('api.public.branches');
 Route::get('/api/public/institutions', [App\Http\Controllers\Public\RegionController::class, 'getInstitutions'])->name('api.public.institutions');
+Route::get('/api/public/indonesia-provinces', [App\Http\Controllers\Public\RegionController::class, 'getIndonesianProvinces'])->name('api.public.indonesia.provinces');
+Route::get('/api/public/indonesia-cities', [App\Http\Controllers\Public\RegionController::class, 'getIndonesianCities'])->name('api.public.indonesia.cities');
+Route::get('/api/public/programs/{program}/payment-plans', [App\Http\Controllers\Public\ProgramController::class, 'getActivePaymentPlans'])->name('api.public.programs.payment-plans');
+Route::get('/api/public/employees/by-code', [App\Http\Controllers\Public\EmployeeController::class, 'byCode'])->name('api.public.employees.by-code');
+Route::get('/api/member/employees/search', [App\Http\Controllers\Public\EmployeeController::class, 'search'])->middleware(['auth:member', 'throttle:30,1'])->name('api.member.employees.search');

@@ -16,7 +16,7 @@ class StoreLetterTemplateRequest extends FormRequest
         return [
             'template_code' => ['required', 'string', 'max:50', 'unique:letter_templates,template_code'],
             'template_name' => ['required', 'string', 'max:100'],
-            'letter_category' => ['required', 'in:generated,marketing,announcement'],
+            'letter_category' => ['required', 'in:generated,marketing,announcement,member'],
             'letter_number_format' => ['nullable', 'string', 'max:100'],
             'file' => ['nullable', 'file', 'max:20480', 'mimes:docx'],
             'is_active' => ['boolean'],

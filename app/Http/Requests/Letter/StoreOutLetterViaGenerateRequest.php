@@ -23,7 +23,8 @@ class StoreOutLetterViaGenerateRequest extends FormRequest
             'subject' => ['nullable', 'string', 'max:255'],
             'notes' => ['nullable', 'string'],
             'manual_vars' => ['nullable', 'array'],
-            'manual_vars.*' => ['nullable', 'string'],
+            'manual_vars.*' => ['nullable'],
+            'manual_vars.*.*' => ['nullable', 'string'],
         ];
     }
 }

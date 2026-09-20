@@ -14,6 +14,29 @@ use PhpOffice\PhpWord\TemplateProcessor;
 
 class LetterService
 {
+    private const VAR_TYPE_MAP = [
+        'nomor_surat' => ['type' => 'auto',            'label' => 'Nomor Surat',             'note' => 'Di-generate saat publish'],
+        'ttd_penandatangan' => ['type' => 'auto',            'label' => 'TTD Penandatangan',        'note' => 'Belum tersedia'],
+        'ttd_pegawai' => ['type' => 'auto',            'label' => 'TTD Pegawai',              'note' => 'Belum tersedia'],
+        'tanggal_surat' => ['type' => 'date',            'label' => 'Tanggal Surat'],
+        'kota_cabang' => ['type' => 'branch',          'label' => 'Kota / Cabang'],
+        'nama_penandatangan' => ['type' => 'signer',          'label' => 'Nama Penandatangan'],
+        'jabatan_penandatangan' => ['type' => 'signer_derived',  'label' => 'Jabatan Penandatangan'],
+        'email_penandatangan' => ['type' => 'signer_derived',  'label' => 'Email Penandatangan'],
+        'nama_pegawai' => ['type' => 'employee',        'label' => 'Nama Pegawai'],
+        'jabatan_pegawai' => ['type' => 'employee_derived', 'label' => 'Jabatan Pegawai'],
+        'divisi_pegawai' => ['type' => 'employee_derived', 'label' => 'Divisi Pegawai'],
+        'agama_pegawai' => ['type' => 'employee_derived', 'label' => 'Agama Pegawai'],
+        'alamat_pegawai' => ['type' => 'employee_derived', 'label' => 'Alamat Pegawai'],
+        'email_pegawai' => ['type' => 'employee_derived', 'label' => 'Email Pegawai'],
+        'wa_pegawai' => ['type' => 'employee_derived', 'label' => 'WA Pegawai'],
+        'nomor_identitas_pegawai' => ['type' => 'employee_derived', 'label' => 'Nomor Identitas'],
+        'tempat_tanggal_lahir_pegawai' => ['type' => 'employee_derived', 'label' => 'Tempat/Tgl Lahir'],
+        'laki_laki_atau_perempuan' => ['type' => 'employee_derived', 'label' => 'Jenis Kelamin'],
+        'tanggal_mulai_kontrak' => ['type' => 'employee_derived', 'label' => 'Tgl Mulai Kontrak'],
+        'tanggal_berakhir_kontrak' => ['type' => 'employee_derived', 'label' => 'Tgl Akhir Kontrak'],
+    ];
+
     private const AUTO_FILL_KEYS = [
         'generated' => [
             'nomor_surat', 'tanggal_surat', 'kota_cabang',
@@ -56,6 +79,57 @@ class LetterService
     ) {}
 
     /**
+     * Return all template vars with their UI type classification.
+     */
+    public function classifyTemplateVars(LetterTemplate $template): array
+    {
+        if (! $template->telegram_file_id) {
+            return [];
+        }
+
+        $tmp = sys_get_temp_dir().'/tv_'.$template->id.'_'.time().'.docx';
+
+        try {
+            file_put_contents($tmp, $this->telegramStorage->downloadFile($template->telegram_file_id));
+            $allVars = (new TemplateProcessor($tmp))->getVariables();
+        } catch (\Throwable $e) {
+            Log::warning('classifyTemplateVars: '.$e->getMessage());
+
+            return [];
+        } finally {
+            if (file_exists($tmp)) {
+                unlink($tmp);
+            }
+        }
+
+        $result = [];
+        $seen = [];
+
+        foreach ($allVars as $var) {
+            // Repeatable: key#N → group by base key
+            if (preg_match('/^(.+)#\d+$/', $var, $m)) {
+                $base = $m[1];
+                if (! in_array($base, $seen)) {
+                    $seen[] = $base;
+                    $result[] = ['key' => $base, 'type' => 'repeatable', 'label' => ucwords(str_replace('_', ' ', $base))];
+                }
+
+                continue;
+            }
+
+            if (in_array($var, $seen)) {
+                continue;
+            }
+            $seen[] = $var;
+
+            $info = self::VAR_TYPE_MAP[$var] ?? ['type' => 'text', 'label' => ucwords(str_replace('_', ' ', $var))];
+            $result[] = array_merge(['key' => $var], $info);
+        }
+
+        return $result;
+    }
+
+    /**
      * Create a draft letter from template + manual vars.
      * Fills Word template placeholders and uploads draft DOCX to Telegram.
      */
@@ -71,8 +145,14 @@ class LetterService
             $context = array_merge(
                 $this->buildContext($template->letter_category, $ids),
                 $manualVars,
-                ['tanggal_surat' => now()->translatedFormat('d F Y')]
             );
+
+            // Format tanggal_surat: accept YYYY-MM-DD from date picker or use today
+            if (! empty($context['tanggal_surat']) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $context['tanggal_surat'])) {
+                $context['tanggal_surat'] = Carbon::parse($context['tanggal_surat'])->translatedFormat('d F Y');
+            } elseif (empty($context['tanggal_surat'])) {
+                $context['tanggal_surat'] = now()->translatedFormat('d F Y');
+            }
 
             $letter = OutLetterViaGenerate::create([
                 'letter_template_id' => $template->id,
@@ -189,17 +269,7 @@ class LetterService
             file_put_contents($tmpSrc, $content);
 
             $processor = new TemplateProcessor($tmpSrc);
-            foreach ($context as $key => $value) {
-                $processor->setValue($key, htmlspecialchars((string) $value));
-            }
-
-            if (! empty($context['ttd_penandatangan'])) {
-                $processor->setImageValue('ttd_penandatangan', $context['ttd_penandatangan']);
-            }
-            if (! empty($context['ttd_pegawai'])) {
-                $processor->setImageValue('ttd_pegawai', $context['ttd_pegawai']);
-            }
-
+            $this->fillProcessor($processor, $context);
             $processor->saveAs($tmpOut);
 
             $uploaded = $this->telegramStorage->uploadFile($tmpOut, $label.'.docx', 'letter_draft', null);
@@ -232,17 +302,7 @@ class LetterService
             file_put_contents($tmpSrc, $content);
 
             $processor = new TemplateProcessor($tmpSrc);
-            foreach ($context as $key => $value) {
-                $processor->setValue($key, htmlspecialchars((string) $value));
-            }
-
-            if (! empty($context['ttd_penandatangan'])) {
-                $processor->setImageValue('ttd_penandatangan', $context['ttd_penandatangan']);
-            }
-            if (! empty($context['ttd_pegawai'])) {
-                $processor->setImageValue('ttd_pegawai', $context['ttd_pegawai']);
-            }
-
+            $this->fillProcessor($processor, $context);
             $processor->saveAs($tmpOut);
 
             $pdfBinary = $this->convertApi->docxToPdf($tmpOut);
@@ -272,6 +332,47 @@ class LetterService
         }
     }
 
+    private function fillProcessor(TemplateProcessor $processor, array $context): void
+    {
+        // Scalar values first
+        foreach ($context as $key => $value) {
+            if (is_array($value)) {
+                continue;
+            }
+            if (in_array($key, ['ttd_penandatangan', 'ttd_pegawai'])) {
+                continue; // handled as image below
+            }
+            $processor->setValue($key, htmlspecialchars((string) $value));
+        }
+
+        // TTD images
+        if (! empty($context['ttd_penandatangan'])) {
+            $processor->setImageValue('ttd_penandatangan', $context['ttd_penandatangan']);
+        }
+        if (! empty($context['ttd_pegawai'])) {
+            $processor->setImageValue('ttd_pegawai', $context['ttd_pegawai']);
+        }
+
+        // Repeatable vars: array values → cloneRow + setValue #N
+        foreach ($context as $key => $values) {
+            if (! is_array($values)) {
+                continue;
+            }
+            $values = array_values(array_filter($values, fn ($v) => $v !== null && $v !== ''));
+            if (empty($values)) {
+                continue;
+            }
+            try {
+                $processor->cloneRow($key, count($values));
+            } catch (\Throwable) {
+                // Already cloned by a paired var in the same row — skip cloneRow, still setValue
+            }
+            foreach ($values as $i => $val) {
+                $processor->setValue("{$key}#".($i + 1), htmlspecialchars((string) $val));
+            }
+        }
+    }
+
     private function buildContext(string $category, array $ids): array
     {
         return match ($category) {
@@ -291,28 +392,30 @@ class LetterService
 
     private function generatedContext(array $ids): array
     {
-        $employee = Employee::with(['branch', 'currentStatus.position'])->findOrFail($ids['employee_id']);
+        $employee = isset($ids['employee_id']) ? Employee::with(['branch', 'currentStatus.position'])->find($ids['employee_id']) : null;
         $signer = isset($ids['signer_employee_id']) ? Employee::with('currentStatus.position')->find($ids['signer_employee_id']) : null;
 
-        return array_merge($this->branchVars($employee->branch), [
+        $branch = $employee?->branch ?? ($ids['branch_id'] ? Branch::find($ids['branch_id']) : null);
+
+        return array_merge($this->branchVars($branch), [
             'nama_penandatangan' => $signer?->full_name ?? '',
             'jabatan_penandatangan' => $signer?->currentStatus?->position?->position_name ?? '',
             'email_penandatangan' => $signer?->email ?? '',
-            'ttd_penandatangan' => '', // $signer?->signature_image
+            'ttd_penandatangan' => '',
 
-            'nama_pegawai' => $employee->full_name ?? '',
-            'jabatan_pegawai' => $employee->currentStatus?->position?->position_name ?? '',
-            'divisi_pegawai' => '', // $employee->division
-            'agama_pegawai' => '', // $employee->religion
-            'alamat_pegawai' => '', // $employee->address
-            'email_pegawai' => $employee->email ?? '',
-            'wa_pegawai' => $employee->whatsapp_number ?? '',
-            'nomor_identitas_pegawai' => $employee->employee_code ?? '',
-            'tempat_tanggal_lahir_pegawai' => $employee->birthdate ? Carbon::parse($employee->birthdate)->translatedFormat('d F Y') : '',
-            'laki_laki_atau_perempuan' => $employee->gender == 'L' ? 'Laki-Laki' : 'Perempuan',
-            'tanggal_mulai_kontrak' => $employee->currentStatus?->join_date ? Carbon::parse($employee->currentStatus->join_date)->translatedFormat('d F Y') : '',
-            'tanggal_berakhir_kontrak' => $employee->currentStatus?->contract_end_date ? Carbon::parse($employee->currentStatus->contract_end_date)->translatedFormat('d F Y') : '',
-            'ttd_pegawai' => '', // $employee->signature_image
+            'nama_pegawai' => $employee?->full_name ?? '',
+            'jabatan_pegawai' => $employee?->currentStatus?->position?->position_name ?? '',
+            'divisi_pegawai' => '',
+            'agama_pegawai' => '',
+            'alamat_pegawai' => '',
+            'email_pegawai' => $employee?->email ?? '',
+            'wa_pegawai' => $employee?->whatsapp_number ?? '',
+            'nomor_identitas_pegawai' => $employee?->employee_code ?? '',
+            'tempat_tanggal_lahir_pegawai' => $employee?->birthdate ? Carbon::parse($employee->birthdate)->translatedFormat('d F Y') : '',
+            'laki_laki_atau_perempuan' => $employee?->gender === 'L' ? 'Laki-Laki' : 'Perempuan',
+            'tanggal_mulai_kontrak' => $employee?->currentStatus?->join_date ? Carbon::parse($employee->currentStatus->join_date)->translatedFormat('d F Y') : '',
+            'tanggal_berakhir_kontrak' => $employee?->currentStatus?->contract_end_date ? Carbon::parse($employee->currentStatus->contract_end_date)->translatedFormat('d F Y') : '',
+            'ttd_pegawai' => '',
         ]);
     }
 

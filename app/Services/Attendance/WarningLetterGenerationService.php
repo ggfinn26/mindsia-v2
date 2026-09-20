@@ -43,9 +43,7 @@ class WarningLetterGenerationService
     ): EmployeeWarningLetter {
         $employee->load('currentStatus.position', 'currentStatus.branch');
 
-        // Get Document Signature Settings for SP
-        // Using 'sp' or 'warning_letter' as document type
-        $sigSetting = DocumentSignatureSetting::where('document_type', 'warning_letter')->first();
+        $sigSetting = DocumentSignatureSetting::where('document_type', 'SP')->first();
 
         // 1. Download Template from Telegram Storage to temp file
         $docxTemplatePath = $this->downloadTemplate($template);
@@ -110,16 +108,16 @@ class WarningLetterGenerationService
     ): void {
         $template = new TemplateProcessor($templatePath);
 
-        $template->setValue('employee_name', $employee->full_name);
-        $template->setValue('employee_code', $employee->employee_code);
-        $template->setValue('position_name', $employee->currentStatus?->position?->position_name ?? '-');
-        $template->setValue('branch_name', $employee->currentStatus?->branch?->branch_name ?? '-');
+        $template->setValue('nama_pegawai', $employee->full_name);
+        $template->setValue('nomor_identitas_pegawai', $employee->employee_code);
+        $template->setValue('jabatan_pegawai', $employee->currentStatus?->position?->position_name ?? '-');
+        $template->setValue('kota_cabang', $employee->currentStatus?->branch?->branch_name ?? '-');
 
-        $template->setValue('sp_level', $spLevel);
-        $template->setValue('date_today', Carbon::today()->translatedFormat('d F Y'));
+        $template->setValue('nomor_sp', $spLevel);
+        $template->setValue('tanggal_surat', Carbon::today()->translatedFormat('d F Y'));
 
-        $template->setValue('signer_name', $sigSetting?->signer_name ?? '');
-        $template->setValue('signer_title', $sigSetting?->signer_title ?? '');
+        $template->setValue('nama_penandatangan', $sigSetting?->signer_name ?? '');
+        $template->setValue('jabatan_penandatangan', $sigSetting?->signer_title ?? '');
 
         $template->saveAs($savePath);
     }

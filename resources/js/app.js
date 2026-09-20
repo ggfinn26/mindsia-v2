@@ -7,3 +7,5 @@ import "./password-toggle";
 import "./otp-input";
 import "./redirect-countdown";
 import "./resend-timer";
+import "./program-registration";
+import "./letter-generate";
