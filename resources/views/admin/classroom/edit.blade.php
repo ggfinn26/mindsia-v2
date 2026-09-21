@@ -35,15 +35,40 @@
                 @enderror
             </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Tutor</label>
-                <select name="tutor_id"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                    <option value="">Pilih Tutor (Opsional)</option>
-                    @foreach($tutors as $id => $name)
-                        <option value="{{ $id }}" {{ old('tutor_id', $class->tutor_id) == $id ? 'selected' : '' }}>{{ $name }}</option>
-                    @endforeach
-                </select>
+            <div x-data="tutorDropdown({{ Illuminate\Support\Js::from($tutors) }}, {{ Illuminate\Support\Js::from(old('tutor_id', $class->tutor_id)) }})" @click.away="open = false">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Tutor <span class="text-red-500">*</span></label>
+                <div class="relative">
+                    <div @click="open = !open"
+                         class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white cursor-pointer flex justify-between items-center focus:ring-2 focus:ring-blue-500">
+                        <span :class="selectedId ? 'text-gray-900' : 'text-gray-400'" x-text="selectedLabel || 'Pilih Tutor'"></span>
+                        <span class="material-symbols-outlined text-[18px] text-gray-400">expand_more</span>
+                    </div>
+                    <div x-show="open" x-transition x-cloak
+                         class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+                        <div class="p-2 bg-gray-50 border-b border-gray-100">
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-3 top-2 text-gray-400 text-[16px]">search</span>
+                                <input type="text" x-model="search" placeholder="Cari tutor..."
+                                       class="w-full pl-9 pr-3 py-1.5 bg-white border border-gray-200 rounded-md text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                       @click.stop>
+                            </div>
+                        </div>
+                        <ul class="max-h-52 overflow-y-auto py-1">
+                            <template x-if="filtered.length === 0">
+                                <li class="px-4 py-2 text-sm text-gray-500 text-center">Tidak ditemukan</li>
+                            </template>
+                            <template x-for="t in filtered" :key="t.id">
+                                <li @click="select(t)"
+                                    class="px-4 py-2 text-sm cursor-pointer hover:bg-blue-500 hover:text-white flex justify-between items-center"
+                                    :class="selectedId == t.id ? 'bg-blue-50 font-semibold text-blue-700' : 'text-gray-700'">
+                                    <span x-text="t.name"></span>
+                                    <span class="text-xs opacity-60 ml-2" x-text="t.class_count + ' kelas'"></span>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </div>
+                <input type="hidden" name="tutor_id" :value="selectedId">
                 @error('tutor_id')
                     <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                 @enderror
@@ -56,4 +81,30 @@
         </div>
     </form>
 </div>
+
+<script>
+function tutorDropdown(tutors, initialId) {
+    return {
+        tutors,
+        search: '',
+        open: false,
+        selectedId: initialId,
+        get filtered() {
+            if (!this.search) return this.tutors;
+            const q = this.search.toLowerCase();
+            return this.tutors.filter(t => t.name.toLowerCase().includes(q));
+        },
+        get selectedLabel() {
+            const t = this.tutors.find(t => t.id == this.selectedId);
+            return t ? t.name + ' (' + t.class_count + ' kelas)' : '';
+        },
+        select(t) {
+            this.selectedId = t.id;
+            this.open = false;
+            this.search = '';
+        },
+    };
+}
+</script>
+
 @endsection

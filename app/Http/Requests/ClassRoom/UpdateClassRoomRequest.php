@@ -16,7 +16,7 @@ class UpdateClassRoomRequest extends FormRequest
     {
         return [
             'class_name' => 'required|string|max:'.ClassRoom::MAX_CLASS_NAME_LENGTH,
-            'tutor_id' => 'nullable|exists:employees,id',
+            'tutor_id' => 'required|exists:employees,id',
         ];
     }
 }

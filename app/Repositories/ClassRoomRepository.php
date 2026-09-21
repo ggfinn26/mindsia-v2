@@ -22,7 +22,7 @@ class ClassRoomRepository
     {
         return ClassRoom::with([
             'program', 'branch', 'tutor', 'schedules', 'tutorChangeHistories', 'tests',
-            'memberClasses.registration.memberData',
+            'memberClasses.memberRegistration.memberData',
         ])->findOrFail($id);
     }
 
@@ -45,10 +45,25 @@ class ClassRoomRepository
 
     public function getAvailableTutors(): array
     {
-        return Employee::whereHas('tutorClasses', fn ($q) => $q->whereIn('status', ['planned', 'active']))
-            ->withCount(['tutorClasses' => fn ($q) => $q->whereIn('status', ['planned', 'active'])])
+        return Employee::with(['branch:id,branch_name', 'area:id,name'])
+            ->whereHas('employmentStatuses', fn ($q) => $q->whereHas(
+                'position',
+                fn ($q) => $q->whereIn('position_name', ['Official Tutor', 'Regular Tutor'])
+            ))
+            ->withCount(['tutorClasses' => fn ($q) => $q->where('status', 'active')])
             ->having('tutor_classes_count', '<', 9)
-            ->pluck('full_name', 'id')
+            ->orderBy('full_name')
+            ->get(['id', 'full_name', 'branch_id', 'area_id'])
+            ->map(fn ($e) => [
+                'id' => $e->id,
+                'name' => $e->full_name,
+                'branch_id' => $e->branch_id,
+                'area_id' => $e->area_id,
+                'branch_name' => $e->branch?->branch_name ?? '—',
+                'area_name' => $e->area?->name ?? '—',
+                'class_count' => $e->tutor_classes_count,
+            ])
+            ->values()
             ->toArray();
     }
 }

@@ -21,7 +21,8 @@
         </div>
     @endif
 
-    <form action="{{ route('classrooms.store') }}" method="POST" class="bg-white shadow sm:rounded-lg">
+    <form action="{{ route('classrooms.store') }}" method="POST" class="bg-white shadow sm:rounded-lg"
+          x-data="classroomForm({{ Illuminate\Support\Js::from($tutors) }}, {{ Illuminate\Support\Js::from($branches) }}, {{ Illuminate\Support\Js::from(old('branch_id')) }}, {{ Illuminate\Support\Js::from(old('tutor_id')) }})">
         @csrf
         <div class="p-6 space-y-6">
             <div>
@@ -40,11 +41,11 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Cabang <span class="text-red-500">*</span></label>
-                <select name="branch_id" required
+                <select name="branch_id" required x-model="selectedBranchId" @change="onBranchChange()"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                     <option value="">Pilih Cabang</option>
                     @foreach($branches as $branch)
-                        <option value="{{ $branch->id }}" {{ old('branch_id') == $branch->id ? 'selected' : '' }}>{{ $branch->branch_name }}</option>
+                        <option value="{{ $branch->id }}">{{ $branch->branch_name }}</option>
                     @endforeach
                 </select>
                 @error('branch_id')
@@ -62,15 +63,49 @@
                 @enderror
             </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Tutor</label>
-                <select name="tutor_id"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                    <option value="">Pilih Tutor (Opsional)</option>
-                    @foreach($tutors as $id => $name)
-                        <option value="{{ $id }}" {{ old('tutor_id') == $id ? 'selected' : '' }}>{{ $name }}</option>
-                    @endforeach
-                </select>
+            {{-- Tutor dropdown --}}
+            <div @click.away="tutorOpen = false">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Tutor <span class="text-red-500">*</span></label>
+                <div class="relative">
+                    <div @click="tutorOpen = !tutorOpen"
+                         class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white cursor-pointer flex justify-between items-center">
+                        <span :class="selectedTutorId ? 'text-gray-900' : 'text-gray-400'" x-text="tutorLabel || 'Pilih Tutor'"></span>
+                        <span class="material-symbols-outlined text-[18px] text-gray-400">expand_more</span>
+                    </div>
+                    <div x-show="tutorOpen" x-transition x-cloak
+                         class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+                        <div class="p-2 bg-gray-50 border-b border-gray-100">
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-3 top-2 text-gray-400 text-[16px]">search</span>
+                                <input type="text" x-model="tutorSearch" placeholder="Cari tutor..."
+                                       class="w-full pl-9 pr-3 py-1.5 bg-white border border-gray-200 rounded-md text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                       @click.stop>
+                            </div>
+                        </div>
+                        <template x-if="!selectedBranchId">
+                            <p class="px-4 py-3 text-sm text-gray-400 text-center">Pilih cabang terlebih dahulu</p>
+                        </template>
+                        <template x-if="selectedBranchId">
+                            <ul class="max-h-56 overflow-y-auto py-1">
+                                <template x-if="filteredTutors.length === 0">
+                                    <li class="px-4 py-2 text-sm text-gray-500 text-center">Tidak ada tutor tersedia untuk cabang ini</li>
+                                </template>
+                                <template x-for="t in filteredTutors" :key="t.id">
+                                    <li @click="selectTutor(t)"
+                                        class="px-4 py-2.5 text-sm cursor-pointer hover:bg-blue-500 hover:text-white"
+                                        :class="selectedTutorId == t.id ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-700'">
+                                        <div class="flex justify-between items-center">
+                                            <span class="font-medium" x-text="t.name"></span>
+                                            <span class="text-xs opacity-60 ml-2" x-text="t.class_count + ' kelas aktif'"></span>
+                                        </div>
+                                        <div class="text-xs opacity-60 mt-0.5" x-text="t.area_name + ' · ' + t.branch_name"></div>
+                                    </li>
+                                </template>
+                            </ul>
+                        </template>
+                    </div>
+                </div>
+                <input type="hidden" name="tutor_id" :value="selectedTutorId">
                 @error('tutor_id')
                     <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                 @enderror
@@ -79,13 +114,15 @@
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Hari Utama <span class="text-red-500">*</span></label>
-                    <select name="day_of_week" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    <select name="day_of_week" id="day_of_week" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                            onchange="updateSecondaryDay(this.value)">
                         <option value="">Pilih Hari</option>
-                        @foreach(\App\Models\ClassRoom::VALID_DAYS as $day)
+                        @foreach(\App\Models\ClassRoom::PRIMARY_DAYS as $day)
                             <option value="{{ $day }}" {{ old('day_of_week') === $day ? 'selected' : '' }}>{{ $day }}</option>
                         @endforeach
                     </select>
+                    <p id="secondary_day_info" class="text-sm text-blue-600 mt-1 hidden"></p>
                     @error('day_of_week')
                         <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                     @enderror
@@ -137,7 +174,7 @@
 
             <div class="border-t border-gray-200 pt-6">
                 <h3 class="text-md font-semibold text-gray-900 mb-4">Jam Pelajaran — Hari Kedua (Opsional)</h3>
-                <p class="text-sm text-gray-500 mb-4">Otomatis diisi berdasarkan hari utama (Senin↔Kamis, Selasa↔Jumat, Rabu↔Sabtu)</p>
+                <p class="text-sm text-gray-500 mb-4">Hari kedua otomatis dari pasangan hari utama. Jika jam tidak diisi, menggunakan jam hari utama.</p>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Jam Mulai</label>
@@ -167,4 +204,65 @@
         </div>
     </form>
 </div>
+
+<script>
+const dayPairs = {
+    'Senin': 'Kamis', 'Kamis': 'Senin',
+    'Selasa': 'Jumat', 'Jumat': 'Selasa',
+    'Rabu': 'Sabtu', 'Sabtu': 'Rabu',
+};
+function updateSecondaryDay(day) {
+    const info = document.getElementById('secondary_day_info');
+    if (dayPairs[day]) {
+        info.textContent = 'Hari kedua: ' + dayPairs[day];
+        info.classList.remove('hidden');
+    } else {
+        info.classList.add('hidden');
+    }
+}
+const initialDay = document.getElementById('day_of_week').value;
+if (initialDay) updateSecondaryDay(initialDay);
+
+function classroomForm(tutors, branches, initialBranchId, initialTutorId) {
+    return {
+        tutors,
+        // branch_id → areas_id map
+        branchAreaMap: Object.fromEntries(branches.map(b => [String(b.id), b.areas_id])),
+        selectedBranchId: initialBranchId ? String(initialBranchId) : '',
+        selectedTutorId: initialTutorId ? String(initialTutorId) : '',
+        tutorSearch: '',
+        tutorOpen: false,
+        get selectedAreaId() {
+            return this.branchAreaMap[this.selectedBranchId] ?? null;
+        },
+        get filteredTutors() {
+            const areaId = this.selectedAreaId;
+            const branchId = this.selectedBranchId;
+            let list = this.tutors.filter(t =>
+                String(t.branch_id) === branchId || String(t.area_id) === String(areaId)
+            );
+            if (this.tutorSearch) {
+                const q = this.tutorSearch.toLowerCase();
+                list = list.filter(t => t.name.toLowerCase().includes(q));
+            }
+            return list;
+        },
+        get tutorLabel() {
+            const t = this.tutors.find(t => String(t.id) === this.selectedTutorId);
+            return t ? t.name + ' (' + t.class_count + ' kelas aktif)' : '';
+        },
+        onBranchChange() {
+            // reset tutor jika tidak lagi tersedia di cabang/area baru
+            const stillAvailable = this.filteredTutors.some(t => String(t.id) === this.selectedTutorId);
+            if (!stillAvailable) this.selectedTutorId = '';
+        },
+        selectTutor(t) {
+            this.selectedTutorId = String(t.id);
+            this.tutorOpen = false;
+            this.tutorSearch = '';
+        },
+    };
+}
+</script>
+
 @endsection

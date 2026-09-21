@@ -48,7 +48,7 @@ class ClassRoomController extends Controller implements HasMiddleware
     {
         return view('admin.classroom.create', [
             'programs' => Program::where('is_active', true)->get(),
-            'branches' => Branch::where('is_active', true)->get(),
+            'branches' => Branch::where('is_active', true)->get(['id', 'branch_name', 'areas_id']),
             'primaryDays' => ClassRoom::PRIMARY_DAYS,
             'tutors' => $this->repository->getAvailableTutors(),
         ]);
@@ -65,7 +65,7 @@ class ClassRoomController extends Controller implements HasMiddleware
     {
         $class = $this->repository->findWithDetails($classroom->id);
 
-        $availableRegistrations = MemberRegistration::with('memberData')
+        $availableRegistrations = MemberRegistration::with(['memberData', 'program'])
             ->where('program_id', $class->program_id)
             ->whereHas('memberData', function ($q) use ($class) {
                 $q->where('branch_id', $class->branch_id)
@@ -74,7 +74,12 @@ class ClassRoomController extends Controller implements HasMiddleware
             ->whereNotIn('id', $class->memberClasses->pluck('member_registration_id'))
             ->get();
 
-        return view('admin.classroom.show', compact('class', 'availableRegistrations'));
+        $memberOptions = $availableRegistrations->map(fn ($r) => [
+            'id' => $r->id,
+            'label' => ($r->memberData?->full_name ?? 'Member #'.$r->id).' — '.($r->program?->program_name ?? ''),
+        ])->values()->toArray();
+
+        return view('admin.classroom.show', compact('class', 'availableRegistrations', 'memberOptions'));
     }
 
     public function edit(ClassRoom $classroom): View

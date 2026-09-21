@@ -157,8 +157,8 @@
 <!-- 1.9 Class -->
 @canany(['class.manage', 'class.attendance.record', 'class.test.create', 'class.graduate'])
 <x-dashboard.nav-group title="Kelas" icon="school" :active="request()->routeIs('classrooms.*') || request()->routeIs('class-schedules.*') || request()->routeIs('class-tests.*') || request()->routeIs('member-class.*')">
+    <x-dashboard.nav-item href="{{ route('classrooms.index') }}" :isChild="true" :active="request()->routeIs('classrooms.index') || request()->routeIs('classrooms.show') || request()->routeIs('member-class.*')">Semua Kelas</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('classrooms.create') }}" :isChild="true" :active="request()->routeIs('classrooms.create')">Buat Kelas Baru</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="{{ route('classrooms.index') }}" :isChild="true" :active="request()->routeIs('classrooms.index') || request()->routeIs('classrooms.show')">Daftarkan Member</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('class-schedules.index') }}" :isChild="true" :active="request()->routeIs('class-schedules.*')">Sesi & Absensi</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('class-tests.index') }}" :isChild="true" :active="request()->routeIs('class-tests.*')">Test & Sertifikat</x-dashboard.nav-item>
 </x-dashboard.nav-group>

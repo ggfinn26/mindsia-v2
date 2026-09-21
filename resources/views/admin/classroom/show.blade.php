@@ -110,67 +110,52 @@
         <!-- Add Member Form -->
         @can('class.member.assign')
         <div id="add-member-form" class="hidden border-b border-gray-200 bg-gray-50 px-6 py-4"
-             x-data="{
-                search: '',
-                open: false,
-                selected: null,
-                registrationId: '',
-                members: @json($availableRegistrations->map(fn($r) => ['id' => $r->id, 'label' => ($r->memberData?->full_name ?? 'Member #'.$r->id) . ' — ' . ($r->program?->program_name ?? '')])),
-                get filtered() {
-                    if (this.search.length < 1) return this.members;
-                    const q = this.search.toLowerCase();
-                    return this.members.filter(m => m.label.toLowerCase().includes(q));
-                },
-                select(member) {
-                    this.selected = member;
-                    this.registrationId = member.id;
-                    this.search = member.label;
-                    this.open = false;
-                },
-                clear() {
-                    this.selected = null;
-                    this.registrationId = '';
-                    this.search = '';
-                }
-             }">
+             x-data="memberDropdown({{ Illuminate\Support\Js::from($memberOptions) }})">
             <form action="{{ route('member-class.store', $class) }}" method="POST">
                 @csrf
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
-                    <div class="relative">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Cari Member</label>
-                        <div class="relative">
-                            <input type="text"
-                                   x-model="search"
-                                   @focus="open = true"
-                                   @click.outside="open = false"
-                                   @input="if (!search) clear()"
-                                   autocomplete="off"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 pr-8"
-                                   placeholder="Ketik nama member..." />
-                            <button type="button" x-show="search" @click="clear()" class="absolute right-2 top-2.5 text-gray-400 hover:text-gray-600 text-sm">&times;</button>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Pilih Member</label>
+                        <div class="relative" @click.away="open = false">
+                            <div @click="open = !open"
+                                 class="w-full px-3.5 py-2.5 bg-white border border-gray-200 rounded-xl text-[13px] shadow-sm flex justify-between items-center cursor-pointer"
+                                 :class="open ? 'ring-2 ring-blue-500 border-blue-500' : ''">
+                                <span x-text="selectedId ? selectedLabel : 'Pilih member...'"
+                                      :class="selectedId ? 'text-gray-900' : 'text-gray-400'"
+                                      class="truncate block pr-2"></span>
+                                <span class="material-symbols-outlined text-[16px] text-gray-400 flex-shrink-0">expand_more</span>
+                            </div>
+                            <div x-show="open" x-transition x-cloak
+                                 class="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
+                                <div class="p-2 bg-gray-50 border-b border-gray-100">
+                                    <div class="relative">
+                                        <span class="material-symbols-outlined absolute left-3 top-2.5 text-gray-400 text-[16px]">search</span>
+                                        <input type="text" x-model="search" placeholder="Cari nama member..."
+                                               class="w-full pl-9 pr-3 py-2 bg-white border border-gray-200 rounded-lg text-[13px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                                               @click.stop>
+                                    </div>
+                                </div>
+                                <ul class="max-h-52 overflow-y-auto py-1">
+                                    <li x-show="filtered.length === 0" class="px-4 py-3 text-[12px] text-gray-500 text-center">Tidak ada member tersedia</li>
+                                    <template x-for="m in filtered" :key="m.id">
+                                        <li @click="select(m)"
+                                            class="px-4 py-2 text-[12px] text-gray-700 hover:bg-blue-500 hover:text-white cursor-pointer transition-colors"
+                                            :class="selectedId == m.id ? 'bg-blue-50 font-semibold' : ''"
+                                            x-text="m.label"></li>
+                                    </template>
+                                </ul>
+                            </div>
                         </div>
-                        <input type="hidden" name="member_registration_id" x-model="registrationId" />
-                        <ul x-show="open && filtered.length > 0"
-                            @click.outside="open = false"
-                            class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-52 overflow-y-auto">
-                            <template x-for="member in filtered" :key="member.id">
-                                <li @click="select(member)"
-                                    class="px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer"
-                                    x-text="member.label"></li>
-                            </template>
-                        </ul>
-                        <p x-show="open && filtered.length === 0 && search.length > 0"
-                           class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-sm px-4 py-3 text-sm text-gray-500">
-                            Tidak ada member ditemukan.
-                        </p>
+                        <input type="hidden" name="member_registration_id" x-model="selectedId" />
                         @error('member_registration_id')
                             <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                         @enderror
+                        <p class="mt-1 text-xs text-gray-400">{{ $availableRegistrations->count() }} member tersedia</p>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Mulai</label>
                         <input type="date" name="start_date" required
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                               class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-[13px] shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                                value="{{ now()->format('Y-m-d') }}" min="{{ now()->format('Y-m-d') }}" />
                         @error('start_date')
                             <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
@@ -178,16 +163,13 @@
                     </div>
                     <div>
                         <button type="submit"
-                                :disabled="!registrationId"
-                                :class="registrationId ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-300 cursor-not-allowed'"
-                                class="text-white px-6 py-2 rounded-lg font-medium w-full transition-colors">
+                                :disabled="!selectedId"
+                                :class="selectedId ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-300 cursor-not-allowed'"
+                                class="text-white px-6 py-2.5 rounded-xl text-[13px] font-medium w-full transition-colors">
                             Daftarkan
                         </button>
                     </div>
                 </div>
-                <p x-show="!registrationId && search.length === 0" class="mt-2 text-xs text-gray-400">
-                    Tersedia {{ $availableRegistrations->count() }} member yang dapat didaftarkan.
-                </p>
             </form>
         </div>
         @endcan
@@ -206,7 +188,7 @@
                     @forelse($class->memberClasses as $mc)
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                {{ $mc->registration?->memberData?->full_name ?? 'Member #' . $mc->member_registration_id }}
+                                {{ $mc->memberRegistration?->memberData?->full_name ?? 'Member #' . $mc->member_registration_id }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm">
                                 @php
@@ -365,4 +347,29 @@
     </div>
     @endif
 </div>
+<script>
+function memberDropdown(members) {
+    return {
+        members,
+        search: '',
+        open: false,
+        selectedId: '',
+        get filtered() {
+            if (!this.search) return this.members;
+            const q = this.search.toLowerCase();
+            return this.members.filter(m => m.label.toLowerCase().includes(q));
+        },
+        get selectedLabel() {
+            const m = this.members.find(m => m.id == this.selectedId);
+            return m ? m.label : '';
+        },
+        select(m) {
+            this.selectedId = m.id;
+            this.open = false;
+            this.search = '';
+        },
+    };
+}
+</script>
+
 @endsection
