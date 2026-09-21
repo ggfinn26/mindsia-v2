@@ -34,7 +34,14 @@ class ClassRoomController extends Controller implements HasMiddleware
 
     public function index(): View
     {
-        return view('admin.classroom.index', ['classes' => $this->repository->all()]);
+        $filters = request()->only(['branch_id', 'program_id', 'status']);
+
+        return view('admin.classroom.index', [
+            'classes' => $this->repository->all($filters),
+            'branches' => Branch::where('is_active', true)->orderBy('branch_name')->get(['id', 'branch_name']),
+            'programs' => Program::where('is_active', true)->orderBy('program_name')->get(['id', 'program_name']),
+            'statuses' => ['planned' => 'Direncanakan', 'active' => 'Aktif', 'completed' => 'Selesai', 'cancelled' => 'Dibatalkan'],
+        ]);
     }
 
     public function create(): View
@@ -56,7 +63,18 @@ class ClassRoomController extends Controller implements HasMiddleware
 
     public function show(ClassRoom $classroom): View
     {
-        return view('admin.classroom.show', ['class' => $this->repository->findWithDetails($classroom->id)]);
+        $class = $this->repository->findWithDetails($classroom->id);
+
+        $availableRegistrations = MemberRegistration::with('memberData')
+            ->where('program_id', $class->program_id)
+            ->whereHas('memberData', function ($q) use ($class) {
+                $q->where('branch_id', $class->branch_id)
+                    ->whereHas('account', fn ($q) => $q->where('is_active', true));
+            })
+            ->whereNotIn('id', $class->memberClasses->pluck('member_registration_id'))
+            ->get();
+
+        return view('admin.classroom.show', compact('class', 'availableRegistrations'));
     }
 
     public function edit(ClassRoom $classroom): View

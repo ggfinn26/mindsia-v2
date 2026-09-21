@@ -100,7 +100,7 @@
     <div class="bg-white shadow sm:rounded-lg mb-6">
         <div class="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
             <h2 class="text-lg font-bold text-gray-900">👥 Member Kelas</h2>
-            @can('class.manage')
+            @can('class.member.assign')
                 <button type="button" onclick="document.getElementById('add-member-form').classList.toggle('hidden')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded text-sm font-medium">
                     + Daftarkan Member
                 </button>
@@ -108,15 +108,61 @@
         </div>
 
         <!-- Add Member Form -->
-        <div id="add-member-form" class="hidden border-b border-gray-200 bg-gray-50 px-6 py-4">
+        @can('class.member.assign')
+        <div id="add-member-form" class="hidden border-b border-gray-200 bg-gray-50 px-6 py-4"
+             x-data="{
+                search: '',
+                open: false,
+                selected: null,
+                registrationId: '',
+                members: @json($availableRegistrations->map(fn($r) => ['id' => $r->id, 'label' => ($r->memberData?->full_name ?? 'Member #'.$r->id) . ' — ' . ($r->program?->program_name ?? '')])),
+                get filtered() {
+                    if (this.search.length < 1) return this.members;
+                    const q = this.search.toLowerCase();
+                    return this.members.filter(m => m.label.toLowerCase().includes(q));
+                },
+                select(member) {
+                    this.selected = member;
+                    this.registrationId = member.id;
+                    this.search = member.label;
+                    this.open = false;
+                },
+                clear() {
+                    this.selected = null;
+                    this.registrationId = '';
+                    this.search = '';
+                }
+             }">
             <form action="{{ route('member-class.store', $class) }}" method="POST">
                 @csrf
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Member Registration ID</label>
-                        <input type="number" name="member_registration_id" required
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                               placeholder="ID Registrasi Member" />
+                    <div class="relative">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Cari Member</label>
+                        <div class="relative">
+                            <input type="text"
+                                   x-model="search"
+                                   @focus="open = true"
+                                   @click.outside="open = false"
+                                   @input="if (!search) clear()"
+                                   autocomplete="off"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 pr-8"
+                                   placeholder="Ketik nama member..." />
+                            <button type="button" x-show="search" @click="clear()" class="absolute right-2 top-2.5 text-gray-400 hover:text-gray-600 text-sm">&times;</button>
+                        </div>
+                        <input type="hidden" name="member_registration_id" x-model="registrationId" />
+                        <ul x-show="open && filtered.length > 0"
+                            @click.outside="open = false"
+                            class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-52 overflow-y-auto">
+                            <template x-for="member in filtered" :key="member.id">
+                                <li @click="select(member)"
+                                    class="px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer"
+                                    x-text="member.label"></li>
+                            </template>
+                        </ul>
+                        <p x-show="open && filtered.length === 0 && search.length > 0"
+                           class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-sm px-4 py-3 text-sm text-gray-500">
+                            Tidak ada member ditemukan.
+                        </p>
                         @error('member_registration_id')
                             <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                         @enderror
@@ -131,11 +177,20 @@
                         @enderror
                     </div>
                     <div>
-                        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium w-full">Daftarkan</button>
+                        <button type="submit"
+                                :disabled="!registrationId"
+                                :class="registrationId ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-300 cursor-not-allowed'"
+                                class="text-white px-6 py-2 rounded-lg font-medium w-full transition-colors">
+                            Daftarkan
+                        </button>
                     </div>
                 </div>
+                <p x-show="!registrationId && search.length === 0" class="mt-2 text-xs text-gray-400">
+                    Tersedia {{ $availableRegistrations->count() }} member yang dapat didaftarkan.
+                </p>
             </form>
         </div>
+        @endcan
 
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">

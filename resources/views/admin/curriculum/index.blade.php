@@ -4,9 +4,26 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex justify-between items-center mb-4">
         <h1 class="text-2xl font-bold text-gray-900">Kelola Kurikulum</h1>
+        <a href="{{ route('curriculums.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
+            Tambah Kurikulum
+        </a>
     </div>
+
+    <form method="GET" action="{{ route('curriculums.index') }}" class="mb-6 flex gap-3 items-center">
+        <select name="program_id" onchange="this.form.submit()" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+            <option value="">Semua Program</option>
+            @foreach($programs as $program)
+                <option value="{{ $program->id }}" {{ request('program_id') == $program->id ? 'selected' : '' }}>
+                    {{ $program->program_name }}
+                </option>
+            @endforeach
+        </select>
+        @if(request('program_id'))
+            <a href="{{ route('curriculums.index') }}" class="text-sm text-gray-500 hover:text-gray-700">Reset</a>
+        @endif
+    </form>
 
     @if (session('success'))
         <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">

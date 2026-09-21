@@ -21,6 +21,7 @@ class Program extends Model
         'admin_fee_timing',
         'program_description',
         'image_path',
+        'receipt_template_path',
         'is_active',
     ];
 
@@ -64,6 +65,21 @@ class Program extends Model
     public function branchQuotas(): HasMany
     {
         return $this->hasMany(BranchProgramQuota::class);
+    }
+
+    public function paymentPlans(): HasMany
+    {
+        return $this->hasMany(ProgramPaymentPlan::class);
+    }
+
+    public function activePaymentPlans(): HasMany
+    {
+        return $this->hasMany(ProgramPaymentPlan::class)->where('is_active', true);
+    }
+
+    public function registrations(): HasMany
+    {
+        return $this->hasMany(MemberRegistration::class);
     }
 
     public function classes(): HasMany

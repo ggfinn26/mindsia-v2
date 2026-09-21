@@ -4,12 +4,40 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8" x-data="{ showConfirmModal: false, confirmTitle: '', confirmMessage: '', confirmActionUrl: '', confirmMethod: 'DELETE', confirmActionText: 'Hapus' }">
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex justify-between items-center mb-4">
         <h1 class="text-2xl font-bold text-gray-900">Kelas</h1>
         <a href="{{ route('classrooms.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
             Buat Kelas Baru
         </a>
     </div>
+
+    <form method="GET" action="{{ route('classrooms.index') }}" class="mb-6 flex flex-wrap gap-3 items-center">
+        <select name="branch_id" onchange="this.form.submit()" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+            <option value="">Semua Cabang</option>
+            @foreach($branches as $branch)
+                <option value="{{ $branch->id }}" {{ request('branch_id') == $branch->id ? 'selected' : '' }}>
+                    {{ $branch->branch_name }}
+                </option>
+            @endforeach
+        </select>
+        <select name="program_id" onchange="this.form.submit()" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+            <option value="">Semua Program</option>
+            @foreach($programs as $program)
+                <option value="{{ $program->id }}" {{ request('program_id') == $program->id ? 'selected' : '' }}>
+                    {{ $program->program_name }}
+                </option>
+            @endforeach
+        </select>
+        <select name="status" onchange="this.form.submit()" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+            <option value="">Semua Status</option>
+            @foreach($statuses as $value => $label)
+                <option value="{{ $value }}" {{ request('status') === $value ? 'selected' : '' }}>{{ $label }}</option>
+            @endforeach
+        </select>
+        @if(request()->hasAny(['branch_id', 'program_id', 'status']))
+            <a href="{{ route('classrooms.index') }}" class="text-sm text-gray-500 hover:text-gray-700">Reset</a>
+        @endif
+    </form>
 
     @if (session('success'))
         <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">

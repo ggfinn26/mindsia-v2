@@ -8,17 +8,22 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class ClassRoomRepository
 {
-    public function all(): LengthAwarePaginator
+    public function all(array $filters = []): LengthAwarePaginator
     {
-        return ClassRoom::with('program', 'branch', 'tutor')
+        return ClassRoom::with('program', 'branch', 'tutor', 'memberClasses')
+            ->when($filters['branch_id'] ?? null, fn ($q, $v) => $q->where('branch_id', $v))
+            ->when($filters['program_id'] ?? null, fn ($q, $v) => $q->where('program_id', $v))
+            ->when($filters['status'] ?? null, fn ($q, $v) => $q->where('status', $v))
             ->latest()
             ->paginate(15);
     }
 
     public function findWithDetails(int $id): ClassRoom
     {
-        return ClassRoom::with('program', 'branch', 'tutor', 'schedules', 'memberClasses', 'tutorChangeHistories', 'tests')
-            ->findOrFail($id);
+        return ClassRoom::with([
+            'program', 'branch', 'tutor', 'schedules', 'tutorChangeHistories', 'tests',
+            'memberClasses.registration.memberData',
+        ])->findOrFail($id);
     }
 
     public function create(array $data): ClassRoom

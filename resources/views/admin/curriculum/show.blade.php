@@ -31,7 +31,7 @@
         <div class="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
             <h2 class="text-lg font-bold text-gray-900">📅 Sesi Pertemuan Mingguan</h2>
             <button type="button" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm"
-                    onclick="document.getElementById('add-session-modal').classList.remove('hidden')">
+                    onclick="openAddSessionModal()">
                 + Tambah Sesi
             </button>
         </div>
@@ -124,7 +124,7 @@
         </div>
         <form id="session-form" method="POST" class="p-6 space-y-4">
             @csrf
-            @method('PUT')
+            <input type="hidden" id="session-method" name="_method" value="POST">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Minggu ke-</label>
                 <input type="number" id="session-number" name="session_number" required min="1"
@@ -162,11 +162,11 @@
 <div id="item-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div class="bg-white rounded-lg shadow-lg max-w-md w-full mx-4">
         <div class="p-6 border-b border-gray-200">
-            <h3 class="text-lg font-bold text-gray-900">Tambah Materi</h3>
+            <h3 id="item-modal-title" class="text-lg font-bold text-gray-900">Tambah Materi</h3>
         </div>
         <form id="item-form" method="POST" class="p-6 space-y-4">
             @csrf
-            @method('PUT')
+            <input type="hidden" id="item-method" name="_method" value="POST">
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">No. Urutan</label>
@@ -210,9 +210,18 @@
 </div>
 
 <script>
+    function openAddSessionModal() {
+        document.getElementById('session-modal-title').textContent = 'Tambah Sesi Pertemuan';
+        document.getElementById('session-form').action = '{{ route("curriculums.sessions.store", $curriculum) }}';
+        document.getElementById('session-method').value = 'POST';
+        document.getElementById('session-form').reset();
+        document.getElementById('session-modal').classList.remove('hidden');
+    }
+
     function editSession(id, session) {
         document.getElementById('session-modal-title').textContent = 'Edit Sesi Pertemuan';
         document.getElementById('session-form').action = '{{ url("curriculum-sessions") }}/' + id;
+        document.getElementById('session-method').value = 'PUT';
         document.getElementById('session-number').value = session.session_number;
         document.getElementById('session-title').value = session.session_title;
         document.getElementById('session-description').value = session.description || '';
@@ -222,13 +231,17 @@
     }
 
     function openAddItemModal(sessionId) {
+        document.getElementById('item-modal-title').textContent = 'Tambah Materi';
         document.getElementById('item-form').action = '{{ url("curriculum-sessions") }}/' + sessionId + '/items';
+        document.getElementById('item-method').value = 'POST';
         document.getElementById('item-form').reset();
         document.getElementById('item-modal').classList.remove('hidden');
     }
 
     function editItem(id, item) {
+        document.getElementById('item-modal-title').textContent = 'Edit Materi';
         document.getElementById('item-form').action = '{{ url("curriculum-items") }}/' + id;
+        document.getElementById('item-method').value = 'PUT';
         document.getElementById('item-sequence').value = item.sequence_number;
         document.getElementById('item-type').value = item.material_type;
         document.getElementById('item-name').value = item.item_name;

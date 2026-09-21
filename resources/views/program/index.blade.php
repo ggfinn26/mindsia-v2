@@ -31,6 +31,8 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kode</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Program</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Biaya Admin</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Template</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kurikulum</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                         <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
@@ -42,6 +44,22 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">{{ $program->program_code }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $program->program_name }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Rp {{ number_format($program->program_price, 0, ',', '.') }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                @if($program->admin_fee > 0)
+                                    Rp {{ number_format($program->admin_fee, 0, ',', '.') }}
+                                @else
+                                    <span class="text-gray-400">-</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                @if($program->receipt_template_path)
+                                    <span class="inline-flex items-center gap-1 text-green-700 text-xs">
+                                        <span class="material-symbols-outlined text-[14px]">description</span> Ada
+                                    </span>
+                                @else
+                                    <span class="text-gray-400 text-xs">-</span>
+                                @endif
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 @if($program->curriculum)
                                     <a href="{{ route('curriculums.show', $program->curriculum) }}" class="text-blue-600 hover:text-blue-900">{{ $program->curriculum->curriculum_name }}</a>
@@ -64,7 +82,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">Belum ada program.</td>
+                            <td colspan="8" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">Belum ada program.</td>
                         </tr>
                     @endforelse
                 </tbody>

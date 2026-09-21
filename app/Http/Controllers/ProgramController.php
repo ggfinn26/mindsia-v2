@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProgramRequest;
 use App\Http\Requests\UpdateProgramRequest;
 use App\Models\Program;
+use App\Services\TelegramStorageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -13,6 +14,8 @@ use Illuminate\View\View;
 
 class ProgramController extends Controller implements HasMiddleware
 {
+    public function __construct(private TelegramStorageService $telegramStorage) {}
+
     public static function middleware(): array
     {
         return [
@@ -40,6 +43,17 @@ class ProgramController extends Controller implements HasMiddleware
             $data['image_path'] = $request->file('image')->store('programs', 'public');
         }
 
+        if ($request->hasFile('receipt_template')) {
+            $file = $request->file('receipt_template');
+            $uploaded = $this->telegramStorage->uploadFile(
+                $file->getRealPath(),
+                $file->getClientOriginalName(),
+                'program_receipt_template',
+                null,
+            );
+            $data['receipt_template_path'] = $uploaded['file_id'];
+        }
+
         Program::create($data);
 
         return redirect()->route('programs.index')->with('success', 'Program berhasil dibuat.');
@@ -47,7 +61,7 @@ class ProgramController extends Controller implements HasMiddleware
 
     public function show(Program $program): View
     {
-        $program->load('curriculum', 'branchQuotas.branch');
+        $program->load('curriculum', 'branchQuotas.branch', 'paymentPlans');
 
         return view('program.show', compact('program'));
     }
@@ -68,6 +82,17 @@ class ProgramController extends Controller implements HasMiddleware
             $data['image_path'] = $request->file('image')->store('programs', 'public');
         }
 
+        if ($request->hasFile('receipt_template')) {
+            $file = $request->file('receipt_template');
+            $uploaded = $this->telegramStorage->uploadFile(
+                $file->getRealPath(),
+                $file->getClientOriginalName(),
+                'program_receipt_template',
+                null,
+            );
+            $data['receipt_template_path'] = $uploaded['file_id'];
+        }
+
         $program->update($data);
 
         return redirect()->route('programs.show', $program)->with('success', 'Program berhasil diperbarui.');
@@ -75,8 +100,8 @@ class ProgramController extends Controller implements HasMiddleware
 
     public function destroy(Program $program): RedirectResponse
     {
-        if ($program->classes()->where('status', '!=', 'completed')->exists()) {
-            return back()->with('error', 'Program tidak bisa dihapus karena masih ada kelas aktif.');
+        if ($program->registrations()->exists()) {
+            return back()->with('error', 'Program tidak bisa dinonaktifkan karena masih ada registrasi member.');
         }
 
         $program->update(['is_active' => false]);

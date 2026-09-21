@@ -53,6 +53,38 @@
                 @enderror
             </div>
 
+            <div x-data="{ showAdminFee: {{ $program->admin_fee > 0 ? 'true' : 'false' }} }">
+                <div class="flex items-center gap-2 mb-2">
+                    <input type="checkbox" id="toggle_admin_fee" x-model="showAdminFee" class="rounded" />
+                    <label for="toggle_admin_fee" class="text-sm font-medium text-gray-700 cursor-pointer">Kenakan Biaya Admin</label>
+                </div>
+                <div x-show="showAdminFee" x-transition class="space-y-4 pl-4 border-l-2 border-blue-200">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nominal Biaya Admin</label>
+                        <input type="number" name="admin_fee" min="0" step="0.01"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                               value="{{ old('admin_fee', $program->admin_fee) }}" placeholder="0" />
+                        @error('admin_fee')
+                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Mode Biaya Admin</label>
+                        <select name="admin_fee_mode" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="per_registration" {{ old('admin_fee_mode', $program->admin_fee_mode) === 'per_registration' ? 'selected' : '' }}>Per Registrasi</option>
+                            <option value="per_transaction" {{ old('admin_fee_mode', $program->admin_fee_mode) === 'per_transaction' ? 'selected' : '' }}>Per Transaksi</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Waktu Penagihan</label>
+                        <select name="admin_fee_timing" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="on_first_payment" {{ old('admin_fee_timing', $program->admin_fee_timing) === 'on_first_payment' ? 'selected' : '' }}>Saat Pembayaran Pertama</option>
+                            <option value="on_registration" {{ old('admin_fee_timing', $program->admin_fee_timing) === 'on_registration' ? 'selected' : '' }}>Saat Registrasi</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Foto Program (Opsional)</label>
                 @if($program->image_path)
@@ -73,6 +105,22 @@
                 <textarea name="program_description" rows="4"
                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">{{ old('program_description', $program->program_description) }}</textarea>
                 @error('program_description')
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Template Kwitansi (.docx)</label>
+                @if($program->receipt_template_path)
+                    <p class="text-sm text-green-700 bg-green-50 border border-green-200 rounded px-3 py-2 mb-2 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[16px]">description</span>
+                        Template sudah ada. Upload file baru untuk mengganti.
+                    </p>
+                @endif
+                <input type="file" name="receipt_template" accept=".docx"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                <p class="text-xs text-gray-500 mt-1">Format: .docx. Kosongkan jika tidak ingin mengubah template.</p>
+                @error('receipt_template')
                     <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                 @enderror
             </div>

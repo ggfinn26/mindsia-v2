@@ -32,16 +32,17 @@ class CurriculumController extends Controller implements HasMiddleware
 
     public function index(): View
     {
+        $programs = Program::where('is_active', true)->orderBy('program_name')->get(['id', 'program_name']);
 
         $curriculums = Curriculum::select('id', 'program_id', 'curriculum_name', 'description', 'is_active', 'created_at')
             ->with('program:id,program_name')
             ->with(['sessions' => fn ($q) => $q->select('id', 'curriculum_id')])
             ->with(['sessions.items' => fn ($q) => $q->select('id', 'curriculum_session_id')])
-            ->where('is_active', true)
+            ->when(request('program_id'), fn ($q) => $q->where('program_id', request('program_id')))
             ->latest()
             ->paginate(15);
 
-        return view('admin.curriculum.index', compact('curriculums'));
+        return view('admin.curriculum.index', compact('curriculums', 'programs'));
     }
 
     public function create(): View
