@@ -1,6 +1,7 @@
 import Alpine from "alpinejs";
 import "./employee-portal";
 import "./member-register";
+import "./select-enhance";
 window.Alpine = Alpine;
 Alpine.start();
 import "./password-toggle";
@@ -9,3 +10,5 @@ import "./redirect-countdown";
 import "./resend-timer";
 import "./program-registration";
 import "./letter-generate";
+import "./passage-preview";
+import "./toefl-test-show";
