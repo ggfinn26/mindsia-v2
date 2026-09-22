@@ -213,6 +213,7 @@ class PermissionSeeder extends Seeder
 
             // Class
             'class.manage',
+            'class.member.assign',
             'class.attendance.record',
             'class.session.update',
             'class.assessment.record',
@@ -277,6 +278,9 @@ class PermissionSeeder extends Seeder
             'curriculum.quota.update',
             'curriculum.interactive.manage',
             'curriculum.interactive.result.view',
+
+            // Program payment plans
+            'program.payment_plan.manage',
         ];
 
         foreach ($permissions as $name) {

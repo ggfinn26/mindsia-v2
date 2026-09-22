@@ -61,13 +61,13 @@ class EmployeeSeeder extends Seeder
         // BANDUNG I=Cipadung, BANDUNG II=Cihapit, BANDUNG III=Panyileukan (BranchDataSeeder names)
         ['ET001', 'Ms. Winda',    'F', 'branch:Ciamis',      'Regular Tutor', '01-02-2025', '01-09-2025'],
         ['ET002', 'Ms. Salma',    'F', 'branch:Cimahi',      'Regular Tutor', '17-04-2025', '17-09-2025'],
-        ['ET003', 'Mr. Azkal',    'M', 'branch:Cipadung',    'Regular Tutor', '05-05-2025', '05-11-2025'],
+        ['ET003', 'Mr. Azkal',    'M', 'branch:Bandung I Cipadung',    'Regular Tutor', '05-05-2025', '05-11-2025'],
         ['ET004', 'Ms. Tuti',     'F', 'branch:Kuningan',    'Regular Tutor', '19-05-2025', '19-06-2026'],
         ['ET005', 'Ms. Vannya',   'F', 'branch:Cikarang',    'Regular Tutor', '01-05-2025', '01-11-2025'],
         ['ET006', 'Mr. Subhan',   'M', 'branch:Cirebon',     'Regular Tutor', '29-04-2025', '29-10-2025'],
-        ['ET007', 'Ms. Zayyinah', 'F', 'branch:Cihapit',     'Regular Tutor', '18-07-2025', '18-12-2025'],
+        ['ET007', 'Ms. Zayyinah', 'F', 'branch:Bandung II Cihapit',     'Regular Tutor', '18-07-2025', '18-12-2025'],
         ['ET008', 'Ms. Salsa',    'F', 'branch:Indramayu',   'Regular Tutor', '15-06-2025', '15-12-2025'],
-        ['ET009', 'Ms. Fitri',    'F', 'branch:Panyileukan', 'Regular Tutor', '18-07-2025', '18-12-2025'],
+        ['ET009', 'Ms. Fitri',    'F', 'branch:Bandung III Panyileukan', 'Regular Tutor', '18-07-2025', '18-12-2025'],
         // ET010: off 19-01-2025 typo error di Excel — dikoreksi 19-01-2026 (kontrak 6 bulan)
         ['ET010', 'Ms. Dheta',    'F', 'branch:Banjar',      'Regular Tutor', '19-07-2025', '19-01-2026'],
         ['ET011', 'Mr. Rafli',    'M', 'branch:Garut',       'Regular Tutor', '14-07-2025', '14-07-2026'],

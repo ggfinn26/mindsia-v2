@@ -33,8 +33,8 @@ class BranchDataSeeder extends Seeder
                         'branches' => [
                             ['code' => 'A4.', 'name' => 'Tangerang Selatan', 'lat' => -6.305723706090739,  'lng' => 106.758476437401,    'url' => 'https://share.google/U2AGBUxOAXagVzDFh'],
                             ['code' => 'A5.', 'name' => 'Kota Tangerang',    'lat' => -6.167137547727367,  'lng' => 106.62706655784697,  'url' => 'https://maps.app.goo.gl/a391hUrKbuRS9cFX9'],
-                            ['code' => 'B18.', 'name' => 'Bogor',            'lat' => -6.591707170800572,  'lng' => 106.78621142208179,  'url' => 'https://maps.app.goo.gl/PRVCd295zTPts1SP7?g_st=ac'],
-                            ['code' => 'B20.', 'name' => 'Cibinong',         'lat' => -6.476643743696853,  'lng' => 106.85504276624377,  'url' => 'https://maps.app.goo.gl/SguDJjUCH91fS1Fs8'],
+                            ['code' => 'B18.', 'name' => 'Bogor',       'lat' => -6.591707170800572,  'lng' => 106.78621142208179,  'url' => 'https://maps.app.goo.gl/PRVCd295zTPts1SP7?g_st=ac'],
+                            ['code' => 'B20.', 'name' => 'Cibinong',       'lat' => -6.476643743696853,  'lng' => 106.85504276624377,  'url' => 'https://maps.app.goo.gl/SguDJjUCH91fS1Fs8'],
                         ],
                     ],
                     [
@@ -56,10 +56,10 @@ class BranchDataSeeder extends Seeder
                     [
                         'name' => 'Area 4',
                         'branches' => [
-                            ['code' => 'B1.I.',   'name' => 'Cipadung',   'lat' => -6.925324063620179,   'lng' => 107.71949182208294,  'url' => 'https://maps.app.goo.gl/JxRECGzhRAJovxLc7?g_st=awb'],
-                            ['code' => 'B1.II.',  'name' => 'Cihapit',    'lat' => -6.907885891441036,   'lng' => 107.62788000496187,  'url' => 'https://maps.app.goo.gl/RwTnRqTzyRmedmrP8?g_st=iw'],
-                            ['code' => 'B1.III.', 'name' => 'Panyileukan', 'lat' => -6.93883975845093,    'lng' => 107.71546837406802,  'url' => 'https://maps.app.goo.gl/9ZNXMFijzDooKuXf9'],
-                            ['code' => 'B2.',     'name' => 'Cimahi',     'lat' => -6.868399474263653,   'lng' => 107.53954878959046,  'url' => 'https://maps.app.goo.gl/VyV6Y4x1owEEtiUV8?g_st=ac'],
+                            ['code' => 'B1.I.',   'name' => 'Bandung I Cipadung',   'lat' => -6.925324063620179,   'lng' => 107.71949182208294,  'url' => 'https://maps.app.goo.gl/JxRECGzhRAJovxLc7?g_st=awb'],
+                            ['code' => 'B1.II.',  'name' => 'Bandung II Cihapit',  'lat' => -6.907885891441036,   'lng' => 107.62788000496187,  'url' => 'https://maps.app.goo.gl/RwTnRqTzyRmedmrP8?g_st=iw'],
+                            ['code' => 'B1.III.', 'name' => 'Bandung III Panyileukan', 'lat' => -6.93883975845093,    'lng' => 107.71546837406802,  'url' => 'https://maps.app.goo.gl/9ZNXMFijzDooKuXf9'],
+                            ['code' => 'B2.',     'name' => 'Cimahi',      'lat' => -6.868399474263653,   'lng' => 107.53954878959046,  'url' => 'https://maps.app.goo.gl/VyV6Y4x1owEEtiUV8?g_st=ac'],
                         ],
                     ],
                     [
@@ -106,7 +106,6 @@ class BranchDataSeeder extends Seeder
                         'branches' => [
                             ['code' => 'C1.', 'name' => 'Brebes',     'lat' => -6.8748910437254525,  'lng' => 109.04325269324289,  'url' => 'https://maps.app.goo.gl/VHwoUZaNmAjMq8hB9'],
                             ['code' => 'C2.', 'name' => 'Tegal',      'lat' => -6.877860490096986,   'lng' => 109.13282986259136,  'url' => 'https://maps.app.goo.gl/94Hj1T8cukbG1qCL8'],
-                            ['code' => 'C3.', 'name' => 'Slawi',      'lat' => -6.973715039915537,   'lng' => 109.13265637612179,  'url' => 'https://maps.app.goo.gl/D7URbeG3Hcbm5E348'],
                             ['code' => 'C6.', 'name' => 'Pekalongan', 'lat' => -6.8996435051407285,  'lng' => 109.66405804908604,  'url' => 'https://share.google/bbJOct3PpXqnTKcjA'],
                             ['code' => 'C7.', 'name' => 'Pemalang',   'lat' => -6.896980999336133,   'lng' => 109.3847396644227,   'url' => 'https://maps.app.goo.gl/FwWTJ71h6cARYnyN9?g_st=ic'],
                         ],
