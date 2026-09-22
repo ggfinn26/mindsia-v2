@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Models\Branch;
 use App\Models\Employee;
 use App\Models\Institution;
 use App\Models\MemberAccount;
@@ -17,11 +18,14 @@ class MemberSelfRegisterTest extends TestCase
 
     private Institution $institution;
 
+    private Branch $branch;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->institution = Institution::factory()->create();
+        $this->branch = Branch::factory()->create();
     }
 
     /** Payload valid untuk register — tanpa referral & program_id */
@@ -42,6 +46,7 @@ class MemberSelfRegisterTest extends TestCase
             'mother_whatsapp' => '081299988876',
             'address' => 'Jl. Merdeka No. 10, Jakarta',
             'institution_id' => $this->institution->id,
+            'branch_id' => $this->branch->id,
             'program_id' => null,
             'referred_by_code' => null,
             'password' => 'Secret@123',
@@ -202,7 +207,34 @@ class MemberSelfRegisterTest extends TestCase
         $this->assertNull($memberData->program_id);
     }
 
-    // MR-11 — Transaksi rollback jika gagal saat MemberAccount::create
+    // MR-11 — branch_id wajib diisi
+    public function test_register_branch_id_wajib(): void
+    {
+        $payload = $this->validPayload();
+        unset($payload['branch_id']);
+
+        $this->post(route('member.register.post'), $payload)
+            ->assertRedirect()
+            ->assertSessionHasErrors('branch_id');
+    }
+
+    // MR-12 — branch_id tersimpan di members_data
+    public function test_register_branch_id_tersimpan(): void
+    {
+        Notification::fake();
+
+        $payload = $this->validPayload();
+
+        $this->post(route('member.register.post'), $payload)
+            ->assertRedirect(route('verification.notice'));
+
+        $this->assertDatabaseHas('members_data', [
+            'email' => $payload['email'],
+            'branch_id' => $this->branch->id,
+        ]);
+    }
+
+    // MR-14 — Transaksi rollback jika gagal saat MemberAccount::create
     public function test_register_rollback_jika_member_account_gagal(): void
     {
         $payload = $this->validPayload();

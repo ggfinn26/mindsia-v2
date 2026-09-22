@@ -160,8 +160,9 @@ test('PQ-07 store quota creates entry via updateOrCreate', function () {
 
     $this->actingAs($this->boardUser)
         ->post(route('programs.quotas.store', $program), [
-            'branch_id' => $this->branch->id,
-            'quota_limit' => 30,
+            'quotas' => [
+                $this->branch->id => 30,
+            ],
         ])
         ->assertRedirect();
 
@@ -182,8 +183,9 @@ test('PQ-07b store quota upserts existing record', function () {
 
     $this->actingAs($this->boardUser)
         ->post(route('programs.quotas.store', $program), [
-            'branch_id' => $this->branch->id,
-            'quota_limit' => 50,
+            'quotas' => [
+                $this->branch->id => 50,
+            ],
         ])
         ->assertRedirect();
 
@@ -194,7 +196,7 @@ test('PQ-07b store quota upserts existing record', function () {
         'quota_limit' => 50,
     ]);
     expect(
-        \App\Models\BranchProgramQuota::where('branch_id', $this->branch->id)
+        BranchProgramQuota::where('branch_id', $this->branch->id)
             ->where('program_id', $program->id)
             ->count()
     )->toBe(1);
@@ -205,8 +207,9 @@ test('PQ-07c store quota without permission returns 403', function () {
 
     $this->actingAs($this->regularUser)
         ->post(route('programs.quotas.store', $program), [
-            'branch_id' => $this->branch->id,
-            'quota_limit' => 10,
+            'quotas' => [
+                $this->branch->id => 10,
+            ],
         ])
         ->assertForbidden();
 });
