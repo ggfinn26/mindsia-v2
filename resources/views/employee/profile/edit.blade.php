@@ -73,19 +73,126 @@
                             <input type="file" name="photo" id="photo" accept="image/jpeg,image/png,image/jpg" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-gray-300 rounded-lg shadow-sm px-3 py-2 bg-white">
                             <p class="mt-1 text-xs text-gray-500">Maksimal ukuran 2MB. Format JPG, JPEG, PNG.</p>
                         </div>
+                        
+                        <div class="pt-4 border-t border-gray-100">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tanda Tangan</label>
+                            
+                            @if($employee->signature_image)
+                                <div class="mb-3 p-3 border border-gray-200 rounded-lg bg-gray-50 max-w-sm">
+                                    <p class="text-xs text-gray-500 mb-2">Tanda Tangan Saat Ini:</p>
+                                    <img src="{{ Storage::url($employee->signature_image) }}" alt="Tanda Tangan" class="h-16 object-contain">
+                                </div>
+                                <p class="text-xs text-gray-500 mb-2">Untuk memperbarui, silakan gambar ulang tanda tangan Anda di bawah ini:</p>
+                            @else
+                                <p class="text-xs text-gray-500 mb-2">Silakan gambar tanda tangan Anda di dalam kotak ini:</p>
+                            @endif
+                            
+                            <div class="border border-gray-300 rounded-lg overflow-hidden w-full max-w-sm relative shadow-sm">
+                                <canvas id="signature-pad" width="380" height="180" class="bg-white w-full touch-none cursor-crosshair"></canvas>
+                                <button type="button" id="clear-signature" class="absolute top-2 right-2 text-xs bg-white text-gray-600 border border-gray-300 px-2 py-1 rounded hover:bg-gray-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#5586DB]">Bersihkan</button>
+                            </div>
+                            <input type="hidden" name="signature_base64" id="signature_base64">
+                            <p class="mt-1.5 text-xs text-gray-500">Gunakan mouse atau sentuh layar untuk menggambar.</p>
+                        </div>
                     </div>
                 @endif
             </div>
 
             <div class="bg-gray-50 px-6 py-4 sm:px-8 border-t border-gray-100 flex items-center justify-end gap-3">
-                <a href="{{ route('employee.profile.show') }}" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none">
+                <a href="{{ route('employee.profile.show') }}" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#5586DB] focus:ring-offset-1 transition-colors">
                     Batal
                 </a>
-                <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-[#5586DB] border border-transparent rounded-lg shadow-sm hover:bg-[#4370BC] focus:outline-none">
+                <button type="submit" id="btn-submit" class="px-4 py-2 text-sm font-medium text-white bg-[#5586DB] border border-transparent rounded-lg shadow-sm hover:bg-[#4370BC] focus:outline-none focus:ring-2 focus:ring-[#5586DB] focus:ring-offset-1 transition-colors">
                     Simpan Perubahan
                 </button>
             </div>
         </form>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const canvas = document.getElementById('signature-pad');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+
+    // Fix scaling for crisp lines
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+
+    // Fill background with white
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    function getPos(e) {
+        const r = canvas.getBoundingClientRect();
+        const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+        const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+        return {
+            x: clientX - r.left,
+            y: clientY - r.top
+        };
+    }
+
+    function startPos(e) {
+        drawing = true;
+        const pos = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+        if (e.cancelable) e.preventDefault();
+    }
+
+    function endPos() {
+        drawing = false;
+        ctx.beginPath();
+    }
+
+    function draw(e) {
+        if (!drawing) return;
+        const pos = getPos(e);
+        ctx.lineWidth = 2.5;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.strokeStyle = '#000000';
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+        if (e.cancelable) e.preventDefault();
+    }
+
+    canvas.addEventListener('mousedown', startPos, {passive: false});
+    canvas.addEventListener('mouseup', endPos);
+    canvas.addEventListener('mousemove', draw, {passive: false});
+    canvas.addEventListener('mouseleave', endPos);
+    
+    canvas.addEventListener('touchstart', startPos, {passive: false});
+    canvas.addEventListener('touchend', endPos);
+    canvas.addEventListener('touchmove', draw, {passive: false});
+
+    document.getElementById('clear-signature').addEventListener('click', () => {
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    });
+
+    const form = document.querySelector('form');
+    form.addEventListener('submit', () => {
+        // Create an empty canvas to compare with
+        const blank = document.createElement('canvas');
+        blank.width = canvas.width;
+        blank.height = canvas.height;
+        const blankCtx = blank.getContext('2d');
+        blankCtx.fillStyle = '#ffffff';
+        blankCtx.fillRect(0, 0, blank.width, blank.height);
+        
+        // If not blank, set the hidden field value
+        if (canvas.toDataURL() !== blank.toDataURL()) {
+            document.getElementById('signature_base64').value = canvas.toDataURL('image/png');
+        }
+    });
+});
+</script>
 @endsection

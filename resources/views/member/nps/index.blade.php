@@ -1,0 +1,27 @@
+@extends('layouts.dashboard')
+
+@section('title', 'NPS Response - MINDSIA')
+@section('header_title', 'NPS Response')
+
+@section('content')
+<div class="max-w-6xl mx-auto">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div>
+            <h2 class="text-2xl font-bold font-jakarta text-gray-900">Net Promoter Score (NPS)</h2>
+            <p class="text-sm text-gray-500 mt-1">Beritahu kami seberapa besar kemungkinan Anda merekomendasikan MINDSIA.</p>
+        </div>
+    </div>
+
+    <!-- Placeholder State -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-10 flex flex-col items-center justify-center text-center">
+        <div class="h-20 w-20 rounded-full bg-blue-50 flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-[#5586DB] text-4xl">thumbs_up_down</span>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900 font-jakarta mb-2">Form NPS Belum Tersedia</h3>
+        <p class="text-gray-500 max-w-md mx-auto mb-6">Survei NPS biasanya akan dikirimkan kepada Anda pada akhir periode pembelajaran atau setelah program selesai.</p>
+        <a href="{{ route('member.dashboard') }}" class="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors shadow-sm">
+            Kembali ke Dashboard
+        </a>
+    </div>
+</div>
+@endsection

@@ -240,6 +240,31 @@
         background-color: var(--color-background);
         color: var(--color-on-background);
     }
+    
+    select {
+        padding: 0.625rem 0.875rem !important; /* py-2.5 px-3.5 */
+        background-color: #ffffff !important;
+        border: 1px solid #E5E7EB !important;
+        border-radius: 0.75rem !important; /* rounded-xl */
+        font-size: 13px !important;
+        color: #111827 !important;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+        cursor: pointer !important;
+        appearance: none !important;
+        background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%239CA3AF%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E") !important;
+        background-position: right 0.75rem center !important;
+        background-size: 1.25rem !important;
+        background-repeat: no-repeat !important;
+        padding-right: 2.5rem !important;
+        min-height: 42px !important;
+        line-height: 1.25rem !important;
+    }
+    
+    select:focus {
+        outline: none !important;
+        border-color: #5586DB !important;
+        box-shadow: 0 0 0 2px rgba(85, 134, 219, 0.2) !important;
+    }
 }
 
 @layer utilities {

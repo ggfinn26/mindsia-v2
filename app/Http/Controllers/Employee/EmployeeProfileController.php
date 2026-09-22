@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Intervention\Image\Drivers\Gd\Driver as GdDriver;
+use Intervention\Image\Encoders\WebpEncoder;
+use Intervention\Image\ImageManager;
 
 class EmployeeProfileController extends Controller
 {
@@ -55,6 +59,7 @@ class EmployeeProfileController extends Controller
             'telegram_chat_id' => 'nullable|string|max:50',
             'whatsapp_number' => 'nullable|string|max:20',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'signature_base64' => 'nullable|string',
         ]);
 
         $user->update([
@@ -76,6 +81,27 @@ class EmployeeProfileController extends Controller
                     $employeeData['image_path'] = $storagePath;
                 } catch (\Exception $e) {
                     return redirect()->back()->withErrors(['photo' => $e->getMessage()]);
+                }
+            }
+
+            if ($request->filled('signature_base64')) {
+                try {
+                    $base64 = $request->input('signature_base64');
+                    if (str_contains($base64, ',')) {
+                        @[$type, $file_data] = explode(';', $base64);
+                        @[, $file_data] = explode(',', $file_data);
+                        $image_data = base64_decode($file_data);
+
+                        $manager = new ImageManager(new GdDriver);
+                        $image = $manager->read($image_data);
+                        $webp = $image->encode(new WebpEncoder(quality: 85));
+
+                        $filename = 'signatures/'.Str::random(40).'.webp';
+                        Storage::put('public/'.$filename, (string) $webp);
+                        $employeeData['signature_image'] = 'public/'.$filename;
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Failed to save signature: '.$e->getMessage());
                 }
             }
 

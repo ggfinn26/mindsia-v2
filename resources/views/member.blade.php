@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Employee Portal - MINDSIA</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0&display=swap" rel="stylesheet"></noscript>
+    <style>
+        .font-jakarta { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-inter { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+@php
+    $allowedViews = ['landing', 'login'];
+    $initialView = 'landing';
+    $animateBack = false;
+    
+    if (in_array(request()->query('view'), $allowedViews, true)) {
+        $initialView = request()->query('view');
+    }
+    if (in_array(old('form_type'), $allowedViews, true)) {
+        $initialView = old('form_type');
+    }
+    if (request()->query('transition') === 'back') {
+        $targetView = $initialView;
+        $initialView = 'loading'; // Start in opened state visually
+        $animateBack = $targetView; // The view we want to transition to
+    }
+@endphp
+<body class="w-full h-screen overflow-hidden bg-[#F8FAFC] text-[#111827] font-inter antialiased"
+      x-data="employeePortal('{{ $initialView }}')" @input="checkValidities()" @change="checkValidities()"
+      x-init="{{ $animateBack ? "setTimeout(() => { view = '{$animateBack}' }, 50)" : "" }}">
+
+    <div class="relative w-full h-full overflow-hidden">
+
+        <!-- ==================== LEFT COVER ==================== -->
+        <div class="absolute left-0 top-0 w-full flex flex-col items-center justify-center text-center overflow-hidden transition-all duration-700 ease-in-out z-20 {{ $initialView === 'landing' ? 'h-full md:w-full' : 'h-[15vh] md:h-full md:w-[40%] lg:w-[45%]' }}"
+             :class="{ 'h-full md:w-full': view === 'landing', 'h-[15vh] md:h-full md:w-[40%] lg:w-[45%]': view !== 'landing' }">
+
+            <div class="absolute inset-0 bg-gradient-to-br from-[#5586DB] to-[#00AACC]"></div>
+            <div class="absolute inset-0 animated-pattern pointer-events-none"></div>
+
+            <!-- Landing Content -->
+            <div class="relative z-10 w-full max-w-3xl px-6 flex flex-col items-center transition-all duration-500"
+                 x-show="view === 'landing'"
+                 x-transition:enter="transition ease-out duration-700 delay-300"
+                 x-transition:enter-start="opacity-0 translate-y-12"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 x-transition:leave="transition ease-in duration-300"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 {!! $initialView !== 'landing' ? 'style="display: none;"' : '' !!}>
+
+                <img src="/img/logo/mindsia-logo.webp" alt="Mindsia Logo"
+                     class="h-16 md:h-28 w-auto mb-4 md:mb-6 filter brightness-0 invert drop-shadow-lg">
+                <h2 class="font-jakarta font-extrabold text-[36px] md:text-[64px] tracking-tight text-white mb-4 md:mb-6 leading-[1.1] drop-shadow-md">
+                    Portal <br><span class="text-white/80">Member</span>
+                </h2>
+                <p class="text-[16px] md:text-[20px] text-white/85 leading-relaxed font-medium mb-6 md:mb-12 max-w-2xl mx-auto">
+                    Sistem Informasi Manajemen Terpadu untuk operasional, akademik, dan sumber daya manusia MINDSIA.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 md:gap-5 w-full sm:w-auto">
+                    <button @click="view = 'login'"
+                            class="w-full sm:w-auto bg-white text-[#5586DB] font-bold text-lg py-3 md:py-3.5 px-12 rounded-xl hover:bg-[#F8FAFC] transition shadow-xl hover:shadow-2xl transform hover:-translate-y-1">
+                        Login
+                    </button>
+                    <button @click="view = 'loading'; setTimeout(() => window.location.href = '{{ route('member.register') }}', 500)"
+                            class="w-full sm:w-auto bg-transparent border-2 border-white/80 text-white font-bold text-lg py-3 md:py-3.5 px-12 rounded-xl hover:bg-white/10 transition hover:border-white">
+                        Daftar
+                    </button>
+                    <a href="{{ route('home') }}"
+                       class="w-full sm:w-auto flex justify-center items-center bg-transparent border-2 border-white/80 text-white font-bold text-lg py-3 md:py-3.5 px-6 rounded-xl hover:bg-white/10 transition hover:border-white">
+                        Halaman Utama
+                    </a>
+                </div>
+            </div>
+
+            <!-- Split Content (shown when form is active) -->
+            <div class="relative z-10 w-full flex flex-col items-center md:items-center transition-all duration-500"
+                 x-show="view !== 'landing'"
+                 x-transition:enter="transition ease-out duration-700 delay-500"
+                 x-transition:enter-start="opacity-0 -translate-y-4 md:translate-y-0 md:-translate-x-12"
+                 x-transition:enter-end="opacity-100 translate-y-0 md:translate-x-0"
+                 x-transition:leave="transition ease-in duration-300"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 {!! $initialView === 'landing' ? 'style="display: none;"' : '' !!}>
+
+                <div class="max-w-md px-10 text-left w-full">
+                    <img src="/img/logo/mindsia-logo.webp" alt="Mindsia Logo"
+                         class="h-10 md:h-20 w-auto mb-2 md:mb-8 filter brightness-0 invert opacity-90 cursor-pointer hover:opacity-80 transition drop-shadow-md"
+                         @click="view = 'landing'" title="Kembali ke awal">
+                    <h2 class="hidden md:block font-jakarta font-extrabold text-[36px] md:text-[48px] tracking-tight text-white mb-6 leading-[1.1]">
+                        Portal <br><span class="text-[#F8FAFC]/90">Member</span>
+                    </h2>
+                    <p class="hidden md:block text-[16px] text-white/80 leading-relaxed font-medium">
+                        Sistem Informasi Manajemen Terpadu untuk operasional, akademik, dan sumber daya manusia MINDSIA.
+                    </p>
+                    <h2 class="md:hidden font-jakarta font-extrabold text-[22px] tracking-tight text-white leading-tight">
+                        Portal Member
+                    </h2>
+                </div>
+            </div>
+
+            <div class="hidden md:block absolute bottom-10 left-10 text-[12px] font-bold text-white/40 uppercase tracking-widest font-jakarta"
+                 x-show="view !== 'landing'" {!! $initialView === 'landing' ? 'style="display: none;"' : '' !!}>
+                Internal Access Only
+            </div>
+        </div>
+
+        <!-- ==================== RIGHT FORM ==================== -->
+        <div class="absolute left-0 md:left-auto right-0 bottom-0 w-full md:w-[60%] lg:w-[55%] bg-white shadow-[-10px_0_30px_rgba(17,24,39,0.02)] transition-transform duration-700 ease-in-out z-30 flex flex-col h-[85vh] md:h-full translate-x-0 md:translate-y-0 {{ $initialView === 'landing' ? 'translate-y-full md:translate-x-full' : 'translate-y-0 md:translate-x-0' }}"
+             :class="{ 'translate-y-full md:translate-x-full': view === 'landing', 'translate-y-0 md:translate-x-0': view !== 'landing' }">
+
+            <div class="relative w-full h-full overflow-y-auto overflow-x-hidden p-4 md:p-16 lg:p-24 flex flex-col justify-start md:justify-center pt-20 md:pt-16">
+
+                <!-- Back Button -->
+                <button @click="view = 'landing'"
+                        class="absolute top-6 left-6 md:top-10 md:left-10 text-[#4B5563] hover:text-[#111827] transition-colors flex items-center gap-1.5 font-bold text-sm z-40">
+                    <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                    <span class="hidden md:inline">Kembali</span>
+                </button>
+
+                <!-- ===================== LOGIN FORM ===================== -->
+                <div class="max-w-[400px] w-full mx-auto"
+                     x-show="view === 'login'"
+                     x-transition:enter="transition ease-out duration-500 delay-300"
+                     x-transition:enter-start="opacity-0 translate-y-8"
+                     x-transition:enter-end="opacity-100 translate-y-0"
+                     {!! $initialView !== 'login' ? 'style="display: none;"' : '' !!}>
+
+
+                    <h1 class="font-jakarta font-extrabold text-[24px] md:text-[28px] text-[#111827] mb-2 tracking-tight">Welcome to MINDSIA</h1>
+                    <p class="text-[14px] text-[#4B5563] mb-6 font-medium">Log in to start learning</p>
+
+                    @if (session('error'))
+                        <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-[13px] text-red-600 font-medium">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
+                    <form @submit.prevent="submitLogin()" class="space-y-5">
+                        <div>
+                            <label for="email" class="block mb-1 text-[12px] font-bold text-[#4B5563]">Email</label>
+                            <input type="email" id="email" name="email"
+                                   class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all shadow-sm"
+                                   :class="loginError ? 'border-red-400 focus:border-red-500 focus:ring-red-200' : 'border-[#E5E7EB] focus:border-[#5586DB] focus:ring-[#5586DB]/20'"
+                                   placeholder="member@mindsia.com" required autofocus>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label for="password" class="block text-[12px] font-bold text-[#4B5563]">Password</label>
+                                <a href="{{ route('member.password.request') }}" class="text-[12px] font-bold text-[#5586DB] hover:text-[#00AACC] transition-colors">Lupa kata sandi?</a>
+                            </div>
+                            <div class="relative">
+                                <input type="password"  id="password" name="password"
+                                       class="pr-12 w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-[#E5E7EB] rounded-xl text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-2 focus:ring-[#5586DB]/20 transition-all shadow-sm"
+                                       required>
+                                <button type="button" onclick="const type = this.previousElementSibling.type === 'password' ? 'text' : 'password'; document.querySelectorAll('input[type=password], input[data-is-pwd]').forEach(i => { i.type = type; i.setAttribute('data-is-pwd', '1'); }); document.querySelectorAll('button.pwd-toggle').forEach(b => { if(b.innerHTML.includes('material-symbols-outlined')) { b.innerHTML = type === 'password' ? '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility</span>' : '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility_off</span>'; } else { const eye = b.querySelector('.eye'); const eyeOff = b.querySelector('.eye-off'); if(eye && eyeOff) { eye.classList.toggle('hidden', type === 'text'); eyeOff.classList.toggle('hidden', type === 'password'); } } });"
+                                        class="absolute inset-y-0 right-0 px-4 flex items-center text-[#4B5563] hover:text-[#5586DB] transition-colors focus:outline-none pwd-toggle">
+                                    <span class="material-symbols-outlined text-[16px]">visibility</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div
+                            x-show="loginError"
+                            x-transition:enter="transition ease-out duration-200"
+                            x-transition:enter-start="opacity-0 -translate-y-1 scale-95"
+                            x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                            class="flex items-start gap-2 rounded-lg bg-red-50 border border-red-200 px-3 py-2.5"
+                        >
+                            <svg class="h-4 w-4 text-red-500 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd"/>
+                            </svg>
+                            <p class="text-[12px] font-medium text-red-700" x-text="loginError"></p>
+                        </div>
+
+                        <div class="flex items-center pt-1 pb-4">
+                            <input type="checkbox" id="remember" name="remember"
+                                   class="h-4 w-4 text-[#5586DB] focus:ring-[#5586DB] border-[#E5E7EB] rounded">
+                            <label for="remember" class="ml-2.5 block text-[12px] text-[#4B5563] font-medium">Ingat saya</label>
+                        </div>
+
+                        <button type="submit"
+                                :disabled="loginLoading"
+                                class="w-full bg-[#5586DB] text-white font-bold py-2.5 px-4 rounded-xl hover:bg-[#00AACC] disabled:opacity-60 transition-all shadow-[0_4px_12px_-2px_rgba(85,134,219,0.3)] flex justify-center items-center gap-2">
+                            <span x-show="!loginLoading" class="flex justify-center items-center gap-2">Masuk <span class="material-symbols-outlined text-[18px]">login</span></span>
+                            <span x-show="loginLoading">Memeriksa...</span>
+                        </button>
+                    </form>
+
+                    <div class="mt-8 text-center border-t border-[#E5E7EB] pt-6 pb-4">
+                        <p class="text-[13px] text-[#4B5563]">
+                            Belum punya akun?
+                            <a href="{{ route('member.register') }}" class="font-bold text-[#5586DB] hover:text-[#00AACC] transition-colors">Daftar di sini</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.__employeePortalConfig = {
+            routes: {
+                registerVerify: '{{ route('register.verify') }}',
+                register: '{{ route('register') }}',
+                registerSuccess: '{{ route('register.success') }}',
+                loginPost: '{{ route('member.login.post') }}',
+                dashboard: '{{ route('member.dashboard') }}',
+            }
+        };
+        // employeePortal() is defined in resources/js/employee-portal.js
+    </script>
+</body>
+</html>
