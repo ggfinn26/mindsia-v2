@@ -422,6 +422,8 @@ Route::middleware(['auth:member', EnsureEmailIsVerified::class, 'no.back'])->gro
         Route::get('/classrooms/{classroom}/curriculum/items/{item}/interactive/result', [MemberCurriculumInteractiveController::class, 'result'])->name('member.curriculum.interactive.result');
         Route::get('/classrooms/{classroom}/curriculum/items/{item}/interactive/history', [MemberCurriculumInteractiveController::class, 'history'])->name('member.curriculum.interactive.history');
         Route::get('/classrooms/{classroom}/curriculum/items/{item}/download', [ClassCurriculumController::class, 'downloadFile'])->name('member.curriculum.download');
+        Route::get('/classrooms/{classroom}/curriculum/items/{item}/view', [MemberCurriculumController::class, 'view'])->name('member.curriculum.view');
+        Route::get('/classrooms/{classroom}/curriculum/items/{item}/media', [MemberCurriculumController::class, 'serveMedia'])->name('member.curriculum.media');
     });
 });
 

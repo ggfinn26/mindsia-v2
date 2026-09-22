@@ -102,9 +102,9 @@
                                                                     Buka Link
                                                                 </a>
                                                             @elseif ($item->material_type === 'file')
-                                                                <a href="{{ route('member.curriculum.download', [$classroom, $item]) }}"
+                                                                <a href="{{ route('member.curriculum.view', [$classroom, $item]) }}"
                                                                     class="btn btn-sm bg-white border border-gray-200 hover:border-gray-300 text-gray-700 text-xs px-3 py-1.5">
-                                                                    Unduh
+                                                                    Lihat
                                                                 </a>
                                                             @endif
                                                         </div>
