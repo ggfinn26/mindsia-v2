@@ -44,11 +44,23 @@
                 @enderror
             </div>
 
-            <div>
+            <div x-data="{
+                rawValue: '{{ old('program_price', '') }}',
+                get displayValue() {
+                    if (this.rawValue === '' || this.rawValue === null) return '';
+                    return 'Rp. ' + new Intl.NumberFormat('id-ID').format(this.rawValue);
+                },
+                updateValue(event) {
+                    let digits = event.target.value.replace(/\D/g, '');
+                    this.rawValue = digits ? parseInt(digits, 10) : '';
+                    event.target.value = this.displayValue;
+                }
+            }" x-init="$refs.input.value = displayValue">
                 <label class="block text-sm font-medium text-gray-700 mb-1">Harga Program</label>
-                <input type="number" name="program_price" required min="0" step="0.01"
+                <input type="hidden" name="program_price" x-model="rawValue" />
+                <input type="text" x-ref="input" @input="updateValue($event)" required
                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                       value="{{ old('program_price') }}" placeholder="0" />
+                       placeholder="Rp. 0" />
                 @error('program_price')
                     <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                 @enderror
@@ -60,11 +72,23 @@
                     <label for="toggle_admin_fee" class="text-sm font-medium text-gray-700 cursor-pointer">Kenakan Biaya Admin</label>
                 </div>
                 <div x-show="showAdminFee" x-transition class="space-y-4 pl-4 border-l-2 border-blue-200">
-                    <div>
+                    <div x-data="{
+                        rawValue: '{{ old('admin_fee', 0) }}',
+                        get displayValue() {
+                            if (this.rawValue === '' || this.rawValue === null) return '';
+                            return 'Rp. ' + new Intl.NumberFormat('id-ID').format(this.rawValue);
+                        },
+                        updateValue(event) {
+                            let digits = event.target.value.replace(/\D/g, '');
+                            this.rawValue = digits ? parseInt(digits, 10) : '';
+                            event.target.value = this.displayValue;
+                        }
+                    }" x-init="$refs.input.value = displayValue">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Nominal Biaya Admin</label>
-                        <input type="number" name="admin_fee" min="0" step="0.01"
+                        <input type="hidden" name="admin_fee" x-model="rawValue" />
+                        <input type="text" x-ref="input" @input="updateValue($event)"
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                               value="{{ old('admin_fee', 0) }}" placeholder="0" />
+                               placeholder="Rp. 0" />
                         @error('admin_fee')
                             <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                         @enderror

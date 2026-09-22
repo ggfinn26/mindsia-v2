@@ -23,7 +23,7 @@ class MemberDataRepository
 
     public function findWithDetails(int $id): MemberData
     {
-        return MemberData::with(['institution', 'program', 'referredBy', 'account', 'registrations.payments'])
+        return MemberData::with(['institution', 'referredBy', 'account', 'branch', 'registrations.program', 'registrations.payments'])
             ->findOrFail($id);
     }
 

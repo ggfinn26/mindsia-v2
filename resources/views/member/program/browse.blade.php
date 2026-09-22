@@ -36,11 +36,42 @@
                     <h3 class="text-xl font-bold text-gray-900 font-jakarta mb-2">{{ $program->program_name }}</h3>
                     <p class="text-sm text-gray-500 mb-6 flex-grow">{{ $program->tagline ?? 'Program intensif dengan metode pengajaran berstandar internasional.' }}</p>
                     
+                    @php
+                        $quotaLimit = isset($quotas) && $quotas->has($program->id) ? $quotas->get($program->id)->quota_limit : null;
+                        $used = isset($usedQuotas) ? $usedQuotas->get($program->id, 0) : 0;
+                        $remaining = $quotaLimit !== null ? max(0, $quotaLimit - $used) : null;
+                        $isExhausted = $quotaLimit !== null && $remaining <= 0;
+                    @endphp
+                    
+                    <div class="mb-4">
+                        @if($isExhausted)
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium bg-red-50 text-red-700">
+                                <span class="material-symbols-outlined text-[14px]">block</span>
+                                Kuota Habis
+                            </span>
+                        @else
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium bg-green-50 text-green-700">
+                                <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                                @if($quotaLimit !== null)
+                                    Tersedia: {{ $remaining }}
+                                @else
+                                    Tersedia
+                                @endif
+                            </span>
+                        @endif
+                    </div>
+                    
                     <div class="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
                         <span class="text-lg font-bold text-gray-900">Rp {{ number_format($program->program_price, 0, ',', '.') }}</span>
-                        <a href="{{ route('member.program.register', $program->id) }}" class="px-4 py-2 bg-[#5586DB] text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors">
-                            Daftar
-                        </a>
+                        @if($isExhausted)
+                            <button disabled class="px-4 py-2 bg-gray-300 text-gray-500 text-sm font-medium rounded-lg cursor-not-allowed">
+                                Penuh
+                            </button>
+                        @else
+                            <a href="{{ route('member.program.register', $program->id) }}" class="px-4 py-2 bg-[#5586DB] text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors">
+                                Daftar
+                            </a>
+                        @endif
                     </div>
                 </div>
             </div>

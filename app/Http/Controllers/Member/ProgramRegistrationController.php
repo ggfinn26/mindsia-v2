@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Member;
 
 use App\Http\Controllers\Controller;
+use App\Models\BranchProgramQuota;
 use App\Models\Employee;
+use App\Models\MemberRegistration;
 use App\Models\Program;
 use App\Models\Province;
 use App\Services\Member\MemberRegistrationService;
@@ -16,6 +18,11 @@ class ProgramRegistrationController extends Controller
     public function create(Program $program)
     {
         $memberData = auth('member')->user()->memberData;
+
+        if ($this->checkQuotaExhausted($program, $memberData?->branch_id)) {
+            return response()->view('errors.quota-full', [], 403);
+        }
+
         $provinces = Province::orderBy('name')->get();
         $paymentPlans = $program->activePaymentPlans;
 
@@ -36,6 +43,11 @@ class ProgramRegistrationController extends Controller
             'education_level' => ['nullable', 'string', 'in:'.implode(',', $educationLevels)],
             'class_or_faculty' => ['nullable', 'string', 'max:100'],
         ]);
+
+        $branchId = $request->branch_id ?: $memberData?->branch_id;
+        if ($this->checkQuotaExhausted($program, $branchId)) {
+            return response()->view('errors.quota-full', [], 403);
+        }
 
         // Resolve referral employee dari kode MO
         $referredByEmployeeId = null;
@@ -67,5 +79,27 @@ class ProgramRegistrationController extends Controller
 
         return redirect()->route('member.program.my')
             ->with('success', 'Pendaftaran program berhasil. Silakan selesaikan pembayaran.');
+    }
+
+    protected function checkQuotaExhausted(Program $program, $branchId): bool
+    {
+        if (! $branchId) {
+            return false;
+        }
+
+        $quota = BranchProgramQuota::where('branch_id', $branchId)
+            ->where('program_id', $program->id)
+            ->first();
+
+        if (! $quota) {
+            return false;
+        }
+
+        $used = MemberRegistration::where('program_id', $program->id)
+            ->whereHas('memberData', function ($q) use ($branchId) {
+                $q->where('branch_id', $branchId);
+            })->count();
+
+        return $used >= $quota->quota_limit;
     }
 }

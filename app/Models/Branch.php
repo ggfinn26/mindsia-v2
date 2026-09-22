@@ -53,6 +53,11 @@ class Branch extends Model
         return $this->hasMany(BranchProgramQuota::class);
     }
 
+    public function members(): HasMany
+    {
+        return $this->hasMany(MemberData::class);
+    }
+
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true);

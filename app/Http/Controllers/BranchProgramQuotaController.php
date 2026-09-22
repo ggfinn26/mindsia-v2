@@ -23,7 +23,7 @@ class BranchProgramQuotaController extends Controller implements HasMiddleware
 
     public function index(Program $program): View
     {
-        $quotas = $program->branchQuotas()->with('branch')->get();
+        $quotas = $program->branchQuotas()->get()->keyBy('branch_id');
         $branches = Branch::active()->orderBy('branch_name')->get();
 
         return view('program.quota.index', compact('program', 'quotas', 'branches'));
@@ -37,10 +37,20 @@ class BranchProgramQuotaController extends Controller implements HasMiddleware
 
     public function store(StoreBranchProgramQuotaRequest $request, Program $program): RedirectResponse
     {
-        BranchProgramQuota::updateOrCreate(
-            ['branch_id' => $request->input('branch_id'), 'program_id' => $program->id],
-            ['quota_limit' => $request->input('quota_limit')]
-        );
+        $quotas = $request->input('quotas', []);
+
+        foreach ($quotas as $branchId => $limit) {
+            if ($limit !== null && $limit !== '') {
+                BranchProgramQuota::updateOrCreate(
+                    ['branch_id' => $branchId, 'program_id' => $program->id],
+                    ['quota_limit' => $limit]
+                );
+            } else {
+                BranchProgramQuota::where('branch_id', $branchId)
+                    ->where('program_id', $program->id)
+                    ->delete();
+            }
+        }
 
         return back()->with('success', 'Kuota berhasil disimpan.');
     }

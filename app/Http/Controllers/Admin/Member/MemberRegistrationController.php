@@ -8,6 +8,7 @@ use App\Http\Requests\Member\UpdateMemberRegistrationGraduationRequest;
 use App\Http\Requests\Member\UpdateMemberRegistrationPaymentStatusRequest;
 use App\Models\MemberData;
 use App\Models\MemberRegistration;
+use App\Models\Program;
 use App\Repositories\Member\MemberRegistrationRepository;
 use App\Services\Member\MemberRegistrationService;
 use Illuminate\Http\RedirectResponse;
@@ -22,12 +23,18 @@ class MemberRegistrationController extends Controller
 
     public function create(MemberData $member): View
     {
-        return view('admin.member.registrations.create', compact('member'));
+        $programs = Program::where('is_active', true)->orderBy('program_name')->get(['id', 'program_name']);
+
+        return view('admin.member.registrations.create', compact('member', 'programs'));
     }
 
     public function store(StoreMemberRegistrationRequest $request, MemberData $member): RedirectResponse
     {
-        $registration = $this->service->register($member, $request->validated());
+        $data = array_merge($request->validated(), [
+            'employee_id' => $request->user()->employee?->id ?? $request->user()->id,
+        ]);
+
+        $registration = $this->service->register($member, $data);
 
         return redirect()->route('registrations.show', $registration)->with('success', 'Registrasi berhasil dibuat.');
     }

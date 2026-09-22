@@ -14,8 +14,8 @@ class StoreBranchProgramQuotaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'branch_id' => ['required', 'integer', 'exists:branches,id'],
-            'quota_limit' => ['required', 'integer', 'min:0'],
+            'quotas' => ['nullable', 'array'],
+            'quotas.*' => ['nullable', 'integer', 'min:0'],
         ];
     }
 }
