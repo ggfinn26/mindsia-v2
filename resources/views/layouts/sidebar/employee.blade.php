@@ -152,7 +152,7 @@
     <x-dashboard.nav-item href="{{ route('programs.index') }}" :isChild="true" :active="request()->routeIs('programs.*')">Program & Kuota</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('curriculums.index') }}" :isChild="true" :active="request()->routeIs('curriculums.*')">Kelola Kurikulum</x-dashboard.nav-item>
 </x-dashboard.nav-group>
-@endcan
+@endcanany
 
 <!-- 1.9 Class -->
 @canany(['class.manage', 'class.attendance.record', 'class.test.create', 'class.graduate'])

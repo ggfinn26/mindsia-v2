@@ -29,7 +29,12 @@ class ToeflSessionController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('toefl.session.index', compact('sessions'));
+        $availableTests = ToeflTest::where('status', ToeflTest::STATUS_PUBLISHED)
+            ->where('is_trial', false)
+            ->orderBy('test_name')
+            ->get();
+
+        return view('toefl.session.index', compact('sessions', 'availableTests'));
     }
 
     public function start(StartToeflSessionRequest $request, ToeflTest $toeflTest): RedirectResponse

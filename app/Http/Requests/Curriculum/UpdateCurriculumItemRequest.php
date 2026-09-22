@@ -16,8 +16,9 @@ class UpdateCurriculumItemRequest extends FormRequest
         return [
             'item_name' => ['required', 'string', 'max:255'],
             'sequence_number' => ['required', 'integer', 'min:1'],
-            'material_type' => ['required', 'in:file,external_link'],
-            'material_value' => ['required', 'string'],
+            'material_type' => ['required', 'in:file,external_link,interactive'],
+            'material_value' => ['nullable', 'string'],
+            'material_file' => ['nullable', 'file', 'max:51200'],
             'notes' => ['nullable', 'string'],
             'is_active' => ['boolean'],
         ];

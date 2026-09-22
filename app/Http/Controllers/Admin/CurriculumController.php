@@ -23,7 +23,11 @@ class CurriculumController extends Controller implements HasMiddleware
 {
     public static function middleware(): array
     {
-        return [new Middleware('can:curriculum.curriculum.create')];
+        return [
+            new Middleware('can:curriculum.view', only: ['index', 'show']),
+            new Middleware('can:curriculum.curriculum.create', only: ['create', 'store']),
+            new Middleware('can:curriculum.curriculum.update', only: ['edit', 'update', 'destroy']),
+        ];
     }
 
     public function __construct(

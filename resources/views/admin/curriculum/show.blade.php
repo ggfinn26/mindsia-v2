@@ -93,9 +93,14 @@
                                                     @endif
                                                 </div>
                                                 <div class="flex gap-2 ml-3">
-                                                    <button type="button"
-                                                            onclick="editItem({{ $item->id }}, {{ json_encode($item) }})"
-                                                            class="px-2 py-1 text-xs text-blue-600 hover:bg-blue-50 rounded">Edit</button>
+                                                    @if ($item->material_type === 'interactive')
+                                                        <a href="{{ route('curriculum-items.interactive.show', $item) }}"
+                                                           class="px-2 py-1 text-xs text-indigo-600 hover:bg-indigo-50 rounded font-medium">Edit Modul</a>
+                                                    @else
+                                                        <button type="button"
+                                                                onclick="editItem({{ $item->id }}, {{ json_encode($item) }})"
+                                                                class="px-2 py-1 text-xs text-blue-600 hover:bg-blue-50 rounded">Edit</button>
+                                                    @endif
                                                     <form action="{{ route('curriculum-items.destroy', $item) }}" method="POST" class="inline"
                                                           onsubmit="return confirm('Yakin ingin menghapus materi ini?')">
                                                         @csrf
@@ -164,7 +169,7 @@
         <div class="p-6 border-b border-gray-200">
             <h3 id="item-modal-title" class="text-lg font-bold text-gray-900">Tambah Materi</h3>
         </div>
-        <form id="item-form" method="POST" class="p-6 space-y-4">
+        <form id="item-form" method="POST" enctype="multipart/form-data" class="p-6 space-y-4">
             @csrf
             <input type="hidden" id="item-method" name="_method" value="POST">
             <div class="grid grid-cols-2 gap-4">
@@ -175,9 +180,11 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Tipe Materi</label>
-                    <select id="item-type" name="material_type" required class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
+                    <select id="item-type" name="material_type" required onchange="onItemTypeChange(this.value)"
+                            class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
                         <option value="file">File</option>
                         <option value="external_link">Link Eksternal</option>
+                        <option value="interactive">Latihan Interaktif (TOEFL)</option>
                     </select>
                 </div>
             </div>
@@ -186,10 +193,25 @@
                 <input type="text" id="item-name" name="item_name" required
                        class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500" />
             </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">File / URL</label>
-                <input type="text" id="item-value" name="material_value" required
-                       class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500" />
+            {{-- File upload --}}
+            <div id="item-value-file">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Upload File</label>
+                <input type="file" id="item-file" name="material_file"
+                       class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 text-sm" />
+                <p id="item-current-file" class="text-xs text-gray-400 mt-1 hidden"></p>
+            </div>
+            {{-- URL input --}}
+            <div id="item-value-url" class="hidden">
+                <label class="block text-sm font-medium text-gray-700 mb-1">URL</label>
+                <input type="text" id="item-value" name="material_value"
+                       class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                       placeholder="https://..." />
+            </div>
+            {{-- Interactive notice --}}
+            <div id="item-value-interactive" class="hidden">
+                <p class="text-sm text-indigo-600 bg-indigo-50 border border-indigo-200 rounded p-3">
+                    Setelah disimpan, klik <strong>Edit Modul</strong> untuk menyusun blok &amp; soal latihan.
+                </p>
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Catatan (Opsional)</label>
@@ -230,11 +252,19 @@
         document.getElementById('session-modal').classList.remove('hidden');
     }
 
+    function onItemTypeChange(type) {
+        document.getElementById('item-value-file').classList.toggle('hidden', type !== 'file');
+        document.getElementById('item-value-url').classList.toggle('hidden', type !== 'external_link');
+        document.getElementById('item-value-interactive').classList.toggle('hidden', type !== 'interactive');
+    }
+
     function openAddItemModal(sessionId) {
         document.getElementById('item-modal-title').textContent = 'Tambah Materi';
         document.getElementById('item-form').action = '{{ url("curriculum-sessions") }}/' + sessionId + '/items';
         document.getElementById('item-method').value = 'POST';
         document.getElementById('item-form').reset();
+        document.getElementById('item-current-file').classList.add('hidden');
+        onItemTypeChange('file');
         document.getElementById('item-modal').classList.remove('hidden');
     }
 
@@ -245,9 +275,17 @@
         document.getElementById('item-sequence').value = item.sequence_number;
         document.getElementById('item-type').value = item.material_type;
         document.getElementById('item-name').value = item.item_name;
-        document.getElementById('item-value').value = item.material_value;
+        document.getElementById('item-value').value = item.material_value || '';
         document.getElementById('item-notes').value = item.notes || '';
         document.getElementById('item-active').checked = !!item.is_active;
+        onItemTypeChange(item.material_type);
+        if (item.material_type === 'file' && item.material_value) {
+            var p = document.getElementById('item-current-file');
+            p.textContent = 'File saat ini: ' + item.material_value.split('/').pop();
+            p.classList.remove('hidden');
+        } else {
+            document.getElementById('item-current-file').classList.add('hidden');
+        }
         document.getElementById('item-modal').classList.remove('hidden');
     }
 </script>

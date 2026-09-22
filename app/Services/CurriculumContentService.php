@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Curriculum;
 use App\Models\CurriculumItem;
 use App\Models\CurriculumSession;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 
 class CurriculumContentService
@@ -56,7 +57,7 @@ class CurriculumContentService
             'item_name' => $data['item_name'],
             'sequence_number' => $data['sequence_number'],
             'material_type' => $data['material_type'],
-            'material_value' => $data['material_value'],
+            'material_value' => $this->resolveValue($data),
             'notes' => $data['notes'] ?? null,
             'is_active' => $data['is_active'] ?? true,
         ]);
@@ -79,13 +80,30 @@ class CurriculumContentService
 
     public function updateItem(CurriculumItem $item, array $data): CurriculumItem
     {
-        return $item->update([
+        $newValue = $this->resolveValue($data, $item->material_value);
+
+        $item->update([
             'item_name' => $data['item_name'] ?? $item->item_name,
             'sequence_number' => $data['sequence_number'] ?? $item->sequence_number,
             'material_type' => $data['material_type'] ?? $item->material_type,
-            'material_value' => $data['material_value'] ?? $item->material_value,
+            'material_value' => $newValue,
             'notes' => $data['notes'] ?? $item->notes,
             'is_active' => $data['is_active'] ?? $item->is_active,
-        ]) ? $item->fresh() : $item;
+        ]);
+
+        return $item->fresh();
+    }
+
+    private function resolveValue(array $data, ?string $existing = null): ?string
+    {
+        if ($data['material_type'] === 'interactive') {
+            return null;
+        }
+
+        if (isset($data['material_file']) && $data['material_file'] instanceof UploadedFile) {
+            return $data['material_file']->store('curriculum/materials', 'public');
+        }
+
+        return $data['material_value'] ?? $existing;
     }
 }

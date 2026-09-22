@@ -145,6 +145,7 @@ use App\Http\Controllers\Landing\CompanyController;
 use App\Http\Controllers\Landing\HomeController;
 use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\Member\CurriculumInteractiveController as MemberCurriculumInteractiveController;
+use App\Http\Controllers\Member\MemberCurriculumController;
 use App\Http\Controllers\Member\MemberDashboardController;
 use App\Http\Controllers\Member\MemberNotificationController;
 use App\Http\Controllers\Member\MemberProfileController;
@@ -163,6 +164,9 @@ use App\Http\Controllers\SessionAttendanceController;
 use App\Http\Controllers\WorkAttendanceController;
 use App\Http\Middleware\EnsureEmailIsVerified;
 use App\Models\Branch;
+use App\Models\BranchProgramQuota;
+use App\Models\MemberClass;
+use App\Models\MemberRegistration;
 use App\Models\Program;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -310,8 +314,27 @@ Route::middleware(['auth:member', EnsureEmailIsVerified::class, 'no.back'])->gro
     })->name('member.program.my');
     Route::get('/member/program/browse', function () {
         $programs = Program::where('is_active', true)->get();
+        $memberData = auth('member')->user()->memberData;
+        $branchId = $memberData ? $memberData->branch_id : null;
 
-        return view('member.program.browse', compact('programs'));
+        $quotas = collect();
+        $usedQuotas = collect();
+        if ($branchId) {
+            $quotas = BranchProgramQuota::where('branch_id', $branchId)
+                ->whereIn('program_id', $programs->pluck('id'))
+                ->get()
+                ->keyBy('program_id');
+
+            $usedQuotas = MemberRegistration::whereIn('program_id', $programs->pluck('id'))
+                ->whereHas('memberData', function ($q) use ($branchId) {
+                    $q->where('branch_id', $branchId);
+                })
+                ->selectRaw('program_id, count(*) as count')
+                ->groupBy('program_id')
+                ->pluck('count', 'program_id');
+        }
+
+        return view('member.program.browse', compact('programs', 'quotas', 'usedQuotas'));
     })->name('member.program.browse');
 
     Route::get('/member/program/{program}/register', [ProgramRegistrationController::class, 'create'])->name('member.program.register');
@@ -320,11 +343,18 @@ Route::middleware(['auth:member', EnsureEmailIsVerified::class, 'no.back'])->gro
     // Akademik — hanya member aktif
     Route::middleware('member.active')->group(function () {
         Route::get('/member/class', function () {
-            return view('member.class.index');
+            $memberData = auth('member')->user()->memberData;
+            $memberClasses = MemberClass::with(['classRoom.schedules' => function ($q) {
+                $q->orderBy('schedule_date')->orderBy('start_time');
+            }, 'classRoom.tutor', 'classRoom.program'])
+                ->whereHas('memberRegistration', function ($query) use ($memberData) {
+                    $query->where('members_data_id', $memberData->id);
+                })
+                ->get();
+
+            return view('member.class.index', compact('memberClasses'));
         })->name('member.class.index');
-        Route::get('/member/curriculum', function () {
-            return view('member.curriculum.index');
-        })->name('member.curriculum.index');
+        Route::get('/member/curriculum', [MemberCurriculumController::class, 'index'])->name('member.curriculum.index');
         Route::get('/member/attendance', function () {
             return view('member.attendance.index');
         })->name('member.attendance.index');
@@ -391,6 +421,7 @@ Route::middleware(['auth:member', EnsureEmailIsVerified::class, 'no.back'])->gro
         Route::post('/classrooms/{classroom}/curriculum/items/{item}/interactive/submit', [MemberCurriculumInteractiveController::class, 'submit'])->name('member.curriculum.interactive.submit');
         Route::get('/classrooms/{classroom}/curriculum/items/{item}/interactive/result', [MemberCurriculumInteractiveController::class, 'result'])->name('member.curriculum.interactive.result');
         Route::get('/classrooms/{classroom}/curriculum/items/{item}/interactive/history', [MemberCurriculumInteractiveController::class, 'history'])->name('member.curriculum.interactive.history');
+        Route::get('/classrooms/{classroom}/curriculum/items/{item}/download', [ClassCurriculumController::class, 'downloadFile'])->name('member.curriculum.download');
     });
 });
 
