@@ -35,8 +35,10 @@ class CurriculumInteractiveController extends Controller
             $item->interactiveBlocks()->delete();
 
             foreach ($request->validated('blocks') as $bi => $blockData) {
-                $audioId = $this->uploadMedia($request, "blocks.$bi.audio_file", 'audio', $employeeId);
-                $imageId = $this->uploadMedia($request, "blocks.$bi.image_file", 'image', $employeeId);
+                $audioId = $this->uploadMedia($request, "blocks.$bi.audio_file", 'audio', $employeeId)
+                    ?? ($blockData['existing_audio_id'] ?? null);
+                $imageId = $this->uploadMedia($request, "blocks.$bi.image_file", 'image', $employeeId)
+                    ?? ($blockData['existing_image_id'] ?? null);
 
                 $block = CurriculumInteractiveBlock::create([
                     'curriculum_item_id' => $item->id,

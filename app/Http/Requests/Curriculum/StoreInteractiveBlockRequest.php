@@ -19,6 +19,8 @@ class StoreInteractiveBlockRequest extends FormRequest
             'blocks.*.instruction_text' => ['nullable', 'string'],
             'blocks.*.audio_file' => ['nullable', 'file', 'mimes:mp3,wav,ogg,m4a', 'max:51200'],
             'blocks.*.image_file' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,gif', 'max:10240'],
+            'blocks.*.existing_audio_id' => ['nullable', 'integer', 'exists:curriculum_media,id'],
+            'blocks.*.existing_image_id' => ['nullable', 'integer', 'exists:curriculum_media,id'],
             'blocks.*.questions' => ['nullable', 'array'],
             'blocks.*.questions.*.sort_order' => ['required', 'integer', 'min:0'],
             'blocks.*.questions.*.question_text' => ['nullable', 'string'],

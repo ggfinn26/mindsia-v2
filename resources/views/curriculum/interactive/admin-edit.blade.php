@@ -31,6 +31,12 @@
             @forelse($item->interactiveBlocks as $bi => $block)
                 <div class="block-item bg-white border border-gray-100 rounded-xl p-6 shadow-sm">
                     <input type="hidden" name="blocks[{{ $bi }}][sort_order]" value="{{ $block->sort_order }}">
+                    @if($block->audio_media_id)
+                        <input type="hidden" name="blocks[{{ $bi }}][existing_audio_id]" value="{{ $block->audio_media_id }}">
+                    @endif
+                    @if($block->image_media_id)
+                        <input type="hidden" name="blocks[{{ $bi }}][existing_image_id]" value="{{ $block->image_media_id }}">
+                    @endif
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="font-semibold text-gray-900 font-jakarta">Blok {{ $bi + 1 }}</h3>
                         <button type="button" class="remove-block text-red-500 hover:text-red-700 text-sm">Hapus Blok</button>
