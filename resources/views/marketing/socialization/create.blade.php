@@ -24,34 +24,48 @@
     <form action="{{ route('socializations.store') }}" method="POST" class="bg-white shadow rounded-lg p-6 space-y-5">
         @csrf
 
-        {{-- Cabang: auto-set jika branch-level employee, pilih jika area-level/HQ --}}
+        {{-- Cabang --}}
         @if ($employee->branch_id)
-            {{-- Branch-level: auto, tampilkan sebagai info saja --}}
-            <input type="hidden" name="branch_id" value="{{ $employee->branch_id }}">
+            {{-- Branch-level: auto dari profil --}}
             <div class="bg-gray-50 border border-gray-200 rounded-md px-4 py-3 text-sm text-gray-700">
                 <span class="font-medium">Cabang:</span>
                 {{ $branches->first()?->branch_name ?? 'Cabang kamu' }}
                 <span class="text-gray-400 text-xs ml-1">(otomatis dari profil)</span>
             </div>
         @else
-            {{-- Area/HQ-level: pilih cabang yang ada di scope mereka --}}
-            <div>
-                <label for="branch_id" class="block text-sm font-medium text-gray-700 mb-1">
-                    Cabang Penyelenggara <span class="text-red-500">*</span>
-                    @if ($employee->area_id)
-                        <span class="text-xs text-gray-400 font-normal ml-1">(cabang di area kamu)</span>
-                    @endif
-                </label>
-                <select name="branch_id" id="branch_id" required
-                    class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500 @error('branch_id') border-red-300 @enderror">
-                    <option value="">-- Pilih Cabang --</option>
+            {{-- Area/HQ: checklist cabang dalam scope --}}
+            <div x-data="branchPicker()" class="space-y-2">
+                <div class="flex items-center justify-between">
+                    <label class="block text-sm font-medium text-gray-700">
+                        Cabang Penyelenggara <span class="text-red-500">*</span>
+                        @if ($employee->area_id)
+                            <span class="text-xs text-gray-400 font-normal ml-1">(cabang di area kamu)</span>
+                        @endif
+                    </label>
+                    <button type="button" @click="toggleAll()"
+                        class="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+                        x-text="allSelected ? 'Batalkan Semua' : 'Pilih Semua'">
+                    </button>
+                </div>
+
+                <div class="border border-gray-200 rounded-md divide-y divide-gray-100 max-h-52 overflow-y-auto">
                     @foreach ($branches as $branch)
-                        <option value="{{ $branch->id }}" {{ old('branch_id') == $branch->id ? 'selected' : '' }}>
-                            {{ $branch->branch_name }}
-                        </option>
+                        <label class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" name="branch_ids[]" value="{{ $branch->id }}"
+                                x-model="selected"
+                                {{ in_array($branch->id, old('branch_ids', [])) ? 'checked' : '' }}
+                                class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                            <span class="text-sm text-gray-700">{{ $branch->branch_name }}</span>
+                        </label>
                     @endforeach
-                </select>
-                @error('branch_id') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                </div>
+
+                <p class="text-xs text-gray-500" x-show="selected.length > 0">
+                    <span x-text="selected.length"></span> cabang dipilih
+                    <span x-show="selected.length > 1"> — akan dibuat <span x-text="selected.length"></span> sosialisasi terpisah</span>
+                </p>
+                @error('branch_ids') <p class="text-xs text-red-600">{{ $message }}</p> @enderror
+                @error('branch_ids.*') <p class="text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
         @endif
 
@@ -116,4 +130,19 @@
         </div>
     </form>
 </div>
+
+<script>
+function branchPicker() {
+    return {
+        selected: {{ json_encode(array_map('intval', old('branch_ids', []))) }},
+        allIds: {{ json_encode($branches->pluck('id')->map(fn($id) => (int)$id)->values()->all()) }},
+        get allSelected() {
+            return this.allIds.length > 0 && this.allIds.every(id => this.selected.includes(id));
+        },
+        toggleAll() {
+            this.selected = this.allSelected ? [] : [...this.allIds];
+        },
+    };
+}
+</script>
 @endsection

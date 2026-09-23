@@ -17,8 +17,6 @@ class StoreSocializationRequest extends FormRequest
     {
         $employee = $this->user()->employee;
 
-        // Branch-level employee: branch_id fixed from profile — no form input needed.
-        // Area/region/HQ employees submit branch_id from form — must be within their scope.
         $allowedBranchIds = match (true) {
             (bool) $employee->branch_id => [$employee->branch_id],
             (bool) $employee->area_id => Branch::where('areas_id', $employee->area_id)->pluck('id')->all(),
@@ -27,7 +25,8 @@ class StoreSocializationRequest extends FormRequest
         };
 
         return [
-            'branch_id' => ['nullable', Rule::in($allowedBranchIds)],
+            'branch_ids' => ['nullable', 'array'],
+            'branch_ids.*' => [Rule::in($allowedBranchIds)],
             'institution_id' => ['nullable', 'exists:institutions,id'],
             'location_name' => ['required', 'string', 'max:255'],
             'partner_fee_amount' => ['nullable', 'numeric', 'min:0'],

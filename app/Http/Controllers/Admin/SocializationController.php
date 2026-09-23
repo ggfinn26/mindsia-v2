@@ -52,19 +52,36 @@ class SocializationController extends Controller
     public function store(StoreSocializationRequest $request): RedirectResponse
     {
         $employee = $request->user()->employee;
+        $status = $request->boolean('schedule_now') ? Socialization::STATUS_SCHEDULED : Socialization::STATUS_DRAFT;
+        $base = array_merge(
+            collect($request->validated())->except(['branch_ids'])->all(),
+            [
+                'area_id' => $employee->area_id,
+                'created_by_employee_id' => $employee->id,
+                'status' => $status,
+            ]
+        );
 
-        $branchId = $employee->branch_id ?? $request->validated('branch_id');
-        abort_unless($branchId, 422, 'Cabang tidak ditemukan. Pastikan profil pegawai sudah diatur.');
+        // Branch-level employee: single branch from profile
+        if ($employee->branch_id) {
+            $socialization = $this->repository->create(array_merge($base, ['branch_id' => $employee->branch_id]));
 
-        $socialization = $this->repository->create([
-            ...$request->validated(),
-            'branch_id' => $branchId,
-            'area_id' => $employee->area_id,
-            'created_by_employee_id' => $employee->id,
-            'status' => $request->boolean('schedule_now') ? Socialization::STATUS_SCHEDULED : Socialization::STATUS_DRAFT,
-        ]);
+            return redirect()->route('socializations.show', $socialization)->with('success', 'Sosialisasi berhasil dibuat.');
+        }
 
-        return redirect()->route('socializations.show', $socialization)->with('success', 'Sosialisasi berhasil dibuat.');
+        // Area/region/HQ: one socialization per selected branch
+        $branchIds = $request->validated('branch_ids') ?? [];
+        abort_unless(count($branchIds) > 0, 422, 'Pilih minimal 1 cabang.');
+
+        $created = collect($branchIds)->map(
+            fn ($branchId) => $this->repository->create(array_merge($base, ['branch_id' => $branchId]))
+        );
+
+        if ($created->count() === 1) {
+            return redirect()->route('socializations.show', $created->first())->with('success', 'Sosialisasi berhasil dibuat.');
+        }
+
+        return redirect()->route('socializations.index')->with('success', "{$created->count()} sosialisasi berhasil dibuat.");
     }
 
     public function show(Request $request, Socialization $socialization): View
