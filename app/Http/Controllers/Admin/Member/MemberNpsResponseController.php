@@ -29,7 +29,7 @@ class MemberNpsResponseController extends Controller
         $memberId = auth('member')->user()->memberData()->value('id');
 
         MemberNpsResponse::create(array_merge(
-            $request->safe()->only(['branch_id', 'score', 'comment']),
+            $request->safe()->only(['branch_id', 'program_id', 'score', 'comment']),
             ['member_id' => $memberId],
         ));
 

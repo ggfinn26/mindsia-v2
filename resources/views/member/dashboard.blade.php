@@ -198,29 +198,45 @@
                                         </div>
                                     </div>
                                     
+                                    @php
+                                        $prog = $memberClass->progress_summary;
+                                        $att  = $memberClass->attendance_summary;
+                                    @endphp
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
                                         <!-- Progress Materi -->
                                         <div>
                                             <div class="flex justify-between items-end mb-2">
                                                 <span class="text-xs font-bold text-gray-600 uppercase tracking-wider">Progress Materi</span>
-                                                <span class="text-sm font-bold text-[#5586DB]">45%</span>
+                                                @if($prog['rate'] !== null)
+                                                    <span class="text-sm font-bold text-[#5586DB]">{{ $prog['rate'] }}%</span>
+                                                @endif
                                             </div>
-                                            <div class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden border border-gray-200">
-                                                <div class="bg-gradient-to-r from-[#5586DB] to-[#00AACC] h-2.5 rounded-full" style="width: 45%"></div>
-                                            </div>
-                                            <p class="text-[11px] text-gray-500 mt-2 text-right">9 dari 20 Modul Selesai</p>
+                                            @if($prog['total'] > 0)
+                                                <div class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden border border-gray-200">
+                                                    <div class="bg-[#5586DB] h-2.5 rounded-full transition-all" style="width: {{ $prog['rate'] }}%"></div>
+                                                </div>
+                                                <p class="text-[11px] text-gray-500 mt-2 text-right">{{ $prog['completed'] }} dari {{ $prog['total'] }} Materi Selesai</p>
+                                            @else
+                                                <p class="text-xs text-gray-400 mt-1">Belum ada materi</p>
+                                            @endif
                                         </div>
-                                        
+
                                         <!-- Kehadiran -->
                                         <div>
                                             <div class="flex justify-between items-end mb-2">
-                                                <span class="text-xs font-bold text-gray-600 uppercase tracking-wider">Kehadiran (Attendance)</span>
-                                                <span class="text-sm font-bold text-green-600">80%</span>
+                                                <span class="text-xs font-bold text-gray-600 uppercase tracking-wider">Kehadiran</span>
+                                                @if($att['rate'] !== null)
+                                                    <span class="text-sm font-bold text-green-600">{{ $att['rate'] }}%</span>
+                                                @endif
                                             </div>
-                                            <div class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden border border-gray-200">
-                                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 80%"></div>
-                                            </div>
-                                            <p class="text-[11px] text-gray-500 mt-2 text-right">8 Hadir, 2 Absen</p>
+                                            @if($att['total'] > 0)
+                                                <div class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden border border-gray-200">
+                                                    <div class="bg-green-500 h-2.5 rounded-full transition-all" style="width: {{ $att['rate'] }}%"></div>
+                                                </div>
+                                                <p class="text-[11px] text-gray-500 mt-2 text-right">{{ $att['attended'] }} Hadir &middot; {{ $att['absent'] }} Tidak Hadir</p>
+                                            @else
+                                                <p class="text-xs text-gray-400 mt-1">Belum ada pertemuan</p>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>

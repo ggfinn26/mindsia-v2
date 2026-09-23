@@ -12,3 +12,4 @@ import "./program-registration";
 import "./letter-generate";
 import "./passage-preview";
 import "./toefl-test-show";
+import "./member-class-calendar";

@@ -28,4 +28,14 @@ class MemberClass extends Model
     {
         return $this->hasMany(MemberCurriculumProgress::class, 'member_class_id');
     }
+
+    public function attendances(): HasMany
+    {
+        return $this->hasMany(MemberAttendance::class, 'member_class_id');
+    }
+
+    public function sessionAssessments(): HasMany
+    {
+        return $this->hasMany(MemberSessionAssessment::class, 'member_class_id');
+    }
 }

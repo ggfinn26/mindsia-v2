@@ -22,7 +22,7 @@
     <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider font-jakarta">Akademik</p>
 </div>
 <x-dashboard.nav-group title="Kelas Saya" icon="school" :active="request()->is('member/class*') || request()->is('member/curriculum*') || request()->is('member/attendance*')">
-    <x-dashboard.nav-item href="{{ route('member.class.index') }}" :isChild="true" :active="request()->routeIs('member.class.index')">Daftar Kelas</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('member.class.index') }}" :isChild="true" :active="request()->routeIs('member.class.index')">Jadwal Kelas</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('member.curriculum.index') }}" :isChild="true" :active="request()->routeIs('member.curriculum.index')">Materi Kurikulum</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('member.attendance.index') }}" :isChild="true" :active="request()->routeIs('member.attendance.index')">Kehadiran & Nilai</x-dashboard.nav-item>
 </x-dashboard.nav-group>
@@ -34,7 +34,6 @@
 <x-dashboard.nav-group title="Pembayaran" icon="payments" :active="request()->is('member/payment*') || request()->is('member/registration*')">
     <x-dashboard.nav-item href="{{ route('member.registration.index') }}" :isChild="true" :active="request()->routeIs('member.registration.index')">Riwayat Registrasi</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('member.payment.installments') }}" :isChild="true" :active="request()->routeIs('member.payment.installments')">Status Cicilan</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="{{ route('member.payment.upload') }}" :isChild="true" :active="request()->routeIs('member.payment.upload')">Upload Bukti Bayar</x-dashboard.nav-item>
 </x-dashboard.nav-group>
 
 <!-- 2.4 TOEFL -->

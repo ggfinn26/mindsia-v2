@@ -10,6 +10,7 @@ class MemberNpsResponse extends Model
     protected $fillable = [
         'member_id',
         'branch_id',
+        'program_id',
         'score',
         'comment',
     ];
@@ -26,5 +27,10 @@ class MemberNpsResponse extends Model
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class);
+    }
+
+    public function program(): BelongsTo
+    {
+        return $this->belongsTo(Program::class);
     }
 }

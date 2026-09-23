@@ -145,8 +145,11 @@ use App\Http\Controllers\Landing\CompanyController;
 use App\Http\Controllers\Landing\HomeController;
 use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\Member\CurriculumInteractiveController as MemberCurriculumInteractiveController;
+use App\Http\Controllers\Member\MemberAttendancePageController;
 use App\Http\Controllers\Member\MemberCurriculumController;
 use App\Http\Controllers\Member\MemberDashboardController;
+use App\Http\Controllers\Member\MemberNpsPageController;
+use App\Http\Controllers\Member\MemberReviewController;
 use App\Http\Controllers\Member\MemberNotificationController;
 use App\Http\Controllers\Member\MemberProfileController;
 use App\Http\Controllers\Member\MemberSurveyController;
@@ -361,9 +364,7 @@ Route::middleware(['auth:member', EnsureEmailIsVerified::class, 'no.back'])->gro
             return view('member.class.index', compact('memberClasses'));
         })->name('member.class.index');
         Route::get('/member/curriculum', [MemberCurriculumController::class, 'index'])->name('member.curriculum.index');
-        Route::get('/member/attendance', function () {
-            return view('member.attendance.index');
-        })->name('member.attendance.index');
+        Route::get('/member/attendance', [MemberAttendancePageController::class, 'index'])->name('member.attendance.index');
     });
 
     // Administrasi & Pembayaran
@@ -387,13 +388,11 @@ Route::middleware(['auth:member', EnsureEmailIsVerified::class, 'no.back'])->gro
         return view('member.payment.upload');
     })->name('member.payment.upload');
 
-    // Survei & Review (Placeholder Views)
-    Route::get('/member/reviews', function () {
-        return view('member.reviews.index');
-    })->name('member.reviews.index');
-    Route::get('/member/nps', function () {
-        return view('member.nps.index');
-    })->name('member.nps.index');
+    // Survei & Review
+    Route::get('/member/reviews', [MemberReviewController::class, 'index'])->name('member.reviews.index');
+    Route::post('/member/reviews', [MemberReviewController::class, 'store'])->name('member.reviews.store');
+    Route::put('/member/reviews/{review}', [MemberReviewController::class, 'update'])->name('member.reviews.update');
+    Route::get('/member/nps', [MemberNpsPageController::class, 'index'])->name('member.nps.index');
 
     // Notifications
     Route::get('/member/notifications', [MemberNotificationController::class, 'index'])->name('member.notifications.index');

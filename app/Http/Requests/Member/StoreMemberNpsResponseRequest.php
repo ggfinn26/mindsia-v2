@@ -15,6 +15,7 @@ class StoreMemberNpsResponseRequest extends FormRequest
     {
         return [
             'branch_id' => ['required', 'integer', 'exists:branches,id'],
+            'program_id' => ['nullable', 'integer', 'exists:programs,id'],
             'score' => ['required', 'integer', 'min:0', 'max:10'],
             'comment' => ['nullable', 'string', 'min:10'],
             'rating' => ['required', 'integer', 'min:1', 'max:5'],
