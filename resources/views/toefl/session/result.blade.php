@@ -44,8 +44,6 @@
         ],
     };
 
-    $shareText = "Skor TOEFL ITP saya: " . ($score ?? 'n/a') . " — " . $jokes['label'] . ". Yuk gabung menjadi Mindsivers! wa.me/6289518494953";
-    $shareUrl  = url()->current();
 @endphp
 
 <div class="max-w-2xl mx-auto py-8 px-4 sm:px-6">
@@ -117,12 +115,6 @@
 
             {{-- Actions --}}
             <div class="pt-2 flex flex-wrap gap-3 justify-end border-t border-gray-100">
-                {{-- Share button --}}
-                <button type="button" id="share-btn" onclick="handleShare(this)"
-                    data-share-text="{{ $shareText }}"
-                    class="btn bg-gray-100 hover:bg-gray-200 text-gray-700">
-                    <span id="share-btn-text">Bagikan Hasil</span>
-                </button>
                 <a href="{{ route('toefl.session.index') }}"
                     class="btn bg-white border border-gray-200 hover:border-gray-300 text-gray-700">
                     Kembali ke Daftar
@@ -137,6 +129,6 @@
 
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha384-4V9+JzaMIem5EAvbMs6OfoKpvJdNcFBziY5Pd6bgr8y4tP0VVdjAkZM/iyF3jdzu" crossorigin="anonymous"></script>
-@vite('resources/js/toefl-result-share.js')
+@endsection
+
 

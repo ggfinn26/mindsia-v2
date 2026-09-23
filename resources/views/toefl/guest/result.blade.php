@@ -42,8 +42,6 @@
         ],
     };
 
-    $shareText = 'Skor TOEFL ITP saya: ' . ($score ?? 'n/a') . ' — ' . $jokes['label'] . '. Yuk gabung menjadi Mindsivers! wa.me/6289518494953';
-    $shareUrl  = url()->current();
 @endphp
 
 <div class="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -124,11 +122,6 @@
                     Tertarik bergabung? Hubungi kami untuk informasi program selengkapnya.
                 </p>
                 <div class="flex flex-wrap gap-3 justify-end">
-                    <button type="button" id="share-btn" onclick="handleShare(this)"
-                        data-share-text="{{ $shareText }}"
-                        class="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-sm text-gray-700 transition-colors">
-                        <span id="share-btn-text">Bagikan Hasil</span>
-                    </button>
                     <a href="https://wa.me/62" target="_blank"
                         class="inline-flex items-center px-5 py-2 rounded-lg bg-[#fbbf24] hover:bg-[#f59e0b] text-sm font-semibold text-gray-900 transition-colors">
                         Daftar Sekarang
@@ -142,6 +135,4 @@
 </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha384-4V9+JzaMIem5EAvbMs6OfoKpvJdNcFBziY5Pd6bgr8y4tP0VVdjAkZM/iyF3jdzu" crossorigin="anonymous"></script>
-@vite('resources/js/toefl-result-share.js')
 @endsection
