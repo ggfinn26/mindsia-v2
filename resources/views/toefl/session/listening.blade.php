@@ -7,11 +7,11 @@
 @php
     use Illuminate\Support\Facades\Storage;
 
-    $audioInstructionA = asset('toefl-audio/SECTION-A-INSTRUCTIONS.mp3');
+    $audioInstructionA = isset($directionAudios['A']) ? asset($directionAudios['A']->file_path) : asset('toefl-audio/SECTION-A-INSTRUCTIONS.mp3');
     $audioEndingA      = asset('toefl-audio/ENDING-PART-A.mp3');
-    $audioInstructionB = asset('toefl-audio/SECTION-B-INSTRUCTIONS.mp3');
+    $audioInstructionB = isset($directionAudios['B']) ? asset($directionAudios['B']->file_path) : asset('toefl-audio/SECTION-B-INSTRUCTIONS.mp3');
     $audioEndingB      = asset('toefl-audio/ENDING-OF-SECTION-B.mp3');
-    $audioInstructionC = asset('toefl-audio/INSTRUCTIONS-PART-C.mp3');
+    $audioInstructionC = isset($directionAudios['C']) ? asset($directionAudios['C']->file_path) : asset('toefl-audio/INSTRUCTIONS-PART-C.mp3');
     $audioEndingC      = asset('toefl-audio/ENDING-OF-LISTENING-SECTION.mp3');
 
     $partAQuestions = [];

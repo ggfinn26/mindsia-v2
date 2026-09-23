@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Toefl\StoreToeflTestRequest;
 use App\Http\Requests\Toefl\UpdateToeflTestRequest;
+use App\Models\ToeflMedia;
 use App\Models\ToeflTest;
 use App\Repositories\Toefl\ToeflTestRepository;
 use Illuminate\Http\RedirectResponse;
@@ -48,7 +49,9 @@ class ToeflTestController extends Controller
             'questions' => fn ($q) => $q->orderBy('section')->orderBy('display_order'),
         ]);
 
-        return view('toefl.test.show', compact('toeflTest'));
+        $audioMedia = ToeflMedia::where('media_type', 'audio')->orderBy('original_name')->get();
+
+        return view('toefl.test.show', compact('toeflTest', 'audioMedia'));
     }
 
     public function edit(ToeflTest $toeflTest): View

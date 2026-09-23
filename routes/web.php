@@ -100,6 +100,7 @@ use App\Http\Controllers\Admin\SystemAccess\NotificationRoutingController;
 use App\Http\Controllers\Admin\SystemAccess\TelegramBackupController;
 use App\Http\Controllers\Admin\SystemAccess\WebhookStatusController;
 use App\Http\Controllers\Admin\TestQuestionController;
+use App\Http\Controllers\Admin\ToeflDirectionAudioController;
 use App\Http\Controllers\Admin\ToeflMediaController;
 use App\Http\Controllers\Admin\ToeflMemberSessionController;
 use App\Http\Controllers\Admin\ToeflPassageController;
@@ -1036,6 +1037,8 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     Route::delete('toefl-media/{toeflMedia}', [ToeflMediaController::class, 'destroy'])->name('toefl.media.destroy');
     Route::get('toefl-member-sessions', [ToeflMemberSessionController::class, 'index'])->name('toefl.member-session.index');
     Route::get('toefl-guest-leads', [GuestToeflLeadController::class, 'index'])->name('toefl.guest-lead.index');
+    Route::get('toefl-direction-audio', [ToeflDirectionAudioController::class, 'index'])->name('toefl.direction-audio.index');
+    Route::patch('toefl-direction-audio/{part}', [ToeflDirectionAudioController::class, 'update'])->name('toefl.direction-audio.update');
 });
 
 require __DIR__.'/webhook.php';

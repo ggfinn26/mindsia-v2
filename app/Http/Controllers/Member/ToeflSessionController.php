@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Toefl\StartToeflSessionRequest;
 use App\Http\Requests\Toefl\SubmitToeflSectionRequest;
 use App\Http\Requests\Toefl\UpdateToeflAnswerRequest;
+use App\Models\ToeflDirectionAudio;
 use App\Models\ToeflSession;
 use App\Models\ToeflTest;
 use App\Services\Toefl\ToeflSessionService;
@@ -48,11 +49,14 @@ class ToeflSessionController extends Controller
     {
         $this->sessionService->assertSessionBelongsToMember($session, auth('member')->user()->memberData->id);
 
+        $directionAudios = ToeflDirectionAudio::whereIn('part', ['A', 'B', 'C'])->get()->keyBy('part');
+
         return view('toefl.session.listening', [
             'session' => $session,
             'questions' => $this->sessionService->getSectionQuestions($session, 'listening', markStarted: false),
             'answers' => $this->sessionService->getSectionAnswers($session, 'listening'),
             'timeLimit' => $session->test->listening_time_limit,
+            'directionAudios' => $directionAudios,
         ]);
     }
 
