@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Marketing\AssignEmployeeSocializationRequest;
 use App\Http\Requests\Marketing\StoreSocializationRequest;
 use App\Http\Requests\Marketing\UpdateSocializationRequest;
+use App\Models\Branch;
+use App\Models\Institution;
 use App\Models\Socialization;
 use App\Repositories\Marketing\SocializationRepository;
 use Illuminate\Http\RedirectResponse;
@@ -31,15 +33,36 @@ class SocializationController extends Controller
     {
         abort_unless($request->user()->can('marketing.socialization.create'), 403);
 
-        return view('marketing.socialization.create');
+        $employee = $request->user()->employee;
+
+        $branches = match (true) {
+            (bool) $employee->branch_id => Branch::where('id', $employee->branch_id)->get(),
+            (bool) $employee->area_id => Branch::active()->where('areas_id', $employee->area_id)->orderBy('branch_name')->get(),
+            (bool) $employee->region_id => Branch::active()->whereHas('area', fn ($q) => $q->where('region_id', $employee->region_id))->orderBy('branch_name')->get(),
+            default => Branch::active()->orderBy('branch_name')->get(),
+        };
+
+        return view('marketing.socialization.create', [
+            'employee' => $employee,
+            'branches' => $branches,
+            'institutions' => Institution::orderBy('institution_name')->get(),
+        ]);
     }
 
     public function store(StoreSocializationRequest $request): RedirectResponse
     {
-        $socialization = $this->repository->create(array_merge($request->validated(), [
-            'created_by_employee_id' => $request->user()->employee->id,
+        $employee = $request->user()->employee;
+
+        $branchId = $employee->branch_id ?? $request->validated('branch_id');
+        abort_unless($branchId, 422, 'Cabang tidak ditemukan. Pastikan profil pegawai sudah diatur.');
+
+        $socialization = $this->repository->create([
+            ...$request->validated(),
+            'branch_id' => $branchId,
+            'area_id' => $employee->area_id,
+            'created_by_employee_id' => $employee->id,
             'status' => $request->boolean('schedule_now') ? Socialization::STATUS_SCHEDULED : Socialization::STATUS_DRAFT,
-        ]));
+        ]);
 
         return redirect()->route('socializations.show', $socialization)->with('success', 'Sosialisasi berhasil dibuat.');
     }

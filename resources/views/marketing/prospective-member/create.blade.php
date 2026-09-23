@@ -1,49 +1,112 @@
 @extends('layouts.dashboard')
 
+@section('title', 'Tambah Lead Baru')
+
 @section('content')
-<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-4xl mx-auto">
-    <div class="mb-8">
-        <h1 class="text-2xl md:text-3xl text-gray-800 font-bold">Tambah Prospek Baru</h1>
+<div class="max-w-3xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center gap-4 mb-6">
+        <a href="{{ route('prospective-members.index') }}" class="text-gray-500 hover:text-gray-700">
+            <span class="material-symbols-outlined text-xl">arrow_back</span>
+        </a>
+        <h1 class="text-2xl font-bold text-gray-900">Tambah Lead Baru</h1>
     </div>
 
-    <div class="bg-white shadow-lg rounded-sm border border-gray-200">
-        <form action="#" method="POST" class="p-6 space-y-4">
-            @csrf
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium mb-1">Nama Lengkap <span class="text-red-500">*</span></label>
-                    <input name="name" type="text" class="form-input w-full" required />
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Telepon / WhatsApp <span class="text-red-500">*</span></label>
-                    <input name="phone" type="text" class="form-input w-full" required />
-                </div>
-            </div>
+    @if ($errors->any())
+        <div class="mb-4 bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded">
+            <ul class="list-disc list-inside text-sm">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium mb-1">Email</label>
-                    <input name="email" type="email" class="form-input w-full" />
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Asal Sekolah / Institusi</label>
-                    <select name="institution_id" class="form-select w-full">
-                        <option value="">Pilih Institusi (Bisa Kosong)</option>
-                    </select>
-                </div>
-            </div>
+    <form action="{{ route('prospective-members.store') }}" method="POST" class="bg-white shadow rounded-lg p-6 space-y-5">
+        @csrf
 
+        @if (request('socialization_id'))
+            <input type="hidden" name="socialization_id" value="{{ request('socialization_id') }}">
+        @endif
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-                <label class="block text-sm font-medium mb-1">Catatan Awal</label>
-                <textarea name="notes" rows="3" class="form-textarea w-full"></textarea>
+                <label for="full_name" class="block text-sm font-medium text-gray-700 mb-1">
+                    Nama Lengkap <span class="text-red-500">*</span>
+                </label>
+                <input type="text" name="full_name" id="full_name" value="{{ old('full_name') }}" required
+                    class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500 @error('full_name') border-red-300 @enderror">
+                @error('full_name') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
+            <div>
+                <label for="whatsapp_number" class="block text-sm font-medium text-gray-700 mb-1">
+                    Nomor WhatsApp <span class="text-red-500">*</span>
+                </label>
+                <input type="text" name="whatsapp_number" id="whatsapp_number" value="{{ old('whatsapp_number') }}" required
+                    placeholder="08xxxxxxxxxx"
+                    class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500 @error('whatsapp_number') border-red-300 @enderror">
+                @error('whatsapp_number') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+            </div>
+        </div>
 
-            <div class="mt-8 flex justify-end">
-                <a href="{{ route('prospective-members.index') }}" class="btn bg-white border-gray-200 hover:border-gray-300 text-gray-600 mr-3">Batal</a>
-                <button type="submit" class="btn bg-indigo-500 hover:bg-indigo-600 text-white">Simpan Prospek</button>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+                <label for="gender" class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin</label>
+                <select name="gender" id="gender"
+                    class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="">-- Tidak Diketahui --</option>
+                    <option value="L" {{ old('gender') === 'L' ? 'selected' : '' }}>Laki-laki</option>
+                    <option value="P" {{ old('gender') === 'P' ? 'selected' : '' }}>Perempuan</option>
+                </select>
             </div>
-        </form>
-    </div>
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email (opsional)</label>
+                <input type="email" name="email" id="email" value="{{ old('email') }}"
+                    class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+                <label for="institution_id" class="block text-sm font-medium text-gray-700 mb-1">Sekolah (dari daftar)</label>
+                <select name="institution_id" id="institution_id"
+                    class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="">-- Tidak Ada --</option>
+                    @foreach (\App\Models\Institution::orderBy('institution_name')->get() as $inst)
+                        <option value="{{ $inst->id }}" {{ old('institution_id') == $inst->id ? 'selected' : '' }}>
+                            {{ $inst->institution_name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
+                <label for="institution_name" class="block text-sm font-medium text-gray-700 mb-1">Atau ketik nama sekolah</label>
+                <input type="text" name="institution_name" id="institution_name" value="{{ old('institution_name') }}"
+                    placeholder="Nama sekolah jika tidak ada di daftar"
+                    class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+        </div>
+
+        <div>
+            <label for="instagram" class="block text-sm font-medium text-gray-700 mb-1">Instagram (opsional)</label>
+            <input type="text" name="instagram" id="instagram" value="{{ old('instagram') }}"
+                placeholder="@username"
+                class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500">
+        </div>
+
+        <div>
+            <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">Catatan Awal</label>
+            <textarea name="notes" id="notes" rows="3"
+                class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500">{{ old('notes') }}</textarea>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-2">
+            <a href="{{ route('prospective-members.index') }}" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                Batal
+            </a>
+            <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700">
+                Simpan Lead
+            </button>
+        </div>
+    </form>
 </div>
 @endsection

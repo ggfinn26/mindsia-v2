@@ -174,7 +174,9 @@
     <x-dashboard.nav-item href="{{ route('members.create') }}" :isChild="true" :active="request()->routeIs('members.create')">Registrasi Member</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('members.index') }}" :isChild="true" :active="request()->routeIs('members.index') || request()->routeIs('members.show') || request()->routeIs('members.edit')">Data Member</x-dashboard.nav-item>
     @endcan
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Sosialisasi & Lead</x-dashboard.nav-item>
+    @canany(['marketing.socialization.create', 'marketing.socialization.update'])
+    <x-dashboard.nav-item href="{{ route('socializations.index') }}" :isChild="true" :active="request()->routeIs('socializations.*') || request()->routeIs('prospective-members.*')">Sosialisasi & Lead</x-dashboard.nav-item>
+    @endcanany
     <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Template WA</x-dashboard.nav-item>
     <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Target & Performance</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('marketing.member-payment-statement') }}" :active="request()->routeIs('marketing.member-payment-statement')" :isChild="true">Financial Statement</x-dashboard.nav-item>
@@ -212,6 +214,7 @@
 @canany(['toefl.test.create', 'toefl.test.update'])
 <x-dashboard.nav-group title="TOEFL" icon="language" :active="request()->is('toefl*')">
     <x-dashboard.nav-item href="{{ route('toefl-tests.index') }}" :isChild="true" :active="request()->routeIs('toefl-tests.*')">Bank Test</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('toefl.media.index') }}" :isChild="true" :active="request()->routeIs('toefl.media.*')">Media Audio</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('toefl.member-session.index') }}" :isChild="true" :active="request()->routeIs('toefl.member-session.*')">Session Member</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('toefl.guest-lead.index') }}" :isChild="true" :active="request()->routeIs('toefl.guest-lead.*')">Lead Guest</x-dashboard.nav-item>
 </x-dashboard.nav-group>

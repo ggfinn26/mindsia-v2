@@ -6,6 +6,7 @@ use App\Enums\Member\ActivationStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Member\StoreMemberDataRequest;
 use App\Http\Requests\Member\UpdateMemberDataRequest;
+use App\Models\Branch;
 use App\Models\MemberAccount;
 use App\Models\MemberData;
 use App\Repositories\Member\MemberDataRepository;
@@ -33,7 +34,9 @@ class MemberDataController extends Controller
 
     public function create(): View
     {
-        return view('admin.member.create');
+        return view('admin.member.create', [
+            'branches' => Branch::active()->orderBy('branch_name')->get(),
+        ]);
     }
 
     public function store(StoreMemberDataRequest $request): RedirectResponse

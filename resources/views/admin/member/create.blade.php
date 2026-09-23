@@ -28,7 +28,7 @@
     <form action="{{ route('members.store') }}" method="POST" id="memberForm" class="border border-slate-200 bg-white">
         @csrf
 
-        <!-- Section: Data Pribadi -->
+        {{-- Section: Data Pribadi --}}
         <div class="border-b border-slate-200 bg-slate-50/50 px-6 py-4">
             <h3 class="font-jakarta text-base font-bold text-slate-900">Data Pribadi</h3>
             <p class="text-xs text-slate-500 mt-0.5">Informasi pribadi calon member</p>
@@ -40,12 +40,10 @@
                 <input type="text" name="full_name" value="{{ old('full_name') }}" required
                        class="w-full border border-slate-300 px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
                        placeholder="Nama sesuai identitas" />
-                @error('full_name')
-                    <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
-                @enderror
+                @error('full_name') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 mb-1">Jenis Kelamin <span class="text-red-500">*</span></label>
                     <select name="gender" required class="w-full border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]">
@@ -53,17 +51,20 @@
                         <option value="L" {{ old('gender') === 'L' ? 'selected' : '' }}>Laki-laki</option>
                         <option value="P" {{ old('gender') === 'P' ? 'selected' : '' }}>Perempuan</option>
                     </select>
-                    @error('gender')
-                        <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
-                    @enderror
+                    @error('gender') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Tempat Lahir <span class="text-red-500">*</span></label>
+                    <input type="text" name="birth_place" value="{{ old('birth_place') }}" required
+                           class="w-full border border-slate-300 px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
+                           placeholder="Kota" />
+                    @error('birth_place') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 mb-1">Tanggal Lahir <span class="text-red-500">*</span></label>
                     <input type="date" name="birthdate" value="{{ old('birthdate') }}" required
                            class="w-full border border-slate-300 px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]" />
-                    @error('birthdate')
-                        <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
-                    @enderror
+                    @error('birthdate') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
 
@@ -73,42 +74,37 @@
                     <input type="email" name="email" value="{{ old('email') }}" required
                            class="w-full border border-slate-300 px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
                            placeholder="email@contoh.com" />
-                    @error('email')
-                        <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
-                    @enderror
+                    @error('email') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 mb-1">Nomor WhatsApp <span class="text-red-500">*</span></label>
                     <input type="tel" name="whatsapp_number" value="{{ old('whatsapp_number') }}" required
                            class="w-full border border-slate-300 px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
                            placeholder="08xxxxxxxxxx" />
-                    @error('whatsapp_number')
-                        <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
-                    @enderror
+                    @error('whatsapp_number') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
 
-            <div>
-                <label class="block text-xs font-semibold text-slate-500 mb-1">Instagram <span class="text-slate-400">(Opsional)</span></label>
-                <input type="text" name="instagram" value="{{ old('instagram') }}"
-                       class="w-full border border-slate-300 px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
-                       placeholder="@username" />
-                @error('instagram')
-                    <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
-                @enderror
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Instagram <span class="text-slate-400">(Opsional)</span></label>
+                    <input type="text" name="instagram" value="{{ old('instagram') }}"
+                           class="w-full border border-slate-300 px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
+                           placeholder="@username" />
+                    @error('instagram') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+                <div></div>
             </div>
 
             <div>
-                <label class="block text-xs font-semibold text-slate-500 mb-1">Alamat <span class="text-slate-400">(Opsional)</span></label>
-                <textarea name="address" rows="2"
+                <label class="block text-xs font-semibold text-slate-500 mb-1">Alamat <span class="text-red-500">*</span></label>
+                <textarea name="address" rows="2" required
                           class="w-full border border-slate-300 px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]">{{ old('address') }}</textarea>
-                @error('address')
-                    <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
-                @enderror
+                @error('address') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
         </div>
 
-        <!-- Section: Data Orang Tua -->
+        {{-- Section: Data Orang Tua --}}
         <div class="border-b border-slate-200 bg-slate-50/50 px-6 py-4">
             <h3 class="font-jakarta text-base font-bold text-slate-900">Data Orang Tua</h3>
             <p class="text-xs text-slate-500 mt-0.5">Informasi orang tua / wali</p>
@@ -117,84 +113,119 @@
         <div class="p-6 space-y-5">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Nama Ayah <span class="text-slate-400">(Opsional)</span></label>
-                    <input type="text" name="father_name" value="{{ old('father_name') }}"
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Nama Ayah <span class="text-red-500">*</span></label>
+                    <input type="text" name="father_name" value="{{ old('father_name') }}" required
                            class="w-full border border-slate-300 px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]" />
-                    @error('father_name')
-                        <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
-                    @enderror
+                    @error('father_name') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Pekerjaan Ayah <span class="text-slate-400">(Opsional)</span></label>
-                    <input type="text" name="father_occupation" value="{{ old('father_occupation') }}"
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Pekerjaan Ayah <span class="text-red-500">*</span></label>
+                    <input type="text" name="father_occupation" value="{{ old('father_occupation') }}" required
                            class="w-full border border-slate-300 px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]" />
-                    @error('father_occupation')
-                        <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
-                    @enderror
+                    @error('father_occupation') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Nama Ibu <span class="text-slate-400">(Opsional)</span></label>
-                    <input type="text" name="mother_name" value="{{ old('mother_name') }}"
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Nama Ibu <span class="text-red-500">*</span></label>
+                    <input type="text" name="mother_name" value="{{ old('mother_name') }}" required
                            class="w-full border border-slate-300 px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]" />
-                    @error('mother_name')
-                        <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
-                    @enderror
+                    @error('mother_name') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Pekerjaan Ibu <span class="text-slate-400">(Opsional)</span></label>
-                    <input type="text" name="mother_occupation" value="{{ old('mother_occupation') }}"
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Pekerjaan Ibu <span class="text-red-500">*</span></label>
+                    <input type="text" name="mother_occupation" value="{{ old('mother_occupation') }}" required
                            class="w-full border border-slate-300 px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]" />
-                    @error('mother_occupation')
-                        <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
-                    @enderror
+                    @error('mother_occupation') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">WA Ayah <span class="text-slate-400">(Opsional)</span></label>
-                    <input type="tel" name="father_whatsapp" value="{{ old('father_whatsapp') }}"
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">WA Ayah <span class="text-red-500">*</span></label>
+                    <input type="tel" name="father_whatsapp" value="{{ old('father_whatsapp') }}" required
                            class="w-full border border-slate-300 px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
                            placeholder="08xxxxxxxxxx" />
-                    @error('father_whatsapp')
-                        <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
-                    @enderror
+                    @error('father_whatsapp') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">WA Ibu <span class="text-slate-400">(Opsional)</span></label>
-                    <input type="tel" name="mother_whatsapp" value="{{ old('mother_whatsapp') }}"
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">WA Ibu <span class="text-red-500">*</span></label>
+                    <input type="tel" name="mother_whatsapp" value="{{ old('mother_whatsapp') }}" required
                            class="w-full border border-slate-300 px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
                            placeholder="08xxxxxxxxxx" />
-                    @error('mother_whatsapp')
-                        <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
-                    @enderror
+                    @error('mother_whatsapp') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
         </div>
 
-        <!-- Section: Institusi & Program -->
+        {{-- Section: Cabang & Institusi --}}
         <div class="border-b border-slate-200 bg-slate-50/50 px-6 py-4">
-            <h3 class="font-jakarta text-base font-bold text-slate-900">Institusi & Program</h3>
-            <p class="text-xs text-slate-500 mt-0.5">Asal institusi dan program yang diminati</p>
+            <h3 class="font-jakarta text-base font-bold text-slate-900">Cabang & Institusi</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Cabang MINDSIA dan asal sekolah member</p>
         </div>
 
         <div class="p-6 space-y-5">
             <div>
-                <label class="block text-xs font-semibold text-slate-500 mb-1">Institusi / Cabang <span class="text-red-500">*</span></label>
-                <select name="institution_id" required class="w-full border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]">
-                    <option value="">-- Pilih Institusi --</option>
+                <label class="block text-xs font-semibold text-slate-500 mb-1">Cabang <span class="text-red-500">*</span></label>
+                <select name="branch_id" required class="w-full border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]">
+                    <option value="">-- Pilih Cabang --</option>
+                    @foreach ($branches as $branch)
+                        <option value="{{ $branch->id }}" {{ old('branch_id') == $branch->id ? 'selected' : '' }}>
+                            {{ $branch->branch_name }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('branch_id') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1">Sekolah / Institusi <span class="text-red-500">*</span></label>
+                <select name="institution_id" class="w-full border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]">
+                    <option value="">-- Pilih dari daftar (atau isi manual di bawah) --</option>
                     @foreach(\App\Models\Institution::orderBy('institution_name')->get() as $inst)
                         <option value="{{ $inst->id }}" {{ old('institution_id') == $inst->id ? 'selected' : '' }}>{{ $inst->institution_name }}</option>
                     @endforeach
                 </select>
-                @error('institution_id')
-                    <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
-                @enderror
+                @error('institution_id') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
+            <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1">Atau ketik nama sekolah <span class="text-slate-400">(jika tidak ada di daftar)</span></label>
+                <input type="text" name="institution_name_custom" value="{{ old('institution_name_custom') }}"
+                       class="w-full border border-slate-300 px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
+                       placeholder="Nama sekolah lainnya" />
+                @error('institution_name_custom') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Jenjang Pendidikan <span class="text-slate-400">(Opsional)</span></label>
+                    <select name="education_level" class="w-full border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]">
+                        <option value="">-- Pilih --</option>
+                        @foreach(['SD','SMP','SMA','SMK','D1','D2','D3','D4','S1','S2','S3','Umum'] as $level)
+                            <option value="{{ $level }}" {{ old('education_level') === $level ? 'selected' : '' }}>{{ $level }}</option>
+                        @endforeach
+                    </select>
+                    @error('education_level') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Kelas / Jurusan <span class="text-slate-400">(Opsional)</span></label>
+                    <input type="text" name="class_or_faculty" value="{{ old('class_or_faculty') }}"
+                           class="w-full border border-slate-300 px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
+                           placeholder="Contoh: XII IPA 3 / Teknik Informatika" />
+                    @error('class_or_faculty') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+            </div>
+        </div>
+
+        {{-- Section: Program & Referral --}}
+        <div class="border-b border-slate-200 bg-slate-50/50 px-6 py-4">
+            <h3 class="font-jakarta text-base font-bold text-slate-900">Program & Referral</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Program yang diminati dan marketer yang mereferral</p>
+        </div>
+
+        <div class="p-6 space-y-5">
             <div>
                 <label class="block text-xs font-semibold text-slate-500 mb-1">Program <span class="text-slate-400">(Opsional)</span></label>
                 <select name="program_id" class="w-full border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]">
@@ -203,13 +234,24 @@
                         <option value="{{ $prog->id }}" {{ old('program_id') == $prog->id ? 'selected' : '' }}>{{ $prog->program_name }}</option>
                     @endforeach
                 </select>
-                @error('program_id')
-                    <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
-                @enderror
+                @error('program_id') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1">Referral Marketer <span class="text-slate-400">(Opsional)</span></label>
+                <select name="referred_by_employee_id" class="w-full border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]">
+                    <option value="">-- Tidak Ada --</option>
+                    @foreach(\App\Models\Employee::orderBy('full_name')->get() as $emp)
+                        <option value="{{ $emp->id }}" {{ old('referred_by_employee_id') == $emp->id ? 'selected' : '' }}>
+                            {{ $emp->full_name }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('referred_by_employee_id') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
         </div>
 
-        <!-- Section: Akun Login -->
+        {{-- Section: Akun Login --}}
         <div class="border-b border-slate-200 bg-slate-50/50 px-6 py-4">
             <h3 class="font-jakarta text-base font-bold text-slate-900">Akun Login Member</h3>
             <p class="text-xs text-slate-500 mt-0.5">Opsional — buatkan akun agar member bisa login ke portal</p>
@@ -222,23 +264,22 @@
                        {{ old('create_account') ? 'checked' : '' }} />
                 <div>
                     <span class="text-sm font-semibold text-slate-800">Buat akun login member</span>
-                    <p class="text-xs text-slate-500">Centang untuk membuat akun login. Email verifikasi akan dikirim otomatis.</p>
+                    <p class="text-xs text-slate-500">Email verifikasi akan dikirim otomatis.</p>
                 </div>
             </label>
 
-            <!-- Account creation info (shown when checkbox is checked) -->
-            <div id="accountInfoPanel" class="hidden border border-blue-200 bg-blue-50/50 px-5 py-4 space-y-3">
+            <div id="accountInfoPanel" class="hidden border border-blue-200 bg-blue-50/50 px-5 py-4">
                 <div class="flex items-start gap-3">
                     <span class="material-symbols-outlined text-blue-600 text-[20px]">info</span>
                     <div class="text-sm text-blue-800">
-                        <p class="font-semibold">Akun akan dibuat secara otomatis</p>
-                        <p class="text-xs mt-1">Password sementara akan di-generate dan email verifikasi akan dikirim ke alamat email yang diisi di atas. Member harus verifikasi email dan mengganti password saat login pertama.</p>
+                        <p class="font-semibold">Akun dibuat otomatis</p>
+                        <p class="text-xs mt-1">Password sementara di-generate, email verifikasi dikirim ke alamat di atas. Member harus verifikasi email dan ganti password saat login pertama.</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Actions -->
+        {{-- Actions --}}
         <div class="border-t border-slate-200 bg-slate-50 px-6 py-4 flex gap-3 justify-end">
             <a href="{{ route('members.index') }}" class="px-6 py-2.5 text-sm font-semibold text-slate-600 border border-slate-300 hover:bg-slate-50">Batal</a>
             <button type="submit" class="px-6 py-2.5 bg-[#215aac] text-white text-sm font-semibold hover:bg-[#194a91]">
@@ -252,13 +293,8 @@
     document.addEventListener('DOMContentLoaded', function () {
         const checkbox = document.getElementById('createAccountCheckbox');
         const panel = document.getElementById('accountInfoPanel');
-
-        function togglePanel() {
-            panel.classList.toggle('hidden', !checkbox.checked);
-        }
-
-        checkbox.addEventListener('change', togglePanel);
-        togglePanel();
+        checkbox.addEventListener('change', () => panel.classList.toggle('hidden', !checkbox.checked));
+        panel.classList.toggle('hidden', !checkbox.checked);
     });
 </script>
 @endsection
