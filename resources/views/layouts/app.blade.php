@@ -32,5 +32,6 @@
             &copy; {{ date('Y') }} MINDSIA. All rights reserved.
         </div>
     </footer>
+@stack('scripts')
 </body>
 </html>

@@ -46,9 +46,16 @@ class ToeflSessionService
         return $session;
     }
 
-    public function getSectionQuestions(ToeflSession $session, string $section): Collection
+    public function markSectionStarted(ToeflSession $session, string $section): void
     {
         $this->sessionRepo->markSectionStarted($session, $section);
+    }
+
+    public function getSectionQuestions(ToeflSession $session, string $section, bool $markStarted = true): Collection
+    {
+        if ($markStarted) {
+            $this->sessionRepo->markSectionStarted($session, $section);
+        }
 
         return $session->test->questions()
             ->where('section', $section)

@@ -30,7 +30,6 @@ class ToeflSessionController extends Controller
             ->paginate(10);
 
         $availableTests = ToeflTest::where('status', ToeflTest::STATUS_PUBLISHED)
-            ->where('is_trial', false)
             ->orderBy('test_name')
             ->get();
 
@@ -51,7 +50,7 @@ class ToeflSessionController extends Controller
 
         return view('toefl.session.listening', [
             'session' => $session,
-            'questions' => $this->sessionService->getSectionQuestions($session, 'listening'),
+            'questions' => $this->sessionService->getSectionQuestions($session, 'listening', markStarted: false),
             'answers' => $this->sessionService->getSectionAnswers($session, 'listening'),
             'timeLimit' => $session->test->listening_time_limit,
         ]);
@@ -63,7 +62,7 @@ class ToeflSessionController extends Controller
 
         return view('toefl.session.structure', [
             'session' => $session,
-            'questions' => $this->sessionService->getSectionQuestions($session, 'structure'),
+            'questions' => $this->sessionService->getSectionQuestions($session, 'structure', markStarted: false),
             'answers' => $this->sessionService->getSectionAnswers($session, 'structure'),
             'timeLimit' => $session->test->structure_time_limit,
         ]);
@@ -75,10 +74,37 @@ class ToeflSessionController extends Controller
 
         return view('toefl.session.reading', [
             'session' => $session,
-            'questions' => $this->sessionService->getSectionQuestions($session, 'reading'),
+            'questions' => $this->sessionService->getSectionQuestions($session, 'reading', markStarted: false),
             'answers' => $this->sessionService->getSectionAnswers($session, 'reading'),
             'timeLimit' => $session->test->reading_time_limit,
         ]);
+    }
+
+    public function markReadingStarted(ToeflSession $session): JsonResponse
+    {
+        $this->sessionService->assertSessionBelongsToMember($session, auth('member')->user()->memberData->id);
+        $this->sessionService->markSectionStarted($session, 'reading');
+        $session->refresh();
+
+        return response()->json(['started_at' => $session->reading_started_at?->timestamp]);
+    }
+
+    public function markStructureStarted(ToeflSession $session): JsonResponse
+    {
+        $this->sessionService->assertSessionBelongsToMember($session, auth('member')->user()->memberData->id);
+        $this->sessionService->markSectionStarted($session, 'structure');
+        $session->refresh();
+
+        return response()->json(['started_at' => $session->structure_started_at?->timestamp]);
+    }
+
+    public function markListeningStarted(ToeflSession $session): JsonResponse
+    {
+        $this->sessionService->assertSessionBelongsToMember($session, auth('member')->user()->memberData->id);
+        $this->sessionService->markSectionStarted($session, 'listening');
+        $session->refresh();
+
+        return response()->json(['started_at' => $session->listening_started_at?->timestamp]);
     }
 
     public function saveAnswer(UpdateToeflAnswerRequest $request, ToeflSession $session): JsonResponse
@@ -108,6 +134,15 @@ class ToeflSessionController extends Controller
         $this->sessionService->assertSessionBelongsToMember($session, auth('member')->user()->memberData->id);
         abort_unless($session->status === ToeflSession::STATUS_COMPLETED, 404);
 
-        return view('toefl.session.result', compact('session'));
+        $session->load(['test', 'answers.question:id,section']);
+
+        $rawScores = $session->answers
+            ->groupBy(fn ($a) => $a->question->section)
+            ->map(fn ($group) => [
+                'correct' => $group->where('is_correct', true)->count(),
+                'total' => $group->count(),
+            ]);
+
+        return view('toefl.session.result', compact('session', 'rawScores'));
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Toefl\StartGuestToeflSessionRequest;
 use App\Http\Requests\Toefl\SubmitToeflSectionRequest;
 use App\Http\Requests\Toefl\UpdateToeflAnswerRequest;
+use App\Models\ToeflDirectionAudio;
 use App\Models\ToeflSession;
 use App\Models\ToeflTest;
 use App\Services\Toefl\ToeflSessionService;
@@ -39,11 +40,15 @@ class GuestToeflSessionController extends Controller
     {
         $this->sessionService->assertGuestSession($session);
 
+        $directionAudios = ToeflDirectionAudio::whereIn('part', ['A', 'B', 'C'])
+            ->get()->keyBy('part');
+
         return view('toefl.guest.listening', [
             'session' => $session,
             'questions' => $this->sessionService->getSectionQuestions($session, 'listening'),
             'answers' => $this->sessionService->getSectionAnswers($session, 'listening'),
             'timeLimit' => $session->test->listening_time_limit,
+            'directionAudios' => $directionAudios,
         ]);
     }
 
@@ -98,6 +103,15 @@ class GuestToeflSessionController extends Controller
         $this->sessionService->assertGuestSession($session);
         abort_unless($session->status === ToeflSession::STATUS_COMPLETED, 404);
 
-        return view('toefl.guest.result', compact('session'));
+        $session->load(['test', 'answers.question:id,section']);
+
+        $rawScores = $session->answers
+            ->groupBy(fn ($a) => $a->question->section)
+            ->map(fn ($group) => [
+                'correct' => $group->where('is_correct', true)->count(),
+                'total' => $group->count(),
+            ]);
+
+        return view('toefl.guest.result', compact('session', 'rawScores'));
     }
 }

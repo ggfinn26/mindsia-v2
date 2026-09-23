@@ -269,6 +269,12 @@ Route::prefix('toefl-trial')->name('toefl.guest.')->group(function () {
     Route::post('session/{session}/answer', [GuestToeflSessionController::class, 'saveAnswer'])->name('answer');
     Route::post('session/{session}/submit-section', [GuestToeflSessionController::class, 'submitSection'])->name('submit-section');
     Route::get('session/{session}/result', [GuestToeflSessionController::class, 'result'])->name('result');
+    if (app()->environment('local')) {
+        Route::get('session/{session}/preview-result', function (\App\Models\ToeflSession $session) {
+            session(['guest_toefl_session_id' => $session->id]);
+            return redirect()->route('toefl.guest.result', $session);
+        })->name('preview-result');
+    }
 });
 
 // Auth Routes — Employee (web guard)
@@ -414,6 +420,9 @@ Route::middleware(['auth:member', EnsureEmailIsVerified::class, 'no.back'])->gro
         Route::get('/toefl/session/{session}/structure', [ToeflSessionController::class, 'showStructure'])->name('toefl.session.structure');
         Route::get('/toefl/session/{session}/reading', [ToeflSessionController::class, 'showReading'])->name('toefl.session.reading');
         Route::post('/toefl/session/{session}/answer', [ToeflSessionController::class, 'saveAnswer'])->name('toefl.session.answer');
+        Route::post('/toefl/session/{session}/listening/start', [ToeflSessionController::class, 'markListeningStarted'])->name('toefl.session.listening.start');
+        Route::post('/toefl/session/{session}/structure/start', [ToeflSessionController::class, 'markStructureStarted'])->name('toefl.session.structure.start');
+        Route::post('/toefl/session/{session}/reading/start', [ToeflSessionController::class, 'markReadingStarted'])->name('toefl.session.reading.start');
         Route::post('/toefl/session/{session}/submit-section', [ToeflSessionController::class, 'submitSection'])->name('toefl.session.submit-section');
         Route::get('/toefl/session/{session}/result', [ToeflSessionController::class, 'result'])->name('toefl.session.result');
 
