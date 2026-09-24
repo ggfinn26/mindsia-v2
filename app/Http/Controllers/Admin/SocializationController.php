@@ -8,6 +8,7 @@ use App\Http\Requests\Marketing\StoreSocializationRequest;
 use App\Http\Requests\Marketing\UpdateSocializationRequest;
 use App\Models\Branch;
 use App\Models\Employee;
+use App\Models\EmployeeSocialization;
 use App\Models\Institution;
 use App\Models\Socialization;
 use App\Repositories\Marketing\ProspectiveMemberRepository;
@@ -56,7 +57,6 @@ class SocializationController extends Controller
 
         $employee = $request->user()->employee;
 
-        // Resolve area → region for institution filtering
         $area = $employee->area
             ?? ($employee->branch_id ? Branch::with('area')->find($employee->branch_id)?->area : null);
 
@@ -64,7 +64,15 @@ class SocializationController extends Controller
             ->when($area?->region_id, fn ($q) => $q->where('regions_id', $area->region_id))
             ->get(['id', 'institution_name']);
 
-        return view('marketing.socialization.create', compact('employee', 'institutions', 'area'));
+        $eligibleEmployees = $area
+            ? Employee::where('is_active', true)
+                ->where(fn ($q) => $q
+                    ->where('area_id', $area->id)
+                    ->orWhereHas('branch', fn ($b) => $b->where('areas_id', $area->id))
+                )->orderBy('full_name')->get(['id', 'full_name'])
+            : Employee::where('is_active', true)->orderBy('full_name')->get(['id', 'full_name']);
+
+        return view('marketing.socialization.create', compact('employee', 'institutions', 'area', 'eligibleEmployees'));
     }
 
     public function store(StoreSocializationRequest $request): RedirectResponse
@@ -72,16 +80,27 @@ class SocializationController extends Controller
         $employee = $request->user()->employee;
         $status = $request->boolean('schedule_now') ? Socialization::STATUS_SCHEDULED : Socialization::STATUS_DRAFT;
 
-        // Area-based: branch_id not stored. area resolved from employee's branch if branch-level.
         $areaId = $employee->area_id
             ?? ($employee->branch_id ? Branch::find($employee->branch_id)?->areas_id : null);
 
-        $socialization = $this->repository->create(array_merge($request->validated(), [
+        $validated = $request->validated();
+
+        $socialization = $this->repository->create(array_merge($validated, [
             'branch_id' => null,
             'area_id' => $areaId,
             'created_by_employee_id' => $employee->id,
             'status' => $status,
         ]));
+
+        $socialization->schedules()->create([
+            'schedule_date' => $validated['schedule_date'],
+            'start_time' => $validated['start_time'],
+            'end_time' => $validated['end_time'],
+        ]);
+
+        foreach ($validated['employee_ids'] as $employeeId) {
+            $this->repository->assignEmployee($socialization, (int) $employeeId);
+        }
 
         return redirect()->route('socializations.show', $socialization)
             ->with('success', 'Sosialisasi berhasil dibuat.');
@@ -163,6 +182,37 @@ class SocializationController extends Controller
         $this->repository->cancel($socialization);
 
         return redirect()->route('socializations.show', $socialization)->with('success', 'Sosialisasi dibatalkan.');
+    }
+
+    public function overrideEmployeeKelas(Request $request, Socialization $socialization, EmployeeSocialization $employeeSocialization): RedirectResponse
+    {
+        abort_unless($request->user()->can('marketing.socialization.update'), 403);
+        abort_unless($employeeSocialization->socialization_id === $socialization->id, 404);
+
+        $validated = $request->validate([
+            'classes_obtained' => ['required', 'integer', 'min:0'],
+        ]);
+
+        $old = $employeeSocialization->classes_obtained;
+        $employeeSocialization->update($validated);
+
+        // ponytail: log override via existing history mechanism
+        $employeeSocialization->history()->updateOrCreate(
+            ['employee_socialization_id' => $employeeSocialization->id],
+            [
+                'employee_id' => $employeeSocialization->employee_id,
+                'socialization_id' => $socialization->id,
+                'employee_name_snapshot' => $employeeSocialization->employee->full_name,
+                'socialization_date_snapshot' => $socialization->schedules()->min('schedule_date'),
+                'location_name_snapshot' => $socialization->institution?->institution_name ?? $socialization->location_name,
+                'classes_obtained' => $validated['classes_obtained'],
+                'prospective_members_count' => $socialization->prospectiveMembers()
+                    ->where('captured_by_employee_id', $employeeSocialization->employee_id)->count(),
+                'snapshot_at' => now(),
+            ]
+        );
+
+        return back()->with('success', "Kelas dioverride dari {$old} → {$validated['classes_obtained']}.");
     }
 
     public function assignEmployee(AssignEmployeeSocializationRequest $request, Socialization $socialization): RedirectResponse

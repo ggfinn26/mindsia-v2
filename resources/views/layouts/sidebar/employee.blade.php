@@ -165,7 +165,11 @@
 @endcan
 
 <!-- 1.10 Member & Marketing -->
-@if(auth()->user()->can('member.manage') || auth()->user()->can('marketing.socialization.create') || auth()->user()->can('marketing.prospective_member.create'))
+@php
+    $hasMarketingAccess = auth()->user()->canAny(['member.manage', 'marketing.socialization.create', 'marketing.socialization.update', 'marketing.socialization.assign', 'marketing.prospective_member.create', 'marketing.prospective_member.update', 'marketing.prospective.view_area', 'marketing.prospective.view_national'])
+        || (auth()->user()->employee && \App\Models\EmployeeSocialization::where('employee_id', auth()->user()->employee->id)->exists());
+@endphp
+@if($hasMarketingAccess)
 <div class="pt-4 pb-2">
     <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider font-jakarta">Sales & Service</p>
 </div>
@@ -175,8 +179,22 @@
     <x-dashboard.nav-item href="{{ route('members.index') }}" :isChild="true" :active="request()->routeIs('members.index') || request()->routeIs('members.show') || request()->routeIs('members.edit')">Data Member</x-dashboard.nav-item>
     @endcan
     @canany(['marketing.socialization.create', 'marketing.socialization.update'])
-    <x-dashboard.nav-item href="{{ route('socializations.index') }}" :isChild="true" :active="request()->routeIs('socializations.*') || request()->routeIs('prospective-members.*')">Sosialisasi & Lead</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('socializations.index') }}" :isChild="true" :active="request()->routeIs('socializations.*') && !request()->routeIs('my-socializations.*')">Kelola Sosialisasi</x-dashboard.nav-item>
     @endcanany
+    @auth
+    @if(auth()->user()->employee && \App\Models\EmployeeSocialization::where('employee_id', auth()->user()->employee->id)->exists())
+    <x-dashboard.nav-item href="{{ route('my-socializations.index') }}" :isChild="true" :active="request()->routeIs('my-socializations.*')">Sosialisasi Saya</x-dashboard.nav-item>
+    @endif
+    @endauth
+    @canany(['marketing.prospective_member.create', 'marketing.prospective_member.update'])
+    <x-dashboard.nav-item href="{{ route('prospective-members.index') }}?view=mine" :isChild="true" :active="request()->routeIs('prospective-members.*') && request()->input('view','mine') === 'mine'">Calon Member Saya</x-dashboard.nav-item>
+    @endcanany
+    @can('marketing.prospective.view_area')
+    <x-dashboard.nav-item href="{{ route('prospective-members.index') }}?view=area" :isChild="true" :active="request()->routeIs('prospective-members.*') && request()->input('view') === 'area'">Calon Member Area</x-dashboard.nav-item>
+    @endcan
+    @can('marketing.prospective.view_national')
+    <x-dashboard.nav-item href="{{ route('prospective-members.index') }}?view=national" :isChild="true" :active="request()->routeIs('prospective-members.*') && request()->input('view') === 'national'">Calon Member Nasional</x-dashboard.nav-item>
+    @endcan
     <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Template WA</x-dashboard.nav-item>
     <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Target & Performance</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('marketing.member-payment-statement') }}" :active="request()->routeIs('marketing.member-payment-statement')" :isChild="true">Financial Statement</x-dashboard.nav-item>

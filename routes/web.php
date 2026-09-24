@@ -77,6 +77,7 @@ use App\Http\Controllers\Admin\Payroll\PayrollPeriodController;
 use App\Http\Controllers\Admin\Payroll\PayrollSlipController;
 use App\Http\Controllers\Admin\Payroll\SessionCompensationRuleController;
 use App\Http\Controllers\Admin\PositionController;
+use App\Http\Controllers\Admin\MySocializationController;
 use App\Http\Controllers\Admin\ProspectiveMemberController;
 use App\Http\Controllers\Admin\Recruitment\ApplicantInterviewEvaluationController;
 use App\Http\Controllers\Admin\Recruitment\ApplicantInterviewScheduleController;
@@ -678,12 +679,16 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     });
 
     // Marketing Domain
+    Route::get('my-socializations', [MySocializationController::class, 'index'])->name('my-socializations.index');
+    Route::get('my-socializations/{mySocialization}', [MySocializationController::class, 'show'])->name('my-socializations.show');
+    Route::patch('my-socializations/{mySocialization}', [MySocializationController::class, 'update'])->name('my-socializations.update');
     Route::resource('socializations', SocializationController::class);
     Route::post('socializations/{socialization}/schedule', [SocializationController::class, 'schedule'])->name('socializations.schedule');
     Route::post('socializations/{socialization}/cancel', [SocializationController::class, 'cancel'])->name('socializations.cancel');
     Route::post('socializations/{socialization}/assign-employee', [SocializationController::class, 'assignEmployee'])->name('socializations.assign-employee');
+    Route::patch('socializations/{socialization}/override-kelas/{employeeSocialization}', [SocializationController::class, 'overrideEmployeeKelas'])->name('socializations.override-kelas');
     Route::patch('socializations/{socialization}/partner-fee', [SocializationController::class, 'updatePartnerFee'])->name('socializations.partner-fee');
-    Route::resource('prospective-members', ProspectiveMemberController::class)->only(['index', 'create', 'store', 'show']);
+    Route::resource('prospective-members', ProspectiveMemberController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update']);
     Route::patch('prospective-members/{prospectiveMember}/status', [ProspectiveMemberController::class, 'updateStatus'])->name('prospective-members.update-status');
     Route::post('prospective-members/{prospectiveMember}/follow-ups', [ProspectiveMemberController::class, 'storeFollowUp'])->name('prospective-members.follow-ups.store');
     Route::resource('wa-templates', EmployeeWaTemplateController::class)->only(['index', 'store', 'update', 'destroy'])->parameters(['wa-templates' => 'employeeWaTemplate']);

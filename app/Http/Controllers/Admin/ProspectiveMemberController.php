@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Marketing\StoreProspectiveMemberRequest;
 use App\Http\Requests\Marketing\UpdateProspectiveMemberStatusRequest;
 use App\Models\Branch;
+use App\Models\EmployeeSocialization;
 use App\Models\ProspectiveMember;
 use App\Repositories\Marketing\ProspectiveMemberRepository;
 use Illuminate\Http\RedirectResponse;
@@ -62,6 +63,16 @@ class ProspectiveMemberController extends Controller
         ]));
 
         if ($lead->socialization_id) {
+            if (! $request->user()->can('marketing.socialization.update') && $request->user()->employee) {
+                $es = EmployeeSocialization::where('socialization_id', $lead->socialization_id)
+                    ->where('employee_id', $request->user()->employee->id)
+                    ->first();
+                if ($es) {
+                    return redirect()->route('my-socializations.show', $es)
+                        ->with('success', 'Lead berhasil ditambahkan.');
+                }
+            }
+
             return redirect()->route('socializations.show', $lead->socialization_id)
                 ->with('success', 'Lead berhasil ditambahkan.');
         }
@@ -79,6 +90,38 @@ class ProspectiveMemberController extends Controller
         return view('marketing.prospective-member.show', [
             'lead' => $this->repository->find($prospectiveMember->id),
         ]);
+    }
+
+    public function edit(Request $request, ProspectiveMember $prospectiveMember): View
+    {
+        if (! $request->user()->can('marketing.prospective.view_area')
+            && ! $request->user()->can('marketing.prospective.view_national')) {
+            abort_unless($prospectiveMember->captured_by_employee_id === $request->user()->employee->id, 403);
+        }
+
+        return view('marketing.prospective-member.edit', [
+            'lead' => $this->repository->find($prospectiveMember->id),
+        ]);
+    }
+
+    public function update(Request $request, ProspectiveMember $prospectiveMember): RedirectResponse
+    {
+        if (! $request->user()->can('marketing.prospective.view_area')
+            && ! $request->user()->can('marketing.prospective.view_national')) {
+            abort_unless($prospectiveMember->captured_by_employee_id === $request->user()->employee->id, 403);
+        }
+
+        $data = $request->validate([
+            'full_name' => ['required', 'string', 'max:255'],
+            'whatsapp_number' => ['required', 'string', 'max:20'],
+            'email' => ['nullable', 'email', 'max:255'],
+            'instagram' => ['nullable', 'string', 'max:255'],
+            'gender' => ['nullable', 'in:L,P'],
+        ]);
+
+        $prospectiveMember->update($data);
+
+        return redirect()->route('prospective-members.show', $prospectiveMember)->with('success', 'Data lead berhasil diperbarui.');
     }
 
     public function updateStatus(UpdateProspectiveMemberStatusRequest $request, ProspectiveMember $prospectiveMember): RedirectResponse
