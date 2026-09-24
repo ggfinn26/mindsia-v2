@@ -63,18 +63,6 @@ class ReimbursementRepository
         ]);
     }
 
-    public function revertToDraft(Reimbursement $reimbursement): void
-    {
-        abort_unless($reimbursement->status === 'REJECTED', 422, 'Hanya reimbursement rejected yang bisa dikembalikan ke draft.');
-        $reimbursement->update([
-            'status' => 'DRAFT',
-            'reviewed_by_employee_id' => null,
-            'reviewed_at' => null,
-            'rejected_at' => null,
-            'rejection_notes' => null,
-        ]);
-    }
-
     public function markPaid(Reimbursement $reimbursement, int $employeeId): void
     {
         abort_unless($reimbursement->status === 'APPROVED', 422, 'Hanya reimbursement approved yang bisa ditandai paid.');

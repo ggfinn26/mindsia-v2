@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Finance;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Finance\StoreBranchMonthlyCostRequest;
 use App\Http\Requests\Finance\UpdateBranchMonthlyCostRequest;
+use App\Models\Branch;
 use App\Models\BranchMonthlyCost;
 use App\Repositories\Finance\BranchMonthlyCostRepository;
 use App\Services\Finance\BranchPeriodLockService;
@@ -24,14 +25,21 @@ class BranchMonthlyCostController extends Controller
         abort_unless($request->user()->can('finance.monthly_cost.view'), 403);
 
         $employee = $request->user()->employee;
-        $branchId = $request->input('branch_id', $employee?->branch_id);
+
+        $branches = match (true) {
+            (bool) $employee?->branch_id => Branch::where('id', $employee->branch_id)->where('is_active', true)->get(),
+            (bool) $employee?->area_id => Branch::where('areas_id', $employee->area_id)->where('is_active', true)->orderBy('branch_name')->get(),
+            default => Branch::where('is_active', true)->orderBy('branch_name')->get(),
+        };
+
+        $branchId = (int) $request->input('branch_id', $employee?->branch_id ?? $branches->first()?->id);
         $year = (int) $request->input('year', now()->year);
         $month = (int) $request->input('month', now()->month);
 
-        $costs = $this->repository->list((int) $branchId, $year, $month);
-        $isLocked = $branchId ? $this->lockService->isLocked((int) $branchId, $year, $month) : false;
+        $costs = $this->repository->list($branchId, $year, $month);
+        $isLocked = $branchId ? $this->lockService->isLocked($branchId, $year, $month) : false;
 
-        return view('finance.monthly-cost.index', compact('costs', 'isLocked', 'year', 'month'));
+        return view('finance.monthly-cost.index', compact('costs', 'isLocked', 'year', 'month', 'branchId', 'branches'));
     }
 
     public function store(StoreBranchMonthlyCostRequest $request): RedirectResponse

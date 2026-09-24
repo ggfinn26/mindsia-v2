@@ -29,7 +29,9 @@ use App\Http\Controllers\Admin\Facility\InventoryItemController;
 use App\Http\Controllers\Admin\Finance\BranchMonthlyCostController;
 use App\Http\Controllers\Admin\Finance\BranchPeriodLockController;
 use App\Http\Controllers\Admin\Finance\BudgetEstimateController;
+use App\Http\Controllers\Admin\Finance\BudgetEstimateItemController;
 use App\Http\Controllers\Admin\Finance\ReimbursementController;
+use App\Http\Controllers\Admin\Finance\ReimbursementItemController;
 use App\Http\Controllers\Admin\GuestToeflLeadController;
 use App\Http\Controllers\Admin\HolidayController;
 use App\Http\Controllers\Admin\Kpi\KpiDocumentController;
@@ -882,17 +884,21 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     Route::get('classrooms/{classroom}/curriculum/items/{item}/download', [ClassCurriculumController::class, 'downloadFile'])->name('class-curriculum.download');
 
     // Finance Domain
+    Route::get('budget-estimates/review', [BudgetEstimateController::class, 'reviewList'])->name('budget-estimates.review-list');
     Route::resource('budget-estimates', BudgetEstimateController::class)->except(['destroy']);
     Route::post('budget-estimates/{budgetEstimate}/submit-ops', [BudgetEstimateController::class, 'submitOps'])->name('budget-estimates.submit-ops');
     Route::post('budget-estimates/{budgetEstimate}/submit-finance', [BudgetEstimateController::class, 'submitFinance'])->name('budget-estimates.submit-finance');
     Route::post('budget-estimates/{budgetEstimate}/review-finance', [BudgetEstimateController::class, 'reviewFinance'])->name('budget-estimates.review-finance');
     Route::post('budget-estimates/{budgetEstimate}/send', [BudgetEstimateController::class, 'send'])->name('budget-estimates.send');
+    Route::post('budget-estimates/{budgetEstimate}/items', [BudgetEstimateItemController::class, 'store'])->name('budget-estimate-items.store');
+    Route::delete('budget-estimates/{budgetEstimate}/items/{item}', [BudgetEstimateItemController::class, 'destroy'])->name('budget-estimate-items.destroy');
 
     Route::resource('reimbursements', ReimbursementController::class)->except(['destroy']);
     Route::post('reimbursements/{reimbursement}/submit', [ReimbursementController::class, 'submit'])->name('reimbursements.submit');
     Route::post('reimbursements/{reimbursement}/review', [ReimbursementController::class, 'review'])->name('reimbursements.review');
-    Route::post('reimbursements/{reimbursement}/revert', [ReimbursementController::class, 'revert'])->name('reimbursements.revert');
     Route::post('reimbursements/{reimbursement}/mark-paid', [ReimbursementController::class, 'markPaid'])->name('reimbursements.mark-paid');
+    Route::post('reimbursements/{reimbursement}/items', [ReimbursementItemController::class, 'store'])->name('reimbursement-items.store');
+    Route::delete('reimbursements/{reimbursement}/items/{item}', [ReimbursementItemController::class, 'destroy'])->name('reimbursement-items.destroy');
     Route::get('reimbursements-review', [ReimbursementController::class, 'reviewList'])->name('reimbursements.review-list');
 
     Route::get('branch-monthly-costs', [BranchMonthlyCostController::class, 'index'])->name('branch-monthly-costs.index');

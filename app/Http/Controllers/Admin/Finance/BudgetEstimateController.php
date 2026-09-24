@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Finance\ReviewBudgetEstimateRequest;
 use App\Http\Requests\Finance\StoreBudgetEstimateRequest;
 use App\Http\Requests\Finance\UpdateBudgetEstimateRequest;
+use App\Models\Branch;
 use App\Models\BudgetEstimate;
 use App\Repositories\Finance\BudgetEstimateRepository;
 use Illuminate\Http\RedirectResponse;
@@ -15,6 +16,24 @@ use Illuminate\View\View;
 class BudgetEstimateController extends Controller
 {
     public function __construct(private readonly BudgetEstimateRepository $repository) {}
+
+    public function reviewList(Request $request): View
+    {
+        abort_unless(
+            $request->user()->canAny(['finance.budget_estimate.ops_review', 'finance.budget_estimate.send']),
+            403
+        );
+
+        $status = match (true) {
+            $request->user()->can('finance.budget_estimate.send') => 'accepted',
+            $request->user()->can('finance.budget_estimate.ops_review') => 'ops_review',
+            default => 'ops_review',
+        };
+
+        $estimates = $this->repository->forReview($status);
+
+        return view('finance.budget-estimate.review-list', compact('estimates', 'status'));
+    }
 
     public function index(Request $request): View
     {
@@ -29,11 +48,19 @@ class BudgetEstimateController extends Controller
         return view('finance.budget-estimate.index', compact('estimates', 'year', 'month'));
     }
 
-    public function create(): View
+    public function create(Request $request): View
     {
         $this->authorize('finance.budget_estimate.create');
 
-        return view('finance.budget-estimate.create');
+        $employee = $request->user()->employee;
+
+        $branches = match (true) {
+            (bool) $employee?->branch_id => Branch::where('id', $employee->branch_id)->where('is_active', true)->get(),
+            (bool) $employee?->area_id => Branch::where('areas_id', $employee->area_id)->where('is_active', true)->orderBy('branch_name')->get(),
+            default => Branch::where('is_active', true)->orderBy('branch_name')->get(),
+        };
+
+        return view('finance.budget-estimate.create', compact('branches'));
     }
 
     public function store(StoreBudgetEstimateRequest $request): RedirectResponse

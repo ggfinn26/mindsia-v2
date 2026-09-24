@@ -23,6 +23,15 @@
     <form method="POST" action="{{ route('budget-estimates.store') }}" class="border border-slate-200 bg-white p-6 space-y-4">
         @csrf
         <div>
+            <label class="mb-1.5 block text-sm font-medium text-slate-700">Cabang</label>
+            <select name="branch_id" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                <option value="">— Pilih cabang —</option>
+                @foreach ($branches as $branch)
+                    <option value="{{ $branch->id }}" @selected(old('branch_id') == $branch->id)>{{ $branch->branch_name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div>
             <label class="mb-1.5 block text-sm font-medium text-slate-700">Judul anggaran</label>
             <input type="text" name="title" value="{{ old('title') }}" required maxlength="255" placeholder="Anggaran Operasional Cabang Agustus 2026" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
         </div>

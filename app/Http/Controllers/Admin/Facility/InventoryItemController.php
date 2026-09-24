@@ -7,9 +7,11 @@ use App\Http\Requests\Facility\AdjustInventoryQuantityRequest;
 use App\Http\Requests\Facility\DisposeInventoryItemRequest;
 use App\Http\Requests\Facility\StoreInventoryItemRequest;
 use App\Http\Requests\Facility\UpdateInventoryItemRequest;
+use App\Models\Branch;
 use App\Models\InventoryItem;
 use App\Repositories\Facility\InventoryItemRepository;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class InventoryItemController extends Controller
@@ -23,9 +25,17 @@ class InventoryItemController extends Controller
         return view('facility.inventory.index');
     }
 
-    public function create(): View
+    public function create(Request $request): View
     {
-        return view('facility.inventory.create');
+        $employee = $request->user()->employee;
+
+        $branches = match (true) {
+            (bool) $employee?->branch_id => Branch::where('id', $employee->branch_id)->where('is_active', true)->get(),
+            (bool) $employee?->area_id => Branch::where('areas_id', $employee->area_id)->where('is_active', true)->orderBy('branch_name')->get(),
+            default => Branch::where('is_active', true)->orderBy('branch_name')->get(),
+        };
+
+        return view('facility.inventory.create', compact('branches'));
     }
 
     public function store(StoreInventoryItemRequest $request): RedirectResponse

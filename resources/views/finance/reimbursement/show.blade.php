@@ -6,11 +6,11 @@
 @section('content')
 @php
     $statusBadge = [
-        'DRAFT'    => 'bg-slate-100 text-slate-700',
-        'PENDING'  => 'bg-amber-100 text-amber-800',
-        'APPROVED' => 'bg-emerald-100 text-emerald-800',
-        'REJECTED' => 'bg-red-100 text-red-800',
-        'PAID'     => 'bg-blue-100 text-blue-800',
+        'DRAFT'          => 'bg-slate-100 text-slate-700',
+        'PENDING_REVIEW' => 'bg-amber-100 text-amber-800',
+        'APPROVED'       => 'bg-emerald-100 text-emerald-800',
+        'REJECTED'       => 'bg-red-100 text-red-800',
+        'PAID'           => 'bg-blue-100 text-blue-800',
     ];
 @endphp
 
@@ -32,11 +32,6 @@
                 <form method="POST" action="{{ route('reimbursements.submit', $reimbursement) }}">
                     @csrf
                     <button type="submit" class="inline-flex min-h-9 items-center bg-[#215aac] px-3 text-xs font-semibold text-white hover:bg-[#194a91]">Ajukan</button>
-                </form>
-            @elseif ($reimbursement->status === 'REJECTED')
-                <form method="POST" action="{{ route('reimbursements.revert', $reimbursement) }}">
-                    @csrf
-                    <button type="submit" class="inline-flex min-h-9 items-center border border-slate-300 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50">Kembalikan ke Draft</button>
                 </form>
             @elseif ($reimbursement->status === 'APPROVED')
                 @can('finance.reimbursement.pay')
@@ -81,28 +76,72 @@
             <thead class="bg-slate-50 text-left text-xs font-semibold text-slate-500">
                 <tr>
                     <th class="px-5 py-3">Tanggal</th>
-                    <th class="px-5 py-3">Deskripsi</th>
                     <th class="px-5 py-3">Kategori</th>
+                    <th class="px-5 py-3">Deskripsi</th>
                     <th class="px-5 py-3 text-right">Jumlah</th>
+                    @if ($reimbursement->isDraft()) <th class="px-5 py-3"></th> @endif
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
                 @forelse ($reimbursement->items as $item)
                     <tr>
                         <td class="px-5 py-3 text-slate-600">{{ $item->expense_date?->format('d M Y') }}</td>
-                        <td class="px-5 py-3 text-slate-900">{{ $item->description }}</td>
-                        <td class="px-5 py-3 text-slate-600">{{ $item->category ?? '—' }}</td>
+                        <td class="px-5 py-3 text-slate-600 capitalize">{{ str_replace('_', ' ', $item->category) }}</td>
+                        <td class="px-5 py-3 text-slate-900">{{ $item->description }}
+                            @if ($item->notes) <p class="text-xs text-slate-400">{{ $item->notes }}</p> @endif
+                        </td>
                         <td class="px-5 py-3 text-right tabular-nums font-semibold text-slate-900">Rp {{ number_format($item->amount, 0, ',', '.') }}</td>
+                        @if ($reimbursement->isDraft())
+                            <td class="px-5 py-3 text-right">
+                                <form method="POST" action="{{ route('reimbursement-items.destroy', [$reimbursement, $item]) }}" onsubmit="return confirm('Hapus item ini?')">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="text-xs text-red-600 hover:text-red-800">Hapus</button>
+                                </form>
+                            </td>
+                        @endif
                     </tr>
                 @empty
-                    <tr><td colspan="4" class="px-5 py-6 text-center text-sm text-slate-400">Belum ada item pengeluaran.</td></tr>
+                    <tr><td colspan="5" class="px-5 py-6 text-center text-sm text-slate-400">Belum ada item pengeluaran.</td></tr>
                 @endforelse
             </tbody>
         </table>
+
+        @if ($reimbursement->isDraft())
+            <div class="border-t border-slate-200 bg-slate-50 px-5 py-4">
+                <p class="mb-3 text-xs font-semibold text-slate-600">Tambah Pengeluaran</p>
+                <form method="POST" action="{{ route('reimbursement-items.store', $reimbursement) }}" class="grid grid-cols-12 gap-2 items-end">
+                    @csrf
+                    <div class="col-span-2">
+                        <label class="mb-1 block text-xs font-medium text-slate-600">Tanggal</label>
+                        <input type="date" name="expense_date" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                    </div>
+                    <div class="col-span-2">
+                        <label class="mb-1 block text-xs font-medium text-slate-600">Kategori</label>
+                        <select name="category" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                            <option value="">— Pilih —</option>
+                            @foreach (['transport' => 'Transport', 'makan' => 'Makan', 'akomodasi' => 'Akomodasi', 'perlengkapan' => 'Perlengkapan', 'lainnya' => 'Lainnya'] as $val => $label)
+                                <option value="{{ $val }}">{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-span-4">
+                        <label class="mb-1 block text-xs font-medium text-slate-600">Deskripsi</label>
+                        <input type="text" name="description" required maxlength="255" placeholder="Detail pengeluaran" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                    </div>
+                    <div class="col-span-3">
+                        <label class="mb-1 block text-xs font-medium text-slate-600">Jumlah (Rp)</label>
+                        <input type="number" name="amount" required min="0" step="100" placeholder="0" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                    </div>
+                    <div class="col-span-1">
+                        <button type="submit" class="inline-flex h-10 w-full items-center justify-center bg-[#215aac] text-sm font-semibold text-white hover:bg-[#194a91]">+</button>
+                    </div>
+                </form>
+            </div>
+        @endif
     </div>
 
     {{-- Review Form --}}
-    @if ($reimbursement->status === 'PENDING')
+    @if ($reimbursement->status === 'PENDING_REVIEW')
         @can('finance.reimbursement.review')
             <div class="border border-slate-200 bg-white p-5 space-y-3">
                 <h3 class="font-jakarta text-sm font-bold text-slate-900">Review Reimbursement</h3>

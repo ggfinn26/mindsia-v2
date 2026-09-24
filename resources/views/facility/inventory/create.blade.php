@@ -30,7 +30,7 @@
                 </div>
                 <div>
                     <label class="mb-1 block text-xs font-semibold text-slate-700">Nama Item</label>
-                    <input type="text" name="item_name" required maxlength="255" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                    <input type="text" name="item_name" required maxlength="200" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
                 </div>
             </div>
 
@@ -41,7 +41,12 @@
                 </div>
                 <div>
                     <label class="mb-1 block text-xs font-semibold text-slate-700">Tipe Inventaris</label>
-                    <input type="text" name="inventory_type" maxlength="100" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]" placeholder="Aset, Consumable, dll">
+                    <select name="inventory_type" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                        <option value="">— Pilih tipe —</option>
+                        <option value="FIXED_ASSET">Aset Tetap</option>
+                        <option value="SUPPLIES">Perlengkapan</option>
+                        <option value="OTHER">Lainnya</option>
+                    </select>
                 </div>
             </div>
 
@@ -50,7 +55,7 @@
                     <label class="mb-1 block text-xs font-semibold text-slate-700">Cabang</label>
                     <select name="branch_id" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
                         <option value="">— Pilih cabang —</option>
-                        @foreach (\App\Models\Branch::where('is_active', true)->get() as $branch)
+                        @foreach ($branches as $branch)
                             <option value="{{ $branch->id }}">{{ $branch->branch_name }}</option>
                         @endforeach
                     </select>
@@ -61,7 +66,7 @@
                 </div>
                 <div>
                     <label class="mb-1 block text-xs font-semibold text-slate-700">Satuan</label>
-                    <input type="text" name="unit" maxlength="30" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]" placeholder="unit, pcs, set">
+                    <input type="text" name="unit" required maxlength="50" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]" placeholder="unit, pcs, set">
                 </div>
             </div>
 
@@ -69,9 +74,10 @@
                 <div>
                     <label class="mb-1 block text-xs font-semibold text-slate-700">Kondisi</label>
                     <select name="condition_status" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
-                        <option value="baik">Baik</option>
-                        <option value="perbaikan">Perbaikan</option>
-                        <option value="rusak">Rusak</option>
+                        <option value="GOOD">Baik</option>
+                        <option value="NEEDS_REPAIR">Perlu Perbaikan</option>
+                        <option value="DAMAGED">Rusak</option>
+                        <option value="UNUSABLE">Tidak Dapat Digunakan</option>
                     </select>
                 </div>
                 <div>
@@ -99,15 +105,6 @@
                 </div>
             </div>
 
-            <div>
-                <label class="mb-1 block text-xs font-semibold text-slate-700">Rencana Anggaran (Opsional)</label>
-                <select name="budget_estimate_item_id" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
-                    <option value="">— Tidak terkait —</option>
-                    @foreach (\App\Models\BudgetEstimateItem::with('budgetEstimate')->latest()->limit(100)->get() as $bei)
-                        <option value="{{ $bei->id }}">{{ $bei->budgetEstimate?->title ?? '-' }} — {{ $bei->item_name }}</option>
-                    @endforeach
-                </select>
-            </div>
         </div>
 
         <div class="border border-slate-200 bg-white p-5 space-y-4">

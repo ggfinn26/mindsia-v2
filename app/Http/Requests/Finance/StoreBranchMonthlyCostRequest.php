@@ -17,9 +17,10 @@ class StoreBranchMonthlyCostRequest extends FormRequest
             'branch_id' => ['required', 'exists:branches,id'],
             'period_year' => ['required', 'integer', 'min:2020', 'max:2099'],
             'period_month' => ['required', 'integer', 'min:1', 'max:12'],
-            'cost_name' => ['required', 'string', 'max:255'],
+            'category' => ['required', 'in:sewa,listrik,air,internet,gaji_non_employee,peralatan,kebersihan,keamanan,lainnya'],
+            'description' => ['required', 'string', 'max:255'],
             'amount' => ['required', 'numeric', 'min:0'],
-            'description' => ['nullable', 'string'],
+            'notes' => ['nullable', 'string'],
         ];
     }
 }

@@ -14,11 +14,9 @@ class UpdateReimbursementRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'branch_id' => ['sometimes', 'exists:branches,id'],
-            'period_year' => ['sometimes', 'integer', 'min:2020', 'max:2099'],
-            'period_month' => ['sometimes', 'integer', 'min:1', 'max:12'],
-            'title' => ['sometimes', 'string', 'max:255'],
-            'notes' => ['nullable', 'string'],
+            'business_purpose' => ['required', 'string', 'max:255'],
+            'expense_period_start' => ['required', 'date'],
+            'expense_period_end' => ['required', 'date', 'after_or_equal:expense_period_start'],
         ];
     }
 }

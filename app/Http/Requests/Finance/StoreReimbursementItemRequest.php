@@ -14,7 +14,9 @@ class StoreReimbursementItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'item_name' => ['required', 'string', 'max:255'],
+            'expense_date' => ['required', 'date'],
+            'category' => ['required', 'in:transport,makan,akomodasi,perlengkapan,lainnya'],
+            'description' => ['required', 'string', 'max:255'],
             'amount' => ['required', 'numeric', 'min:0'],
             'notes' => ['nullable', 'string'],
         ];

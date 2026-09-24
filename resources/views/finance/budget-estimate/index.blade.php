@@ -11,7 +11,8 @@
         'ops_review'     => 'bg-blue-100 text-blue-800',
         'finance_review' => 'bg-amber-100 text-amber-800',
         'accepted'       => 'bg-emerald-100 text-emerald-800',
-        'sent'           => 'bg-purple-100 text-purple-800',
+        'sent'            => 'bg-purple-100 text-purple-800',
+        'inventory_draft' => 'bg-teal-100 text-teal-800',
     ];
 @endphp
 
@@ -21,11 +22,18 @@
             <p class="text-sm font-medium text-[#725c00]">Finance</p>
             <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Anggaran Cabang</h2>
         </div>
-        @can('finance.budget_estimate.create')
-            <a href="{{ route('budget-estimates.create') }}" class="inline-flex min-h-10 items-center gap-2 bg-[#215aac] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">
-                <span class="material-symbols-outlined text-[18px]">add</span> Buat Anggaran
-            </a>
-        @endcan
+        <div class="flex gap-2">
+            @canany(['finance.budget_estimate.ops_review', 'finance.budget_estimate.send'])
+                <a href="{{ route('budget-estimates.review-list') }}" class="inline-flex min-h-10 items-center gap-2 border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                    Antrean Review
+                </a>
+            @endcanany
+            @can('finance.budget_estimate.create')
+                <a href="{{ route('budget-estimates.create') }}" class="inline-flex min-h-10 items-center gap-2 bg-[#215aac] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">
+                    <span class="material-symbols-outlined text-[18px]">add</span> Buat Anggaran
+                </a>
+            @endcan
+        </div>
     </div>
 
     @if (session('success'))

@@ -44,9 +44,13 @@ class ReimbursementController extends Controller
 
     public function store(StoreReimbursementRequest $request): RedirectResponse
     {
+        $employee = $request->user()->employee;
+
         $reimbursement = $this->repository->create(array_merge($request->validated(), [
-            'employee_id' => $request->user()->employee->id,
-            'submitted_by_employee_id' => $request->user()->employee->id,
+            'employee_id' => $employee->id,
+            'submitted_by_employee_id' => $employee->id,
+            'branch_id' => $employee->branch_id,
+            'status' => 'DRAFT',
         ]));
 
         return redirect()->route('reimbursements.show', $reimbursement)->with('success', 'Reimbursement berhasil dibuat.');
@@ -95,14 +99,6 @@ class ReimbursementController extends Controller
         }
 
         return redirect()->route('reimbursements.show', $reimbursement)->with('success', 'Review berhasil disimpan.');
-    }
-
-    public function revert(Request $request, Reimbursement $reimbursement): RedirectResponse
-    {
-        abort_unless($reimbursement->employee_id === $request->user()->employee->id, 403);
-        $this->repository->revertToDraft($reimbursement);
-
-        return redirect()->route('reimbursements.show', $reimbursement)->with('success', 'Dikembalikan ke draft.');
     }
 
     public function markPaid(Request $request, Reimbursement $reimbursement): RedirectResponse

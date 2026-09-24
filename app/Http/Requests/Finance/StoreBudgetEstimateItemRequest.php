@@ -16,8 +16,7 @@ class StoreBudgetEstimateItemRequest extends FormRequest
         return [
             'item_name' => ['required', 'string', 'max:255'],
             'quantity' => ['required', 'integer', 'min:1'],
-            'unit_price' => ['required', 'numeric', 'min:0'],
-            'total_price' => ['nullable', 'numeric', 'min:0'],
+            'estimated_price' => ['required', 'numeric', 'min:0'],
             'notes' => ['nullable', 'string'],
         ];
     }
