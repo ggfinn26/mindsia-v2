@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Marketing\StoreProspectiveMemberRequest;
 use App\Http\Requests\Marketing\UpdateProspectiveMemberStatusRequest;
 use App\Models\Branch;
+use App\Models\Employee;
 use App\Models\EmployeeSocialization;
 use App\Models\ProspectiveMember;
 use App\Repositories\Marketing\ProspectiveMemberRepository;
@@ -22,31 +23,20 @@ class ProspectiveMemberController extends Controller
     public function index(Request $request): View
     {
         abort_unless($request->user()->canAny([
-            'marketing.prospective_member.create',
-            'marketing.prospective_member.update',
             'marketing.prospective.view_area',
             'marketing.prospective.view_national',
         ]), 403);
 
-        $canViewWide = $request->user()->canAny(['marketing.prospective.view_area', 'marketing.prospective.view_national']);
-        $currentView = $canViewWide ? $request->input('view', 'mine') : 'mine';
-
-        $filters = $request->only(['status', 'socialization_id', 'branch_id', 'search', 'sort', 'dir']);
-
-        if (! $canViewWide || $currentView === 'mine') {
-            $filters['employee_id'] = $request->user()->employee->id;
-            unset($filters['branch_id']);
-        }
-
-        $branches = $canViewWide
-            ? Branch::active()->orderBy('branch_name')->get(['id', 'branch_name'])
-            : collect();
+        $canViewNational = $request->user()->can('marketing.prospective.view_national');
+        $filters = $request->only(['status', 'branch_id', 'employee_id', 'search', 'sort', 'dir']);
+        $branches = Branch::active()->orderBy('branch_name')->get(['id', 'branch_name']);
+        $employees = Employee::where('is_active', true)->orderBy('full_name')->get(['id', 'full_name']);
 
         return view('marketing.prospective-member.index', [
             'leads' => $this->repository->paginate($filters),
-            'canViewWide' => $canViewWide,
-            'currentView' => $currentView,
+            'canViewNational' => $canViewNational,
             'branches' => $branches,
+            'employees' => $employees,
         ]);
     }
 

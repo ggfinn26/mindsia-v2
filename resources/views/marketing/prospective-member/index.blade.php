@@ -34,14 +34,12 @@
 
     {{-- Header --}}
     <div class="flex items-center justify-between mb-5">
-        <h1 class="text-xl font-bold text-gray-900">Prospective Member</h1>
-        @can('marketing.prospective_member.create')
-            <a href="{{ route('prospective-members.create') }}"
-                class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                <span class="material-symbols-outlined text-[16px]">person_add</span>
-                Tambah Prospective Member
-            </a>
-        @endcan
+        <div>
+            <h1 class="text-xl font-bold text-gray-900">
+                {{ $canViewNational ? 'Calon Member Nasional' : 'Calon Member Area' }}
+            </h1>
+            <p class="text-sm text-gray-400 mt-0.5">{{ $leads->total() }} total</p>
+        </div>
     </div>
 
     @if (session('success'))
@@ -50,40 +48,16 @@
         </div>
     @endif
 
-    {{-- Tab: Milik Saya / Semua Data --}}
-    @if ($canViewWide)
-        <div class="flex gap-1 mb-4 border-b border-gray-200">
-            <a href="{{ request()->fullUrlWithQuery(['view' => 'mine', 'page' => 1]) }}"
-                class="px-4 py-2 text-sm font-medium border-b-2 transition-colors focus:outline-none
-                    {{ $currentView === 'mine' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
-                Milik Saya
-            </a>
-            <a href="{{ request()->fullUrlWithQuery(['view' => 'all', 'page' => 1]) }}"
-                class="px-4 py-2 text-sm font-medium border-b-2 transition-colors focus:outline-none
-                    {{ $currentView === 'all' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
-                Semua Data
-            </a>
-        </div>
-    @endif
-
     {{-- Filter bar --}}
     <form method="GET" action="{{ route('prospective-members.index') }}"
         class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 mb-5">
-        {{-- Preserve tab view --}}
-        @if ($canViewWide)
-            <input type="hidden" name="view" value="{{ $currentView }}">
-        @endif
-
         <div class="flex flex-wrap gap-3 items-end">
-            {{-- Search --}}
             <div class="flex-1 min-w-[180px]">
                 <label class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1">Cari</label>
                 <input type="text" name="search" value="{{ request('search') }}"
                     placeholder="Nama atau nomor WA..."
                     class="w-full bg-gray-50 border border-gray-200 rounded-lg text-sm px-3 py-2 outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-200 transition-colors">
             </div>
-
-            {{-- Filter Status --}}
             <div>
                 <label class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1">Status</label>
                 <select name="status" onchange="this.form.submit()"
@@ -94,9 +68,7 @@
                     @endforeach
                 </select>
             </div>
-
-            {{-- Filter Cabang (area/national only) --}}
-            @if ($canViewWide && $branches->isNotEmpty())
+            @if ($branches->isNotEmpty())
                 <div>
                     <label class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1">Cabang</label>
                     <select name="branch_id" onchange="this.form.submit()"
@@ -110,18 +82,26 @@
                     </select>
                 </div>
             @endif
-
-            {{-- Tombol submit + reset --}}
+            @if ($employees->isNotEmpty())
+                <div>
+                    <label class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1">Marketer</label>
+                    <select name="employee_id" onchange="this.form.submit()"
+                        class="bg-gray-50 border border-gray-200 rounded-lg text-sm px-3 py-2 outline-none focus:border-indigo-400 transition-colors">
+                        <option value="">Semua Marketer</option>
+                        @foreach ($employees as $emp)
+                            <option value="{{ $emp->id }}" {{ request('employee_id') == $emp->id ? 'selected' : '' }}>
+                                {{ $emp->full_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            @endif
             <div class="flex gap-2">
                 <button type="submit"
-                    class="px-3 py-2 text-sm font-medium text-white bg-gray-700 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500">
-                    Cari
-                </button>
-                @if (request()->hasAny(['search', 'status', 'branch_id', 'socialization_id']))
-                    <a href="{{ route('prospective-members.index', array_filter(['view' => $canViewWide ? $currentView : null])) }}"
-                        class="px-3 py-2 text-sm text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none">
-                        Reset
-                    </a>
+                    class="px-3 py-2 text-sm font-medium text-white bg-gray-700 rounded-lg hover:bg-gray-800">Cari</button>
+                @if (request()->hasAny(['search', 'status', 'branch_id', 'employee_id']))
+                    <a href="{{ route('prospective-members.index') }}"
+                        class="px-3 py-2 text-sm text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200">Reset</a>
                 @endif
             </div>
         </div>
@@ -147,8 +127,8 @@
                             </a>
                         </th>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wide hidden md:table-cell">Sosialisasi</th>
-                        @if ($canViewWide && $currentView === 'all')
-                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wide hidden lg:table-cell">PIC</th>
+                        @if (true)
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wide hidden lg:table-cell">Marketer</th>
                         @endif
                         <th class="px-4 py-3 text-left">
                             <a href="{{ $sortUrl('created_at') }}"
@@ -256,7 +236,7 @@
                                     <span class="text-xs text-gray-400">Walk-in</span>
                                 @endif
                             </td>
-                            @if ($canViewWide && $currentView === 'all')
+                            @if (true)
                                 <td class="px-4 py-3 hidden lg:table-cell text-xs text-gray-500">
                                     {{ $lead->capturedBy?->full_name ?? '-' }}
                                 </td>

@@ -77,6 +77,7 @@ use App\Http\Controllers\Admin\Payroll\PayrollPeriodController;
 use App\Http\Controllers\Admin\Payroll\PayrollSlipController;
 use App\Http\Controllers\Admin\Payroll\SessionCompensationRuleController;
 use App\Http\Controllers\Admin\PositionController;
+use App\Http\Controllers\Admin\MyProspectiveMemberController;
 use App\Http\Controllers\Admin\MySocializationController;
 use App\Http\Controllers\Admin\ProspectiveMemberController;
 use App\Http\Controllers\Admin\Recruitment\ApplicantInterviewEvaluationController;
@@ -679,6 +680,8 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     });
 
     // Marketing Domain
+    Route::get('my-prospective-members', [MyProspectiveMemberController::class, 'index'])->name('my-prospective-members.index');
+    Route::patch('my-prospective-members/{myProspectiveMember}/status', [MyProspectiveMemberController::class, 'updateStatus'])->name('my-prospective-members.update-status');
     Route::get('my-socializations', [MySocializationController::class, 'index'])->name('my-socializations.index');
     Route::get('my-socializations/{mySocialization}', [MySocializationController::class, 'show'])->name('my-socializations.show');
     Route::patch('my-socializations/{mySocialization}', [MySocializationController::class, 'update'])->name('my-socializations.update');

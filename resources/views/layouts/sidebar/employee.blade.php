@@ -186,15 +186,14 @@
     <x-dashboard.nav-item href="{{ route('my-socializations.index') }}" :isChild="true" :active="request()->routeIs('my-socializations.*')">Sosialisasi Saya</x-dashboard.nav-item>
     @endif
     @endauth
-    @canany(['marketing.prospective_member.create', 'marketing.prospective_member.update'])
-    <x-dashboard.nav-item href="{{ route('prospective-members.index') }}?view=mine" :isChild="true" :active="request()->routeIs('prospective-members.*') && request()->input('view','mine') === 'mine'">Calon Member Saya</x-dashboard.nav-item>
+    @auth
+    @if(auth()->user()->employee)
+    <x-dashboard.nav-item href="{{ route('my-prospective-members.index') }}" :isChild="true" :active="request()->routeIs('my-prospective-members.*')">Calon Member Saya</x-dashboard.nav-item>
+    @endif
+    @endauth
+    @canany(['marketing.prospective.view_area', 'marketing.prospective.view_national'])
+    <x-dashboard.nav-item href="{{ route('prospective-members.index') }}" :isChild="true" :active="request()->routeIs('prospective-members.*')">{{ auth()->user()->can('marketing.prospective.view_national') ? 'Calon Member Nasional' : 'Calon Member Area' }}</x-dashboard.nav-item>
     @endcanany
-    @can('marketing.prospective.view_area')
-    <x-dashboard.nav-item href="{{ route('prospective-members.index') }}?view=area" :isChild="true" :active="request()->routeIs('prospective-members.*') && request()->input('view') === 'area'">Calon Member Area</x-dashboard.nav-item>
-    @endcan
-    @can('marketing.prospective.view_national')
-    <x-dashboard.nav-item href="{{ route('prospective-members.index') }}?view=national" :isChild="true" :active="request()->routeIs('prospective-members.*') && request()->input('view') === 'national'">Calon Member Nasional</x-dashboard.nav-item>
-    @endcan
     <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Template WA</x-dashboard.nav-item>
     <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Target & Performance</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('marketing.member-payment-statement') }}" :active="request()->routeIs('marketing.member-payment-statement')" :isChild="true">Financial Statement</x-dashboard.nav-item>
