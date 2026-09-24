@@ -15,9 +15,6 @@ document.addEventListener("alpine:init", () => {
                 const s = this.search.toLowerCase();
                 return allNames.every((name) => !name.toLowerCase().includes(s));
             },
-            matches(name) {
-                return name.toLowerCase().includes(this.search.toLowerCase());
-            },
             toggleAll() {
                 const s = this.search.toLowerCase();
                 const visible = allIds.filter((_, i) => allNames[i].toLowerCase().includes(s));

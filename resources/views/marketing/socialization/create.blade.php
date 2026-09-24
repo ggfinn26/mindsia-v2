@@ -54,13 +54,13 @@
                         <span class="material-symbols-outlined text-[18px]">search</span>
                     </span>
                     <input type="text" x-model="search" placeholder="Cari cabang…"
-                        class="block w-full border border-gray-200 rounded-t-md pl-9 pr-4 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        class="block w-full border border-gray-200 rounded-t-md pr-4 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500" style="padding-left: 3rem !important;">
                 </div>
 
                 <div class="border border-t-0 border-gray-200 rounded-b-md divide-y divide-gray-100 max-h-52 overflow-y-auto">
                     @foreach ($branches as $branch)
                         <label class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 cursor-pointer"
-                            x-show="matches('{{ addslashes($branch->branch_name) }}')">
+                            x-show="!search || '{{ addslashes($branch->branch_name) }}'.toLowerCase().includes(search.toLowerCase())">
                             <input type="checkbox" name="branch_ids[]" value="{{ $branch->id }}"
                                 x-model="selected"
                                 {{ in_array($branch->id, old('branch_ids', [])) ? 'checked' : '' }}
