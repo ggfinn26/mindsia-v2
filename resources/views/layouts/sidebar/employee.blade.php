@@ -24,7 +24,7 @@
 </div>
 <x-dashboard.nav-item href="{{ route('employee.payslips.index') }}" icon="receipt_long" :active="request()->routeIs('employee.payslips.*')">Slip Gaji Saya</x-dashboard.nav-item>
 <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" icon="track_changes" :active="request()->is('employee/my-kpi*')">KPI Saya</x-dashboard.nav-item>
-<x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" icon="format_list_numbered" :active="request()->is('marketing/my-performance*')">Ranking MPI Saya</x-dashboard.nav-item>
+<x-dashboard.nav-item href="{{ route('marketing.my-performance') }}" icon="format_list_numbered" :active="request()->routeIs('marketing.my-performance')">Ranking MPI Saya</x-dashboard.nav-item>
 <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" icon="history" :active="request()->is('attendance/my-recap*')">Riwayat Absensi Saya</x-dashboard.nav-item>
 <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" icon="login" :active="request()->is('attendance/check-in-out*')">Absen Masuk/Keluar</x-dashboard.nav-item>
 <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" icon="co_present" :active="request()->is('class/my-classes*')">Absen Sesi Saya</x-dashboard.nav-item>

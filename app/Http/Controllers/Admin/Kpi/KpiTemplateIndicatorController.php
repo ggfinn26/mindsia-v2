@@ -23,6 +23,7 @@ class KpiTemplateIndicatorController extends Controller
         return view('kpi.templates.indicators.create', [
             'template' => $kpiTemplate,
             'allowedSources' => KpiDataSourceService::ALLOWED_SOURCES,
+            'sourceLabels' => KpiDataSourceService::SOURCE_LABELS,
         ]);
     }
 
@@ -41,6 +42,7 @@ class KpiTemplateIndicatorController extends Controller
             'template' => $kpiTemplate,
             'indicator' => $indicator,
             'allowedSources' => KpiDataSourceService::ALLOWED_SOURCES,
+            'sourceLabels' => KpiDataSourceService::SOURCE_LABELS,
         ]);
     }
 

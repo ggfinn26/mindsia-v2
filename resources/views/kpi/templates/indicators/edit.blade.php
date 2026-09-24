@@ -51,7 +51,7 @@
             <select name="data_source_type" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
                 <option value="">— Manual —</option>
                 @foreach ($allowedSources as $source)
-                    <option value="{{ $source }}" @selected(old('data_source_type', $indicator->data_source_type) === $source)>{{ $source }}</option>
+                    <option value="{{ $source }}" @selected(old('data_source_type', $indicator->data_source_type) === $source)>{{ $sourceLabels[$source] ?? $source }}</option>
                 @endforeach
             </select>
         </div>

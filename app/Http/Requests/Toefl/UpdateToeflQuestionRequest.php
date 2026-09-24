@@ -15,13 +15,14 @@ class UpdateToeflQuestionRequest extends FormRequest
     {
         return [
             'passage_id' => ['nullable', 'exists:toefl_passages,id'],
+            'question_type' => ['sometimes', 'in:multiple_choice,written_expression'],
             'display_order' => ['nullable', 'integer', 'min:0'],
             'question_text' => ['sometimes', 'string'],
             'image_media_id' => ['nullable', 'exists:toefl_media,id'],
-            'option_a' => ['sometimes', 'string', 'max:500'],
-            'option_b' => ['sometimes', 'string', 'max:500'],
-            'option_c' => ['sometimes', 'string', 'max:500'],
-            'option_d' => ['sometimes', 'string', 'max:500'],
+            'option_a' => ['nullable', 'string', 'max:500'],
+            'option_b' => ['nullable', 'string', 'max:500'],
+            'option_c' => ['nullable', 'string', 'max:500'],
+            'option_d' => ['nullable', 'string', 'max:500'],
             'correct_option' => ['sometimes', 'in:A,B,C,D'],
             'difficulty' => ['sometimes', 'in:easy,intermediate,advanced'],
             'points' => ['nullable', 'integer', 'min:1'],

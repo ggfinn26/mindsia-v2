@@ -26,7 +26,7 @@
     $sortIcon = fn(string $col) => $currentSort === $col ? ($currentDir === 'asc' ? '↑' : '↓') : '';
 @endphp
 
-<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+<div class="w-full py-4 sm:py-6">
 
     <div class="flex items-center justify-between mb-5">
         <div>
@@ -78,133 +78,131 @@
     </form>
 
     {{-- Table --}}
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="min-w-full text-sm">
-                <thead>
-                    <tr class="border-b border-gray-100">
-                        <th class="px-4 py-3 text-left">
-                            <a href="{{ $sortUrl('full_name') }}" class="text-xs font-semibold text-gray-400 uppercase tracking-wide hover:text-gray-600">
-                                Nama {{ $sortIcon('full_name') }}
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="border-b border-gray-100">
+                    <th class="px-4 py-3 text-left">
+                        <a href="{{ $sortUrl('full_name') }}" class="text-xs font-semibold text-gray-400 uppercase tracking-wide hover:text-gray-600">
+                            Nama {{ $sortIcon('full_name') }}
+                        </a>
+                    </th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wide">WhatsApp</th>
+                    <th class="px-4 py-3 text-left">
+                        <a href="{{ $sortUrl('status') }}" class="text-xs font-semibold text-gray-400 uppercase tracking-wide hover:text-gray-600">
+                            Status {{ $sortIcon('status') }}
+                        </a>
+                    </th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wide hidden md:table-cell">Sosialisasi</th>
+                    <th class="px-4 py-3 text-left hidden sm:table-cell">
+                        <a href="{{ $sortUrl('created_at') }}" class="text-xs font-semibold text-gray-400 uppercase tracking-wide hover:text-gray-600">
+                            Tanggal {{ $sortIcon('created_at') }}
+                        </a>
+                    </th>
+                    <th class="px-4 py-3"></th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-50">
+                @forelse ($leads as $lead)
+                    @php
+                        $waNum = preg_replace('/[^0-9]/', '', $lead->whatsapp_number ?? '');
+                        if (str_starts_with($waNum, '0')) $waNum = '62' . substr($waNum, 1);
+                        elseif ($waNum && ! str_starts_with($waNum, '62')) $waNum = '62' . $waNum;
+                    @endphp
+                    <tr class="hover:bg-gray-50/50 transition-colors">
+                        <td class="px-4 py-3">
+                            <a href="{{ route('prospective-members.show', $lead) }}"
+                                class="font-medium text-gray-900 hover:text-indigo-600 focus:outline-none focus:underline">
+                                {{ $lead->full_name }}
                             </a>
-                        </th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wide">WhatsApp</th>
-                        <th class="px-4 py-3 text-left">
-                            <a href="{{ $sortUrl('status') }}" class="text-xs font-semibold text-gray-400 uppercase tracking-wide hover:text-gray-600">
-                                Status {{ $sortIcon('status') }}
-                            </a>
-                        </th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wide hidden md:table-cell">Sosialisasi</th>
-                        <th class="px-4 py-3 text-left hidden sm:table-cell">
-                            <a href="{{ $sortUrl('created_at') }}" class="text-xs font-semibold text-gray-400 uppercase tracking-wide hover:text-gray-600">
-                                Tanggal {{ $sortIcon('created_at') }}
-                            </a>
-                        </th>
-                        <th class="px-4 py-3"></th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-50">
-                    @forelse ($leads as $lead)
-                        @php
-                            $waNum = preg_replace('/[^0-9]/', '', $lead->whatsapp_number ?? '');
-                            if (str_starts_with($waNum, '0')) $waNum = '62' . substr($waNum, 1);
-                            elseif ($waNum && ! str_starts_with($waNum, '62')) $waNum = '62' . $waNum;
-                        @endphp
-                        <tr class="hover:bg-gray-50/50 transition-colors">
-                            <td class="px-4 py-3">
-                                <a href="{{ route('prospective-members.show', $lead) }}"
-                                    class="font-medium text-gray-900 hover:text-indigo-600 focus:outline-none focus:underline">
-                                    {{ $lead->full_name }}
-                                </a>
-                                @if ($lead->institution || $lead->institution_name)
-                                    <p class="text-xs text-gray-400">{{ $lead->institution?->institution_name ?? $lead->institution_name }}</p>
-                                @endif
-                            </td>
-                            <td class="px-4 py-3">
-                                @if ($waNum)
-                                    <div class="relative" x-data="waPicker({
-                                        wa: '{{ $waNum }}',
-                                        nama: @js($lead->full_name),
-                                        institusi: @js($lead->institution?->institution_name ?? $lead->institution_name ?? ''),
-                                        sosialisasi: @js($lead->socialization?->institution?->institution_name ?? $lead->socialization?->location_name ?? ''),
-                                        status: '{{ $lead->status }}'
-                                    })" @click.away="open = false">
-                                        <button @click="open = !open"
-                                            class="inline-flex items-center justify-center w-8 h-8 rounded-full hover:bg-green-50 focus:outline-none transition-colors"
-                                            title="{{ $lead->whatsapp_number }}">
-                                            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 362" fill="none" aria-label="WhatsApp"><path fill="#25D366" fill-rule="evenodd" d="M307.546 52.566C273.709 18.684 228.706.017 180.756 0 81.951 0 1.538 80.404 1.504 179.235c-.017 31.594 8.242 62.432 23.928 89.609L0 361.736l95.024-24.925c26.179 14.285 55.659 21.805 85.655 21.814h.077c98.788 0 179.21-80.413 179.244-179.244.017-47.898-18.608-92.926-52.454-126.807v-.008Zm-126.79 275.788h-.06c-26.73-.008-52.952-7.194-75.831-20.765l-5.44-3.231-56.391 14.791 15.05-54.981-3.542-5.638c-14.912-23.721-22.793-51.139-22.776-79.286.035-82.14 66.867-148.973 149.051-148.973 39.793.017 77.198 15.53 105.328 43.695 28.131 28.157 43.61 65.596 43.593 105.398-.035 82.149-66.867 148.982-148.982 148.982v.008Zm81.719-111.577c-4.478-2.243-26.497-13.073-30.606-14.568-4.108-1.496-7.09-2.243-10.073 2.243-2.982 4.487-11.568 14.577-14.181 17.559-2.613 2.991-5.226 3.361-9.704 1.117-4.477-2.243-18.908-6.97-36.02-22.226-13.313-11.878-22.304-26.54-24.916-31.027-2.613-4.486-.275-6.91 1.959-9.136 2.011-2.011 4.478-5.234 6.721-7.847 2.244-2.613 2.983-4.486 4.478-7.469 1.496-2.991.748-5.603-.369-7.847-1.118-2.243-10.073-24.289-13.812-33.253-3.636-8.732-7.331-7.546-10.073-7.692-2.613-.13-5.595-.155-8.586-.155-2.991 0-7.839 1.118-11.947 5.604-4.108 4.486-15.677 15.324-15.677 37.361s16.047 43.344 18.29 46.335c2.243 2.991 31.585 48.225 76.51 67.632 10.684 4.615 19.029 7.374 25.535 9.437 10.727 3.412 20.49 2.931 28.208 1.779 8.604-1.289 26.498-10.838 30.228-21.298 3.73-10.46 3.73-19.433 2.613-21.298-1.117-1.865-4.108-2.991-8.586-5.234l.008-.017Z" clip-rule="evenodd"/></svg>
-                                        </button>
-                                        <div x-show="open" x-transition
-                                            class="absolute left-0 top-7 z-20 w-56 bg-white border border-gray-200 rounded-xl shadow-lg py-1">
-                                            <button @click="send(null)" class="w-full text-left px-4 py-2 text-xs text-gray-700 hover:bg-gray-50">Kirim langsung</button>
-                                            <template x-if="templates.length > 0">
-                                                <div>
-                                                    <p class="px-4 py-1 text-[10px] font-semibold text-gray-400 uppercase tracking-widest border-t border-gray-100 mt-1">Template</p>
-                                                    <template x-for="t in templates" :key="t.id">
-                                                        <button @click="send(t)" class="w-full text-left px-4 py-2 text-xs text-gray-700 hover:bg-indigo-50 hover:text-indigo-700" x-text="t.name"></button>
-                                                    </template>
-                                                </div>
-                                            </template>
-                                            <p x-show="templates.length === 0" class="px-4 py-2 text-[10px] text-gray-400 border-t border-gray-100 mt-1">
-                                                Belum ada template.
-                                            </p>
-                                        </div>
+                            @if ($lead->institution || $lead->institution_name)
+                                <p class="text-xs text-gray-400">{{ $lead->institution?->institution_name ?? $lead->institution_name }}</p>
+                            @endif
+                        </td>
+                        <td class="px-4 py-3">
+                            @if ($waNum)
+                                <div class="relative" x-data="waPicker({
+                                    wa: '{{ $waNum }}',
+                                    nama: @js($lead->full_name),
+                                    institusi: @js($lead->institution?->institution_name ?? $lead->institution_name ?? ''),
+                                    sosialisasi: @js($lead->socialization?->institution?->institution_name ?? $lead->socialization?->location_name ?? ''),
+                                    status: '{{ $lead->status }}'
+                                })" @click.away="open = false">
+                                    <button @click="open = !open"
+                                        class="inline-flex items-center justify-center w-8 h-8 rounded-full hover:bg-green-50 focus:outline-none transition-colors"
+                                        title="{{ $lead->whatsapp_number }}">
+                                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 362" fill="none" aria-label="WhatsApp"><path fill="#25D366" fill-rule="evenodd" d="M307.546 52.566C273.709 18.684 228.706.017 180.756 0 81.951 0 1.538 80.404 1.504 179.235c-.017 31.594 8.242 62.432 23.928 89.609L0 361.736l95.024-24.925c26.179 14.285 55.659 21.805 85.655 21.814h.077c98.788 0 179.21-80.413 179.244-179.244.017-47.898-18.608-92.926-52.454-126.807v-.008Zm-126.79 275.788h-.06c-26.73-.008-52.952-7.194-75.831-20.765l-5.44-3.231-56.391 14.791 15.05-54.981-3.542-5.638c-14.912-23.721-22.793-51.139-22.776-79.286.035-82.14 66.867-148.973 149.051-148.973 39.793.017 77.198 15.53 105.328 43.695 28.131 28.157 43.61 65.596 43.593 105.398-.035 82.149-66.867 148.982-148.982 148.982v.008Zm81.719-111.577c-4.478-2.243-26.497-13.073-30.606-14.568-4.108-1.496-7.09-2.243-10.073 2.243-2.982 4.487-11.568 14.577-14.181 17.559-2.613 2.991-5.226 3.361-9.704 1.117-4.477-2.243-18.908-6.97-36.02-22.226-13.313-11.878-22.304-26.54-24.916-31.027-2.613-4.486-.275-6.91 1.959-9.136 2.011-2.011 4.478-5.234 6.721-7.847 2.244-2.613 2.983-4.486 4.478-7.469 1.496-2.991.748-5.603-.369-7.847-1.118-2.243-10.073-24.289-13.812-33.253-3.636-8.732-7.331-7.546-10.073-7.692-2.613-.13-5.595-.155-8.586-.155-2.991 0-7.839 1.118-11.947 5.604-4.108 4.486-15.677 15.324-15.677 37.361s16.047 43.344 18.29 46.335c2.243 2.991 31.585 48.225 76.51 67.632 10.684 4.615 19.029 7.374 25.535 9.437 10.727 3.412 20.49 2.931 28.208 1.779 8.604-1.289 26.498-10.838 30.228-21.298 3.73-10.46 3.73-19.433 2.613-21.298-1.117-1.865-4.108-2.991-8.586-5.234l.008-.017Z" clip-rule="evenodd"/></svg>
+                                    </button>
+                                    <div x-show="open" x-transition
+                                        class="absolute left-0 top-7 z-20 w-56 bg-white border border-gray-200 rounded-xl shadow-lg py-1">
+                                        <button @click="send(null)" class="w-full text-left px-4 py-2 text-xs text-gray-700 hover:bg-gray-50">Kirim langsung</button>
+                                        <template x-if="templates.length > 0">
+                                            <div>
+                                                <p class="px-4 py-1 text-[10px] font-semibold text-gray-400 uppercase tracking-widest border-t border-gray-100 mt-1">Template</p>
+                                                <template x-for="t in templates" :key="t.id">
+                                                    <button @click="send(t)" class="w-full text-left px-4 py-2 text-xs text-gray-700 hover:bg-indigo-50 hover:text-indigo-700" x-text="t.name"></button>
+                                                </template>
+                                            </div>
+                                        </template>
+                                        <p x-show="templates.length === 0" class="px-4 py-2 text-[10px] text-gray-400 border-t border-gray-100 mt-1">
+                                            Belum ada template.
+                                        </p>
                                     </div>
-                                @else
-                                    <span class="text-gray-400 text-sm">-</span>
-                                @endif
-                            </td>
-                            <td class="px-4 py-3">
-                                <div class="flex items-center gap-1.5 flex-wrap">
-                                    <span class="px-2 py-0.5 text-[10px] font-bold rounded-full {{ $statusColors[$lead->status] ?? 'bg-gray-100 text-gray-600' }}">
-                                        {{ $statusLabels[$lead->status] ?? $lead->status }}
-                                    </span>
-                                    @if ($lead->status !== 'FIXED')
-                                        @foreach ($toggleTargets as $targetStatus => [$icon, $cls])
-                                            @if ($targetStatus !== $lead->status)
-                                                <form method="POST" action="{{ route('my-prospective-members.update-status', $lead) }}" class="inline">
-                                                    @csrf @method('PATCH')
-                                                    <input type="hidden" name="status" value="{{ $targetStatus }}">
-                                                    <button type="submit" title="{{ $statusLabels[$targetStatus] }}"
-                                                        class="w-5 h-5 rounded-full text-[9px] font-bold border transition-colors focus:outline-none {{ $cls }}">
-                                                        {{ $icon }}
-                                                    </button>
-                                                </form>
-                                            @endif
-                                        @endforeach
-                                    @else
-                                        <span class="text-[10px] text-green-600 font-medium">Terdaftar ✓</span>
-                                    @endif
                                 </div>
-                            </td>
-                            <td class="px-4 py-3 hidden md:table-cell">
-                                @if ($lead->socialization)
-                                    @php
-                                        $socName = $lead->socialization->institution?->institution_name ?? $lead->socialization->location_name ?? '—';
-                                    @endphp
-                                    <span class="text-xs text-gray-600 line-clamp-1">{{ $socName }}</span>
+                            @else
+                                <span class="text-gray-400 text-sm">-</span>
+                            @endif
+                        </td>
+                        <td class="px-4 py-3">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span class="px-2 py-0.5 text-[10px] font-bold rounded-full {{ $statusColors[$lead->status] ?? 'bg-gray-100 text-gray-600' }}">
+                                    {{ $statusLabels[$lead->status] ?? $lead->status }}
+                                </span>
+                                @if ($lead->status !== 'FIXED')
+                                    @foreach ($toggleTargets as $targetStatus => [$icon, $cls])
+                                        @if ($targetStatus !== $lead->status)
+                                            <form method="POST" action="{{ route('my-prospective-members.update-status', $lead) }}" class="inline">
+                                                @csrf @method('PATCH')
+                                                <input type="hidden" name="status" value="{{ $targetStatus }}">
+                                                <button type="submit" title="{{ $statusLabels[$targetStatus] }}"
+                                                    class="w-5 h-5 rounded-full text-[9px] font-bold border transition-colors focus:outline-none {{ $cls }}">
+                                                    {{ $icon }}
+                                                </button>
+                                            </form>
+                                        @endif
+                                    @endforeach
                                 @else
-                                    <span class="text-xs text-gray-400">Walk-in</span>
+                                    <span class="text-[10px] text-green-600 font-medium">Terdaftar ✓</span>
                                 @endif
-                            </td>
-                            <td class="px-4 py-3 text-xs text-gray-400 hidden sm:table-cell whitespace-nowrap">
-                                {{ $lead->created_at->format('d M Y') }}
-                            </td>
-                            <td class="px-4 py-3 text-right">
-                                <a href="{{ route('prospective-members.show', $lead) }}"
-                                    class="text-xs font-medium text-indigo-600 hover:text-indigo-800">Detail</a>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="px-4 py-10 text-center text-sm text-gray-400">
-                                Belum ada prospective member.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 hidden md:table-cell">
+                            @if ($lead->socialization)
+                                @php
+                                    $socName = $lead->socialization->institution?->institution_name ?? $lead->socialization->location_name ?? '—';
+                                @endphp
+                                <span class="text-xs text-gray-600 line-clamp-1">{{ $socName }}</span>
+                            @else
+                                <span class="text-xs text-gray-400">Walk-in</span>
+                            @endif
+                        </td>
+                        <td class="px-4 py-3 text-xs text-gray-400 hidden sm:table-cell whitespace-nowrap">
+                            {{ $lead->created_at->format('d M Y') }}
+                        </td>
+                        <td class="px-4 py-3 text-right">
+                            <a href="{{ route('prospective-members.show', $lead) }}"
+                                class="text-xs font-medium text-indigo-600 hover:text-indigo-800">Detail</a>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="px-4 py-10 text-center text-sm text-gray-400">
+                            Belum ada prospective member.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
         @if ($leads->hasPages())
             <div class="px-4 py-3 border-t border-gray-100">{{ $leads->withQueryString()->links() }}</div>
         @endif

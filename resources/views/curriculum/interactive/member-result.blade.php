@@ -5,22 +5,22 @@
 @section('content')
 <div class="max-w-3xl mx-auto px-4 py-8">
     <div class="mb-6">
-        <a href="{{ route('class-curriculum.index', $classroom) }}" class="text-sm text-slate-500 hover:text-slate-700">← Kurikulum</a>
-        <h1 class="text-xl font-bold text-slate-900 mt-1">Hasil Latihan — {{ $item->item_name }}</h1>
+        <a href="{{ route('member.curriculum.index') }}" class="text-sm text-gray-500 hover:text-gray-700">← Kurikulum</a>
+        <h1 class="text-xl font-bold text-gray-900 font-jakarta mt-1">Hasil Latihan — {{ $item->item_name }}</h1>
     </div>
 
     {{-- Score card --}}
-    <div class="bg-white border border-slate-200 rounded-lg p-6 mb-6 text-center shadow-sm">
-        <p class="text-sm text-slate-500 mb-1">Skor Kamu</p>
+    <div class="bg-white border border-gray-100 rounded-xl p-6 mb-6 text-center shadow-sm">
+        <p class="text-sm text-gray-500 mb-1">Skor Kamu</p>
         <p class="text-5xl font-bold {{ $attempt->score >= 70 ? 'text-green-600' : ($attempt->score >= 50 ? 'text-amber-500' : 'text-red-500') }}">
-            {{ $attempt->score }}<span class="text-2xl text-slate-400">%</span>
+            {{ $attempt->score }}<span class="text-2xl text-gray-400">%</span>
         </p>
-        <p class="text-sm text-slate-400 mt-2">Selesai {{ $attempt->completed_at->diffForHumans() }}</p>
+        <p class="text-sm text-gray-400 mt-2">Selesai {{ $attempt->completed_at->diffForHumans() }}</p>
         <div class="mt-4 flex gap-2 justify-center">
             <a href="{{ route('member.curriculum.interactive.show', [$classroom, $item]) }}"
-                class="btn bg-indigo-600 hover:bg-indigo-700 text-white text-sm">Ulangi Latihan</a>
+                class="px-4 py-2 font-medium rounded-lg transition-colors bg-[#5586DB] hover:bg-[#4370BC] text-white text-sm">Ulangi Latihan</a>
             <a href="{{ route('member.curriculum.interactive.history', [$classroom, $item]) }}"
-                class="btn bg-white border border-slate-300 text-slate-700 text-sm">Riwayat</a>
+                class="px-4 py-2 font-medium rounded-lg transition-colors bg-white border border-gray-200 text-gray-700 text-sm">Riwayat</a>
         </div>
     </div>
 
@@ -30,13 +30,13 @@
     @foreach($item->interactiveBlocks as $bi => $block)
         @if($block->questions->isNotEmpty())
             <div class="mb-6">
-                <h2 class="text-sm font-semibold text-slate-600 uppercase tracking-wide mb-3">Blok {{ $bi + 1 }}</h2>
+                <h2 class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-3">Blok {{ $bi + 1 }}</h2>
                 @foreach($block->questions as $qi => $question)
                     @php $ans = $answerMap->get($question->id); @endphp
-                    <div class="bg-white border rounded-lg p-5 mb-3
+                    <div class="bg-white border rounded-xl p-5 mb-3
                         {{ $ans?->is_correct ? 'border-green-300 bg-green-50' : 'border-red-200 bg-red-50' }}">
                         <div class="flex items-start justify-between mb-2">
-                            <p class="text-sm font-medium text-slate-800">{{ $qi + 1 }}. {{ $question->question_text }}</p>
+                            <p class="text-sm font-medium text-gray-900 font-jakarta">{{ $qi + 1 }}. {{ $question->question_text }}</p>
                             @if($ans?->is_correct)
                                 <span class="ml-2 text-green-600 text-xs font-semibold shrink-0">✓ Benar</span>
                             @else
@@ -60,7 +60,7 @@
                             @endforeach
                         </div>
                         @if($question->explanation)
-                            <p class="mt-3 text-xs text-slate-600 bg-slate-100 rounded p-2">
+                            <p class="mt-3 text-xs text-gray-600 bg-gray-100 rounded p-2">
                                 <span class="font-semibold">Penjelasan:</span> {{ $question->explanation }}
                             </p>
                         @endif

@@ -16,6 +16,7 @@ class ToeflQuestion extends Model
         'toefl_test_id',
         'passage_id',
         'section',
+        'question_type',
         'display_order',
         'question_text',
         'image_media_id',

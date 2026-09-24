@@ -18,7 +18,7 @@ class ToeflTestRepository
     public function create(array $data): ToeflTest
     {
         if (isset($data['password'])) {
-            $data['password'] = bcrypt($data['password']);
+            $data['password'] = Hash::make($data['password']);
         }
 
         return ToeflTest::create($data);
@@ -29,7 +29,7 @@ class ToeflTestRepository
         abort_unless($test->status === ToeflTest::STATUS_DRAFT, 422, 'Hanya test draft yang bisa diedit.');
 
         if (isset($data['password'])) {
-            $data['password'] = bcrypt($data['password']);
+            $data['password'] = Hash::make($data['password']);
         }
 
         $test->update($data);

@@ -128,12 +128,7 @@
                             <td class="px-5 py-4 text-right">
                                 <a href="{{ route('members.show', $member) }}" class="inline-flex min-h-9 items-center border border-slate-300 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50">Detail</a>
                                 <a href="{{ route('members.edit', $member) }}" class="inline-flex min-h-9 items-center border border-slate-300 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50 ml-1">Edit</a>
-                                @if($member->activation_status !== ActivationStatus::Aktif)
-                                    <form method="POST" action="{{ route('members.activate', $member) }}" class="inline-block ml-1">
-                                        @csrf @method('PATCH')
-                                        <button type="submit" class="inline-flex min-h-9 items-center border border-emerald-300 bg-emerald-50 px-3 text-xs font-semibold text-emerald-700 hover:bg-emerald-100">Aktifkan</button>
-                                    </form>
-                                @endif
+
                             </td>
                         </tr>
                     @empty

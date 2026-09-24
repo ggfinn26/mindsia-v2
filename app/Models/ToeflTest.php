@@ -15,6 +15,7 @@ class ToeflTest extends Model
         'status',
         'password',
         'is_trial',
+        'level',
         'listening_time_limit',
         'structure_time_limit',
         'reading_time_limit',

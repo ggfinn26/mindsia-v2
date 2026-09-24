@@ -19,8 +19,8 @@
         <!-- Right: Actions -->
         <div class="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             @can('toefl.test.create')
-            <a href="{{ route('toefl-tests.create') }}" class="btn bg-indigo-500 hover:bg-indigo-600 text-white">
-                <span class="hidden xs:block ml-2">Tambah Test</span>
+            <a href="{{ route('toefl-tests.create') }}" class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium transition-colors">
+                Tambah Test
             </a>
             @endcan
         </div>
@@ -67,13 +67,15 @@
                                 {{ optional($test->createdBy)->full_name ?? '-' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="{{ route('toefl-tests.show', $test->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Detail & Soal</a>
-                                @can('toefl.test.update')
-                                    <a href="{{ route('toefl-tests.edit', $test->id) }}" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
-                                @endcan
-                                @can('toefl.test.delete')
-                                    <button type="button" @click="showConfirmModal = true; confirmTitle = 'Hapus Test'; confirmMessage = 'Yakin ingin menghapus test ini?'; confirmActionUrl = '{{ route('toefl-tests.destroy', $test->id) }}'; confirmMethod = 'DELETE'; confirmActionText = 'Hapus'" class="text-red-600 hover:text-red-900">Hapus</button>
-                                @endcan
+                                <div class="flex items-center justify-end gap-1">
+                                    <a href="{{ route('toefl-tests.show', $test->id) }}" class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-md text-indigo-600 hover:bg-indigo-50 hover:text-indigo-900 transition-colors">Detail & Soal</a>
+                                    @can('toefl.test.update')
+                                        <a href="{{ route('toefl-tests.edit', $test->id) }}" class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-md text-blue-600 hover:bg-blue-50 hover:text-blue-900 transition-colors">Edit</a>
+                                    @endcan
+                                    @can('toefl.test.delete')
+                                        <button type="button" @click="showConfirmModal = true; confirmTitle = 'Hapus Test'; confirmMessage = 'Yakin ingin menghapus test ini?'; confirmActionUrl = '{{ route('toefl-tests.destroy', $test->id) }}'; confirmMethod = 'DELETE'; confirmActionText = 'Hapus'" class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-md text-red-600 hover:bg-red-50 hover:text-red-900 transition-colors">Hapus</button>
+                                    @endcan
+                                </div>
                             </td>
                         </tr>
                     @empty
@@ -110,8 +112,8 @@
                     </div>
                 </div>
                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="button" @click="$refs.confirmForm.submit()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm" x-text="confirmActionText"></button>
-                    <button type="button" @click="showConfirmModal = false" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Batal</button>
+                    <button type="button" @click="$refs.confirmForm.submit()" class="w-full sm:w-auto inline-flex justify-center items-center rounded-md border border-transparent shadow-sm px-4 py-2 min-h-[44px] min-w-[44px] bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none sm:ml-3 sm:text-sm transition-colors" x-text="confirmActionText"></button>
+                    <button type="button" @click="showConfirmModal = false" class="mt-3 sm:mt-0 sm:ml-3 w-full sm:w-auto inline-flex justify-center items-center rounded-md border border-gray-300 shadow-sm px-4 py-2 min-h-[44px] min-w-[44px] bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:text-sm transition-colors">Batal</button>
                 </div>
                 <form x-ref="confirmForm" :action="confirmActionUrl" method="POST" class="hidden">
                     @csrf

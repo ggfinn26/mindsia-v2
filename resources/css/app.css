@@ -362,6 +362,38 @@
     }
 }
 
+@layer components {
+    /* ponytail: shared button base — inline-flex + rounded-lg only, no color. Callers add bg/text. */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.375rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        line-height: 1.25rem;
+        border-radius: 0.5rem; /* rounded-lg */
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition:
+            background-color 0.15s,
+            border-color 0.15s,
+            color 0.15s;
+        white-space: nowrap;
+    }
+
+    .btn:focus-visible {
+        outline: 2px solid rgba(85, 134, 219, 0.5);
+        outline-offset: 2px;
+    }
+
+    .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
 @layer utilities {
     .glass-card {
         background: rgba(255, 255, 255, 0.7);

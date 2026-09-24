@@ -4,95 +4,136 @@
 
 @section('content')
 <div class="max-w-5xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-    <h2 class="text-2xl font-bold text-gray-900 mb-6">Ujian TOEFL</h2>
+
+    {{-- Page header --}}
+    <div class="mb-8">
+        <h2 class="text-2xl font-bold text-gray-900">Ujian TOEFL</h2>
+        <p class="mt-1 text-sm text-gray-500">Pilih test yang tersedia, atau lihat riwayat hasil ujian kamu.</p>
+    </div>
 
     @if (session('success'))
-        <div class="mb-4 bg-green-50 border border-green-300 text-green-700 px-4 py-3 rounded text-sm">{{ session('success') }}</div>
+        <div class="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">{{ session('success') }}</div>
     @endif
     @if (session('error'))
-        <div class="mb-4 bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded text-sm">{{ session('error') }}</div>
+        <div class="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">{{ session('error') }}</div>
     @endif
 
     {{-- Available Tests --}}
-    <div class="bg-white shadow-sm rounded-xl border border-gray-200 mb-8">
-        <div class="px-6 py-4 border-b border-gray-100">
-            <h3 class="font-semibold text-gray-800">Test Tersedia</h3>
+    <section class="bg-white border border-gray-200 rounded-xl shadow-sm mb-6" aria-label="Test tersedia">
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+            <h3 class="font-semibold text-gray-900 text-sm">Test Tersedia</h3>
+            <span class="text-xs text-gray-400">{{ $availableTests->count() }} test</span>
         </div>
         <div class="divide-y divide-gray-100">
             @forelse ($availableTests as $test)
-                <div class="px-6 py-4 flex items-center justify-between gap-4" x-data="{ showForm: false }">
-                    <div>
-                        <p class="font-medium text-gray-900">{{ $test->test_name }}</p>
-                        <p class="text-sm text-gray-500 mt-0.5">
-                            Listening {{ $test->listening_time_limit }}m &bull;
-                            Structure {{ $test->structure_time_limit }}m &bull;
-                            Reading {{ $test->reading_time_limit }}m
-                        </p>
-                    </div>
-                    <div class="shrink-0">
-                        <button type="button" @click="showForm = !showForm"
-                            class="btn bg-indigo-500 hover:bg-indigo-600 text-white text-sm">
-                            Mulai Ujian
-                        </button>
-                    </div>
-                </div>
-                <div x-show="showForm" style="display:none" class="px-6 pb-4">
-                    <form action="{{ route('toefl.session.start', $test) }}" method="POST" class="flex items-end gap-3">
-                        @csrf
-                        <div class="flex-1">
-                            <label class="block text-xs font-medium text-gray-600 mb-1">
-                                Password Test
-                                @if (!$test->password)
-                                    <span class="text-gray-400">(tidak diperlukan)</span>
-                                @endif
-                            </label>
-                            <input name="password" type="password" class="form-input w-full text-sm"
-                                placeholder="{{ $test->password ? 'Masukkan password test' : 'Biarkan kosong' }}" />
+                <div x-data="{ showForm: false }">
+                    <div class="px-6 py-4 flex items-center justify-between gap-4">
+                        <div class="min-w-0">
+                            <p class="font-medium text-gray-900 truncate">{{ $test->test_name }}</p>
+                            <p class="text-xs text-gray-400 mt-0.5">
+                                Listening {{ $test->listening_time_limit }}m
+                                <span class="mx-1 text-gray-200">|</span>
+                                Structure {{ $test->structure_time_limit }}m
+                                <span class="mx-1 text-gray-200">|</span>
+                                Reading {{ $test->reading_time_limit }}m
+                            </p>
                         </div>
-                        <button type="submit" class="btn bg-green-500 hover:bg-green-600 text-white text-sm">Konfirmasi & Mulai</button>
-                        <button type="button" @click="showForm = false" class="btn bg-white border-gray-200 hover:border-gray-300 text-gray-600 text-sm">Batal</button>
-                    </form>
+                        <div class="shrink-0">
+                            <button
+                                type="button"
+                                @click="showForm = !showForm"
+                                :aria-expanded="showForm"
+                                class="btn bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-4"
+                            >
+                                Mulai Ujian
+                            </button>
+                        </div>
+                    </div>
+
+                    {{-- Inline start form --}}
+                    <div
+                        x-show="showForm"
+                        x-transition:enter="transition duration-150"
+                        x-transition:enter-start="opacity-0 -translate-y-1"
+                        x-transition:enter-end="opacity-100 translate-y-0"
+                        style="display:none"
+                        class="px-6 pb-5 pt-1 bg-gray-50 border-t border-gray-100"
+                    >
+                        <form action="{{ route('toefl.session.start', $test) }}" method="POST" class="flex flex-col sm:flex-row items-start sm:items-end gap-3">
+                            @csrf
+                            <div class="flex-1 w-full sm:w-auto">
+                                <label class="block text-xs font-medium text-gray-600 mb-1">
+                                    Password Test
+                                    @if (!$test->password)
+                                        <span class="font-normal text-gray-400">(tidak diperlukan)</span>
+                                    @endif
+                                </label>
+                                <div class="relative" x-data="{ showPw: false }">
+                                    <input
+                                        name="password"
+                                        :type="showPw ? 'text' : 'password'"
+                                        class="form-input w-full text-sm pr-10"
+                                        placeholder="{{ $test->password ? 'Masukkan password test' : 'Biarkan kosong jika tidak ada password' }}"
+                                    />
+                                    <button type="button" @click="showPw = !showPw"
+                                        class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600">
+                                        <svg x-show="!showPw" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                        <svg x-show="showPw" x-cloak class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 4.411m0 0L21 21"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="flex gap-2 shrink-0">
+                                <button type="submit" class="btn bg-indigo-600 hover:bg-indigo-700 text-white text-sm">Konfirmasi &amp; Mulai</button>
+                                <button type="button" @click="showForm = false" class="btn bg-white border border-gray-200 hover:border-gray-300 text-gray-600 text-sm">Batal</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             @empty
-                <div class="px-6 py-10 text-center text-sm text-gray-400">
-                    Belum ada test yang tersedia saat ini.
+                <div class="px-6 py-12 text-center">
+                    <p class="text-sm font-medium text-gray-500">Belum ada test yang tersedia</p>
+                    <p class="text-xs text-gray-400 mt-1">Hubungi pengajar untuk mengaktifkan test TOEFL kamu.</p>
                 </div>
             @endforelse
         </div>
-    </div>
+    </section>
 
     {{-- Session History --}}
-    <div class="bg-white shadow-sm rounded-xl border border-gray-200">
+    <section class="bg-white border border-gray-200 rounded-xl shadow-sm" aria-label="Riwayat ujian">
         <div class="px-6 py-4 border-b border-gray-100">
-            <h3 class="font-semibold text-gray-800">Riwayat Ujian</h3>
+            <h3 class="font-semibold text-gray-900 text-sm">Riwayat Ujian</h3>
         </div>
+
         @if ($sessions->isEmpty())
-            <div class="px-6 py-10 text-center text-sm text-gray-400">Belum ada riwayat ujian.</div>
+            <div class="px-6 py-12 text-center">
+                <p class="text-sm font-medium text-gray-500">Belum ada riwayat ujian</p>
+                <p class="text-xs text-gray-400 mt-1">Hasil ujian yang sudah diselesaikan akan tampil di sini.</p>
+            </div>
         @else
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
-                    <thead class="text-xs uppercase text-gray-500 bg-gray-50 border-b border-gray-200">
-                        <tr>
-                            <th class="px-6 py-3 text-left">Test</th>
-                            <th class="px-6 py-3 text-left">Status</th>
-                            <th class="px-6 py-3 text-right">Listening</th>
-                            <th class="px-6 py-3 text-right">Structure</th>
-                            <th class="px-6 py-3 text-right">Reading</th>
-                            <th class="px-6 py-3 text-right">Total</th>
-                            <th class="px-6 py-3 text-right">Tanggal</th>
-                            <th class="px-6 py-3 text-right">Aksi</th>
+                    <thead>
+                        <tr class="border-b border-gray-100 text-xs text-gray-500 bg-gray-50">
+                            <th class="px-6 py-3 text-left font-medium">Test</th>
+                            <th class="px-6 py-3 text-left font-medium">Status</th>
+                            <th class="px-6 py-3 text-right font-medium">Listening</th>
+                            <th class="px-6 py-3 text-right font-medium">Structure</th>
+                            <th class="px-6 py-3 text-right font-medium">Reading</th>
+                            <th class="px-6 py-3 text-right font-medium">Total</th>
+                            <th class="px-6 py-3 text-right font-medium">Tanggal</th>
+                            <th class="px-6 py-3 text-right font-medium">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
                         @foreach ($sessions as $session)
-                            <tr>
-                                <td class="px-6 py-3 font-medium text-gray-800">{{ optional($session->test)->test_name ?? '—' }}</td>
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-6 py-3 font-medium text-gray-900 max-w-[180px] truncate">{{ optional($session->test)->test_name ?? 'Test dihapus' }}</td>
                                 <td class="px-6 py-3">
                                     @php
                                         $badge = match($session->status) {
-                                            'completed' => 'bg-green-100 text-green-700',
-                                            'expired'   => 'bg-red-100 text-red-700',
-                                            default     => 'bg-yellow-100 text-yellow-700',
+                                            'completed'   => 'bg-green-50 text-green-700 ring-1 ring-green-200',
+                                            'expired'     => 'bg-red-50 text-red-700 ring-1 ring-red-200',
+                                            default       => 'bg-amber-50 text-amber-700 ring-1 ring-amber-200',
                                         };
                                         $label = match($session->status) {
                                             'completed'   => 'Selesai',
@@ -101,16 +142,16 @@
                                             default       => $session->status,
                                         };
                                     @endphp
-                                    <span class="px-2 py-0.5 text-xs rounded-full {{ $badge }}">{{ $label }}</span>
+                                    <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded {{ $badge }}">{{ $label }}</span>
                                 </td>
-                                <td class="px-6 py-3 text-right font-mono">{{ $session->score_listening ?? '—' }}</td>
-                                <td class="px-6 py-3 text-right font-mono">{{ $session->score_structure ?? '—' }}</td>
-                                <td class="px-6 py-3 text-right font-mono">{{ $session->score_reading ?? '—' }}</td>
-                                <td class="px-6 py-3 text-right font-mono font-bold text-indigo-700">{{ $session->score_total ?? '—' }}</td>
-                                <td class="px-6 py-3 text-right text-gray-500">{{ $session->created_at->format('d/m/Y') }}</td>
+                                <td class="px-6 py-3 text-right font-mono text-gray-700">{{ $session->score_listening ?? 'n/a' }}</td>
+                                <td class="px-6 py-3 text-right font-mono text-gray-700">{{ $session->score_structure ?? 'n/a' }}</td>
+                                <td class="px-6 py-3 text-right font-mono text-gray-700">{{ $session->score_reading ?? 'n/a' }}</td>
+                                <td class="px-6 py-3 text-right font-mono font-bold text-indigo-700">{{ $session->score_total ?? 'n/a' }}</td>
+                                <td class="px-6 py-3 text-right text-gray-400 tabular-nums">{{ $session->created_at->format('d/m/Y') }}</td>
                                 <td class="px-6 py-3 text-right">
                                     @if ($session->status === 'completed')
-                                        <a href="{{ route('toefl.session.result', $session) }}" class="text-indigo-600 hover:text-indigo-800 text-xs">Lihat Hasil</a>
+                                        <a href="{{ route('toefl.session.result', $session) }}" class="text-indigo-600 hover:text-indigo-800 text-xs font-medium">Lihat Hasil</a>
                                     @elseif ($session->status === 'in_progress')
                                         @php
                                             $nextRoute = $session->listening_submitted_at
@@ -119,7 +160,9 @@
                                                     : route('toefl.session.structure', $session))
                                                 : route('toefl.session.listening', $session);
                                         @endphp
-                                        <a href="{{ $nextRoute }}" class="text-yellow-600 hover:text-yellow-800 text-xs font-medium">Lanjutkan</a>
+                                        <a href="{{ $nextRoute }}" class="text-amber-600 hover:text-amber-800 text-xs font-medium">Lanjutkan</a>
+                                    @else
+                                        <span class="text-gray-300 text-xs">-</span>
                                     @endif
                                 </td>
                             </tr>
@@ -131,6 +174,7 @@
                 {{ $sessions->links() }}
             </div>
         @endif
-    </div>
+    </section>
+
 </div>
 @endsection

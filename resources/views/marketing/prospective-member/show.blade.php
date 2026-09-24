@@ -34,7 +34,12 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
         {{-- Profil Prospective Member --}}
         <div class="bg-white shadow rounded-lg p-5 md:col-span-1 space-y-4">
-            <h2 class="text-base font-semibold text-gray-800 border-b pb-2">Profil Lead</h2>
+            <div class="flex items-center justify-between border-b pb-2">
+                <h2 class="text-base font-semibold text-gray-800">Profil Lead</h2>
+                <a href="{{ route('prospective-members.edit', $lead) }}" class="text-xs font-medium text-indigo-600 hover:text-indigo-800 flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-sm">
+                    <span class="material-symbols-outlined text-[14px]">edit</span> Edit
+                </a>
+            </div>
 
             <div>
                 <p class="text-xs text-gray-500">Nama</p>
@@ -120,7 +125,7 @@
         </div>
 
         {{-- Log Follow-Up --}}
-        <div class="bg-white shadow rounded-lg p-5 md:col-span-2 flex flex-col" style="max-height: 600px;">
+        <div class="bg-white shadow rounded-lg p-5 md:col-span-2 flex flex-col max-h-[600px]">
             <h2 class="text-base font-semibold text-gray-800 border-b pb-2 mb-4">Log Follow-Up</h2>
 
             <div class="flex-1 overflow-y-auto space-y-3 mb-4 pr-1">

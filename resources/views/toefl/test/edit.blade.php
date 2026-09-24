@@ -6,7 +6,7 @@
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-3xl mx-auto">
     <div class="mb-6 flex items-center justify-between">
         <h1 class="text-2xl font-bold text-gray-800">Edit Test TOEFL</h1>
-        <a href="{{ route('toefl-tests.show', $toeflTest) }}" class="btn bg-white border-gray-200 hover:border-gray-300 text-gray-600 text-sm">Kembali</a>
+        <a href="{{ route('toefl-tests.show', $toeflTest) }}" class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-white border border-gray-300 hover:bg-gray-50 text-gray-600 text-sm font-medium transition-colors">Kembali</a>
     </div>
 
     @if ($errors->any())
@@ -26,7 +26,7 @@
                 <label for="test_name" class="block text-sm font-medium text-gray-700 mb-1">Nama Test <span class="text-red-500">*</span></label>
                 <input id="test_name" name="test_name" type="text"
                     value="{{ old('test_name', $toeflTest->test_name) }}"
-                    class="form-input w-full @error('test_name') border-red-400 @enderror" required />
+                    class="form-input w-full min-h-[44px] @error('test_name') border-red-400 @enderror" required />
             </div>
 
             <div>
@@ -34,47 +34,60 @@
                     Password Test <span class="text-gray-400 font-normal">(kosongkan untuk hapus password)</span>
                 </label>
                 <input id="password" name="password" type="text"
-                    class="form-input w-full @error('password') border-red-400 @enderror"
+                    class="form-input w-full min-h-[44px] @error('password') border-red-400 @enderror"
                     placeholder="Min. 4 karakter — kosongkan jika tidak berubah" />
                 <p class="text-xs text-gray-400 mt-1">Biarkan kosong untuk mempertahankan password saat ini.</p>
             </div>
 
-            <div class="flex items-center gap-3">
-                <input id="is_trial" name="is_trial" type="checkbox" value="1"
-                    class="rounded border-gray-300 text-indigo-600"
-                    {{ old('is_trial', $toeflTest->is_trial) ? 'checked' : '' }} />
-                <label for="is_trial" class="text-sm font-medium text-gray-700">
-                    Test Trial <span class="text-gray-400 font-normal">(akses publik tanpa login member)</span>
-                </label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="level" class="block text-sm font-medium text-gray-700 mb-1">
+                        Level <span class="text-gray-400 font-normal">(opsional)</span>
+                    </label>
+                    <select id="level" name="level" class="form-select w-full min-h-[44px] @error('level') border-red-400 @enderror">
+                        <option value="">— Pilih Level —</option>
+                        <option value="beginner" {{ old('level', $toeflTest->level) === 'beginner' ? 'selected' : '' }}>Beginner (skor &lt; 450)</option>
+                        <option value="intermediate" {{ old('level', $toeflTest->level) === 'intermediate' ? 'selected' : '' }}>Intermediate (skor 450–500)</option>
+                        <option value="advanced" {{ old('level', $toeflTest->level) === 'advanced' ? 'selected' : '' }}>Advanced (skor &gt; 500)</option>
+                    </select>
+                </div>
+                <div class="flex items-center gap-3 min-h-[44px] pt-6">
+                    <input id="is_trial" name="is_trial" type="checkbox" value="1"
+                        class="rounded border-gray-300 text-indigo-600 w-5 h-5 cursor-pointer"
+                        {{ old('is_trial', $toeflTest->is_trial) ? 'checked' : '' }} />
+                    <label for="is_trial" class="text-sm font-medium text-gray-700 cursor-pointer select-none">
+                        Test Trial <span class="text-gray-400 font-normal">(akses publik tanpa login member)</span>
+                    </label>
+                </div>
             </div>
 
             <div class="border-t border-gray-100 pt-5">
                 <p class="text-sm font-medium text-gray-700 mb-3">Durasi per Section (menit)</p>
-                <div class="grid grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                         <label class="block text-xs text-gray-500 mb-1">Listening</label>
                         <input name="listening_time_limit" type="number" min="1"
                             value="{{ old('listening_time_limit', $toeflTest->listening_time_limit) }}"
-                            class="form-input w-full" />
+                            class="form-input w-full min-h-[44px]" />
                     </div>
                     <div>
                         <label class="block text-xs text-gray-500 mb-1">Structure</label>
                         <input name="structure_time_limit" type="number" min="1"
                             value="{{ old('structure_time_limit', $toeflTest->structure_time_limit) }}"
-                            class="form-input w-full" />
+                            class="form-input w-full min-h-[44px]" />
                     </div>
                     <div>
                         <label class="block text-xs text-gray-500 mb-1">Reading</label>
                         <input name="reading_time_limit" type="number" min="1"
                             value="{{ old('reading_time_limit', $toeflTest->reading_time_limit) }}"
-                            class="form-input w-full" />
+                            class="form-input w-full min-h-[44px]" />
                     </div>
                 </div>
             </div>
 
-            <div class="flex justify-end gap-3 pt-2">
-                <a href="{{ route('toefl-tests.show', $toeflTest) }}" class="btn bg-white border-gray-200 hover:border-gray-300 text-gray-600">Batal</a>
-                <button type="submit" class="btn bg-indigo-500 hover:bg-indigo-600 text-white">Simpan Perubahan</button>
+            <div class="flex flex-col sm:flex-row sm:justify-end gap-3 pt-4 mt-2 border-t border-gray-100">
+                <a href="{{ route('toefl-tests.show', $toeflTest) }}" class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-sm font-medium transition-colors">Batal</a>
+                <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium transition-colors">Simpan Perubahan</button>
             </div>
         </form>
     </div>

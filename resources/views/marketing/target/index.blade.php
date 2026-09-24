@@ -130,6 +130,34 @@
             Override target individu untuk periode <strong>{{ $monthNames[$month] }} {{ $year }}</strong>.
             Kosongkan jika ingin mengikuti default posisi.
         </p>
+
+        {{-- Filter Pegawai --}}
+        <form method="GET" action="{{ route('marketing-target.index') }}" class="mb-4 flex flex-wrap gap-3 items-end bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+            <input type="hidden" name="month" value="{{ $month }}">
+            <input type="hidden" name="year" value="{{ $year }}">
+            <div class="flex-1 min-w-[200px]">
+                <label class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1">Cari Pegawai</label>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Nama pegawai..."
+                    class="w-full bg-gray-50 border border-gray-200 rounded-lg text-sm px-3 py-2 outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-200 transition-colors">
+            </div>
+            <div>
+                <label class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1">Cabang</label>
+                <select name="branch_id" onchange="this.form.submit()"
+                    class="bg-gray-50 border border-gray-200 rounded-lg text-sm px-3 py-2 outline-none focus:border-indigo-400 transition-colors">
+                    <option value="">Semua Cabang</option>
+                    @foreach ($branches as $branch)
+                        <option value="{{ $branch->id }}" {{ request('branch_id') == $branch->id ? 'selected' : '' }}>{{ $branch->branch_name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="flex gap-2">
+                <button type="submit" class="px-3 py-2 text-sm font-medium text-white bg-gray-700 rounded-lg hover:bg-gray-800">Filter</button>
+                @if(request()->hasAny(['search', 'branch_id']))
+                    <a href="{{ route('marketing-target.index', ['month' => $month, 'year' => $year]) }}" class="px-3 py-2 text-sm text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200">Reset</a>
+                @endif
+            </div>
+        </form>
+
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
             <table class="min-w-full text-sm">
                 <thead>
@@ -198,6 +226,9 @@
                     @endforelse
                 </tbody>
             </table>
+            @if ($employees->hasPages())
+                <div class="px-4 py-3 border-t border-gray-100">{{ $employees->withQueryString()->links() }}</div>
+            @endif
         </div>
     </div>
 
@@ -228,8 +259,10 @@
 
 <script>
 function targetPage() {
+    const params = new URLSearchParams(window.location.search);
+    const initTab = (params.has('search') || params.has('branch_id') || params.has('page')) ? 'employee' : 'position';
     return {
-        tab: 'position',
+        tab: initTab,
         confirm: { open: false, form: null },
         confirmSave(form) {
             this.confirm.form = form;

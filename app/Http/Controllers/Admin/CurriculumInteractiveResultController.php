@@ -51,7 +51,7 @@ class CurriculumInteractiveResultController extends Controller
             ->latest('completed_at')
             ->get();
 
-        $item->load(['interactiveBlocks.questions' => fn ($q) => $q->makeVisible(['correct_option']), 'interactiveBlocks.audio', 'interactiveBlocks.image']);
+        $item->load(['interactiveBlocks.questions', 'interactiveBlocks.audio', 'interactiveBlocks.image']);
 
         return view('curriculum.interactive.tutor-member-detail', compact('classroom', 'item', 'memberClass', 'attempts'));
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Marketing\StoreMarketingTargetDefaultRequest;
 use App\Http\Requests\Marketing\StoreMarketingTargetRequest;
+use App\Models\Branch;
 use App\Models\Employee;
 use App\Models\MarketingTarget;
 use App\Models\MarketingTargetDefault;
@@ -34,10 +35,22 @@ class MarketingTargetController extends Controller
             ->get()
             ->keyBy('position_id');
 
+        $search = $request->input('search');
+        $branchId = $request->input('branch_id');
+
+        $branches = Branch::active()->orderBy('branch_name')->get(['id', 'branch_name']);
+
         $employees = Employee::where('is_active', true)
             ->with('currentStatus.position')
+            ->when($search, function ($query, $search) {
+                $query->where('full_name', 'like', "%{$search}%");
+            })
+            ->when($branchId, function ($query, $branchId) {
+                $query->where('branch_id', $branchId);
+            })
             ->orderBy('full_name')
-            ->get();
+            ->paginate(20)
+            ->withQueryString();
 
         $employeeTargets = MarketingTarget::where('period_month', $month)
             ->where('period_year', $year)
@@ -45,7 +58,7 @@ class MarketingTargetController extends Controller
             ->keyBy('employee_id');
 
         return view('marketing.target.index', compact(
-            'month', 'year', 'positions', 'positionTargets', 'employees', 'employeeTargets',
+            'month', 'year', 'positions', 'positionTargets', 'employees', 'employeeTargets', 'branches', 'search', 'branchId'
         ));
     }
 

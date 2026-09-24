@@ -19,7 +19,7 @@ class CurriculumInteractiveController extends Controller
     {
         $memberDataId = auth('member')->user()->members_data_id;
 
-        $memberClass = MemberClass::whereHas('registration', fn ($q) => $q->where('members_data_id', $memberDataId))
+        $memberClass = MemberClass::whereHas('memberRegistration', fn ($q) => $q->where('members_data_id', $memberDataId))
             ->where('class_id', $classroom->id)
             ->firstOrFail();
 
@@ -31,7 +31,7 @@ class CurriculumInteractiveController extends Controller
         $memberClass = $this->getMemberClass($classroom);
 
         $item->load(['interactiveBlocks' => fn ($q) => $q->with([
-            'questions' => fn ($q) => $q->makeVisible(['correct_option', 'explanation'])->select('id', 'block_id', 'sort_order', 'question_text', 'option_a', 'option_b', 'option_c', 'option_d'),
+            'questions' => fn ($q) => $q->select('id', 'block_id', 'sort_order', 'question_text', 'option_a', 'option_b', 'option_c', 'option_d'),
             'audio',
             'image',
         ])]);
@@ -114,7 +114,7 @@ class CurriculumInteractiveController extends Controller
             ->with(['answers.question'])
             ->firstOrFail();
 
-        $item->load(['interactiveBlocks.questions' => fn ($q) => $q->makeVisible(['correct_option', 'explanation']), 'interactiveBlocks.audio', 'interactiveBlocks.image']);
+        $item->load(['interactiveBlocks.questions', 'interactiveBlocks.audio', 'interactiveBlocks.image']);
 
         return view('curriculum.interactive.member-result', compact('classroom', 'item', 'attempt'));
     }

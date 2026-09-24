@@ -11,6 +11,15 @@ class StartGuestToeflSessionRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        if ($this->guest_whatsapp) {
+            $number = preg_replace('/[^0-9]/', '', $this->guest_whatsapp);
+            $number = ltrim($number, '0');
+            $this->merge(['guest_whatsapp' => '+62'.$number]);
+        }
+    }
+
     public function rules(): array
     {
         return [

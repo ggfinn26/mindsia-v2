@@ -17,6 +17,7 @@ class StoreToeflTestRequest extends FormRequest
             'test_name' => ['required', 'string', 'max:255'],
             'password' => ['nullable', 'string', 'min:4'],
             'is_trial' => ['boolean'],
+            'level' => ['nullable', 'in:beginner,intermediate,advanced'],
             'listening_time_limit' => ['nullable', 'integer', 'min:1'],
             'structure_time_limit' => ['nullable', 'integer', 'min:1'],
             'reading_time_limit' => ['nullable', 'integer', 'min:1'],
