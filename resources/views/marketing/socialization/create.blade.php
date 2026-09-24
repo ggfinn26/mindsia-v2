@@ -34,7 +34,8 @@
             </div>
         @else
             {{-- Area/HQ: checklist cabang dalam scope --}}
-            <div x-data="branchPicker()" class="space-y-2">
+            <script>window.__branchPickerCfg = { allIds: @json($branches->pluck('id')->map(fn($id) => (int)$id)->values()->all()), allNames: @json($branches->pluck('branch_name')->values()->all()), selected: @json(array_map('intval', old('branch_ids', []))) };</script>
+            <div x-data="branchPicker" class="space-y-2">
                 <div class="flex items-center justify-between">
                     <label class="block text-sm font-medium text-gray-700">
                         Cabang Penyelenggara <span class="text-red-500">*</span>
@@ -59,8 +60,7 @@
                 <div class="border border-t-0 border-gray-200 rounded-b-md divide-y divide-gray-100 max-h-52 overflow-y-auto">
                     @foreach ($branches as $branch)
                         <label class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 cursor-pointer"
-                            x-show="matches('{{ addslashes($branch->branch_name) }}')"
-                            x-cloak>
+                            x-show="matches('{{ addslashes($branch->branch_name) }}')">
                             <input type="checkbox" name="branch_ids[]" value="{{ $branch->id }}"
                                 x-model="selected"
                                 {{ in_array($branch->id, old('branch_ids', [])) ? 'checked' : '' }}
@@ -68,7 +68,7 @@
                             <span class="text-sm text-gray-700">{{ $branch->branch_name }}</span>
                         </label>
                     @endforeach
-                    <p class="px-4 py-3 text-sm text-gray-400" x-show="noResults" x-cloak>Tidak ada cabang ditemukan.</p>
+                    <p class="px-4 py-3 text-sm text-gray-400" x-show="noResults">Tidak ada cabang ditemukan.</p>
                 </div>
 
                 <p class="text-xs text-gray-500" x-show="selected.length > 0">
@@ -142,32 +142,5 @@
     </form>
 </div>
 
-<script>
-function branchPicker() {
-    const allIds = {{ json_encode($branches->pluck('id')->map(fn($id) => (int)$id)->values()->all()) }};
-    const allNames = {{ json_encode($branches->pluck('branch_name')->values()->all()) }};
-    return {
-        selected: {{ json_encode(array_map('intval', old('branch_ids', []))) }},
-        search: '',
-        get allSelected() {
-            return allIds.length > 0 && allIds.every(id => this.selected.includes(id));
-        },
-        get noResults() {
-            return allNames.every(name => !name.toLowerCase().includes(this.search.toLowerCase()));
-        },
-        matches(name) {
-            return name.toLowerCase().includes(this.search.toLowerCase());
-        },
-        toggleAll() {
-            const visible = allIds.filter((_, i) => allNames[i].toLowerCase().includes(this.search.toLowerCase()));
-            const allVisibleSelected = visible.every(id => this.selected.includes(id));
-            if (allVisibleSelected) {
-                this.selected = this.selected.filter(id => !visible.includes(id));
-            } else {
-                this.selected = [...new Set([...this.selected, ...visible])];
-            }
-        },
-    };
-}
-</script>
 @endsection
+

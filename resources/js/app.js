@@ -2,6 +2,7 @@ import Alpine from "alpinejs";
 import "./employee-portal";
 import "./member-register";
 import "./select-enhance";
+import "./branch-picker";
 window.Alpine = Alpine;
 Alpine.start();
 import "./password-toggle";
