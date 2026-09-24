@@ -30,7 +30,11 @@
 <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" icon="co_present" :active="request()->is('class/my-classes*')">Absen Sesi Saya</x-dashboard.nav-item>
 <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" icon="event_busy" :active="request()->is('attendance/leave-request*')">Izin/Sakit/Cuti Saya</x-dashboard.nav-item>
 <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" icon="mail" :active="request()->is('letter/my-letters*')">Surat Saya</x-dashboard.nav-item>
-<x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" icon="campaign" :active="request()->is('marketing/my-templates*')">Template Marketing Saya</x-dashboard.nav-item>
+@auth
+    @if(auth()->user()->can('marketing.wa_template.manage') && auth()->user()->employee)
+    <x-dashboard.nav-item href="{{ route('wa-templates.index') }}" icon="chat" :active="request()->routeIs('wa-templates.*')">Template WA Saya</x-dashboard.nav-item>
+    @endif
+@endauth
 <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" icon="confirmation_number" :active="request()->is('facility/my-tickets*')">Tiket Saya</x-dashboard.nav-item>
 
 <!-- 1.2 Organization -->
@@ -194,8 +198,9 @@
     @canany(['marketing.prospective.view_area', 'marketing.prospective.view_national'])
     <x-dashboard.nav-item href="{{ route('prospective-members.index') }}" :isChild="true" :active="request()->routeIs('prospective-members.*')">{{ auth()->user()->can('marketing.prospective.view_national') ? 'Calon Member Nasional' : 'Calon Member Area' }}</x-dashboard.nav-item>
     @endcanany
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Template WA</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Target & Performance</x-dashboard.nav-item>
+    @can('marketing.target.set')
+    <x-dashboard.nav-item href="{{ route('marketing-target.index') }}" :isChild="true" :active="request()->routeIs('marketing-target.*')">Target & Performance</x-dashboard.nav-item>
+    @endcan
     <x-dashboard.nav-item href="{{ route('marketing.member-payment-statement') }}" :active="request()->routeIs('marketing.member-payment-statement')" :isChild="true">Financial Statement</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('marketing.monthly-revenue-data') }}" :active="request()->routeIs('marketing.monthly-revenue-data')" :isChild="true">Data Pendapatan Bulanan</x-dashboard.nav-item>
 </x-dashboard.nav-group>
