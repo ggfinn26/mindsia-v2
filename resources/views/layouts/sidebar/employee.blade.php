@@ -202,7 +202,14 @@
     <x-dashboard.nav-item href="{{ route('marketing-target.index') }}" :isChild="true" :active="request()->routeIs('marketing-target.*')">Target & Performance</x-dashboard.nav-item>
     @endcan
     <x-dashboard.nav-item href="{{ route('marketing.member-payment-statement') }}" :active="request()->routeIs('marketing.member-payment-statement')" :isChild="true">Financial Statement</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="{{ route('marketing.monthly-revenue-data') }}" :active="request()->routeIs('marketing.monthly-revenue-data')" :isChild="true">Data Pendapatan Bulanan</x-dashboard.nav-item>
+    @auth
+    @if(auth()->user()->employee)
+    <x-dashboard.nav-item href="{{ route('marketing.my-monthly-revenue') }}" :active="request()->routeIs('marketing.my-monthly-revenue')" :isChild="true">Pendapatan Saya</x-dashboard.nav-item>
+    @endif
+    @endauth
+    @can('marketing.monthly_revenue_data.view_branch')
+    <x-dashboard.nav-item href="{{ route('marketing.monthly-revenue-data') }}" :active="request()->routeIs('marketing.monthly-revenue-data')" :isChild="true">Data Pendapatan Area</x-dashboard.nav-item>
+    @endcan
 </x-dashboard.nav-group>
 @endif
 

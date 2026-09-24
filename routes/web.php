@@ -66,6 +66,7 @@ use App\Http\Controllers\Admin\MemberPaymentStatementController;
 use App\Http\Controllers\Admin\MemberSessionAssessmentController;
 use App\Http\Controllers\Admin\MemberTestResultController;
 use App\Http\Controllers\Admin\MonthlyRevenueDataController;
+use App\Http\Controllers\Admin\MyMonthlyRevenueController;
 use App\Http\Controllers\Admin\NotificationLogController;
 use App\Http\Controllers\Admin\NotificationManualSendController;
 use App\Http\Controllers\Admin\NotificationTemplateController;
@@ -706,6 +707,7 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     Route::post('marketing-kpi/rules/{rule}/activate', [MarketingKpiController::class, 'activateRule'])->name('marketing-kpi.rules.activate');
     Route::get('marketing/my-performance', [MarketingMyPerformanceController::class, 'index'])->name('marketing.my-performance');
     Route::get('marketing/member-payment-statement', [MemberPaymentStatementController::class, 'index'])->name('marketing.member-payment-statement');
+    Route::get('marketing/my-monthly-revenue', [MyMonthlyRevenueController::class, 'index'])->name('marketing.my-monthly-revenue');
     Route::get('marketing/monthly-revenue-data', [MonthlyRevenueDataController::class, 'index'])->name('marketing.monthly-revenue-data');
 
     // Bonus Domain
