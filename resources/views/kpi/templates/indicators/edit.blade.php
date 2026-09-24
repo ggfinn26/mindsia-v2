@@ -24,26 +24,32 @@
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-slate-700">Kode indikator</label>
                 <input type="text" name="indicator_code" value="{{ old('indicator_code', $indicator->indicator_code) }}" required maxlength="100" class="block w-full border-slate-300 text-sm uppercase focus:border-[#215aac] focus:ring-[#215aac]">
+                <p class="mt-1 text-xs text-slate-400">ID unik huruf kapital, dipakai sistem. Contoh: <span class="font-mono">HADIR_RATE</span>, <span class="font-mono">MPI_SCORE</span>.</p>
             </div>
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-slate-700">Nama indikator</label>
                 <input type="text" name="indicator_name" value="{{ old('indicator_name', $indicator->indicator_name) }}" required maxlength="255" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                <p class="mt-1 text-xs text-slate-400">Nama yang tampil ke pegawai saat mengisi evaluasi.</p>
             </div>
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-slate-700">Satuan</label>
                 <input type="text" name="unit" value="{{ old('unit', $indicator->unit) }}" maxlength="50" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                <p class="mt-1 text-xs text-slate-400">Label angka hasil evaluasi. Contoh: <span class="font-mono">%</span>, <span class="font-mono">hari</span>, <span class="font-mono">sesi</span>, <span class="font-mono">Rp</span>.</p>
             </div>
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-slate-700">Target nilai</label>
                 <input type="number" name="target_value" value="{{ old('target_value', $indicator->target_value) }}" required step="0.01" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                <p class="mt-1 text-xs text-slate-400">Nilai ideal yang ingin dicapai (100%, 20 sesi, dst).</p>
             </div>
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-slate-700">Bobot (%)</label>
                 <input type="number" name="weight" value="{{ old('weight', $indicator->weight) }}" required min="0" max="100" step="0.01" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                <p class="mt-1 text-xs text-slate-400">Porsi indikator ini dari total KPI. Semua bobot harus berjumlah 100%.</p>
             </div>
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-slate-700">Urutan</label>
                 <input type="number" name="sequence_number" value="{{ old('sequence_number', $indicator->sequence_number) }}" required min="1" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                <p class="mt-1 text-xs text-slate-400">Urutan tampil di form evaluasi. Angka kecil tampil lebih atas.</p>
             </div>
         </div>
         <div>

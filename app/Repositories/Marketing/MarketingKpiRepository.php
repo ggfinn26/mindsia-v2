@@ -8,9 +8,8 @@ use Illuminate\Database\Eloquent\Collection;
 
 class MarketingKpiRepository
 {
-    public function latestByPeriod(int $month, int $year): Collection
+    public function latestByPeriod(int $month, int $year, ?int $branchId = null, ?int $areaId = null): Collection
     {
-        // latest snapshot per employee, sorted: rank_national → classes_pct → reg_value_pct → name
         return MarketingKpiSnapshot::with('employee.branch')
             ->where('period_month', $month)
             ->where('period_year', $year)
@@ -21,6 +20,8 @@ class MarketingKpiRepository
                     ->where('period_year', $year)
                     ->groupBy('employee_id');
             })
+            ->when($branchId, fn ($q) => $q->whereHas('employee', fn ($eq) => $eq->where('branch_id', $branchId)))
+            ->when($areaId && ! $branchId, fn ($q) => $q->whereHas('employee.branch', fn ($bq) => $bq->where('area_id', $areaId)))
             ->orderBy('rank_national')
             ->orderByDesc('classes_percentage')
             ->orderByDesc('registration_value_percentage')

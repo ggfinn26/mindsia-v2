@@ -15,7 +15,9 @@ use App\Models\KpiBonusRule;
 use App\Models\KpiBonusRuleTier;
 use App\Models\MarketingBonusRule;
 use App\Models\MarketingBonusRuleTier;
+use App\Models\MarketingPerformance;
 use App\Models\MemberSupportTicket;
+use App\Models\ProspectiveMember;
 use App\Models\Province;
 use App\Models\Region;
 use App\Models\ReimbursementItem;
@@ -32,6 +34,7 @@ use App\Observers\ClassRoomObserver;
 use App\Observers\EmployeeWorkAttendanceLogObserver;
 use App\Observers\JobPermintaanObserver;
 use App\Observers\JobPostingObserver;
+use App\Observers\MarketingSnapshotObserver;
 use App\Observers\Member\MemberSupportTicketObserver;
 use App\Observers\ReimbursementItemObserver;
 use App\Observers\SurveyObserver;
@@ -105,5 +108,11 @@ class AppServiceProvider extends ServiceProvider
         JobPosting::observe(JobPostingObserver::class);
         BudgetEstimateItem::observe(BudgetEstimateItemObserver::class);
         ReimbursementItem::observe(ReimbursementItemObserver::class);
+
+        $snapshotObserver = app(MarketingSnapshotObserver::class);
+        foreach (['created', 'updated'] as $event) {
+            ProspectiveMember::registerModelEvent($event, Closure::fromCallable([$snapshotObserver, 'prospectiveMemberSaved']));
+            MarketingPerformance::registerModelEvent($event, Closure::fromCallable([$snapshotObserver, 'marketingPerformanceSaved']));
+        }
     }
 }

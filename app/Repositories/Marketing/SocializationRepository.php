@@ -2,11 +2,17 @@
 
 namespace App\Repositories\Marketing;
 
+use App\Models\Employee;
 use App\Models\Socialization;
+use App\Services\Marketing\MarketingSnapshotService;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class SocializationRepository
 {
+    public function __construct(
+        private readonly MarketingSnapshotService $snapshotService,
+    ) {}
+
     public function paginate(array $filters = []): LengthAwarePaginator
     {
         return Socialization::with(['branch', 'area', 'institution', 'createdBy'])
@@ -104,5 +110,16 @@ class SocializationRepository
         }
 
         $socialization->update(['status' => Socialization::STATUS_COMPLETED]);
+
+        $scheduleDate = $socialization->schedules()->min('schedule_date');
+        $month = $scheduleDate ? (int) date('n', strtotime($scheduleDate)) : now()->month;
+        $year = $scheduleDate ? (int) date('Y', strtotime($scheduleDate)) : now()->year;
+
+        foreach ($socialization->employeeSocializations as $es) {
+            $employee = Employee::with('branch.area.region')->find($es->employee_id);
+            if ($employee) {
+                $this->snapshotService->append($employee, $month, $year);
+            }
+        }
     }
 }

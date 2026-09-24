@@ -3,9 +3,11 @@
 namespace App\Services\Marketing;
 
 use App\Models\Employee;
+use App\Models\EmployeeSocialization;
+use App\Models\MarketingKpiRankingRule;
 use App\Models\MarketingKpiSnapshot;
-use App\Models\MarketingPerformance;
 use App\Models\MemberPayment;
+use App\Models\ProspectiveMember;
 use App\Repositories\Marketing\MarketingKpiRepository;
 use App\Repositories\Marketing\MarketingTargetRepository;
 
@@ -18,7 +20,10 @@ class MarketingSnapshotService
 
     public function append(Employee $employee, int $month, int $year): void
     {
-        $rule = $this->kpiRepository->activeRankingRule();
+        $rule = MarketingKpiRankingRule::where('is_active', true)->first();
+        if (! $rule) {
+            return;
+        }
         $target = $this->targetRepository->resolve($employee, $month, $year);
 
         $classesActual = $this->resolveClassesActual($employee->id, $month, $year);
@@ -39,6 +44,14 @@ class MarketingSnapshotService
 
         [$rankArea, $rankRegion, $rankNational] = $this->resolveRanking($employee, $month, $year, $mpiScore);
 
+        $fixedCount = ProspectiveMember::where('captured_by_employee_id', $employee->id)
+            ->where('status', ProspectiveMember::STATUS_FIXED)
+            ->count();
+
+        $prospectiveCount = ProspectiveMember::where('captured_by_employee_id', $employee->id)
+            ->where('status', '!=', ProspectiveMember::STATUS_FIXED)
+            ->count();
+
         $snapshotData = [
             'employee_id' => $employee->id,
             'ranking_rule_id' => $rule->id,
@@ -47,7 +60,7 @@ class MarketingSnapshotService
             'revenue_basis_snapshot' => $rule->revenue_basis,
             'employee_name_snapshot' => $employee->full_name,
             'branch_name_snapshot' => $employee->branch?->branch_name ?? '',
-            'area_name_snapshot' => $employee->branch?->area?->area_name ?? '',
+            'area_name_snapshot' => $employee->branch?->area?->name ?? $employee->branch?->area?->area_name ?? '',
             'region_name_snapshot' => $employee->branch?->area?->region?->region_name ?? '',
             'period_month' => $month,
             'period_year' => $year,
@@ -61,6 +74,8 @@ class MarketingSnapshotService
             'cash_collected_percentage' => $cashPct,
             'admin_fee_deducted' => $adminFeeDeducted,
             'income_actual' => $incomeActual,
+            'prospective_members_count' => $prospectiveCount,
+            'fixed_members_count' => $fixedCount,
             'mpi_score' => $mpiScore,
             'rank_area' => $rankArea,
             'rank_region' => $rankRegion,
@@ -72,24 +87,26 @@ class MarketingSnapshotService
 
     private function resolveClassesActual(int $employeeId, int $month, int $year): int
     {
-        // classes_actual comes from marketing_performances which is updated by MarketingPerformanceObserver
-        $performance = MarketingPerformance::where('employee_id', $employeeId)
-            ->where('period_month', $month)
-            ->where('period_year', $year)
-            ->first();
-
-        return $performance?->classes_actual ?? 0;
+        return (int) EmployeeSocialization::where('employee_id', $employeeId)
+            ->whereHas('socialization', function ($q) use ($month, $year) {
+                $q->where('status', 'completed')
+                    ->whereHas('schedules', function ($sq) use ($month, $year) {
+                        $sq->whereYear('schedule_date', $year)
+                            ->whereMonth('schedule_date', $month);
+                    });
+            })
+            ->sum('classes_obtained');
     }
 
     private function resolveCashCollected(int $employeeId, int $month, int $year): float
     {
         return (float) MemberPayment::whereHas(
-            'registration',
-            fn ($q) => $q->where('employee_id', $employeeId)
+            'registration.memberData',
+            fn ($q) => $q->where('referred_by_employee_id', $employeeId)
         )
             ->whereMonth('paid_at', $month)
             ->whereYear('paid_at', $year)
-            ->where('payment_status', 'confirmed')
+            ->where('payment_status', 'paid')
             ->sum('amount');
     }
 
@@ -97,42 +114,45 @@ class MarketingSnapshotService
     {
         $total = 0.0;
 
-        // per_registration + on_registration: count registrations created in period
-        $total += (float) \DB::table('member_registrations as mr')
+        // per_registration + on_registration
+        $total += (float) \DB::table('members_registration as mr')
+            ->join('members_data as md', 'mr.members_data_id', '=', 'md.id')
             ->join('programs as p', 'mr.program_id', '=', 'p.id')
-            ->where('mr.employee_id', $employeeId)
+            ->where('md.referred_by_employee_id', $employeeId)
             ->whereYear('mr.created_at', $year)
             ->whereMonth('mr.created_at', $month)
             ->where('p.admin_fee_mode', 'per_registration')
             ->where('p.admin_fee_timing', 'on_registration')
             ->sum('p.admin_fee');
 
-        // per_registration + on_first_payment: count registrations whose first confirmed payment falls in period
-        $total += (float) \DB::table('member_registrations as mr')
+        // per_registration + on_first_payment
+        $total += (float) \DB::table('members_registration as mr')
+            ->join('members_data as md', 'mr.members_data_id', '=', 'md.id')
             ->join('programs as p', 'mr.program_id', '=', 'p.id')
             ->joinSub(
                 \DB::table('member_payments')
                     ->selectRaw('member_registration_id, MIN(paid_at) as first_paid')
-                    ->where('payment_status', 'confirmed')
+                    ->where('payment_status', 'paid')
                     ->groupBy('member_registration_id'),
                 'fp',
                 'fp.member_registration_id', '=', 'mr.id'
             )
-            ->where('mr.employee_id', $employeeId)
+            ->where('md.referred_by_employee_id', $employeeId)
             ->whereYear('fp.first_paid', $year)
             ->whereMonth('fp.first_paid', $month)
             ->where('p.admin_fee_mode', 'per_registration')
             ->where('p.admin_fee_timing', 'on_first_payment')
             ->sum('p.admin_fee');
 
-        // per_transaction: count each confirmed payment in period
+        // per_transaction
         $total += (float) \DB::table('member_payments as mp')
-            ->join('member_registrations as mr', 'mp.member_registration_id', '=', 'mr.id')
+            ->join('members_registration as mr', 'mp.member_registration_id', '=', 'mr.id')
+            ->join('members_data as md', 'mr.members_data_id', '=', 'md.id')
             ->join('programs as p', 'mr.program_id', '=', 'p.id')
-            ->where('mr.employee_id', $employeeId)
+            ->where('md.referred_by_employee_id', $employeeId)
             ->whereYear('mp.paid_at', $year)
             ->whereMonth('mp.paid_at', $month)
-            ->where('mp.payment_status', 'confirmed')
+            ->where('mp.payment_status', 'paid')
             ->where('p.admin_fee_mode', 'per_transaction')
             ->sum('p.admin_fee');
 
@@ -143,7 +163,7 @@ class MarketingSnapshotService
     {
         // Shared rank — employees with higher mpi_score get a lower (better) rank number
         // Rank = count of employees with strictly higher mpi_score + 1 (ties share rank)
-        $areaId = $employee->branch?->area_id;
+        $areaId = $employee->branch?->areas_id;
         $regionId = $employee->branch?->area?->region_id;
 
         $rankArea = $areaId ? $this->computeRank($month, $year, $mpiScore, 'area', $areaId) : null;
@@ -167,7 +187,7 @@ class MarketingSnapshotService
             });
 
         if ($scope === 'area' && $scopeId) {
-            $query->whereHas('employee.branch', fn ($q) => $q->where('area_id', $scopeId));
+            $query->whereHas('employee.branch', fn ($q) => $q->where('areas_id', $scopeId));
         } elseif ($scope === 'region' && $scopeId) {
             $query->whereHas('employee.branch.area', fn ($q) => $q->where('region_id', $scopeId));
         }

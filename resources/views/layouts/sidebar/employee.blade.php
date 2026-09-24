@@ -210,6 +210,9 @@
     @can('marketing.monthly_revenue_data.view_branch')
     <x-dashboard.nav-item href="{{ route('marketing.monthly-revenue-data') }}" :active="request()->routeIs('marketing.monthly-revenue-data')" :isChild="true">Data Pendapatan Area</x-dashboard.nav-item>
     @endcan
+    @can('marketing.kpi.view')
+    <x-dashboard.nav-item href="{{ route('marketing-kpi.index') }}" :active="request()->routeIs('marketing-kpi.index') || request()->routeIs('marketing-kpi.show')" :isChild="true">KPI Snapshot & Ranking</x-dashboard.nav-item>
+    @endcan
 </x-dashboard.nav-group>
 @endif
 

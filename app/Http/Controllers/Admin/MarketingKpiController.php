@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Marketing\StoreMarketingKpiRankingRuleRequest;
+use App\Models\Area;
+use App\Models\Branch;
 use App\Models\Employee;
 use App\Models\MarketingKpiRankingRule;
 use App\Repositories\Marketing\MarketingKpiRepository;
@@ -24,9 +26,19 @@ class MarketingKpiController extends Controller
         $month = (int) $request->input('month', now()->month);
         $year = (int) $request->input('year', now()->year);
 
-        $snapshots = $this->repository->latestByPeriod($month, $year);
+        $canViewNational = $request->user()->can('marketing.kpi.view_national');
+        $userBranchId = $request->user()->employee?->branch_id;
+        $userAreaId = $request->user()->employee?->branch?->area_id;
 
-        return view('marketing.kpi.index', compact('snapshots', 'month', 'year'));
+        $branchId = $canViewNational ? ($request->input('branch_id') ?: null) : $userBranchId;
+        $areaId = $canViewNational ? ($request->input('area_id') ?: null) : $userAreaId;
+
+        $snapshots = $this->repository->latestByPeriod($month, $year, $branchId, $areaId);
+
+        $branches = $canViewNational ? Branch::active()->orderBy('branch_name')->get(['id', 'branch_name']) : collect();
+        $areas = $canViewNational ? Area::orderBy('area_name')->get(['id', 'area_name']) : collect();
+
+        return view('marketing.kpi.index', compact('snapshots', 'month', 'year', 'canViewNational', 'branches', 'areas', 'branchId', 'areaId'));
     }
 
     public function show(Employee $employee, Request $request): View
@@ -42,6 +54,19 @@ class MarketingKpiController extends Controller
         $history = $this->repository->historyByEmployee($employee->id, $month, $year);
 
         return view('marketing.kpi.show', compact('history', 'employee', 'month', 'year'));
+    }
+
+    public function finalize(Request $request): RedirectResponse
+    {
+        abort_unless($request->user()->can('marketing.kpi.view'), 403);
+
+        $month = (int) $request->input('month', now()->month);
+        $year = (int) $request->input('year', now()->year);
+
+        $this->repository->finalizePreviousPeriod($month, $year);
+
+        return redirect()->route('marketing-kpi.index', compact('month', 'year'))
+            ->with('success', "Snapshot periode {$month}/{$year} berhasil di-finalize.");
     }
 
     // Ranking rule management

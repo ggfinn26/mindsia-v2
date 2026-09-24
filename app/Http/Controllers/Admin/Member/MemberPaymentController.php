@@ -6,12 +6,14 @@ use App\Enums\Member\ActivationStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Member\UpdateMemberPaymentRequest;
 use App\Jobs\SendPaymentReceiptJob;
+use App\Models\Employee;
 use App\Models\MemberAccount;
 use App\Models\MemberData;
 use App\Models\MemberPayment;
 use App\Models\MemberRegistration;
 use App\Models\ProspectiveMember;
 use App\Repositories\Member\MemberRegistrationRepository;
+use App\Services\Marketing\MarketingSnapshotService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -21,6 +23,7 @@ class MemberPaymentController extends Controller
 {
     public function __construct(
         private readonly MemberRegistrationRepository $registrationRepo,
+        private readonly MarketingSnapshotService $snapshotService,
     ) {}
 
     public function store(Request $request, MemberRegistration $registration): RedirectResponse
@@ -91,6 +94,15 @@ class MemberPaymentController extends Controller
 
         if (($data['payment_status'] ?? null) === 'paid') {
             dispatch(new SendPaymentReceiptJob($memberPayment));
+
+            $employeeId = $memberPayment->registration->memberData?->referred_by_employee_id;
+            $paidAt = $memberPayment->fresh()->paid_at ?? now();
+            if ($employeeId) {
+                $employee = Employee::with('branch.area.region')->find($employeeId);
+                if ($employee) {
+                    $this->snapshotService->append($employee, (int) $paidAt->month, (int) $paidAt->year);
+                }
+            }
         }
 
         return redirect()->back()->with('success', 'Data pembayaran berhasil diperbarui.');

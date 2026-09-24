@@ -39,7 +39,7 @@ class MarketingTargetRepository
 
         return [
             'classes_target' => $this->autoClassesTarget($month, $year),
-            'omzet_target' => 0.0,
+            'omzet_target' => 40_000_000.0,
             'source' => 'auto',
         ];
     }

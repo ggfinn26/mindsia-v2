@@ -215,6 +215,23 @@ class SocializationController extends Controller
         return back()->with('success', "Kelas dioverride dari {$old} → {$validated['classes_obtained']}.");
     }
 
+    public function complete(Request $request, Socialization $socialization): RedirectResponse
+    {
+        abort_unless($request->user()->can('marketing.socialization.update'), 403);
+        abort_if($socialization->status === Socialization::STATUS_COMPLETED, 422, 'Sosialisasi sudah selesai.');
+
+        $validated = $request->validate([
+            'results' => ['required', 'array'],
+            'results.*.employee_socialization_id' => ['required', 'integer'],
+            'results.*.classes_obtained' => ['required', 'integer', 'min:0'],
+        ]);
+
+        $this->repository->completeWithReport($socialization, $validated['results']);
+
+        return redirect()->route('socializations.show', $socialization)
+            ->with('success', 'Sosialisasi berhasil diselesaikan.');
+    }
+
     public function assignEmployee(AssignEmployeeSocializationRequest $request, Socialization $socialization): RedirectResponse
     {
         foreach ($request->validated('employee_ids') as $employeeId) {
