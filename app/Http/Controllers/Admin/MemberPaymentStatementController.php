@@ -24,6 +24,7 @@ class MemberPaymentStatementController extends Controller
 
         $query = MemberRegistration::with([
             'memberData.branch',
+            'memberData.institution',
             'program',
             'payments' => fn ($q) => $q->orderBy('installment_number'),
         ])

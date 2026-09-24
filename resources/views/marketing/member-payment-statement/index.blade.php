@@ -100,8 +100,8 @@
                         @endphp
                         <tr class="hover:bg-slate-50/70">
                             <td class="px-5 py-4 font-semibold text-slate-900">{{ $member?->full_name ?? '—' }}</td>
-                            <td class="px-5 py-4 text-slate-600">{{ $member?->institution?->name ?? '—' }}</td>
-                            <td class="px-5 py-4 text-slate-600">{{ $registration->program?->name ?? '—' }}</td>
+                            <td class="px-5 py-4 text-slate-600">{{ $member?->institution?->institution_name ?? $member?->institution_name_custom ?? '—' }}</td>
+                            <td class="px-5 py-4 text-slate-600">{{ $registration->program?->program_name ?? '—' }}</td>
                             <td class="px-5 py-4 text-slate-600">{{ $member?->whatsapp_number ?? '—' }}</td>
                             <td class="px-5 py-4 text-right tabular-nums text-slate-700">
                                 @if ($dp && $dp->payment_status === 'paid')
