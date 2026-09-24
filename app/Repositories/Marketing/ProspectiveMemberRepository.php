@@ -7,15 +7,22 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProspectiveMemberRepository
 {
-    public function paginate(array $filters = []): LengthAwarePaginator
+    public function paginate(array $filters = [], int $perPage = 20): LengthAwarePaginator
     {
-        return ProspectiveMember::with(['capturedBy', 'socialization', 'institution'])
-            ->when(isset($filters['employee_id']), fn ($q) => $q->where('captured_by_employee_id', $filters['employee_id']))
-            ->when(isset($filters['status']), fn ($q) => $q->where('status', $filters['status']))
-            ->when(isset($filters['socialization_id']), fn ($q) => $q->where('socialization_id', $filters['socialization_id']))
-            ->when(isset($filters['branch_id']), fn ($q) => $q->whereHas('capturedBy', fn ($e) => $e->where('branch_id', $filters['branch_id'])))
-            ->latest()
-            ->paginate(20);
+        $sort = in_array($filters['sort'] ?? '', ['full_name', 'status', 'created_at']) ? $filters['sort'] : 'created_at';
+        $dir = ($filters['dir'] ?? 'desc') === 'asc' ? 'asc' : 'desc';
+
+        return ProspectiveMember::with(['capturedBy', 'socialization.branch', 'institution'])
+            ->when(! empty($filters['employee_id']), fn ($q) => $q->where('captured_by_employee_id', $filters['employee_id']))
+            ->when(! empty($filters['status']), fn ($q) => $q->where('status', $filters['status']))
+            ->when(! empty($filters['socialization_id']), fn ($q) => $q->where('socialization_id', $filters['socialization_id']))
+            ->when(! empty($filters['branch_id']), fn ($q) => $q->whereHas('capturedBy', fn ($e) => $e->where('branch_id', $filters['branch_id'])))
+            ->when(! empty($filters['search']), fn ($q) => $q->where(fn ($s) => $s
+                ->where('full_name', 'like', '%'.$filters['search'].'%')
+                ->orWhere('whatsapp_number', 'like', '%'.$filters['search'].'%')
+            ))
+            ->orderBy($sort, $dir)
+            ->paginate($perPage);
     }
 
     public function find(int $id): ProspectiveMember

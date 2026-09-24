@@ -22,6 +22,7 @@ class StoreProspectiveMemberRequest extends FormRequest
             'gender' => ['nullable', 'in:L,P'],
             'institution_id' => ['nullable', 'exists:institutions,id'],
             'institution_name' => ['nullable', 'string', 'max:255'],
+            'status' => ['nullable', 'in:ALMOST,YES,NO'],
             'notes' => ['nullable', 'string'],
         ];
     }

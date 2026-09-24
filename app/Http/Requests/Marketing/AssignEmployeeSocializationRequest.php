@@ -8,13 +8,14 @@ class AssignEmployeeSocializationRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('marketing.socialization.assign');
+        return $this->user()->canAny(['marketing.socialization.assign', 'marketing.socialization.update']);
     }
 
     public function rules(): array
     {
         return [
-            'employee_id' => ['required', 'exists:employees,id'],
+            'employee_ids' => ['required', 'array', 'min:1'],
+            'employee_ids.*' => ['exists:employees,id'],
         ];
     }
 }

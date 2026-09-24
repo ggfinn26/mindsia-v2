@@ -3,17 +3,17 @@
 @section('title', 'Buat Sosialisasi')
 
 @section('content')
-<div class="max-w-3xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+<div class="max-w-2xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
     <div class="flex items-center gap-4 mb-6">
         <a href="{{ route('socializations.index') }}" class="text-gray-500 hover:text-gray-700">
             <span class="material-symbols-outlined text-xl">arrow_back</span>
         </a>
-        <h1 class="text-2xl font-bold text-gray-900">Buat Sosialisasi Baru</h1>
+        <h1 class="text-xl font-bold text-gray-900">Buat Sosialisasi Baru</h1>
     </div>
 
     @if ($errors->any())
-        <div class="mb-4 bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded">
-            <ul class="list-disc list-inside text-sm">
+        <div class="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
+            <ul class="list-disc list-inside space-y-1">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -21,64 +21,19 @@
         </div>
     @endif
 
-    <form action="{{ route('socializations.store') }}" method="POST" class="bg-white shadow rounded-lg p-6 space-y-5">
+    <form action="{{ route('socializations.store') }}" method="POST" class="bg-white shadow-sm rounded-xl border border-gray-100 p-6 space-y-5">
         @csrf
 
-        {{-- Cabang --}}
-        @if ($employee->branch_id)
-            {{-- Branch-level: auto dari profil --}}
-            <div class="bg-gray-50 border border-gray-200 rounded-md px-4 py-3 text-sm text-gray-700">
-                <span class="font-medium">Cabang:</span>
-                {{ $branches->first()?->branch_name ?? 'Cabang kamu' }}
-                <span class="text-gray-400 text-xs ml-1">(otomatis dari profil)</span>
-            </div>
-        @else
-            {{-- Area/HQ: checklist cabang dalam scope --}}
-            <script>window.__branchPickerCfg = { allIds: @json($branches->pluck('id')->map(fn($id) => (int)$id)->values()->all()), allNames: @json($branches->pluck('branch_name')->values()->all()), selected: @json(array_map('intval', old('branch_ids', []))) };</script>
-            <div x-data="branchPicker" class="space-y-2">
-                <div class="flex items-center justify-between">
-                    <label class="block text-sm font-medium text-gray-700">
-                        Cabang Penyelenggara <span class="text-red-500">*</span>
-                        @if ($employee->area_id)
-                            <span class="text-xs text-gray-400 font-normal ml-1">(cabang di area kamu)</span>
-                        @endif
-                    </label>
-                    <button type="button" @click="toggleAll()"
-                        class="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
-                        x-text="allSelected ? 'Batalkan Semua' : 'Pilih Semua'">
-                    </button>
-                </div>
-
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
-                        <span class="material-symbols-outlined text-[18px]">search</span>
-                    </span>
-                    <input type="text" x-model="search" placeholder="Cari cabang…"
-                        class="block w-full border border-gray-200 rounded-t-md pr-4 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500" style="padding-left: 3rem !important;">
-                </div>
-
-                <div class="border border-t-0 border-gray-200 rounded-b-md divide-y divide-gray-100 max-h-52 overflow-y-auto">
-                    @foreach ($branches as $branch)
-                        <label class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 cursor-pointer"
-                            x-show="!search || '{{ addslashes($branch->branch_name) }}'.toLowerCase().includes(search.toLowerCase())">
-                            <input type="checkbox" name="branch_ids[]" value="{{ $branch->id }}"
-                                x-model="selected"
-                                {{ in_array($branch->id, old('branch_ids', [])) ? 'checked' : '' }}
-                                class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
-                            <span class="text-sm text-gray-700">{{ $branch->branch_name }}</span>
-                        </label>
-                    @endforeach
-                    <p class="px-4 py-3 text-sm text-gray-400" x-show="noResults">Tidak ada cabang ditemukan.</p>
-                </div>
-
-                <p class="text-xs text-gray-500" x-show="selected.length > 0">
-                    <span x-text="selected.length"></span> cabang dipilih
-                    <span x-show="selected.length > 1"> — akan dibuat <span x-text="selected.length"></span> sosialisasi terpisah</span>
-                </p>
-                @error('branch_ids') <p class="text-xs text-red-600">{{ $message }}</p> @enderror
-                @error('branch_ids.*') <p class="text-xs text-red-600">{{ $message }}</p> @enderror
-            </div>
-        @endif
+        {{-- Area info (auto) --}}
+        <div class="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-600">
+            <span class="font-medium text-gray-700">Area:</span>
+            {{ $area?->name ?? 'Semua Area' }}
+            @if ($area?->region)
+                <span class="text-gray-400 mx-1">·</span>
+                <span class="text-gray-400">{{ $area->region->name }}</span>
+            @endif
+            <span class="text-gray-400 text-xs ml-1">(otomatis dari profil)</span>
+        </div>
 
         <div>
             <label for="location_name" class="block text-sm font-medium text-gray-700 mb-1">
@@ -86,39 +41,41 @@
             </label>
             <input type="text" name="location_name" id="location_name" value="{{ old('location_name') }}" required
                 placeholder="Contoh: SMAN 1 Makassar — Aula Utama"
-                class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500 @error('location_name') border-red-300 @enderror">
+                class="block w-full border-gray-300 rounded-lg shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500
+                    @error('location_name') border-red-300 @enderror">
             @error('location_name') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
         </div>
 
         <div>
             <label for="institution_id" class="block text-sm font-medium text-gray-700 mb-1">
                 Institusi / Sekolah
-                <span class="text-gray-400 text-xs font-normal">(opsional — kosongkan jika lokasi bebas)</span>
+                <span class="text-gray-400 text-xs font-normal">(opsional)</span>
             </label>
             <select name="institution_id" id="institution_id"
-                class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500">
+                class="block w-full border-gray-300 rounded-lg shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500">
                 <option value="">-- Tidak Ada --</option>
-                @foreach ($institutions as $institution)
-                    <option value="{{ $institution->id }}" {{ old('institution_id') == $institution->id ? 'selected' : '' }}>
-                        {{ $institution->institution_name }}
+                @foreach ($institutions as $inst)
+                    <option value="{{ $inst->id }}" {{ old('institution_id') == $inst->id ? 'selected' : '' }}>
+                        {{ $inst->institution_name }}
                     </option>
                 @endforeach
             </select>
         </div>
 
-        <div class="border-t border-gray-100 pt-5">
+        <div class="border-t border-gray-100 pt-4">
             <h3 class="text-sm font-semibold text-gray-700 mb-3">Fee Partner <span class="text-gray-400 font-normal">(opsional)</span></h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label for="partner_fee_amount" class="block text-sm font-medium text-gray-700 mb-1">Jumlah Fee (Rp)</label>
-                    <input type="number" name="partner_fee_amount" id="partner_fee_amount" value="{{ old('partner_fee_amount') }}"
-                        min="0" step="1000" placeholder="0"
-                        class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    <input type="number" name="partner_fee_amount" id="partner_fee_amount"
+                        value="{{ old('partner_fee_amount') }}" min="0" step="1000" placeholder="0"
+                        class="block w-full border-gray-300 rounded-lg shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
                 <div>
                     <label for="partner_fee_due_date" class="block text-sm font-medium text-gray-700 mb-1">Tenggat Fee</label>
-                    <input type="date" name="partner_fee_due_date" id="partner_fee_due_date" value="{{ old('partner_fee_due_date') }}"
-                        class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    <input type="date" name="partner_fee_due_date" id="partner_fee_due_date"
+                        value="{{ old('partner_fee_due_date') }}"
+                        class="block w-full border-gray-300 rounded-lg shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
             </div>
         </div>
@@ -132,15 +89,15 @@
         </div>
 
         <div class="flex justify-end gap-3 pt-2">
-            <a href="{{ route('socializations.index') }}" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+            <a href="{{ route('socializations.index') }}"
+                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
                 Batal
             </a>
-            <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700">
+            <button type="submit"
+                class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700">
                 Simpan
             </button>
         </div>
     </form>
 </div>
-
 @endsection
-

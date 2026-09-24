@@ -3,6 +3,8 @@ import "./employee-portal";
 import "./member-register";
 import "./select-enhance";
 import "./branch-picker";
+import "./socialization-create";
+import "./wa-picker";
 window.Alpine = Alpine;
 Alpine.start();
 import "./password-toggle";

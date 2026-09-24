@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Sosialisasi & Lead')
+@section('title', 'Sosialisasi')
 
 @section('content')
 @php
@@ -19,7 +19,7 @@
 @endphp
 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">Sosialisasi & Lead</h1>
+        <h1 class="text-2xl font-bold text-gray-900">Sosialisasi</h1>
         @can('marketing.socialization.create')
         <a href="{{ route('socializations.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium text-sm">
             + Buat Sosialisasi
@@ -36,6 +36,22 @@
     @if (session('error'))
         <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
             {{ session('error') }}
+        </div>
+    @endif
+
+    {{-- Tab --}}
+    @if ($canViewAll)
+        <div class="flex gap-1 mb-4 border-b border-gray-200">
+            <a href="{{ request()->fullUrlWithQuery(['view' => 'mine', 'page' => 1]) }}"
+                class="px-4 py-2 text-sm font-medium border-b-2 transition-colors focus:outline-none
+                    {{ $currentView === 'mine' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                Milik Saya
+            </a>
+            <a href="{{ request()->fullUrlWithQuery(['view' => 'all', 'page' => 1]) }}"
+                class="px-4 py-2 text-sm font-medium border-b-2 transition-colors focus:outline-none
+                    {{ $currentView === 'all' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                Semua
+            </a>
         </div>
     @endif
 
@@ -66,7 +82,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cabang</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lead</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prospective Member</th>
                         <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                     </tr>
                 </thead>

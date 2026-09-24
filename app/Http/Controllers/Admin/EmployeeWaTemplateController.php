@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Marketing\StoreEmployeeWaTemplateRequest;
 use App\Models\EmployeeWaTemplate;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -20,6 +21,21 @@ class EmployeeWaTemplateController extends Controller
             ->get();
 
         return view('marketing.wa-template.index', compact('templates'));
+    }
+
+    public function json(Request $request): JsonResponse
+    {
+        $employee = $request->user()->employee;
+
+        if (! $employee) {
+            return response()->json([]);
+        }
+
+        return response()->json(
+            EmployeeWaTemplate::where('employee_id', $employee->id)
+                ->orderBy('template_name')
+                ->get(['id', 'template_name as name', 'template_body as body'])
+        );
     }
 
     public function store(StoreEmployeeWaTemplateRequest $request): RedirectResponse

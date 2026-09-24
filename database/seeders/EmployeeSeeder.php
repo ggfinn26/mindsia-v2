@@ -186,7 +186,8 @@ class EmployeeSeeder extends Seeder
 
         if (str_starts_with($placement, 'branch:')) {
             $branchName = substr($placement, 7);
-            $branch = Branch::where('branch_name', $branchName)->first();
+            // prefer highest id: BranchDataSeeder upserts by code so latest run = highest id
+            $branch = Branch::where('branch_name', $branchName)->orderByDesc('id')->first();
 
             if (! $branch) {
                 $this->command->warn("Branch not found: {$branchName} — skipping {$code}");

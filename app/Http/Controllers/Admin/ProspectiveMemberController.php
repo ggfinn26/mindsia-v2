@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Marketing\StoreProspectiveMemberRequest;
 use App\Http\Requests\Marketing\UpdateProspectiveMemberStatusRequest;
+use App\Models\Branch;
 use App\Models\ProspectiveMember;
 use App\Repositories\Marketing\ProspectiveMemberRepository;
 use Illuminate\Http\RedirectResponse;
@@ -26,16 +27,25 @@ class ProspectiveMemberController extends Controller
             'marketing.prospective.view_national',
         ]), 403);
 
-        $filters = $request->only(['status', 'socialization_id', 'branch_id']);
+        $canViewWide = $request->user()->canAny(['marketing.prospective.view_area', 'marketing.prospective.view_national']);
+        $currentView = $canViewWide ? $request->input('view', 'mine') : 'mine';
 
-        // scope: own / area / national per permission
-        if (! $request->user()->can('marketing.prospective.view_area')
-            && ! $request->user()->can('marketing.prospective.view_national')) {
+        $filters = $request->only(['status', 'socialization_id', 'branch_id', 'search', 'sort', 'dir']);
+
+        if (! $canViewWide || $currentView === 'mine') {
             $filters['employee_id'] = $request->user()->employee->id;
+            unset($filters['branch_id']);
         }
+
+        $branches = $canViewWide
+            ? Branch::active()->orderBy('branch_name')->get(['id', 'branch_name'])
+            : collect();
 
         return view('marketing.prospective-member.index', [
             'leads' => $this->repository->paginate($filters),
+            'canViewWide' => $canViewWide,
+            'currentView' => $currentView,
+            'branches' => $branches,
         ]);
     }
 
@@ -48,8 +58,13 @@ class ProspectiveMemberController extends Controller
     {
         $lead = $this->repository->create(array_merge($request->validated(), [
             'captured_by_employee_id' => $request->user()->employee->id,
-            'status' => ProspectiveMember::STATUS_ALMOST,
+            'status' => $request->validated('status') ?? ProspectiveMember::STATUS_ALMOST,
         ]));
+
+        if ($lead->socialization_id) {
+            return redirect()->route('socializations.show', $lead->socialization_id)
+                ->with('success', 'Lead berhasil ditambahkan.');
+        }
 
         return redirect()->route('prospective-members.show', $lead)->with('success', 'Lead berhasil ditambahkan.');
     }

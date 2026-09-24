@@ -5,6 +5,7 @@ let _selectId = 0;
 document.addEventListener("alpine:init", () => {
     window.Alpine.data("customSelect", (id) => {
         const cfg = window.__selectCfg[id] || { value: "", label: "", placeholder: "Pilih...", options: [] };
+        const native = cfg._native || null;
         return {
             open: false,
             search: "",
@@ -22,8 +23,7 @@ document.addEventListener("alpine:init", () => {
                 this.label = opt.label;
                 this.open = false;
                 this.search = "";
-                const native = this.$el.nextElementSibling;
-                if (native?.tagName === "SELECT") {
+                if (native) {
                     native.value = opt.value;
                     native.dispatchEvent(new Event("change", { bubbles: true }));
                 }
@@ -48,6 +48,7 @@ document.addEventListener("alpine:initialized", () => {
     }).observe(document.body, { childList: true, subtree: true });
 });
 
+window.enhanceSelect = enhanceSelect;
 function enhanceSelect(sel) {
     if (sel.dataset.enhanced || sel.dataset.noEnhance) return;
     sel.dataset.enhanced = "1";
@@ -67,6 +68,7 @@ function enhanceSelect(sel) {
         label: hasValue ? selectedOpt.text.trim() : "",
         placeholder,
         options,
+        _native: sel,
     };
 
     Object.assign(sel.style, {

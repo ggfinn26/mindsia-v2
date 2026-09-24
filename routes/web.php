@@ -149,10 +149,10 @@ use App\Http\Controllers\Member\CurriculumInteractiveController as MemberCurricu
 use App\Http\Controllers\Member\MemberAttendancePageController;
 use App\Http\Controllers\Member\MemberCurriculumController;
 use App\Http\Controllers\Member\MemberDashboardController;
-use App\Http\Controllers\Member\MemberNpsPageController;
-use App\Http\Controllers\Member\MemberReviewController;
 use App\Http\Controllers\Member\MemberNotificationController;
+use App\Http\Controllers\Member\MemberNpsPageController;
 use App\Http\Controllers\Member\MemberProfileController;
+use App\Http\Controllers\Member\MemberReviewController;
 use App\Http\Controllers\Member\MemberSurveyController;
 use App\Http\Controllers\Member\ProgramRegistrationController;
 use App\Http\Controllers\Member\ToeflSessionController;
@@ -172,6 +172,7 @@ use App\Models\BranchProgramQuota;
 use App\Models\MemberClass;
 use App\Models\MemberRegistration;
 use App\Models\Program;
+use App\Models\ToeflSession;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -274,8 +275,9 @@ Route::prefix('toefl-trial')->name('toefl.guest.')->group(function () {
     Route::post('session/{session}/submit-section', [GuestToeflSessionController::class, 'submitSection'])->name('submit-section');
     Route::get('session/{session}/result', [GuestToeflSessionController::class, 'result'])->name('result');
     if (app()->environment('local')) {
-        Route::get('session/{session}/preview-result', function (\App\Models\ToeflSession $session) {
+        Route::get('session/{session}/preview-result', function (ToeflSession $session) {
             session(['guest_toefl_session_id' => $session->id]);
+
             return redirect()->route('toefl.guest.result', $session);
         })->name('preview-result');
     }
@@ -685,6 +687,7 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     Route::patch('prospective-members/{prospectiveMember}/status', [ProspectiveMemberController::class, 'updateStatus'])->name('prospective-members.update-status');
     Route::post('prospective-members/{prospectiveMember}/follow-ups', [ProspectiveMemberController::class, 'storeFollowUp'])->name('prospective-members.follow-ups.store');
     Route::resource('wa-templates', EmployeeWaTemplateController::class)->only(['index', 'store', 'update', 'destroy'])->parameters(['wa-templates' => 'employeeWaTemplate']);
+    Route::get('wa-templates/json', [EmployeeWaTemplateController::class, 'json'])->name('wa-templates.json');
     Route::get('marketing-target', [MarketingTargetController::class, 'index'])->name('marketing-target.index');
     Route::post('marketing-target/employee', [MarketingTargetController::class, 'setEmployeeTarget'])->name('marketing-target.employee');
     Route::post('marketing-target/position-default', [MarketingTargetController::class, 'setPositionDefault'])->name('marketing-target.position-default');

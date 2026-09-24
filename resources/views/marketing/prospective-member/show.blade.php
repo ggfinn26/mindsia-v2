@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Detail Lead')
+@section('title', 'Detail Prospective Member')
 
 @section('content')
 @php
@@ -32,7 +32,7 @@
     @endif
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {{-- Profil Lead --}}
+        {{-- Profil Prospective Member --}}
         <div class="bg-white shadow rounded-lg p-5 md:col-span-1 space-y-4">
             <h2 class="text-base font-semibold text-gray-800 border-b pb-2">Profil Lead</h2>
 

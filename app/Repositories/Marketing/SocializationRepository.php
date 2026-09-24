@@ -10,9 +10,10 @@ class SocializationRepository
     public function paginate(array $filters = []): LengthAwarePaginator
     {
         return Socialization::with(['branch', 'area', 'institution', 'createdBy'])
-            ->when(isset($filters['branch_id']), fn ($q) => $q->where('branch_id', $filters['branch_id']))
-            ->when(isset($filters['area_id']), fn ($q) => $q->where('area_id', $filters['area_id']))
-            ->when(isset($filters['status']), fn ($q) => $q->where('status', $filters['status']))
+            ->when(! empty($filters['branch_ids']), fn ($q) => $q->whereIn('branch_id', $filters['branch_ids']))
+            ->when(! empty($filters['branch_id']), fn ($q) => $q->where('branch_id', $filters['branch_id']))
+            ->when(! empty($filters['area_id']), fn ($q) => $q->where('area_id', $filters['area_id']))
+            ->when(! empty($filters['status']), fn ($q) => $q->where('status', $filters['status']))
             ->latest()
             ->paginate(20);
     }
