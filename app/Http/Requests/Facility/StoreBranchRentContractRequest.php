@@ -18,7 +18,7 @@ class StoreBranchRentContractRequest extends FormRequest
             'branch_id' => ['required', 'exists:branches,id'],
             'area_id' => ['nullable', 'exists:areas,id'],
             'owner_name' => ['required', 'string', 'max:150'],
-            'owner_phone' => ['nullable', 'string', 'max:30'],
+            'owner_phone' => ['nullable', 'string', 'min:8', 'max:15'],
             'rent_amount' => ['required', 'numeric', 'min:0'],
             'down_payment' => ['required', 'numeric', 'min:0', 'lt:rent_amount'],
             'termin_count' => ['required', 'integer', 'min:1'],
@@ -26,6 +26,9 @@ class StoreBranchRentContractRequest extends FormRequest
             'start_date' => ['required', 'date'],
             'end_date' => ['required', 'date', 'gte:start_date'],
             'notes' => ['nullable', 'string'],
+            'termins' => ['sometimes', 'array'],
+            'termins.*.due_date' => ['required_with:termins', 'date'],
+            'termins.*.amount' => ['required_with:termins', 'numeric', 'min:0'],
         ];
     }
 

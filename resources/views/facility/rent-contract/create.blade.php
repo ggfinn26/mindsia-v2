@@ -30,29 +30,23 @@
                 </div>
                 <div>
                     <label class="mb-1 block text-xs font-semibold text-slate-700">Telepon Pemilik</label>
-                    <input type="text" name="owner_phone" maxlength="30" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                    <div class="flex rounded-md shadow-sm">
+                        <span class="inline-flex items-center rounded-l-md border border-r-0 border-slate-300 bg-slate-50 px-3 text-sm font-bold text-slate-500">+62</span>
+                        <input type="text" name="owner_phone" placeholder="8xxxxxxxxxx"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')"
+                            class="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]" minlength="8" maxlength="15">
+                    </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="mb-1 block text-xs font-semibold text-slate-700">Cabang</label>
-                    <select name="branch_id" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
-                        <option value="">— Pilih cabang —</option>
-                        @foreach (\App\Models\Branch::where('is_active', true)->get() as $branch)
-                            <option value="{{ $branch->id }}">{{ $branch->branch_name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <label class="mb-1 block text-xs font-semibold text-slate-700">Area</label>
-                    <select name="area_id" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
-                        <option value="">— Pilih area —</option>
-                        @foreach (\App\Models\Area::with('region')->get() as $area)
-                            <option value="{{ $area->id }}">{{ $area->region?->region_name ?? '' }} — {{ $area->area_name }}</option>
-                        @endforeach
-                    </select>
-                </div>
+            <div>
+                <label class="mb-1 block text-xs font-semibold text-slate-700">Cabang</label>
+                <select name="branch_id" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                    <option value="">— Pilih cabang —</option>
+                    @foreach (\App\Models\Branch::where('is_active', true)->get() as $branch)
+                        <option value="{{ $branch->id }}">{{ $branch->branch_name }}</option>
+                    @endforeach
+                </select>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
@@ -71,13 +65,33 @@
             <h3 class="font-jakarta text-sm font-bold text-slate-900">Pembayaran</h3>
 
             <div class="grid grid-cols-3 gap-4">
-                <div>
-                    <label class="mb-1 block text-xs font-semibold text-slate-700">Total Sewa (Rp)</label>
-                    <input type="number" name="rent_amount" required min="0" step="0.01" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                <div x-data="{
+                        rawValue: '{{ old('rent_amount', '') }}',
+                        format(val) {
+                            let num = val.toString().replace(/[^0-9]/g, '');
+                            return num ? new Intl.NumberFormat('id-ID').format(num) : '';
+                        }
+                    }">
+                    <label class="mb-1 block text-xs font-semibold text-slate-700">Total Sewa</label>
+                    <div class="flex rounded-md shadow-sm">
+                        <span class="inline-flex items-center rounded-l-md border border-r-0 border-slate-300 bg-slate-50 px-3 text-sm font-bold text-slate-500">Rp</span>
+                        <input type="text" :value="format(rawValue)" @input="rawValue = $event.target.value.replace(/[^0-9]/g, ''); $event.target.value = format(rawValue)" required class="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                        <input type="hidden" name="rent_amount" x-model="rawValue">
+                    </div>
                 </div>
-                <div>
-                    <label class="mb-1 block text-xs font-semibold text-slate-700">Down Payment (Rp)</label>
-                    <input type="number" name="down_payment" required min="0" step="0.01" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]" value="0">
+                <div x-data="{
+                        rawValue: '{{ old('down_payment', '0') }}',
+                        format(val) {
+                            let num = val.toString().replace(/[^0-9]/g, '');
+                            return num ? new Intl.NumberFormat('id-ID').format(num) : '';
+                        }
+                    }">
+                    <label class="mb-1 block text-xs font-semibold text-slate-700">Down Payment</label>
+                    <div class="flex rounded-md shadow-sm">
+                        <span class="inline-flex items-center rounded-l-md border border-r-0 border-slate-300 bg-slate-50 px-3 text-sm font-bold text-slate-500">Rp</span>
+                        <input type="text" :value="format(rawValue)" @input="rawValue = $event.target.value.replace(/[^0-9]/g, ''); $event.target.value = format(rawValue)" required class="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                        <input type="hidden" name="down_payment" x-model="rawValue">
+                    </div>
                 </div>
                 <div>
                     <label class="mb-1 block text-xs font-semibold text-slate-700">Jumlah Termin</label>
@@ -87,7 +101,34 @@
 
             <div>
                 <label class="mb-1 block text-xs font-semibold text-slate-700">Periode Sewa</label>
-                <input type="text" name="rent_period" maxlength="100" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]" placeholder="12 bulan, 1 tahun, dll">
+                <select name="rent_period" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                    <option value="">-- Pilih Periode --</option>
+                    <option value="monthly" {{ old('rent_period') === 'monthly' ? 'selected' : '' }}>Bulanan (Monthly)</option>
+                    <option value="yearly" {{ old('rent_period') === 'yearly' ? 'selected' : '' }}>Tahunan (Yearly)</option>
+                    <option value="one_time" {{ old('rent_period') === 'one_time' ? 'selected' : '' }}>Sekali Bayar (One Time)</option>
+                </select>
+            </div>
+        </div>
+
+        {{-- Live preview jadwal cicilan --}}
+        <div id="termin-preview" class="border border-slate-200 bg-white p-5 space-y-3 hidden">
+            <div class="flex items-center justify-between">
+                <h3 class="font-jakarta text-sm font-bold text-slate-900">Preview Jadwal Cicilan</h3>
+                <div class="text-xs text-slate-500">
+                    Sisa setelah DP: <span id="preview-sisa" class="font-semibold text-slate-800"></span>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-slate-200 text-sm">
+                    <thead class="bg-slate-50 text-left text-xs font-semibold text-slate-500">
+                        <tr>
+                            <th class="px-4 py-2">Termin</th>
+                            <th class="px-4 py-2">Jatuh Tempo</th>
+                            <th class="px-4 py-2">Jumlah Cicilan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="preview-rows" class="divide-y divide-slate-100 text-sm text-slate-700"></tbody>
+                </table>
             </div>
         </div>
 

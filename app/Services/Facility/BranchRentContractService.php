@@ -15,25 +15,30 @@ class BranchRentContractService
 
     public function create(array $data, int $employeeId): BranchRentContract
     {
-        $contract = $this->repo->create(array_merge($data, [
-            'created_by_employee_id' => $employeeId,
-        ]));
+        $terminsOverride = $data['termins'] ?? null;
 
-        $this->generateTermins($contract);
+        $contract = $this->repo->create(array_merge(
+            collect($data)->except('termins')->all(),
+            ['created_by_employee_id' => $employeeId],
+        ));
+
+        $this->generateTermins($contract, $terminsOverride);
 
         return $contract;
     }
 
-    private function generateTermins(BranchRentContract $contract): void
+    private function generateTermins(BranchRentContract $contract, ?array $overrides = null): void
     {
-        $amountPerTermin = ($contract->rent_amount - $contract->down_payment) / $contract->termin_count;
+        $defaultAmount = ($contract->rent_amount - $contract->down_payment) / $contract->termin_count;
 
         for ($i = 1; $i <= $contract->termin_count; $i++) {
+            $override = $overrides[$i - 1] ?? null;
+
             BranchRentTermin::create([
                 'contract_id' => $contract->id,
                 'termin_number' => $i,
-                'due_date' => $this->calcDueDate($contract, $i),
-                'amount' => round($amountPerTermin, 2),
+                'due_date' => $override['due_date'] ?? $this->calcDueDate($contract, $i),
+                'amount' => isset($override['amount']) ? round((float) $override['amount'], 2) : round($defaultAmount, 2),
                 'status' => 'unpaid',
             ]);
         }

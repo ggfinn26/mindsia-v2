@@ -39,18 +39,25 @@
     @endif
 
     {{-- Contract Info --}}
+    @php
+        $paidTerminTotal = $branchRentContract->termins->where('status', 'paid')->sum('amount');
+        $unpaidTerminTotal = $branchRentContract->termins->whereIn('status', ['unpaid', 'overdue'])->sum('amount');
+        $totalSudahBayar = $branchRentContract->down_payment + $paidTerminTotal;
+        $rentPeriodLabel = ['monthly' => 'Bulanan', 'yearly' => 'Tahunan', 'one_time' => 'Sekali Bayar'];
+    @endphp
     <div class="border border-slate-200 bg-white p-5 text-sm">
         <div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
             <div><p class="text-xs text-slate-500">Pemilik</p><p class="mt-1 font-medium">{{ $branchRentContract->owner_name }}</p></div>
-            <div><p class="text-xs text-slate-500">Telepon</p><p class="mt-1 text-slate-700">{{ $branchRentContract->owner_phone ?? '—' }}</p></div>
+            <div><p class="text-xs text-slate-500">Telepon</p><p class="mt-1 text-slate-700">{{ $branchRentContract->owner_phone ? '+62 ' . $branchRentContract->owner_phone : '—' }}</p></div>
             <div><p class="text-xs text-slate-500">Cabang</p><p class="mt-1 text-slate-700">{{ $branchRentContract->branch?->branch_name ?? '—' }}</p></div>
-            <div><p class="text-xs text-slate-500">Area</p><p class="mt-1 text-slate-700">{{ $branchRentContract->area?->area_name ?? '—' }}</p></div>
             <div><p class="text-xs text-slate-500">Periode</p><p class="mt-1 text-slate-700">{{ $branchRentContract->start_date?->format('d M Y') ?? '—' }} – {{ $branchRentContract->end_date?->format('d M Y') ?? '—' }}</p></div>
-            <div><p class="text-xs text-slate-500">Durasi Sewa</p><p class="mt-1 text-slate-700">{{ $branchRentContract->rent_period ?? '—' }}</p></div>
+            <div><p class="text-xs text-slate-500">Durasi Sewa</p><p class="mt-1 text-slate-700">{{ $rentPeriodLabel[$branchRentContract->rent_period] ?? $branchRentContract->rent_period ?? '—' }}</p></div>
             <div><p class="text-xs text-slate-500">Total Sewa</p><p class="mt-1 font-semibold text-slate-900">Rp {{ number_format($branchRentContract->rent_amount, 0, ',', '.') }}</p></div>
             <div><p class="text-xs text-slate-500">Down Payment</p><p class="mt-1 font-semibold text-slate-900">Rp {{ number_format($branchRentContract->down_payment, 0, ',', '.') }}</p></div>
             <div><p class="text-xs text-slate-500">Per Termin</p><p class="mt-1 font-semibold text-slate-900">Rp {{ number_format($branchRentContract->terminAmountPerCycle(), 0, ',', '.') }}</p></div>
             <div><p class="text-xs text-slate-500">Jumlah Termin</p><p class="mt-1 text-slate-700">{{ $branchRentContract->termin_count }}</p></div>
+            <div><p class="text-xs text-slate-500">Sudah Dibayar</p><p class="mt-1 font-semibold text-emerald-700">Rp {{ number_format($totalSudahBayar, 0, ',', '.') }}</p></div>
+            <div><p class="text-xs text-slate-500">Sisa Pembayaran</p><p class="mt-1 font-semibold {{ $unpaidTerminTotal > 0 ? 'text-red-700' : 'text-slate-400' }}">Rp {{ number_format($unpaidTerminTotal, 0, ',', '.') }}</p></div>
             <div><p class="text-xs text-slate-500">Dibuat oleh</p><p class="mt-1 text-slate-700">{{ $branchRentContract->createdBy?->full_name ?? '—' }}</p></div>
         </div>
         @if ($branchRentContract->notes)
