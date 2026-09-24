@@ -10,6 +10,7 @@ use App\Models\MemberAccount;
 use App\Models\MemberData;
 use App\Models\MemberPayment;
 use App\Models\MemberRegistration;
+use App\Models\ProspectiveMember;
 use App\Repositories\Member\MemberRegistrationRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -75,6 +76,16 @@ class MemberPaymentController extends Controller
 
                 MemberData::where('id', $membersDataId)
                     ->update(['activation_status' => ActivationStatus::Aktif->value]);
+
+                $member = MemberData::find($membersDataId);
+                if ($member) {
+                    ProspectiveMember::where('status', '!=', ProspectiveMember::STATUS_FIXED)
+                        ->where(function ($q) use ($member) {
+                            $q->when($member->whatsapp_number, fn ($q) => $q->orWhere('whatsapp_number', $member->whatsapp_number))
+                                ->when($member->email, fn ($q) => $q->orWhere('email', $member->email));
+                        })
+                        ->update(['status' => ProspectiveMember::STATUS_FIXED]);
+                }
             }
         });
 
