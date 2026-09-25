@@ -102,28 +102,32 @@
 @endcanany
 
 <!-- 1.5 Bonus & Payroll -->
-@if(auth()->user()->can('payroll.component.create') || auth()->user()->can('payroll.component.update') || auth()->user()->can('payroll.period.view') || auth()->user()->can('payroll.period.generate') || auth()->user()->can('payroll.period.pay') || auth()->user()->canAny(['bonus.marketing-rule.view','bonus.kpi-rule.view','bonus.special-rule.view']))
+@if(auth()->user()->can('payroll.component.create') || auth()->user()->can('payroll.component.update') || auth()->user()->can('payroll.period.view') || auth()->user()->can('payroll.period.generate') || auth()->user()->can('payroll.period.pay') || auth()->user()->can('payroll.item.adjust') || auth()->user()->canAny(['bonus.marketing-rule.view','bonus.kpi-rule.view','bonus.special-rule.view']))
 <div class="pt-4 pb-2">
     <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider font-jakarta">Payroll</p>
 </div>
 <x-dashboard.nav-group title="Gaji & Bonus" icon="payments" :active="request()->is('payroll*') || request()->is('bonus*')">
     @canany(['payroll.component.create', 'payroll.component.update'])
-    <x-dashboard.nav-item href="{{ route('payroll.components.index') }}" :active="request()->routeIs('payroll.components.*')" :isChild="true">Komponen Gaji</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('payroll.components.index') }}" :active="request()->routeIs('payroll.components.*')" :isChild="true">Kelola Komponen Gaji</x-dashboard.nav-item>
     @endcanany
     @canany(['bonus.marketing-rule.view','bonus.marketing-rule.create'])
-    <x-dashboard.nav-item href="{{ route('bonus.marketing-rules.index') }}" :active="request()->routeIs('bonus.marketing-rules.*')" :isChild="true">Marketing Bonus</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('bonus.marketing-rules.index') }}" :active="request()->routeIs('bonus.marketing-rules.*')" :isChild="true">Aturan Bonus Marketing</x-dashboard.nav-item>
     @endcanany
     @canany(['bonus.kpi-rule.view','bonus.kpi-rule.create'])
-    <x-dashboard.nav-item href="{{ route('bonus.kpi-rules.index') }}" :active="request()->routeIs('bonus.kpi-rules.*')" :isChild="true">KPI Bonus</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('bonus.kpi-rules.index') }}" :active="request()->routeIs('bonus.kpi-rules.*')" :isChild="true">Aturan Bonus KPI</x-dashboard.nav-item>
     @endcanany
     @canany(['bonus.special-rule.view','bonus.special-rule.create'])
-    <x-dashboard.nav-item href="{{ route('bonus.special-rules.index') }}" :active="request()->routeIs('bonus.special-rules.*')" :isChild="true">Special Bonus</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('bonus.special-rules.index') }}" :active="request()->routeIs('bonus.special-rules.*')" :isChild="true">Aturan Bonus Spesial</x-dashboard.nav-item>
     @endcanany
-    <x-dashboard.nav-item href="{{ route('bonus.history.index') }}" :active="request()->routeIs('bonus.history.*')" :isChild="true">Riwayat Bonus</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="{{ route('payroll.session-rules.index') }}" :active="request()->routeIs('payroll.session-rules.*')" :isChild="true">Rules Sesi</x-dashboard.nav-item>
-    @canany(['payroll.period.view', 'payroll.period.generate', 'payroll.period.update'])
-    <x-dashboard.nav-item href="{{ route('payroll.periods.index') }}" :active="request()->routeIs('payroll.periods.*')" :isChild="true">Periode Payroll</x-dashboard.nav-item>
+    @canany(['payroll.period.view', 'payroll.period.create', 'payroll.period.update'])
+    <x-dashboard.nav-item href="{{ route('payroll.periods.index') }}" :active="request()->routeIs('payroll.periods.*')" :isChild="true">Kelola Periode Payroll</x-dashboard.nav-item>
     @endcanany
+    @can('payroll.period.generate')
+    <x-dashboard.nav-item href="{{ route('payroll.generate') }}" :active="request()->routeIs('payroll.generate')" :isChild="true">Generate Payroll</x-dashboard.nav-item>
+    @endcan
+    @can('payroll.item.adjust')
+    <x-dashboard.nav-item href="{{ route('payroll.adjustment') }}" :active="request()->routeIs('payroll.adjustment')" :isChild="true">Koreksi Payroll</x-dashboard.nav-item>
+    @endcan
     @can('payroll.period.pay')
     <x-dashboard.nav-item href="{{ route('payroll.payments.index') }}" :active="request()->routeIs('payroll.payments.index')" :isChild="true">Proses Pembayaran</x-dashboard.nav-item>
     @endcan

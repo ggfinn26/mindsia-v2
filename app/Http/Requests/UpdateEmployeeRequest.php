@@ -19,10 +19,14 @@ class UpdateEmployeeRequest extends FormRequest
         return [
             'full_name' => ['required', 'string', 'max:255'],
             'gender' => ['required', 'in:L,P'],
-            'birthdate' => ['required', 'date'],
-            'email' => ['required', 'email', Rule::unique('employees', 'email')->ignore($employee->id)],
-            'whatsapp_number' => ['required', 'string', 'min:8', 'max:15'],
-            'branch_id' => ['required', 'exists:branches,id'],
+            'birthdate' => ['nullable', 'date'],
+            'email' => ['nullable', 'email', Rule::unique('employees', 'email')->ignore($employee->id)],
+            'whatsapp_number' => ['nullable', 'string', 'min:8', 'max:15'],
+            'is_active' => ['boolean'],
+            'is_hq' => ['boolean'],
+            'branch_id' => ['nullable', 'exists:branches,id'],
+            'area_id' => ['nullable', 'exists:areas,id'],
+            'region_id' => ['nullable', 'exists:regions,id'],
         ];
     }
 }

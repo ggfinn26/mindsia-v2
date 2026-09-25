@@ -39,7 +39,9 @@ class EmployeeRepository
             'educations',
             'workHistories',
             'branch',
+            'area',
             'region',
+            'compensations.payrollComponent',
             'user',
         )
             ->inUserScope($user)

@@ -162,6 +162,32 @@ class PayrollPeriodController extends Controller
         return redirect()->route('payroll.periods.show', $period)->with('success', 'Periode berhasil di-revert ke draft.');
     }
 
+    public function generateIndex(): View
+    {
+        abort_unless(auth()->user()->can('payroll.period.generate'), 403);
+
+        $periods = PayrollPeriod::whereIn('status', ['finalized', 'review'])
+            ->orderByDesc('period_year')
+            ->orderByDesc('period_month')
+            ->withCount('employeePayrolls')
+            ->get();
+
+        return view('admin.payroll.generate.index', compact('periods'));
+    }
+
+    public function adjustmentIndex(): View
+    {
+        abort_unless(auth()->user()->can('payroll.item.adjust'), 403);
+
+        $periods = PayrollPeriod::where('status', 'review')
+            ->orderByDesc('period_year')
+            ->orderByDesc('period_month')
+            ->withCount('employeePayrolls')
+            ->get();
+
+        return view('admin.payroll.adjustment.index', compact('periods'));
+    }
+
     public function recap(): View
     {
         $periods = $this->repo->all()->load('employeePayrolls.payments');

@@ -2,7 +2,6 @@
 
 // use App\Http\Controllers\Admin\AttendanceLogController;
 use App\Http\Controllers\Admin\Attendance\LeavePaySettingController;
-use App\Http\Controllers\Admin\AttendancePolicyController;
 use App\Http\Controllers\Admin\AttendanceRecapController;
 use App\Http\Controllers\Admin\AttendanceRuleController;
 use App\Http\Controllers\Admin\Bonus\BonusRuleChangeHistoryController;
@@ -143,6 +142,7 @@ use App\Http\Controllers\Employee\EmployeeProfileController;
 use App\Http\Controllers\Employee\EmployeeSurveyController;
 use App\Http\Controllers\Employee\PayslipController;
 use App\Http\Controllers\EmployeeEducationHistoryController;
+use App\Http\Controllers\EmployeeWorkHistoryController;
 use App\Http\Controllers\EmployeeNotificationController;
 use App\Http\Controllers\FileProxyController;
 use App\Http\Controllers\GuestToeflSessionController;
@@ -574,7 +574,7 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
 
     // Employee Management (Employee Flow 2)
     Route::resource('employees', EmployeeController::class)->except(['destroy']);
-    Route::resource('employment-statuses', EmploymentStatusController::class)->except(['show', 'index', 'destroy']);
+    Route::resource('employment-statuses', EmploymentStatusController::class)->except(['show', 'index', 'destroy', 'create', 'store']);
     // GAP-212: Override resource store+create routes to include {employee} param for route model binding
     Route::get('employment-statuses/create/{employee}', [EmploymentStatusController::class, 'create'])->name('employment-statuses.create');
     Route::post('employment-statuses/{employee}', [EmploymentStatusController::class, 'store'])->name('employment-statuses.store');
@@ -589,6 +589,11 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     Route::post('employees/{employee}/educations', [EmployeeEducationHistoryController::class, 'store'])->name('employees.educations.store');
     Route::patch('employees/{employee}/educations/{education}', [EmployeeEducationHistoryController::class, 'update'])->name('employees.educations.update');
     Route::delete('employees/{employee}/educations/{education}', [EmployeeEducationHistoryController::class, 'destroy'])->name('employees.educations.destroy');
+
+    // Employee Work History (inline in profile)
+    Route::post('employees/{employee}/work-histories', [EmployeeWorkHistoryController::class, 'store'])->name('employees.work-histories.store');
+    Route::patch('employees/{employee}/work-histories/{workHistory}', [EmployeeWorkHistoryController::class, 'update'])->name('employees.work-histories.update');
+    Route::delete('employees/{employee}/work-histories/{workHistory}', [EmployeeWorkHistoryController::class, 'destroy'])->name('employees.work-histories.destroy');
 
     // Employee Resign Requests (self-service initiate + BOARD approval)
     Route::get('employees/{employee}/resign-requests/create', [ResignRequestController::class, 'create'])->name('resign-requests.create');
@@ -625,9 +630,8 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     Route::resource('work-schedule-rules', WorkScheduleRuleController::class);
     Route::post('work-schedule-assignments', [WorkScheduleAssignmentController::class, 'store'])->name('work-schedule-assignments.store');
     Route::delete('work-schedule-assignments/{workScheduleAssignment}', [WorkScheduleAssignmentController::class, 'destroy'])->name('work-schedule-assignments.destroy');
-    Route::resource('holidays', HolidayController::class)->except(['index', 'show']);
+    Route::resource('holidays', HolidayController::class)->except(['show']);
     // Route::resource('attendance-logs', AttendanceLogController::class);
-    Route::resource('attendance-policies', AttendancePolicyController::class);
     Route::resource('attendance-rules', AttendanceRuleController::class);
     Route::resource('leave-pay-settings', LeavePaySettingController::class)->only(['index', 'update']);
     Route::resource('leave-requests', LeaveRequestController::class)->only(['index', 'create', 'store']);
@@ -640,6 +644,7 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     Route::put('attendance/document-signature', [DocumentSignatureSettingController::class, 'upsert'])->name('attendance.document-signature.upsert');
 
     // Work Attendance — check-in/out + manage
+    Route::get('attendance/my-recap', [WorkAttendanceController::class, 'myRecap'])->name('work-attendance.my-recap');
     Route::get('work-attendance', [WorkAttendanceController::class, 'index'])->name('work-attendance.index');
     Route::post('work-attendance/check-in', [WorkAttendanceController::class, 'checkIn'])->name('work-attendance.check-in');
     Route::post('work-attendance/check-out', [WorkAttendanceController::class, 'checkOut'])->name('work-attendance.check-out');
@@ -765,6 +770,8 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
         'update' => 'payroll.session-rules.update',
         'destroy' => 'payroll.session-rules.destroy',
     ]);
+    Route::get('payroll/generate', [PayrollPeriodController::class, 'generateIndex'])->name('payroll.generate');
+    Route::get('payroll/adjustment', [PayrollPeriodController::class, 'adjustmentIndex'])->name('payroll.adjustment');
     Route::get('payroll/payment', [PayrollPaymentController::class, 'index'])->name('payroll.payments.index');
     Route::get('payroll/recap', [PayrollPeriodController::class, 'recap'])->name('payroll.recap');
 

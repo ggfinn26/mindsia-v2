@@ -1,20 +1,26 @@
 @extends('layouts.dashboard')
 
 @section('title', 'Edit Pegawai')
+@section('header_title', 'Edit Pegawai')
 
 @section('content')
-<div class="max-w-4xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">Edit Pegawai</h1>
-        <a href="{{ route('employees.index') }}" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium border border-gray-300">
-            Batal
-        </a>
+<div class="max-w-3xl mx-auto space-y-6">
+
+    <div class="flex items-center justify-between">
+        <div>
+            <a href="{{ route('employees.show', $employee->id) }}"
+               class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700">
+                <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                {{ $employee->full_name }}
+            </a>
+            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Edit Data Pegawai</h2>
+        </div>
     </div>
 
     @if ($errors->any())
-        <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-            <strong>Ada kesalahan pada input Anda:</strong>
-            <ul class="list-disc pl-5 mt-1">
+        <div class="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+            <p class="font-semibold">Ada kesalahan:</p>
+            <ul class="mt-1 list-disc pl-5">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -22,82 +28,181 @@
         </div>
     @endif
 
-    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-        <form action="{{ route('employees.update', $employee->id) }}" method="POST" class="p-6">
-            @csrf
-            @method('PUT')
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Kode Pegawai -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Kode Pegawai <span class="text-red-500">*</span></label>
-                    <input type="text" name="employee_code" value="{{ old('employee_code', $employee->employee_code) }}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                </div>
+    <form action="{{ route('employees.update', $employee) }}" method="POST" class="space-y-6">
+        @csrf
+        @method('PUT')
 
-                <!-- Nama Lengkap -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Nama Lengkap <span class="text-red-500">*</span></label>
-                    <input type="text" name="full_name" value="{{ old('full_name', $employee->full_name) }}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+        {{-- Informasi Dasar --}}
+        <div class="overflow-hidden border border-slate-200 bg-white">
+            <div class="border-b border-slate-200 bg-slate-50 px-5 py-4">
+                <h3 class="font-jakarta text-sm font-bold text-slate-900">Informasi Dasar</h3>
+            </div>
+            <div class="grid gap-5 px-5 py-5 sm:grid-cols-2">
+                <div class="sm:col-span-2">
+                    <label class="mb-1.5 block text-sm font-medium text-slate-700">
+                        Nama Lengkap <span class="text-rose-500">*</span>
+                    </label>
+                    <input type="text" name="full_name" value="{{ old('full_name', $employee->full_name) }}"
+                           required maxlength="255"
+                           class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
                 </div>
-
-                <!-- Jenis Kelamin -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Jenis Kelamin</label>
-                    <select name="gender" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    <label class="mb-1.5 block text-sm font-medium text-slate-700">Jenis Kelamin <span class="text-rose-500">*</span></label>
+                    <select name="gender" required
+                            class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
                         <option value="">Pilih...</option>
-                        <option value="L" {{ old('gender', $employee->gender) == 'L' ? 'selected' : '' }}>Laki-laki</option>
-                        <option value="P" {{ old('gender', $employee->gender) == 'P' ? 'selected' : '' }}>Perempuan</option>
+                        <option value="L" @selected(old('gender', $employee->gender) === 'L')>Laki-laki</option>
+                        <option value="P" @selected(old('gender', $employee->gender) === 'P')>Perempuan</option>
                     </select>
                 </div>
-
-                <!-- Tanggal Lahir -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Tanggal Lahir</label>
-                    <input type="date" name="birthdate" value="{{ old('birthdate', $employee->birthdate ? $employee->birthdate->format('Y-m-d') : '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    <label class="mb-1.5 block text-sm font-medium text-slate-700">Tanggal Lahir</label>
+                    <input type="date" name="birthdate"
+                           value="{{ old('birthdate', $employee->birthdate?->format('Y-m-d')) }}"
+                           class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
                 </div>
-
-                <!-- Email -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Email Utama</label>
-                    <input type="email" name="email" value="{{ old('email', $employee->email) }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    <label class="mb-1.5 block text-sm font-medium text-slate-700">Email</label>
+                    <input type="email" name="email" value="{{ old('email', $employee->email) }}"
+                           class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
                 </div>
-
-                <!-- WhatsApp -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Nomor WhatsApp</label>
-                    <div class="mt-1 flex rounded-md shadow-sm">
-                        <span class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-sm font-bold text-gray-500">+62</span>
-                        <input type="text" name="whatsapp_number" value="{{ old('whatsapp_number', $employee->whatsapp_number) }}" placeholder="8xxxxxxxxxx" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')" minlength="8" maxlength="15" class="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    <label class="mb-1.5 block text-sm font-medium text-slate-700">No. WhatsApp</label>
+                    <div class="flex">
+                        <span class="inline-flex items-center border border-r-0 border-slate-300 bg-slate-50 px-3 text-sm font-bold text-slate-500">+62</span>
+                        <input type="text" name="whatsapp_number"
+                               value="{{ old('whatsapp_number', $employee->whatsapp_number) }}"
+                               placeholder="8xxxxxxxxxx" minlength="8" maxlength="15"
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')"
+                               class="block w-full min-w-0 flex-1 border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- Penempatan Branch -->
+        {{-- Penempatan --}}
+        <div class="border border-slate-200 bg-white"
+             x-data="{
+                 placement: '{{ old('is_hq', $employee->is_hq) ? 'hq' : (old('branch_id', $employee->branch_id) ? 'branch' : (old('area_id', $employee->area_id) ? 'area' : (old('region_id', $employee->region_id) ? 'region' : 'branch'))) }}'
+             }">
+            <div class="border-b border-slate-200 bg-slate-50 px-5 py-4">
+                <h3 class="font-jakarta text-sm font-bold text-slate-900">Penempatan</h3>
+            </div>
+            <div class="px-5 py-5 space-y-5">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Penempatan Cabang</label>
-                    <select name="branch_id" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                        <option value="">(Tidak ditempatkan di Cabang)</option>
-                        @foreach($branches as $branch)
-                            <option value="{{ $branch->id }}" {{ old('branch_id', $employee->branch_id) == $branch->id ? 'selected' : '' }}>{{ $branch->branch_name }}</option>
-                        @endforeach
+                    <label class="mb-1.5 block text-sm font-medium text-slate-700">Tingkat Penempatan</label>
+                    <select x-model="placement"
+                            class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                        <option value="hq">Headquarters (Pusat)</option>
+                        <option value="branch">Cabang</option>
+                        <option value="area">Area</option>
+                        <option value="region">Region</option>
                     </select>
                 </div>
-                
-                <!-- Status Aktif -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Status Pegawai <span class="text-red-500">*</span></label>
-                    <select name="is_active" required class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                        <option value="1" {{ old('is_active', $employee->is_active) == '1' ? 'selected' : '' }}>Aktif</option>
-                        <option value="0" {{ old('is_active', $employee->is_active) == '0' ? 'selected' : '' }}>Nonaktif</option>
-                    </select>
-                </div>
-            </div>
 
-            <div class="mt-8 flex justify-end">
-                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 border border-transparent rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    Simpan Perubahan
-                </button>
+                {{-- HQ hidden inputs --}}
+                <template x-if="placement === 'hq'">
+                    <div>
+                        <input type="hidden" name="is_hq" value="1">
+                        <input type="hidden" name="branch_id" value="">
+                        <input type="hidden" name="area_id" value="">
+                        <input type="hidden" name="region_id" value="">
+                        <p class="text-sm text-slate-500">Pegawai ditempatkan di kantor pusat.</p>
+                    </div>
+                </template>
+
+                {{-- Branch --}}
+                <template x-if="placement === 'branch'">
+                    <div>
+                        <input type="hidden" name="is_hq" value="0">
+                        <input type="hidden" name="area_id" value="">
+                        <input type="hidden" name="region_id" value="">
+                        <label class="mb-1.5 block text-sm font-medium text-slate-700">Cabang <span class="text-rose-500">*</span></label>
+                        <select name="branch_id"
+                                class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                            <option value="">Pilih cabang...</option>
+                            @foreach ($branches as $branch)
+                                <option value="{{ $branch->id }}"
+                                        @selected(old('branch_id', $employee->branch_id) == $branch->id)>
+                                    {{ $branch->branch_name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </template>
+
+                {{-- Area --}}
+                <template x-if="placement === 'area'">
+                    <div>
+                        <input type="hidden" name="is_hq" value="0">
+                        <input type="hidden" name="branch_id" value="">
+                        <input type="hidden" name="region_id" value="">
+                        <label class="mb-1.5 block text-sm font-medium text-slate-700">Area <span class="text-rose-500">*</span></label>
+                        <select name="area_id"
+                                class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                            <option value="">Pilih area...</option>
+                            @foreach ($areas as $area)
+                                <option value="{{ $area->id }}"
+                                        @selected(old('area_id', $employee->area_id) == $area->id)>
+                                    {{ $area->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </template>
+
+                {{-- Region --}}
+                <template x-if="placement === 'region'">
+                    <div>
+                        <input type="hidden" name="is_hq" value="0">
+                        <input type="hidden" name="branch_id" value="">
+                        <input type="hidden" name="area_id" value="">
+                        <label class="mb-1.5 block text-sm font-medium text-slate-700">Region <span class="text-rose-500">*</span></label>
+                        <select name="region_id"
+                                class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                            <option value="">Pilih region...</option>
+                            @foreach ($regions as $region)
+                                <option value="{{ $region->id }}"
+                                        @selected(old('region_id', $employee->region_id) == $region->id)>
+                                    {{ $region->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </template>
             </div>
-        </form>
-    </div>
+        </div>
+
+        {{-- Status --}}
+        <div class="overflow-hidden border border-slate-200 bg-white">
+            <div class="border-b border-slate-200 bg-slate-50 px-5 py-4">
+                <h3 class="font-jakarta text-sm font-bold text-slate-900">Status Pegawai</h3>
+            </div>
+            <div class="px-5 py-5">
+                <label class="inline-flex cursor-pointer items-center gap-3">
+                    <input type="hidden" name="is_active" value="0">
+                    <input type="checkbox" name="is_active" value="1"
+                           @checked(old('is_active', $employee->is_active))
+                           class="h-4 w-4 border-slate-300 text-[#215aac] focus:ring-[#215aac]">
+                    <span class="text-sm font-medium text-slate-700">Pegawai aktif</span>
+                </label>
+                <p class="mt-1 text-xs text-slate-500">Nonaktifkan untuk menyembunyikan pegawai dari daftar dan proses payroll.</p>
+            </div>
+        </div>
+
+        {{-- Actions --}}
+        <div class="flex justify-end gap-3">
+            <a href="{{ route('employees.show', $employee->id) }}"
+               class="inline-flex min-h-10 items-center border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                Batal
+            </a>
+            <button type="submit"
+                    class="inline-flex min-h-10 items-center gap-2 bg-[#215aac] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">
+                <span class="material-symbols-outlined text-[18px]">save</span>
+                Simpan Perubahan
+            </button>
+        </div>
+
+    </form>
 </div>
 @endsection

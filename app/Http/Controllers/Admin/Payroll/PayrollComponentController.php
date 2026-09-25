@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin\Payroll;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Payroll\StorePayrollComponentRequest;
 use App\Http\Requests\Payroll\UpdatePayrollComponentRequest;
+use App\Models\Employee;
+use App\Models\EmployeeCompensation;
 use App\Models\PayrollComponent;
 use App\Repositories\Payroll\PayrollComponentRepository;
 use Illuminate\Http\RedirectResponse;
@@ -20,6 +22,8 @@ class PayrollComponentController extends Controller
     {
         return view('admin.payroll.components.index', [
             'components' => $this->repo->all(),
+            'employees' => Employee::where('is_active', true)->orderBy('full_name')->get(),
+            'allCompensations' => EmployeeCompensation::with(['employee', 'payrollComponent'])->orderBy('employee_id')->get(),
         ]);
     }
 
