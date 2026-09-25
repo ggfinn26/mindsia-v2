@@ -15,8 +15,9 @@ class AttendanceComplianceWidget implements WidgetDataProviderInterface
         return 'attendance_compliance';
     }
 
-    public function getData(?int $branchId = null): array
+    public function getData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
         $currentMonth = $now->month;
         $currentYear = $now->year;
@@ -72,8 +73,9 @@ class AttendanceComplianceWidget implements WidgetDataProviderInterface
         ];
     }
 
-    public function getExportData(?int $branchId = null): array
+    public function getExportData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $violations = AttendanceRuleViolation::when($branchId, fn ($q) => $q->whereHas('employee', fn ($e) => $e->where('branch_id', $branchId)))
             ->with(['employee', 'rule'])
             ->orderByDesc('period_start_date')

@@ -13,8 +13,9 @@ class SupportTicketWidget implements WidgetDataProviderInterface
         return 'support_ticket';
     }
 
-    public function getData(?int $branchId = null): array
+    public function getData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
         $user = auth()->user();
         $employeeId = $user?->employee?->id;
@@ -51,8 +52,9 @@ class SupportTicketWidget implements WidgetDataProviderInterface
         ];
     }
 
-    public function getExportData(?int $branchId = null): array
+    public function getExportData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $employeeId = auth()->user()?->employee?->id;
 
         if (! $employeeId) {

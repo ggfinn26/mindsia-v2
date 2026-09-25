@@ -13,8 +13,9 @@ class SocializationScheduleWidget implements WidgetDataProviderInterface
         return 'socialization_schedule';
     }
 
-    public function getData(?int $branchId = null): array
+    public function getData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
 
         $upcoming = SocializationSchedule::where('scheduled_date', '>=', $now->toDateString())
@@ -48,8 +49,9 @@ class SocializationScheduleWidget implements WidgetDataProviderInterface
         ];
     }
 
-    public function getExportData(?int $branchId = null): array
+    public function getExportData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
 
         $schedules = SocializationSchedule::whereMonth('scheduled_date', $now->month)

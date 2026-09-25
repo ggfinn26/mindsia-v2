@@ -13,8 +13,9 @@ class SystemAuditLogWidget implements WidgetDataProviderInterface
         return 'system_audit_log';
     }
 
-    public function getData(?int $branchId = null): array
+    public function getData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
 
         // Activity log — using DB::table if no dedicated audit model
@@ -49,8 +50,9 @@ class SystemAuditLogWidget implements WidgetDataProviderInterface
         ];
     }
 
-    public function getExportData(?int $branchId = null): array
+    public function getExportData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
 
         return DB::table('activity_log')

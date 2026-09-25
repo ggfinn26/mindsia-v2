@@ -31,6 +31,7 @@ use App\Services\Dashboard\Widgets\EmployeeDirectoryWidget;
 use App\Services\Dashboard\Widgets\ExpenseTrackingWidget;
 use App\Services\Dashboard\Widgets\FacilityStatusWidget;
 use App\Services\Dashboard\Widgets\FinancialForecastingWidget;
+use App\Services\Dashboard\Widgets\FinancialHubWidget;
 use App\Services\Dashboard\Widgets\FinancialReportsWidget;
 use App\Services\Dashboard\Widgets\HiringMetricsWidget;
 use App\Services\Dashboard\Widgets\InterviewScheduleWidget;
@@ -81,6 +82,7 @@ class DashboardWidgetService
     public function __construct()
     {
         // Financial & Business
+        $this->registerProvider(new FinancialHubWidget);
         $this->registerProvider(new RevenueWidget);
         $this->registerProvider(new ProfitWidget);
         $this->registerProvider(new CostControlWidget);
@@ -205,7 +207,7 @@ class DashboardWidgetService
         return $enabledOnly ? $widgets->filter(fn (array $w) => $w['is_enabled'])->values() : $widgets;
     }
 
-    public function getWidgetData(string $widgetKey, ?int $branchId = null): array
+    public function getWidgetData(string $widgetKey, array $filters = []): array
     {
         $provider = $this->providers[$widgetKey] ?? null;
 
@@ -215,10 +217,10 @@ class DashboardWidgetService
 
         // Personal + real-time widgets bypass cache entirely (auth-scoped / always fresh)
         if ($this->shouldSkipCache($widgetKey)) {
-            return $provider->getData($branchId);
+            return $provider->getData($filters);
         }
 
-        $cacheKey = $this->cacheKey($widgetKey, $branchId);
+        $cacheKey = $this->cacheKey($widgetKey, $filters);
 
         // Write-through: on hit return cached value; on miss fetch + write to cache
         $cached = cache()->get($cacheKey);
@@ -227,7 +229,7 @@ class DashboardWidgetService
             return $cached;
         }
 
-        $data = $provider->getData($branchId);
+        $data = $provider->getData($filters);
         cache()->put($cacheKey, $data, now()->addMinutes(15));
 
         return $data;
@@ -237,7 +239,7 @@ class DashboardWidgetService
      * Write-through refresh: force fetch fresh data and overwrite cache immediately.
      * Call this after writes that affect widget data.
      */
-    public function refreshWidgetCache(string $widgetKey, ?int $branchId = null): void
+    public function refreshWidgetCache(string $widgetKey, array $filters = []): void
     {
         $provider = $this->providers[$widgetKey] ?? null;
 
@@ -245,19 +247,21 @@ class DashboardWidgetService
             return;
         }
 
-        $data = $provider->getData($branchId);
-        cache()->put($this->cacheKey($widgetKey, $branchId), $data, now()->addMinutes(15));
+        $data = $provider->getData($filters);
+        cache()->put($this->cacheKey($widgetKey, $filters), $data, now()->addMinutes(15));
     }
 
     /** Bust cache for a specific widget + branch (e.g. after bulk data import). */
-    public function invalidateWidgetCache(string $widgetKey, ?int $branchId = null): void
+    public function invalidateWidgetCache(string $widgetKey, array $filters = []): void
     {
-        cache()->forget($this->cacheKey($widgetKey, $branchId));
+        cache()->forget($this->cacheKey($widgetKey, $filters));
     }
 
-    private function cacheKey(string $widgetKey, ?int $branchId): string
+    private function cacheKey(string $widgetKey, array $filters): string
     {
-        return "widget:{$widgetKey}:branch:{$branchId}";
+        $hash = md5(json_encode($filters));
+
+        return "widget:{$widgetKey}:filters:{$hash}";
     }
 
     private function shouldSkipCache(string $widgetKey): bool
@@ -267,7 +271,7 @@ class DashboardWidgetService
             || in_array($widgetKey, ['active_users', 'alert_merah', 'system_audit_log']);
     }
 
-    public function getWidgetExportData(string $widgetKey, ?int $branchId = null): array
+    public function getWidgetExportData(string $widgetKey, array $filters = []): array
     {
         $provider = $this->providers[$widgetKey] ?? null;
 
@@ -275,7 +279,7 @@ class DashboardWidgetService
             return [];
         }
 
-        return $provider->getExportData($branchId);
+        return $provider->getExportData($filters);
     }
 
     public function updateWidgetOrder(User $user, array $widgetOrders): void

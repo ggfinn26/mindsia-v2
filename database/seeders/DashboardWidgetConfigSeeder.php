@@ -10,13 +10,14 @@ class DashboardWidgetConfigSeeder extends Seeder
 {
     private const POSITION_DEFAULTS = [
         'Chief Executive Officer' => [
-            ['widget_key' => 'revenue', 'order' => 1],
-            ['widget_key' => 'profit', 'order' => 2],
-            ['widget_key' => 'alert_merah', 'order' => 3],
-            ['widget_key' => 'cabang_performance', 'order' => 4],
-            ['widget_key' => 'member_growth', 'order' => 5],
-            ['widget_key' => 'ranking_program', 'order' => 6],
-            ['widget_key' => 'comparable', 'order' => 7],
+            ['widget_key' => 'financial_hub', 'order' => 1],
+            ['widget_key' => 'revenue', 'order' => 2],
+            ['widget_key' => 'profit', 'order' => 3],
+            ['widget_key' => 'alert_merah', 'order' => 4],
+            ['widget_key' => 'cabang_performance', 'order' => 5],
+            ['widget_key' => 'member_growth', 'order' => 6],
+            ['widget_key' => 'ranking_program', 'order' => 7],
+            ['widget_key' => 'comparable', 'order' => 8],
         ],
         'Super Admin' => [
             ['widget_key' => 'system_audit_log', 'order' => 1],

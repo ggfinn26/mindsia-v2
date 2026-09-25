@@ -51,16 +51,16 @@
 @endpush
 
 @section('content')
-    <div x-data="{ customizing: false }">
+    <div x-data="{}" >
         <div class="mb-6 flex items-center justify-between">
             <p class="text-gray-500 font-medium text-sm sm:text-base">Selamat datang kembali, <span class="font-semibold text-gray-800">{{ Auth::user()->name ?? 'Pengguna' }}</span> 👋</p>
 
             {{-- Customize toggle --}}
-            <button @click="customizing = !customizing"
-                    :class="customizing ? 'bg-indigo-600 text-white' : 'bg-white text-gray-600 border border-gray-200'"
+            <button @click="$store.dashboard.customizing = !$store.dashboard.customizing"
+                    :class="$store.dashboard.customizing ? 'bg-indigo-600 text-white' : 'bg-white text-gray-600 border border-gray-200'"
                     class="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg transition-colors">
                 <span class="material-symbols-outlined text-base">dashboard_customize</span>
-                <span x-text="customizing ? 'Selesai' : 'Atur Widget'"></span>
+                <span x-text="$store.dashboard.customizing ? 'Selesai' : 'Atur Widget'"></span>
             </button>
         </div>
 
@@ -94,12 +94,12 @@
 
                                 @foreach($categoryWidgets as $widget)
                                     {{-- Disabled widgets only visible during customize mode --}}
-                                    <div class="relative {{ $widget['is_enabled'] ? '' : 'opacity-50' }}"
+                                    <div class="group/widget relative {{ $widget['is_enabled'] ? '' : 'opacity-50' }} {{ in_array($widget['key'], ['financial_hub', 'member_growth']) ? 'col-span-full' : '' }}"
                                          data-widget-key="{{ $widget['key'] }}"
-                                         @if(!$widget['is_enabled']) x-show="customizing" style="display:none;" @endif>
+                                         @if(!$widget['is_enabled']) x-show="$store.dashboard.customizing" style="display:none;" @endif>
 
                                         {{-- Customize overlay (drag handle + toggle) --}}
-                                        <div x-show="customizing"
+                                        <div x-show="$store.dashboard.customizing"
                                              class="absolute inset-0 z-50 rounded-xl ring-4 {{ $widget['is_enabled'] ? 'ring-indigo-500' : 'ring-gray-300' }} bg-slate-900/40 backdrop-blur-sm flex flex-col items-center justify-center gap-2"
                                              style="display: none;">
                                             <div class="drag-handle cursor-grab active:cursor-grabbing p-2 rounded-lg bg-white shadow border border-gray-100" title="Geser untuk mengubah urutan">
@@ -114,8 +114,8 @@
                                         </div>
 
                                         {{-- Widget content --}}
-                                        @if(view()->exists('dashboard.widgets.' . $widget['key']))
-                                            @include('dashboard.widgets.' . $widget['key'], ['data' => $widgetData[$widget['key']] ?? []])
+                                        @if(view()->exists('dashboard.widgets.' . $widget['key']) && isset($widgetData[$widget['key']]))
+                                            @include('dashboard.widgets.' . $widget['key'], ['data' => $widgetData[$widget['key']]])
                                         @else
                                             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
                                                 <div class="flex items-center gap-3 mb-2">
@@ -125,25 +125,6 @@
                                                     <h3 class="text-sm font-semibold text-gray-800">{{ $widget['label'] }}</h3>
                                                 </div>
                                                 <p class="text-xs text-gray-400">Widget view belum tersedia.</p>
-                                            </div>
-                                        @endif
-
-                                        {{-- Export button (hidden while customizing) --}}
-                                        @if($widget['is_enabled'] && $widget['is_exportable'] && !empty($widgetData[$widget['key']]))
-                                            <div class="absolute top-3 right-3" x-show="!customizing">
-                                                <div class="relative" x-data="{ open: false }">
-                                                    <button @click="open = !open" class="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
-                                                        <span class="material-symbols-outlined text-gray-400 text-sm">download</span>
-                                                    </button>
-                                                    <div x-show="open" @click.away="open = false"
-                                                         class="absolute right-0 mt-1 w-32 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-10"
-                                                         style="display: none;">
-                                                        <a href="{{ route('dashboard.widget-export', ['widgetKey' => $widget['key'], 'format' => 'csv']) }}"
-                                                           class="block px-3 py-1.5 text-xs text-gray-600 hover:bg-gray-50">Export CSV</a>
-                                                        <a href="{{ route('dashboard.widget-export', ['widgetKey' => $widget['key'], 'format' => 'pdf']) }}"
-                                                           class="block px-3 py-1.5 text-xs text-gray-600 hover:bg-gray-50">Export PDF</a>
-                                                    </div>
-                                                </div>
                                             </div>
                                         @endif
                                     </div>

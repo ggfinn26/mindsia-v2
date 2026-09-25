@@ -13,8 +13,9 @@ class OnboardingStatusWidget implements WidgetDataProviderInterface
         return 'onboarding_status';
     }
 
-    public function getData(?int $branchId = null): array
+    public function getData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
         $currentMonth = $now->month;
         $currentYear = $now->year;
@@ -55,8 +56,9 @@ class OnboardingStatusWidget implements WidgetDataProviderInterface
         ];
     }
 
-    public function getExportData(?int $branchId = null): array
+    public function getExportData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $onboardings = EmployeeOnboarding::when($branchId, fn ($q) => $q->where('branch_id', $branchId))
             ->with(['application.applicant', 'position', 'branch'])
             ->get();

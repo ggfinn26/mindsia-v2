@@ -14,8 +14,9 @@ class AccountReconciliationWidget implements WidgetDataProviderInterface
         return 'account_reconciliation';
     }
 
-    public function getData(?int $branchId = null): array
+    public function getData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
         $currentMonth = $now->month;
         $currentYear = $now->year;
@@ -56,8 +57,9 @@ class AccountReconciliationWidget implements WidgetDataProviderInterface
         ];
     }
 
-    public function getExportData(?int $branchId = null): array
+    public function getExportData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $payments = MemberPayment::where('payment_status', 'pending')
             ->when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
             ->with('registration.member:id,full_name')

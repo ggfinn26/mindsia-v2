@@ -15,20 +15,20 @@ class RankingProgramWidget implements WidgetDataProviderInterface
         return 'ranking_program';
     }
 
-    public function getData(?int $branchId = null): array
+    public function getData(array $filters = []): array
     {
-        $now = Carbon::now();
-        $currentMonth = $now->month;
-        $currentYear = $now->year;
+        $branchId = $filters['branch_id'] ?? null;
+        $currentMonth = (int) ($filters['month'] ?? now()->month);
+        $currentYear = (int) ($filters['year'] ?? now()->year);
+        $now = Carbon::create($currentYear, $currentMonth, 1);
 
         $programs = Program::where('is_active', true)->get(['id', 'program_name']);
 
-        // Ranking by new members per program
         $ranking = $programs->map(function ($program) use ($currentMonth, $currentYear, $branchId) {
-            $newMembers = MemberRegistration::whereMonth('created_at', $currentMonth)
+            $memberCount = MemberRegistration::whereMonth('created_at', $currentMonth)
                 ->whereYear('created_at', $currentYear)
                 ->where('program_id', $program->id)
-                ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
+                ->when($branchId, fn ($q) => $q->whereHas('memberData', fn ($md) => $md->where('branch_id', $branchId)))
                 ->count();
 
             $revenue = MemberPayment::where('payment_status', 'paid')
@@ -36,38 +36,30 @@ class RankingProgramWidget implements WidgetDataProviderInterface
                 ->whereYear('paid_at', $currentYear)
                 ->whereHas('registration', fn ($r) => $r
                     ->where('program_id', $program->id)
-                    ->when($branchId, fn ($bq) => $bq->where('branch_id', $branchId)))
+                    ->when($branchId, fn ($bq) => $bq->whereHas('memberData', fn ($md) => $md->where('branch_id', $branchId))))
                 ->sum('amount');
 
             return [
                 'program' => $program->program_name,
-                'new_members' => $newMembers,
+                'member_count' => $memberCount,
                 'revenue' => $revenue,
             ];
-        })->sortByDesc('new_members')->values()->toArray();
+        })->sortByDesc('member_count')->values()->toArray();
 
         return [
-            'ranking' => $ranking,
+            'programs' => $ranking,
             'period' => $now->translatedFormat('F Y'),
         ];
     }
 
-    public function getExportData(?int $branchId = null): array
+    public function getExportData(array $filters = []): array
     {
-        $now = Carbon::now();
-        $programs = Program::where('is_active', true)->get(['id', 'program_name']);
+        $data = $this->getData($filters);
 
-        return $programs->map(function ($program) use ($now, $branchId) {
-            $newMembers = MemberRegistration::whereMonth('created_at', $now->month)
-                ->whereYear('created_at', $now->year)
-                ->where('program_id', $program->id)
-                ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
-                ->count();
-
-            return [
-                'program' => $program->program_name,
-                'new_members' => $newMembers,
-            ];
-        })->sortByDesc('new_members')->values()->toArray();
+        return array_map(fn ($p) => [
+            'program' => $p['program'],
+            'member_baru' => $p['member_count'],
+            'revenue' => $p['revenue'],
+        ], $data['programs']);
     }
 }

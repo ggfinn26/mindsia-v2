@@ -14,8 +14,9 @@ class ActiveUsersWidget implements WidgetDataProviderInterface
         return 'active_users';
     }
 
-    public function getData(?int $branchId = null): array
+    public function getData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
 
         // Sessions table for active sessions
@@ -49,8 +50,10 @@ class ActiveUsersWidget implements WidgetDataProviderInterface
         ];
     }
 
-    public function getExportData(?int $branchId = null): array
+    public function getExportData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
+
         return User::where('is_active', true)
             ->with('employee:id,user_id,full_name')
             ->orderBy('last_login_at', 'desc')

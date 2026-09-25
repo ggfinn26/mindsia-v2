@@ -9,6 +9,7 @@ import "./branch-picker";
 import "./socialization-create";
 import "./wa-picker";
 window.Alpine = Alpine;
+Alpine.store("dashboard", { customizing: false });
 Alpine.start();
 import "./password-toggle";
 import "./otp-input";
@@ -21,9 +22,8 @@ import "./toefl-test-show";
 import "./member-class-calendar";
 import "./rent-contract-create";
 
-import Sortable from 'sortablejs';
+import Sortable from "sortablejs";
 window.Sortable = Sortable;
 
-import ApexCharts from 'apexcharts';
+import ApexCharts from "apexcharts";
 window.ApexCharts = ApexCharts;
-

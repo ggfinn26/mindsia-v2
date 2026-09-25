@@ -13,8 +13,9 @@ class MarketingKpiSnapshotWidget implements WidgetDataProviderInterface
         return 'marketing_kpi_snapshot';
     }
 
-    public function getData(?int $branchId = null): array
+    public function getData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
         $currentMonth = $now->month;
         $currentYear = $now->year;
@@ -47,8 +48,9 @@ class MarketingKpiSnapshotWidget implements WidgetDataProviderInterface
         ];
     }
 
-    public function getExportData(?int $branchId = null): array
+    public function getExportData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
 
         $snapshots = MarketingKpiSnapshot::where('period_month', $now->month)

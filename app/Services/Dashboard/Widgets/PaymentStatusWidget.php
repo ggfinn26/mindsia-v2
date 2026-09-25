@@ -13,8 +13,9 @@ class PaymentStatusWidget implements WidgetDataProviderInterface
         return 'payment_status';
     }
 
-    public function getData(?int $branchId = null): array
+    public function getData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
 
         $byStatus = MemberPayment::when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
@@ -45,8 +46,9 @@ class PaymentStatusWidget implements WidgetDataProviderInterface
         ];
     }
 
-    public function getExportData(?int $branchId = null): array
+    public function getExportData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $payments = MemberPayment::when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
             ->with('registration.member:id,full_name')
             ->orderBy('due_date')

@@ -13,15 +13,34 @@ class DashboardController extends Controller
         private readonly DashboardWidgetService $widgetService,
     ) {}
 
-    public function index(): View
+    public function index(Request $request): View
     {
         $user = auth()->user();
         $allWidgets = $this->widgetService->getWidgetsForUser($user, enabledOnly: false);
-        $branchId = $user->employee?->branch_id;
+        $globalFilters = [
+            'branch_id' => $request->query('branch_id', $user->employee?->branch_id),
+            'month' => $request->query('month', now()->month),
+            'year' => $request->query('year', now()->year),
+            'area_id' => $request->query('area_id'),
+            'scope' => $request->query('scope', 'cabang'),
+        ];
 
         $widgetData = [];
         foreach ($allWidgets->filter(fn (array $w) => $w['is_enabled']) as $widget) {
-            $widgetData[$widget['key']] = $this->widgetService->getWidgetData($widget['key'], $branchId);
+            $key = $widget['key'];
+            $widgetFilters = [
+                'branch_id' => $request->query("{$key}_branch_id", $globalFilters['branch_id']),
+                'month'     => $request->query("{$key}_month", $globalFilters['month']),
+                'year'      => $request->query("{$key}_year", $globalFilters['year']),
+                'area_id'   => $request->query("{$key}_area_id", $globalFilters['area_id']),
+                'program_id'=> $request->query("{$key}_program_id", $request->query('program_id')),
+                'scope'     => $request->query("{$key}_scope", $globalFilters['scope']),
+                'branch_a'  => $request->query("{$key}_branch_a"),
+                'branch_b'  => $request->query("{$key}_branch_b"),
+                'month_start'=> $request->query("{$key}_month_start"),
+                'month_end' => $request->query("{$key}_month_end"),
+            ];
+            $widgetData[$key] = $this->widgetService->getWidgetData($key, $widgetFilters);
         }
 
         return view('dashboard.index', [

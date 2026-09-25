@@ -14,8 +14,9 @@ class ContractStatusWidget implements WidgetDataProviderInterface
         return 'contract_status';
     }
 
-    public function getData(?int $branchId = null): array
+    public function getData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
         $thresholdDays = 30;
 
@@ -52,8 +53,9 @@ class ContractStatusWidget implements WidgetDataProviderInterface
         ];
     }
 
-    public function getExportData(?int $branchId = null): array
+    public function getExportData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $statuses = EmploymentStatus::when($branchId, fn ($q) => $q->whereHas('employee', fn ($e) => $e->where('branch_id', $branchId)))
             ->with(['employee', 'position'])
             ->whereDoesntHave('offBoarding')

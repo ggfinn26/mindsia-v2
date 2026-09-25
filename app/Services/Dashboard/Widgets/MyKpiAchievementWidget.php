@@ -13,8 +13,9 @@ class MyKpiAchievementWidget implements WidgetDataProviderInterface
         return 'my_kpi_achievement';
     }
 
-    public function getData(?int $branchId = null): array
+    public function getData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
         $employeeId = auth()->user()?->employee?->id;
 
@@ -47,8 +48,9 @@ class MyKpiAchievementWidget implements WidgetDataProviderInterface
         ];
     }
 
-    public function getExportData(?int $branchId = null): array
+    public function getExportData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $employeeId = auth()->user()?->employee?->id;
 
         if (! $employeeId) {

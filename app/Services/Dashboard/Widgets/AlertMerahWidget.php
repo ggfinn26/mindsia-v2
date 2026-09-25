@@ -19,8 +19,9 @@ class AlertMerahWidget implements WidgetDataProviderInterface
         return 'alert_merah';
     }
 
-    public function getData(?int $branchId = null): array
+    public function getData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
         $alerts = [];
 
@@ -106,8 +107,10 @@ class AlertMerahWidget implements WidgetDataProviderInterface
         ];
     }
 
-    public function getExportData(?int $branchId = null): array
+    public function getExportData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
+
         return [];
     }
 }

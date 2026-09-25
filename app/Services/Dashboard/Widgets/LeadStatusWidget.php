@@ -13,8 +13,9 @@ class LeadStatusWidget implements WidgetDataProviderInterface
         return 'lead_status';
     }
 
-    public function getData(?int $branchId = null): array
+    public function getData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
 
         $byStatus = ProspectiveMember::when($branchId, fn ($q) => $q->where('branch_id', $branchId))
@@ -46,8 +47,9 @@ class LeadStatusWidget implements WidgetDataProviderInterface
         ];
     }
 
-    public function getExportData(?int $branchId = null): array
+    public function getExportData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $prospects = ProspectiveMember::when($branchId, fn ($q) => $q->where('branch_id', $branchId))
             ->with('branch:id,branch_name')
             ->orderBy('created_at', 'desc')

@@ -13,8 +13,9 @@ class FacilityStatusWidget implements WidgetDataProviderInterface
         return 'facility_status';
     }
 
-    public function getData(?int $branchId = null): array
+    public function getData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
 
         $baseQuery = FacilityTicket::when($branchId, fn ($q) => $q->where('branch_id', $branchId));
@@ -54,8 +55,9 @@ class FacilityStatusWidget implements WidgetDataProviderInterface
         ];
     }
 
-    public function getExportData(?int $branchId = null): array
+    public function getExportData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $tickets = FacilityTicket::when($branchId, fn ($q) => $q->where('branch_id', $branchId))
             ->with('branch')
             ->orderByDesc('created_at')

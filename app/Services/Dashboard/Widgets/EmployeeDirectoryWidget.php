@@ -14,8 +14,9 @@ class EmployeeDirectoryWidget implements WidgetDataProviderInterface
         return 'employee_directory';
     }
 
-    public function getData(?int $branchId = null): array
+    public function getData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
 
         $query = Employee::where('is_active', true)
@@ -61,8 +62,9 @@ class EmployeeDirectoryWidget implements WidgetDataProviderInterface
         ];
     }
 
-    public function getExportData(?int $branchId = null): array
+    public function getExportData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $employees = Employee::where('is_active', true)
             ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
             ->with(['currentStatus.position', 'branch'])

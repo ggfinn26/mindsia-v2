@@ -5,6 +5,7 @@ namespace App\Enums;
 enum WidgetKey: string
 {
     // Financial & Business
+    case FinancialHub = 'financial_hub';
     case Revenue = 'revenue';
     case Profit = 'profit';
     case CostControl = 'cost_control';
@@ -88,6 +89,7 @@ enum WidgetKey: string
     public function label(): string
     {
         return match ($this) {
+            self::FinancialHub => 'Komparasi Finansial',
             self::Revenue => 'Revenue',
             self::Profit => 'Profit',
             self::CostControl => 'Cost Control',
@@ -159,7 +161,7 @@ enum WidgetKey: string
     public function category(): string
     {
         return match ($this) {
-            self::Revenue, self::Profit, self::CostControl => 'financial',
+            self::FinancialHub, self::Revenue, self::Profit, self::CostControl => 'financial',
             self::CabangPerformance, self::AttendanceSummary, self::ClassScheduleUtilization,
             self::FacilityStatus, self::InventoryStatus, self::BranchRentContracts,
             self::AttendanceCompliance, self::ContractStatus, self::AlertMerah => 'operations',
@@ -194,6 +196,7 @@ enum WidgetKey: string
     {
         return match ($this) {
             // Financial & Business
+            self::FinancialHub => 'account_balance',
             self::Revenue => 'payments',
             self::Profit => 'trending_up',
             self::CostControl => 'account_balance_wallet',

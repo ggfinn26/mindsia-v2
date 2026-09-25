@@ -14,8 +14,9 @@ class HiringMetricsWidget implements WidgetDataProviderInterface
         return 'hiring_metrics';
     }
 
-    public function getData(?int $branchId = null): array
+    public function getData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
         $currentMonth = $now->month;
         $currentYear = $now->year;
@@ -60,8 +61,9 @@ class HiringMetricsWidget implements WidgetDataProviderInterface
         ];
     }
 
-    public function getExportData(?int $branchId = null): array
+    public function getExportData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
 
         $applications = JobApplication::whereYear('applied_at', $now->year)

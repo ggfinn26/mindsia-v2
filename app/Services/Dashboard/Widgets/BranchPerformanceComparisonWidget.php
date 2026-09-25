@@ -17,8 +17,9 @@ class BranchPerformanceComparisonWidget implements WidgetDataProviderInterface
         return 'branch_performance_comparison';
     }
 
-    public function getData(?int $branchId = null): array
+    public function getData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
         $currentMonth = $now->month;
         $currentYear = $now->year;
@@ -71,8 +72,9 @@ class BranchPerformanceComparisonWidget implements WidgetDataProviderInterface
         ];
     }
 
-    public function getExportData(?int $branchId = null): array
+    public function getExportData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
 
         $branches = Branch::where('is_active', true)

@@ -14,8 +14,9 @@ class BranchRentContractsWidget implements WidgetDataProviderInterface
         return 'branch_rent_contracts';
     }
 
-    public function getData(?int $branchId = null): array
+    public function getData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
         $thresholdDays = 90;
 
@@ -59,8 +60,9 @@ class BranchRentContractsWidget implements WidgetDataProviderInterface
         ];
     }
 
-    public function getExportData(?int $branchId = null): array
+    public function getExportData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $contracts = BranchRentContract::when($branchId, fn ($q) => $q->where('branch_id', $branchId))
             ->with('branch')
             ->orderByDesc('end_date')

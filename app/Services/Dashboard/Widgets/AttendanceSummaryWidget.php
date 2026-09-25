@@ -14,8 +14,9 @@ class AttendanceSummaryWidget implements WidgetDataProviderInterface
         return 'attendance_summary';
     }
 
-    public function getData(?int $branchId = null): array
+    public function getData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
         $currentMonth = $now->month;
         $currentYear = $now->year;
@@ -74,8 +75,9 @@ class AttendanceSummaryWidget implements WidgetDataProviderInterface
         ];
     }
 
-    public function getExportData(?int $branchId = null): array
+    public function getExportData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
 
         $recaps = EmployeeAttendanceMonthlyRecap::where('period_year', $now->year)

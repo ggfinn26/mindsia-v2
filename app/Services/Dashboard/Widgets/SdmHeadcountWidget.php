@@ -15,8 +15,9 @@ class SdmHeadcountWidget implements WidgetDataProviderInterface
         return 'sdm_headcount';
     }
 
-    public function getData(?int $branchId = null): array
+    public function getData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
 
         $activeEmployees = Employee::where('is_active', true)
@@ -65,8 +66,9 @@ class SdmHeadcountWidget implements WidgetDataProviderInterface
         ];
     }
 
-    public function getExportData(?int $branchId = null): array
+    public function getExportData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
 
         $employees = Employee::where('is_active', true)

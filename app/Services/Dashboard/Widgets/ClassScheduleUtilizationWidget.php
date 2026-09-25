@@ -15,8 +15,9 @@ class ClassScheduleUtilizationWidget implements WidgetDataProviderInterface
         return 'class_schedule_utilization';
     }
 
-    public function getData(?int $branchId = null): array
+    public function getData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
 
         $classesQuery = ClassRoom::when($branchId, fn ($q) => $q->where('branch_id', $branchId));
@@ -49,8 +50,9 @@ class ClassScheduleUtilizationWidget implements WidgetDataProviderInterface
         ];
     }
 
-    public function getExportData(?int $branchId = null): array
+    public function getExportData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $classes = ClassRoom::when($branchId, fn ($q) => $q->where('branch_id', $branchId))
             ->with(['program', 'memberClasses'])
             ->get();

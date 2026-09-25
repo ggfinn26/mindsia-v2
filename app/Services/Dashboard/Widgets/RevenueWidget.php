@@ -14,29 +14,42 @@ class RevenueWidget implements WidgetDataProviderInterface
         return 'revenue';
     }
 
-    public function getData(?int $branchId = null): array
+    public function getData(array $filters = []): array
     {
-        $now = Carbon::now();
-        $currentMonth = $now->month;
-        $currentYear = $now->year;
+        $branchId = $filters['branch_id'] ?? null;
+        $scope = $filters['scope'] ?? 'cabang';
+        $areaId = $filters['area_id'] ?? null;
+        $currentMonth = (int) ($filters['month'] ?? now()->month);
+        $currentYear = (int) ($filters['year'] ?? now()->year);
+        $targetDate = Carbon::create($currentYear, $currentMonth, 1);
+        $now = $targetDate->copy();
+
+        // Override branchId if scope is not cabang
+        if ($scope === 'nasional') {
+            $branchId = null;
+        }
+        // For area, we would need to join branch.area_id, but for now we'll pass area_id dynamically
 
         $memberRevenue = MemberPayment::where('payment_status', 'paid')
             ->whereMonth('paid_at', $currentMonth)
             ->whereYear('paid_at', $currentYear)
-            ->when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+            ->when($scope === 'cabang' && $branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+            ->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('registration.branch', fn ($b) => $b->where('area_id', $areaId)))
             ->sum('amount');
 
         $payrollCost = EmployeePayroll::where('payment_status', 'paid')
             ->whereMonth('paid_at', $currentMonth)
             ->whereYear('paid_at', $currentYear)
-            ->when($branchId, fn ($q) => $q->whereHas('employee.employmentStatus', fn ($r) => $r->where('position_id', '>', 0)))
+            ->when($scope === 'cabang' && $branchId, fn ($q) => $q->whereHas('employee', fn ($e) => $e->where('branch_id', $branchId)))
+            ->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('employee.branch', fn ($b) => $b->where('area_id', $areaId)))
             ->sum('net_amount');
 
         $prevMonth = $now->copy()->subMonth();
         $prevMemberRevenue = MemberPayment::where('payment_status', 'paid')
             ->whereMonth('paid_at', $prevMonth->month)
             ->whereYear('paid_at', $prevMonth->year)
-            ->when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+            ->when($scope === 'cabang' && $branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+            ->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('registration.branch', fn ($b) => $b->where('area_id', $areaId)))
             ->sum('amount');
 
         $trend = $prevMemberRevenue > 0
@@ -52,7 +65,8 @@ class RevenueWidget implements WidgetDataProviderInterface
             $rev = MemberPayment::where('payment_status', 'paid')
                 ->whereMonth('paid_at', $monthDate->month)
                 ->whereYear('paid_at', $monthDate->year)
-                ->when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+                ->when($scope === 'cabang' && $branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+                ->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('registration.branch', fn ($b) => $b->where('area_id', $areaId)))
                 ->sum('amount');
 
             $historyLabels[] = $monthDate->format('M');
@@ -70,13 +84,23 @@ class RevenueWidget implements WidgetDataProviderInterface
         ];
     }
 
-    public function getExportData(?int $branchId = null): array
+    public function getExportData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
+        $scope = $filters['scope'] ?? 'cabang';
+        $areaId = $filters['area_id'] ?? null;
+
+        // Override branchId if scope is not cabang
+        if ($scope === 'nasional') {
+            $branchId = null;
+        }
+
         $now = Carbon::now();
 
         $payments = MemberPayment::where('payment_status', 'paid')
             ->whereYear('paid_at', $now->year)
-            ->when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+            ->when($scope === 'cabang' && $branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+            ->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('registration.branch', fn ($b) => $b->where('area_id', $areaId)))
             ->orderBy('paid_at')
             ->get();
 

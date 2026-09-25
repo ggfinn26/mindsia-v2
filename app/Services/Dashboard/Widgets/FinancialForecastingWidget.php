@@ -14,8 +14,9 @@ class FinancialForecastingWidget implements WidgetDataProviderInterface
         return 'financial_forecasting';
     }
 
-    public function getData(?int $branchId = null): array
+    public function getData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
 
         // Collect last 3 months of revenue for simple average forecast
@@ -71,8 +72,9 @@ class FinancialForecastingWidget implements WidgetDataProviderInterface
         ];
     }
 
-    public function getExportData(?int $branchId = null): array
+    public function getExportData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
 
         return collect(range(6, 1))->map(function ($i) use ($now, $branchId) {

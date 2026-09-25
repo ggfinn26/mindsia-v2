@@ -13,8 +13,9 @@ class InventoryStatusWidget implements WidgetDataProviderInterface
         return 'inventory_status';
     }
 
-    public function getData(?int $branchId = null): array
+    public function getData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
 
         $baseQuery = InventoryItem::when($branchId, fn ($q) => $q->where('branch_id', $branchId));
@@ -55,8 +56,9 @@ class InventoryStatusWidget implements WidgetDataProviderInterface
         ];
     }
 
-    public function getExportData(?int $branchId = null): array
+    public function getExportData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
         $items = InventoryItem::when($branchId, fn ($q) => $q->where('branch_id', $branchId))
             ->with('branch')
             ->where('status', 'active')

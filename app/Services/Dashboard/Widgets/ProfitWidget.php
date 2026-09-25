@@ -15,27 +15,39 @@ class ProfitWidget implements WidgetDataProviderInterface
         return 'profit';
     }
 
-    public function getData(?int $branchId = null): array
+    public function getData(array $filters = []): array
     {
-        $now = Carbon::now();
-        $currentMonth = $now->month;
-        $currentYear = $now->year;
+        $branchId = $filters['branch_id'] ?? null;
+        $scope = $filters['scope'] ?? 'cabang';
+        $areaId = $filters['area_id'] ?? null;
+        $currentMonth = (int) ($filters['month'] ?? now()->month);
+        $currentYear = (int) ($filters['year'] ?? now()->year);
+        $targetDate = Carbon::create($currentYear, $currentMonth, 1);
+        $now = $targetDate->copy();
+
+        // Override branchId if scope is not cabang
+        if ($scope === 'nasional') {
+            $branchId = null;
+        }
+        // For area, we would need to join branch.area_id, but for now we'll pass area_id dynamically
 
         $revenue = MemberPayment::where('payment_status', 'paid')
             ->whereMonth('paid_at', $currentMonth)
             ->whereYear('paid_at', $currentYear)
-            ->when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+            ->when($scope === 'cabang' && $branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+            ->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('registration.branch', fn ($b) => $b->where('area_id', $areaId)))
             ->sum('amount');
 
         $payrollCost = EmployeePayroll::where('payment_status', 'paid')
             ->whereMonth('paid_at', $currentMonth)
             ->whereYear('paid_at', $currentYear)
-            ->when($branchId, fn ($q) => $q->whereHas('employee.employmentStatus', fn ($r) => $r->where('position_id', '>', 0)))
+            ->when($scope === 'cabang' && $branchId, fn ($q) => $q->whereHas('employee', fn ($e) => $e->where('branch_id', $branchId)))
+            ->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('employee.branch', fn ($b) => $b->where('area_id', $areaId)))
             ->sum('net_amount');
 
         $operationalCost = BranchMonthlyCost::where('period_month', $currentMonth)
             ->where('period_year', $currentYear)
-            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
+            ->when($scope === 'cabang' && $branchId, fn ($q) => $q->where('branch_id', $branchId))->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('branch', fn ($b) => $b->where('area_id', $areaId)))
             ->sum('amount');
 
         $totalCost = $payrollCost + $operationalCost;
@@ -46,18 +58,20 @@ class ProfitWidget implements WidgetDataProviderInterface
         $prevRevenue = MemberPayment::where('payment_status', 'paid')
             ->whereMonth('paid_at', $prevMonth->month)
             ->whereYear('paid_at', $prevMonth->year)
-            ->when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+            ->when($scope === 'cabang' && $branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+            ->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('registration.branch', fn ($b) => $b->where('area_id', $areaId)))
             ->sum('amount');
 
         $prevPayrollCost = EmployeePayroll::where('payment_status', 'paid')
             ->whereMonth('paid_at', $prevMonth->month)
             ->whereYear('paid_at', $prevMonth->year)
-            ->when($branchId, fn ($q) => $q->whereHas('employee.employmentStatus', fn ($r) => $r->where('position_id', '>', 0)))
+            ->when($scope === 'cabang' && $branchId, fn ($q) => $q->whereHas('employee', fn ($e) => $e->where('branch_id', $branchId)))
+            ->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('employee.branch', fn ($b) => $b->where('area_id', $areaId)))
             ->sum('net_amount');
 
         $prevOperationalCost = BranchMonthlyCost::where('period_month', $prevMonth->month)
             ->where('period_year', $prevMonth->year)
-            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
+            ->when($scope === 'cabang' && $branchId, fn ($q) => $q->where('branch_id', $branchId))->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('branch', fn ($b) => $b->where('area_id', $areaId)))
             ->sum('amount');
 
         $prevProfit = $prevRevenue - ($prevPayrollCost + $prevOperationalCost);
@@ -71,14 +85,16 @@ class ProfitWidget implements WidgetDataProviderInterface
 
             $rev = MemberPayment::where('payment_status', 'paid')
                 ->whereMonth('paid_at', $mDate->month)->whereYear('paid_at', $mDate->year)
-                ->when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))->sum('amount');
+                ->when($scope === 'cabang' && $branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+                ->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('registration.branch', fn ($b) => $b->where('area_id', $areaId)))->sum('amount');
 
             $pay = EmployeePayroll::where('payment_status', 'paid')
                 ->whereMonth('paid_at', $mDate->month)->whereYear('paid_at', $mDate->year)
-                ->when($branchId, fn ($q) => $q->whereHas('employee.employmentStatus', fn ($r) => $r->where('position_id', '>', 0)))->sum('net_amount');
+                ->when($scope === 'cabang' && $branchId, fn ($q) => $q->whereHas('employee', fn ($e) => $e->where('branch_id', $branchId)))
+                ->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('employee.branch', fn ($b) => $b->where('area_id', $areaId)))->sum('net_amount');
 
             $op = BranchMonthlyCost::where('period_month', $mDate->month)->where('period_year', $mDate->year)
-                ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))->sum('amount');
+                ->when($scope === 'cabang' && $branchId, fn ($q) => $q->where('branch_id', $branchId))->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('branch', fn ($b) => $b->where('area_id', $areaId)))->sum('amount');
 
             $historyLabels[] = $mDate->format('M');
             $historyData[] = $rev - ($pay + $op);
@@ -98,8 +114,17 @@ class ProfitWidget implements WidgetDataProviderInterface
         ];
     }
 
-    public function getExportData(?int $branchId = null): array
+    public function getExportData(array $filters = []): array
     {
+        $branchId = $filters['branch_id'] ?? null;
+        $scope = $filters['scope'] ?? 'cabang';
+        $areaId = $filters['area_id'] ?? null;
+
+        // Override branchId if scope is not cabang
+        if ($scope === 'nasional') {
+            $branchId = null;
+        }
+
         $now = Carbon::now();
         $data = [];
 
@@ -111,14 +136,16 @@ class ProfitWidget implements WidgetDataProviderInterface
 
             $rev = MemberPayment::where('payment_status', 'paid')
                 ->whereMonth('paid_at', $i)->whereYear('paid_at', $now->year)
-                ->when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))->sum('amount');
+                ->when($scope === 'cabang' && $branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+                ->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('registration.branch', fn ($b) => $b->where('area_id', $areaId)))->sum('amount');
 
             $pay = EmployeePayroll::where('payment_status', 'paid')
                 ->whereMonth('paid_at', $i)->whereYear('paid_at', $now->year)
-                ->when($branchId, fn ($q) => $q->whereHas('employee.employmentStatus', fn ($r) => $r->where('position_id', '>', 0)))->sum('net_amount');
+                ->when($scope === 'cabang' && $branchId, fn ($q) => $q->whereHas('employee', fn ($e) => $e->where('branch_id', $branchId)))
+                ->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('employee.branch', fn ($b) => $b->where('area_id', $areaId)))->sum('net_amount');
 
             $op = BranchMonthlyCost::where('period_month', $i)->where('period_year', $now->year)
-                ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))->sum('amount');
+                ->when($scope === 'cabang' && $branchId, fn ($q) => $q->where('branch_id', $branchId))->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('branch', fn ($b) => $b->where('area_id', $areaId)))->sum('amount');
 
             $data[] = [
                 'month' => $month->format('M Y'),

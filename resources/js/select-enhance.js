@@ -96,6 +96,13 @@ function enhanceSelect(sel) {
     wrapper.setAttribute("x-data", `customSelect('${id}')`);
     wrapper.setAttribute("@click.away", "open = false");
 
+    // Transfer x-show from native select so visibility bindings work on the wrapper
+    const xShow = sel.getAttribute("x-show");
+    if (xShow) {
+        wrapper.setAttribute("x-show", xShow);
+        sel.removeAttribute("x-show");
+    }
+
     // All content is static template — no user data injected into HTML
     wrapper.innerHTML = `
         <div @click="open = !open"
