@@ -79,6 +79,8 @@ function enhanceSelect(sel) {
         overflow: "hidden",
         pointerEvents: "none",
     });
+    sel.removeAttribute("required");
+    sel.setAttribute("tabindex", "-1");
 
     const wrapper = document.createElement("div");
     wrapper.className = "relative";

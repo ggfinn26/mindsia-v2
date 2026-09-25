@@ -906,7 +906,6 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     Route::patch('branch-monthly-costs/{branchMonthlyCost}', [BranchMonthlyCostController::class, 'update'])->name('branch-monthly-costs.update');
     Route::delete('branch-monthly-costs/{branchMonthlyCost}', [BranchMonthlyCostController::class, 'destroy'])->name('branch-monthly-costs.destroy');
 
-    Route::get('period-locks', [BranchPeriodLockController::class, 'index'])->name('period-locks.index');
     Route::post('period-locks/lock', [BranchPeriodLockController::class, 'lock'])->name('period-locks.lock');
     Route::post('period-locks/unlock', [BranchPeriodLockController::class, 'unlock'])->name('period-locks.unlock');
 

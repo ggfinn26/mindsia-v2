@@ -276,9 +276,6 @@
     @can('finance.monthly_cost.view')
     <x-dashboard.nav-item href="{{ route('branch-monthly-costs.index') }}" :active="request()->routeIs('branch-monthly-costs.*')" :isChild="true">Biaya Operasional</x-dashboard.nav-item>
     @endcan
-    @can('finance.period.lock')
-    <x-dashboard.nav-item href="{{ route('period-locks.index') }}" :active="request()->routeIs('period-locks.*')" :isChild="true">Lock Periode</x-dashboard.nav-item>
-    @endcan
 </x-dashboard.nav-group>
 @endcanany
 

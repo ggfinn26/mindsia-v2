@@ -37,6 +37,7 @@ class ReimbursementRepository
     public function submit(Reimbursement $reimbursement): void
     {
         abort_unless($reimbursement->isDraft(), 422, 'Hanya draft yang bisa diajukan.');
+        abort_if($reimbursement->items()->count() === 0, 422, 'Tambahkan minimal satu item pengeluaran sebelum mengajukan.');
         $reimbursement->update(['status' => 'PENDING_REVIEW']);
     }
 

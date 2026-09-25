@@ -32,12 +32,17 @@ class BranchMonthlyCostController extends Controller
             default => Branch::where('is_active', true)->orderBy('branch_name')->get(),
         };
 
-        $branchId = (int) $request->input('branch_id', $employee?->branch_id ?? $branches->first()?->id);
+        $branchId = (int) $request->input('branch_id', $employee?->branch_id);
         $year = (int) $request->input('year', now()->year);
         $month = (int) $request->input('month', now()->month);
 
-        $costs = $this->repository->list($branchId, $year, $month);
-        $isLocked = $branchId ? $this->lockService->isLocked($branchId, $year, $month) : false;
+        if ($branchId) {
+            $costs = $this->repository->list($branchId, $year, $month);
+            $isLocked = $this->lockService->isLocked($branchId, $year, $month);
+        } else {
+            $costs = collect();
+            $isLocked = false;
+        }
 
         return view('finance.monthly-cost.index', compact('costs', 'isLocked', 'year', 'month', 'branchId', 'branches'));
     }

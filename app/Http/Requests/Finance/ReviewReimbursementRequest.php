@@ -16,7 +16,7 @@ class ReviewReimbursementRequest extends FormRequest
         return [
             'action' => ['required', 'in:approve,reject'],
             'review_notes' => ['nullable', 'string', 'max:1000'],
-            'rejection_notes' => ['required_if:action,reject', 'string', 'max:1000'],
+            'rejection_notes' => ['nullable', 'required_if:action,reject', 'string', 'max:1000'],
         ];
     }
 }
