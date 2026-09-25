@@ -4,83 +4,81 @@
 @section('header_title', 'Survey Saya')
 
 @section('content')
-<div class="max-w-6xl mx-auto">
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+<div class="max-w-6xl mx-auto space-y-6">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-            <h2 class="text-2xl font-bold font-jakarta text-gray-900">Survey Saya</h2>
-            <p class="text-sm text-gray-500 mt-1">Daftar survei yang ditugaskan kepada Anda untuk evaluasi program.</p>
+            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Survey Saya</h2>
+            <p class="text-sm text-slate-500 mt-1">Daftar survei yang ditugaskan kepada Anda untuk evaluasi program.</p>
         </div>
     </div>
 
     @if(session('success'))
-        <div class="mb-6 p-4 bg-green-50 border border-green-200 text-green-700 rounded-xl flex items-start gap-3">
-            <span class="material-symbols-outlined text-green-500 mt-0.5">check_circle</span>
-            <div>
-                <p class="font-medium">{{ session('success') }}</p>
-            </div>
+        <div class="flex items-center gap-3 rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-800 shadow-sm">
+            <span class="material-symbols-outlined text-[20px] text-emerald-600">check_circle</span>
+            <p class="font-medium">{{ session('success') }}</p>
         </div>
     @endif
 
     @if($surveys->isEmpty())
         <!-- Placeholder State -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-10 flex flex-col items-center justify-center text-center">
-            <div class="h-20 w-20 rounded-full bg-blue-50 flex items-center justify-center mb-4">
-                <span class="material-symbols-outlined text-[#5586DB] text-4xl">assignment</span>
+        <div class="flex flex-col items-center justify-center rounded-xl border border-slate-100 bg-white py-16 px-6 shadow-sm text-center">
+            <div class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-slate-50 mb-4">
+                <span class="material-symbols-outlined text-slate-400 text-3xl">assignment</span>
             </div>
-            <h3 class="text-lg font-bold text-gray-900 font-jakarta mb-2">Belum Ada Survei</h3>
-            <p class="text-gray-500 max-w-md mx-auto mb-6">Belum ada survei yang ditugaskan kepada Anda saat ini. Kami akan memberi tahu Anda jika ada survei baru.</p>
-            <a href="{{ route('member.dashboard') }}" class="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors shadow-sm">
-                Kembali ke Dashboard
-            </a>
+            <h3 class="font-jakarta text-base font-bold text-slate-900">Belum Ada Survei</h3>
+            <p class="mt-1 text-sm text-slate-500 max-w-md mx-auto">Belum ada survei yang ditugaskan kepada Anda saat ini. Kami akan memberi tahu Anda jika ada survei baru.</p>
+            <div class="mt-6">
+                <a href="{{ route('member.dashboard') }}" class="inline-flex min-h-[42px] items-center justify-center rounded-lg border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-colors">
+                    Kembali ke Dashboard
+                </a>
+            </div>
         </div>
     @else
-        <div class="bg-white shadow-sm rounded-xl border border-gray-100 overflow-hidden">
+        <div class="overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm">
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-gray-50 border-b border-gray-100 text-xs uppercase tracking-wider text-gray-500 font-semibold">
+                <table class="min-w-full divide-y divide-slate-100 text-sm">
+                    <thead class="bg-slate-50 text-left text-xs font-bold uppercase tracking-wider text-slate-500">
+                        <tr>
                             <th class="px-6 py-4">Nama Survey</th>
                             <th class="px-6 py-4">Status Pengisian</th>
                             <th class="px-6 py-4">Waktu Penyelesaian</th>
                             <th class="px-6 py-4 text-right">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100 text-sm text-gray-700">
+                    <tbody class="divide-y divide-slate-50 text-slate-700">
                         @foreach($surveys as $memberSurvey)
-                            <tr class="hover:bg-gray-50/50 transition-colors">
+                            <tr class="hover:bg-slate-50/50 transition-colors">
                                 <td class="px-6 py-4">
-                                    <p class="font-bold text-gray-900 font-jakarta">{{ $memberSurvey->survey->title }}</p>
-                                    @if($memberSurvey->survey->description)
-                                        <p class="text-xs text-gray-500 mt-1 line-clamp-1">{{ $memberSurvey->survey->description }}</p>
+                                    <p class="font-jakarta font-bold text-slate-900">{{ $memberSurvey->survey->survey_name }}</p>
+                                    @if($memberSurvey->survey->survey_description)
+                                        <p class="mt-0.5 text-xs text-slate-500 line-clamp-1">{{ $memberSurvey->survey->survey_description }}</p>
                                     @endif
                                 </td>
                                 <td class="px-6 py-4">
                                     @if($memberSurvey->answers_exists)
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-200">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                        <span class="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-emerald-100 text-emerald-800">
                                             Sudah Diisi
                                         </span>
                                     @else
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-yellow-50 text-yellow-700 border border-yellow-200">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+                                        <span class="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-amber-100 text-amber-800">
                                             Belum Diisi
                                         </span>
                                     @endif
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-gray-500">
+                                <td class="px-6 py-4 font-medium text-slate-600">
                                     @if($memberSurvey->answers_exists)
-                                        {{ $memberSurvey->updated_at->format('d M Y, H:i') }}
+                                        <span class="inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-slate-400">check_circle</span> {{ $memberSurvey->updated_at->format('d M Y, H:i') }}</span>
                                     @else
-                                        -
+                                        <span class="text-slate-400 italic">—</span>
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 text-right">
                                     @if($memberSurvey->answers_exists)
-                                        <a href="{{ route('member.surveys.show', $memberSurvey) }}" class="inline-flex items-center justify-center px-4 py-2 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors shadow-sm text-xs">
+                                        <a href="{{ route('member.surveys.show', $memberSurvey) }}" class="inline-flex min-h-[38px] items-center justify-center rounded-lg border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-colors">
                                             Lihat Jawaban
                                         </a>
                                     @else
-                                        <a href="{{ route('member.surveys.show', $memberSurvey) }}" class="inline-flex items-center justify-center px-4 py-2 bg-[#5586DB] text-white font-medium rounded-lg hover:bg-[#4370BC] transition-colors shadow-sm text-xs">
+                                        <a href="{{ route('member.surveys.show', $memberSurvey) }}" class="inline-flex min-h-[38px] items-center justify-center rounded-lg bg-[#215aac] px-4 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-colors">
                                             Mulai Isi
                                         </a>
                                     @endif
