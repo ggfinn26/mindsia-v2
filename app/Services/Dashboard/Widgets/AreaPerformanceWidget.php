@@ -48,8 +48,8 @@ class AreaPerformanceWidget implements WidgetDataProviderInterface
                 ->whereIn('branch_id', $branchIds)
                 ->sum('amount');
 
-            $newMembers = MemberRegistration::whereMonth('registration_date', $currentMonth)
-                ->whereYear('registration_date', $currentYear)
+            $newMembers = MemberRegistration::whereMonth('created_at', $currentMonth)
+                ->whereYear('created_at', $currentYear)
                 ->whereIn('branch_id', $branchIds)
                 ->count();
 

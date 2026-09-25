@@ -1,286 +1,226 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
 @section('title', 'Buat Kontrak — ' . $employee->full_name)
 
 @section('content')
-    <div class="container py-6">
-        <div class="flex items-center justify-between mb-6">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900">Buat Kontrak</h1>
-                <p class="text-gray-600 mt-2">{{ $employee->full_name }}</p>
-            </div>
-            <a href="{{ route('employees.show', $employee) }}"
-               class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
-                Kembali
-            </a>
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-5xl mx-auto space-y-8">
+    
+    <!-- Page header -->
+    <div class="sm:flex sm:justify-between sm:items-end">
+        <div>
+            <p class="text-sm font-semibold text-indigo-600 tracking-wide uppercase mb-1">Manajemen Kontrak</p>
+            <h1 class="text-2xl md:text-3xl text-gray-900 font-bold tracking-tight">Buat Kontrak Kerja</h1>
+            <p class="mt-1 text-sm text-gray-500">Pegawai: <span class="font-medium text-gray-700">{{ $employee->full_name }}</span></p>
         </div>
-
-        <div class="bg-white rounded-lg shadow">
-            <!-- Tab Navigation -->
-            <div class="border-b border-gray-200">
-                <div class="flex" role="tablist">
-                    <button type="button"
-                            role="tab"
-                            aria-selected="true"
-                            aria-controls="lengkap-panel"
-                            class="tab-button px-6 py-4 font-medium text-gray-700 border-b-2 border-blue-500 active"
-                            data-tab="lengkap">
-                        <span class="text-lg">📋 Lengkap</span>
-                        <p class="text-sm text-gray-500 mt-1">Form lengkap dengan semua detail kontrak</p>
-                    </button>
-                    <button type="button"
-                            role="tab"
-                            aria-selected="false"
-                            aria-controls="cepat-panel"
-                            class="tab-button px-6 py-4 font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700"
-                            data-tab="cepat">
-                        <span class="text-lg">⚡ Cepat</span>
-                        <p class="text-sm text-gray-500 mt-1">Upload file kontrak, detail diisi nanti</p>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Tab Panels -->
-            <div class="p-8">
-                <!-- Tab: Lengkap (Full Form) -->
-                <form id="lengkap-form"
-                      action="{{ route('employment-statuses.store', $employee) }}"
-                      method="POST"
-                      role="tabpanel"
-                      aria-labelledby="lengkap-tab"
-                      class="tab-panel active space-y-6">
-                    @csrf
-                    <input type="hidden" name="tab" value="lengkap">
-
-                    <div class="grid grid-cols-2 gap-6">
-                        <!-- Type Employment -->
-                        <div>
-                            <label for="type_employment" class="block text-sm font-medium text-gray-700 mb-2">
-                                Jenis Ketenagakerjaan
-                            </label>
-                            <input type="text"
-                                   id="type_employment"
-                                   name="type_employment"
-                                   value="{{ old('type_employment') }}"
-                                   placeholder="Tetap, Kontrak, Magang"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('type_employment') border-red-500 @enderror">
-                            @error('type_employment')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- Join Date -->
-                        <div>
-                            <label for="join_date" class="block text-sm font-medium text-gray-700 mb-2">
-                                Tanggal Mulai Kerja
-                            </label>
-                            <input type="date"
-                                   id="join_date"
-                                   name="join_date"
-                                   value="{{ old('join_date') }}"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('join_date') border-red-500 @enderror">
-                            @error('join_date')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- Contract Start Date -->
-                        <div>
-                            <label for="contract_start_date" class="block text-sm font-medium text-gray-700 mb-2">
-                                Tanggal Mulai Kontrak
-                            </label>
-                            <input type="date"
-                                   id="contract_start_date"
-                                   name="contract_start_date"
-                                   value="{{ old('contract_start_date') }}"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('contract_start_date') border-red-500 @enderror">
-                            @error('contract_start_date')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- Contract End Date -->
-                        <div>
-                            <label for="contract_end_date" class="block text-sm font-medium text-gray-700 mb-2">
-                                Tanggal Akhir Kontrak (opsional)
-                            </label>
-                            <input type="date"
-                                   id="contract_end_date"
-                                   name="contract_end_date"
-                                   value="{{ old('contract_end_date') }}"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('contract_end_date') border-red-500 @enderror">
-                            @error('contract_end_date')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <!-- Position -->
-                    <div>
-                        <label for="position_id" class="block text-sm font-medium text-gray-700 mb-2">
-                            Posisi
-                        </label>
-                        <select id="position_id"
-                                name="position_id"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('position_id') border-red-500 @enderror">
-                            <option value="">-- Pilih Posisi --</option>
-                            @foreach ($positions as $position)
-                                <option value="{{ $position->id }}" @selected(old('position_id') == $position->id)>
-                                    {{ $position->position_name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('position_id')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <!-- Submit -->
-                    <div class="flex gap-3 pt-6 border-t">
-                        <button type="submit"
-                                class="px-6 py-2 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600">
-                            Buat Kontrak
-                        </button>
-                        <a href="{{ route('employees.show', $employee) }}"
-                           class="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
-                            Batal
-                        </a>
-                    </div>
-                </form>
-
-                <!-- Tab: Cepat (Quick Upload) -->
-                <form id="cepat-form"
-                      action="{{ route('employment-statuses.store', $employee) }}"
-                      method="POST"
-                      enctype="multipart/form-data"
-                      role="tabpanel"
-                      aria-labelledby="cepat-tab"
-                      class="tab-panel hidden space-y-6">
-                    @csrf
-                    <input type="hidden" name="tab" value="cepat">
-
-                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                        <p class="text-sm text-blue-800">
-                            <strong>Mode Cepat:</strong> Upload file kontrak terlebih dahulu. Detail kontrak dapat dilengkapi kemudian.
-                        </p>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-6">
-                        <!-- Type Employment -->
-                        <div>
-                            <label for="cepat_type_employment" class="block text-sm font-medium text-gray-700 mb-2">
-                                Jenis Ketenagakerjaan
-                            </label>
-                            <input type="text"
-                                   id="cepat_type_employment"
-                                   name="type_employment"
-                                   value="{{ old('type_employment') }}"
-                                   placeholder="Tetap, Kontrak, Magang"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('type_employment') border-red-500 @enderror">
-                            @error('type_employment')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- Join Date -->
-                        <div>
-                            <label for="cepat_join_date" class="block text-sm font-medium text-gray-700 mb-2">
-                                Tanggal Mulai Kerja
-                            </label>
-                            <input type="date"
-                                   id="cepat_join_date"
-                                   name="join_date"
-                                   value="{{ old('join_date') }}"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('join_date') border-red-500 @enderror">
-                            @error('join_date')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <!-- Position -->
-                    <div>
-                        <label for="cepat_position_id" class="block text-sm font-medium text-gray-700 mb-2">
-                            Posisi
-                        </label>
-                        <select id="cepat_position_id"
-                                name="position_id"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('position_id') border-red-500 @enderror">
-                            <option value="">-- Pilih Posisi --</option>
-                            @foreach ($positions as $position)
-                                <option value="{{ $position->id }}" @selected(old('position_id') == $position->id)>
-                                    {{ $position->position_name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('position_id')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <!-- File Upload -->
-                    <div>
-                        <label for="contract_file_path" class="block text-sm font-medium text-gray-700 mb-2">
-                            File Kontrak (PDF / Word)
-                        </label>
-                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-500 transition">
-                            <input type="file"
-                                   id="contract_file_path"
-                                   name="contract_file_path"
-                                   accept=".pdf,.doc,.docx"
-                                   class="hidden"
-                                   onchange="document.getElementById('file-name').textContent = this.files[0]?.name || 'Pilih file'">
-                            <p class="text-gray-600 mb-3">Drag & drop file atau klik untuk memilih</p>
-                            <button type="button"
-                                    onclick="document.getElementById('contract_file_path').click()"
-                                    class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                                Pilih File
-                            </button>
-                            <p id="file-name" class="text-sm text-gray-500 mt-3">File belum dipilih</p>
-                            <p class="text-xs text-gray-400 mt-2">Format: PDF, DOC, DOCX (maks 10 MB)</p>
-                        </div>
-                        @error('contract_file_path')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <!-- Submit -->
-                    <div class="flex gap-3 pt-6 border-t">
-                        <button type="submit"
-                                class="px-6 py-2 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600">
-                            Upload & Buat Kontrak
-                        </button>
-                        <a href="{{ route('employees.show', $employee) }}"
-                           class="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
-                            Batal
-                        </a>
-                    </div>
-                </form>
-            </div>
+        <div class="mt-4 sm:mt-0">
+            <a href="{{ route('employees.show', $employee->id) }}" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                Kembali ke Profil
+            </a>
         </div>
     </div>
 
-    <script>
-        document.querySelectorAll('.tab-button').forEach(button => {
-            button.addEventListener('click', () => {
-                const tabName = button.dataset.tab;
+    <div x-data="{ activeTab: 'lengkap' }" class="bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden">
+        
+        <!-- Tab Navigation -->
+        <div class="border-b border-gray-200">
+            <nav class="flex -mb-px" aria-label="Tabs">
+                <button @click="activeTab = 'lengkap'"
+                        :class="activeTab === 'lengkap' ? 'border-indigo-500 text-indigo-600 bg-indigo-50/50' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                        class="w-1/2 py-4 px-1 text-center border-b-2 font-medium text-sm transition-colors flex flex-col items-center justify-center gap-1">
+                    <div class="flex items-center gap-2">
+                        <svg class="h-5 w-5" :class="activeTab === 'lengkap' ? 'text-indigo-600' : 'text-gray-400'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <span class="text-base font-bold">Form Lengkap</span>
+                    </div>
+                    <span class="text-xs font-normal" :class="activeTab === 'lengkap' ? 'text-indigo-500' : 'text-gray-400'">Isi seluruh detail secara manual</span>
+                </button>
+                <button @click="activeTab = 'cepat'"
+                        :class="activeTab === 'cepat' ? 'border-indigo-500 text-indigo-600 bg-indigo-50/50' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                        class="w-1/2 py-4 px-1 text-center border-b-2 font-medium text-sm transition-colors flex flex-col items-center justify-center gap-1">
+                    <div class="flex items-center gap-2">
+                        <svg class="h-5 w-5" :class="activeTab === 'cepat' ? 'text-indigo-600' : 'text-gray-400'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        <span class="text-base font-bold">Mode Cepat</span>
+                    </div>
+                    <span class="text-xs font-normal" :class="activeTab === 'cepat' ? 'text-indigo-500' : 'text-gray-400'">Upload draft file kontrak</span>
+                </button>
+            </nav>
+        </div>
 
-                // Update button states
-                document.querySelectorAll('.tab-button').forEach(btn => {
-                    btn.classList.remove('active', 'border-blue-500', 'text-gray-700');
-                    btn.classList.add('border-transparent', 'text-gray-500');
-                    btn.setAttribute('aria-selected', 'false');
-                });
-                button.classList.add('active', 'border-blue-500', 'text-gray-700');
-                button.classList.remove('border-transparent', 'text-gray-500');
-                button.setAttribute('aria-selected', 'true');
+        <!-- Tab Panels -->
+        <div class="p-6 sm:p-8">
+            
+            <!-- Tab: Lengkap (Full Form) -->
+            <form x-show="activeTab === 'lengkap'"
+                  action="{{ route('employment-statuses.store', $employee->id) }}"
+                  method="POST"
+                  class="space-y-6">
+                @csrf
+                <input type="hidden" name="tab" value="lengkap">
 
-                // Show/hide panels
-                document.querySelectorAll('.tab-panel').forEach(panel => {
-                    panel.classList.add('hidden');
-                });
-                document.getElementById(tabName + '-form').classList.remove('hidden');
-            });
-        });
-    </script>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Type Employment -->
+                    <div>
+                        <label for="type_employment" class="block text-sm font-semibold text-gray-700 mb-1.5">Jenis Ketenagakerjaan <span class="text-rose-500">*</span></label>
+                        <input type="text" id="type_employment" name="type_employment" value="{{ old('type_employment') }}" placeholder="Tetap, Kontrak, Magang" class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500 @error('type_employment') border-rose-500 focus:border-rose-500 focus:ring-rose-500 @enderror">
+                        @error('type_employment')
+                            <p class="text-rose-500 text-xs mt-1.5 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Join Date -->
+                    <div>
+                        <label for="join_date" class="block text-sm font-semibold text-gray-700 mb-1.5">Tanggal Mulai Kerja <span class="text-rose-500">*</span></label>
+                        <input type="date" id="join_date" name="join_date" value="{{ old('join_date') }}" class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500 @error('join_date') border-rose-500 focus:border-rose-500 focus:ring-rose-500 @enderror">
+                        @error('join_date')
+                            <p class="text-rose-500 text-xs mt-1.5 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Contract Start Date -->
+                    <div>
+                        <label for="contract_start_date" class="block text-sm font-semibold text-gray-700 mb-1.5">Tanggal Mulai Kontrak <span class="text-rose-500">*</span></label>
+                        <input type="date" id="contract_start_date" name="contract_start_date" value="{{ old('contract_start_date') }}" class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500 @error('contract_start_date') border-rose-500 focus:border-rose-500 focus:ring-rose-500 @enderror">
+                        @error('contract_start_date')
+                            <p class="text-rose-500 text-xs mt-1.5 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Contract End Date -->
+                    <div>
+                        <label for="contract_end_date" class="block text-sm font-semibold text-gray-700 mb-1.5">Tanggal Akhir Kontrak <span class="text-gray-400 font-normal">(opsional)</span></label>
+                        <input type="date" id="contract_end_date" name="contract_end_date" value="{{ old('contract_end_date') }}" class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500 @error('contract_end_date') border-rose-500 focus:border-rose-500 focus:ring-rose-500 @enderror">
+                        @error('contract_end_date')
+                            <p class="text-rose-500 text-xs mt-1.5 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Position -->
+                <div class="pt-2">
+                    <label for="position_id" class="block text-sm font-semibold text-gray-700 mb-1.5">Posisi / Jabatan <span class="text-rose-500">*</span></label>
+                    <select id="position_id" name="position_id" class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500 @error('position_id') border-rose-500 focus:border-rose-500 focus:ring-rose-500 @enderror">
+                        <option value="">-- Pilih Posisi --</option>
+                        @foreach ($positions as $position)
+                            <option value="{{ $position->id }}" @selected(old('position_id') == $position->id)>
+                                {{ $position->position_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('position_id')
+                        <p class="text-rose-500 text-xs mt-1.5 font-medium">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Submit -->
+                <div class="flex items-center gap-3 pt-6 border-t border-gray-100 mt-8">
+                    <button type="submit" class="inline-flex justify-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Simpan Kontrak Lengkap
+                    </button>
+                    <a href="{{ route('employees.show', $employee->id) }}" class="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Batal
+                    </a>
+                </div>
+            </form>
+
+            <!-- Tab: Cepat (Quick Upload) -->
+            <form x-show="activeTab === 'cepat'" x-cloak
+                  action="{{ route('employment-statuses.store', $employee->id) }}"
+                  method="POST"
+                  enctype="multipart/form-data"
+                  class="space-y-6">
+                @csrf
+                <input type="hidden" name="tab" value="cepat">
+
+                <div class="bg-indigo-50 border border-indigo-100 rounded-lg p-4 mb-6 flex gap-3">
+                    <svg class="h-5 w-5 text-indigo-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p class="text-sm text-indigo-800">
+                        <strong>Mode Cepat:</strong> Upload file kontrak terlebih dahulu. Tanggal kontrak spesifik dan detail lainnya dapat dilengkapi di kemudian hari.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Type Employment -->
+                    <div>
+                        <label for="cepat_type_employment" class="block text-sm font-semibold text-gray-700 mb-1.5">Jenis Ketenagakerjaan <span class="text-rose-500">*</span></label>
+                        <input type="text" id="cepat_type_employment" name="type_employment" value="{{ old('type_employment') }}" placeholder="Tetap, Kontrak, Magang" class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500 @error('type_employment') border-rose-500 focus:border-rose-500 focus:ring-rose-500 @enderror">
+                        @error('type_employment')
+                            <p class="text-rose-500 text-xs mt-1.5 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Join Date -->
+                    <div>
+                        <label for="cepat_join_date" class="block text-sm font-semibold text-gray-700 mb-1.5">Tanggal Mulai Kerja <span class="text-rose-500">*</span></label>
+                        <input type="date" id="cepat_join_date" name="join_date" value="{{ old('join_date') }}" class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500 @error('join_date') border-rose-500 focus:border-rose-500 focus:ring-rose-500 @enderror">
+                        @error('join_date')
+                            <p class="text-rose-500 text-xs mt-1.5 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Position -->
+                <div class="pt-2">
+                    <label for="cepat_position_id" class="block text-sm font-semibold text-gray-700 mb-1.5">Posisi / Jabatan <span class="text-rose-500">*</span></label>
+                    <select id="cepat_position_id" name="position_id" class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500 @error('position_id') border-rose-500 focus:border-rose-500 focus:ring-rose-500 @enderror">
+                        <option value="">-- Pilih Posisi --</option>
+                        @foreach ($positions as $position)
+                            <option value="{{ $position->id }}" @selected(old('position_id') == $position->id)>
+                                {{ $position->position_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('position_id')
+                        <p class="text-rose-500 text-xs mt-1.5 font-medium">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- File Upload -->
+                <div class="pt-2" x-data="{ fileName: null }">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">File Kontrak <span class="text-gray-400 font-normal">(PDF, DOC, DOCX)</span></label>
+                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:bg-gray-50 transition-colors relative">
+                        <div class="space-y-1 text-center">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div class="flex text-sm text-gray-600 justify-center">
+                                <label for="contract_file_path" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                                    <span>Upload sebuah file</span>
+                                    <input id="contract_file_path" name="contract_file_path" type="file" class="sr-only" accept=".pdf,.doc,.docx" @change="fileName = $event.target.files[0]?.name">
+                                </label>
+                                <p class="pl-1">atau drag and drop</p>
+                            </div>
+                            <p class="text-xs text-gray-500">
+                                PDF, DOC, DOCX up to 10MB
+                            </p>
+                        </div>
+                    </div>
+                    <div x-show="fileName" x-cloak class="mt-3 flex items-center gap-2 text-sm text-emerald-600 bg-emerald-50 p-2 rounded-md border border-emerald-100">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        File terpilih: <span class="font-semibold" x-text="fileName"></span>
+                    </div>
+                    @error('contract_file_path')
+                        <p class="text-rose-500 text-xs mt-1.5 font-medium">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Submit -->
+                <div class="flex items-center gap-3 pt-6 border-t border-gray-100 mt-8">
+                    <button type="submit" class="inline-flex justify-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Upload & Buat Kontrak
+                    </button>
+                    <a href="{{ route('employees.show', $employee->id) }}" class="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Batal
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection

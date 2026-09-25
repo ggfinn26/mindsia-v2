@@ -6,7 +6,7 @@
 @section('content')
 <div class="max-w-2xl mx-auto space-y-6">
     <div>
-        <a href="{{ route('employees.show', $employee) }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700">
+        <a href="{{ route('employees.show', $employee->id) }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700">
             <span class="material-symbols-outlined text-[16px]">arrow_back</span> {{ $employee->full_name }}
         </a>
         <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Ajukan Pengunduran Diri</h2>
@@ -32,7 +32,7 @@
         </div>
         <div class="flex gap-3 pt-2">
             <button type="submit" onclick="return confirm('Yakin ajukan pengunduran diri?')" class="inline-flex min-h-10 items-center gap-2 bg-red-600 px-5 text-sm font-semibold text-white hover:bg-red-700">Ajukan</button>
-            <a href="{{ route('employees.show', $employee) }}" class="inline-flex min-h-10 items-center border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50">Batal</a>
+            <a href="{{ route('employees.show', $employee->id) }}" class="inline-flex min-h-10 items-center border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50">Batal</a>
         </div>
     </form>
 </div>

@@ -20,9 +20,11 @@ class HolidayController extends Controller implements HasMiddleware
         ];
     }
 
-    public function index(): RedirectResponse
+    public function index(): View
     {
-        return redirect()->route('work-schedule-rules.index');
+        return view('attendance.holidays.index', [
+            'holidays' => Holiday::orderBy('holiday_start_date')->paginate(20),
+        ]);
     }
 
     public function create(): View
@@ -34,7 +36,7 @@ class HolidayController extends Controller implements HasMiddleware
     {
         Holiday::create($request->validated());
 
-        return redirect()->route('work-schedule-rules.index')
+        return redirect()->route('holidays.index')
             ->with('success', 'Hari libur berhasil ditambahkan');
     }
 
@@ -49,7 +51,7 @@ class HolidayController extends Controller implements HasMiddleware
     {
         $holiday->update($request->validated());
 
-        return redirect()->route('work-schedule-rules.index')
+        return redirect()->route('holidays.index')
             ->with('success', 'Hari libur berhasil diperbarui');
     }
 
@@ -57,7 +59,7 @@ class HolidayController extends Controller implements HasMiddleware
     {
         $holiday->delete();
 
-        return redirect()->route('work-schedule-rules.index')
+        return redirect()->route('holidays.index')
             ->with('success', 'Hari libur berhasil dihapus');
     }
 }

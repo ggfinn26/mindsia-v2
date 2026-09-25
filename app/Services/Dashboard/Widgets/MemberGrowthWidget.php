@@ -20,18 +20,18 @@ class MemberGrowthWidget implements WidgetDataProviderInterface
         // Monthly trend for current year
         $monthlyGrowth = collect(range(1, $now->month))->map(fn ($m) => [
             'month' => $m,
-            'count' => MemberRegistration::whereMonth('registration_date', $m)
-                ->whereYear('registration_date', $now->year)
+            'count' => MemberRegistration::whereMonth('created_at', $m)
+                ->whereYear('created_at', $now->year)
                 ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
                 ->count(),
         ])->toArray();
 
         // YoY comparison
-        $ytdThis = MemberRegistration::whereYear('registration_date', $now->year)
+        $ytdThis = MemberRegistration::whereYear('created_at', $now->year)
             ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
             ->count();
 
-        $ytdLast = MemberRegistration::whereYear('registration_date', $now->year - 1)
+        $ytdLast = MemberRegistration::whereYear('created_at', $now->year - 1)
             ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
             ->count();
 
@@ -39,8 +39,8 @@ class MemberGrowthWidget implements WidgetDataProviderInterface
             ? round((($ytdThis - $ytdLast) / $ytdLast) * 100, 1)
             : 0;
 
-        $thisMonth = MemberRegistration::whereMonth('registration_date', $now->month)
-            ->whereYear('registration_date', $now->year)
+        $thisMonth = MemberRegistration::whereMonth('created_at', $now->month)
+            ->whereYear('created_at', $now->year)
             ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
             ->count();
 
@@ -61,8 +61,8 @@ class MemberGrowthWidget implements WidgetDataProviderInterface
         return collect(range(1, $now->month))->map(fn ($m) => [
             'month' => $m,
             'year' => $now->year,
-            'new_members' => MemberRegistration::whereMonth('registration_date', $m)
-                ->whereYear('registration_date', $now->year)
+            'new_members' => MemberRegistration::whereMonth('created_at', $m)
+                ->whereYear('created_at', $now->year)
                 ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
                 ->count(),
         ])->toArray();

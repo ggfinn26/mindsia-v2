@@ -25,8 +25,8 @@ class RankingProgramWidget implements WidgetDataProviderInterface
 
         // Ranking by new members per program
         $ranking = $programs->map(function ($program) use ($currentMonth, $currentYear, $branchId) {
-            $newMembers = MemberRegistration::whereMonth('registration_date', $currentMonth)
-                ->whereYear('registration_date', $currentYear)
+            $newMembers = MemberRegistration::whereMonth('created_at', $currentMonth)
+                ->whereYear('created_at', $currentYear)
                 ->where('program_id', $program->id)
                 ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
                 ->count();
@@ -58,8 +58,8 @@ class RankingProgramWidget implements WidgetDataProviderInterface
         $programs = Program::where('is_active', true)->get(['id', 'program_name']);
 
         return $programs->map(function ($program) use ($now, $branchId) {
-            $newMembers = MemberRegistration::whereMonth('registration_date', $now->month)
-                ->whereYear('registration_date', $now->year)
+            $newMembers = MemberRegistration::whereMonth('created_at', $now->month)
+                ->whereYear('created_at', $now->year)
                 ->where('program_id', $program->id)
                 ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
                 ->count();

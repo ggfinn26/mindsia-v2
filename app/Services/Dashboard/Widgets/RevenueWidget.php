@@ -43,12 +43,30 @@ class RevenueWidget implements WidgetDataProviderInterface
             ? round((($memberRevenue - $prevMemberRevenue) / $prevMemberRevenue) * 100, 1)
             : 0;
 
+        // Generate 6 months history for sparkline chart
+        $historyData = [];
+        $historyLabels = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $monthDate = $now->copy()->subMonths($i);
+
+            $rev = MemberPayment::where('payment_status', 'paid')
+                ->whereMonth('paid_at', $monthDate->month)
+                ->whereYear('paid_at', $monthDate->year)
+                ->when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+                ->sum('amount');
+
+            $historyLabels[] = $monthDate->format('M');
+            $historyData[] = $rev;
+        }
+
         return [
             'member_revenue' => $memberRevenue,
             'payroll_cost' => $payrollCost,
             'total_revenue' => $memberRevenue,
             'trend_percent' => $trend,
             'period' => $now->translatedFormat('F Y'),
+            'history_data' => $historyData,
+            'history_labels' => $historyLabels,
         ];
     }
 

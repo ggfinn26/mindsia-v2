@@ -33,8 +33,8 @@ class SocializationEffectivenessWidget implements WidgetDataProviderInterface
             ->where('attended', true)
             ->count();
 
-        $converted = MemberRegistration::whereMonth('registration_date', $currentMonth)
-            ->whereYear('registration_date', $currentYear)
+        $converted = MemberRegistration::whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
             ->whereNotNull('socialization_id')
             ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
             ->count();

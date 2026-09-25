@@ -13,14 +13,14 @@
         <form action="{{ route('branches.update', $branch->id) }}" method="POST">
             @csrf
             @method('PUT')
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Kode Cabang</label>
                     <input type="text" name="code_branches" value="{{ old('code_branches', $branch->code_branches) }}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                     @error('code_branches') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
-                
+
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Nama Cabang</label>
                     <input type="text" name="branch_name" value="{{ old('branch_name', $branch->branch_name) }}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
@@ -54,7 +54,7 @@
                     <label class="block text-sm font-medium text-gray-700">WhatsApp</label>
                     <div class="mt-1 flex rounded-md shadow-sm">
                         <span class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-sm font-bold text-gray-500">+62</span>
-                        <input type="text" name="whatsapp" value="{{ old('whatsapp', $branch-  minlength="8" maxlength="15">whatsapp) }}" placeholder="8xxxxxxxxxx" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')" class="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        <input type="text" name="whatsapp" value="{{ old('whatsapp', $branch-minlength="8" maxlength="15">whatsapp) }}" placeholder="8xxxxxxxxxx" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')" class="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                     </div>
                     @error('whatsapp') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>

@@ -20,14 +20,14 @@ class MemberAcquisitionWidget implements WidgetDataProviderInterface
         $currentMonth = $now->month;
         $currentYear = $now->year;
 
-        $newMembers = MemberRegistration::whereMonth('registration_date', $currentMonth)
-            ->whereYear('registration_date', $currentYear)
+        $newMembers = MemberRegistration::whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
             ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
             ->count();
 
         $prevMonth = $now->copy()->subMonth();
-        $prevNewMembers = MemberRegistration::whereMonth('registration_date', $prevMonth->month)
-            ->whereYear('registration_date', $prevMonth->year)
+        $prevNewMembers = MemberRegistration::whereMonth('created_at', $prevMonth->month)
+            ->whereYear('created_at', $prevMonth->year)
             ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
             ->count();
 
@@ -62,16 +62,16 @@ class MemberAcquisitionWidget implements WidgetDataProviderInterface
     {
         $now = Carbon::now();
 
-        $registrations = MemberRegistration::whereYear('registration_date', $now->year)
+        $registrations = MemberRegistration::whereYear('created_at', $now->year)
             ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
             ->with('member:id,full_name', 'program:id,program_name')
-            ->orderBy('registration_date')
+            ->orderBy('created_at')
             ->get();
 
         return $registrations->map(fn ($r) => [
             'member' => $r->member?->full_name ?? '-',
             'program' => $r->program?->program_name ?? '-',
-            'registration_date' => $r->registration_date?->format('Y-m-d'),
+            'created_at' => $r->created_at?->format('Y-m-d'),
             'status' => $r->status,
         ])->toArray();
     }

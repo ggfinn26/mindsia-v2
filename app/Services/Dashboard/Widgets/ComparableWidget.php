@@ -49,8 +49,8 @@ class ComparableWidget implements WidgetDataProviderInterface
             ->when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
             ->sum('amount');
 
-        $members = MemberRegistration::whereMonth('registration_date', $month)
-            ->whereYear('registration_date', $year)
+        $members = MemberRegistration::whereMonth('created_at', $month)
+            ->whereYear('created_at', $year)
             ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
             ->count();
 

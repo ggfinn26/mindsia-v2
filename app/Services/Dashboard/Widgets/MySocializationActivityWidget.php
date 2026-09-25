@@ -37,8 +37,8 @@ class MySocializationActivityWidget implements WidgetDataProviderInterface
                 ->whereYear('event_date', $now->year))
             ->count();
 
-        $converted = MemberRegistration::whereMonth('registration_date', $now->month)
-            ->whereYear('registration_date', $now->year)
+        $converted = MemberRegistration::whereMonth('created_at', $now->month)
+            ->whereYear('created_at', $now->year)
             ->whereHas('socialization', fn ($q) => $q
                 ->whereHas('employeeSocializations', fn ($bq) => $bq->where('employee_id', $employeeId)))
             ->count();

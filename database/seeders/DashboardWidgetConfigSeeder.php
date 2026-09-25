@@ -9,7 +9,7 @@ use Illuminate\Database\Seeder;
 class DashboardWidgetConfigSeeder extends Seeder
 {
     private const POSITION_DEFAULTS = [
-        'CEO' => [
+        'Chief Executive Officer' => [
             ['widget_key' => 'revenue', 'order' => 1],
             ['widget_key' => 'profit', 'order' => 2],
             ['widget_key' => 'alert_merah', 'order' => 3],
@@ -18,11 +18,11 @@ class DashboardWidgetConfigSeeder extends Seeder
             ['widget_key' => 'ranking_program', 'order' => 6],
             ['widget_key' => 'comparable', 'order' => 7],
         ],
-        'Superadmin' => [
+        'Super Admin' => [
             ['widget_key' => 'system_audit_log', 'order' => 1],
             ['widget_key' => 'active_users', 'order' => 2],
         ],
-        'COO' => [
+        'Chief Operating Officer' => [
             ['widget_key' => 'alert_merah', 'order' => 1],
             ['widget_key' => 'cabang_performance', 'order' => 2],
             ['widget_key' => 'attendance_summary', 'order' => 3],
@@ -33,7 +33,7 @@ class DashboardWidgetConfigSeeder extends Seeder
             ['widget_key' => 'cost_control', 'order' => 8],
             ['widget_key' => 'comparable', 'order' => 9],
         ],
-        'CMO' => [
+        'Chief Marketing Officer' => [
             ['widget_key' => 'alert_merah', 'order' => 1],
             ['widget_key' => 'marketing_revenue', 'order' => 2],
             ['widget_key' => 'member_acquisition', 'order' => 3],
@@ -41,7 +41,7 @@ class DashboardWidgetConfigSeeder extends Seeder
             ['widget_key' => 'marketing_kpi_snapshot', 'order' => 5],
             ['widget_key' => 'comparable', 'order' => 6],
         ],
-        'CHRO' => [
+        'Chief Human Resources Officer' => [
             ['widget_key' => 'alert_merah', 'order' => 1],
             ['widget_key' => 'sdm_headcount', 'order' => 2],
             ['widget_key' => 'payroll_summary', 'order' => 3],
@@ -49,7 +49,7 @@ class DashboardWidgetConfigSeeder extends Seeder
             ['widget_key' => 'attendance_compliance', 'order' => 5],
             ['widget_key' => 'comparable', 'order' => 6],
         ],
-        'CPO' => [
+        'Chief Product Officer' => [
             ['widget_key' => 'alert_merah', 'order' => 1],
             ['widget_key' => 'program_financial_performance', 'order' => 2],
             ['widget_key' => 'ranking_program', 'order' => 3],
@@ -58,7 +58,7 @@ class DashboardWidgetConfigSeeder extends Seeder
             ['widget_key' => 'class_schedule_utilization', 'order' => 6],
             ['widget_key' => 'comparable', 'order' => 7],
         ],
-        'HR Recruitment' => [
+        'Human Resources Recruitment' => [
             ['widget_key' => 'recruitment_pipeline', 'order' => 1],
             ['widget_key' => 'job_postings', 'order' => 2],
             ['widget_key' => 'candidate_screening', 'order' => 3],
@@ -67,7 +67,7 @@ class DashboardWidgetConfigSeeder extends Seeder
             ['widget_key' => 'hiring_metrics', 'order' => 6],
             ['widget_key' => 'comparable', 'order' => 7],
         ],
-        'HR Personalia' => [
+        'Human Resources Personalia' => [
             ['widget_key' => 'employee_directory', 'order' => 1],
             ['widget_key' => 'contract_status', 'order' => 2],
             ['widget_key' => 'payroll_summary', 'order' => 3],
@@ -76,7 +76,7 @@ class DashboardWidgetConfigSeeder extends Seeder
             ['widget_key' => 'compliance_policies', 'order' => 6],
             ['widget_key' => 'comparable', 'order' => 7],
         ],
-        'Dir Ops' => [
+        'Director Operasional' => [
             ['widget_key' => 'alert_merah', 'order' => 1],
             ['widget_key' => 'cabang_performance', 'order' => 2],
             ['widget_key' => 'class_schedule_utilization', 'order' => 3],
@@ -88,7 +88,7 @@ class DashboardWidgetConfigSeeder extends Seeder
             ['widget_key' => 'sdm_headcount', 'order' => 9],
             ['widget_key' => 'comparable', 'order' => 10],
         ],
-        'Finance Director' => [
+        'Director Finance' => [
             ['widget_key' => 'revenue', 'order' => 1],
             ['widget_key' => 'profit', 'order' => 2],
             ['widget_key' => 'budget_vs_actual', 'order' => 3],
@@ -100,7 +100,7 @@ class DashboardWidgetConfigSeeder extends Seeder
             ['widget_key' => 'financial_forecasting', 'order' => 9],
             ['widget_key' => 'comparable', 'order' => 10],
         ],
-        'Finance General' => [
+        'Regular Finance' => [
             ['widget_key' => 'payroll_summary', 'order' => 1],
             ['widget_key' => 'invoice_bill_management', 'order' => 2],
             ['widget_key' => 'payment_status', 'order' => 3],
@@ -124,7 +124,7 @@ class DashboardWidgetConfigSeeder extends Seeder
             ['widget_key' => 'cost_control', 'order' => 9],
             ['widget_key' => 'comparable', 'order' => 10],
         ],
-        'PIC' => [
+        'Person In Charge' => [
             ['widget_key' => 'alert_merah', 'order' => 1],
             ['widget_key' => 'branch_performance', 'order' => 2],
             ['widget_key' => 'attendance_summary', 'order' => 3],

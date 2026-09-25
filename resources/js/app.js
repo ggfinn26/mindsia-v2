@@ -20,3 +20,10 @@ import "./passage-preview";
 import "./toefl-test-show";
 import "./member-class-calendar";
 import "./rent-contract-create";
+
+import Sortable from 'sortablejs';
+window.Sortable = Sortable;
+
+import ApexCharts from 'apexcharts';
+window.ApexCharts = ApexCharts;
+

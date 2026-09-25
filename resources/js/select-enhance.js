@@ -33,16 +33,25 @@ document.addEventListener("alpine:init", () => {
 });
 
 document.addEventListener("alpine:initialized", () => {
-    document.querySelectorAll("select:not([data-enhanced]):not([data-no-enhance])").forEach(enhanceSelect);
+    document
+        .querySelectorAll("select:not([data-enhanced]):not([data-no-enhance]):not([data-with-semua])")
+        .forEach(enhanceSelect);
 
     new MutationObserver((muts) => {
         muts.forEach((m) =>
             m.addedNodes.forEach((node) => {
                 if (node.nodeType !== 1) return;
-                if (node.tagName === "SELECT" && !node.dataset.enhanced && !node.dataset.noEnhance) {
+                if (
+                    node.tagName === "SELECT" &&
+                    !node.dataset.enhanced &&
+                    !node.dataset.noEnhance &&
+                    !node.dataset.withSemua
+                ) {
                     enhanceSelect(node);
                 }
-                node.querySelectorAll?.("select:not([data-enhanced]):not([data-no-enhance])").forEach(enhanceSelect);
+                node.querySelectorAll?.(
+                    "select:not([data-enhanced]):not([data-no-enhance]):not([data-with-semua])",
+                ).forEach(enhanceSelect);
             }),
         );
     }).observe(document.body, { childList: true, subtree: true });

@@ -35,8 +35,8 @@ class BranchPerformanceWidget implements WidgetDataProviderInterface
             ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
             ->sum('amount');
 
-        $newMembers = MemberRegistration::whereMonth('registration_date', $currentMonth)
-            ->whereYear('registration_date', $currentYear)
+        $newMembers = MemberRegistration::whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
             ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
             ->count();
 
