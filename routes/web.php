@@ -93,6 +93,7 @@ use App\Http\Controllers\Admin\Recruitment\OfferingLetterController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\RolePermissionController;
 use App\Http\Controllers\Admin\SocializationController;
+use App\Http\Controllers\Admin\StrategicAlertController;
 use App\Http\Controllers\Admin\SurveyAssignmentController;
 use App\Http\Controllers\Admin\SurveyController;
 use App\Http\Controllers\Admin\SurveyResultController;
@@ -527,6 +528,9 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
         Route::get('testimonials/from-review/{memberReview}', [LandingTestimonialController::class, 'fromReview'])->name('testimonials.from-review');
         Route::resource('testimonials', LandingTestimonialController::class)->except(['show']);
     });
+
+    // Strategic Alert Center (Papan Krisis)
+    Route::get('/admin/strategic-alert', [StrategicAlertController::class, 'index'])->name('admin.strategic-alert.index');
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

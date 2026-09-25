@@ -25,9 +25,9 @@ class AlertMerahWidget implements WidgetDataProviderInterface
         $alerts = [];
 
         // 1. Employee contracts expiring within 30 days
-        $expiringContracts = EmploymentStatus::whereIn('contract_status', ['active', 'extended'])
+        $expiringContracts = EmploymentStatus::where('type_employment', 'contract')
             ->whereBetween('contract_end_date', [$now->toDateString(), $now->copy()->addDays(30)->toDateString()])
-            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
+            ->when($branchId, fn ($q) => $q->whereHas('employee', fn ($e) => $e->where('branch_id', $branchId)))
             ->whereDoesntHave('offBoarding')
             ->count();
 

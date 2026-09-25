@@ -13,7 +13,7 @@
 <div class="pt-4 pb-2">
     <p class="px-3 text-[11px] font-bold text-red-400 uppercase tracking-wider font-jakarta">Strategic Alert Center</p>
 </div>
-<x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" icon="warning" :active="request()->is('admin/strategic-alert*')" class="text-red-600 hover:bg-red-50 hover:text-red-700">
+<x-dashboard.nav-item href="{{ route('admin.strategic-alert.index') }}" icon="warning" :active="request()->routeIs('admin.strategic-alert.*')" class="text-red-600 hover:bg-red-50 hover:text-red-700">
     Papan Krisis
 </x-dashboard.nav-item>
 @endcan

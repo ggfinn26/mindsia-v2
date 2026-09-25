@@ -41,6 +41,10 @@ use App\Observers\SurveyObserver;
 use App\Observers\ToeflMediaObserver;
 use App\Observers\ToeflTestObserver;
 use App\Repositories\Bonus\BonusRuleChangeHistoryRepository;
+use App\Services\Alerts\EmployeeAlertProvider;
+use App\Services\Alerts\FacilityAlertProvider;
+use App\Services\Alerts\RentAlertProvider;
+use App\Services\Alerts\StrategicAlertService;
 use Closure;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
@@ -52,7 +56,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(StrategicAlertService::class, fn () => new StrategicAlertService([
+            new RentAlertProvider,
+            new FacilityAlertProvider,
+            new EmployeeAlertProvider,
+        ]));
     }
 
     /**
