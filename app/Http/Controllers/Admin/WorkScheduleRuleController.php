@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Attendance\StoreWorkScheduleRuleRequest;
 use App\Http\Requests\Attendance\UpdateWorkScheduleRuleRequest;
-use App\Models\Holiday;
+use App\Models\Employee;
+use App\Models\Position;
 use App\Models\WorkScheduleRule;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\View\View;
+use Spatie\Permission\Models\Role;
 
 class WorkScheduleRuleController extends Controller implements HasMiddleware
 {
@@ -25,7 +27,6 @@ class WorkScheduleRuleController extends Controller implements HasMiddleware
     {
         return view('attendance.work-schedule.index', [
             'rules' => WorkScheduleRule::where('is_active', true)->latest()->paginate(15),
-            'holidays' => Holiday::orderBy('holiday_start_date')->paginate(10, ['*'], 'hpage'),
         ]);
     }
 
@@ -44,8 +45,13 @@ class WorkScheduleRuleController extends Controller implements HasMiddleware
 
     public function show(WorkScheduleRule $workScheduleRule): View
     {
+        $workScheduleRule->load('assignments.assignable');
+
         return view('attendance.work-schedule.show', [
             'rule' => $workScheduleRule,
+            'roles' => Role::orderBy('name')->get(['id', 'name']),
+            'positions' => Position::orderBy('position_name')->get(['id', 'position_name']),
+            'employees' => Employee::orderBy('full_name')->get(['id', 'full_name']),
         ]);
     }
 

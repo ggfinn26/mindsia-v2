@@ -22,6 +22,10 @@ class AttendanceService
 
     public function checkIn(Employee $employee, array $data): EmployeeWorkAttendanceLog
     {
+        if (! $employee->branch_id) {
+            throw ValidationException::withMessages(['employee' => 'Pegawai belum memiliki cabang. Hubungi HR.']);
+        }
+
         $today = now()->toDateString();
 
         if ($this->holidayRepo->isHoliday($today)) {

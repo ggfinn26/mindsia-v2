@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Attendance\AdjustAttendanceRequest;
 use App\Http\Requests\Attendance\CheckInRequest;
 use App\Http\Requests\Attendance\CheckOutRequest;
+use App\Models\EmployeeAttendanceMonthlyRecap;
 use App\Models\EmployeeWorkAttendanceLog;
 use App\Repositories\WorkAttendanceRepository;
 use App\Services\AttendanceService;
@@ -17,6 +18,19 @@ class WorkAttendanceController extends Controller
         private readonly AttendanceService $service,
         private readonly WorkAttendanceRepository $repository,
     ) {}
+
+    public function myRecap(): View
+    {
+        $employeeId = auth()->user()->employee_id;
+        $year = (int) request('year', now()->year);
+
+        $recaps = EmployeeAttendanceMonthlyRecap::where('employee_id', $employeeId)
+            ->where('period_year', $year)
+            ->orderBy('period_month')
+            ->get();
+
+        return view('attendance.work.my-recap', compact('recaps', 'year'));
+    }
 
     public function index(): View
     {

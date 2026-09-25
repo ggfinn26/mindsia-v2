@@ -8,7 +8,7 @@ class StoreWorkScheduleAssignmentRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('attendance.holiday.manage');
+        return $this->user()->can('attendance.schedule_rule.manage');
     }
 
     public function rules(): array
@@ -16,7 +16,8 @@ class StoreWorkScheduleAssignmentRequest extends FormRequest
         return [
             'work_schedule_rule_id' => 'required|exists:work_schedule_rules,id',
             'assignable_type' => 'required|in:employee,position,role',
-            'assignable_id' => 'required|integer|min:1',
+            'assignable_id' => 'required',
+            'assignable_id.*' => 'integer|min:1',
             'effective_start_date' => 'required|date',
             'effective_end_date' => 'nullable|date|after_or_equal:effective_start_date',
             'is_active' => 'boolean',
@@ -36,8 +37,13 @@ class StoreWorkScheduleAssignmentRequest extends FormRequest
             ];
 
             $table = $tableMap[$type] ?? null;
-            if ($table && ! \DB::table($table)->where('id', $id)->exists()) {
-                $validator->errors()->add('assignable_id', "The selected $type does not exist.");
+            if ($table) {
+                $ids = (array) $this->input('assignable_id');
+                foreach ($ids as $id) {
+                    if (! \DB::table($table)->where('id', $id)->exists()) {
+                        $validator->errors()->add('assignable_id', "The selected $type (id: $id) does not exist.");
+                    }
+                }
             }
         });
     }

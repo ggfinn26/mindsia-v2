@@ -20,7 +20,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('work-schedule-rules.update', $rule) }}" class="bg-white shadow rounded-lg divide-y divide-gray-100">
+    <form method="POST" action="{{ route('work-schedule-rules.update', $rule) }}" x-data="{ isRequired: {{ old('is_required', $rule->is_required) ? 'true' : 'false' }} }" class="bg-white shadow rounded-lg divide-y divide-gray-100">
         @csrf @method('PUT')
 
         <div class="px-6 py-5 space-y-4">
@@ -31,16 +31,22 @@
                 @error('setting_name') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-2 gap-4" x-show="isRequired">
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Jam Mulai <span class="text-red-500">*</span></label>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">
+                        Jam Mulai <span class="text-red-500">*</span>
+                    </label>
                     <input type="time" name="start_time" value="{{ old('start_time', $rule->start_time) }}"
+                           :required="isRequired"
                            class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                     @error('start_time') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Jam Selesai <span class="text-red-500">*</span></label>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">
+                        Jam Selesai <span class="text-red-500">*</span>
+                    </label>
                     <input type="time" name="end_time" value="{{ old('end_time', $rule->end_time) }}"
+                           :required="isRequired"
                            class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                     @error('end_time') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
@@ -82,6 +88,7 @@
                 <label class="flex items-center gap-2 cursor-pointer">
                     <input type="hidden" name="is_required" value="0">
                     <input type="checkbox" name="is_required" value="1" {{ old('is_required', $rule->is_required) ? 'checked' : '' }}
+                           @change="isRequired = $event.target.checked"
                            class="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
                     <span class="text-sm font-medium text-gray-700">Absensi Wajib</span>
                 </label>

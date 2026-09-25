@@ -1,7 +1,10 @@
 import Alpine from "alpinejs";
+import "./attendance-camera";
+import "./work-schedule-assign";
 import "./employee-portal";
 import "./member-register";
 import "./select-enhance";
+import "./select-enhance-with-semua-option";
 import "./branch-picker";
 import "./socialization-create";
 import "./wa-picker";

@@ -72,19 +72,34 @@
 @endcan
 
 <!-- 1.4 Attendance -->
-@canany(['attendance.document_signature.manage', 'attendance.adjustment.create', 'attendance.leave.review'])
+@canany(['attendance.recap.view', 'attendance.leave.review', 'attendance.verify_adjust.view', 'attendance.schedule.manage', 'attendance.holiday.manage', 'attendance.policy_rules.manage', 'leave.pay_settings.manage'])
 <div class="pt-4 pb-2">
     <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider font-jakarta">Manajemen Absensi</p>
 </div>
 <x-dashboard.nav-group title="Absensi" icon="how_to_reg" :active="request()->is('attendance*') && !request()->is('attendance/check-in-out*') && !request()->is('attendance/leave-request*') && !request()->is('attendance/my-recap*')">
+    @can('attendance.recap.view')
     <x-dashboard.nav-item href="{{ route('attendance-recaps.index') }}" :active="request()->routeIs('attendance-recaps.*')" :isChild="true">Rekap Absensi Pegawai</x-dashboard.nav-item>
+    @endcan
+    @can('attendance.leave.review')
     <x-dashboard.nav-item href="{{ route('leave-requests.manage') }}" :active="request()->routeIs('leave-requests.manage')" :isChild="true">Review Izin/Sakit/Cuti</x-dashboard.nav-item>
+    @endcan
+    @can('attendance.verify_adjust.view')
     <x-dashboard.nav-item href="{{ route('work-attendance.manage') }}" :active="request()->routeIs('work-attendance.manage')" :isChild="true">Verifikasi & Koreksi</x-dashboard.nav-item>
+    @endcan
+    @can('attendance.schedule.manage')
     <x-dashboard.nav-item href="{{ route('work-schedule-rules.index') }}" :active="request()->routeIs('work-schedule-rules.*')" :isChild="true">Aturan Jadwal Kerja</x-dashboard.nav-item>
+    @endcan
+    @can('attendance.holiday.manage')
     <x-dashboard.nav-item href="{{ route('holidays.index') }}" :active="request()->routeIs('holidays.*')" :isChild="true">Hari Libur</x-dashboard.nav-item>
+    @endcan
+    @can('attendance.policy_rules.manage')
     <x-dashboard.nav-item href="{{ route('attendance-rules.index') }}" :active="request()->routeIs('attendance-rules.*')" :isChild="true">Kelola Sanksi Absen</x-dashboard.nav-item>
+    @endcan
+    @can('leave.pay_settings.manage')
+    <x-dashboard.nav-item href="{{ route('leave-pay-settings.index') }}" :active="request()->routeIs('leave-pay-settings.*')" :isChild="true">Pengaturan Izin/Cuti</x-dashboard.nav-item>
+    @endcan
 </x-dashboard.nav-group>
-@endcan
+@endcanany
 
 <!-- 1.5 Bonus & Payroll -->
 @if(auth()->user()->can('payroll.component.create') || auth()->user()->can('payroll.component.update') || auth()->user()->can('payroll.period.view') || auth()->user()->can('payroll.period.generate') || auth()->user()->can('payroll.period.pay') || auth()->user()->canAny(['bonus.marketing-rule.view','bonus.kpi-rule.view','bonus.special-rule.view']))

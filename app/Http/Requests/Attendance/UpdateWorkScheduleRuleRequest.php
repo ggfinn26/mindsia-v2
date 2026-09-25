@@ -15,8 +15,8 @@ class UpdateWorkScheduleRuleRequest extends FormRequest
     {
         return [
             'setting_name' => 'required|string|max:100|unique:work_schedule_rules,setting_name,'.$this->route('work_schedule_rule')->id,
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
+            'start_time' => 'required_if:is_required,1|nullable|date_format:H:i',
+            'end_time' => 'required_if:is_required,1|nullable|date_format:H:i|after:start_time',
             'break_start_time' => 'nullable|date_format:H:i',
             'break_end_time' => 'nullable|date_format:H:i|after:break_start_time',
             'late_tolerance_minutes' => 'required|integer|min:0|max:120',
