@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('content')
-<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto" x-data="{
+<div class="max-w-6xl mx-auto space-y-6" x-data="{
     showConfirmModal: false,
     confirmTitle: '',
     confirmMessage: '',
@@ -10,10 +10,18 @@
     confirmActionText: 'Konfirmasi'
 }">
     <!-- Page header -->
-    <div class="sm:flex sm:justify-between sm:items-center mb-8">
-        <!-- Left: Title -->
-        <div class="mb-4 sm:mb-0">
-            <h1 class="text-2xl md:text-3xl text-gray-800 font-bold">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <p class="text-sm font-semibold uppercase tracking-wider text-slate-500">
+                @if(request('tab') == 'assign')
+                    Manajemen
+                @elseif(request('tab') == 'results')
+                    Laporan
+                @else
+                    Konfigurasi
+                @endif
+            </p>
+            <h1 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">
                 @if(request('tab') == 'assign')
                     Assign Survey
                 @elseif(request('tab') == 'results')
@@ -24,12 +32,11 @@
             </h1>
         </div>
 
-        <!-- Right: Actions -->
-        <div class="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
+        <div class="flex items-center gap-2">
             @if(!request()->has('tab'))
                 @can('survey.form.create')
-                <a href="{{ route('surveys.create') }}" class="btn bg-indigo-500 hover:bg-indigo-600 text-white">
-                    <span class="hidden xs:block ml-2">Tambah Survey</span>
+                <a href="{{ route('surveys.create') }}" class="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-lg bg-[#215aac] px-5 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">add</span> Tambah Survey
                 </a>
                 @endcan
             @endif
@@ -37,89 +44,100 @@
     </div>
 
     <!-- Table -->
-    <div class="bg-white shadow-lg rounded-sm border border-gray-200">
+    <div class="overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm">
         <div class="overflow-x-auto">
-            <table class="table-auto w-full">
-                <!-- Table header -->
-                <thead class="text-xs font-semibold uppercase text-gray-500 bg-gray-50 border-t border-b border-gray-200">
+            <table class="min-w-full divide-y divide-slate-100 text-sm">
+                <thead class="bg-slate-50 text-left text-xs font-bold uppercase tracking-wider text-slate-500">
                     <tr>
-                        <th class="px-6 py-3 text-left">No</th>
-                        <th class="px-6 py-3 text-left">Nama Survey</th>
-                        <th class="px-6 py-3 text-left">Batas Waktu</th>
-                        <th class="px-6 py-3 text-left">Status</th>
-                        <th class="px-6 py-3 text-right">Aksi</th>
+                        <th class="px-6 py-4">Nama Survey</th>
+                        <th class="px-6 py-4">Batas Waktu</th>
+                        <th class="px-6 py-4">Status</th>
+                        <th class="px-6 py-4 text-right">Aksi</th>
                     </tr>
                 </thead>
-                <!-- Table body -->
-                <tbody class="text-sm divide-y divide-gray-200">
+                <tbody class="divide-y divide-slate-50">
                     @forelse($surveys as $survey)
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $loop->iteration }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
+                        <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="px-6 py-4 font-semibold text-slate-900">
                                 {{ $survey->survey_name }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                {{ $survey->deadline_at ? $survey->deadline_at->format('d M Y H:i') : 'Tanpa Batas' }}
+                            <td class="px-6 py-4 text-slate-600 font-medium">
+                                @if ($survey->deadline_at)
+                                    <span class="inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-slate-400">calendar_month</span> {{ $survey->deadline_at->format('d M Y H:i') }}</span>
+                                @else
+                                    <span class="text-slate-400 italic">Tanpa Batas</span>
+                                @endif
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-6 py-4">
                                 @if($survey->isExpired())
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Berakhir</span>
+                                    <span class="inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-red-100 text-red-800">Berakhir</span>
                                 @else
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Aktif</span>
+                                    <span class="inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-emerald-100 text-emerald-800">Aktif</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                @if(request('tab') == 'assign')
-                                    <a href="{{ route('surveys.show', $survey->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Assign Member/Pegawai</a>
-                                @elseif(request('tab') == 'results')
-                                    @can('survey.result.view')
-                                        <a href="{{ route('surveys.results', $survey->id) }}" class="text-purple-600 hover:text-purple-900 mr-3">Lihat Hasil</a>
-                                    @endcan
-                                @else
-                                    <a href="{{ route('surveys.show', $survey->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Detail</a>
-                                    @can('survey.form.update')
-                                        <a href="{{ route('surveys.edit', $survey->id) }}" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
-                                    @endcan
-                                    @can('survey.form.delete')
-                                        <button type="button" @click="showConfirmModal = true; confirmTitle = 'Hapus Survey'; confirmMessage = 'Yakin ingin menghapus survey ini?'; confirmActionUrl = '{{ route('surveys.destroy', $survey->id) }}'; confirmMethod = 'DELETE'; confirmActionText = 'Hapus'" class="text-red-600 hover:text-red-900">Hapus</button>
-                                    @endcan
-                                @endif
+                            <td class="px-6 py-4 text-right">
+                                <div class="inline-flex items-center justify-end gap-3">
+                                    @if(request('tab') == 'assign')
+                                        <a href="{{ route('surveys.show', $survey->id) }}" class="text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors">Assign Member/Pegawai</a>
+                                    @elseif(request('tab') == 'results')
+                                        @can('survey.result.view')
+                                            <a href="{{ route('surveys.results', $survey->id) }}" class="text-sm font-semibold text-purple-600 hover:text-purple-800 transition-colors">Lihat Hasil</a>
+                                        @endcan
+                                    @else
+                                        <a href="{{ route('surveys.show', $survey->id) }}" class="text-sm font-semibold text-[#215aac] hover:text-[#194a91] transition-colors">Detail</a>
+                                        @can('survey.form.update')
+                                            <a href="{{ route('surveys.edit', $survey->id) }}" class="text-sm font-semibold text-amber-600 hover:text-amber-800 transition-colors">Edit</a>
+                                        @endcan
+                                        @can('survey.form.delete')
+                                            <button type="button" @click="showConfirmModal = true; confirmTitle = 'Hapus Survey'; confirmMessage = 'Yakin ingin menghapus survey ini?'; confirmActionUrl = '{{ route('surveys.destroy', $survey->id) }}'; confirmMethod = 'DELETE'; confirmActionText = 'Hapus'" class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors">Hapus</button>
+                                        @endcan
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">Belum ada data survey.</td>
+                            <td colspan="4" class="px-6 py-12 text-center">
+                                <div class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-50 mb-3">
+                                    <span class="material-symbols-outlined text-slate-400 text-2xl">fact_check</span>
+                                </div>
+                                <h3 class="text-sm font-medium text-slate-900">Belum ada data survey</h3>
+                                <p class="mt-1 text-sm text-slate-500">
+                                    @if(request('tab') == 'assign') Belum ada survey yang bisa di-assign. @elseif(request('tab') == 'results') Belum ada hasil survey yang tersedia. @else Silakan buat template survey baru. @endif
+                                </p>
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
-        <!-- Note: Pagination depends on repository return type, assuming Collection based on the controller. -->
     </div>
 
     <!-- Modal Konfirmasi Hapus -->
-    <div x-show="showConfirmModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
+    <div x-show="showConfirmModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
         <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
-            <div x-show="showConfirmModal" @click="showConfirmModal = false" class="fixed inset-0 transition-opacity" aria-hidden="true">
-                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true" @click="showConfirmModal = false">
+                <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
             </div>
-            <div x-show="showConfirmModal" class="relative z-10 inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            
+            <!-- Modal panel -->
+            <div class="relative inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-slate-100">
+                <div class="bg-white px-6 pt-6 pb-6">
                     <div class="sm:flex sm:items-start">
-                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-50 sm:mx-0 sm:h-10 sm:w-10">
                             <span class="material-symbols-outlined text-red-600">warning</span>
                         </div>
                         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                            <h3 class="text-lg leading-6 font-medium text-gray-900" x-text="confirmTitle"></h3>
+                            <h3 class="font-jakarta text-lg font-bold text-slate-900" x-text="confirmTitle"></h3>
                             <div class="mt-2">
-                                <p class="text-sm text-gray-500" x-text="confirmMessage"></p>
+                                <p class="text-sm text-slate-500" x-text="confirmMessage"></p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="button" @click="$refs.confirmForm.submit()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm" x-text="confirmActionText"></button>
-                    <button type="button" @click="showConfirmModal = false" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Batal</button>
+                <div class="bg-slate-50 px-6 py-4 sm:flex sm:flex-row-reverse gap-3 border-t border-slate-100">
+                    <button type="button" @click="$refs.confirmForm.submit()" class="w-full inline-flex justify-center rounded-lg bg-red-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-red-700 transition-colors sm:w-auto" x-text="confirmActionText"></button>
+                    <button type="button" @click="showConfirmModal = false" class="mt-3 w-full inline-flex justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-colors sm:mt-0 sm:w-auto">Batal</button>
                 </div>
                 <form x-ref="confirmForm" :action="confirmActionUrl" method="POST" class="hidden">
                     @csrf

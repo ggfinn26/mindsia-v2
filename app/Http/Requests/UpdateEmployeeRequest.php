@@ -21,7 +21,7 @@ class UpdateEmployeeRequest extends FormRequest
             'gender' => ['required', 'in:L,P'],
             'birthdate' => ['required', 'date'],
             'email' => ['required', 'email', Rule::unique('employees', 'email')->ignore($employee->id)],
-            'whatsapp_number' => ['required', 'string'],
+            'whatsapp_number' => ['required', 'string', 'min:8', 'max:15'],
             'branch_id' => ['required', 'exists:branches,id'],
         ];
     }

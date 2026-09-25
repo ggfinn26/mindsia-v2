@@ -78,9 +78,12 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 mb-1">Nomor WhatsApp <span class="text-red-500">*</span></label>
-                    <input type="tel" name="whatsapp_number" value="{{ old('whatsapp_number') }}" required
-                           class="w-full border border-slate-300 px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
-                           placeholder="08xxxxxxxxxx" />
+                    <div class="flex">
+                        <span class="inline-flex items-center border border-r-0 border-slate-300 bg-slate-50 px-3 text-sm font-bold text-slate-500">+62</span>
+                        <input type="tel" name="whatsapp_number" value="{{ old('whatsapp_number') }}" required
+                               placeholder="8xxxxxxxxxx" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')"
+                               class="w-full min-w-0 flex-1 border border-slate-300 px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]" minlength="8" maxlength="15" />
+                    </div>
                     @error('whatsapp_number') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
@@ -146,14 +149,14 @@
                     <label class="block text-xs font-semibold text-slate-500 mb-1">WA Ayah <span class="text-red-500">*</span></label>
                     <input type="tel" name="father_whatsapp" value="{{ old('father_whatsapp') }}" required
                            class="w-full border border-slate-300 px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
-                           placeholder="08xxxxxxxxxx" />
+                           placeholder="08xxxxxxxxxx"  minlength="8" maxlength="15" />
                     @error('father_whatsapp') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 mb-1">WA Ibu <span class="text-red-500">*</span></label>
                     <input type="tel" name="mother_whatsapp" value="{{ old('mother_whatsapp') }}" required
                            class="w-full border border-slate-300 px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
-                           placeholder="08xxxxxxxxxx" />
+                           placeholder="08xxxxxxxxxx"  minlength="8" maxlength="15" />
                     @error('mother_whatsapp') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>

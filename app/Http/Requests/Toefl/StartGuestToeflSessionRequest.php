@@ -24,7 +24,7 @@ class StartGuestToeflSessionRequest extends FormRequest
     {
         return [
             'guest_name' => ['required', 'string', 'max:255'],
-            'guest_whatsapp' => ['required', 'string', 'max:50'],
+            'guest_whatsapp' => ['required', 'string', 'min:8', 'max:15'],
             'guest_city' => ['required', 'string', 'max:100'],
             'guest_email' => ['nullable', 'email', 'max:255'],
             'guest_instagram' => ['nullable', 'string', 'max:100'],

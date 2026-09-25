@@ -54,8 +54,11 @@
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">No. HP</label>
-                <input type="text" name="phone" value="{{ old('phone') }}"
-                       class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" placeholder="08xxxxxxxxxx">
+                <div class="flex rounded-lg shadow-sm">
+                    <span class="inline-flex items-center rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 px-3 text-sm font-bold text-gray-500">+62</span>
+                    <input type="text" name="phone" value="{{ old('phone') }}" placeholder="8xxxxxxxxxx" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')"
+                           class="block w-full min-w-0 flex-1 rounded-none rounded-r-lg border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" minlength="8" maxlength="15">
+                </div>
             </div>
             <div class="col-span-2">
                 <label class="block text-sm font-medium text-gray-700 mb-1">Alamat Lengkap</label>

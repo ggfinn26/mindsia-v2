@@ -20,7 +20,7 @@ class StoreEmployeeRequest extends FormRequest
             'gender' => ['required', 'in:L,P'],
             'birthdate' => ['required', 'date'],
             'email' => ['required', 'email', 'unique:employees'],
-            'whatsapp_number' => ['required', 'string'],
+            'whatsapp_number' => ['required', 'string', 'min:8', 'max:15'],
             'branch_id' => ['required', 'exists:branches,id'],
             'region_id' => ['required', 'exists:regions,id'],
             'area_id' => ['nullable', 'exists:areas,id'],

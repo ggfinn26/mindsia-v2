@@ -19,7 +19,7 @@ class StoreWalkInApplicationRequest extends FormRequest
             'notes' => ['nullable', 'string'],
             // applicant data (buat ApplicantMasterData baru jika belum ada)
             'applicant.full_name' => ['required', 'string', 'max:255'],
-            'applicant.whatsapp_number' => ['required', 'string', 'max:50'],
+            'applicant.whatsapp_number' => ['required', 'string', 'min:8', 'max:15'],
             'applicant.email' => ['nullable', 'email'],
         ];
     }

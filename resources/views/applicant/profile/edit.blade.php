@@ -18,7 +18,7 @@
 
             <div>
                 <label class="block text-sm font-medium mb-1">Telepon / WhatsApp</label>
-                <input name="phone" type="text" class="form-input w-full" />
+                <input name="phone" type="text" class="form-input w-full" /  minlength="8" maxlength="15">
             </div>
 
             <div>

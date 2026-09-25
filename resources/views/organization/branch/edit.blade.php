@@ -52,7 +52,10 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700">WhatsApp</label>
-                    <input type="text" name="whatsapp" value="{{ old('whatsapp', $branch->whatsapp) }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    <div class="mt-1 flex rounded-md shadow-sm">
+                        <span class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-sm font-bold text-gray-500">+62</span>
+                        <input type="text" name="whatsapp" value="{{ old('whatsapp', $branch-  minlength="8" maxlength="15">whatsapp) }}" placeholder="8xxxxxxxxxx" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')" class="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
                     @error('whatsapp') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 

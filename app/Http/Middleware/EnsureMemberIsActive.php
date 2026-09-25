@@ -23,6 +23,7 @@ class EnsureMemberIsActive
             if ($request->expectsJson()) {
                 return response()->json(['message' => 'Akun Anda ditangguhkan. Selesaikan pembayaran yang tertunggak untuk memulihkan akses.'], 403);
             }
+
             return response()->view('member.activation.status', [
                 'status' => 'ditangguhkan',
                 'message' => 'Akun Anda ditangguhkan. Selesaikan pembayaran yang tertunggak untuk memulihkan akses.',
@@ -33,6 +34,7 @@ class EnsureMemberIsActive
             if ($request->expectsJson()) {
                 return response()->json(['message' => 'Akun Anda belum aktif. Selesaikan pembayaran pertama untuk mengakses fitur ini.'], 403);
             }
+
             return response()->view('member.activation.status', [
                 'status' => 'pending',
                 'message' => 'Akun Anda belum aktif. Selesaikan pembayaran pertama untuk mengakses fitur ini.',

@@ -16,7 +16,7 @@ class StoreApplicantRequest extends FormRequest
     {
         return [
             'full_name' => ['required', 'string', 'max:255'],
-            'whatsapp_number' => ['required', 'string', 'max:50'],
+            'whatsapp_number' => ['required', 'string', 'min:8', 'max:15'],
             'birth_date' => ['nullable', 'date'],
             'gender' => ['nullable', 'in:male,female'],
             'address' => ['nullable', 'string', 'max:500'],

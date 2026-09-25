@@ -58,7 +58,10 @@
 
             <div class="mb-8">
                 <label class="block mb-2 text-[12px] font-bold text-ky-text/80 uppercase tracking-wider">WhatsApp *</label>
-                <input name="whatsapp" type="tel" class="w-full px-4 py-3 bg-white border border-ky-border/50 rounded-xl text-[14px] focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors" required>
+                <div class="flex">
+                    <span class="inline-flex items-center px-4 bg-[#F8F9FA] border border-r-0 border-ky-border/50 rounded-l-xl text-[14px] font-bold text-ky-text/70">+62</span>
+                    <input name="whatsapp" type="tel" placeholder="8xxxxxxxxxx" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')" class="w-full min-w-0 flex-1 px-4 py-3 bg-white border border-ky-border/50 rounded-r-xl text-[14px] focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors" required  minlength="8" maxlength="15">
+                </div>
             </div>
 
             <div class="pt-6 border-t border-ky-border/50 flex flex-col-reverse sm:flex-row justify-end gap-3">

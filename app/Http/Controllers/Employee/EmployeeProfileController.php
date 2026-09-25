@@ -57,7 +57,7 @@ class EmployeeProfileController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'telegram_chat_id' => 'nullable|string|max:50',
-            'whatsapp_number' => 'nullable|string|max:20',
+            'whatsapp_number' => 'nullable|string|min:8|max:15',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'signature_base64' => 'nullable|string',
         ]);

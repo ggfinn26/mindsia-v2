@@ -76,8 +76,12 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 mb-1">Nomor WhatsApp <span class="text-red-500">*</span></label>
-                    <input type="tel" name="whatsapp_number" value="{{ old('whatsapp_number', $member->whatsapp_number) }}" required
-                           class="w-full border border-slate-300 px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]" />
+                    <div class="flex">
+                        <span class="inline-flex items-center border border-r-0 border-slate-300 bg-slate-50 px-3 text-sm font-bold text-slate-500">+62</span>
+                        <input type="tel" name="whatsapp_number" value="{{ old('whatsapp_number', $member-  minlength="8" maxlength="15">whatsapp_number) }}" required
+                               placeholder="8xxxxxxxxxx" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')"
+                               class="w-full min-w-0 flex-1 border border-slate-300 px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]" />
+                    </div>
                     @error('whatsapp_number')
                         <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
                     @enderror
@@ -138,12 +142,12 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 mb-1">WA Ayah</label>
-                    <input type="tel" name="father_whatsapp" value="{{ old('father_whatsapp', $member->father_whatsapp) }}"
+                    <input type="tel" name="father_whatsapp" value="{{ old('father_whatsapp', $member- minlength="8" maxlength="15">father_whatsapp) }}"
                            class="w-full border border-slate-300 px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]" />
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 mb-1">WA Ibu</label>
-                    <input type="tel" name="mother_whatsapp" value="{{ old('mother_whatsapp', $member->mother_whatsapp) }}"
+                    <input type="tel" name="mother_whatsapp" value="{{ old('mother_whatsapp', $member- minlength="8" maxlength="15">mother_whatsapp) }}"
                            class="w-full border border-slate-300 px-4 py-2.5 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]" />
                 </div>
             </div>

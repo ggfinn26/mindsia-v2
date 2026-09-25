@@ -43,9 +43,9 @@
                         <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm font-bold">+62</span>
                         <input name="guest_whatsapp" type="text" required
                             value="{{ old('guest_whatsapp') ? ltrim(preg_replace('/^\+?62/', '', old('guest_whatsapp')), '0') : '' }}"
-                            placeholder="8xxxxxxxxxx" maxlength="13"
+                            placeholder="8xxxxxxxxxx"
                             @input="$el.value = $el.value.replace(/[^0-9]/g, '').replace(/^0+/, '')"
-                            class="flex-1 block w-full border border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            class="flex-1 block w-full border border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" minlength="8" maxlength="15">
                     </div>
                     @error('guest_whatsapp') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>

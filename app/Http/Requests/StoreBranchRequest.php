@@ -19,7 +19,7 @@ class StoreBranchRequest extends FormRequest
             'code_branches' => ['required', 'string', 'max:20', 'unique:branches,code_branches'],
             'address' => ['required', 'string'],
             'gmaps_url' => ['nullable', 'string', 'max:500'],
-            'whatsapp' => ['required', 'string', 'max:255'],
+            'whatsapp' => ['required', 'string', 'min:8', 'max:15'],
             'instagram' => ['nullable', 'string', 'max:255'],
             'latitude' => ['required', 'numeric', 'between:-90,90'],
             'longitude' => ['required', 'numeric', 'between:-180,180'],

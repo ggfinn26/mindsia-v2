@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Employee;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class EmployeeNotificationFactory extends Factory
 {

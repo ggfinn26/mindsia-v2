@@ -108,9 +108,19 @@
                                         <div class="absolute right-0 z-10 mt-2 w-80 border border-slate-300 bg-white p-4 shadow-lg">
                                             <form method="POST" action="{{ route('payroll.payrolls.payment.store', [$payroll->period, $payroll]) }}" class="space-y-3">
                                                 @csrf
-                                                <div>
+                                                <div x-data="{
+                                                        rawValue: '{{ $remainingAmount }}',
+                                                        format(val) {
+                                                            let num = val.toString().replace(/[^0-9]/g, '');
+                                                            return num ? new Intl.NumberFormat('id-ID').format(num) : '';
+                                                        }
+                                                    }">
                                                     <label for="amount-{{ $payroll->id }}" class="mb-1 block text-xs font-semibold text-slate-700">Jumlah pembayaran</label>
-                                                    <input id="amount-{{ $payroll->id }}" name="amount" type="number" min="0.01" max="{{ $remainingAmount }}" step="0.01" value="{{ $remainingAmount }}" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                                                    <div class="flex rounded-md shadow-sm">
+                                                        <span class="inline-flex items-center rounded-l-md border border-r-0 border-slate-300 bg-slate-50 px-3 text-sm font-bold text-slate-500">Rp</span>
+                                                        <input id="amount-{{ $payroll->id }}-ui" type="text" :value="format(rawValue)" @input="rawValue = $event.target.value.replace(/[^0-9]/g, ''); $event.target.value = format(rawValue)" required class="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                                                        <input type="hidden" id="amount-{{ $payroll->id }}" name="amount" x-model="rawValue">
+                                                    </div>
                                                 </div>
                                                 <div>
                                                     <label for="method-{{ $payroll->id }}" class="mb-1 block text-xs font-semibold text-slate-700">Metode</label>

@@ -103,7 +103,7 @@ class ProspectiveMemberController extends Controller
 
         $data = $request->validate([
             'full_name' => ['required', 'string', 'max:255'],
-            'whatsapp_number' => ['required', 'string', 'max:20'],
+            'whatsapp_number' => ['required', 'string', 'min:8', 'max:15'],
             'email' => ['nullable', 'email', 'max:255'],
             'instagram' => ['nullable', 'string', 'max:255'],
             'gender' => ['nullable', 'in:L,P'],

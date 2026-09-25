@@ -72,7 +72,7 @@
                             <span class="inline-flex items-center px-3.5 text-[13px] text-[#4B5563] bg-[#E5E7EB] border border-[#E5E7EB] rounded-l-xl font-bold">+62</span>
                             <input type="text" id="whatsapp_number" name="whatsapp_number"
                                    value="{{ old('whatsapp_number') }}" placeholder="8xxxxxxxxxx"
-                                   class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-l-0 @error('whatsapp_number') border-red-300 @else border-[#E5E7EB] @enderror rounded-r-xl text-[13px] focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20 transition-all shadow-sm" required>
+                                   class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-l-0 @error('whatsapp_number') border-red-300 @else border-[#E5E7EB] @enderror rounded-r-xl text-[13px] focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20 transition-all shadow-sm" required minlength="8" maxlength="15">
                         </div>
                         @error('whatsapp_number')
                             <p class="mt-1 text-[11px] text-red-600 font-medium">{{ $message }}</p>

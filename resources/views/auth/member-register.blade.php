@@ -134,10 +134,10 @@
                             <div class="flex">
                                 <span class="inline-flex items-center px-3.5 text-[13px] text-[#4B5563] bg-[#E5E7EB] border border-[#E5E7EB] rounded-l-xl font-bold">+62</span>
                                 <input type="text" id="whatsapp_number" name="whatsapp_number"
-                                       value="{{ old('whatsapp_number') }}" placeholder="8xxxxxxxxxx" maxlength="13"
+                                       value="{{ old('whatsapp_number') }}" placeholder="8xxxxxxxxxx"
                                        @input="$el.value = $el.value.replace(/[^0-9]/g, '').replace(/^0+/, ''); checkValidities()"
                                        class="w-full px-3.5 py-2.5 border border-l-0 rounded-r-xl text-[13px] focus:outline-none focus:ring-2 transition-all shadow-sm"
-                                       :class="inputClass(1, 'whatsapp_number')">
+                                       :class="inputClass(1, 'whatsapp_number')" minlength="8" maxlength="15">
                             </div>
                             <p x-show="hasError(1, 'whatsapp_number')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium">Minimal 9 digit.</p>
                             @error('whatsapp_number')
@@ -503,14 +503,14 @@
                                 <label for="father_whatsapp" class="block mb-1 text-[12px] font-bold text-[#4B5563]">WhatsApp Ayah <span class="text-red-600">*</span></label>
                                 <input type="text" id="father_whatsapp" name="father_whatsapp" value="{{ old('father_whatsapp') }}"
                                        class="w-full px-3.5 py-2.5 border rounded-xl text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-2 focus:ring-[#5586DB]/20 transition-all shadow-sm"
-                                       :class="hasError(2,'father_whatsapp') ? 'border-red-500 bg-red-50' : 'bg-[#F8FAFC] border-[#E5E7EB]'">
+                                       :class="hasError(2,'father_whatsapp') ? 'border-red-500 bg-red-50' : 'bg-[#F8FAFC] border-[#E5E7EB]'" minlength="8" maxlength="15">
                                 <p x-show="hasError(2,'father_whatsapp')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium">Bagian ini wajib diisi.</p>
                             </div>
                             <div>
                                 <label for="mother_whatsapp" class="block mb-1 text-[12px] font-bold text-[#4B5563]">WhatsApp Ibu <span class="text-red-600">*</span></label>
                                 <input type="text" id="mother_whatsapp" name="mother_whatsapp" value="{{ old('mother_whatsapp') }}"
                                        class="w-full px-3.5 py-2.5 border rounded-xl text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-2 focus:ring-[#5586DB]/20 transition-all shadow-sm"
-                                       :class="hasError(2,'mother_whatsapp') ? 'border-red-500 bg-red-50' : 'bg-[#F8FAFC] border-[#E5E7EB]'">
+                                       :class="hasError(2,'mother_whatsapp') ? 'border-red-500 bg-red-50' : 'bg-[#F8FAFC] border-[#E5E7EB]'" minlength="8" maxlength="15">
                                 <p x-show="hasError(2,'mother_whatsapp')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium">Bagian ini wajib diisi.</p>
                             </div>
                         </div>

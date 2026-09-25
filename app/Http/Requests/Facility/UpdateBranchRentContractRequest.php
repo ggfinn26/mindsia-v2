@@ -15,7 +15,7 @@ class UpdateBranchRentContractRequest extends FormRequest
     {
         return [
             'owner_name' => ['sometimes', 'string', 'max:150'],
-            'owner_phone' => ['nullable', 'string', 'max:30'],
+            'owner_phone' => ['nullable', 'string', 'min:8', 'max:15'],
             'status' => ['sometimes', 'in:active,expired,terminated'],
             'notes' => ['nullable', 'string'],
         ];

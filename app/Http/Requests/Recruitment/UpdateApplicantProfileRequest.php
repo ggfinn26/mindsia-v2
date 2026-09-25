@@ -17,7 +17,7 @@ class UpdateApplicantProfileRequest extends FormRequest
         return [
             'full_name' => ['sometimes', 'string', 'max:255'],
             'email' => ['nullable', 'email', 'max:255'],
-            'whatsapp_number' => ['sometimes', 'string', 'max:50'],
+            'whatsapp_number' => ['sometimes', 'string', 'min:8', 'max:15'],
             'birth_date' => ['nullable', 'date'],
             'gender' => ['nullable', 'in:male,female'],
             'address' => ['nullable', 'string'],

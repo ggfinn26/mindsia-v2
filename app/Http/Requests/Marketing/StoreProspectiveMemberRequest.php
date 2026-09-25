@@ -16,7 +16,7 @@ class StoreProspectiveMemberRequest extends FormRequest
         return [
             'socialization_id' => ['nullable', 'exists:socializations,id'],
             'full_name' => ['required', 'string', 'max:255'],
-            'whatsapp_number' => ['required', 'string', 'max:50'],
+            'whatsapp_number' => ['required', 'string', 'min:8', 'max:15'],
             'instagram' => ['nullable', 'string', 'max:255'],
             'email' => ['nullable', 'email', 'max:255'],
             'gender' => ['nullable', 'in:L,P'],

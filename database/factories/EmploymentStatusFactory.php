@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Employee;
 use App\Models\Position;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class EmploymentStatusFactory extends Factory
 {

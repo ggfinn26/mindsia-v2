@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\MemberData;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class MemberNotificationFactory extends Factory
 {

@@ -63,7 +63,7 @@
                             <label for="whatsapp_number" class="block text-sm font-medium text-gray-700 mb-1">No. WhatsApp</label>
                             <div class="flex">
                                 <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm">+62</span>
-                                <input type="text" name="whatsapp_number" id="whatsapp_number" value="{{ old('whatsapp_number', preg_replace('/^\+?62/', '', $employee->whatsapp_number)) }}" placeholder="81234567890" class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-lg border border-gray-300 focus:border-[#5586DB] focus:ring-[#5586DB] sm:text-sm">
+                                <input type="text" name="whatsapp_number" id="whatsapp_number" value="{{ old('whatsapp_number', preg_replace('/^\+?62/', '', $employee-  minlength="8" maxlength="15">whatsapp_number)) }}" placeholder="81234567890" class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-lg border border-gray-300 focus:border-[#5586DB] focus:ring-[#5586DB] sm:text-sm">
                             </div>
                             <p class="mt-1 text-xs text-gray-500">Gunakan nomor yang aktif untuk keperluan notifikasi sistem.</p>
                         </div>

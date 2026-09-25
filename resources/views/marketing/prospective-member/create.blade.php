@@ -41,9 +41,12 @@
                 <label for="whatsapp_number" class="block text-sm font-medium text-gray-700 mb-1">
                     Nomor WhatsApp <span class="text-red-500">*</span>
                 </label>
-                <input type="text" name="whatsapp_number" id="whatsapp_number" value="{{ old('whatsapp_number') }}" required
-                    placeholder="08xxxxxxxxxx"
-                    class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500 @error('whatsapp_number') border-red-300 @enderror">
+                <div class="flex rounded-md shadow-sm">
+                    <span class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-sm font-bold text-gray-500">+62</span>
+                    <input type="text" name="whatsapp_number" id="whatsapp_number" value="{{ old('whatsapp_number') }}" required
+                        placeholder="8xxxxxxxxxx" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')"
+                        class="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 text-sm focus:ring-indigo-500 focus:border-indigo-500 @error('whatsapp_number') border-red-300 @enderror" minlength="8" maxlength="15">
+                </div>
                 @error('whatsapp_number') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
         </div>
