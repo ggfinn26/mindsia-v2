@@ -1,37 +1,48 @@
 @extends('layouts.dashboard')
 
+@section('title', 'Edit Akun Pegawai')
+
 @section('content')
-<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-4xl mx-auto">
-    <div class="mb-8">
-        <h1 class="text-2xl md:text-3xl text-gray-800 font-bold">Edit User</h1>
+<div class="max-w-4xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">Edit Akun: {{ $user->name }}</h1>
+        <a href="{{ route('users.show', $user->id) }}" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium border border-gray-300">
+            Batal
+        </a>
     </div>
 
-    <div class="bg-white shadow-lg rounded-sm border border-gray-200">
-        <form action="#" method="POST" class="p-6 space-y-4">
+    @if ($errors->any())
+        <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+            <strong>Ada kesalahan pada input Anda:</strong>
+            <ul class="list-disc pl-5 mt-1">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+        <form action="{{ route('users.update', $user->id) }}" method="POST" class="p-6 space-y-4">
             @csrf
             @method('PUT')
-            
+
             <div>
-                <label class="block text-sm font-medium mb-1">Nama Lengkap <span class="text-red-500">*</span></label>
-                <input name="name" type="text" class="form-input w-full" required />
+                <label class="block text-sm font-medium text-gray-700">Nama Lengkap <span class="text-red-500">*</span></label>
+                <input type="text" name="name" value="{{ old('name', $user->name) }}" required
+                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
             </div>
 
             <div>
-                <label class="block text-sm font-medium mb-1">Email <span class="text-red-500">*</span></label>
-                <input name="email" type="email" class="form-input w-full" required />
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium mb-1">Status Akun</label>
-                <select name="status" class="form-select w-full">
-                    <option value="active">Aktif</option>
-                    <option value="suspended">Suspended</option>
-                </select>
+                <label class="block text-sm font-medium text-gray-700">Email <span class="text-red-500">*</span></label>
+                <input type="email" name="email" value="{{ old('email', $user->email) }}" required
+                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
             </div>
 
             <div class="mt-8 flex justify-end">
-                <a href="{{ route('admin.users.index') }}" class="btn bg-white border-gray-200 hover:border-gray-300 text-gray-600 mr-3">Batal</a>
-                <button type="submit" class="btn bg-indigo-500 hover:bg-indigo-600 text-white">Simpan Perubahan</button>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 border border-transparent rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Simpan Perubahan
+                </button>
             </div>
         </form>
     </div>

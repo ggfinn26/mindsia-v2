@@ -25,10 +25,10 @@
 <x-dashboard.nav-item href="{{ route('employee.payslips.index') }}" icon="receipt_long" :active="request()->routeIs('employee.payslips.*')">Slip Gaji Saya</x-dashboard.nav-item>
 <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" icon="track_changes" :active="request()->is('employee/my-kpi*')">KPI Saya</x-dashboard.nav-item>
 <x-dashboard.nav-item href="{{ route('marketing.my-performance') }}" icon="format_list_numbered" :active="request()->routeIs('marketing.my-performance')">Ranking MPI Saya</x-dashboard.nav-item>
-<x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" icon="history" :active="request()->is('attendance/my-recap*')">Riwayat Absensi Saya</x-dashboard.nav-item>
-<x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" icon="login" :active="request()->is('attendance/check-in-out*')">Absen Masuk/Keluar</x-dashboard.nav-item>
-<x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" icon="co_present" :active="request()->is('class/my-classes*')">Absen Sesi Saya</x-dashboard.nav-item>
-<x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" icon="event_busy" :active="request()->is('attendance/leave-request*')">Izin/Sakit/Cuti Saya</x-dashboard.nav-item>
+<x-dashboard.nav-item href="{{ route('work-attendance.my-recap') }}" icon="history" :active="request()->is('attendance/my-recap*')">Riwayat Absensi Saya</x-dashboard.nav-item>
+<x-dashboard.nav-item href="{{ route('work-attendance.index') }}" icon="login" :active="request()->routeIs('work-attendance.index')">Absen Masuk/Keluar</x-dashboard.nav-item>
+<x-dashboard.nav-item href="{{ route('session-attendance.index') }}" icon="co_present" :active="request()->routeIs('session-attendance.index')">Absen Sesi Saya</x-dashboard.nav-item>
+<x-dashboard.nav-item href="{{ route('leave-requests.index') }}" icon="event_busy" :active="request()->routeIs('leave-requests.index') || request()->routeIs('leave-requests.create')">Izin/Sakit/Cuti Saya</x-dashboard.nav-item>
 <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" icon="mail" :active="request()->is('letter/my-letters*')">Surat Saya</x-dashboard.nav-item>
 @auth
     @if(auth()->user()->can('marketing.wa_template.manage') && auth()->user()->employee)
@@ -52,21 +52,22 @@
 @endcan
 
 <!-- 1.3 Kelola Pengguna -->
-@if(auth()->user()->can('employee.view') || auth()->user()->can('position.view'))
+@if(auth()->user()->can('employee.view') || auth()->user()->can('position.view') || auth()->user()->can('position.manage'))
 <div class="pt-4 pb-2">
     <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider font-jakarta">SDM & Akses</p>
 </div>
-<x-dashboard.nav-group title="Kelola Pengguna" icon="manage_accounts" :active="request()->is('admin/employee/list*') || request()->is('admin/position*') || request()->routeIs('employees.*') || request()->routeIs('positions.*')">
-    <x-dashboard.nav-item href="{{ route('employees.index') }}" :active="request()->routeIs('employees.*')" :isChild="true">Daftar Pegawai</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="{{ route('positions.index') }}" :active="request()->routeIs('positions.*')" :isChild="true">Kelola Divisi dan Posisi</x-dashboard.nav-item>
+<x-dashboard.nav-group title="Kelola Pengguna" icon="manage_accounts" :active="request()->is('admin/position*') || request()->routeIs('positions.*') || request()->routeIs('roles.*') || request()->routeIs('users.*')">
+    <x-dashboard.nav-item href="{{ route('users.index') }}" :active="request()->routeIs('users.*')" :isChild="true">Manajemen Akun Pegawai</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('roles.index') }}" :active="request()->routeIs('roles.*')" :isChild="true">Kelola Divisi</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('positions.index') }}" :active="request()->routeIs('positions.*')" :isChild="true">Kelola Posisi</x-dashboard.nav-item>
 </x-dashboard.nav-group>
 @endif
 
 <!-- 1.3A Sistem & Akses -->
 @can('system.permission.manage')
-<x-dashboard.nav-group title="Sistem & Akses" icon="shield_person" :active="request()->is('admin/permission*') || request()->is('admin/dashboard-config*') || request()->routeIs('roles.*') || request()->routeIs('system.dashboard-widgets.*')">
-    <x-dashboard.nav-item href="{{ route('roles.index') }}" :active="request()->routeIs('roles.*')" :isChild="true">Manajemen Permission</x-dashboard.nav-item>
+<x-dashboard.nav-group title="Sistem & Akses" icon="shield_person" :active="request()->is('admin/permission*') || request()->is('admin/dashboard-config*') || request()->routeIs('system.dashboard-widgets.*')">
     <x-dashboard.nav-item href="{{ route('system.dashboard-widgets.index') }}" :active="request()->routeIs('system.dashboard-widgets.*')" :isChild="true">Widget Dashboard</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('attendance.document-signature.index') }}" :active="request()->routeIs('attendance.document-signature.*')" :isChild="true">Pengaturan TTD Dokumen</x-dashboard.nav-item>
 </x-dashboard.nav-group>
 @endcan
 
@@ -76,13 +77,12 @@
     <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider font-jakarta">Manajemen Absensi</p>
 </div>
 <x-dashboard.nav-group title="Absensi" icon="how_to_reg" :active="request()->is('attendance*') && !request()->is('attendance/check-in-out*') && !request()->is('attendance/leave-request*') && !request()->is('attendance/my-recap*')">
-    <x-dashboard.nav-item href="{{ route('attendance-policies.index') }}" :active="request()->routeIs('attendance-policies.*')" :isChild="true">Jadwal Kerja & Libur</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('attendance-recaps.index') }}" :active="request()->routeIs('attendance-recaps.*')" :isChild="true">Rekap Absensi Pegawai</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('leave-requests.manage') }}" :active="request()->routeIs('leave-requests.manage')" :isChild="true">Review Izin/Sakit/Cuti</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('work-attendance.manage') }}" :active="request()->routeIs('work-attendance.manage')" :isChild="true">Verifikasi & Koreksi</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('work-schedule-rules.index') }}" :active="request()->routeIs('work-schedule-rules.*')" :isChild="true">Aturan Jadwal Kerja</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('holidays.index') }}" :active="request()->routeIs('holidays.*')" :isChild="true">Hari Libur</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('attendance-rules.index') }}" :active="request()->routeIs('attendance-rules.*')" :isChild="true">Kelola Sanksi Absen</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="{{ route('attendance.document-signature.index') }}" :active="request()->routeIs('attendance.document-signature.*')" :isChild="true">Pengaturan TTD</x-dashboard.nav-item>
 </x-dashboard.nav-group>
 @endcan
 

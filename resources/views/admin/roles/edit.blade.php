@@ -1,11 +1,11 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Edit Role')
+@section('title', 'Edit Divisi')
 
 @section('content')
 <div class="max-w-4xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">Edit Role: {{ $role->name }}</h1>
+        <h1 class="text-2xl font-bold text-gray-900">Edit Divisi: {{ $role->name }}</h1>
         <a href="{{ route('roles.index') }}" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium border border-gray-300">
             Batal
         </a>
@@ -28,7 +28,7 @@
             @method('PATCH')
             
             <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700">Nama Role <span class="text-red-500">*</span></label>
+                <label class="block text-sm font-medium text-gray-700">Nama Divisi <span class="text-red-500">*</span></label>
                 <input type="text" name="name" value="{{ old('name', $role->name) }}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
             </div>
 

@@ -53,29 +53,6 @@
                 </div>
             </div>
 
-            <!-- Permissions Khusus -->
-            <div class="mt-6 border-t border-gray-200 pt-6">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Izin Tambahan (Custom Permissions)</h3>
-                <p class="text-sm text-gray-500 mb-4">Pilih izin spesifik yang melekat pada posisi ini. (Biasanya cukup ditentukan dari Role, gunakan ini hanya untuk pengecualian).</p>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-h-96 overflow-y-auto p-4 border border-gray-200 rounded-md">
-                    @php
-                        // Get current position's permission IDs
-                        $currentPermissionIds = $position->permissions->pluck('id')->toArray();
-                    @endphp
-                    @foreach($permissions as $permission)
-                        <div class="flex items-start">
-                            <div class="flex items-center h-5">
-                                <input type="checkbox" name="permission_ids[]" value="{{ $permission->id }}" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded" {{ in_array($permission->id, old('permission_ids', $currentPermissionIds)) ? 'checked' : '' }}>
-                            </div>
-                            <div class="ml-3 text-sm">
-                                <label class="font-medium text-gray-700">{{ $permission->name }}</label>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-
             <div class="mt-8 flex justify-end">
                 <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 border border-transparent rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                     Simpan Perubahan

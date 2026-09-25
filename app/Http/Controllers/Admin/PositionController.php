@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\View\View;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class PositionController extends Controller implements HasMiddleware
@@ -31,9 +30,8 @@ class PositionController extends Controller implements HasMiddleware
     public function create(): View
     {
         $roles = Role::all();
-        $permissions = Permission::orderBy('name')->get();
 
-        return view('admin.positions.create', compact('roles', 'permissions'));
+        return view('admin.positions.create', compact('roles'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -42,22 +40,19 @@ class PositionController extends Controller implements HasMiddleware
             'position_name' => ['required', 'string', 'max:255'],
             'role_id' => ['required', 'exists:roles,id'],
             'hierarchy_order' => ['required', 'integer'],
-            'permission_ids' => ['array', 'exists:permissions,id'],
         ]);
 
-        $position = Position::create($validated);
-        $position->permissions()->sync($request->input('permission_ids', []));
+        Position::create($validated);
 
         return redirect()->route('positions.index')->with('success', 'Posisi berhasil ditambahkan.');
     }
 
     public function edit(Position $position): View
     {
-        $position->load('role', 'permissions');
+        $position->load('role');
         $roles = Role::all();
-        $permissions = Permission::orderBy('name')->get();
 
-        return view('admin.positions.edit', compact('position', 'roles', 'permissions'));
+        return view('admin.positions.edit', compact('position', 'roles'));
     }
 
     public function update(Request $request, Position $position): RedirectResponse
@@ -66,14 +61,9 @@ class PositionController extends Controller implements HasMiddleware
             'position_name' => ['required', 'string', 'max:255'],
             'role_id' => ['required', 'exists:roles,id'],
             'hierarchy_order' => ['required', 'integer'],
-            'permission_ids' => ['array', 'exists:permissions,id'],
         ]);
 
         $position->update($validated);
-        $position->permissions()->sync($request->input('permission_ids', []));
-
-        $position->load('role');
-        $position->role?->users->each->forgetCachedPermissions();
 
         return redirect()->route('positions.index')->with('success', 'Posisi berhasil diperbarui.');
     }
