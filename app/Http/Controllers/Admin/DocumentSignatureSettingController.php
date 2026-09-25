@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Attendance\UpsertDocumentSignatureRequest;
 use App\Models\DocumentSignatureSetting;
+use App\Models\Employee;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -23,9 +24,21 @@ class DocumentSignatureSettingController extends Controller implements HasMiddle
     {
         $settings = DocumentSignatureSetting::all()->keyBy('document_type');
 
+        $employees = Employee::query()
+            ->where('is_active', true)
+            ->with('currentStatus.position')
+            ->orderBy('full_name')
+            ->get(['id', 'full_name', 'signature_image'])
+            ->map(fn ($e) => [
+                'name' => $e->full_name,
+                'title' => $e->currentStatus?->position?->position_name ?? '',
+                'has_signature' => ! empty($e->getRawOriginal('signature_image')),
+            ]);
+
         return view('attendance.document-signature.index', [
             'settings' => $settings,
             'documentTypes' => DocumentSignatureSetting::$documentTypes,
+            'employees' => $employees,
         ]);
     }
 

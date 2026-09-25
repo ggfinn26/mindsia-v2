@@ -30,6 +30,21 @@ class EmploymentStatusController extends Controller implements HasMiddleware
         private readonly EmployeeAuthService $employeeAuthService,
     ) {}
 
+    public function index(): View
+    {
+        $today = now()->toDateString();
+        $soon = now()->addDays(30)->toDateString();
+
+        $employees = Employee::query()
+            ->where('is_active', true)
+            ->with(['currentStatus.position', 'currentStatus.extendOffer'])
+            ->whereHas('currentStatus')
+            ->get()
+            ->sortBy(fn ($e) => $e->currentStatus?->contract_end_date ?? '9999-12-31');
+
+        return view('admin.employees.employment-status.index', compact('employees', 'today', 'soon'));
+    }
+
     public function create(Employee $employee): View
     {
         $positions = $this->positionRepository->all();

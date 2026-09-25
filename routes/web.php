@@ -142,8 +142,8 @@ use App\Http\Controllers\Employee\EmployeeProfileController;
 use App\Http\Controllers\Employee\EmployeeSurveyController;
 use App\Http\Controllers\Employee\PayslipController;
 use App\Http\Controllers\EmployeeEducationHistoryController;
-use App\Http\Controllers\EmployeeWorkHistoryController;
 use App\Http\Controllers\EmployeeNotificationController;
+use App\Http\Controllers\EmployeeWorkHistoryController;
 use App\Http\Controllers\FileProxyController;
 use App\Http\Controllers\GuestToeflSessionController;
 use App\Http\Controllers\InstitutionController;
@@ -575,6 +575,7 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     // Employee Management (Employee Flow 2)
     Route::resource('employees', EmployeeController::class)->except(['destroy']);
     Route::resource('employment-statuses', EmploymentStatusController::class)->except(['show', 'index', 'destroy', 'create', 'store']);
+    Route::get('employment-statuses', [EmploymentStatusController::class, 'index'])->name('employment-statuses.index');
     // GAP-212: Override resource store+create routes to include {employee} param for route model binding
     Route::get('employment-statuses/create/{employee}', [EmploymentStatusController::class, 'create'])->name('employment-statuses.create');
     Route::post('employment-statuses/{employee}', [EmploymentStatusController::class, 'store'])->name('employment-statuses.store');

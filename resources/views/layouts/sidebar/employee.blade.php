@@ -159,6 +159,9 @@
     @canany(['employee.view', 'employee.create'])
     <x-dashboard.nav-item href="{{ route('employees.index') }}" :active="request()->routeIs('employees.*')" :isChild="true">Data Pegawai</x-dashboard.nav-item>
     @endcanany
+    @can('contract.manage')
+    <x-dashboard.nav-item href="{{ route('employment-statuses.index') }}" :active="request()->routeIs('employment-statuses.*')" :isChild="true">Kelola Kontrak</x-dashboard.nav-item>
+    @endcan
     @can('employee.update')
     <x-dashboard.nav-item href="{{ route('resign-requests.index') }}" :active="request()->routeIs('resign-requests.*')" :isChild="true">Resign & Offboarding</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('branch-transfers.review.index') }}" :active="request()->routeIs('branch-transfers.*')" :isChild="true">Review Pindah Cabang</x-dashboard.nav-item>
