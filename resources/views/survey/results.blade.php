@@ -3,129 +3,150 @@
 @section('title', 'Hasil Survey - ' . $survey->survey_name)
 
 @section('content')
-<div class="max-w-4xl mx-auto py-6 px-4 sm:px-6 lg:px-8" x-data="{ activeTab: 'summary' }">
+<div class="max-w-5xl mx-auto space-y-6" x-data="{ activeTab: 'summary' }">
 
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-            <a href="{{ route('surveys.index', ['tab' => 'results']) }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700">
-                <span class="material-symbols-outlined text-[16px]">arrow_back</span> Daftar Survey
+            <a href="{{ route('surveys.index', ['tab' => 'results']) }}" class="mb-2 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-[#215aac] transition-colors">
+                <span class="material-symbols-outlined text-[16px]">arrow_back</span> Daftar Hasil Survey
             </a>
-            <h1 class="text-2xl font-bold text-gray-900">Hasil Survey</h1>
-            <p class="text-sm text-gray-500 mt-1">{{ $survey->survey_name }}</p>
+            <h1 class="font-jakarta text-3xl font-bold tracking-tight text-slate-900">Laporan Survey</h1>
+            <p class="mt-2 text-sm text-slate-600">{{ $survey->survey_name }}</p>
         </div>
     </div>
 
     <!-- Summary Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div class="bg-white shadow sm:rounded-lg border border-gray-200 px-6 py-4">
-            <p class="text-xs font-medium text-gray-500 uppercase">Total Responden</p>
-            <p class="mt-1 text-2xl font-bold text-gray-900">{{ $survey->memberSurveys->where(fn ($ms) => $ms->isSubmitted())->count() + $survey->employeeSurveys->where(fn ($es) => $es->isSubmitted())->count() }}</p>
-            <p class="text-xs text-gray-400 mt-1">Member: {{ $survey->memberSurveys->where(fn ($ms) => $ms->isSubmitted())->count() }} · Pegawai: {{ $survey->employeeSurveys->where(fn ($es) => $es->isSubmitted())->count() }}</p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        @php
+            $totalMembers = $survey->memberSurveys->where(fn ($ms) => $ms->isSubmitted())->count();
+            $totalEmployees = $survey->employeeSurveys->where(fn ($es) => $es->isSubmitted())->count();
+            $totalSubmitted = $totalMembers + $totalEmployees;
+            $totalUnsubmitted = $survey->memberSurveys->count() + $survey->employeeSurveys->count() - $totalSubmitted;
+        @endphp
+        <div class="flex flex-col rounded-xl border border-slate-100 bg-white p-6 shadow-sm">
+            <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Responden</p>
+            <p class="mt-2 font-jakarta text-3xl font-black text-slate-900">{{ $totalSubmitted }}</p>
+            <p class="mt-2 text-xs font-semibold text-slate-400">Member: {{ $totalMembers }} &bull; Pegawai: {{ $totalEmployees }}</p>
         </div>
-        <div class="bg-white shadow sm:rounded-lg border border-gray-200 px-6 py-4">
-            <p class="text-xs font-medium text-gray-500 uppercase">Belum Mengisi</p>
-            <p class="mt-1 text-2xl font-bold text-yellow-600">{{ $survey->memberSurveys->count() + $survey->employeeSurveys->count() - $survey->memberSurveys->where(fn ($ms) => $ms->isSubmitted())->count() - $survey->employeeSurveys->where(fn ($es) => $es->isSubmitted())->count() }}</p>
+        <div class="flex flex-col rounded-xl border border-amber-100 bg-amber-50 p-6 shadow-sm">
+            <p class="text-xs font-bold uppercase tracking-wider text-amber-600">Belum Mengisi</p>
+            <p class="mt-2 font-jakarta text-3xl font-black text-amber-600">{{ $totalUnsubmitted }}</p>
+            <p class="mt-2 text-xs font-semibold text-amber-500/70">Orang</p>
         </div>
-        <div class="bg-white shadow sm:rounded-lg border border-gray-200 px-6 py-4">
-            <p class="text-xs font-medium text-gray-500 uppercase">Pertanyaan</p>
-            <p class="mt-1 text-2xl font-bold text-gray-900">{{ $survey->questions->count() }}</p>
+        <div class="flex flex-col rounded-xl border border-slate-100 bg-white p-6 shadow-sm">
+            <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Pertanyaan</p>
+            <p class="mt-2 font-jakarta text-3xl font-black text-slate-900">{{ $survey->questions->count() }}</p>
+            <p class="mt-2 text-xs font-semibold text-slate-400">Soal</p>
         </div>
     </div>
 
-    <!-- Tabs: Summary per question vs Individual responses -->
-    <div class="border-b border-gray-200 mb-6">
-        <nav class="-mb-px flex space-x-8">
-            <button type="button" @click="activeTab = 'summary'" :class="activeTab === 'summary' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Ringkasan</button>
-            <button type="button" @click="activeTab = 'individual'" :class="activeTab === 'individual' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Per Responden</button>
-        </nav>
+    <!-- Tabs -->
+    <div class="flex space-x-1 rounded-xl bg-slate-100 p-1">
+        <button type="button" @click="activeTab = 'summary'" :class="activeTab === 'summary' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'" class="flex-1 rounded-lg py-2.5 text-sm font-bold transition-all">
+            Ringkasan Statistik
+        </button>
+        <button type="button" @click="activeTab = 'individual'" :class="activeTab === 'individual' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'" class="flex-1 rounded-lg py-2.5 text-sm font-bold transition-all">
+            Per Responden
+        </button>
     </div>
 
     <!-- Tab: Summary per question -->
-    <div x-show="activeTab === 'summary'" x-transition>
-        <div class="space-y-4">
-            @foreach($survey->questions as $qi => $question)
-                <div class="bg-white shadow sm:rounded-lg border border-gray-200">
-                    <div class="px-6 py-4">
-                        <div class="flex items-start gap-3 mb-4">
-                            <span class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">{{ $qi + 1 }}</span>
-                            <div>
-                                <p class="text-sm font-medium text-gray-900">{{ $question->question_text }}</p>
-                                <span class="inline-flex mt-1 px-2 text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                    @if($question->question_type === 'single_choice') Pilihan Tunggal
-                                    @elseif($question->question_type === 'multiple_choice') Pilihan Ganda
-                                    @elseif($question->question_type === 'scale') Skala ({{ $question->scale_min }}–{{ $question->scale_max }})
-                                    @else Teks Bebas
-                                    @endif
-                                </span>
-                            </div>
+    <div x-show="activeTab === 'summary'" x-transition class="space-y-6">
+        @foreach($survey->questions as $qi => $question)
+            <div class="overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm">
+                <div class="border-b border-slate-100 bg-slate-50/50 px-6 py-5">
+                    <div class="flex items-start gap-4">
+                        <span class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#215aac]/10 text-sm font-black text-[#215aac]">{{ $qi + 1 }}</span>
+                        <div class="pt-1">
+                            <p class="font-jakarta text-base font-bold text-slate-900">{{ $question->question_text }}</p>
+                            <span class="mt-2 inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                                @if($question->question_type === 'single_choice') Pilihan Tunggal
+                                @elseif($question->question_type === 'multiple_choice') Pilihan Ganda
+                                @elseif($question->question_type === 'scale') Skala ({{ $question->scale_min }}–{{ $question->scale_max }})
+                                @else Teks Bebas
+                                @endif
+                            </span>
                         </div>
+                    </div>
+                </div>
 
+                <div class="px-6 py-6 sm:pl-[72px]">
+                    @php
+                        $memberAnswers = $survey->memberSurveys->filter(fn ($ms) => $ms->isSubmitted())->flatMap(fn ($ms) => $ms->answers->where('survey_question_id', $question->id));
+                        $employeeAnswers = $survey->employeeSurveys->filter(fn ($es) => $es->isSubmitted())->flatMap(fn ($es) => $es->answers->where('survey_question_id', $question->id));
+                        $allAnswers = $memberAnswers->concat($employeeAnswers);
+                        $totalResponses = $allAnswers->count();
+                    @endphp
+
+                    @if($totalResponses === 0)
+                        <p class="text-sm font-medium italic text-slate-400">Belum ada jawaban.</p>
+                    @elseif($question->question_type === 'text')
+                        <div class="space-y-3">
+                            @foreach($allAnswers as $answer)
+                                <div class="rounded-lg border border-slate-100 bg-slate-50 p-4 text-sm text-slate-700">
+                                    {{ $answer->answer_text }}
+                                </div>
+                            @endforeach
+                        </div>
+                    @elseif($question->question_type === 'scale')
                         @php
-                            $allAnswers = $question->answers ?? collect();
-                            // Collect answers from both member and employee surveys
-                            $memberAnswers = $survey->memberSurveys->filter(fn ($ms) => $ms->isSubmitted())->flatMap(fn ($ms) => $ms->answers->where('survey_question_id', $question->id));
-                            $employeeAnswers = $survey->employeeSurveys->filter(fn ($es) => $es->isSubmitted())->flatMap(fn ($es) => $es->answers->where('survey_question_id', $question->id));
-                            $allAnswers = $memberAnswers->concat($employeeAnswers);
-                            $totalResponses = $allAnswers->count();
+                            $values = $allAnswers->pluck('answer_value')->filter();
+                            $avg = $values->count() > 0 ? round($values->avg(), 1) : '-';
                         @endphp
-
-                        @if($totalResponses === 0)
-                            <p class="text-sm text-gray-500 ml-10">Belum ada jawaban.</p>
-                        @elseif($question->question_type === 'text')
-                            <div class="ml-10 space-y-2">
-                                @foreach($allAnswers as $answer)
-                                    <div class="bg-gray-50 rounded-md px-3 py-2 text-sm text-gray-700">
-                                        {{ $answer->answer_text }}
-                                    </div>
-                                @endforeach
-                            </div>
-                        @elseif($question->question_type === 'scale')
-                            @php
-                                $values = $allAnswers->pluck('answer_value')->filter();
-                                $avg = $values->count() > 0 ? round($values->avg(), 1) : '-';
-                            @endphp
-                            <div class="ml-10">
-                                <p class="text-sm text-gray-600">Rata-rata: <span class="font-semibold text-gray-900">{{ $avg }}</span> dari {{ $question->scale_max }}</p>
-                                <p class="text-xs text-gray-400 mt-1">{{ $totalResponses }} respons</p>
-                                <div class="mt-2 flex items-end gap-1 h-20">
-                                    @for($v = $question->scale_min; $v <= $question->scale_max; $v++)
-                                        @php $count = $values->filter(fn ($val) => $val === $v)->count(); @endphp
-                                        <div class="flex-1 flex flex-col items-center">
-                                            <div class="w-full bg-indigo-{{ min(100, max(100, 200 + $v * 50)) }} rounded-t" style="height: {{ $totalResponses > 0 ? max(4, ($count / $totalResponses) * 80) : 4 }}px"></div>
-                                            <span class="text-xs text-gray-500 mt-1">{{ $v }}</span>
-                                        </div>
-                                    @endfor
+                        <div>
+                            <div class="mb-6 flex items-center gap-4">
+                                <div>
+                                    <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Rata-rata</p>
+                                    <p class="font-jakarta text-3xl font-black text-[#215aac]">{{ $avg }}<span class="text-lg text-slate-400">/{{ $question->scale_max }}</span></p>
+                                </div>
+                                <div class="h-10 w-px bg-slate-200"></div>
+                                <div>
+                                    <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Respons</p>
+                                    <p class="font-jakarta text-3xl font-black text-slate-900">{{ $totalResponses }}</p>
                                 </div>
                             </div>
-                        @else
-                            {{-- single_choice / multiple_choice --}}
-                            <div class="ml-10 space-y-2">
-                                @foreach($question->choices as $choice)
-                                    @php
-                                        $choiceCount = $allAnswers->filter(fn ($a) => $a->selectedChoices->contains('id', $choice->id))->count();
-                                        $pct = $totalResponses > 0 ? round(($choiceCount / $totalResponses) * 100) : 0;
+                            <div class="flex items-end gap-2 h-32 pt-4 border-b border-slate-200 relative">
+                                @for($v = $question->scale_min; $v <= $question->scale_max; $v++)
+                                    @php 
+                                        $count = $values->filter(fn ($val) => $val === $v)->count(); 
+                                        $heightPct = $totalResponses > 0 ? ($count / $totalResponses) * 100 : 0;
                                     @endphp
-                                    <div>
-                                        <div class="flex justify-between text-sm mb-1">
-                                            <span class="text-gray-700">{{ $choice->choice_text }}</span>
-                                            <span class="text-gray-500">{{ $choiceCount }} ({{ $pct }}%)</span>
-                                        </div>
-                                        <div class="w-full bg-gray-200 rounded-full h-2">
-                                            <div class="bg-indigo-500 h-2 rounded-full" style="width: {{ $pct }}%"></div>
+                                    <div class="flex-1 flex flex-col items-center justify-end h-full relative group">
+                                        <div class="absolute -top-8 bg-slate-800 text-white text-xs font-bold rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">{{ $count }}</div>
+                                        <div class="w-full max-w-[40px] rounded-t-md transition-all {{ $heightPct > 0 ? 'bg-[#215aac]' : 'bg-slate-100' }}" style="height: {{ max(4, $heightPct) }}%"></div>
+                                        <span class="mt-2 text-xs font-bold text-slate-500">{{ $v }}</span>
+                                    </div>
+                                @endfor
+                            </div>
+                        </div>
+                    @else
+                        {{-- single_choice / multiple_choice --}}
+                        <div class="space-y-5">
+                            @foreach($question->choices as $choice)
+                                @php
+                                    $choiceCount = $allAnswers->filter(fn ($a) => $a->selectedChoices->contains('id', $choice->id))->count();
+                                    $pct = $totalResponses > 0 ? round(($choiceCount / $totalResponses) * 100) : 0;
+                                @endphp
+                                <div>
+                                    <div class="mb-2 flex items-center justify-between text-sm">
+                                        <span class="font-bold text-slate-700">{{ $choice->choice_text }}</span>
+                                        <span class="font-semibold text-slate-500">{{ $choiceCount }} <span class="font-normal text-slate-400">({{ $pct }}%)</span></span>
+                                    </div>
+                                    <div class="h-2.5 w-full overflow-hidden rounded-full bg-slate-100">
+                                            <div class="h-full rounded-full bg-[#215aac] transition-all" style="width: {{ $pct }}%"></div>
                                         </div>
                                     </div>
                                 @endforeach
-                                <p class="text-xs text-gray-400 mt-2">{{ $totalResponses }} respons</p>
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider pt-2">{{ $totalResponses }} Respons</p>
                             </div>
                         @endif
                     </div>
                 </div>
             @endforeach
-        </div>
     </div>
 
     <!-- Tab: Individual responses -->
-    <div x-show="activeTab === 'individual'" x-transition>
+    <div x-show="activeTab === 'individual'" x-transition class="space-y-4">
         @php
             $respondents = collect();
             foreach ($survey->memberSurveys as $ms) {
@@ -149,45 +170,52 @@
         @endphp
 
         @if($respondents->isEmpty())
-            <p class="text-sm text-gray-500 text-center py-8">Belum ada responden yang mengisi survey.</p>
+            <div class="rounded-xl border border-slate-100 bg-white py-16 text-center shadow-sm">
+                <span class="material-symbols-outlined text-4xl text-slate-300">person_off</span>
+                <p class="mt-4 text-sm font-medium text-slate-500">Belum ada responden yang mengisi survey ini.</p>
+            </div>
         @else
-            <div class="space-y-4">
-                @foreach($respondents as $ri => $respondent)
-                    <div class="bg-white shadow sm:rounded-lg border border-gray-200">
-                        <div class="px-6 py-4">
-                            <div class="flex items-center gap-3 mb-4">
-                                <span class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full bg-gray-100 text-gray-600 text-xs font-bold">{{ $ri + 1 }}</span>
-                                <div>
-                                    <p class="text-sm font-medium text-gray-900">{{ $respondent->name }}</p>
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $respondent->type === 'Member' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800' }}">{{ $respondent->type }}</span>
-                                </div>
-                            </div>
-
-                            <div class="ml-10 space-y-3">
-                                @foreach($survey->questions as $question)
-                                    @php
-                                        $answer = $respondent->answers->firstWhere('survey_question_id', $question->id);
-                                    @endphp
-                                    <div>
-                                        <p class="text-xs font-medium text-gray-500">{{ $question->question_text }}</p>
-                                        @if($answer)
-                                            @if($question->question_type === 'text')
-                                                <p class="text-sm text-gray-800 mt-0.5">{{ $answer->answer_text }}</p>
-                                            @elseif($question->question_type === 'scale')
-                                                <p class="text-sm text-gray-800 mt-0.5">{{ $answer->answer_value }}</p>
-                                            @else
-                                                <p class="text-sm text-gray-800 mt-0.5">{{ $answer->selectedChoices->pluck('choice_text')->join(', ') }}</p>
-                                            @endif
-                                        @else
-                                            <p class="text-sm text-gray-400 mt-0.5">Tidak dijawab</p>
-                                        @endif
-                                    </div>
-                                @endforeach
+            @foreach($respondents as $ri => $respondent)
+                <div class="overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm">
+                    <div class="border-b border-slate-100 bg-slate-50/50 px-6 py-4">
+                        <div class="flex items-center gap-3">
+                            <span class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-slate-200 text-sm font-black text-slate-600">{{ $ri + 1 }}</span>
+                            <div>
+                                <p class="font-jakarta text-base font-bold text-slate-900">{{ $respondent->name }}</p>
+                                <span class="mt-0.5 inline-flex items-center rounded-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider {{ $respondent->type === 'Member' ? 'bg-[#215aac]/10 text-[#215aac]' : 'bg-emerald-100 text-emerald-800' }}">{{ $respondent->type }}</span>
                             </div>
                         </div>
                     </div>
-                @endforeach
-            </div>
+
+                    <div class="px-6 py-5 sm:pl-[72px] space-y-6">
+                        @foreach($survey->questions as $question)
+                            @php
+                                $answer = $respondent->answers->firstWhere('survey_question_id', $question->id);
+                            @endphp
+                            <div>
+                                <p class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">{{ $question->question_text }}</p>
+                                @if($answer)
+                                    @if($question->question_type === 'text')
+                                        <p class="text-sm font-medium text-slate-800 bg-slate-50 p-3 rounded-lg border border-slate-100">{{ $answer->answer_text }}</p>
+                                    @elseif($question->question_type === 'scale')
+                                        <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-[#215aac] text-sm font-black text-white shadow-sm">{{ $answer->answer_value }}</span>
+                                    @else
+                                        <div class="flex flex-wrap gap-2">
+                                            @foreach($answer->selectedChoices as $choice)
+                                                <span class="inline-flex items-center rounded-md border border-slate-200 bg-white px-3 py-1.5 text-sm font-bold text-slate-700 shadow-sm">
+                                                    {{ $choice->choice_text }}
+                                                </span>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                @else
+                                    <p class="text-sm font-medium italic text-slate-400">Tidak dijawab</p>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endforeach
         @endif
     </div>
 </div>
