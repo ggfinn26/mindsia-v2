@@ -4,7 +4,6 @@
 @section('header_title', 'Overview')
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.3/Sortable.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const grids = document.querySelectorAll('[data-sortable-grid]');
@@ -52,19 +51,20 @@
 @endpush
 
 @section('content')
-    <div class="mb-6 flex items-center justify-between">
-        <p class="text-gray-500 font-medium text-sm sm:text-base">Selamat datang kembali, <span class="font-semibold text-gray-800">{{ Auth::user()->name ?? 'Pengguna' }}</span> 👋</p>
+    <div x-data="{ customizing: false }">
+        <div class="mb-6 flex items-center justify-between">
+            <p class="text-gray-500 font-medium text-sm sm:text-base">Selamat datang kembali, <span class="font-semibold text-gray-800">{{ Auth::user()->name ?? 'Pengguna' }}</span> 👋</p>
 
-        {{-- Customize toggle --}}
-        <div x-data="{ customizing: false }">
+            {{-- Customize toggle --}}
             <button @click="customizing = !customizing"
                     :class="customizing ? 'bg-indigo-600 text-white' : 'bg-white text-gray-600 border border-gray-200'"
                     class="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg transition-colors">
                 <span class="material-symbols-outlined text-base">dashboard_customize</span>
                 <span x-text="customizing ? 'Selesai' : 'Atur Widget'"></span>
             </button>
+        </div>
 
-            @if($widgets->isNotEmpty())
+        @if($widgets->isNotEmpty())
                 @php
                     $categories = [
                         'financial'    => ['label' => 'Financial & Business',       'icon' => 'payments'],
@@ -89,21 +89,24 @@
                                 <h2 class="text-sm font-semibold text-gray-600 uppercase tracking-wider">{{ $catInfo['label'] }}</h2>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+                            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 items-start auto-rows-max"
                                  data-sortable-grid>
 
                                 @foreach($categoryWidgets as $widget)
-                                    <div class="relative" data-widget-key="{{ $widget['key'] }}">
+                                    {{-- Disabled widgets only visible during customize mode --}}
+                                    <div class="relative {{ $widget['is_enabled'] ? '' : 'opacity-50' }}"
+                                         data-widget-key="{{ $widget['key'] }}"
+                                         @if(!$widget['is_enabled']) x-show="customizing" style="display:none;" @endif>
 
                                         {{-- Customize overlay (drag handle + toggle) --}}
                                         <div x-show="customizing"
-                                             class="absolute inset-0 z-20 rounded-xl ring-2 ring-indigo-300 bg-white/10 backdrop-blur-[1px] flex flex-col items-center justify-center gap-2"
+                                             class="absolute inset-0 z-50 rounded-xl ring-4 {{ $widget['is_enabled'] ? 'ring-indigo-500' : 'ring-gray-300' }} bg-slate-900/40 backdrop-blur-sm flex flex-col items-center justify-center gap-2"
                                              style="display: none;">
                                             <div class="drag-handle cursor-grab active:cursor-grabbing p-2 rounded-lg bg-white shadow border border-gray-100" title="Geser untuk mengubah urutan">
                                                 <span class="material-symbols-outlined text-gray-500 text-xl">drag_indicator</span>
                                             </div>
                                             <label class="flex items-center gap-1.5 bg-white shadow border border-gray-100 rounded-lg px-2 py-1 cursor-pointer">
-                                                <input type="checkbox" checked
+                                                <input type="checkbox" {{ $widget['is_enabled'] ? 'checked' : '' }}
                                                        class="accent-indigo-600"
                                                        onchange="toggleWidget('{{ $widget['key'] }}', this)">
                                                 <span class="text-xs text-gray-600 font-medium">Tampilkan</span>
@@ -126,7 +129,7 @@
                                         @endif
 
                                         {{-- Export button (hidden while customizing) --}}
-                                        @if($widget['is_exportable'] && !empty($widgetData[$widget['key']]))
+                                        @if($widget['is_enabled'] && $widget['is_exportable'] && !empty($widgetData[$widget['key']]))
                                             <div class="absolute top-3 right-3" x-show="!customizing">
                                                 <div class="relative" x-data="{ open: false }">
                                                     <button @click="open = !open" class="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
@@ -149,11 +152,19 @@
                         </div>
                     @endforeach
                 </div>
-            @endif
-        </div>
+        @endif
     </div>
 
-    @if($widgets->isEmpty())
+    @if($widgets->where('is_enabled', true)->isEmpty() && !$widgets->isEmpty())
+        {{-- All widgets disabled: hint user to re-enable via Atur Widget --}}
+        <div class="flex flex-col items-center justify-center min-h-[60vh] h-full text-center">
+            <div class="h-20 w-20 rounded-full bg-amber-50 flex items-center justify-center mb-5">
+                <span class="material-symbols-outlined text-amber-400 text-4xl">visibility_off</span>
+            </div>
+            <h2 class="text-xl font-bold font-jakarta text-gray-800 mb-3">Semua Widget Disembunyikan</h2>
+            <p class="text-sm text-gray-500 leading-relaxed max-w-sm">Klik <strong>Atur Widget</strong> di atas untuk menampilkan kembali widget yang Anda butuhkan.</p>
+        </div>
+    @elseif($widgets->isEmpty())
         <div class="flex flex-col items-center justify-center min-h-[60vh] h-full text-center">
             <div class="h-20 w-20 rounded-full bg-[#EEF4FF] flex items-center justify-center mb-5">
                 <span class="material-symbols-outlined text-[#5586DB] text-4xl">dashboard_customize</span>

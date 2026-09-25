@@ -167,7 +167,7 @@ class DashboardWidgetService
         $this->providers[$provider->getKey()] = $provider;
     }
 
-    public function getWidgetsForUser(User $user): Collection
+    public function getWidgetsForUser(User $user, bool $enabledOnly = true): Collection
     {
         $positionId = $user->employee?->currentStatus?->position_id;
 
@@ -175,19 +175,17 @@ class DashboardWidgetService
             return collect();
         }
 
-        // Load user-level overrides (order + is_enabled) keyed by widget_key
         $userOverrides = UserDashboardWidgetCustomization::where('user_id', $user->id)
             ->get()
             ->keyBy('widget_key');
 
-        return DashboardWidgetConfig::with('position')
+        $widgets = DashboardWidgetConfig::with('position')
             ->where('position_id', $positionId)
             ->get()
             ->map(function (DashboardWidgetConfig $config) use ($userOverrides) {
                 $override = $userOverrides->get($config->widget_key);
 
-                // User override wins over position config
-                $isEnabled = $override ? $override->is_enabled : $config->is_enabled;
+                $isEnabled = $override?->is_enabled ?? $config->is_enabled;
                 $order = $override?->order ?? $config->order;
 
                 return [
@@ -201,9 +199,10 @@ class DashboardWidgetService
                     'custom_settings' => $config->custom_settings,
                 ];
             })
-            ->filter(fn (array $w) => $w['is_enabled'])
             ->sortBy('order')
             ->values();
+
+        return $enabledOnly ? $widgets->filter(fn (array $w) => $w['is_enabled'])->values() : $widgets;
     }
 
     public function getWidgetData(string $widgetKey, ?int $branchId = null): array
