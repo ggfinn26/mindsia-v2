@@ -41,6 +41,7 @@ use App\Services\Dashboard\Widgets\JobPostingsWidget;
 use App\Services\Dashboard\Widgets\LeadStatusWidget;
 use App\Services\Dashboard\Widgets\LeaveAttendanceWidget;
 use App\Services\Dashboard\Widgets\MarketingKpiSnapshotWidget;
+use App\Services\Dashboard\Widgets\MarketingProgressWidget;
 use App\Services\Dashboard\Widgets\MarketingRevenueWidget;
 use App\Services\Dashboard\Widgets\MarketingTeamPerformanceWidget;
 use App\Services\Dashboard\Widgets\MemberAcquisitionWidget;
@@ -119,6 +120,7 @@ class DashboardWidgetService
         $this->registerProvider(new MarketingTeamPerformanceWidget);
         $this->registerProvider(new SocializationEffectivenessWidget);
         $this->registerProvider(new MarketingKpiSnapshotWidget);
+        $this->registerProvider(new MarketingProgressWidget);
 
         // Finance & Administrative
         $this->registerProvider(new BudgetVsActualWidget);

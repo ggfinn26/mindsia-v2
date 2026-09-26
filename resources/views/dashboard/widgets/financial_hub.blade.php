@@ -502,7 +502,7 @@
                         </div>
                     </div>
                     <div class="text-right">
-                        <p class="text-xs font-bold text-[#1E293B] font-mono">Rp {{ number_format($branch['revenue'] / 1000000, 2) }}M</p>
+                        <p class="text-xs font-bold text-[#1E293B] font-mono">Rp {{ number_format($branch['revenue'] / 1000000, 2) }} Juta</p>
                         <span class="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 mt-1 rounded {{ $sc['bg'] }} {{ $sc['text'] }}">
                             {{ $branch['status'] }}
                         </span>

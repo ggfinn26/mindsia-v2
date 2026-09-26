@@ -18,7 +18,7 @@
                     <p class="text-xs text-gray-400">{{ $program['member_count'] }} member</p>
                 </div>
                 <div class="text-right">
-                    <p class="text-xs font-bold text-gray-900">Rp {{ number_format($program['revenue'] / 1000000, 1) }}M</p>
+                    <p class="text-xs font-bold text-gray-900">Rp {{ number_format($program['revenue'] / 1000000, 1) }} Juta</p>
                 </div>
             </div>
         @empty

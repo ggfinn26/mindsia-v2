@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class DashboardWidgetExportController extends Controller
 {
     // Widgets with dedicated PDF templates — bypass flat getExportData() for PDF
-    private const DEDICATED_PDF = ['financial_hub', 'member_growth', 'ranking_program', 'comparable'];
+    private const DEDICATED_PDF = ['financial_hub', 'member_growth', 'ranking_program', 'comparable', 'marketing_progress'];
 
     public function __construct(
         private readonly DashboardWidgetService $widgetService,
@@ -52,7 +52,8 @@ class DashboardWidgetExportController extends Controller
         if ($format === 'pdf' && in_array($widgetKey, self::DEDICATED_PDF)) {
             return match ($widgetKey) {
                 'financial_hub' => $this->exportFinancialHubPdf($filename),
-                'comparable'    => $this->exportComparablePdf($filename),
+                'comparable' => $this->exportComparablePdf($filename),
+                'marketing_progress' => $this->exportMarketingProgressPdf($filename),
                 default => $this->exportMemberAnalyticsPdf($filename),
             };
         }
@@ -187,6 +188,44 @@ class DashboardWidgetExportController extends Controller
         return $pdf->download("{$filename}.pdf");
     }
 
+    private function exportMarketingProgressPdf(string $filename): Response
+    {
+        /** @var User $user */
+        $user = auth()->user();
+        $month = (int) request('month', now()->month);
+        $year = (int) request('year', now()->year);
+        $periodType = request('period_type', 'monthly');
+        $semester = (int) request('semester', 1);
+
+        $filters = [
+            'branch_id' => request('branch_id'),
+            'area_id' => request('area_id'),
+            'month' => $month,
+            'year' => $year,
+            'period_type' => $periodType,
+            'semester' => $semester,
+        ];
+
+        $data = $this->widgetService->getWidgetData('marketing_progress', $filters);
+        $docCode = 'DOC/MKT-PRG/'.$year.str_pad($month, 2, '0', STR_PAD_LEFT).'-'.strtoupper(substr(md5($user->id.now()->timestamp), 0, 6));
+
+        $logoPath = public_path('img/logo/mindsia-logo.png');
+        $logoSrc = file_exists($logoPath) ? 'data:image/png;base64,'.base64_encode(file_get_contents($logoPath)) : null;
+
+        $pdf = Pdf::loadView('dashboard.widgets.marketing_progress_export_pdf', [
+            'data' => $data,
+            'docCode' => $docCode,
+            'logoSrc' => $logoSrc,
+            'printedAt' => now()->setTimezone('Asia/Jakarta')->format('d M Y, H:i').' WIB',
+        ])->setPaper('a4', 'portrait')
+            ->setOption('margin_top', 20)
+            ->setOption('margin_right', 18)
+            ->setOption('margin_bottom', 18)
+            ->setOption('margin_left', 18);
+
+        return $pdf->download("{$filename}.pdf");
+    }
+
     private function exportComparablePdf(string $filename): Response
     {
         $filters = [
@@ -220,4 +259,3 @@ class DashboardWidgetExportController extends Controller
         return $pdf->download("{$filename}.pdf");
     }
 }
-

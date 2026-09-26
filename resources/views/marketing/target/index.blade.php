@@ -55,6 +55,13 @@
     <div class="border-b border-gray-200 mb-6">
         <nav class="flex gap-6" aria-label="Tabs">
             <button
+                @click="tab = 'global'"
+                :class="tab === 'global' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                class="py-3 text-sm font-medium border-b-2 focus:outline-none transition-colors">
+                Default Global
+                <span class="ml-1.5 px-1.5 py-0.5 text-[10px] font-semibold bg-blue-100 text-blue-700 rounded">Berlaku Seterusnya</span>
+            </button>
+            <button
                 @click="tab = 'position'"
                 :class="tab === 'position' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                 class="py-3 text-sm font-medium border-b-2 focus:outline-none transition-colors">
@@ -68,6 +75,55 @@
                 <span class="ml-1.5 px-1.5 py-0.5 text-[10px] font-semibold bg-amber-100 text-amber-700 rounded">Override</span>
             </button>
         </nav>
+    </div>
+
+    {{-- Tab: Default Global --}}
+    <div x-show="tab === 'global'" x-cloak>
+        <p class="text-sm text-gray-500 mb-4">
+            Default target berlaku untuk semua periode yang tidak memiliki target spesifik. Fallback terakhir sebelum "Auto".
+        </p>
+        @forelse ($positions as $position)
+            @php $globalExisting = $globalDefaults[$position->id] ?? null; @endphp
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 mb-3 px-5 py-4">
+                <form method="POST" action="{{ route('marketing-target.global-default') }}"
+                    @submit.prevent="confirmSave($el)">
+                    @csrf
+                    <input type="hidden" name="position_id" value="{{ $position->id }}">
+
+                    <div class="flex flex-wrap items-end gap-4">
+                        <div class="flex-1 min-w-[160px]">
+                            <p class="font-semibold text-gray-900 text-sm">{{ $position->position_name }}</p>
+                            @if($globalExisting)
+                                <p class="text-xs text-blue-600 mt-0.5">Tersimpan — berlaku semua periode</p>
+                            @else
+                                <p class="text-xs text-gray-400 mt-0.5">Belum diatur</p>
+                            @endif
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Kelas Target</label>
+                            <input type="number" name="classes_target" min="0"
+                                value="{{ $globalExisting?->classes_target ?? 0 }}"
+                                class="border border-gray-200 rounded-lg px-3 py-2 text-sm w-28 focus:outline-none focus:border-indigo-400">
+                        </div>
+                        <div x-data="{ rawOmzet: '{{ $globalExisting?->omzet_target ?? 0 }}' }">
+                            <label class="block text-xs text-gray-500 mb-1">Omzet Target</label>
+                            <input type="hidden" name="omzet_target" x-model="rawOmzet">
+                            <input type="text"
+                                :value="formatRupiah(rawOmzet)"
+                                @input="rawOmzet = parseRupiah($event.target.value)"
+                                placeholder="Rp 0"
+                                class="border border-gray-200 rounded-lg px-3 py-2 text-sm w-44 focus:outline-none focus:border-indigo-400">
+                        </div>
+                        <button type="submit"
+                            class="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors">
+                            Simpan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        @empty
+            <p class="text-sm text-gray-400">Tidak ada posisi ditemukan.</p>
+        @endforelse
     </div>
 
     {{-- Tab: Target Per Posisi --}}
@@ -102,10 +158,13 @@
                                 value="{{ old('classes_target', $existing?->classes_target ?? 0) }}"
                                 class="w-28 border border-gray-200 rounded-lg text-sm px-3 py-2 bg-gray-50 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-200 outline-none transition-colors text-center">
                         </div>
-                        <div>
-                            <label class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1">Target Omzet (Rp)</label>
-                            <input type="number" name="omzet_target" min="0" step="1000"
-                                value="{{ old('omzet_target', $existing?->omzet_target ?? 0) }}"
+                        <div x-data="{ rawOmzet: '{{ old('omzet_target', $existing?->omzet_target ?? 0) }}' }">
+                            <label class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1">Target Omzet</label>
+                            <input type="hidden" name="omzet_target" x-model="rawOmzet">
+                            <input type="text"
+                                :value="formatRupiah(rawOmzet)"
+                                @input="rawOmzet = parseRupiah($event.target.value)"
+                                placeholder="Rp 0"
                                 class="w-44 border border-gray-200 rounded-lg text-sm px-3 py-2 bg-gray-50 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-200 outline-none transition-colors">
                         </div>
                         <div>
@@ -182,7 +241,7 @@
                                 default    => ['Auto', 'bg-gray-100 text-gray-500'],
                             };
                         @endphp
-                        <tr class="hover:bg-gray-50/50 transition-colors">
+                        <tr class="hover:bg-gray-50/50 transition-colors" x-data="{ rawOmzet: '{{ $existing?->omzet_target ?? '' }}' }">
                             <td class="px-4 py-3 font-medium text-gray-900">{{ $employee->full_name }}</td>
                             <td class="px-4 py-3 text-gray-500 text-xs">{{ $positionName }}</td>
                             <td class="px-4 py-3">
@@ -192,15 +251,16 @@
                                     <input type="hidden" name="employee_id" value="{{ $employee->id }}">
                                     <input type="hidden" name="period_month" value="{{ $month }}">
                                     <input type="hidden" name="period_year" value="{{ $year }}">
-                                    <input type="hidden" name="omzet_target" value="{{ $existing?->omzet_target ?? 0 }}" class="omzet-input-{{ $employee->id }}">
                                     <input type="number" name="classes_target" min="0"
                                         value="{{ $existing?->classes_target ?? '' }}"
                                         placeholder="—"
                                         class="w-20 border border-gray-200 rounded-lg text-sm px-2 py-1.5 bg-gray-50 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-200 outline-none transition-colors text-center">
                             </td>
                             <td class="px-4 py-3">
-                                    <input type="number" name="omzet_target" min="0" step="1000"
-                                        value="{{ $existing?->omzet_target ?? '' }}"
+                                    <input type="hidden" name="omzet_target" x-model="rawOmzet">
+                                    <input type="text"
+                                        :value="formatRupiah(rawOmzet)"
+                                        @input="rawOmzet = parseRupiah($event.target.value)"
                                         placeholder="—"
                                         class="w-40 border border-gray-200 rounded-lg text-sm px-3 py-1.5 bg-gray-50 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-200 outline-none transition-colors">
                             </td>
@@ -274,6 +334,15 @@ function targetPage() {
                 this.confirm.form.submit();
             }
         },
+        formatRupiah(value) {
+            if (value === null || value === '') return '';
+            let val = value.toString().replace(/[^0-9]/g, '');
+            if (!val) return '';
+            return 'Rp ' + parseInt(val, 10).toLocaleString('id-ID');
+        },
+        parseRupiah(value) {
+            return value.toString().replace(/[^0-9]/g, '');
+        }
     };
 }
 </script>

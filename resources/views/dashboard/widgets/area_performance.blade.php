@@ -14,7 +14,7 @@
             <div class="p-2 rounded-lg bg-gray-50">
                 <div class="flex items-center justify-between mb-1">
                     <span class="text-xs font-semibold text-gray-700">{{ $area['area'] }}</span>
-                    <span class="text-xs font-bold text-indigo-600">Rp {{ number_format($area['revenue'] / 1000000, 1) }}M</span>
+                    <span class="text-xs font-bold text-indigo-600">Rp {{ number_format($area['revenue'] / 1000000, 1) }} Juta</span>
                 </div>
                 <div class="flex gap-3 text-xs text-gray-400">
                     <span>{{ $area['branch_count'] }} cabang</span>

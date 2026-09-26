@@ -42,6 +42,7 @@ enum WidgetKey: string
     case MarketingTeamPerformance = 'marketing_team_performance';
     case SocializationEffectiveness = 'socialization_effectiveness';
     case MarketingKpiSnapshot = 'marketing_kpi_snapshot';
+    case MarketingProgress = 'marketing_progress';
 
     // Finance & Administrative
     case BudgetVsActual = 'budget_vs_actual';
@@ -120,6 +121,7 @@ enum WidgetKey: string
             self::MarketingTeamPerformance => 'Marketing Team Performance',
             self::SocializationEffectiveness => 'Socialization Effectiveness',
             self::MarketingKpiSnapshot => 'Marketing KPI Snapshot',
+            self::MarketingProgress => 'Progress Marketing',
             self::BudgetVsActual => 'Budget vs Actual',
             self::CashFlow => 'Cash Flow',
             self::BranchFinancialPerformance => 'Branch Financial Performance',
@@ -171,7 +173,7 @@ enum WidgetKey: string
             self::EmployeeDirectory, self::LeaveAttendance, self::CompliancePolicies => 'hr',
             self::MarketingRevenue, self::MemberAcquisition, self::LeadStatus,
             self::MarketingTeamPerformance, self::SocializationEffectiveness,
-            self::MarketingKpiSnapshot => 'marketing',
+            self::MarketingKpiSnapshot, self::MarketingProgress => 'marketing',
             self::BudgetVsActual, self::CashFlow, self::BranchFinancialPerformance,
             self::ProgramFinancialPerformance, self::CostAnalysis, self::FinancialForecasting,
             self::InvoiceBillManagement, self::PaymentStatus, self::ExpenseTracking,

@@ -9,6 +9,7 @@ use App\Models\Branch;
 use App\Models\Employee;
 use App\Models\MarketingTarget;
 use App\Models\MarketingTargetDefault;
+use App\Models\MarketingTargetGlobalDefault;
 use App\Models\Position;
 use App\Repositories\Marketing\MarketingTargetRepository;
 use Illuminate\Http\RedirectResponse;
@@ -35,6 +36,8 @@ class MarketingTargetController extends Controller
             ->get()
             ->keyBy('position_id');
 
+        $globalDefaults = MarketingTargetGlobalDefault::all()->keyBy('position_id');
+
         $search = $request->input('search');
         $branchId = $request->input('branch_id');
 
@@ -58,7 +61,7 @@ class MarketingTargetController extends Controller
             ->keyBy('employee_id');
 
         return view('marketing.target.index', compact(
-            'month', 'year', 'positions', 'positionTargets', 'employees', 'employeeTargets', 'branches', 'search', 'branchId'
+            'month', 'year', 'positions', 'positionTargets', 'globalDefaults', 'employees', 'employeeTargets', 'branches', 'search', 'branchId'
         ));
     }
 
@@ -69,6 +72,23 @@ class MarketingTargetController extends Controller
         ]));
 
         return back()->with('success', 'Target employee berhasil disimpan.');
+    }
+
+    public function setGlobalDefault(Request $request): RedirectResponse
+    {
+        abort_unless($request->user()->can('marketing.target.set'), 403);
+
+        $request->validate([
+            'position_id' => ['required', 'exists:positions,id'],
+            'classes_target' => ['required', 'integer', 'min:0'],
+            'omzet_target' => ['required', 'numeric', 'min:0'],
+        ]);
+
+        $this->repository->setGlobalDefault(array_merge($request->only('position_id', 'classes_target', 'omzet_target'), [
+            'created_by_employee_id' => $request->user()->employee?->id,
+        ]));
+
+        return back()->with('success', 'Default global target posisi berhasil disimpan.');
     }
 
     public function setPositionDefault(StoreMarketingTargetDefaultRequest $request): RedirectResponse

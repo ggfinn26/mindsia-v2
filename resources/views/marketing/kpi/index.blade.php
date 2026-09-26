@@ -97,6 +97,7 @@
                         <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-wide">Cabang</th>
                         <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-wide text-right">Skor MPI</th>
                         <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-wide text-right">Kelas</th>
+                        <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-wide text-right">Target Omzet</th>
                         <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-wide text-right">Omzet</th>
                         <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-wide">Status</th>
                         <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-wide"></th>
@@ -126,6 +127,9 @@
                             {{ $snap->classes_actual }}/{{ $snap->classes_target }}
                             <span class="text-xs text-slate-400">({{ number_format((float)$snap->classes_percentage, 1) }}%)</span>
                         </td>
+                        <td class="px-5 py-4 text-right tabular-nums text-slate-400">
+                            Rp {{ number_format((float)$snap->omzet_target, 0, ',', '.') }}
+                        </td>
                         <td class="px-5 py-4 text-right tabular-nums text-slate-600">
                             Rp {{ number_format((float)$snap->registration_value_actual, 0, ',', '.') }}
                             <span class="text-xs text-slate-400">({{ number_format((float)$snap->registration_value_percentage, 1) }}%)</span>
@@ -146,7 +150,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="px-5 py-20 text-center">
+                        <td colspan="9" class="px-5 py-20 text-center">
                             <span class="material-symbols-outlined text-5xl text-slate-200 mb-3 block">leaderboard</span>
                             <p class="font-semibold text-slate-700">Belum ada snapshot KPI untuk {{ $months[$month] }} {{ $year }}.</p>
                             <p class="text-sm text-slate-400 mt-1">Data muncul otomatis saat pembayaran member dikonfirmasi.</p>

@@ -713,6 +713,7 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     Route::get('marketing-target', [MarketingTargetController::class, 'index'])->name('marketing-target.index');
     Route::post('marketing-target/employee', [MarketingTargetController::class, 'setEmployeeTarget'])->name('marketing-target.employee');
     Route::post('marketing-target/position-default', [MarketingTargetController::class, 'setPositionDefault'])->name('marketing-target.position-default');
+    Route::post('marketing-target/global-default', [MarketingTargetController::class, 'setGlobalDefault'])->name('marketing-target.global-default');
     Route::get('marketing-kpi', [MarketingKpiController::class, 'index'])->name('marketing-kpi.index');
     Route::get('marketing-kpi/employees/{employee}', [MarketingKpiController::class, 'show'])->name('marketing-kpi.show');
     Route::get('marketing-kpi/rules', [MarketingKpiController::class, 'rules'])->name('marketing-kpi.rules');

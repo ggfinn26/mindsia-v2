@@ -5,6 +5,7 @@ namespace App\Repositories\Marketing;
 use App\Models\Employee;
 use App\Models\MarketingTarget;
 use App\Models\MarketingTargetDefault;
+use App\Models\MarketingTargetGlobalDefault;
 use Carbon\Carbon;
 
 class MarketingTargetRepository
@@ -37,9 +38,22 @@ class MarketingTargetRepository
             ];
         }
 
+        $positionId = $employee->currentStatus?->position_id;
+        $globalDefault = $positionId
+            ? MarketingTargetGlobalDefault::where('position_id', $positionId)->first()
+            : null;
+
+        if ($globalDefault) {
+            return [
+                'classes_target' => $globalDefault->classes_target,
+                'omzet_target' => (float) $globalDefault->omzet_target,
+                'source' => 'global',
+            ];
+        }
+
         return [
             'classes_target' => $this->autoClassesTarget($month, $year),
-            'omzet_target' => 40_000_000.0,
+            'omzet_target' => 0.0,
             'source' => 'auto',
         ];
     }
@@ -52,6 +66,14 @@ class MarketingTargetRepository
                 'period_month' => $data['period_month'],
                 'period_year' => $data['period_year'],
             ],
+            $data
+        );
+    }
+
+    public function setGlobalDefault(array $data): MarketingTargetGlobalDefault
+    {
+        return MarketingTargetGlobalDefault::updateOrCreate(
+            ['position_id' => $data['position_id']],
             $data
         );
     }

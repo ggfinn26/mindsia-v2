@@ -18,7 +18,7 @@
                     <p class="text-xs text-gray-400">{{ $branch['member_count'] }} member • {{ $branch['employee_count'] }} SDM</p>
                 </div>
                 <div class="text-right">
-                    <p class="text-xs font-bold text-gray-900">Rp {{ number_format($branch['revenue'] / 1000000, 1) }}M</p>
+                    <p class="text-xs font-bold text-gray-900">Rp {{ number_format($branch['revenue'] / 1000000, 1) }} Juta</p>
                     <p class="text-xs {{ ($branch['margin_percent'] ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-500' }}">{{ $branch['margin_percent'] ?? 0 }}%</p>
                 </div>
             </div>

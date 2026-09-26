@@ -292,10 +292,22 @@
     {{-- Tab 2: Detail Data (Table View) --}}
     <div x-show="activeTab === 'table'" class="p-6 bg-[#f9f9f8]" style="display:none;" x-data="{
         search: '',
+        sortCol: 'this_month', sortDir: 'desc',
         get filteredBranches() {
-            if (this.search === '') return this.branches;
-            return this.branches.filter(b => b.name.toLowerCase().includes(this.search.toLowerCase()) || b.area_name.toLowerCase().includes(this.search.toLowerCase()));
-        }
+            const list = this.search === '' ? this.branches
+                : this.branches.filter(b => b.name.toLowerCase().includes(this.search.toLowerCase()) || b.area_name.toLowerCase().includes(this.search.toLowerCase()));
+            const col = this.sortCol, dir = this.sortDir;
+            return list.slice().sort((a, b) => {
+                const va = a[col] ?? '', vb = b[col] ?? '';
+                if (typeof va === 'string') return dir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
+                return dir === 'asc' ? va - vb : vb - va;
+            });
+        },
+        toggleSort(col) {
+            if (this.sortCol === col) { this.sortDir = this.sortDir === 'desc' ? 'asc' : 'desc'; }
+            else { this.sortCol = col; this.sortDir = 'desc'; }
+        },
+        sortIcon(col) { return this.sortCol === col ? (this.sortDir === 'desc' ? ' ↓' : ' ↑') : ''; }
     }">
         <div class="bg-white rounded-lg border border-[#cfc6af] overflow-hidden">
             <div class="p-5 border-b border-[#cfc6af] flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white">
@@ -314,8 +326,8 @@
                 <table class="w-full text-left text-xs">
                     <thead>
                         <tr class="bg-[#f3f4f3] text-[#4c4635] uppercase tracking-wider font-bold border-b border-[#cfc6af] text-[10px]">
-                            <th class="py-3 px-5">Cabang & Area</th>
-                            <th class="py-3 px-5 text-right">Member Bln Ini</th>
+                            <th class="py-3 px-5 cursor-pointer select-none hover:text-[#1E293B]" @click="toggleSort('name')">Cabang & Area <span x-text="sortIcon('name')"></span></th>
+                            <th class="py-3 px-5 text-right cursor-pointer select-none hover:text-[#1E293B]" @click="toggleSort('this_month')">Member Bln Ini <span x-text="sortIcon('this_month')"></span></th>
                             <th class="py-3 px-5 text-left pl-10">Demografi Terbanyak</th>
                             <th class="py-3 px-5">Program Terbanyak</th>
                         </tr>

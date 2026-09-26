@@ -112,7 +112,7 @@
                 
                 <div>
                     <p class="text-[10px] uppercase tracking-wide text-gray-500 font-bold mb-1">Total Revenue</p>
-                    <p class="text-lg font-mono font-bold text-[#00677d]">Rp {{ number_format($data['data_a']['revenue'] / 1000000, 2) }}M</p>
+                    <p class="text-lg font-mono font-bold text-[#00677d]">Rp {{ number_format($data['data_a']['revenue'] / 1000000, 2) }} Juta</p>
                 </div>
                 
                 <div>
@@ -145,7 +145,7 @@
                 
                 <div>
                     <p class="text-[10px] uppercase tracking-wide text-gray-500 font-bold mb-1">Total Revenue</p>
-                    <p class="text-lg font-mono font-bold text-[#00677d]">Rp {{ number_format($data['data_b']['revenue'] / 1000000, 2) }}M</p>
+                    <p class="text-lg font-mono font-bold text-[#00677d]">Rp {{ number_format($data['data_b']['revenue'] / 1000000, 2) }} Juta</p>
                 </div>
                 
                 <div>
