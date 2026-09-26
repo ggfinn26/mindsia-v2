@@ -102,6 +102,7 @@ use App\Http\Controllers\Admin\SystemAccess\BotManagementController;
 use App\Http\Controllers\Admin\SystemAccess\DashboardWidgetConfigController;
 use App\Http\Controllers\Admin\SystemAccess\ForceResetPasswordController;
 use App\Http\Controllers\Admin\SystemAccess\NotificationRoutingController;
+use App\Http\Controllers\Admin\SystemAccess\PermissionManagementController;
 use App\Http\Controllers\Admin\SystemAccess\TelegramBackupController;
 use App\Http\Controllers\Admin\SystemAccess\WebhookStatusController;
 use App\Http\Controllers\Admin\TestQuestionController;
@@ -142,6 +143,8 @@ use App\Http\Controllers\DashboardWidgetExportController;
 use App\Http\Controllers\Employee\EmployeeProfileController;
 use App\Http\Controllers\Employee\EmployeeSurveyController;
 use App\Http\Controllers\Employee\MyKpiController;
+use App\Http\Controllers\Employee\MyLetterController;
+use App\Http\Controllers\Employee\MyTicketController;
 use App\Http\Controllers\Employee\PayslipController;
 use App\Http\Controllers\EmployeeEducationHistoryController;
 use App\Http\Controllers\EmployeeNotificationController;
@@ -801,6 +804,11 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
         ]);
     });
 
+    // Employee self-service: surat saya
+    Route::get('my-letters', [MyLetterController::class, 'index'])->name('employee.my-letters.index');
+    Route::get('my-tickets', [MyTicketController::class, 'index'])->name('employee.my-tickets.index');
+    Route::get('my-letters/warning/{warningLetter}/download', [MyLetterController::class, 'downloadWarningLetter'])->name('employee.my-letters.warning.download');
+
     // Employee self-service payslip portal — GAP-132
     Route::get('my-payslips', [PayslipController::class, 'index'])->name('employee.payslips.index');
     Route::get('my-payslips/{payroll}/download', [PayslipController::class, 'download'])->name('employee.payslips.download');
@@ -946,8 +954,15 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
 
     // System & Access Domain (superadmin)
     Route::prefix('system')->name('system.')->group(function () {
+        Route::get('permissions', [PermissionManagementController::class, 'index'])->name('permissions.index')->middleware('can:system.permission.manage');
+        Route::get('permissions/position/{position}', [PermissionManagementController::class, 'editPosition'])->name('permissions.position.edit')->middleware('can:system.permission.manage');
+        Route::put('permissions/position/{position}', [PermissionManagementController::class, 'updatePosition'])->name('permissions.position.update')->middleware('can:system.permission.manage');
+        Route::get('permissions/user/{user}', [PermissionManagementController::class, 'editUser'])->name('permissions.user.edit')->middleware('can:system.permission.manage');
+        Route::put('permissions/user/{user}', [PermissionManagementController::class, 'updateUser'])->name('permissions.user.update')->middleware('can:system.permission.manage');
+
         Route::resource('notification-routings', NotificationRoutingController::class)->except(['show']);
         Route::resource('dashboard-widgets', DashboardWidgetConfigController::class)->except(['show', 'edit', 'create']);
+        Route::put('dashboard-widgets/{widgetKey}/positions', [DashboardWidgetConfigController::class, 'assignPositions'])->name('dashboard-widgets.assign-positions');
         Route::resource('bots', BotManagementController::class)->except(['show', 'destroy']);
         Route::post('bots/{bot}/toggle', [BotManagementController::class, 'toggleActive'])->name('bots.toggle');
         Route::resource('webhooks', WebhookStatusController::class)->except(['show']);

@@ -157,6 +157,7 @@ class LetterService
             $letter = OutLetterViaGenerate::create([
                 'letter_template_id' => $template->id,
                 'branch_id' => $ids['branch_id'],
+                'recipient_employee_id' => $ids['employee_id'] ?? null,
                 'letter_type' => $template->template_code,
                 'letter_date' => now()->toDateString(),
                 'signer_employee_id' => $ids['signer_employee_id'] ?? null,

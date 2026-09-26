@@ -29,13 +29,13 @@
 <x-dashboard.nav-item href="{{ route('work-attendance.index') }}" icon="login" :active="request()->routeIs('work-attendance.index')">Absen Masuk/Keluar</x-dashboard.nav-item>
 <x-dashboard.nav-item href="{{ route('session-attendance.index') }}" icon="co_present" :active="request()->routeIs('session-attendance.index')">Absen Sesi Saya</x-dashboard.nav-item>
 <x-dashboard.nav-item href="{{ route('leave-requests.index') }}" icon="event_busy" :active="request()->routeIs('leave-requests.index') || request()->routeIs('leave-requests.create')">Izin/Sakit/Cuti Saya</x-dashboard.nav-item>
-<x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" icon="mail" :active="request()->is('letter/my-letters*')">Surat Saya</x-dashboard.nav-item>
+<x-dashboard.nav-item href="{{ route('employee.my-letters.index') }}" icon="mail" :active="request()->routeIs('employee.my-letters.*')">Surat Saya</x-dashboard.nav-item>
 @auth
     @if(auth()->user()->can('marketing.wa_template.manage') && auth()->user()->employee)
     <x-dashboard.nav-item href="{{ route('wa-templates.index') }}" icon="chat" :active="request()->routeIs('wa-templates.*')">Template WA Saya</x-dashboard.nav-item>
     @endif
 @endauth
-<x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" icon="confirmation_number" :active="request()->is('facility/my-tickets*')">Tiket Saya</x-dashboard.nav-item>
+<x-dashboard.nav-item href="{{ route('employee.my-tickets.index') }}" icon="confirmation_number" :active="request()->routeIs('employee.my-tickets.*')">Tiket Saya</x-dashboard.nav-item>
 
 <!-- 1.2 Organization -->
 @canany(['organization.province.create', 'organization.branch.create', 'organization.institution.create'])
@@ -65,7 +65,8 @@
 
 <!-- 1.3A Sistem & Akses -->
 @can('system.permission.manage')
-<x-dashboard.nav-group title="Sistem & Akses" icon="shield_person" :active="request()->is('admin/permission*') || request()->is('admin/dashboard-config*') || request()->routeIs('system.dashboard-widgets.*')">
+<x-dashboard.nav-group title="Sistem & Akses" icon="shield_person" :active="request()->routeIs('system.permissions.*') || request()->routeIs('system.dashboard-widgets.*') || request()->routeIs('attendance.document-signature.*')">
+    <x-dashboard.nav-item href="{{ route('system.permissions.index') }}" :active="request()->routeIs('system.permissions.*')" :isChild="true">Manajemen Permission</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('system.dashboard-widgets.index') }}" :active="request()->routeIs('system.dashboard-widgets.*')" :isChild="true">Widget Dashboard</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('attendance.document-signature.index') }}" :active="request()->routeIs('attendance.document-signature.*')" :isChild="true">Pengaturan TTD Dokumen</x-dashboard.nav-item>
 </x-dashboard.nav-group>

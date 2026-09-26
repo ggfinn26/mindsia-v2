@@ -24,6 +24,7 @@ class OutLetterViaGenerate extends Model
         'signer_employee_id',
         'signer_name_snapshot',
         'signer_title_snapshot',
+        'recipient_employee_id',
         'created_by_employee_id',
         'published_by_employee_id',
         'published_at',
@@ -49,6 +50,11 @@ class OutLetterViaGenerate extends Model
     public function signer(): BelongsTo
     {
         return $this->belongsTo(Employee::class, 'signer_employee_id');
+    }
+
+    public function recipientEmployee(): BelongsTo
+    {
+        return $this->belongsTo(Employee::class, 'recipient_employee_id');
     }
 
     public function createdBy(): BelongsTo

@@ -57,6 +57,11 @@ class RoleSeeder extends Seeder
         Position::whereIn('position_name', $hrStaffPositions)->with('role')->get()
             ->each(fn ($p) => $p->role?->givePermissionTo('attendance.leave.review'));
 
+        // HR positions — can manage employee contracts
+        $contractPositions = ['Human Resources Personalia', 'Chief Human Resources Officer'];
+        Position::whereIn('position_name', $contractPositions)->with('role')->get()
+            ->each(fn ($p) => $p->role?->givePermissionTo('contract.manage'));
+
         // C-Level positions — can approve leave from HR staff
         $cLevelPositions = [
             'Chief Executive Officer',

@@ -9,6 +9,7 @@ use App\Http\Requests\SystemAccess\UpdateDashboardWidgetConfigRequest;
 use App\Models\DashboardWidgetConfig;
 use App\Repositories\PositionRepository;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class DashboardWidgetConfigController extends Controller
@@ -19,16 +20,18 @@ class DashboardWidgetConfigController extends Controller
 
     public function index(): View
     {
-        $configs = DashboardWidgetConfig::with('position')
-            ->orderBy('position_id')
-            ->orderBy('order')
-            ->get()
-            ->groupBy('position_id');
+        $configs = DashboardWidgetConfig::with('position')->get();
+
+        // Group by widget_key → collect position configs per widget
+        $byWidget = $configs->groupBy('widget_key');
+
+        $widgetKeys = collect(WidgetKey::cases())
+            ->groupBy(fn (WidgetKey $wk) => $wk->category());
 
         return view('system-access.dashboard-widget.index', [
-            'configs' => $configs,
+            'byWidget' => $byWidget,
+            'widgetKeys' => $widgetKeys,
             'positions' => $this->positionRepository->all(),
-            'widgetKeys' => WidgetKey::cases(),
         ]);
     }
 
@@ -51,5 +54,32 @@ class DashboardWidgetConfigController extends Controller
         $dashboardWidgetConfig->delete();
 
         return redirect()->route('system.dashboard-widgets.index')->with('success', 'Widget berhasil dihapus.');
+    }
+
+    public function assignPositions(Request $request, string $widgetKey): RedirectResponse
+    {
+        $wk = WidgetKey::tryFrom($widgetKey);
+        abort_if(! $wk, 404);
+
+        $validated = $request->validate([
+            'positions' => ['nullable', 'array'],
+            'positions.*.position_id' => ['required', 'exists:positions,id'],
+            'positions.*.order' => ['required', 'integer', 'min:1'],
+            'positions.*.is_enabled' => ['nullable', 'boolean'],
+        ]);
+
+        DashboardWidgetConfig::where('widget_key', $widgetKey)->delete();
+
+        foreach ($validated['positions'] ?? [] as $row) {
+            DashboardWidgetConfig::create([
+                'widget_key' => $widgetKey,
+                'position_id' => $row['position_id'],
+                'order' => $row['order'],
+                'is_enabled' => isset($row['is_enabled']) ? (bool) $row['is_enabled'] : true,
+            ]);
+        }
+
+        return redirect()->route('system.dashboard-widgets.index')
+            ->with('success', 'Konfigurasi widget "'.$wk->label().'" berhasil diperbarui.');
     }
 }
