@@ -42,7 +42,7 @@
         <div>
             <label class="mb-1.5 block text-sm font-medium text-slate-700">Tipe periode</label>
             <select name="period_type" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
-                @foreach (['monthly' => 'Bulanan', 'quarterly' => 'Kuartalan', 'annual' => 'Tahunan'] as $val => $label)
+                @foreach (['monthly' => 'Bulanan', 'quarterly' => 'Kuartalan', 'yearly' => 'Tahunan'] as $val => $label)
                     <option value="{{ $val }}" @selected(old('period_type') === $val)>{{ $label }}</option>
                 @endforeach
             </select>

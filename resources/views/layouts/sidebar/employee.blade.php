@@ -23,7 +23,7 @@
     <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider font-jakarta">Personal Dashboard</p>
 </div>
 <x-dashboard.nav-item href="{{ route('employee.payslips.index') }}" icon="receipt_long" :active="request()->routeIs('employee.payslips.*')">Slip Gaji Saya</x-dashboard.nav-item>
-<x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" icon="track_changes" :active="request()->is('employee/my-kpi*')">KPI Saya</x-dashboard.nav-item>
+<x-dashboard.nav-item href="{{ route('employee.my-kpi') }}" icon="track_changes" :active="request()->routeIs('employee.my-kpi')">KPI Saya</x-dashboard.nav-item>
 <x-dashboard.nav-item href="{{ route('marketing.my-performance') }}" icon="format_list_numbered" :active="request()->routeIs('marketing.my-performance')">Ranking MPI Saya</x-dashboard.nav-item>
 <x-dashboard.nav-item href="{{ route('work-attendance.my-recap') }}" icon="history" :active="request()->is('attendance/my-recap*')">Riwayat Absensi Saya</x-dashboard.nav-item>
 <x-dashboard.nav-item href="{{ route('work-attendance.index') }}" icon="login" :active="request()->routeIs('work-attendance.index')">Absen Masuk/Keluar</x-dashboard.nav-item>

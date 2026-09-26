@@ -141,6 +141,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DashboardWidgetExportController;
 use App\Http\Controllers\Employee\EmployeeProfileController;
 use App\Http\Controllers\Employee\EmployeeSurveyController;
+use App\Http\Controllers\Employee\MyKpiController;
 use App\Http\Controllers\Employee\PayslipController;
 use App\Http\Controllers\EmployeeEducationHistoryController;
 use App\Http\Controllers\EmployeeNotificationController;
@@ -537,6 +538,7 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     Route::get('/dashboard/widget/{widgetKey}/export/{format}', [DashboardWidgetExportController::class, 'export'])->name('dashboard.widget-export');
     Route::post('/dashboard/widget-order', [DashboardController::class, 'updateWidgetOrder'])->name('dashboard.widget-order');
     Route::post('/dashboard/widget-toggle', [DashboardController::class, 'toggleWidget'])->name('dashboard.widget-toggle');
+    Route::get('/employee/my-kpi', [MyKpiController::class, 'index'])->name('employee.my-kpi');
     Route::get('/employee/profile', [EmployeeProfileController::class, 'show'])->name('employee.profile.show');
     Route::get('/employee/profile/edit', [EmployeeProfileController::class, 'edit'])->name('employee.profile.edit');
     Route::patch('/employee/profile', [EmployeeProfileController::class, 'update'])->name('employee.profile.update');

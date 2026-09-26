@@ -11,7 +11,7 @@
             <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Assignment Evaluator</h2>
             <p class="mt-1 max-w-2xl text-sm leading-6 text-slate-600">Tentukan siapa yang mengevaluasi siapa dan dengan template apa.</p>
         </div>
-        @can('kpi.evaluation.create')
+        @can('kpi.evaluator_assignment.create')
             <a href="{{ route('kpi.evaluator-assignments.create') }}" class="inline-flex min-h-10 items-center gap-2 bg-[#215aac] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">
                 <span class="material-symbols-outlined text-[18px]">add</span> Tambah Assignment
             </a>
@@ -75,7 +75,7 @@
                                 </span>
                             </td>
                             <td class="px-5 py-4 text-right">
-                                @can('kpi.evaluation.create')
+                                @can('kpi.evaluator_assignment.update')
                                     <a href="{{ route('kpi.evaluator-assignments.edit', $assignment) }}" class="inline-flex min-h-9 items-center border border-slate-300 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50">Edit</a>
                                 @endcan
                             </td>

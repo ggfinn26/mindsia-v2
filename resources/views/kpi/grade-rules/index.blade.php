@@ -17,7 +17,7 @@
             <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Grade KPI</h2>
             <p class="mt-1 max-w-2xl text-sm leading-6 text-slate-600">Definisikan range skor untuk setiap grade. Grade dipakai otomatis saat evaluasi di-finalize.</p>
         </div>
-        @can('kpi.grade_rule.view')
+        @can('kpi.grade_rule.create')
             <a href="{{ route('kpi.grade-rules.create') }}" class="inline-flex min-h-10 items-center gap-2 bg-[#215aac] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">
                 <span class="material-symbols-outlined text-[18px]">add</span> Tambah Grade
             </a>
@@ -62,7 +62,7 @@
                                 </span>
                             </td>
                             <td class="px-5 py-4 text-right">
-                                @can('kpi.grade_rule.view')
+                                @can('kpi.grade_rule.update')
                                     <a href="{{ route('kpi.grade-rules.edit', $rule) }}" class="inline-flex min-h-9 items-center gap-1 border border-slate-300 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50 mr-1">Edit</a>
                                 @endcan
                                 @can('kpi.grade_rule.delete')

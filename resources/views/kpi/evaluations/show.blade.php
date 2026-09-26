@@ -75,6 +75,7 @@
                     <th class="px-5 py-3">Indikator</th>
                     <th class="px-5 py-3 text-right">Target</th>
                     <th class="px-5 py-3 text-right">Aktual</th>
+                    <th class="px-5 py-3 text-right">Capaian</th>
                     <th class="px-5 py-3 text-right">Bobot</th>
                     <th class="px-5 py-3 text-right">Skor</th>
                     @if ($evaluation->isDraft())
@@ -92,9 +93,12 @@
                                 <p class="mt-0.5 text-xs text-slate-400">{{ $item->notes }}</p>
                             @endif
                         </td>
-                        <td class="px-5 py-3 text-right tabular-nums text-slate-700">{{ $item->target_value_snapshot }}</td>
+                        <td class="px-5 py-3 text-right tabular-nums text-slate-700">{{ $item->target_value ?? '—' }}</td>
                         <td class="px-5 py-3 text-right tabular-nums {{ $item->actual_value !== null ? 'font-semibold text-slate-900' : 'text-slate-300' }}">
                             {{ $item->actual_value ?? '—' }}
+                        </td>
+                        <td class="px-5 py-3 text-right tabular-nums {{ $item->actual_value !== null ? 'text-slate-700' : 'text-slate-300' }}">
+                            {{ $item->achievement_percentage !== null ? number_format($item->achievement_percentage, 1).'%' : '—' }}
                         </td>
                         <td class="px-5 py-3 text-right text-slate-600">{{ $item->weight_snapshot }}%</td>
                         <td class="px-5 py-3 text-right tabular-nums font-semibold text-slate-900">
@@ -105,8 +109,10 @@
                                 <form method="POST" action="{{ route('kpi.evaluations.items.update', [$evaluation, $item]) }}" class="inline-flex items-center gap-2">
                                     @csrf @method('PUT')
                                     <input type="number" name="actual_value" value="{{ $item->actual_value }}" step="0.01"
-                                           placeholder="Aktual" class="w-24 border-slate-300 text-xs focus:border-[#215aac] focus:ring-[#215aac]">
-                                    <button type="submit" class="inline-flex min-h-7 items-center bg-[#215aac] px-2 text-xs font-semibold text-white hover:bg-[#194a91]">Isi</button>
+                                           placeholder="Aktual" class="w-20 border-slate-300 text-xs focus:border-[#215aac] focus:ring-[#215aac]">
+                                    <input type="text" name="notes" value="{{ $item->notes }}"
+                                           placeholder="Catatan (opsional)" class="w-32 border-slate-300 text-xs focus:border-[#215aac] focus:ring-[#215aac]">
+                                    <button type="submit" class="inline-flex min-h-7 items-center bg-[#215aac] px-2 text-xs font-semibold text-white hover:bg-[#194a91]">Simpan</button>
                                 </form>
                             </td>
                         @endif
