@@ -60,7 +60,7 @@
 @endphp
 
 <div class="max-w-5xl mx-auto py-6 px-4 sm:px-6 lg:px-8"
-    x-data="{ showAssignModal: false, showFeeModal: false, showCancelModal: false }">
+    x-data="{ showAssignModal: false, showFeeModal: false, showCancelModal: false, showCompleteModal: false }">
 
     @if (session('success'))
         <div class="mb-4 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-xl text-sm">{{ session('success') }}</div>
@@ -107,6 +107,13 @@
                         <button @click="showCancelModal = true"
                             class="inline-flex items-center px-3 py-2 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100">
                             Batalkan
+                        </button>
+                    @endif
+                    @if ($socialization->status === 'scheduled')
+                        <button @click="showCompleteModal = true"
+                            class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-white bg-green-600 border border-green-600 rounded-lg hover:bg-green-700">
+                            <span class="material-symbols-outlined text-base">check_circle</span>
+                            Selesaikan
                         </button>
                     @endif
                 @endcan
@@ -550,6 +557,45 @@
                         class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700">Ya, batalkan</button>
                 </form>
             </div>
+        </div>
+    </div>
+    {{-- Modal: Selesaikan --}}
+    <div x-show="showCompleteModal" x-transition.opacity @keydown.escape.window="showCompleteModal = false"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display: none;">
+        <div @click="showCompleteModal = false" class="absolute inset-0 bg-gray-900/50" aria-hidden="true"></div>
+        <div class="relative bg-white rounded-2xl shadow-xl max-w-lg w-full z-10 p-6">
+            <h3 class="text-base font-semibold text-gray-900 mb-1">Selesaikan Sosialisasi</h3>
+            <p class="text-sm text-gray-500 mb-4">Konfirmasi jumlah kelas per marketer. Tidak bisa diubah setelah selesai.</p>
+
+            <form action="{{ route('socializations.complete', $socialization) }}" method="POST">
+                @csrf
+                @if ($socialization->employeeSocializations->isEmpty())
+                    <p class="text-sm text-amber-600 mb-4">Belum ada marketer ditugaskan — tetap bisa diselesaikan.</p>
+                @else
+                    <div class="divide-y divide-gray-100 mb-4">
+                        @foreach ($socialization->employeeSocializations as $es)
+                        <div class="flex items-center justify-between py-3 gap-4">
+                            <div class="min-w-0">
+                                <p class="text-sm font-medium text-gray-800">{{ $es->employee->full_name ?? '-' }}</p>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <label class="text-xs text-gray-400">Kelas</label>
+                                <input type="hidden" name="results[{{ $loop->index }}][employee_socialization_id]" value="{{ $es->id }}">
+                                <input type="number" name="results[{{ $loop->index }}][classes_obtained]"
+                                    value="{{ $es->classes_obtained ?? 0 }}" min="0"
+                                    class="w-20 text-center border border-gray-200 rounded-lg text-sm px-2 py-1.5 focus:outline-none focus:border-green-400">
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                @endif
+                <div class="flex justify-end gap-3">
+                    <button type="button" @click="showCompleteModal = false"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">Batal</button>
+                    <button type="submit"
+                        class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700">Selesaikan</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

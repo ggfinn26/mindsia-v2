@@ -232,7 +232,7 @@ class DashboardWidgetService
         }
 
         $data = $provider->getData($filters);
-        cache()->put($cacheKey, $data, now()->addMinutes(15));
+        cache()->put($cacheKey, $data, now()->addMinutes(1));
 
         return $data;
     }
@@ -250,7 +250,7 @@ class DashboardWidgetService
         }
 
         $data = $provider->getData($filters);
-        cache()->put($this->cacheKey($widgetKey, $filters), $data, now()->addMinutes(15));
+        cache()->put($this->cacheKey($widgetKey, $filters), $data, now()->addMinutes(1));
     }
 
     /** Bust cache for a specific widget + branch (e.g. after bulk data import). */

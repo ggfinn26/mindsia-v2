@@ -231,9 +231,10 @@ class MarketingProgressWidget implements WidgetDataProviderInterface
             ->selectRaw('md.referred_by_employee_id as employee_id, COUNT(*) as cnt')
             ->get()->keyBy('employee_id');
 
-        // Kelas dari socializations.created_by_employee_id
-        $kelasQ = DB::table('socializations as s')
-            ->whereIn('s.created_by_employee_id', $empIds)
+        // Kelas dari SUM(employee_socializations.classes_obtained) per periode
+        $kelasQ = DB::table('employee_socializations as es')
+            ->join('socializations as s', 'es.socialization_id', '=', 's.id')
+            ->whereIn('es.employee_id', $empIds)
             ->where('s.status', '!=', 'cancelled')
             ->whereYear('s.created_at', $y);
         if ($pType === 'monthly') {
@@ -241,8 +242,8 @@ class MarketingProgressWidget implements WidgetDataProviderInterface
         } elseif ($pType === 'semester') {
             $kelasQ->whereIn(DB::raw('MONTH(s.created_at)'), $sem === 1 ? [1, 2, 3, 4, 5, 6] : [7, 8, 9, 10, 11, 12]);
         }
-        $kelasMap = $kelasQ->groupBy('s.created_by_employee_id')
-            ->selectRaw('s.created_by_employee_id as employee_id, COUNT(*) as cnt')
+        $kelasMap = $kelasQ->groupBy('es.employee_id')
+            ->selectRaw('es.employee_id, SUM(es.classes_obtained) as cnt')
             ->get()->keyBy('employee_id');
 
         // Prospek dari prospective_members.captured_by_employee_id
