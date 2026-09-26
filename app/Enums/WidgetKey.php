@@ -76,6 +76,7 @@ enum WidgetKey: string
     case MyStudentProgress = 'my_student_progress';
     case MyAttendanceRecord = 'my_attendance_record';
     case MyPerformanceSummary = 'my_performance_summary';
+    case MyMpiProgress = 'my_mpi_progress';
     case SupportTicket = 'support_ticket';
 
     // Analytics & Insight
@@ -151,6 +152,7 @@ enum WidgetKey: string
             self::MyStudentProgress => 'My Student Progress',
             self::MyAttendanceRecord => 'My Attendance Record',
             self::MyPerformanceSummary => 'My Performance Summary',
+            self::MyMpiProgress => 'MPI Progress',
             self::SupportTicket => 'Support Ticket',
             self::MemberGrowth => 'Member Growth',
             self::RankingProgram => 'Ranking Program',
@@ -183,7 +185,8 @@ enum WidgetKey: string
             self::MyTargetStatus, self::MyRanking, self::MyCommissionIncentive,
             self::MyPerformanceHistory, self::MyClasses, self::MySessionSchedule,
             self::MySessionAttendance, self::MyAssessmentTasks, self::MyStudentProgress,
-            self::MyAttendanceRecord, self::MyPerformanceSummary, self::SupportTicket => 'personal',
+            self::MyAttendanceRecord, self::MyPerformanceSummary, self::MyMpiProgress,
+            self::SupportTicket => 'personal',
             self::MemberGrowth, self::RankingProgram, self::Comparable => 'analytics',
             self::SystemAuditLog, self::ActiveUsers => 'system',
         };
@@ -228,6 +231,7 @@ enum WidgetKey: string
             // Marketing & Growth
             self::MarketingRevenue => 'campaign',
             self::MemberAcquisition => 'person_add',
+            self::MyMpiProgress => 'speed',
             // Analytics & Insight
             self::MemberGrowth => 'show_chart',
             self::RankingProgram => 'leaderboard',

@@ -43,16 +43,16 @@ class MyPerformanceHistoryWidget implements WidgetDataProviderInterface
             ->get()
             ->map(fn ($s) => [
                 'period' => $s->period_month.'/'.$s->period_year,
-                'total_score' => $s->total_score,
-                'grade' => $s->grade,
+                'score' => (float) $s->mpi_score,
             ])->toArray();
 
         $history = count($kpiHistory) > 0 ? $kpiHistory : $marketingHistory;
+        $scoreKey = count($kpiHistory) > 0 ? 'total_score' : 'score';
 
         return [
             'history' => $history,
             'trend' => count($history) >= 2
-                ? round($history[count($history) - 1]['total_score'] - $history[0]['total_score'], 2)
+                ? round(($history[count($history) - 1][$scoreKey] ?? 0) - ($history[0][$scoreKey] ?? 0), 2)
                 : 0,
             'period' => $now->translatedFormat('F Y'),
         ];

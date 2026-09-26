@@ -51,6 +51,7 @@ use App\Services\Dashboard\Widgets\MyAttendanceRecordWidget;
 use App\Services\Dashboard\Widgets\MyClassesWidget;
 use App\Services\Dashboard\Widgets\MyCommissionIncentiveWidget;
 use App\Services\Dashboard\Widgets\MyKpiAchievementWidget;
+use App\Services\Dashboard\Widgets\MyMpiProgressWidget;
 use App\Services\Dashboard\Widgets\MyPerformanceHistoryWidget;
 use App\Services\Dashboard\Widgets\MyPerformanceSummaryWidget;
 use App\Services\Dashboard\Widgets\MyRankingWidget;
@@ -154,6 +155,7 @@ class DashboardWidgetService
         $this->registerProvider(new MyStudentProgressWidget);
         $this->registerProvider(new MyAttendanceRecordWidget);
         $this->registerProvider(new MyPerformanceSummaryWidget);
+        $this->registerProvider(new MyMpiProgressWidget);
         $this->registerProvider(new SupportTicketWidget);
 
         // Analytics & Insight
