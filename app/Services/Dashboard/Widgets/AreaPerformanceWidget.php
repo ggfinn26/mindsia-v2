@@ -27,13 +27,13 @@ class AreaPerformanceWidget implements WidgetDataProviderInterface
         // If scoped to a branch, find its area
         $areaQuery = Area::query();
         if ($branchId) {
-            $branch = Branch::find($branchId, ['area_id']);
-            if ($branch?->area_id) {
-                $areaQuery->where('id', $branch->area_id);
+            $branch = Branch::find($branchId, ['areas_id']);
+            if ($branch?->areas_id) {
+                $areaQuery->where('id', $branch->areas_id);
             }
         }
 
-        $areas = $areaQuery->with('branches:id,area_id,branch_name')->get();
+        $areas = $areaQuery->with('branches:id,areas_id,branch_name')->get();
 
         $areaPerformance = $areas->map(function ($area) use ($currentMonth, $currentYear) {
             $branchIds = $area->branches->pluck('id');
@@ -41,7 +41,7 @@ class AreaPerformanceWidget implements WidgetDataProviderInterface
             $revenue = MemberPayment::where('payment_status', 'paid')
                 ->whereMonth('paid_at', $currentMonth)
                 ->whereYear('paid_at', $currentYear)
-                ->whereHas('registration', fn ($r) => $r->whereIn('branch_id', $branchIds))
+                ->whereHas('registration.memberData', fn ($r) => $r->whereIn('branch_id', $branchIds))
                 ->sum('amount');
 
             $cost = BranchMonthlyCost::where('period_month', $currentMonth)
@@ -51,7 +51,7 @@ class AreaPerformanceWidget implements WidgetDataProviderInterface
 
             $newMembers = MemberRegistration::whereMonth('created_at', $currentMonth)
                 ->whereYear('created_at', $currentYear)
-                ->whereIn('branch_id', $branchIds)
+                ->whereHas('memberData', fn ($m) => $m->whereIn('branch_id', $branchIds))
                 ->count();
 
             return [
@@ -77,14 +77,14 @@ class AreaPerformanceWidget implements WidgetDataProviderInterface
         $currentMonth = $now->month;
         $currentYear = $now->year;
 
-        $areas = Area::with('branches:id,area_id')->get();
+        $areas = Area::with('branches:id,areas_id')->get();
 
         return $areas->map(function ($area) use ($currentMonth, $currentYear) {
             $branchIds = $area->branches->pluck('id');
             $revenue = MemberPayment::where('payment_status', 'paid')
                 ->whereMonth('paid_at', $currentMonth)
                 ->whereYear('paid_at', $currentYear)
-                ->whereHas('registration', fn ($r) => $r->whereIn('branch_id', $branchIds))
+                ->whereHas('registration.memberData', fn ($r) => $r->whereIn('branch_id', $branchIds))
                 ->sum('amount');
 
             return [

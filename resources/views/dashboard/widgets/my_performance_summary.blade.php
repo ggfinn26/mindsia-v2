@@ -21,7 +21,7 @@
                 <p class="text-xs text-gray-400 mt-0.5">Total Score</p>
             </div>
             <div class="text-center p-3 rounded-lg bg-gray-50">
-                <p class="text-2xl font-bold text-gray-700">{{ $data['rank_branch'] ? '#'.$data['rank_branch'] : '-' }}</p>
+                <p class="text-2xl font-bold text-gray-700">{{ ($data['rank_branch'] ?? null) ? '#'.$data['rank_branch'] : '-' }}</p>
                 <p class="text-xs text-gray-400 mt-0.5">Rank Cabang</p>
             </div>
         </div>

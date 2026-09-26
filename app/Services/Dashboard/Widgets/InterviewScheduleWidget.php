@@ -2,6 +2,7 @@
 
 namespace App\Services\Dashboard\Widgets;
 
+use App\Models\ApplicantInterviewEvaluation;
 use App\Models\ApplicantInterviewSchedule;
 use App\Services\Dashboard\WidgetDataProviderInterface;
 use Carbon\Carbon;
@@ -38,10 +39,10 @@ class InterviewScheduleWidget implements WidgetDataProviderInterface
 
         $completed = (clone $query)->whereHas('evaluation')->count();
 
-        $byDecision = ApplicantInterviewSchedule::whereHas('evaluation')
+        $byDecision = ApplicantInterviewEvaluation::whereHas('schedule', fn ($q) => $q
             ->whereMonth('scheduled_at', $currentMonth)
             ->whereYear('scheduled_at', $currentYear)
-            ->when($branchId, fn ($q) => $q->whereHas('application.jobPosting', fn ($j) => $j->where('branch_id', $branchId)))
+            ->when($branchId, fn ($bq) => $bq->whereHas('application.jobPosting', fn ($j) => $j->where('branch_id', $branchId))))
             ->selectRaw('decision, COUNT(*) as count')
             ->groupBy('decision')
             ->pluck('count', 'decision')

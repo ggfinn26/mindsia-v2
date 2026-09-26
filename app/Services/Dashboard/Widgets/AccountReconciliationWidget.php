@@ -23,11 +23,11 @@ class AccountReconciliationWidget implements WidgetDataProviderInterface
 
         // AR: member payments pending (receivable)
         $arTotal = MemberPayment::where('payment_status', 'pending')
-            ->when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+            ->when($branchId, fn ($q) => $q->whereHas('registration.memberData', fn ($r) => $r->where('branch_id', $branchId)))
             ->sum('amount');
 
         $arCount = MemberPayment::where('payment_status', 'pending')
-            ->when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+            ->when($branchId, fn ($q) => $q->whereHas('registration.memberData', fn ($r) => $r->where('branch_id', $branchId)))
             ->count();
 
         // AP: payroll pending (payable)
@@ -43,7 +43,7 @@ class AccountReconciliationWidget implements WidgetDataProviderInterface
         $collectedThisMonth = MemberPayment::where('payment_status', 'paid')
             ->whereMonth('paid_at', $currentMonth)
             ->whereYear('paid_at', $currentYear)
-            ->when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+            ->when($branchId, fn ($q) => $q->whereHas('registration.memberData', fn ($r) => $r->where('branch_id', $branchId)))
             ->sum('amount');
 
         return [
@@ -61,7 +61,7 @@ class AccountReconciliationWidget implements WidgetDataProviderInterface
     {
         $branchId = $filters['branch_id'] ?? null;
         $payments = MemberPayment::where('payment_status', 'pending')
-            ->when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+            ->when($branchId, fn ($q) => $q->whereHas('registration.memberData', fn ($r) => $r->where('branch_id', $branchId)))
             ->with('registration.member:id,full_name')
             ->orderBy('due_date')
             ->get();

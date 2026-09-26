@@ -23,7 +23,7 @@ class MyClassesWidget implements WidgetDataProviderInterface
             return ['error' => 'Employee not found'];
         }
 
-        $classes = MemberClass::where('tutor_employee_id', $employeeId)
+        $classes = MemberClass::whereHas('classRoom', fn ($q) => $q->where('tutor_id', $employeeId))
             ->with('program:id,program_name', 'classRoom:id,room_name,branch_id')
             ->get();
 
@@ -54,7 +54,7 @@ class MyClassesWidget implements WidgetDataProviderInterface
             return [];
         }
 
-        return MemberClass::where('tutor_employee_id', $employeeId)
+        return MemberClass::whereHas('classRoom', fn ($q) => $q->where('tutor_id', $employeeId))
             ->with('program:id,program_name')
             ->get()
             ->map(fn ($c) => [

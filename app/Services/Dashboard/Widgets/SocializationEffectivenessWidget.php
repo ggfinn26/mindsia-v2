@@ -22,22 +22,21 @@ class SocializationEffectivenessWidget implements WidgetDataProviderInterface
         $currentMonth = $now->month;
         $currentYear = $now->year;
 
-        $totalEvents = Socialization::whereMonth('event_date', $currentMonth)
-            ->whereYear('event_date', $currentYear)
+        $totalEvents = Socialization::whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
             ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
             ->count();
 
         $attended = EmployeeSocialization::whereHas('socialization', fn ($q) => $q
-            ->whereMonth('event_date', $currentMonth)
-            ->whereYear('event_date', $currentYear)
+            ->whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
             ->when($branchId, fn ($bq) => $bq->where('branch_id', $branchId)))
-            ->where('attended', true)
+            ->where('status', 'confirmed')
             ->count();
 
         $converted = MemberRegistration::whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear)
-            ->whereNotNull('socialization_id')
-            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
+            ->when($branchId, fn ($q) => $q->whereHas('member', fn ($mq) => $mq->where('branch_id', $branchId)))
             ->count();
 
         $conversionRate = $attended > 0
@@ -58,15 +57,15 @@ class SocializationEffectivenessWidget implements WidgetDataProviderInterface
         $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
 
-        $socializations = Socialization::whereYear('event_date', $now->year)
+        $socializations = Socialization::whereYear('created_at', $now->year)
             ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
-            ->withCount(['employeeSocializations as attended_count' => fn ($q) => $q->where('attended', true)])
-            ->orderBy('event_date')
+            ->withCount(['employeeSocializations as attended_count' => fn ($q) => $q->where('status', 'confirmed')])
+            ->orderBy('created_at')
             ->get();
 
         return $socializations->map(fn ($s) => [
             'event_name' => $s->name ?? '-',
-            'event_date' => $s->event_date?->format('Y-m-d'),
+            'created_at' => $s->created_at?->format('Y-m-d'),
             'attended_count' => $s->attended_count,
         ])->toArray();
     }

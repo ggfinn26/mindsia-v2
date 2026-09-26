@@ -24,7 +24,7 @@ class MyStudentProgressWidget implements WidgetDataProviderInterface
             return ['error' => 'Employee not found'];
         }
 
-        $activeClasses = MemberClass::where('tutor_employee_id', $employeeId)
+        $activeClasses = MemberClass::whereHas('classRoom', fn ($q) => $q->where('tutor_id', $employeeId))
             ->where('status', 'active')
             ->with('program:id,program_name')
             ->get();
@@ -62,7 +62,7 @@ class MyStudentProgressWidget implements WidgetDataProviderInterface
             return [];
         }
 
-        $activeClasses = MemberClass::where('tutor_employee_id', $employeeId)
+        $activeClasses = MemberClass::whereHas('classRoom', fn ($q) => $q->where('tutor_id', $employeeId))
             ->where('status', 'active')
             ->with('program:id,program_name')
             ->pluck('id', 'program.program_name');

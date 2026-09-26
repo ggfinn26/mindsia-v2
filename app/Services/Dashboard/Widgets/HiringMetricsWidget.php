@@ -37,9 +37,9 @@ class HiringMetricsWidget implements WidgetDataProviderInterface
         $hireRate = $offered > 0 ? round(($hired / $offered) * 100, 1) : 0;
         $overallConversion = $applied > 0 ? round(($hired / $applied) * 100, 1) : 0;
 
-        $targetHires = JobPermintaanDetail::whereHas('jobPermintaan', fn ($q) => $q
+        $targetHires = JobPermintaanDetail::whereHas('permintaan', fn ($q) => $q
             ->where('status', 'approved'))
-            ->when($branchId, fn ($q) => $q->whereHas('jobPermintaan', fn ($bq) => $bq->where('branch_id', $branchId)))
+            ->when($branchId, fn ($q) => $q->whereHas('permintaan', fn ($bq) => $bq->where('branch_id', $branchId)))
             ->sum('headcount');
 
         $fulfillmentRate = $targetHires > 0 ? round(($hired / $targetHires) * 100, 1) : 0;

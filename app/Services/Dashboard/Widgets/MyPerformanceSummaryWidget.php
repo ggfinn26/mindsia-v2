@@ -26,8 +26,8 @@ class MyPerformanceSummaryWidget implements WidgetDataProviderInterface
 
         // Try KPI evaluation first, fall back to marketing snapshot
         $kpiEval = EmployeeKpiEvaluation::where('employee_id', $employeeId)
-            ->whereMonth('evaluation_period', $now->month)
-            ->whereYear('evaluation_period', $now->year)
+            ->whereMonth('period_start_date', $now->month)
+            ->whereYear('period_start_date', $now->year)
             ->first();
 
         if ($kpiEval) {
@@ -45,7 +45,7 @@ class MyPerformanceSummaryWidget implements WidgetDataProviderInterface
             ->first();
 
         return [
-            'score' => $snapshot?->total_score ?? null,
+            'score' => $snapshot?->mpi_score ?? null,
             'grade' => $snapshot?->grade ?? null,
             'source' => 'marketing_snapshot',
             'period' => $now->translatedFormat('F Y'),
@@ -62,10 +62,10 @@ class MyPerformanceSummaryWidget implements WidgetDataProviderInterface
         }
 
         $kpiHistory = EmployeeKpiEvaluation::where('employee_id', $employeeId)
-            ->orderBy('evaluation_period', 'desc')
+            ->orderBy('period_start_date', 'desc')
             ->get()
             ->map(fn ($ev) => [
-                'period' => $ev->evaluation_period?->format('Y-m'),
+                'period' => $ev->period_start_date?->format('Y-m'),
                 'score' => $ev->total_score,
                 'grade' => $ev->grade,
             ])->toArray();
@@ -77,7 +77,7 @@ class MyPerformanceSummaryWidget implements WidgetDataProviderInterface
                 ->get()
                 ->map(fn ($s) => [
                     'period' => $s->period_year.'-'.str_pad($s->period_month, 2, '0', STR_PAD_LEFT),
-                    'score' => $s->total_score,
+                    'score' => $s->mpi_score,
                     'grade' => $s->grade,
                 ])->toArray();
     }

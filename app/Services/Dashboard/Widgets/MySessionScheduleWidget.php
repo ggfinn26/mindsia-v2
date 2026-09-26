@@ -15,7 +15,6 @@ class MySessionScheduleWidget implements WidgetDataProviderInterface
 
     public function getData(array $filters = []): array
     {
-        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
         $employeeId = auth()->user()?->employee?->id;
 
@@ -23,30 +22,26 @@ class MySessionScheduleWidget implements WidgetDataProviderInterface
             return ['error' => 'Employee not found'];
         }
 
-        // Today's sessions
-        $todaySessions = SessionSchedule::where('tutor_employee_id', $employeeId)
-            ->whereDate('session_date', $now->toDateString())
-            ->with('memberClass.program:id,program_name')
-            ->orderBy('start_time')
+        $todaySessions = SessionSchedule::where('employee_id', $employeeId)
+            ->whereHas('classSchedule', fn ($q) => $q->whereDate('schedule_date', $now->toDateString()))
+            ->with('classSchedule:id,schedule_date,start_time,end_time', 'classSchedule.class:id,program_id', 'classSchedule.class.program:id,program_name')
             ->get()
             ->map(fn ($s) => [
-                'program' => $s->memberClass?->program?->program_name ?? '-',
-                'start_time' => $s->start_time,
-                'end_time' => $s->end_time,
-                'status' => $s->status ?? 'scheduled',
+                'program' => $s->classSchedule?->class?->program?->program_name ?? '-',
+                'start_time' => $s->classSchedule?->start_time,
+                'end_time' => $s->classSchedule?->end_time,
+                'schedule_date' => $s->classSchedule?->schedule_date?->format('Y-m-d'),
             ])->toArray();
 
-        // This week
         $weekStart = $now->copy()->startOfWeek();
         $weekEnd = $now->copy()->endOfWeek();
-        $weekCount = SessionSchedule::where('tutor_employee_id', $employeeId)
-            ->whereBetween('session_date', [$weekStart->toDateString(), $weekEnd->toDateString()])
+
+        $weekCount = SessionSchedule::where('employee_id', $employeeId)
+            ->whereHas('classSchedule', fn ($q) => $q->whereBetween('schedule_date', [$weekStart->toDateString(), $weekEnd->toDateString()]))
             ->count();
 
-        // This month
-        $monthCount = SessionSchedule::where('tutor_employee_id', $employeeId)
-            ->whereMonth('session_date', $now->month)
-            ->whereYear('session_date', $now->year)
+        $monthCount = SessionSchedule::where('employee_id', $employeeId)
+            ->whereHas('classSchedule', fn ($q) => $q->whereMonth('schedule_date', $now->month)->whereYear('schedule_date', $now->year))
             ->count();
 
         return [
@@ -60,7 +55,6 @@ class MySessionScheduleWidget implements WidgetDataProviderInterface
 
     public function getExportData(array $filters = []): array
     {
-        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
         $employeeId = auth()->user()?->employee?->id;
 
@@ -68,18 +62,15 @@ class MySessionScheduleWidget implements WidgetDataProviderInterface
             return [];
         }
 
-        return SessionSchedule::where('tutor_employee_id', $employeeId)
-            ->whereMonth('session_date', $now->month)
-            ->whereYear('session_date', $now->year)
-            ->with('memberClass.program:id,program_name')
-            ->orderBy('session_date')
+        return SessionSchedule::where('employee_id', $employeeId)
+            ->whereHas('classSchedule', fn ($q) => $q->whereMonth('schedule_date', $now->month)->whereYear('schedule_date', $now->year))
+            ->with('classSchedule:id,schedule_date,start_time,end_time', 'classSchedule.class.program:id,program_name')
             ->get()
             ->map(fn ($s) => [
-                'session_date' => $s->session_date?->format('Y-m-d'),
-                'program' => $s->memberClass?->program?->program_name ?? '-',
-                'start_time' => $s->start_time,
-                'end_time' => $s->end_time,
-                'status' => $s->status ?? '-',
+                'schedule_date' => $s->classSchedule?->schedule_date?->format('Y-m-d'),
+                'program' => $s->classSchedule?->class?->program?->program_name ?? '-',
+                'start_time' => $s->classSchedule?->start_time,
+                'end_time' => $s->classSchedule?->end_time,
             ])->toArray();
     }
 }

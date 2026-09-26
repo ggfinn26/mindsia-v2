@@ -23,20 +23,20 @@ class MemberAcquisitionWidget implements WidgetDataProviderInterface
 
         $newMembers = MemberRegistration::whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear)
-            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
+            ->when($branchId, fn ($q) => $q->whereHas('memberData', fn ($m) => $m->where('branch_id', $branchId)))
             ->count();
 
         $prevMonth = $now->copy()->subMonth();
         $prevNewMembers = MemberRegistration::whereMonth('created_at', $prevMonth->month)
             ->whereYear('created_at', $prevMonth->year)
-            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
+            ->when($branchId, fn ($q) => $q->whereHas('memberData', fn ($m) => $m->where('branch_id', $branchId)))
             ->count();
 
         $trend = $prevNewMembers > 0
             ? round((($newMembers - $prevNewMembers) / $prevNewMembers) * 100, 1)
             : 0;
 
-        $pipeline = ProspectiveMember::when($branchId, fn ($q) => $q->where('branch_id', $branchId))
+        $pipeline = ProspectiveMember::when($branchId, fn ($q) => $q->whereHas('socialization', fn ($s) => $s->where('branch_id', $branchId)))
             ->selectRaw('status, COUNT(*) as count')
             ->groupBy('status')
             ->pluck('count', 'status')
@@ -65,16 +65,16 @@ class MemberAcquisitionWidget implements WidgetDataProviderInterface
         $now = Carbon::now();
 
         $registrations = MemberRegistration::whereYear('created_at', $now->year)
-            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
-            ->with('member:id,full_name', 'program:id,program_name')
+            ->when($branchId, fn ($q) => $q->whereHas('memberData', fn ($m) => $m->where('branch_id', $branchId)))
+            ->with('memberData:id,full_name', 'program:id,program_name')
             ->orderBy('created_at')
             ->get();
 
         return $registrations->map(fn ($r) => [
-            'member' => $r->member?->full_name ?? '-',
+            'member' => $r->memberData?->full_name ?? '-',
             'program' => $r->program?->program_name ?? '-',
             'created_at' => $r->created_at?->format('Y-m-d'),
-            'status' => $r->status,
+            'status' => $r->payment_status,
         ])->toArray();
     }
 }

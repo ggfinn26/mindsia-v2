@@ -30,7 +30,7 @@ class CabangPerformanceWidget implements WidgetDataProviderInterface
         $revenue = MemberPayment::where('payment_status', 'paid')
             ->whereMonth('paid_at', $currentMonth)
             ->whereYear('paid_at', $currentYear)
-            ->when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+            ->when($branchId, fn ($q) => $q->whereHas('registration.memberData', fn ($r) => $r->where('branch_id', $branchId)))
             ->sum('amount');
 
         $operationalCost = BranchMonthlyCost::where('period_month', $currentMonth)
@@ -46,7 +46,7 @@ class CabangPerformanceWidget implements WidgetDataProviderInterface
         $prevRevenue = MemberPayment::where('payment_status', 'paid')
             ->whereMonth('paid_at', $prevMonth->month)
             ->whereYear('paid_at', $prevMonth->year)
-            ->when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+            ->when($branchId, fn ($q) => $q->whereHas('registration.memberData', fn ($r) => $r->where('branch_id', $branchId)))
             ->sum('amount');
 
         $trend = $prevRevenue > 0
@@ -70,7 +70,7 @@ class CabangPerformanceWidget implements WidgetDataProviderInterface
 
         $payments = MemberPayment::where('payment_status', 'paid')
             ->whereYear('paid_at', $now->year)
-            ->when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+            ->when($branchId, fn ($q) => $q->whereHas('registration.memberData', fn ($r) => $r->where('branch_id', $branchId)))
             ->selectRaw('MONTH(paid_at) as month, SUM(amount) as total')
             ->groupByRaw('MONTH(paid_at)')
             ->orderBy('month')

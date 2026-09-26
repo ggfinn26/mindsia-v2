@@ -18,7 +18,7 @@ class PaymentStatusWidget implements WidgetDataProviderInterface
         $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
 
-        $byStatus = MemberPayment::when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+        $byStatus = MemberPayment::when($branchId, fn ($q) => $q->whereHas('registration.memberData', fn ($r) => $r->where('branch_id', $branchId)))
             ->selectRaw('payment_status, COUNT(*) as count, SUM(amount) as total')
             ->groupBy('payment_status')
             ->get()
@@ -30,12 +30,12 @@ class PaymentStatusWidget implements WidgetDataProviderInterface
 
         $dueSoon = MemberPayment::where('payment_status', 'pending')
             ->where('due_date', '<=', $now->copy()->addDays(7))
-            ->when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+            ->when($branchId, fn ($q) => $q->whereHas('registration.memberData', fn ($r) => $r->where('branch_id', $branchId)))
             ->count();
 
         $overdue = MemberPayment::where('payment_status', 'pending')
             ->where('due_date', '<', $now)
-            ->when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+            ->when($branchId, fn ($q) => $q->whereHas('registration.memberData', fn ($r) => $r->where('branch_id', $branchId)))
             ->count();
 
         return [
@@ -49,7 +49,7 @@ class PaymentStatusWidget implements WidgetDataProviderInterface
     public function getExportData(array $filters = []): array
     {
         $branchId = $filters['branch_id'] ?? null;
-        $payments = MemberPayment::when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+        $payments = MemberPayment::when($branchId, fn ($q) => $q->whereHas('registration.memberData', fn ($r) => $r->where('branch_id', $branchId)))
             ->with('registration.member:id,full_name')
             ->orderBy('due_date')
             ->get();

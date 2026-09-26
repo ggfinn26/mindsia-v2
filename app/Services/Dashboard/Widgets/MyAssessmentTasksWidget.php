@@ -3,7 +3,6 @@
 namespace App\Services\Dashboard\Widgets;
 
 use App\Models\MemberSessionAssessment;
-use App\Models\SessionSchedule;
 use App\Services\Dashboard\WidgetDataProviderInterface;
 use Carbon\Carbon;
 
@@ -16,7 +15,6 @@ class MyAssessmentTasksWidget implements WidgetDataProviderInterface
 
     public function getData(array $filters = []): array
     {
-        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
         $employeeId = auth()->user()?->employee?->id;
 
@@ -24,34 +22,29 @@ class MyAssessmentTasksWidget implements WidgetDataProviderInterface
             return ['error' => 'Employee not found'];
         }
 
-        // Sessions where assessment is pending (session done but not scored)
-        $sessionIds = SessionSchedule::where('tutor_employee_id', $employeeId)
-            ->where('status', 'completed')
-            ->pluck('id');
+        $pastSessionsScope = fn ($q) => $q->where('schedule_date', '<', $now->toDateString());
 
-        $pendingAssessments = MemberSessionAssessment::whereIn('session_schedule_id', $sessionIds)
+        $pendingAssessments = MemberSessionAssessment::where('employee_id', $employeeId)
+            ->whereHas('classSchedule', $pastSessionsScope)
             ->whereNull('score')
             ->count();
 
-        $submittedThisMonth = MemberSessionAssessment::whereIn('session_schedule_id', $sessionIds)
+        $submittedThisMonth = MemberSessionAssessment::where('employee_id', $employeeId)
             ->whereNotNull('score')
             ->whereMonth('updated_at', $now->month)
             ->whereYear('updated_at', $now->year)
             ->count();
 
-        $totalPending = $pendingAssessments;
-
         return [
             'pending_count' => $pendingAssessments,
             'submitted_this_month' => $submittedThisMonth,
-            'total_sessions_needing_assessment' => $totalPending,
+            'total_sessions_needing_assessment' => $pendingAssessments,
             'period' => $now->translatedFormat('F Y'),
         ];
     }
 
     public function getExportData(array $filters = []): array
     {
-        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
         $employeeId = auth()->user()?->employee?->id;
 
@@ -59,16 +52,13 @@ class MyAssessmentTasksWidget implements WidgetDataProviderInterface
             return [];
         }
 
-        $sessionIds = SessionSchedule::where('tutor_employee_id', $employeeId)
-            ->pluck('id');
-
-        return MemberSessionAssessment::whereIn('session_schedule_id', $sessionIds)
-            ->with('member:id,full_name', 'sessionSchedule:id,session_date')
+        return MemberSessionAssessment::where('employee_id', $employeeId)
+            ->with('classSchedule:id,schedule_date', 'memberClass.memberData:id,full_name')
             ->orderBy('updated_at', 'desc')
             ->get()
             ->map(fn ($a) => [
-                'member' => $a->member?->full_name ?? '-',
-                'session_date' => $a->sessionSchedule?->session_date?->format('Y-m-d'),
+                'member' => $a->memberClass?->memberData?->full_name ?? '-',
+                'schedule_date' => $a->classSchedule?->schedule_date?->format('Y-m-d'),
                 'score' => $a->score ?? 'Pending',
             ])->toArray();
     }

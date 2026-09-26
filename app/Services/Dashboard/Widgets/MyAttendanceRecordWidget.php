@@ -2,8 +2,8 @@
 
 namespace App\Services\Dashboard\Widgets;
 
+use App\Models\EmployeeLeaveRequest;
 use App\Models\EmployeeWorkAttendanceLog;
-use App\Models\LeaveRequest;
 use App\Services\Dashboard\WidgetDataProviderInterface;
 use Carbon\Carbon;
 
@@ -34,11 +34,11 @@ class MyAttendanceRecordWidget implements WidgetDataProviderInterface
         $absent = $logs->where('status', 'absent')->count();
         $total = $logs->count();
 
-        $pendingLeave = LeaveRequest::where('employee_id', $employeeId)
+        $pendingLeave = EmployeeLeaveRequest::where('employee_id', $employeeId)
             ->where('status', 'pending')
             ->count();
 
-        $approvedLeaveThisMonth = LeaveRequest::where('employee_id', $employeeId)
+        $approvedLeaveThisMonth = EmployeeLeaveRequest::where('employee_id', $employeeId)
             ->where('status', 'approved')
             ->whereMonth('start_date', $now->month)
             ->whereYear('start_date', $now->year)

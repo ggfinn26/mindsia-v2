@@ -19,12 +19,12 @@
         @forelse($data['upcoming'] ?? [] as $event)
             <div class="flex items-start gap-2 p-2 rounded-lg bg-gray-50">
                 <div class="text-center min-w-[36px] bg-white rounded p-1 border border-gray-100">
-                    <p class="text-xs font-bold text-gray-900">{{ \Carbon\Carbon::parse($event['scheduled_date'])->format('d') }}</p>
-                    <p class="text-xs text-gray-400">{{ \Carbon\Carbon::parse($event['scheduled_date'])->format('M') }}</p>
+                    <p class="text-xs font-bold text-gray-900">{{ \Carbon\Carbon::parse($event['schedule_date'])->format('d') }}</p>
+                    <p class="text-xs text-gray-400">{{ \Carbon\Carbon::parse($event['schedule_date'])->format('M') }}</p>
                 </div>
                 <div class="min-w-0">
-                    <p class="text-xs font-semibold text-gray-800 truncate">{{ $event['title'] }}</p>
-                    <p class="text-xs text-gray-400">{{ $event['location'] ?? '-' }}</p>
+                    <p class="text-xs font-semibold text-gray-800 truncate">{{ $event['location'] ?? '-' }}</p>
+                    <p class="text-xs text-gray-400">{{ $event['branch'] ?? '-' }}</p>
                 </div>
             </div>
         @empty

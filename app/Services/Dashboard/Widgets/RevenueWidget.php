@@ -33,23 +33,23 @@ class RevenueWidget implements WidgetDataProviderInterface
         $memberRevenue = MemberPayment::where('payment_status', 'paid')
             ->whereMonth('paid_at', $currentMonth)
             ->whereYear('paid_at', $currentYear)
-            ->when($scope === 'cabang' && $branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
-            ->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('registration.branch', fn ($b) => $b->where('area_id', $areaId)))
+            ->when($scope === 'cabang' && $branchId, fn ($q) => $q->whereHas('registration.memberData', fn ($r) => $r->where('branch_id', $branchId)))
+            ->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('registration.branch', fn ($b) => $b->where('areas_id', $areaId)))
             ->sum('amount');
 
         $payrollCost = EmployeePayroll::where('payment_status', 'paid')
             ->whereMonth('paid_at', $currentMonth)
             ->whereYear('paid_at', $currentYear)
             ->when($scope === 'cabang' && $branchId, fn ($q) => $q->whereHas('employee', fn ($e) => $e->where('branch_id', $branchId)))
-            ->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('employee.branch', fn ($b) => $b->where('area_id', $areaId)))
+            ->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('employee.branch', fn ($b) => $b->where('areas_id', $areaId)))
             ->sum('net_amount');
 
         $prevMonth = $now->copy()->subMonth();
         $prevMemberRevenue = MemberPayment::where('payment_status', 'paid')
             ->whereMonth('paid_at', $prevMonth->month)
             ->whereYear('paid_at', $prevMonth->year)
-            ->when($scope === 'cabang' && $branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
-            ->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('registration.branch', fn ($b) => $b->where('area_id', $areaId)))
+            ->when($scope === 'cabang' && $branchId, fn ($q) => $q->whereHas('registration.memberData', fn ($r) => $r->where('branch_id', $branchId)))
+            ->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('registration.branch', fn ($b) => $b->where('areas_id', $areaId)))
             ->sum('amount');
 
         $trend = $prevMemberRevenue > 0
@@ -65,8 +65,8 @@ class RevenueWidget implements WidgetDataProviderInterface
             $rev = MemberPayment::where('payment_status', 'paid')
                 ->whereMonth('paid_at', $monthDate->month)
                 ->whereYear('paid_at', $monthDate->year)
-                ->when($scope === 'cabang' && $branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
-                ->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('registration.branch', fn ($b) => $b->where('area_id', $areaId)))
+                ->when($scope === 'cabang' && $branchId, fn ($q) => $q->whereHas('registration.memberData', fn ($r) => $r->where('branch_id', $branchId)))
+                ->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('registration.branch', fn ($b) => $b->where('areas_id', $areaId)))
                 ->sum('amount');
 
             $historyLabels[] = $monthDate->format('M');
@@ -99,8 +99,8 @@ class RevenueWidget implements WidgetDataProviderInterface
 
         $payments = MemberPayment::where('payment_status', 'paid')
             ->whereYear('paid_at', $now->year)
-            ->when($scope === 'cabang' && $branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
-            ->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('registration.branch', fn ($b) => $b->where('area_id', $areaId)))
+            ->when($scope === 'cabang' && $branchId, fn ($q) => $q->whereHas('registration.memberData', fn ($r) => $r->where('branch_id', $branchId)))
+            ->when($scope === 'area' && $areaId, fn ($q) => $q->whereHas('registration.branch', fn ($b) => $b->where('areas_id', $areaId)))
             ->orderBy('paid_at')
             ->get();
 

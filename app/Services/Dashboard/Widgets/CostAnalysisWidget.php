@@ -25,9 +25,9 @@ class CostAnalysisWidget implements WidgetDataProviderInterface
         $opex = BranchMonthlyCost::where('period_month', $currentMonth)
             ->where('period_year', $currentYear)
             ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
-            ->selectRaw('cost_category, SUM(amount) as total')
-            ->groupBy('cost_category')
-            ->pluck('total', 'cost_category')
+            ->selectRaw('category, SUM(amount) as total')
+            ->groupBy('category')
+            ->pluck('total', 'category')
             ->toArray();
 
         $payroll = EmployeePayroll::where('payment_status', 'paid')
@@ -73,7 +73,7 @@ class CostAnalysisWidget implements WidgetDataProviderInterface
 
         return $costs->map(fn ($c) => [
             'branch' => $c->branch?->branch_name ?? '-',
-            'category' => $c->cost_category ?? '-',
+            'category' => $c->category ?? '-',
             'amount' => $c->amount,
             'period' => $c->period_month.'/'.$c->period_year,
         ])->toArray();

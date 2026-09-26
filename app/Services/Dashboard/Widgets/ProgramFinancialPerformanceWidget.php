@@ -38,7 +38,7 @@ class ProgramFinancialPerformanceWidget implements WidgetDataProviderInterface
                 ->whereHas('registration', fn ($r) => $r
                     ->where('program_id', $program->id)
                     ->when($branchId, fn ($bq) => $bq->where('branch_id', $branchId)))
-                ->distinct('registration_id')
+                ->distinct('member_registration_id')
                 ->count();
 
             return [

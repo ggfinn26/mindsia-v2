@@ -3,7 +3,6 @@
 namespace App\Services\Dashboard\Widgets;
 
 use App\Models\Employee;
-use App\Models\EmploymentStatus;
 use App\Services\Dashboard\WidgetDataProviderInterface;
 use Carbon\Carbon;
 
@@ -24,33 +23,27 @@ class EmployeeDirectoryWidget implements WidgetDataProviderInterface
 
         $totalActive = (clone $query)->count();
 
-        $byPosition = EmploymentStatus::whereHas('employee', fn ($q) => $q
-            ->where('is_active', true)
-            ->when($branchId, fn ($bq) => $bq->where('branch_id', $branchId)))
-            ->where('is_current', true)
-            ->with('position')
-            ->get()
-            ->groupBy(fn ($s) => $s->position?->position_name ?? 'Unassigned')
+        $activeWithStatus = Employee::where('is_active', true)
+            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
+            ->with('currentStatus.position')
+            ->get();
+
+        $byPosition = $activeWithStatus
+            ->groupBy(fn ($e) => $e->currentStatus?->position?->position_name ?? 'Unassigned')
             ->map(fn ($group) => $group->count())
             ->sortDesc()
             ->take(5)
             ->toArray();
 
-        $recentJoins = EmploymentStatus::whereHas('employee', fn ($q) => $q
-            ->where('is_active', true)
-            ->when($branchId, fn ($bq) => $bq->where('branch_id', $branchId)))
-            ->where('is_current', true)
-            ->whereMonth('join_date', $now->month)
-            ->whereYear('join_date', $now->year)
-            ->count();
+        $recentJoins = $activeWithStatus->filter(fn ($e) => $e->currentStatus
+            && $e->currentStatus->join_date
+            && $e->currentStatus->join_date->month === $now->month
+            && $e->currentStatus->join_date->year === $now->year
+        )->count();
 
-        $byEmploymentType = EmploymentStatus::whereHas('employee', fn ($q) => $q
-            ->where('is_active', true)
-            ->when($branchId, fn ($bq) => $bq->where('branch_id', $branchId)))
-            ->where('is_current', true)
-            ->selectRaw('type_employment, COUNT(*) as count')
-            ->groupBy('type_employment')
-            ->pluck('count', 'type_employment')
+        $byEmploymentType = $activeWithStatus
+            ->groupBy(fn ($e) => $e->currentStatus?->type_employment ?? 'Lainnya')
+            ->map(fn ($g) => $g->count())
             ->toArray();
 
         return [

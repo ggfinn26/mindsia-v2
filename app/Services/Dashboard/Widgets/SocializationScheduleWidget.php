@@ -18,30 +18,31 @@ class SocializationScheduleWidget implements WidgetDataProviderInterface
         $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
 
-        $upcoming = SocializationSchedule::where('scheduled_date', '>=', $now->toDateString())
-            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
-            ->with('branch:id,branch_name')
-            ->orderBy('scheduled_date')
+        $upcoming = SocializationSchedule::where('schedule_date', '>=', $now->toDateString())
+            ->when($branchId, fn ($q) => $q->whereHas('socialization', fn ($s) => $s->where('branch_id', $branchId)))
+            ->with('socialization:id,branch_id,location_name', 'socialization.branch:id,branch_name')
+            ->orderBy('schedule_date')
             ->limit(10)
             ->get();
 
-        $thisMonth = SocializationSchedule::whereMonth('scheduled_date', $now->month)
-            ->whereYear('scheduled_date', $now->year)
-            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
+        $thisMonth = SocializationSchedule::whereMonth('schedule_date', $now->month)
+            ->whereYear('schedule_date', $now->year)
+            ->when($branchId, fn ($q) => $q->whereHas('socialization', fn ($s) => $s->where('branch_id', $branchId)))
             ->count();
 
-        $nextWeek = SocializationSchedule::whereBetween('scheduled_date', [
+        $nextWeek = SocializationSchedule::whereBetween('schedule_date', [
             $now->toDateString(),
             $now->copy()->addWeek()->toDateString(),
-        ])->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
+        ])->when($branchId, fn ($q) => $q->whereHas('socialization', fn ($s) => $s->where('branch_id', $branchId)))
             ->count();
 
         return [
             'upcoming' => $upcoming->map(fn ($s) => [
-                'name' => $s->name ?? '-',
-                'scheduled_date' => $s->scheduled_date?->format('Y-m-d'),
-                'branch' => $s->branch?->branch_name ?? '-',
-                'status' => $s->status ?? 'scheduled',
+                'location' => $s->socialization?->location_name ?? '-',
+                'schedule_date' => $s->schedule_date?->format('Y-m-d'),
+                'start_time' => $s->start_time,
+                'end_time' => $s->end_time,
+                'branch' => $s->socialization?->branch?->branch_name ?? '-',
             ])->toArray(),
             'this_month_count' => $thisMonth,
             'next_week_count' => $nextWeek,
@@ -54,18 +55,17 @@ class SocializationScheduleWidget implements WidgetDataProviderInterface
         $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
 
-        $schedules = SocializationSchedule::whereMonth('scheduled_date', $now->month)
-            ->whereYear('scheduled_date', $now->year)
-            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
-            ->with('branch:id,branch_name')
-            ->orderBy('scheduled_date')
+        $schedules = SocializationSchedule::whereMonth('schedule_date', $now->month)
+            ->whereYear('schedule_date', $now->year)
+            ->when($branchId, fn ($q) => $q->whereHas('socialization', fn ($s) => $s->where('branch_id', $branchId)))
+            ->with('socialization:id,branch_id,location_name', 'socialization.branch:id,branch_name')
+            ->orderBy('schedule_date')
             ->get();
 
         return $schedules->map(fn ($s) => [
-            'name' => $s->name ?? '-',
-            'scheduled_date' => $s->scheduled_date?->format('Y-m-d'),
-            'branch' => $s->branch?->branch_name ?? '-',
-            'status' => $s->status ?? '-',
+            'location' => $s->socialization?->location_name ?? '-',
+            'schedule_date' => $s->schedule_date?->format('Y-m-d'),
+            'branch' => $s->socialization?->branch?->branch_name ?? '-',
         ])->toArray();
     }
 }

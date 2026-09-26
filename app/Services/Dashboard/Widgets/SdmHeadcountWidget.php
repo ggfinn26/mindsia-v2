@@ -3,7 +3,6 @@
 namespace App\Services\Dashboard\Widgets;
 
 use App\Models\Employee;
-use App\Models\EmploymentStatus;
 use App\Models\JobPermintaanDetail;
 use App\Services\Dashboard\WidgetDataProviderInterface;
 use Carbon\Carbon;
@@ -24,13 +23,12 @@ class SdmHeadcountWidget implements WidgetDataProviderInterface
             ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
             ->count();
 
-        $byEmploymentType = EmploymentStatus::whereHas('employee', fn ($q) => $q
-            ->where('is_active', true)
-            ->when($branchId, fn ($bq) => $bq->where('branch_id', $branchId)))
-            ->where('is_current', true)
-            ->selectRaw('type_employment, COUNT(*) as count')
-            ->groupBy('type_employment')
-            ->pluck('count', 'type_employment')
+        $byEmploymentType = Employee::where('is_active', true)
+            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
+            ->with('currentStatus')
+            ->get()
+            ->groupBy(fn ($e) => $e->currentStatus?->type_employment ?? 'Lainnya')
+            ->map(fn ($g) => $g->count())
             ->toArray();
 
         $byGender = Employee::where('is_active', true)
@@ -40,9 +38,9 @@ class SdmHeadcountWidget implements WidgetDataProviderInterface
             ->pluck('count', 'gender')
             ->toArray();
 
-        $requestedHeadcount = JobPermintaanDetail::whereHas('jobPermintaan', fn ($q) => $q
+        $requestedHeadcount = JobPermintaanDetail::whereHas('permintaan', fn ($q) => $q
             ->where('status', 'approved'))
-            ->when($branchId, fn ($q) => $q->whereHas('jobPermintaan', fn ($bq) => $bq->where('branch_id', $branchId)))
+            ->when($branchId, fn ($q) => $q->whereHas('permintaan', fn ($bq) => $bq->where('branch_id', $branchId)))
             ->sum('headcount');
 
         $prevMonth = $now->copy()->subMonth();

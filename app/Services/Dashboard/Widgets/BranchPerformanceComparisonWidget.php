@@ -27,9 +27,9 @@ class BranchPerformanceComparisonWidget implements WidgetDataProviderInterface
         // If scoped to a branch, get branches in the same area
         $branchQuery = Branch::where('is_active', true);
         if ($branchId) {
-            $area = Branch::find($branchId, ['area_id']);
-            if ($area?->area_id) {
-                $branchQuery->where('area_id', $area->area_id);
+            $area = Branch::find($branchId, ['areas_id']);
+            if ($area?->areas_id) {
+                $branchQuery->where('areas_id', $area->areas_id);
             }
         }
 
@@ -39,7 +39,7 @@ class BranchPerformanceComparisonWidget implements WidgetDataProviderInterface
             $revenue = MemberPayment::where('payment_status', 'paid')
                 ->whereMonth('paid_at', $currentMonth)
                 ->whereYear('paid_at', $currentYear)
-                ->whereHas('registration', fn ($r) => $r->where('branch_id', $branch->id))
+                ->whereHas('registration.memberData', fn ($r) => $r->where('branch_id', $branch->id))
                 ->sum('amount');
 
             $cost = BranchMonthlyCost::where('period_month', $currentMonth)
@@ -49,7 +49,7 @@ class BranchPerformanceComparisonWidget implements WidgetDataProviderInterface
 
             $newMembers = MemberRegistration::whereMonth('created_at', $currentMonth)
                 ->whereYear('created_at', $currentYear)
-                ->where('branch_id', $branch->id)
+                ->whereHas('memberData', fn ($m) => $m->where('branch_id', $branch->id))
                 ->count();
 
             $activeStaff = Employee::where('is_active', true)
@@ -79,9 +79,9 @@ class BranchPerformanceComparisonWidget implements WidgetDataProviderInterface
 
         $branches = Branch::where('is_active', true)
             ->when($branchId, function ($q) use ($branchId) {
-                $area = Branch::find($branchId, ['area_id']);
-                if ($area?->area_id) {
-                    $q->where('area_id', $area->area_id);
+                $area = Branch::find($branchId, ['areas_id']);
+                if ($area?->areas_id) {
+                    $q->where('areas_id', $area->areas_id);
                 }
             })
             ->get(['id', 'branch_name']);
@@ -90,7 +90,7 @@ class BranchPerformanceComparisonWidget implements WidgetDataProviderInterface
             $revenue = MemberPayment::where('payment_status', 'paid')
                 ->whereMonth('paid_at', $now->month)
                 ->whereYear('paid_at', $now->year)
-                ->whereHas('registration', fn ($r) => $r->where('branch_id', $branch->id))
+                ->whereHas('registration.memberData', fn ($r) => $r->where('branch_id', $branch->id))
                 ->sum('amount');
 
             return [

@@ -15,7 +15,6 @@ class MySessionAttendanceWidget implements WidgetDataProviderInterface
 
     public function getData(array $filters = []): array
     {
-        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
         $employeeId = auth()->user()?->employee?->id;
 
@@ -24,16 +23,15 @@ class MySessionAttendanceWidget implements WidgetDataProviderInterface
         }
 
         $logs = EmployeeSessionAttendanceLog::where('employee_id', $employeeId)
-            ->whereMonth('session_date', $now->month)
-            ->whereYear('session_date', $now->year)
+            ->whereHas('sessionSchedule.classSchedule', fn ($q) => $q
+                ->whereMonth('schedule_date', $now->month)
+                ->whereYear('schedule_date', $now->year))
             ->get();
 
         $attended = $logs->where('status', 'present')->count();
         $absent = $logs->where('status', 'absent')->count();
         $total = $logs->count();
-        $attendanceRate = $total > 0
-            ? round(($attended / $total) * 100, 1)
-            : 0;
+        $attendanceRate = $total > 0 ? round(($attended / $total) * 100, 1) : 0;
 
         return [
             'attended' => $attended,
@@ -46,7 +44,6 @@ class MySessionAttendanceWidget implements WidgetDataProviderInterface
 
     public function getExportData(array $filters = []): array
     {
-        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
         $employeeId = auth()->user()?->employee?->id;
 
@@ -55,14 +52,15 @@ class MySessionAttendanceWidget implements WidgetDataProviderInterface
         }
 
         return EmployeeSessionAttendanceLog::where('employee_id', $employeeId)
-            ->whereMonth('session_date', $now->month)
-            ->whereYear('session_date', $now->year)
-            ->orderBy('session_date')
+            ->whereHas('sessionSchedule.classSchedule', fn ($q) => $q
+                ->whereMonth('schedule_date', $now->month)
+                ->whereYear('schedule_date', $now->year))
+            ->with('sessionSchedule.classSchedule:id,schedule_date')
             ->get()
             ->map(fn ($l) => [
-                'session_date' => $l->session_date?->format('Y-m-d'),
+                'schedule_date' => $l->sessionSchedule?->classSchedule?->schedule_date?->format('Y-m-d'),
                 'status' => $l->status,
-                'note' => $l->note ?? '-',
+                'late_minutes' => $l->late_minutes,
             ])->toArray();
     }
 }

@@ -23,7 +23,7 @@ class FinancialReportsWidget implements WidgetDataProviderInterface
         // YTD summary
         $ytdRevenue = MemberPayment::where('payment_status', 'paid')
             ->whereYear('paid_at', $now->year)
-            ->when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+            ->when($branchId, fn ($q) => $q->whereHas('registration.memberData', fn ($r) => $r->where('branch_id', $branchId)))
             ->sum('amount');
 
         $ytdCost = BranchMonthlyCost::where('period_year', $now->year)
@@ -43,7 +43,7 @@ class FinancialReportsWidget implements WidgetDataProviderInterface
             'revenue' => MemberPayment::where('payment_status', 'paid')
                 ->whereMonth('paid_at', $m)
                 ->whereYear('paid_at', $now->year)
-                ->when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+                ->when($branchId, fn ($q) => $q->whereHas('registration.memberData', fn ($r) => $r->where('branch_id', $branchId)))
                 ->sum('amount'),
         ])->toArray();
 
@@ -65,7 +65,7 @@ class FinancialReportsWidget implements WidgetDataProviderInterface
             $revenue = MemberPayment::where('payment_status', 'paid')
                 ->whereMonth('paid_at', $m)
                 ->whereYear('paid_at', $now->year)
-                ->when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+                ->when($branchId, fn ($q) => $q->whereHas('registration.memberData', fn ($r) => $r->where('branch_id', $branchId)))
                 ->sum('amount');
 
             $cost = BranchMonthlyCost::where('period_month', $m)

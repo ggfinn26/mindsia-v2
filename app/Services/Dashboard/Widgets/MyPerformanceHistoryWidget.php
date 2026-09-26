@@ -26,11 +26,11 @@ class MyPerformanceHistoryWidget implements WidgetDataProviderInterface
 
         // Last 3 months KPI evaluations
         $kpiHistory = EmployeeKpiEvaluation::where('employee_id', $employeeId)
-            ->where('evaluation_period', '>=', $now->copy()->subMonths(3)->startOfMonth())
-            ->orderBy('evaluation_period')
+            ->where('period_start_date', '>=', $now->copy()->subMonths(3)->startOfMonth())
+            ->orderBy('period_start_date')
             ->get()
             ->map(fn ($ev) => [
-                'period' => $ev->evaluation_period?->translatedFormat('M Y'),
+                'period' => $ev->period_start_date?->translatedFormat('M Y'),
                 'total_score' => $ev->total_score,
                 'grade' => $ev->grade,
             ])->toArray();
@@ -68,10 +68,10 @@ class MyPerformanceHistoryWidget implements WidgetDataProviderInterface
         }
 
         return EmployeeKpiEvaluation::where('employee_id', $employeeId)
-            ->orderBy('evaluation_period', 'desc')
+            ->orderBy('period_start_date', 'desc')
             ->get()
             ->map(fn ($ev) => [
-                'period' => $ev->evaluation_period?->format('Y-m'),
+                'period' => $ev->period_start_date?->format('Y-m'),
                 'total_score' => $ev->total_score,
                 'grade' => $ev->grade,
             ])->toArray();

@@ -24,8 +24,8 @@ class MyKpiAchievementWidget implements WidgetDataProviderInterface
         }
 
         $evaluation = EmployeeKpiEvaluation::where('employee_id', $employeeId)
-            ->whereMonth('evaluation_period', $now->month)
-            ->whereYear('evaluation_period', $now->year)
+            ->whereMonth('period_start_date', $now->month)
+            ->whereYear('period_start_date', $now->year)
             ->with('items:id,evaluation_id,indicator_name,target_value,actual_value,weight,score')
             ->first();
 
@@ -59,11 +59,11 @@ class MyKpiAchievementWidget implements WidgetDataProviderInterface
 
         $evaluations = EmployeeKpiEvaluation::where('employee_id', $employeeId)
             ->with('items')
-            ->orderBy('evaluation_period', 'desc')
+            ->orderBy('period_start_date', 'desc')
             ->get();
 
         return $evaluations->flatMap(fn ($ev) => $ev->items->map(fn ($item) => [
-            'period' => $ev->evaluation_period?->format('Y-m'),
+            'period' => $ev->period_start_date?->format('Y-m'),
             'indicator' => $item->indicator_name,
             'target' => $item->target_value,
             'actual' => $item->actual_value,

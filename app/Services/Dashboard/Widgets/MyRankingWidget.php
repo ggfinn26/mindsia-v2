@@ -39,31 +39,31 @@ class MyRankingWidget implements WidgetDataProviderInterface
             ];
         }
 
-        // Rank within branch
+        // Rank within branch (via snapshot)
         $rankBranch = MarketingKpiSnapshot::where('period_month', $now->month)
             ->where('period_year', $now->year)
-            ->where('branch_id', $mySnapshot->branch_id)
-            ->where('total_score', '>', $mySnapshot->total_score)
+            ->where('branch_name_snapshot', $mySnapshot->branch_name_snapshot)
+            ->where('mpi_score', '>', $mySnapshot->mpi_score)
             ->count() + 1;
 
-        // Rank within area
+        // Rank within area (via snapshot)
         $rankArea = MarketingKpiSnapshot::where('period_month', $now->month)
             ->where('period_year', $now->year)
-            ->where('area_id', $mySnapshot->area_id)
-            ->where('total_score', '>', $mySnapshot->total_score)
+            ->where('area_name_snapshot', $mySnapshot->area_name_snapshot)
+            ->where('mpi_score', '>', $mySnapshot->mpi_score)
             ->count() + 1;
 
         // Rank nationally
         $rankNational = MarketingKpiSnapshot::where('period_month', $now->month)
             ->where('period_year', $now->year)
-            ->where('total_score', '>', $mySnapshot->total_score)
+            ->where('mpi_score', '>', $mySnapshot->mpi_score)
             ->count() + 1;
 
         return [
             'rank_branch' => $rankBranch,
             'rank_area' => $rankArea,
             'rank_national' => $rankNational,
-            'total_score' => $mySnapshot->total_score,
+            'total_score' => $mySnapshot->mpi_score,
             'grade' => $mySnapshot->grade,
             'period' => $now->translatedFormat('F Y'),
         ];
@@ -84,7 +84,7 @@ class MyRankingWidget implements WidgetDataProviderInterface
             ->get()
             ->map(fn ($s) => [
                 'period' => $s->period_month.'/'.$s->period_year,
-                'total_score' => $s->total_score,
+                'total_score' => $s->mpi_score,
                 'grade' => $s->grade,
             ])->toArray();
     }

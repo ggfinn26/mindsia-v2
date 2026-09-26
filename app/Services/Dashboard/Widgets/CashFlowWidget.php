@@ -25,7 +25,7 @@ class CashFlowWidget implements WidgetDataProviderInterface
         $inflow = MemberPayment::where('payment_status', 'paid')
             ->whereMonth('paid_at', $currentMonth)
             ->whereYear('paid_at', $currentYear)
-            ->when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+            ->when($branchId, fn ($q) => $q->whereHas('registration.memberData', fn ($r) => $r->where('branch_id', $branchId)))
             ->sum('amount');
 
         $payrollOutflow = EmployeePayroll::where('payment_status', 'paid')
@@ -46,7 +46,7 @@ class CashFlowWidget implements WidgetDataProviderInterface
         $weeklyInflow = MemberPayment::where('payment_status', 'paid')
             ->whereMonth('paid_at', $currentMonth)
             ->whereYear('paid_at', $currentYear)
-            ->when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+            ->when($branchId, fn ($q) => $q->whereHas('registration.memberData', fn ($r) => $r->where('branch_id', $branchId)))
             ->selectRaw('WEEK(paid_at) as week, SUM(amount) as total')
             ->groupByRaw('WEEK(paid_at)')
             ->pluck('total', 'week')
@@ -70,7 +70,7 @@ class CashFlowWidget implements WidgetDataProviderInterface
 
         $payments = MemberPayment::where('payment_status', 'paid')
             ->whereYear('paid_at', $now->year)
-            ->when($branchId, fn ($q) => $q->whereHas('registration', fn ($r) => $r->where('branch_id', $branchId)))
+            ->when($branchId, fn ($q) => $q->whereHas('registration.memberData', fn ($r) => $r->where('branch_id', $branchId)))
             ->selectRaw('MONTH(paid_at) as month, SUM(amount) as inflow')
             ->groupByRaw('MONTH(paid_at)')
             ->pluck('inflow', 'month')

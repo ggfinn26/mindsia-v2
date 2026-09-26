@@ -94,7 +94,7 @@
 
                                 @foreach($categoryWidgets as $widget)
                                     {{-- Disabled widgets only visible during customize mode --}}
-                                    <div class="group/widget relative min-w-0 {{ $widget['is_enabled'] ? '' : 'opacity-50' }} {{ in_array($widget['key'], ['financial_hub', 'member_growth', 'comparable', 'marketing_progress']) ? 'col-span-full' : '' }}"
+                                    <div class="group/widget relative min-w-0 {{ $widget['is_enabled'] ? '' : 'opacity-50' }} {{ in_array($widget['key'], ['financial_hub', 'member_growth', 'comparable', 'marketing_progress', 'branch_financial_performance', 'area_performance']) ? 'col-span-full' : '' }}"
                                          data-widget-key="{{ $widget['key'] }}"
                                          @if(!$widget['is_enabled']) x-show="$store.dashboard.customizing" style="display:none;" @endif>
 

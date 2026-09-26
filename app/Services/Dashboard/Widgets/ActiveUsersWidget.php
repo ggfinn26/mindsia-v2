@@ -28,7 +28,7 @@ class ActiveUsersWidget implements WidgetDataProviderInterface
         $totalUsers = User::where('is_active', true)->count();
 
         $recentLogins = User::where('last_login_at', '>=', $now->copy()->subDay())
-            ->with('employee:id,user_id,full_name')
+            ->with('employee:id,full_name')
             ->orderBy('last_login_at', 'desc')
             ->limit(10)
             ->get()
@@ -55,7 +55,7 @@ class ActiveUsersWidget implements WidgetDataProviderInterface
         $branchId = $filters['branch_id'] ?? null;
 
         return User::where('is_active', true)
-            ->with('employee:id,user_id,full_name')
+            ->with('employee:id,full_name')
             ->orderBy('last_login_at', 'desc')
             ->get()
             ->map(fn ($u) => [

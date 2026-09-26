@@ -25,23 +25,22 @@ class MySocializationActivityWidget implements WidgetDataProviderInterface
         }
 
         $attended = EmployeeSocialization::where('employee_id', $employeeId)
-            ->where('attended', true)
+            ->where('status', 'confirmed')
             ->whereHas('socialization', fn ($q) => $q
-                ->whereMonth('event_date', $now->month)
-                ->whereYear('event_date', $now->year))
+                ->whereMonth('created_at', $now->month)
+                ->whereYear('created_at', $now->year))
             ->count();
 
         $notAttended = EmployeeSocialization::where('employee_id', $employeeId)
-            ->where('attended', false)
+            ->where('status', '!=', 'confirmed')
             ->whereHas('socialization', fn ($q) => $q
-                ->whereMonth('event_date', $now->month)
-                ->whereYear('event_date', $now->year))
+                ->whereMonth('created_at', $now->month)
+                ->whereYear('created_at', $now->year))
             ->count();
 
         $converted = MemberRegistration::whereMonth('created_at', $now->month)
             ->whereYear('created_at', $now->year)
-            ->whereHas('socialization', fn ($q) => $q
-                ->whereHas('employeeSocializations', fn ($bq) => $bq->where('employee_id', $employeeId)))
+            ->where('employee_id', $employeeId)
             ->count();
 
         $conversionRate = $attended > 0
@@ -67,14 +66,14 @@ class MySocializationActivityWidget implements WidgetDataProviderInterface
         }
 
         $activities = EmployeeSocialization::where('employee_id', $employeeId)
-            ->with('socialization:id,name,event_date')
+            ->with('socialization:id,name,created_at')
             ->orderBy('created_at', 'desc')
             ->get();
 
         return $activities->map(fn ($es) => [
             'event' => $es->socialization?->name ?? '-',
-            'event_date' => $es->socialization?->event_date?->format('Y-m-d'),
-            'attended' => $es->attended ? 'Ya' : 'Tidak',
+            'created_at' => $es->socialization?->created_at?->format('Y-m-d'),
+            'attended' => $es->status === 'confirmed' ? 'Ya' : 'Tidak',
         ])->toArray();
     }
 }

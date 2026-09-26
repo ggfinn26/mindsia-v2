@@ -30,7 +30,7 @@ class BranchFinancialPerformanceWidget implements WidgetDataProviderInterface
             $revenue = MemberPayment::where('payment_status', 'paid')
                 ->whereMonth('paid_at', $currentMonth)
                 ->whereYear('paid_at', $currentYear)
-                ->whereHas('registration', fn ($r) => $r->where('branch_id', $branch->id))
+                ->whereHas('registration.memberData', fn ($r) => $r->where('branch_id', $branch->id))
                 ->sum('amount');
 
             $cost = BranchMonthlyCost::where('period_month', $currentMonth)
@@ -71,7 +71,7 @@ class BranchFinancialPerformanceWidget implements WidgetDataProviderInterface
             $revenue = MemberPayment::where('payment_status', 'paid')
                 ->whereMonth('paid_at', $currentMonth)
                 ->whereYear('paid_at', $currentYear)
-                ->whereHas('registration', fn ($r) => $r->where('branch_id', $branch->id))
+                ->whereHas('registration.memberData', fn ($r) => $r->where('branch_id', $branch->id))
                 ->sum('amount');
 
             $cost = BranchMonthlyCost::where('period_month', $currentMonth)

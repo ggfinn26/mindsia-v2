@@ -16,7 +16,6 @@ class MyCommissionIncentiveWidget implements WidgetDataProviderInterface
 
     public function getData(array $filters = []): array
     {
-        $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
         $employeeId = auth()->user()?->employee?->id;
 
@@ -24,34 +23,36 @@ class MyCommissionIncentiveWidget implements WidgetDataProviderInterface
             return ['error' => 'Employee not found'];
         }
 
-        // Bonus/incentive calculated this month
-        $bonusCalculation = PayrollBonusCalculation::where('employee_id', $employeeId)
-            ->whereMonth('created_at', $now->month)
-            ->whereYear('created_at', $now->year)
-            ->get();
-
-        $pendingBonus = $bonusCalculation->where('payment_status', 'pending')->sum('bonus_amount');
-        $paidBonus = $bonusCalculation->where('payment_status', 'paid')->sum('bonus_amount');
-
-        // Commission via payroll items
-        $commissionItems = PayrollItem::whereHas('payroll', fn ($q) => $q
+        // Bonus items from payroll this month
+        $bonusItems = PayrollItem::whereHas('employeePayroll', fn ($q) => $q
             ->where('employee_id', $employeeId)
-            ->whereMonth('paid_at', $now->month)
-            ->whereYear('paid_at', $now->year))
-            ->where('component_type', 'bonus')
+            ->whereMonth('created_at', $now->month)
+            ->whereYear('created_at', $now->year))
+            ->where('component_type_snapshot', 'bonus')
             ->get();
 
-        $commissionTotal = $commissionItems->sum('amount');
+        $totalBonus = $bonusItems->sum('total_amount');
 
-        // Forecast: last 3 months avg
-        $avgBonus = PayrollBonusCalculation::where('employee_id', $employeeId)
-            ->where('created_at', '>=', $now->copy()->subMonths(3))
-            ->avg('bonus_amount') ?? 0;
+        // Bonus calculations this month
+        $bonusCalcs = PayrollBonusCalculation::whereHas('employeePayroll', fn ($q) => $q
+            ->where('employee_id', $employeeId)
+            ->whereMonth('created_at', $now->month)
+            ->whereYear('created_at', $now->year))
+            ->get();
+
+        $totalCalcBonus = $bonusCalcs->sum('calculated_amount');
+
+        // 3-month avg forecast
+        $avgBonus = PayrollItem::whereHas('employeePayroll', fn ($q) => $q
+            ->where('employee_id', $employeeId)
+            ->where('created_at', '>=', $now->copy()->subMonths(3)))
+            ->where('component_type_snapshot', 'bonus')
+            ->avg('total_amount') ?? 0;
 
         return [
-            'pending_bonus' => $pendingBonus,
-            'paid_bonus' => $paidBonus,
-            'commission_total' => $commissionTotal,
+            'bonus_items' => $bonusItems->count(),
+            'total_bonus' => $totalBonus,
+            'total_calc_bonus' => $totalCalcBonus,
             'forecast_next' => round($avgBonus),
             'period' => $now->translatedFormat('F Y'),
         ];
@@ -59,20 +60,20 @@ class MyCommissionIncentiveWidget implements WidgetDataProviderInterface
 
     public function getExportData(array $filters = []): array
     {
-        $branchId = $filters['branch_id'] ?? null;
         $employeeId = auth()->user()?->employee?->id;
 
         if (! $employeeId) {
             return [];
         }
 
-        return PayrollBonusCalculation::where('employee_id', $employeeId)
+        return PayrollItem::whereHas('employeePayroll', fn ($q) => $q->where('employee_id', $employeeId))
+            ->where('component_type_snapshot', 'bonus')
             ->orderBy('created_at', 'desc')
             ->get()
             ->map(fn ($b) => [
                 'period' => $b->created_at?->format('Y-m'),
-                'bonus_amount' => $b->bonus_amount,
-                'payment_status' => $b->payment_status,
+                'component' => $b->component_name_snapshot,
+                'amount' => $b->total_amount,
             ])->toArray();
     }
 }
