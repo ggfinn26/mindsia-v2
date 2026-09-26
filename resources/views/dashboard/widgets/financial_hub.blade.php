@@ -22,6 +22,7 @@
 <div class="bg-white rounded-lg border border-[#cfc6af] shadow-sm overflow-hidden font-sans"
      x-data="{
          activeTab: 'comparison',
+         downloadModalOpen: false, dlType: 'tahunan', dlYear: '{{ request('year', now()->year) }}', dlSemester: '1', dlMonth: '{{ request('month', now()->month) }}',
          search: '',
          sortBy: 'revenue',
          get filteredBranches() {
@@ -63,12 +64,95 @@
                 <button type="submit" class="bg-[#1E293B] hover:bg-[#314865] text-white px-2 py-1 rounded text-xs font-semibold transition-colors">Filter</button>
             </form>
 
-            {{-- Download link --}}
-            <a href="{{ route('dashboard.widget-export', array_merge(['widgetKey' => 'financial_hub', 'format' => 'pdf', 'month' => $mVal, 'year' => $yVal], request()->only(['area_id']))) }}"
-               class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-white border border-[#cfc6af] text-[#1E293B] text-xs font-semibold hover:bg-[#f3f4f3] transition-colors">
-                <span class="material-symbols-outlined text-[16px]">download</span>
-                Unduh Laporan
-            </a>
+            <button @click="downloadModalOpen = true" class="p-1.5 rounded bg-white shadow-sm border border-[#cfc6af] hover:bg-gray-50 transition-colors flex items-center gap-1">
+                <span class="material-symbols-outlined text-gray-600 text-sm">download</span>
+                <span class="text-xs font-bold text-[#4c4635] pr-1">Unduh Laporan</span>
+            </button>
+
+            {{-- Modal --}}
+            <div x-show="downloadModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" style="display: none;" @keydown.escape.window="downloadModalOpen = false">
+                <div @click.away="downloadModalOpen = false" class="bg-white rounded-lg shadow-xl border border-[#cfc6af] w-full max-w-md">
+                    <div class="px-5 py-4 border-b border-[#cfc6af] flex justify-between items-center bg-[#f9f9f8] rounded-t-lg">
+                        <h3 class="text-sm font-bold text-[#1E293B]">Unduh Laporan PDF</h3>
+                        <button @click="downloadModalOpen = false" class="text-gray-400 hover:text-gray-600">
+                            <span class="material-symbols-outlined text-sm">close</span>
+                        </button>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex border-b border-[#cfc6af] mb-4">
+                            <button @click="dlType = 'tahunan'" :class="dlType === 'tahunan' ? 'border-b-2 border-[#dbb940] text-[#1E293B]' : 'text-gray-500 hover:text-gray-700'" class="px-3 py-2 text-xs font-bold transition-colors">Tahunan</button>
+                            <button @click="dlType = 'semester'" :class="dlType === 'semester' ? 'border-b-2 border-[#dbb940] text-[#1E293B]' : 'text-gray-500 hover:text-gray-700'" class="px-3 py-2 text-xs font-bold transition-colors">Semester</button>
+                            <button @click="dlType = 'bulanan'" :class="dlType === 'bulanan' ? 'border-b-2 border-[#dbb940] text-[#1E293B]' : 'text-gray-500 hover:text-gray-700'" class="px-3 py-2 text-xs font-bold transition-colors">Bulanan</button>
+                        </div>
+
+                        <form action="{{ route('dashboard.widget-export', ['widgetKey' => 'financial_hub', 'format' => 'pdf']) }}" method="GET">
+                            <template x-if="dlType === 'tahunan'">
+                                <div>
+                                    <input type="hidden" name="period_type" value="yearly">
+                                    <label class="block text-xs font-bold text-[#4c4635] mb-1">Pilih Tahun</label>
+                                    <select name="year" x-model="dlYear" class="w-full rounded border-[#cfc6af] py-2 px-3 text-sm focus:ring-[#dbb940]">
+                                        @foreach(range(now()->year - 2, now()->year + 1) as $y)
+                                            <option value="{{ $y }}">{{ $y }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </template>
+
+                            <template x-if="dlType === 'semester'">
+                                <div>
+                                    <input type="hidden" name="period_type" value="semester">
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-xs font-bold text-[#4c4635] mb-1">Semester</label>
+                                            <select name="semester" x-model="dlSemester" class="w-full rounded border-[#cfc6af] py-2 px-3 text-sm focus:ring-[#dbb940]">
+                                                <option value="1">Semester 1 (Jan-Jun)</option>
+                                                <option value="2">Semester 2 (Jul-Des)</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-[#4c4635] mb-1">Tahun</label>
+                                            <select name="year" x-model="dlYear" class="w-full rounded border-[#cfc6af] py-2 px-3 text-sm focus:ring-[#dbb940]">
+                                                @foreach(range(now()->year - 2, now()->year + 1) as $y)
+                                                    <option value="{{ $y }}">{{ $y }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <template x-if="dlType === 'bulanan'">
+                                <div>
+                                    <input type="hidden" name="period_type" value="monthly">
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-xs font-bold text-[#4c4635] mb-1">Bulan</label>
+                                            <select name="month" x-model="dlMonth" class="w-full rounded border-[#cfc6af] py-2 px-3 text-sm focus:ring-[#dbb940]">
+                                                @foreach([1=>'Januari',2=>'Februari',3=>'Maret',4=>'April',5=>'Mei',6=>'Juni',7=>'Juli',8=>'Agustus',9=>'September',10=>'Oktober',11=>'November',12=>'Desember'] as $m => $name)
+                                                    <option value="{{ $m }}">{{ $name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-[#4c4635] mb-1">Tahun</label>
+                                            <select name="year" x-model="dlYear" class="w-full rounded border-[#cfc6af] py-2 px-3 text-sm focus:ring-[#dbb940]">
+                                                @foreach(range(now()->year - 2, now()->year + 1) as $y)
+                                                    <option value="{{ $y }}">{{ $y }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <div class="mt-6 flex justify-end gap-2">
+                                <button type="button" @click="downloadModalOpen = false" class="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-700">Batal</button>
+                                <button type="submit" class="px-4 py-2 bg-[#1E293B] text-white text-xs font-bold rounded hover:bg-[#0f172a] shadow">Unduh PDF</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
             {{-- View Tabs --}}
             <nav class="flex items-center p-1 bg-[#eeeeed] rounded border border-[#cfc6af] text-xs font-semibold">

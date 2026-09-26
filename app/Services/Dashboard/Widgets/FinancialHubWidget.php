@@ -21,11 +21,41 @@ class FinancialHubWidget implements WidgetDataProviderInterface
 
     public function getData(array $filters = []): array
     {
+        $periodType = $filters['period_type'] ?? 'monthly';
         $currentMonth = (int) ($filters['month'] ?? now()->month);
         $currentYear = (int) ($filters['year'] ?? now()->year);
+        $semester = (int) ($filters['semester'] ?? 1);
         $filterAreaId = $filters['area_id'] ?? null;
         $now = Carbon::create($currentYear, $currentMonth, 1);
         $prev = $now->copy()->subMonth();
+
+        $applyTimeFilter = function($query, $pType, $m, $y, $sem, $dateCol) {
+            $query->whereYear($dateCol, $y);
+            if ($pType === 'monthly') {
+                $query->whereMonth($dateCol, $m);
+            } elseif ($pType === 'semester') {
+                if ($sem === 1) {
+                    $query->whereMonth($dateCol, '>=', 1)->whereMonth($dateCol, '<=', 6);
+                } else {
+                    $query->whereMonth($dateCol, '>=', 7)->whereMonth($dateCol, '<=', 12);
+                }
+            }
+            return $query;
+        };
+
+        $applyMonthYearFilter = function($query, $pType, $m, $y, $sem) {
+            $query->where('period_year', $y);
+            if ($pType === 'monthly') {
+                $query->where('period_month', $m);
+            } elseif ($pType === 'semester') {
+                if ($sem === 1) {
+                    $query->where('period_month', '>=', 1)->where('period_month', '<=', 6);
+                } else {
+                    $query->where('period_month', '>=', 7)->where('period_month', '<=', 12);
+                }
+            }
+            return $query;
+        };
 
         $branches = Branch::with('area')
             ->where('is_active', true)
@@ -36,42 +66,44 @@ class FinancialHubWidget implements WidgetDataProviderInterface
 
         // Bulk-load revenue, payroll, operational to avoid N+1
         // branch_id lives on MemberData, not MemberRegistration → use nested relationship
-        $revenueByBranch = MemberPayment::where('payment_status', 'paid')
-            ->whereMonth('paid_at', $currentMonth)
-            ->whereYear('paid_at', $currentYear)
+        $revenueByBranch = MemberPayment::where('payment_status', 'paid');
+        $revenueByBranch = $applyTimeFilter($revenueByBranch, $periodType, $currentMonth, $currentYear, $semester, 'paid_at')
             ->whereHas('registration.memberData', fn ($q) => $q->whereIn('branch_id', $branchIds))
             ->with(['registration:id,members_data_id', 'registration.memberData:id,branch_id'])
             ->get(['id', 'member_registration_id', 'amount'])
             ->groupBy(fn ($p) => $p->registration?->memberData?->branch_id)
             ->map(fn ($ps) => $ps->sum('amount'));
 
-        $payrollByBranch = EmployeePayroll::where('payment_status', 'paid')
-            ->whereMonth('paid_at', $currentMonth)
-            ->whereYear('paid_at', $currentYear)
+        $payrollByBranch = EmployeePayroll::where('payment_status', 'paid');
+        $payrollByBranch = $applyTimeFilter($payrollByBranch, $periodType, $currentMonth, $currentYear, $semester, 'paid_at')
             ->whereHas('employee', fn ($e) => $e->whereIn('branch_id', $branchIds))
             ->with('employee:id,branch_id')
             ->get(['id', 'net_amount'])
             ->groupBy(fn ($p) => $p->employee?->branch_id)
             ->map(fn ($ps) => $ps->sum('net_amount'));
 
-        $opByBranch = BranchMonthlyCost::where('period_month', $currentMonth)
-            ->where('period_year', $currentYear)
+        $opByBranch = BranchMonthlyCost::query();
+        $opByBranch = $applyMonthYearFilter($opByBranch, $periodType, $currentMonth, $currentYear, $semester)
             ->whereIn('branch_id', $branchIds)
             ->get(['branch_id', 'amount'])
             ->groupBy('branch_id')
             ->map(fn ($rows) => $rows->sum('amount'));
 
         // Prev month revenue per branch
-        $prevRevenueByBranch = MemberPayment::where('payment_status', 'paid')
-            ->whereMonth('paid_at', $prev->month)
-            ->whereYear('paid_at', $prev->year)
-            ->whereHas('registration.memberData', fn ($q) => $q->whereIn('branch_id', $branchIds))
+        $prevRevenueByBranchQuery = MemberPayment::where('payment_status', 'paid');
+        if ($periodType === 'monthly') {
+            $prevRevenueByBranchQuery = $applyTimeFilter($prevRevenueByBranchQuery, 'monthly', $prev->month, $prev->year, 1, 'paid_at');
+        } else {
+            $prevRevenueByBranchQuery->where('id', '<', 0);
+        }
+        
+        $prevRevenueByBranch = $prevRevenueByBranchQuery->whereHas('registration.memberData', fn ($q) => $q->whereIn('branch_id', $branchIds))
             ->with(['registration:id,members_data_id', 'registration.memberData:id,branch_id'])
             ->get(['id', 'member_registration_id', 'amount'])
             ->groupBy(fn ($p) => $p->registration?->memberData?->branch_id)
             ->map(fn ($ps) => $ps->sum('amount'));
 
-        $adminFeeByBranch = $this->resolveAdminFeeByBranch($branchIds, $currentMonth, $currentYear);
+        $adminFeeByBranch = $this->resolveAdminFeeByBranch($branchIds, $filters, $applyTimeFilter);
 
         $branchData = $branches->map(function ($branch) use ($revenueByBranch, $payrollByBranch, $opByBranch, $prevRevenueByBranch, $adminFeeByBranch) {
             $grossRevenue = $revenueByBranch[$branch->id] ?? 0;
@@ -106,21 +138,32 @@ class FinancialHubWidget implements WidgetDataProviderInterface
         $avgBranchRevenue = $branchCount > 0 ? intdiv($nationalRevenue, $branchCount) : 0;
 
         // National prev-month trend
-        $prevNatGrossRevenue = MemberPayment::where('payment_status', 'paid')
-            ->whereMonth('paid_at', $prev->month)
-            ->whereYear('paid_at', $prev->year)
-            ->whereHas('registration.memberData', fn ($q) => $q->whereIn('branch_id', $branchIds))
+        $prevNatGrossRevenueQuery = MemberPayment::where('payment_status', 'paid');
+        if ($periodType === 'monthly') {
+            $prevNatGrossRevenueQuery = $applyTimeFilter($prevNatGrossRevenueQuery, 'monthly', $prev->month, $prev->year, 1, 'paid_at');
+        } else {
+            $prevNatGrossRevenueQuery->where('id', '<', 0);
+        }
+        $prevNatGrossRevenue = $prevNatGrossRevenueQuery->whereHas('registration.memberData', fn ($q) => $q->whereIn('branch_id', $branchIds))
             ->sum('amount');
-        $prevNatAdminFee = $this->resolveAdminFeeByBranch($branchIds, $prev->month, $prev->year)->sum();
+        $prevNatAdminFee = ($periodType === 'monthly') ? $this->resolveAdminFeeByBranch($branchIds, array_merge($filters, ['month' => $prev->month, 'year' => $prev->year]), $applyTimeFilter)->sum() : 0;
         $prevNatRevenue = max(0, $prevNatGrossRevenue - $prevNatAdminFee);
-        $prevNatPayroll = EmployeePayroll::where('payment_status', 'paid')
-            ->whereMonth('paid_at', $prev->month)
-            ->whereYear('paid_at', $prev->year)
-            ->whereHas('employee', fn ($e) => $e->whereIn('branch_id', $branchIds))
+        $prevNatPayrollQuery = EmployeePayroll::where('payment_status', 'paid');
+        if ($periodType === 'monthly') {
+            $prevNatPayrollQuery = $applyTimeFilter($prevNatPayrollQuery, 'monthly', $prev->month, $prev->year, 1, 'paid_at');
+        } else {
+            $prevNatPayrollQuery->where('id', '<', 0);
+        }
+        $prevNatPayroll = $prevNatPayrollQuery->whereHas('employee', fn ($e) => $e->whereIn('branch_id', $branchIds))
             ->sum('net_amount');
-        $prevNatOp = BranchMonthlyCost::where('period_month', $prev->month)
-            ->where('period_year', $prev->year)
-            ->whereIn('branch_id', $branchIds)
+            
+        $prevNatOpQuery = BranchMonthlyCost::query();
+        if ($periodType === 'monthly') {
+            $prevNatOpQuery = $applyMonthYearFilter($prevNatOpQuery, 'monthly', $prev->month, $prev->year, 1);
+        } else {
+            $prevNatOpQuery->where('id', '<', 0);
+        }
+        $prevNatOp = $prevNatOpQuery->whereIn('branch_id', $branchIds)
             ->sum('amount');
 
         $nationalTrend = $prevNatRevenue > 0
@@ -176,8 +219,15 @@ class FinancialHubWidget implements WidgetDataProviderInterface
             }
         }
 
+        $periodString = $now->translatedFormat('F Y');
+        if ($periodType === 'yearly') {
+            $periodString = 'Tahun ' . $currentYear;
+        } elseif ($periodType === 'semester') {
+            $periodString = 'Semester ' . $semester . ' ' . $currentYear;
+        }
+
         return [
-            'period' => $now->translatedFormat('F Y'),
+            'period' => $periodString,
             'national_revenue' => $nationalRevenue,
             'national_profit' => $nationalProfit,
             'national_margin' => $nationalMargin,
@@ -202,21 +252,25 @@ class FinancialHubWidget implements WidgetDataProviderInterface
      * @param  Collection<int, int>  $branchIds
      * @return Collection<int, float>
      */
-    private function resolveAdminFeeByBranch(Collection $branchIds, int $month, int $year): Collection
+    private function resolveAdminFeeByBranch(Collection $branchIds, $filters, $applyTimeFilter): Collection
     {
+        $month = (int) ($filters['month'] ?? now()->month);
+        $year = (int) ($filters['year'] ?? now()->year);
+        $periodType = $filters['period_type'] ?? 'monthly';
+        $semester = (int) ($filters['semester'] ?? 1);
+
         $ids = $branchIds->toArray();
         $totals = collect($ids)->mapWithKeys(fn ($id) => [$id => 0.0]);
 
-        // per_registration + on_registration — counted at registration date
-        $rows = DB::table('members_registration as mr')
+        $query1 = DB::table('members_registration as mr')
             ->join('members_data as md', 'mr.members_data_id', '=', 'md.id')
             ->join('programs as p', 'mr.program_id', '=', 'p.id')
             ->whereIn('md.branch_id', $ids)
-            ->whereYear('mr.created_at', $year)
-            ->whereMonth('mr.created_at', $month)
             ->where('p.admin_fee_mode', 'per_registration')
-            ->where('p.admin_fee_timing', 'on_registration')
-            ->groupBy('md.branch_id')
+            ->where('p.admin_fee_timing', 'on_registration');
+        $query1 = $applyTimeFilter($query1, $periodType, $month, $year, $semester, 'mr.created_at');
+        
+        $rows = $query1->groupBy('md.branch_id')
             ->selectRaw('md.branch_id, SUM(p.admin_fee) as total')
             ->pluck('total', 'branch_id');
 
@@ -224,46 +278,27 @@ class FinancialHubWidget implements WidgetDataProviderInterface
             $totals[$branchId] = ($totals[$branchId] ?? 0.0) + (float) $total;
         }
 
-        // per_registration + on_first_payment — counted at first payment date
-        $rows = DB::table('members_registration as mr')
+        $query2 = DB::table('member_payments as pay')
+            ->join('members_registration as mr', 'pay.member_registration_id', '=', 'mr.id')
             ->join('members_data as md', 'mr.members_data_id', '=', 'md.id')
             ->join('programs as p', 'mr.program_id', '=', 'p.id')
-            ->joinSub(
-                DB::table('member_payments')
-                    ->selectRaw('member_registration_id, MIN(paid_at) as first_paid')
-                    ->where('payment_status', 'paid')
-                    ->groupBy('member_registration_id'),
-                'fp',
-                'fp.member_registration_id', '=', 'mr.id'
-            )
+            ->where('pay.payment_status', 'paid')
             ->whereIn('md.branch_id', $ids)
-            ->whereYear('fp.first_paid', $year)
-            ->whereMonth('fp.first_paid', $month)
-            ->where('p.admin_fee_mode', 'per_registration')
-            ->where('p.admin_fee_timing', 'on_first_payment')
-            ->groupBy('md.branch_id')
+            ->where(function($q) {
+                $q->where('p.admin_fee_timing', 'per_payment')
+                  ->orWhere(function($q2) {
+                      $q2->where('p.admin_fee_timing', 'on_first_payment')
+                         ->where('pay.installment_number', 1);
+                  });
+            });
+            
+        $query2 = $applyTimeFilter($query2, $periodType, $month, $year, $semester, 'pay.paid_at');
+        
+        $rows2 = $query2->groupBy('md.branch_id')
             ->selectRaw('md.branch_id, SUM(p.admin_fee) as total')
             ->pluck('total', 'branch_id');
 
-        foreach ($rows as $branchId => $total) {
-            $totals[$branchId] = ($totals[$branchId] ?? 0.0) + (float) $total;
-        }
-
-        // per_transaction — counted per paid payment
-        $rows = DB::table('member_payments as mp')
-            ->join('members_registration as mr', 'mp.member_registration_id', '=', 'mr.id')
-            ->join('members_data as md', 'mr.members_data_id', '=', 'md.id')
-            ->join('programs as p', 'mr.program_id', '=', 'p.id')
-            ->whereIn('md.branch_id', $ids)
-            ->whereYear('mp.paid_at', $year)
-            ->whereMonth('mp.paid_at', $month)
-            ->where('mp.payment_status', 'paid')
-            ->where('p.admin_fee_mode', 'per_transaction')
-            ->groupBy('md.branch_id')
-            ->selectRaw('md.branch_id, SUM(p.admin_fee) as total')
-            ->pluck('total', 'branch_id');
-
-        foreach ($rows as $branchId => $total) {
+        foreach ($rows2 as $branchId => $total) {
             $totals[$branchId] = ($totals[$branchId] ?? 0.0) + (float) $total;
         }
 

@@ -1,6 +1,7 @@
 <div class="bg-white rounded-lg shadow-sm overflow-hidden font-sans border border-[#cfc6af] w-full" x-data="{
     branchA: '{{ $data['branch_a']['id'] ?? '' }}',
     branchB: '{{ $data['branch_b']['id'] ?? '' }}',
+    programId: '{{ $data['filters']['program_id'] ?? '' }}',
     monthStart: '{{ $data['filters']['month_start'] }}',
     monthEnd: '{{ $data['filters']['month_end'] }}',
     year: '{{ $data['filters']['year'] }}'
@@ -9,22 +10,21 @@
     <div class="bg-[#f3f4f3] px-5 py-4 border-b border-[#cfc6af] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
             <h3 class="text-sm font-bold text-[#1E293B] uppercase tracking-wide">Komparasi Cabang</h3>
-            <p class="text-xs text-gray-500 mt-0.5">Bandingkan performa antar cabang • {{ $data['period_label'] }}</p>
+            <p class="text-xs text-gray-500 mt-0.5">
+                Bandingkan performa antar cabang • {{ $data['period_label'] }}
+                @if(!empty($data['program']))
+                    • <span class="font-bold text-[#1E293B]">{{ $data['program']['program_name'] }}</span>
+                @endif
+            </p>
         </div>
         
         {{-- Export / Actions --}}
         <div class="flex items-center gap-2">
-            <div class="relative" x-data="{ open: false }">
-                <button @click="open = !open" class="p-1.5 rounded bg-white shadow-sm border border-[#cfc6af] hover:bg-gray-50 transition-colors">
-                    <span class="material-symbols-outlined text-gray-600 text-sm">download</span>
-                </button>
-                <div x-show="open" @click.away="open = false" 
-                     class="absolute right-0 mt-1 w-32 bg-white rounded shadow-lg border border-[#cfc6af] py-1 z-10"
-                     style="display: none;">
-                     <a href="{{ route('dashboard.widget-export', ['widgetKey' => 'comparable', 'format' => 'pdf', 'comparable_branch_a' => $data['branch_a']['id'] ?? '', 'comparable_branch_b' => $data['branch_b']['id'] ?? '', 'comparable_month_start' => $data['filters']['month_start'], 'comparable_month_end' => $data['filters']['month_end'], 'comparable_year' => $data['filters']['year']]) }}"
-                        class="block px-3 py-1.5 text-xs text-[#1E293B] hover:bg-gray-50 font-medium">Export PDF</a>
-                </div>
-            </div>
+            <a href="{{ route('dashboard.widget-export', ['widgetKey' => 'comparable', 'format' => 'pdf', 'comparable_branch_a' => $data['branch_a']['id'] ?? '', 'comparable_branch_b' => $data['branch_b']['id'] ?? '', 'comparable_program_id' => $data['filters']['program_id'] ?? '', 'comparable_month_start' => $data['filters']['month_start'], 'comparable_month_end' => $data['filters']['month_end'], 'comparable_year' => $data['filters']['year']]) }}"
+               class="p-1.5 rounded bg-white shadow-sm border border-[#cfc6af] hover:bg-gray-50 transition-colors flex items-center gap-1">
+                <span class="material-symbols-outlined text-gray-600 text-sm">download</span>
+                <span class="text-xs font-bold text-[#4c4635] pr-1">Unduh Laporan</span>
+            </a>
         </div>
     </div>
 
@@ -34,6 +34,7 @@
             const url = new URL(window.location.href);
             url.searchParams.set('comparable_branch_a', branchA);
             url.searchParams.set('comparable_branch_b', branchB);
+            url.searchParams.set('comparable_program_id', programId);
             url.searchParams.set('comparable_month_start', monthStart);
             url.searchParams.set('comparable_month_end', monthEnd);
             url.searchParams.set('comparable_year', year);
@@ -52,6 +53,18 @@
                 <select x-model="branchB" class="rounded border-[#cfc6af] py-1 pl-2 pr-6 text-xs focus:ring-[#1E293B] focus:border-[#1E293B]">
                     @foreach($data['branches'] as $b)
                         <option value="{{ $b['id'] }}">{{ $b['branch_name'] }}</option>
+                    @endforeach
+                </select>
+            </div>
+            
+            <div class="w-px h-8 bg-gray-200 mx-1 hidden sm:block"></div>
+
+            <div class="flex flex-col gap-1">
+                <label class="font-medium text-gray-500">Program</label>
+                <select x-model="programId" class="rounded border-[#cfc6af] py-1 pl-2 pr-6 text-xs focus:ring-[#1E293B] focus:border-[#1E293B]">
+                    <option value="">Semua Program</option>
+                    @foreach($data['programs'] as $p)
+                        <option value="{{ $p['id'] }}">{{ $p['program_name'] }}</option>
                     @endforeach
                 </select>
             </div>

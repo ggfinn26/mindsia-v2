@@ -120,6 +120,8 @@ class DashboardWidgetExportController extends Controller
         $filters = [
             'month' => request('month', now()->month),
             'year' => request('year', now()->year),
+            'period_type' => request('period_type', 'monthly'),
+            'semester' => request('semester', 1),
             'area_id' => request('area_id'),
             'scope' => 'nasional',
         ];
@@ -152,11 +154,15 @@ class DashboardWidgetExportController extends Controller
         $user = auth()->user();
         $month = (int) request('month', now()->month);
         $year = (int) request('year', now()->year);
+        $periodType = request('period_type', 'monthly');
+        $semester = (int) request('semester', 1);
 
         $filters = [
             'branch_id' => request('branch_id', $user->employee?->branch_id),
             'month' => $month,
             'year' => $year,
+            'period_type' => $periodType,
+            'semester' => $semester,
         ];
 
         $data = $this->widgetService->getWidgetData('member_growth', $filters);
@@ -186,6 +192,7 @@ class DashboardWidgetExportController extends Controller
         $filters = [
             'branch_a' => request('comparable_branch_a'),
             'branch_b' => request('comparable_branch_b'),
+            'program_id' => request('comparable_program_id'),
             'month_start' => (int) request('comparable_month_start', now()->month),
             'month_end' => (int) request('comparable_month_end', now()->month),
             'year' => (int) request('comparable_year', now()->year),
@@ -193,8 +200,17 @@ class DashboardWidgetExportController extends Controller
 
         $data = $this->widgetService->getWidgetData('comparable', $filters);
 
+        $docCode = 'DOC/COMP/'.$filters['year'].str_pad($filters['month_end'], 2, '0', STR_PAD_LEFT).'-'.strtoupper(substr(md5(auth()->id().now()->timestamp), 0, 6));
+        $logoPath = public_path('img/logo/mindsia-logo.png');
+        $logoSrc = file_exists($logoPath)
+            ? 'data:image/png;base64,'.base64_encode(file_get_contents($logoPath))
+            : null;
+
         $pdf = Pdf::loadView('dashboard.widgets.comparable_export_pdf', [
             'data' => $data,
+            'docCode' => $docCode,
+            'logoSrc' => $logoSrc,
+            'printedAt' => now()->setTimezone('Asia/Jakarta')->format('d M Y, H:i').' WIB',
         ])->setPaper('a4', 'portrait')
             ->setOption('margin_top', 20)
             ->setOption('margin_right', 18)
