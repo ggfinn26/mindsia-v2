@@ -33,7 +33,11 @@
 
         <!-- Navigation -->
         <nav class="flex-1 overflow-y-auto min-h-0 py-4 px-3 space-y-1 custom-scrollbar">
-            @if (Auth::guard('web')->check())
+            @if (request()->is('applicant*') && Auth::guard('applicant')->check())
+                @include('layouts.sidebar.applicant')
+            @elseif (request()->is('member*') && Auth::guard('member')->check())
+                @include('layouts.sidebar.member')
+            @elseif (Auth::guard('web')->check())
                 @include('layouts.sidebar.employee')
             @elseif (Auth::guard('member')->check())
                 @include('layouts.sidebar.member')

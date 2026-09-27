@@ -51,11 +51,18 @@
                                 class="text-xs font-semibold text-slate-500 hover:underline">Hapus semua</button>
                         </div>
                         @foreach ($perms as $perm)
-                            <label class="flex cursor-pointer items-center gap-3 py-2.5 hover:bg-slate-50/70">
+                            @php $meta = \App\Support\PermissionLabels::get($perm->name); @endphp
+                            <label class="flex cursor-pointer items-start gap-3 py-2.5 hover:bg-slate-50/70">
                                 <input type="checkbox" name="permissions[]" value="{{ $perm->id }}"
                                     {{ in_array($perm->id, $assigned) ? 'checked' : '' }}
-                                    class="h-4 w-4 rounded border-slate-300 text-[#215aac] focus:ring-[#215aac]">
-                                <span class="font-mono text-xs text-slate-700">{{ $perm->name }}</span>
+                                    class="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-[#215aac] focus:ring-[#215aac]">
+                                <div class="min-w-0">
+                                    <p class="text-sm font-medium text-slate-800 leading-snug">{{ $meta['label'] }}</p>
+                                    @if($meta['description'])
+                                        <p class="text-xs text-slate-400 mt-0.5">{{ $meta['description'] }}</p>
+                                    @endif
+                                    <p class="font-mono text-[10px] text-slate-400 mt-0.5">{{ $perm->name }}</p>
+                                </div>
                             </label>
                         @endforeach
                     </div>

@@ -17,7 +17,7 @@ class StoreApplicantRequest extends FormRequest
         return [
             'full_name' => ['required', 'string', 'max:255'],
             'whatsapp_number' => ['required', 'string', 'min:8', 'max:15'],
-            'birth_date' => ['nullable', 'date'],
+            'birth_date' => ['nullable', 'date', 'before_or_equal:' . now()->subYears(17)->format('Y-m-d')],
             'gender' => ['nullable', 'in:male,female'],
             'address' => ['nullable', 'string', 'max:500'],
             'city' => ['nullable', 'string', 'max:100'],
@@ -33,6 +33,7 @@ class StoreApplicantRequest extends FormRequest
             'email.unique' => 'Email ini sudah terdaftar.',
             'whatsapp_number.required' => 'Nomor WhatsApp wajib diisi.',
             'password.min' => 'Password minimal 8 karakter.',
+            'birth_date.before_or_equal' => 'Pelamar harus berusia minimal 17 tahun.',
         ];
     }
 }

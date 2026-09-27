@@ -98,8 +98,8 @@
                         <select id="gender" name="gender"
                                 class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border @error('gender') border-red-300 @else border-[#E5E7EB] @enderror rounded-xl text-[13px] focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20 transition-all shadow-sm">
                             <option value="">Pilih...</option>
-                            <option value="Laki-laki" {{ old('gender') == 'Laki-laki' || old('gender') == 'male' ? 'selected' : '' }}>Laki-laki</option>
-                            <option value="Perempuan" {{ old('gender') == 'Perempuan' || old('gender') == 'female' ? 'selected' : '' }}>Perempuan</option>
+                            <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Laki-laki</option>
+                            <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Perempuan</option>
                         </select>
                         @error('gender')
                             <p class="mt-1 text-[11px] text-red-600 font-medium">{{ $message }}</p>
@@ -112,7 +112,7 @@
                         <label for="birth_date" class="block mb-1 text-[12px] font-bold text-[#4B5563]">
                             Tanggal Lahir
                         </label>
-                        <input type="date" id="birth_date" name="birth_date" value="{{ old('birth_date') }}"
+                        <input type="date" id="birth_date" name="birth_date" value="{{ old('birth_date') }}" max="{{ now()->subYears(17)->format('Y-m-d') }}"
                                class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border @error('birth_date') border-red-300 @else border-[#E5E7EB] @enderror rounded-xl text-[13px] focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20 transition-all shadow-sm">
                         @error('birth_date')
                             <p class="mt-1 text-[11px] text-red-600 font-medium">{{ $message }}</p>

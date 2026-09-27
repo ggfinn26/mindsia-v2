@@ -117,6 +117,9 @@ use App\Http\Controllers\Admin\WorkScheduleAssignmentController;
 use App\Http\Controllers\Admin\WorkScheduleRuleController;
 use App\Http\Controllers\Applicant\ApplicantDashboardController;
 use App\Http\Controllers\Applicant\ApplicantProfileController;
+use App\Http\Controllers\Applicant\ApplicationListController;
+use App\Http\Controllers\Applicant\InterviewScheduleController;
+use App\Http\Controllers\Applicant\JobListingController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\Auth\ApplicantForgotPasswordController;
 use App\Http\Controllers\Auth\ApplicantLoginController;
@@ -476,6 +479,11 @@ Route::middleware(['auth:applicant', EnsureEmailIsVerified::class, 'no.back'])->
     // Apply for jobs
     Route::post('/applicant/apply/{jobPosting}', [JobApplicationController::class, 'store'])->name('applicant.apply');
     Route::get('/applicant/applications/{jobApplication}', [JobApplicationController::class, 'show'])->name('applicant.applications.show');
+
+    // Karir
+    Route::get('/applicant/lowongan', [JobListingController::class, 'index'])->name('applicant.job-listings.index');
+    Route::get('/applicant/lamaran', [ApplicationListController::class, 'index'])->name('applicant.applications.index');
+    Route::get('/applicant/jadwal-interview', [InterviewScheduleController::class, 'index'])->name('applicant.interviews.index');
 });
 
 // Auth Routes — Password Management (forgot + reset) — Employee (web guard)

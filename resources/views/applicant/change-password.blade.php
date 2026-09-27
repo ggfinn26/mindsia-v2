@@ -1,10 +1,12 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
+
+@section('title', 'Ubah Password - MINDSIA')
+@section('header_title', 'Ubah Password')
 
 @section('content')
-<div class="container mx-auto px-4 py-8 max-w-md">
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold">Ubah Password</h1>
-        <p class="text-gray-600">Masukkan password lama dan password baru Anda</p>
+<div class="max-w-md mx-auto">
+    <div class="mb-6">
+        <p class="text-sm text-gray-500">Masukkan password lama dan password baru Anda.</p>
     </div>
 
     @if (session('status'))
