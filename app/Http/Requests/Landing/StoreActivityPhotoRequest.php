@@ -8,7 +8,7 @@ class StoreActivityPhotoRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('landing.photo.create');
+        return $this->user()->can('landing.photo.manage');
     }
 
     public function rules(): array

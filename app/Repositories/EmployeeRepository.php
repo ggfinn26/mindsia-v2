@@ -12,8 +12,18 @@ class EmployeeRepository
 {
     public function paginate(array $filters = [], ?User $user = null): LengthAwarePaginator
     {
+        $sortMap = [
+            'name' => ['full_name', 'asc'],
+            'name_desc' => ['full_name', 'desc'],
+            'code' => ['employee_code', 'asc'],
+            'code_desc' => ['employee_code', 'desc'],
+            'newest' => ['created_at', 'desc'],
+            'newest_desc' => ['created_at', 'asc'],
+        ];
+        [$col, $dir] = $sortMap[$filters['sort'] ?? ''] ?? ['full_name', 'asc'];
+
         return $this->applyFilters(Employee::with('currentStatus.position', 'region', 'branch'), $filters, $user)
-            ->orderBy('full_name')
+            ->orderBy($col, $dir)
             ->paginate(25);
     }
 

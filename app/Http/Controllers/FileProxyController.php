@@ -3,11 +3,28 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 class FileProxyController extends Controller
 {
     public function serve(string $fileId)
     {
+        // Serve from local disk — allowlist only, no path traversal
+        $publicPrefixes = ['landing/', 'photos/', 'payroll/', 'letters/', 'kpi/', 'documents/'];
+        $isPublicPath = str_contains($fileId, '/')
+            && ! str_contains($fileId, '..')
+            && collect($publicPrefixes)->contains(fn ($p) => str_starts_with($fileId, $p));
+
+        if ($isPublicPath && Storage::exists($fileId)) {
+            $content = Storage::get($fileId);
+            $mimeType = $this->detectMimeType($fileId);
+
+            return response($content)
+                ->header('Content-Type', $mimeType)
+                ->header('Content-Length', strlen($content))
+                ->header('Cache-Control', 'public, max-age=3600');
+        }
+
         $botToken = env('TELEGRAM_BOT_TOKEN');
 
         try {

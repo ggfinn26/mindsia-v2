@@ -19,7 +19,7 @@
         </div>
     </div>
 
-    <div x-data="{ activeTab: 'lengkap' }" class="bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden">
+    <div x-data="{ activeTab: 'lengkap' }" class="bg-white shadow-sm border border-gray-200 rounded-lg">
         
         <!-- Tab Navigation -->
         <div class="border-b border-gray-200">

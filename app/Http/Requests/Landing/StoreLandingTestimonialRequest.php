@@ -9,7 +9,7 @@ class StoreLandingTestimonialRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('landing.testimonial.create');
+        return $this->user()->can('landing.testimonial.manage');
     }
 
     public function rules(): array

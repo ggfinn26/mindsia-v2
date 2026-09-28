@@ -29,7 +29,7 @@ class LandingLeader extends Model
     public function getPhotoUrlAttribute(): ?string
     {
         if ($this->storage_path) {
-            return Storage::url($this->storage_path);
+            return Storage::disk('public')->url($this->storage_path);
         }
 
         if (! $this->telegram_file_id) {

@@ -8,7 +8,7 @@ class UpdateLandingLeaderRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('landing.leader.update');
+        return $this->user()->can('landing.leader.manage');
     }
 
     public function rules(): array

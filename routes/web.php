@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\Bonus\KpiBonusRuleController;
 use App\Http\Controllers\Admin\Bonus\MarketingBonusRuleController;
 use App\Http\Controllers\Admin\Bonus\SpecialBonusRuleController;
 use App\Http\Controllers\Admin\BranchTransferController;
+use App\Http\Controllers\Admin\ClassPlacementTestController;
 use App\Http\Controllers\Admin\ClassRoomController;
 use App\Http\Controllers\Admin\ClassScheduleController;
 use App\Http\Controllers\Admin\ClassTestController;
@@ -267,7 +268,7 @@ Route::post('/daftar', function () {
     return 'Success';
 })->name('public.store');
 
-Route::get('/file/{fileId}', [FileProxyController::class, 'serve'])->name('file.serve');
+Route::get('/file/{fileId}', [FileProxyController::class, 'serve'])->where('fileId', '.*')->name('file.serve');
 Route::get('/pdf-test', [PdfTestController::class, 'test'])->name('pdf.test');
 Route::get('/pdf-test/kop', [PdfTestController::class, 'testKopSurat'])->name('pdf.test.kop');
 
@@ -905,6 +906,11 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     Route::delete('test-questions/{question}', [TestQuestionController::class, 'destroy'])->name('test-questions.destroy');
     Route::post('member-class/{memberClass}/tests/{classTest}/results', [MemberTestResultController::class, 'store'])->name('member-test-results.store');
     Route::post('member-test-results/{result}/review-essay', [MemberTestResultController::class, 'reviewEssay'])->name('member-test-results.review-essay');
+
+    // Placement Test (Pre-Test)
+    Route::get('classrooms/{classroom}/placement-test', [ClassPlacementTestController::class, 'show'])->name('classrooms.placement-test.show');
+    Route::post('classrooms/{classroom}/placement-test/schedule', [ClassPlacementTestController::class, 'schedule'])->name('classrooms.placement-test.schedule');
+    Route::post('classrooms/{classroom}/placement-test', [ClassPlacementTestController::class, 'store'])->name('classrooms.placement-test.store');
 
     // Certificate
     Route::patch('member-certificates/{memberCertificate}', [MemberCertificateController::class, 'update'])->name('member-certificates.update');

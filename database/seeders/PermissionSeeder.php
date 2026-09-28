@@ -225,6 +225,7 @@ class PermissionSeeder extends Seeder
             'class.certificate.update',
             'class.graduate',
             'class.test.review_essay',
+            'class.placement_test.manage',
 
             // TOEFL
             'toefl.test.create',
@@ -350,6 +351,11 @@ class PermissionSeeder extends Seeder
             'dashboard.widget.comparable.view',
             'dashboard.widget.system_audit_log.view',
             'dashboard.widget.active_users.view',
+
+            // Landing Page
+            'landing.testimonial.manage',
+            'landing.photo.manage',
+            'landing.leader.manage',
         ];
 
         foreach ($permissions as $name) {

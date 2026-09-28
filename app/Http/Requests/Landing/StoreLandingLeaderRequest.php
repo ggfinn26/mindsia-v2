@@ -8,7 +8,7 @@ class StoreLandingLeaderRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('landing.leader.create');
+        return $this->user()->can('landing.leader.manage');
     }
 
     public function rules(): array

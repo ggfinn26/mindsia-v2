@@ -34,14 +34,14 @@ class ActivityPhoto extends Model
     public function getPhotoUrlAttribute(): string
     {
         if ($this->storage_path) {
-            return Storage::url($this->storage_path);
+            return Storage::disk('public')->url($this->storage_path);
         }
 
         if ($this->telegram_file_id) {
             return route('file.serve', $this->telegram_file_id);
         }
 
-        return $this->file_path ? Storage::url($this->file_path) : '';
+        return $this->file_path ? Storage::disk('public')->url($this->file_path) : '';
     }
 
     /** Alias so welcome.blade.php $gallery->image keeps working */

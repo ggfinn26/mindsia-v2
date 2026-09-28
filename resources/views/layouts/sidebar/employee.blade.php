@@ -331,3 +331,19 @@
     <x-dashboard.nav-item href="{{ route('facility.rent-contracts.index') }}" :active="request()->routeIs('facility.rent-contracts.*')" :isChild="true">Kontrak Sewa</x-dashboard.nav-item>
 </x-dashboard.nav-group>
 @endcan
+
+<!-- 1.18 Landing Page -->
+@canany(['landing.testimonial.manage', 'landing.photo.manage', 'landing.leader.manage'])
+<x-dashboard.nav-group title="Landing Page" icon="public" :active="request()->routeIs('admin.landing.*')">
+    @can('landing.testimonial.manage')
+    <x-dashboard.nav-item href="{{ route('admin.landing.testimonials.index') }}" :active="request()->routeIs('admin.landing.testimonials.*')" :isChild="true">Testimoni</x-dashboard.nav-item>
+    @endcan
+    @can('landing.photo.manage')
+    <x-dashboard.nav-item href="{{ route('admin.landing.photos.index', ['section' => 'landing']) }}" :active="request()->routeIs('admin.landing.photos.*') && request('section') === 'landing'" :isChild="true">Galeri Landing</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('admin.landing.photos.index', ['section' => 'company']) }}" :active="request()->routeIs('admin.landing.photos.*') && request('section') === 'company'" :isChild="true">Galeri Profil Perusahaan</x-dashboard.nav-item>
+    @endcan
+    @can('landing.leader.manage')
+    <x-dashboard.nav-item href="{{ route('admin.landing.leaders.index') }}" :active="request()->routeIs('admin.landing.leaders.*')" :isChild="true">Pimpinan</x-dashboard.nav-item>
+    @endcan
+</x-dashboard.nav-group>
+@endcanany

@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Position;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
@@ -14,64 +13,64 @@ class RoleSeeder extends Seeder
 
     public function run(): void
     {
-        $roleNames = [
-            'Super Admin',
-            'CEO',
-            'COO',
-            'CMO',
-            'CHRO',
-            'CPO',
-            'CFO',
-            'HRR',
-            'HRP',
-            'DIR_OPS',
-            'FINANCE_DIRECTOR',
-            'FINANCE_GENERAL',
-            'MANAGER_AREA',
-            'PIC',
-            'MARKETING',
-            'REGULAR_TUTOR',
-            'OFFICIAL_TUTOR',
+        $roles = [
+            'Developer',
+            'Board',
+            'IT',
+            'HR',
+            'Finance',
+            'Manager Area',
+            'Operasional',
+            'Marketing',
+            'Tutor',
         ];
 
-        foreach ($roleNames as $name) {
+        foreach ($roles as $name) {
             Role::firstOrCreate(['name' => $name, 'guard_name' => 'web']);
         }
 
         $allPermissions = Permission::pluck('name')->toArray();
 
-        // Assign all permissions to Super Admin
-        $superAdminRole = Role::where('name', 'Super Admin')->first();
-        if ($superAdminRole) {
-            $superAdminRole->syncPermissions($allPermissions);
-        }
+        // Developer has all permissions — app owner/builder
+        Role::where('name', 'Developer')->first()
+            ?->syncPermissions($allPermissions);
 
-        // Assign all permissions to CEO (temp until positions are implemented)
-        $ceoRole = Role::where('name', 'CEO')->first();
-        if ($ceoRole) {
-            $ceoRole->syncPermissions($allPermissions);
-        }
-
-        // HR staff positions — can review leave requests
-        $hrStaffPositions = ['Human Resources Personalia', 'Chief Human Resources Officer'];
-        Position::whereIn('position_name', $hrStaffPositions)->with('role')->get()
-            ->each(fn ($p) => $p->role?->givePermissionTo('attendance.leave.review'));
-
-        // HR positions — can manage employee contracts
-        $contractPositions = ['Human Resources Personalia', 'Chief Human Resources Officer'];
-        Position::whereIn('position_name', $contractPositions)->with('role')->get()
-            ->each(fn ($p) => $p->role?->givePermissionTo('contract.manage'));
-
-        // C-Level positions — can approve leave from HR staff
-        $cLevelPositions = [
-            'Chief Executive Officer',
-            'Chief Operating Officer',
-            'Chief Human Resources Officer',
-            'Chief Financial Officer',
-            'Chief Marketing Officer',
-            'Chief Product Officer',
+        // IT: system management only
+        $itPermissions = [
+            'system.permission.manage',
+            'system.api_key.create',
+            'system.api_key.update',
+            'system.webhook.manage',
+            'system.bot.manage',
+            'system.notification_routing.manage',
+            'auth.user.force_reset_password',
         ];
-        Position::whereIn('position_name', $cLevelPositions)->with('role')->get()
-            ->each(fn ($p) => $p->role?->givePermissionTo('attendance.leave.approve_hr_staff'));
+        Role::where('name', 'IT')->first()
+            ?->syncPermissions(array_intersect($itPermissions, $allPermissions));
+
+        // Placement test: Tutor (Official + Regular), Marketing (Official Tutor is in Marketing division),
+        // Manager Area (covers Manager Area + PIC positions), Board (CEO)
+        $placementTestPermission = 'class.placement_test.manage';
+        if (in_array($placementTestPermission, $allPermissions, true)) {
+            foreach (['Tutor', 'Marketing', 'Manager Area', 'Board'] as $roleName) {
+                Role::where('name', $roleName)->first()
+                    ?->givePermissionTo($placementTestPermission);
+            }
+        }
+
+        // Landing page: Board & Operasional kelola konten publik
+        $landingPermissions = [
+            'landing.testimonial.manage',
+            'landing.photo.manage',
+            'landing.leader.manage',
+        ];
+        foreach ($landingPermissions as $perm) {
+            if (in_array($perm, $allPermissions, true)) {
+                foreach (['Board', 'Operasional'] as $roleName) {
+                    Role::where('name', $roleName)->first()
+                        ?->givePermissionTo($perm);
+                }
+            }
+        }
     }
 }

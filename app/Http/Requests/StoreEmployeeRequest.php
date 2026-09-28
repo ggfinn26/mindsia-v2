@@ -21,9 +21,10 @@ class StoreEmployeeRequest extends FormRequest
             'birthdate' => ['required', 'date'],
             'email' => ['required', 'email', 'unique:employees'],
             'whatsapp_number' => ['required', 'string', 'min:8', 'max:15'],
-            'branch_id' => ['required', 'exists:branches,id'],
-            'region_id' => ['required', 'exists:regions,id'],
+            'branch_id' => ['nullable', 'exists:branches,id'],
+            'region_id' => ['nullable', 'exists:regions,id'],
             'area_id' => ['nullable', 'exists:areas,id'],
+            'is_hq' => ['nullable', 'boolean'],
         ];
     }
 }

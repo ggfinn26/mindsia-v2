@@ -1,12 +1,12 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
 @section('title', 'Struktur Kepemimpinan')
 
 @section('content')
-<div class="max-w-4xl mx-auto px-4 py-8">
+<div class="max-w-4xl mx-auto px-4 py-8" x-data="{ showModal: false, deleteUrl: '', deleteName: '' }" @keydown.escape.window="showModal = false">
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-2xl font-bold text-gray-900">Struktur Kepemimpinan</h1>
-        @can('landing.leader.create')
+        @can('landing.leader.manage')
         <a href="{{ route('admin.landing.leaders.create') }}"
            class="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
             <span class="material-symbols-outlined text-[18px]">person_add</span>
@@ -60,16 +60,14 @@
                     </td>
                     <td class="px-4 py-3 text-right">
                         <div class="flex justify-end gap-1">
-                            @can('landing.leader.update')
+                            @can('landing.leader.manage')
                             <a href="{{ route('admin.landing.leaders.edit', $leader) }}"
                                class="px-3 py-1.5 text-blue-600 hover:bg-blue-50 rounded text-xs font-medium transition-colors">Edit</a>
                             @endcan
-                            @can('landing.leader.delete')
-                            <form method="POST" action="{{ route('admin.landing.leaders.destroy', $leader) }}"
-                                  onsubmit="return confirm('Hapus {{ $leader->name }}?')">
-                                @csrf @method('DELETE')
-                                <button type="submit" class="px-3 py-1.5 text-red-500 hover:bg-red-50 rounded text-xs font-medium transition-colors">Hapus</button>
-                            </form>
+                            @can('landing.leader.manage')
+                            <button type="button"
+                                @click="deleteUrl = '{{ route('admin.landing.leaders.destroy', $leader) }}'; deleteName = '{{ addslashes($leader->name) }}'; showModal = true"
+                                class="px-3 py-1.5 text-red-500 hover:bg-red-50 rounded text-xs font-medium transition-colors">Hapus</button>
                             @endcan
                         </div>
                     </td>
@@ -79,5 +77,29 @@
         </table>
     </div>
     @endif
+
+    {{-- Delete Confirmation Modal --}}
+    <div x-show="showModal" class="fixed inset-0 z-50 flex items-center justify-center" style="display:none" @click.self="showModal = false">
+        <div class="absolute inset-0 bg-black/40"></div>
+        <div class="relative bg-white rounded-xl shadow-xl p-6 w-full max-w-sm mx-4">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-red-600 text-[20px]">delete</span>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-gray-900">Hapus Pemimpin</h3>
+                    <p class="text-sm text-gray-500">Hapus <span class="font-medium" x-text="deleteName"></span>? Tidak dapat dibatalkan.</p>
+                </div>
+            </div>
+            <div class="flex justify-end gap-3">
+                <button type="button" @click="showModal = false"
+                    class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">Batal</button>
+                <form :action="deleteUrl" method="POST">
+                    @csrf @method('DELETE')
+                    <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg">Hapus</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

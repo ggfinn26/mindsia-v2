@@ -48,7 +48,7 @@ class LandingTestimonial extends Model
     public function getImageUrlAttribute(): ?string
     {
         if ($this->file_path) {
-            return Storage::url($this->file_path);
+            return Storage::disk('public')->url($this->file_path);
         }
 
         return $this->telegram_file_id

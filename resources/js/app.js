@@ -1,4 +1,5 @@
 import Alpine from "alpinejs";
+import collapse from '@alpinejs/collapse';
 import "./attendance-camera";
 import "./work-schedule-assign";
 import "./employee-portal";
@@ -9,6 +10,7 @@ import "./branch-picker";
 import "./socialization-create";
 import "./wa-picker";
 window.Alpine = Alpine;
+Alpine.plugin(collapse);
 Alpine.store("dashboard", { customizing: false });
 Alpine.start();
 import "./password-toggle";

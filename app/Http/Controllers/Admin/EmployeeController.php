@@ -28,12 +28,13 @@ class EmployeeController extends Controller
         $this->authorize('viewAny', Employee::class);
 
         $employees = $this->repository->paginate(
-            $request->only('region_id', 'branch_id', 'is_active', 'search'),
+            $request->only('region_id', 'branch_id', 'is_active', 'search', 'sort'),
             auth()->user()
         );
         $regions = $this->regionRepository->all();
+        $branches = $this->branchRepository->active();
 
-        return view('admin.employees.index', compact('employees', 'regions'));
+        return view('admin.employees.index', compact('employees', 'regions', 'branches'));
     }
 
     public function create(): View

@@ -37,7 +37,7 @@
             
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Filter Status</label>
-                <select name="is_active" class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500" onchange="this.form.submit()">
+                <select name="is_active" data-no-enhance class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500" onchange="this.form.submit()">
                     <option value="">Semua Status</option>
                     <option value="1" {{ request('is_active') === '1' ? 'selected' : '' }}>Aktif</option>
                     <option value="0" {{ request('is_active') === '0' ? 'selected' : '' }}>Nonaktif</option>
@@ -46,15 +46,25 @@
             
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Filter Region</label>
-                <select name="region_id" class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500" onchange="this.form.submit()">
+                <select name="region_id" data-no-enhance class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500" onchange="this.form.submit()">
                     <option value="">Semua Region</option>
                     @foreach($regions as $region)
                         <option value="{{ $region->id }}" {{ request('region_id') == $region->id ? 'selected' : '' }}>{{ $region->name }}</option>
                     @endforeach
                 </select>
             </div>
-            
-            @if(request('search') || request('is_active') !== null || request('region_id'))
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Filter Cabang</label>
+                <select name="branch_id" data-no-enhance class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500" onchange="this.form.submit()">
+                    <option value="">Semua Cabang</option>
+                    @foreach($branches as $branch)
+                        <option value="{{ $branch->id }}" {{ request('branch_id') == $branch->id ? 'selected' : '' }}>{{ $branch->branch_name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            @if(request('search') || request('is_active') !== null || request('region_id') || request('branch_id') || request('sort'))
                 <a href="{{ route('employees.index') }}" class="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 text-center">Reset</a>
             @endif
             
@@ -66,12 +76,26 @@
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
+                    @php
+                        $currentSort = request('sort', 'name');
+                        $q = request()->except('sort');
+                        $sortLink = fn(string $key) => route('employees.index', array_merge($q, ['sort' => $currentSort === $key ? $key.'_desc' : $key]));
+                        $sortIcon = fn(string $key) => str_starts_with($currentSort, $key)
+                            ? ($currentSort === $key.'_desc' ? '↑' : '↓')
+                            : '';
+                    @endphp
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kode Pegawai</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Pegawai</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <a href="{{ $sortLink('code') }}" class="flex items-center gap-1 hover:text-gray-700">Kode Pegawai <span class="text-blue-500">{{ $sortIcon('code') }}</span></a>
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <a href="{{ $sortLink('name') }}" class="flex items-center gap-1 hover:text-gray-700">Nama Pegawai <span class="text-blue-500">{{ $sortIcon('name') }}</span></a>
+                        </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Posisi / Jabatan</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Penempatan</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <a href="{{ $sortLink('newest') }}" class="flex items-center gap-1 hover:text-gray-700">Status <span class="text-blue-500">{{ $sortIcon('newest') }}</span></a>
+                        </th>
                         <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                     </tr>
                 </thead>
@@ -88,7 +112,7 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $emp->currentStatus->position->title ?? 'Belum ada jabatan' }}
+                                {{ $emp->currentStatus?->position?->position_name ?? 'Belum ada jabatan' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 @if($emp->branch)

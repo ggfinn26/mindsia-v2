@@ -98,4 +98,9 @@ class ClassRoom extends Model
     {
         return $this->hasMany(ClassTest::class, 'class_id');
     }
+
+    public function placementTests(): HasMany
+    {
+        return $this->hasMany(PlacementTest::class, 'class_id');
+    }
 }

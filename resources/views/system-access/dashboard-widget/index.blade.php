@@ -111,11 +111,12 @@ window._widgetPositions = @json($positions->map(fn($p) => ['id' => $p->id, 'name
                     <template x-for="(row, index) in modalPositions" :key="index">
                         <div class="flex items-center gap-2">
                             <select :name="'positions[' + index + '][position_id]'" x-model="row.position_id" required
-                                class="flex-1 border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                                    data-no-enhance
+                                    class="flex-1 border-slate-300 rounded-lg text-sm px-2 py-2 focus:border-[#215aac] focus:ring-[#215aac]">
                                 <option value="">— Pilih posisi —</option>
-                                <template x-for="pos in positions" :key="pos.id">
-                                    <option :value="pos.id" :selected="row.position_id == pos.id" x-text="pos.name"></option>
-                                </template>
+                                @foreach ($positions as $pos)
+                                    <option value="{{ $pos->id }}">{{ $pos->position_name }}</option>
+                                @endforeach
                             </select>
                             <div class="flex items-center gap-1">
                                 <span class="text-xs text-slate-500">Urutan</span>

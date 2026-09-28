@@ -8,7 +8,7 @@ class UpdateActivityPhotoRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('landing.photo.update');
+        return $this->user()->can('landing.photo.manage');
     }
 
     public function rules(): array

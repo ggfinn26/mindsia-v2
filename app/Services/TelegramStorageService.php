@@ -56,14 +56,14 @@ class TelegramStorageService
      */
     public function uploadFile(string $localPath, string $filename, string $type = 'document', ?int $referenceId = null): array
     {
-        $extension = pathinfo($filename, PATHINFO_EXTENSION);
         $directory = $this->directoryForType($type);
         $storagePath = $directory.'/'.$filename;
+        $disk = $this->diskForType($type);
 
-        Storage::put($storagePath, file_get_contents($localPath));
+        Storage::disk($disk)->put($storagePath, file_get_contents($localPath));
 
         $caption = "{$type}:{$referenceId}";
-        $this->dispatchBackup($storagePath, $filename, $type, $caption);
+        $this->dispatchBackup($storagePath, $filename, $type, $caption, $disk);
 
         return ['file_id' => $storagePath];
     }
@@ -188,7 +188,7 @@ class TelegramStorageService
     private function directoryForType(string $type): string
     {
         return match ($type) {
-            'landing_photo' => 'landing',
+            'landing_photo', 'landing_leader', 'landing_testimonial', 'photo' => 'landing',
             'payroll_slip' => 'payroll',
             'warning_letter' => 'letters',
             'kpi_document' => 'kpi',
@@ -196,9 +196,17 @@ class TelegramStorageService
         };
     }
 
-    private function dispatchBackup(string $storagePath, string $originalFilename, string $type, ?string $caption): void
+    private function diskForType(string $type): string
     {
-        $absolutePath = Storage::path($storagePath);
+        return match ($type) {
+            'landing_photo', 'landing_leader', 'landing_testimonial', 'photo' => 'public',
+            default => 'local',
+        };
+    }
+
+    private function dispatchBackup(string $storagePath, string $originalFilename, string $type, ?string $caption, string $disk = 'local'): void
+    {
+        $absolutePath = Storage::disk($disk)->path($storagePath);
 
         $telegramFile = TelegramFile::create([
             'telegram_file_id' => 'pending_'.uniqid(),
