@@ -95,7 +95,7 @@
                                             <div class="relative">
                                                 <span class="material-symbols-outlined absolute left-3 top-2 text-gray-400 text-[16px]">search</span>
                                                 <input type="text" x-model="branchProvinceSearch" placeholder="Cari provinsi..."
-                                                       class="w-full pl-9 pr-3 py-1.5 bg-white border border-gray-200 rounded-md sm:text-sm focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB]">
+                                                       style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-white border border-gray-200 rounded-md sm:text-sm focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB]">
                                             </div>
                                         </div>
                                         <ul class="max-h-48 overflow-y-auto py-1">
@@ -124,7 +124,7 @@
                                             <div class="relative">
                                                 <span class="material-symbols-outlined absolute left-3 top-2 text-gray-400 text-[16px]">search</span>
                                                 <input type="text" x-model="branchSearch" placeholder="Cari cabang..."
-                                                       class="w-full pl-9 pr-3 py-1.5 bg-white border border-gray-200 rounded-md sm:text-sm focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB]">
+                                                       style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-white border border-gray-200 rounded-md sm:text-sm focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB]">
                                             </div>
                                         </div>
                                         <ul class="max-h-48 overflow-y-auto py-1">
@@ -170,7 +170,7 @@
                                             <div class="relative">
                                                 <span class="material-symbols-outlined absolute left-3 top-2 text-gray-400 text-[16px]">search</span>
                                                 <input type="text" x-model="birthProvinceSearch" placeholder="Cari provinsi..."
-                                                       class="w-full pl-9 pr-3 py-1.5 bg-white border border-gray-200 rounded-md sm:text-sm focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB]">
+                                                       style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-white border border-gray-200 rounded-md sm:text-sm focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB]">
                                             </div>
                                         </div>
                                         <ul class="max-h-48 overflow-y-auto py-1">
@@ -199,7 +199,7 @@
                                             <div class="relative">
                                                 <span class="material-symbols-outlined absolute left-3 top-2 text-gray-400 text-[16px]">search</span>
                                                 <input type="text" x-model="birthPlaceSearch" placeholder="Cari kota/kabupaten..."
-                                                       class="w-full pl-9 pr-3 py-1.5 bg-white border border-gray-200 rounded-md sm:text-sm focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB]">
+                                                       style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-white border border-gray-200 rounded-md sm:text-sm focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB]">
                                             </div>
                                         </div>
                                         <ul class="max-h-48 overflow-y-auto py-1">
@@ -302,7 +302,7 @@
                                     <span class="material-symbols-outlined absolute left-3 top-2 text-gray-400 text-[16px]">search</span>
                                     <input type="text" x-model="employeeSearch" @input.debounce.500ms="searchEmployee()"
                                            placeholder="Ketik nama atau kode..."
-                                           class="w-full pl-9 pr-8 py-1.5 bg-white border border-gray-200 rounded-md sm:text-sm focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB]">
+                                           class="w-full pl-10 pr-8 py-1.5 bg-white border border-gray-200 rounded-md sm:text-sm focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB]">
                                     <span x-show="searchingEmployee" class="absolute right-3 top-2 flex items-center">
                                         <span class="material-symbols-outlined text-gray-400 animate-spin text-[16px]">progress_activity</span>
                                     </span>

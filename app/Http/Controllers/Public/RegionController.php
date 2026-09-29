@@ -97,30 +97,14 @@ class RegionController extends Controller
             return response()->json([]);
         }
 
-        $cities = [];
-
         $kotaPath = base_path('../data-indonesia/kota/'.$provinceId.'.json');
-        if (file_exists($kotaPath)) {
-            $kotaData = json_decode(file_get_contents($kotaPath), true) ?: [];
-            foreach ($kotaData as &$k) {
-                $k['nama'] = 'Kota '.$k['nama'];
-            }
-            $cities = array_merge($cities, $kotaData);
+        if (! file_exists($kotaPath)) {
+            return response()->json([]);
         }
 
-        $kabPath = base_path('../data-indonesia/kabupaten/'.$provinceId.'.json');
-        if (file_exists($kabPath)) {
-            $kabData = json_decode(file_get_contents($kabPath), true) ?: [];
-            foreach ($kabData as &$k) {
-                $k['nama'] = 'Kabupaten '.$k['nama'];
-            }
-            $cities = array_merge($cities, $kabData);
-        }
+        $cities = json_decode(file_get_contents($kotaPath), true) ?: [];
 
-        // Sort by name
-        usort($cities, function ($a, $b) {
-            return strcmp($a['nama'], $b['nama']);
-        });
+        usort($cities, fn ($a, $b) => strcmp($a['nama'], $b['nama']));
 
         return response()->json($cities);
     }

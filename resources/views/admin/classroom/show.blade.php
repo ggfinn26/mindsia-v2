@@ -131,7 +131,7 @@
                                     <div class="relative">
                                         <span class="material-symbols-outlined absolute left-3 top-2.5 text-gray-400 text-[16px]">search</span>
                                         <input type="text" x-model="search" placeholder="Cari nama member..."
-                                               class="w-full pl-9 pr-3 py-2 bg-white border border-gray-200 rounded-lg text-[13px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                                               style="padding-left: 2.5rem !important" class="w-full pr-3 py-2 bg-white border border-gray-200 rounded-lg text-[13px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
                                                @click.stop>
                                     </div>
                                 </div>

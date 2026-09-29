@@ -100,7 +100,7 @@ $formConfig = [
                                 <div class="relative">
                                     <span class="material-symbols-outlined absolute left-3 top-2 text-slate-400 text-[16px]">search</span>
                                     <input type="text" x-model="searchTemplate" placeholder="Cari template..."
-                                           class="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-md text-[13px] focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
+                                           style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-white border border-slate-200 rounded-md text-[13px] focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
                                            @click.stop>
                                 </div>
                             </div>
@@ -154,7 +154,7 @@ $formConfig = [
                                         <div class="relative">
                                             <span class="material-symbols-outlined absolute left-3 top-2 text-slate-400 text-[16px]">search</span>
                                             <input type="text" x-model="searchBranch" placeholder="Cari cabang..."
-                                                   class="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-md text-[13px] focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
+                                                   style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-white border border-slate-200 rounded-md text-[13px] focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
                                                    @click.stop>
                                         </div>
                                     </div>
@@ -196,7 +196,7 @@ $formConfig = [
                                     <div class="relative">
                                         <span class="material-symbols-outlined absolute left-3 top-2 text-slate-400 text-[16px]">search</span>
                                         <input type="text" x-model="searchEmployee" placeholder="Cari pegawai..."
-                                               class="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-md text-[13px] focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
+                                               style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-white border border-slate-200 rounded-md text-[13px] focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
                                                @click.stop>
                                     </div>
                                 </div>
@@ -241,7 +241,7 @@ $formConfig = [
                                     <div class="relative">
                                         <span class="material-symbols-outlined absolute left-3 top-2 text-slate-400 text-[16px]">search</span>
                                         <input type="text" x-model="searchSigner" placeholder="Cari penandatangan..."
-                                               class="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-md text-[13px] focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
+                                               style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-white border border-slate-200 rounded-md text-[13px] focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
                                                @click.stop>
                                     </div>
                                 </div>

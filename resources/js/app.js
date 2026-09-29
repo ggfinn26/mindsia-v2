@@ -1,9 +1,10 @@
 import Alpine from "alpinejs";
-import collapse from '@alpinejs/collapse';
+import collapse from "@alpinejs/collapse";
 import "./attendance-camera";
 import "./work-schedule-assign";
 import "./employee-portal";
 import "./member-register";
+import "./applicant-register";
 import "./select-enhance";
 import "./select-enhance-with-semua-option";
 import "./branch-picker";

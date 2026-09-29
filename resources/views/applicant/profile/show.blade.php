@@ -142,7 +142,7 @@
                                 @if($edu->gpa) · IPK {{ number_format($edu->gpa, 2) }} @endif
                             </p>
                             <p class="text-xs text-gray-400 mt-0.5">
-                                {{ $edu->start_date->format('M Y') }} —
+                                {{ $edu->start_date->format('M Y') }} -
                                 {{ $edu->graduation_date ? $edu->graduation_date->format('M Y') : 'Sekarang' }}
                             </p>
                         </div>
@@ -268,7 +268,7 @@
                             <p class="font-semibold text-sm text-gray-800">{{ $exp->position }}</p>
                             <p class="text-xs text-gray-500 mt-0.5">{{ $exp->company_name }}</p>
                             <p class="text-xs text-gray-400 mt-0.5">
-                                {{ $exp->start_date->format('M Y') }} —
+                                {{ $exp->start_date->format('M Y') }} -
                                 {{ $exp->end_date ? $exp->end_date->format('M Y') : 'Sekarang' }}
                             </p>
                             @if($exp->reason_for_leaving)

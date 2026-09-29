@@ -119,7 +119,7 @@ function enhanceSelectWithSemua(sel) {
                 <div class="relative">
                     <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[16px]">search</span>
                     <input type="text" x-model="search" placeholder="Cari..." @click.stop
-                           style="padding-left: 2rem !important"
+                           style="padding-left: 2.5rem !important"
                            class="w-full pr-3 py-2 bg-white border border-gray-200 rounded-lg text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB] transition-all">
                 </div>
             </div>

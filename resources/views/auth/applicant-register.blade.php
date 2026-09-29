@@ -72,10 +72,13 @@
                             <span class="inline-flex items-center px-3.5 text-[13px] text-[#4B5563] bg-[#E5E7EB] border border-[#E5E7EB] rounded-l-xl font-bold">+62</span>
                             <input type="text" id="whatsapp_number" name="whatsapp_number"
                                    value="{{ old('whatsapp_number') }}" placeholder="8xxxxxxxxxx"
+                                   oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')"
                                    class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-l-0 @error('whatsapp_number') border-red-300 @else border-[#E5E7EB] @enderror rounded-r-xl text-[13px] focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20 transition-all shadow-sm" required minlength="8" maxlength="15">
                         </div>
                         @error('whatsapp_number')
                             <p class="mt-1 text-[11px] text-red-600 font-medium">{{ $message }}</p>
+                        @else
+                            <p id="wa-uniqueness-error" class="mt-1 text-[11px] text-red-600 font-medium hidden"></p>
                         @enderror
                     </div>
                 </div>
@@ -89,6 +92,8 @@
                                class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border @error('email') border-red-300 @else border-[#E5E7EB] @enderror rounded-xl text-[13px] focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20 transition-all shadow-sm" required>
                         @error('email')
                             <p class="mt-1 text-[11px] text-red-600 font-medium">{{ $message }}</p>
+                        @else
+                            <p id="email-uniqueness-error" class="mt-1 text-[11px] text-red-600 font-medium hidden"></p>
                         @enderror
                     </div>
                     <div>
@@ -107,27 +112,88 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="birth_date" class="block mb-1 text-[12px] font-bold text-[#4B5563]">
-                            Tanggal Lahir
-                        </label>
-                        <input type="date" id="birth_date" name="birth_date" value="{{ old('birth_date') }}" max="{{ now()->subYears(17)->format('Y-m-d') }}"
-                               class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border @error('birth_date') border-red-300 @else border-[#E5E7EB] @enderror rounded-xl text-[13px] focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20 transition-all shadow-sm">
-                        @error('birth_date')
-                            <p class="mt-1 text-[11px] text-red-600 font-medium">{{ $message }}</p>
-                        @enderror
+                <div x-data="applicantCitySelector()" x-init="init()">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="birth_date" class="block mb-1 text-[12px] font-bold text-[#4B5563]">
+                                Tanggal Lahir
+                            </label>
+                            <input type="date" id="birth_date" name="birth_date" value="{{ old('birth_date') }}" max="{{ now()->subYears(17)->format('Y-m-d') }}"
+                                   class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border @error('birth_date') border-red-300 @else border-[#E5E7EB] @enderror rounded-xl text-[13px] focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20 transition-all shadow-sm">
+                            @error('birth_date')
+                                <p class="mt-1 text-[11px] text-red-600 font-medium">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
+                            <label class="block mb-1 text-[12px] font-bold text-[#4B5563]">Provinsi Domisili</label>
+                            <div class="relative" @click.away="showProvinceDropdown = false">
+                                <div @click="showProvinceDropdown = !showProvinceDropdown"
+                                     class="w-full px-3.5 py-2.5 bg-white border border-[#E5E7EB] rounded-xl text-[13px] transition-all shadow-sm flex justify-between items-center cursor-pointer">
+                                    <span x-text="getSelectedProvinceName()" class="truncate block pr-4"
+                                          :class="provinceId ? 'text-[#111827]' : 'text-[#9CA3AF]'"></span>
+                                    <span class="material-symbols-outlined text-[16px] text-gray-400">expand_more</span>
+                                </div>
+                                <div x-show="showProvinceDropdown" x-transition x-cloak
+                                     class="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
+                                    <div class="p-2 bg-gray-50 border-b border-gray-100">
+                                        <div class="relative">
+                                            <span class="material-symbols-outlined absolute left-3 top-2.5 text-gray-400 text-[16px]">search</span>
+                                            <input type="text" x-model="provinceSearch" placeholder="Cari provinsi..."
+                                                   style="padding-left: 2.5rem !important"
+                                                   class="w-full pr-3 py-2 bg-white border border-gray-200 rounded-lg text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB] transition-all">
+                                        </div>
+                                    </div>
+                                    <ul class="max-h-48 overflow-y-auto py-1">
+                                        <li x-show="filteredProvinces.length === 0" class="px-4 py-3 text-[12px] text-gray-500 text-center">Tidak ditemukan</li>
+                                        <template x-for="p in filteredProvinces" :key="p.id">
+                                            <li @click="selectProvince(p.id)"
+                                                class="px-4 py-2 text-[12px] text-gray-700 hover:bg-[#5586DB] hover:text-white cursor-pointer transition-colors"
+                                                :class="provinceId == p.id ? 'bg-[#EFF6FF] font-semibold' : ''"
+                                                x-text="p.nama"></li>
+                                        </template>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <label for="city" class="block mb-1 text-[12px] font-bold text-[#4B5563]">
-                            Kota Domisili
-                        </label>
-                        <input type="text" id="city" name="city" value="{{ old('city') }}"
-                               class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border @error('city') border-red-300 @else border-[#E5E7EB] @enderror rounded-xl text-[13px] focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20 transition-all shadow-sm">
+                    <div class="mt-4">
+                        <label class="block mb-1 text-[12px] font-bold text-[#4B5563]">Kota Domisili</label>
+                        <div class="relative" @click.away="showCityDropdown = false">
+                            <div @click="if (provinceId) showCityDropdown = !showCityDropdown"
+                                 class="w-full px-3.5 py-2.5 bg-white border rounded-xl text-[13px] transition-all shadow-sm flex justify-between items-center @error('city') border-red-300 @else border-[#E5E7EB] @enderror"
+                                 :class="!provinceId ? 'bg-gray-50 cursor-not-allowed' : 'cursor-pointer'">
+                                <span x-text="city || (provinceId ? 'Pilih Kota/Kabupaten...' : 'Pilih Provinsi dulu...')"
+                                      :class="city ? 'text-[#111827]' : 'text-[#9CA3AF]'" class="truncate block pr-4"></span>
+                                <span class="material-symbols-outlined text-[16px] text-gray-400">expand_more</span>
+                            </div>
+                            <div x-show="showCityDropdown" x-transition x-cloak
+                                 class="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
+                                <div class="p-2 bg-gray-50 border-b border-gray-100">
+                                    <div class="relative">
+                                        <span class="material-symbols-outlined absolute left-3 top-2.5 text-gray-400 text-[16px]">search</span>
+                                        <input type="text" x-model="citySearch" placeholder="Cari kota/kabupaten..."
+                                               style="padding-left: 2.5rem !important"
+                                               class="w-full pr-3 py-2 bg-white border border-gray-200 rounded-lg text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB] transition-all">
+                                    </div>
+                                </div>
+                                <ul class="max-h-48 overflow-y-auto py-1">
+                                    <li x-show="cities.length === 0" class="px-4 py-3 text-[12px] text-gray-500 text-center">Pilih Provinsi terlebih dahulu</li>
+                                    <li x-show="cities.length > 0 && filteredCities.length === 0" class="px-4 py-3 text-[12px] text-gray-500 text-center">Tidak ditemukan</li>
+                                    <template x-for="c in filteredCities" :key="c.id">
+                                        <li @click="selectCity(c.nama)"
+                                            class="px-4 py-2 text-[12px] text-gray-700 hover:bg-[#5586DB] hover:text-white cursor-pointer transition-colors"
+                                            :class="city == c.nama ? 'bg-[#EFF6FF] font-semibold' : ''"
+                                            x-text="c.nama"></li>
+                                    </template>
+                                </ul>
+                            </div>
+                        </div>
                         @error('city')
                             <p class="mt-1 text-[11px] text-red-600 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
+                    <input type="hidden" name="city" :value="city">
+                    <input type="hidden" name="province_id" :value="provinceId">
                 </div>
 
                 <div>
@@ -198,5 +264,13 @@
             </div>
         </div>
     </div>
+    <script>
+        window.__applicantRegisterConfig = {
+            old: {
+                province_id: @json(old('province_id', '')),
+                city: @json(old('city', '')),
+            },
+        };
+    </script>
 </body>
 </html>

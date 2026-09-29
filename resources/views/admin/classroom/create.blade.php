@@ -78,7 +78,7 @@
                             <div class="relative">
                                 <span class="material-symbols-outlined absolute left-3 top-2 text-gray-400 text-[16px]">search</span>
                                 <input type="text" x-model="tutorSearch" placeholder="Cari tutor..."
-                                       class="w-full pl-9 pr-3 py-1.5 bg-white border border-gray-200 rounded-md text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                       style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-white border border-gray-200 rounded-md text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                                        @click.stop>
                             </div>
                         </div>

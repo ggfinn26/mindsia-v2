@@ -40,6 +40,7 @@
                         <span class="inline-flex items-center px-3 text-sm text-gray-500 bg-gray-100 border border-gray-200 border-r-0 rounded-l-xl font-semibold">+62</span>
                         <input type="text" name="whatsapp_number" value="{{ old('whatsapp_number', $applicant->whatsapp_number) }}"
                                minlength="8" maxlength="15" placeholder="8xxxxxxxxxx"
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')"
                                class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-gray-200 rounded-r-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
                     </div>
                 </div>
