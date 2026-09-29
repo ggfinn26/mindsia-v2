@@ -47,6 +47,10 @@ window.memberRegisterPortal = function () {
         showErrors1: false,
         showErrors2: false,
         showErrors3: false,
+        _tick: 0,
+        _uniquenessErrors: {},
+        regPassword: "",
+        regPasswordConfirm: "",
         provinces,
         indoProvinces: [],
         indoCities: [],
@@ -341,6 +345,7 @@ window.memberRegisterPortal = function () {
         },
 
         checkValidities() {
+            this._tick++;
             const bdValid = this.form.birthdate && this.form.birthdate <= MAX_BIRTHDATE;
             this.step1Valid = !!(
                 getVal("full_name") &&
@@ -353,22 +358,42 @@ window.memberRegisterPortal = function () {
                 getVal("address")
             );
             const parentsValid = PARENT_FIELDS.every((f) => getVal(f) !== "");
-            this.step2Valid = !!(
-                getVal("province_id") &&
-                this.form.branch_id &&
-                getVal("institution_id") &&
-                parentsValid
+            const institutionValid = this.showCustomInstitution
+                ? !!getVal("institution_name_custom")
+                : !!getVal("institution_id");
+            this.step2Valid = !!(getVal("province_id") && this.form.branch_id && institutionValid && parentsValid);
+            this.step3Valid = !!(
+                this.regPassword &&
+                this.regPasswordConfirm &&
+                this.regPassword === this.regPasswordConfirm &&
+                PASSWORD_RE.test(this.regPassword)
             );
-            const pass = getVal("password");
-            const conf = getVal("password_confirmation");
-            this.step3Valid = !!(pass && conf && pass === conf && PASSWORD_RE.test(pass));
         },
 
-        nextStep(current) {
+        async nextStep(current) {
             this.checkValidities();
             if (current === 1) {
-                if (this.step1Valid) this.step = 2;
-                else this.showErrors1 = true;
+                if (!this.step1Valid) {
+                    this.showErrors1 = true;
+                    return;
+                }
+                const email = getVal("email");
+                const wa = getVal("whatsapp_number");
+                try {
+                    const params = new URLSearchParams({ email, whatsapp: wa });
+                    const res = await fetch(`/api/public/member/check-uniqueness?${params}`);
+                    const data = await res.json();
+                    if (data.errors && Object.keys(data.errors).length > 0) {
+                        this._uniquenessErrors = data.errors;
+                        this.showErrors1 = true;
+                        this._tick++;
+                        return;
+                    }
+                } catch (e) {
+                    // network error — allow to proceed, server will catch
+                }
+                this._uniquenessErrors = {};
+                this.step = 2;
             } else if (current === 2) {
                 if (this.step2Valid) this.step = 3;
                 else this.showErrors2 = true;
@@ -376,20 +401,26 @@ window.memberRegisterPortal = function () {
         },
 
         hasError(stepNum, id) {
+            void this._tick;
             if (stepNum === 1 && !this.showErrors1) return false;
             if (stepNum === 2 && !this.showErrors2) return false;
             if (stepNum === 3 && !this.showErrors3) return false;
+            if (this._uniquenessErrors[id]) return true;
             if (id === "branch_id") return !this.form.branch_id;
             if (id === "birth_place_province_id") return !this.form.birth_place_province_id;
             if (id === "birth_place") return !this.form.birth_place;
             if (id === "province_id") return !this.form.province_id;
-            if (id === "whatsapp_number") return getVal(id).length < 9;
+            if (id === "whatsapp_number") {
+                const wa = getVal(id);
+                return !wa || wa.length < 9;
+            }
             if (id === "birthdate") {
                 const bd = this.form.birthdate;
                 return !bd || bd > MAX_BIRTHDATE;
             }
-            if (id === "password") return !PASSWORD_RE.test(getVal(id));
-            if (id === "password_confirmation") return getVal("password") !== getVal(id) || !getVal(id);
+            if (id === "password") return !PASSWORD_RE.test(this.regPassword);
+            if (id === "password_confirmation")
+                return this.regPassword !== this.regPasswordConfirm || !this.regPasswordConfirm;
             return !getVal(id);
         },
 
@@ -397,6 +428,18 @@ window.memberRegisterPortal = function () {
             return this.hasError(stepNum, id)
                 ? "border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200 text-red-700"
                 : "bg-[#F8FAFC] border-[#E5E7EB] focus:border-[#5586DB] focus:ring-[#5586DB]/20 text-[#111827]";
+        },
+
+        whatsappErrorText() {
+            if (this._uniquenessErrors["whatsapp_number"]) return this._uniquenessErrors["whatsapp_number"];
+            const wa = getVal("whatsapp_number");
+            if (!wa) return "Bagian ini wajib diisi.";
+            return "Minimal 9 digit.";
+        },
+
+        emailErrorText() {
+            if (this._uniquenessErrors["email"]) return this._uniquenessErrors["email"];
+            return "Bagian ini wajib diisi.";
         },
 
         birthdateErrorText() {
@@ -407,16 +450,15 @@ window.memberRegisterPortal = function () {
         },
 
         passwordErrorText() {
-            const pass = getVal("password");
-            if (!pass) return "Bagian ini wajib diisi.";
-            if (!PASSWORD_RE.test(pass)) return "Password minimal 8 karakter, mengandung huruf besar, angka, & simbol.";
+            if (!this.regPassword) return "Bagian ini wajib diisi.";
+            if (!PASSWORD_RE.test(this.regPassword))
+                return "Password minimal 8 karakter, mengandung huruf besar, angka, & simbol.";
             return "";
         },
 
         passwordConfirmErrorText() {
-            const conf = getVal("password_confirmation");
-            if (!conf) return "Bagian ini wajib diisi.";
-            if (getVal("password") !== conf) return "Password tidak cocok.";
+            if (!this.regPasswordConfirm) return "Bagian ini wajib diisi.";
+            if (this.regPassword !== this.regPasswordConfirm) return "Password tidak cocok.";
             return "";
         },
     };

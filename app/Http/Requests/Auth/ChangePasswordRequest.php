@@ -20,4 +20,16 @@ class ChangePasswordRequest extends FormRequest
             'password_confirmation' => ['required', 'string'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'current_password.required' => 'Password saat ini wajib diisi.',
+            'current_password.current_password' => 'Password saat ini tidak sesuai.',
+            'password.required' => 'Password baru wajib diisi.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'password.different' => 'Password baru tidak boleh sama dengan password saat ini.',
+            'password_confirmation.required' => 'Konfirmasi password wajib diisi.',
+        ];
+    }
 }

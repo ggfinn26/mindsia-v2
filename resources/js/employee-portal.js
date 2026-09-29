@@ -67,10 +67,7 @@ window.employeePortal = function (serverView) {
 
         async submitRegister() {
             this.registerErrors = {};
-            if (!this.step2Valid) {
-                this.showErrors2 = true;
-                return;
-            }
+            this.showErrors2 = true;
             this.registerLoading = true;
             try {
                 const res = await this._post(routes.register, {

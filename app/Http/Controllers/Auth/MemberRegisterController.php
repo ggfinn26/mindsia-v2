@@ -8,8 +8,11 @@ use App\Models\Employee;
 use App\Models\MemberAccount;
 use App\Models\MemberData;
 use App\Models\Province;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class MemberRegisterController extends Controller
@@ -21,6 +24,24 @@ class MemberRegisterController extends Controller
         return view('auth.member-register', [
             'provinces' => $provinces,
         ]);
+    }
+
+    public function checkUniqueness(Request $request): JsonResponse
+    {
+        $email = $request->query('email');
+        $whatsapp = $request->query('whatsapp');
+
+        $errors = [];
+
+        if ($email && (MemberData::where('email', $email)->exists() || MemberAccount::where('email', $email)->exists())) {
+            $errors['email'] = 'Email ini sudah terdaftar.';
+        }
+
+        if ($whatsapp && MemberData::where('whatsapp_number', $whatsapp)->exists()) {
+            $errors['whatsapp_number'] = 'Nomor WhatsApp ini sudah terdaftar.';
+        }
+
+        return response()->json(['errors' => $errors]);
     }
 
     public function register(StoreMemberRequest $request): RedirectResponse
@@ -78,6 +99,8 @@ class MemberRegisterController extends Controller
                     ->with('success', 'Pendaftaran berhasil! Silakan verifikasi email untuk melanjutkan.');
             });
         } catch (\Throwable $e) {
+            Log::error('Member registration failed', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+
             return back()->withErrors(['registration' => 'Terjadi kesalahan saat pendaftaran. Silakan coba lagi.'])->onlyInput();
         }
     }

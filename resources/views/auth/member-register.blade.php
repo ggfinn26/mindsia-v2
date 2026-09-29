@@ -135,11 +135,11 @@
                                 <span class="inline-flex items-center px-3.5 text-[13px] text-[#4B5563] bg-[#E5E7EB] border border-[#E5E7EB] rounded-l-xl font-bold">+62</span>
                                 <input type="text" id="whatsapp_number" name="whatsapp_number"
                                        value="{{ old('whatsapp_number') }}" placeholder="8xxxxxxxxxx"
-                                       @input="$el.value = $el.value.replace(/[^0-9]/g, '').replace(/^0+/, ''); checkValidities()"
+                                       @input="$el.value = $el.value.replace(/[^0-9]/g, '').replace(/^0+/, ''); delete _uniquenessErrors['whatsapp_number']; checkValidities()"
                                        class="w-full px-3.5 py-2.5 border border-l-0 rounded-r-xl text-[13px] focus:outline-none focus:ring-2 transition-all shadow-sm"
                                        :class="inputClass(1, 'whatsapp_number')" minlength="8" maxlength="15">
                             </div>
-                            <p x-show="hasError(1, 'whatsapp_number')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium">Minimal 9 digit.</p>
+                            <p x-show="hasError(1, 'whatsapp_number')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium" x-text="whatsappErrorText()"></p>
                             @error('whatsapp_number')
                                 <p class="mt-1 text-[11px] text-red-600 font-medium">{{ $message }}</p>
                             @enderror
@@ -153,8 +153,9 @@
                             </label>
                             <input type="email" id="email" name="email" value="{{ old('email') }}"
                                    class="w-full px-3.5 py-2.5 border rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all shadow-sm"
-                                   :class="inputClass(1, 'email')">
-                            <p x-show="hasError(1, 'email')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium">Bagian ini wajib diisi.</p>
+                                   :class="inputClass(1, 'email')"
+                                   @input="delete _uniquenessErrors['email']; checkValidities()">
+                            <p x-show="hasError(1, 'email')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium" x-text="emailErrorText()"></p>
                             @error('email')
                                 <p class="mt-1 text-[11px] text-red-600 font-medium">{{ $message }}</p>
                             @enderror
@@ -423,6 +424,7 @@
                                         <span class="material-symbols-outlined absolute left-3 top-2.5 text-gray-400 text-[16px]">search</span>
                                         <input type="text" x-model="institutionSearch"
                                                placeholder="Ketik nama sekolah/kampus..."
+                                               @keydown.enter.prevent
                                                class="w-full pl-9 pr-3 py-2 bg-white border border-gray-200 rounded-lg text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB] transition-all">
                                     </div>
                                 </div>
@@ -503,14 +505,14 @@
                                 <label for="father_whatsapp" class="block mb-1 text-[12px] font-bold text-[#4B5563]">WhatsApp Ayah <span class="text-red-600">*</span></label>
                                 <input type="text" id="father_whatsapp" name="father_whatsapp" value="{{ old('father_whatsapp') }}"
                                        class="w-full px-3.5 py-2.5 border rounded-xl text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-2 focus:ring-[#5586DB]/20 transition-all shadow-sm"
-                                       :class="hasError(2,'father_whatsapp') ? 'border-red-500 bg-red-50' : 'bg-[#F8FAFC] border-[#E5E7EB]'" minlength="8" maxlength="15">
+                                       :class="hasError(2,'father_whatsapp') ? 'border-red-500 bg-red-50' : 'bg-[#F8FAFC] border-[#E5E7EB]'" maxlength="20">
                                 <p x-show="hasError(2,'father_whatsapp')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium">Bagian ini wajib diisi.</p>
                             </div>
                             <div>
                                 <label for="mother_whatsapp" class="block mb-1 text-[12px] font-bold text-[#4B5563]">WhatsApp Ibu <span class="text-red-600">*</span></label>
                                 <input type="text" id="mother_whatsapp" name="mother_whatsapp" value="{{ old('mother_whatsapp') }}"
                                        class="w-full px-3.5 py-2.5 border rounded-xl text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-2 focus:ring-[#5586DB]/20 transition-all shadow-sm"
-                                       :class="hasError(2,'mother_whatsapp') ? 'border-red-500 bg-red-50' : 'bg-[#F8FAFC] border-[#E5E7EB]'" minlength="8" maxlength="15">
+                                       :class="hasError(2,'mother_whatsapp') ? 'border-red-500 bg-red-50' : 'bg-[#F8FAFC] border-[#E5E7EB]'" maxlength="20">
                                 <p x-show="hasError(2,'mother_whatsapp')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium">Bagian ini wajib diisi.</p>
                             </div>
                         </div>
@@ -542,6 +544,7 @@
                         </label>
                         <div class="relative w-full">
                             <input type="password" id="password" name="password"
+                                   x-model="regPassword"
                                    class="w-full px-3.5 py-2.5 border rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all shadow-sm pr-10"
                                    :class="inputClass(3, 'password')">
                             <button type="button" onclick="const type = this.previousElementSibling.type === 'password' ? 'text' : 'password'; document.querySelectorAll('input[type=password], input[data-is-pwd]').forEach(i => { i.type = type; i.setAttribute('data-is-pwd', '1'); }); document.querySelectorAll('button.pwd-toggle').forEach(b => { if(b.innerHTML.includes('material-symbols-outlined')) { b.innerHTML = type === 'password' ? '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility</span>' : '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility_off</span>'; } else { const eye = b.querySelector('.eye'); const eyeOff = b.querySelector('.eye-off'); if(eye && eyeOff) { eye.classList.toggle('hidden', type === 'text'); eyeOff.classList.toggle('hidden', type === 'password'); } } });" class="absolute inset-y-0 right-0 pr-3 flex items-center pwd-toggle pwd-toggle">
@@ -561,6 +564,7 @@
                         </label>
                         <div class="relative w-full">
                             <input type="password" id="password_confirmation" name="password_confirmation"
+                                   x-model="regPasswordConfirm"
                                    class="w-full px-3.5 py-2.5 border rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all shadow-sm pr-10"
                                    :class="inputClass(3, 'password_confirmation')">
                             <button type="button" onclick="const type = this.previousElementSibling.type === 'password' ? 'text' : 'password'; document.querySelectorAll('input[type=password], input[data-is-pwd]').forEach(i => { i.type = type; i.setAttribute('data-is-pwd', '1'); }); document.querySelectorAll('button.pwd-toggle').forEach(b => { if(b.innerHTML.includes('material-symbols-outlined')) { b.innerHTML = type === 'password' ? '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility</span>' : '<span class=\'material-symbols-outlined text-[18px] text-gray-500\'>visibility_off</span>'; } else { const eye = b.querySelector('.eye'); const eyeOff = b.querySelector('.eye-off'); if(eye && eyeOff) { eye.classList.toggle('hidden', type === 'text'); eyeOff.classList.toggle('hidden', type === 'password'); } } });" class="absolute inset-y-0 right-0 pr-3 flex items-center pwd-toggle pwd-toggle">
@@ -578,7 +582,8 @@
                                 class="bg-gray-100 text-[#4B5563] font-bold py-2.5 px-5 rounded-xl hover:bg-gray-200 transition-all flex items-center gap-2">
                             <span class="material-symbols-outlined text-[16px]">arrow_back</span> Kembali
                         </button>
-                        <button type="submit"
+                        <button type="button"
+                                @click="showErrors1 = true; showErrors2 = true; showErrors3 = true; if (step1Valid && step2Valid && step3Valid) $el.closest('form').submit();"
                                 class="flex-1 ml-4 bg-[#5586DB] text-white font-bold py-2.5 px-4 rounded-xl hover:bg-[#00AACC] transition-all shadow-[0_4px_12px_-2px_rgba(85,134,219,0.3)] flex justify-center items-center gap-2">
                             Daftar <span class="material-symbols-outlined text-[16px]">person_add</span>
                         </button>
@@ -598,7 +603,7 @@
 
     @php
         $errorStep = $errors->hasAny(['password','password_confirmation']) ? 3
-            : ($errors->hasAny(['institution_id','institution_name_custom','father_name','mother_name','father_occupation','mother_occupation','father_whatsapp','mother_whatsapp']) ? 2
+            : ($errors->hasAny(['branch_id','institution_id','institution_name_custom','father_name','mother_name','father_occupation','mother_occupation','father_whatsapp','mother_whatsapp']) ? 2
             : ($errors->any() ? 1 : 0));
     @endphp
     <script>
@@ -609,6 +614,8 @@
                 branch_id: @json(old('branch_id', '')),
                 institution_id: @json(old('institution_id', '')),
                 birthdate: @json(old('birthdate', '')),
+                birth_place_province_id: @json(old('birth_place_province_id', '')),
+                birth_place: @json(old('birth_place', '')),
                 education_level: @json(old('education_level', '')),
                 class_or_faculty: @json(old('class_or_faculty', '')),
             },

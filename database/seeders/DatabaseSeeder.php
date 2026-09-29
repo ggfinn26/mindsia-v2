@@ -36,7 +36,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
         if ($superAdmin->roles->isEmpty()) {
-            $superAdmin->assignRole('Super Admin');
+            $superAdmin->assignRole('IT');
         }
 
         // Create accounts for permanent HQ employees so they can log in without registering.

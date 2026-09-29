@@ -288,7 +288,7 @@
                             </div>
                             <p x-show="hasError(2, 'reg_password')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium" x-text="passwordErrorText()"></p>
                             <p x-show="registerErrors.password && !hasError(2, 'reg_password')" x-cloak class="mt-1 text-[11px] text-red-600 font-medium" x-text="registerErrors.password?.[0]"></p>
-                            <p class="mt-1.5 text-[11px] text-gray-500">Minimal 8 karakter, mengandung huruf besar, angka, dan simbol.</p>
+                            <p x-show="!hasError(2, 'reg_password') && !registerErrors.password" class="mt-1.5 text-[11px] text-gray-500">Minimal 8 karakter, mengandung huruf besar, angka, dan simbol.</p>
                         </div>
 
                         <div>

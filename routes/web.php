@@ -1116,4 +1116,5 @@ Route::get('/api/public/indonesia-provinces', [App\Http\Controllers\Public\Regio
 Route::get('/api/public/indonesia-cities', [App\Http\Controllers\Public\RegionController::class, 'getIndonesianCities'])->name('api.public.indonesia.cities');
 Route::get('/api/public/programs/{program}/payment-plans', [App\Http\Controllers\Public\ProgramController::class, 'getActivePaymentPlans'])->name('api.public.programs.payment-plans');
 Route::get('/api/public/employees/by-code', [App\Http\Controllers\Public\EmployeeController::class, 'byCode'])->name('api.public.employees.by-code');
+Route::get('/api/public/member/check-uniqueness', [MemberRegisterController::class, 'checkUniqueness'])->name('api.public.member.check-uniqueness');
 Route::get('/api/member/employees/search', [App\Http\Controllers\Public\EmployeeController::class, 'search'])->middleware(['auth:member', 'throttle:30,1'])->name('api.member.employees.search');

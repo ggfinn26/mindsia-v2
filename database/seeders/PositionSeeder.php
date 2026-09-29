@@ -3,43 +3,59 @@
 namespace Database\Seeders;
 
 use App\Models\Position;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 
 class PositionSeeder extends Seeder
 {
+    use WithoutModelEvents;
+
     public function run(): void
     {
+        // [position_name, primary_role, hierarchy_order]
+        // Double-division positions use their primary (first-listed) division as role.
         $positions = [
-            ['position_name' => 'Super Admin',                   'role' => 'Super Admin',      'hierarchy_order' => 0],
-            ['position_name' => 'Chief Executive Officer',       'role' => 'CEO',              'hierarchy_order' => 1],
-            ['position_name' => 'Chief Operating Officer',       'role' => 'COO',              'hierarchy_order' => 1],
-            ['position_name' => 'Chief Human Resources Officer', 'role' => 'CHRO',             'hierarchy_order' => 1],
-            ['position_name' => 'Chief Product Officer',         'role' => 'CPO',              'hierarchy_order' => 1],
-            ['position_name' => 'Chief Financial Officer',       'role' => 'CFO',              'hierarchy_order' => 1],
-            ['position_name' => 'Chief Marketing Officer',       'role' => 'CMO',              'hierarchy_order' => 1],
-            ['position_name' => 'Human Resources Personalia',    'role' => 'HRP',              'hierarchy_order' => 2],
-            ['position_name' => 'Human Resources Recruitment',   'role' => 'HRR',              'hierarchy_order' => 2],
-            ['position_name' => 'Director Operasional',          'role' => 'DIR_OPS',          'hierarchy_order' => 2],
-            ['position_name' => 'Director Finance',              'role' => 'FINANCE_DIRECTOR', 'hierarchy_order' => 2],
-            ['position_name' => 'Manager Area',                  'role' => 'MANAGER_AREA',     'hierarchy_order' => 3],
-            ['position_name' => 'Person In Charge',              'role' => 'PIC',              'hierarchy_order' => 4],
-            ['position_name' => 'Regular Operasional',           'role' => null,               'hierarchy_order' => 4],
-            ['position_name' => 'Regular Finance',               'role' => 'FINANCE_GENERAL',  'hierarchy_order' => 4],
-            ['position_name' => 'Marketing',                     'role' => 'MARKETING',        'hierarchy_order' => 5],
-            ['position_name' => 'Official Tutor',                'role' => 'OFFICIAL_TUTOR',   'hierarchy_order' => 5],
-            ['position_name' => 'Executive Assistant',           'role' => null,               'hierarchy_order' => 5],
-            ['position_name' => 'Regular Tutor',                 'role' => 'REGULAR_TUTOR',    'hierarchy_order' => 6],
+            // Divisi IT
+            ['Super Admin',                     'IT',           2],
+
+            // Divisi Developer
+            ['Developer',                       'Developer',    1],
+
+            // Divisi Board (primary); some double to HR/Finance/Operasional
+            ['Chief Executive Officer',         'Board',        1],
+            ['Chief Operating Officer',         'Board',        1],
+            ['Chief Human Resources Officer',   'Board',        1],
+            ['Chief Product Officer',           'Board',        1],
+            ['Chief Financial Officer',         'Board',        1],
+            ['Chief Marketing Officer',         'Board',        1],
+
+            // Divisi HR
+            ['Human Resources Personalia',      'HR',           2],
+            ['Human Resources Recruitment',     'HR',           2],
+
+            // Divisi Manager Area
+            ['Manager Area',                    'Manager Area', 3],
+            ['Person In Charge',                'Manager Area', 3],
+
+            // Divisi Marketing
+            ['Marketing',                       'Marketing',    4],
+            ['Executive Assistant',             'Marketing',    4],
+
+            // Divisi Tutor
+            ['Official Tutor',                  'Tutor',        4],
+            ['Regular Tutor',                   'Tutor',        4],
         ];
 
         $roleCache = Role::all()->keyBy('name');
 
-        foreach ($positions as $data) {
-            $roleId = $data['role'] ? $roleCache->get($data['role'])?->id : null;
-
+        foreach ($positions as [$name, $roleName, $hierarchyOrder]) {
             Position::firstOrCreate(
-                ['position_name' => $data['position_name']],
-                ['role_id' => $roleId, 'hierarchy_order' => $data['hierarchy_order']]
+                ['position_name' => $name],
+                [
+                    'role_id' => $roleCache->get($roleName)?->id,
+                    'hierarchy_order' => $hierarchyOrder,
+                ]
             );
         }
     }
