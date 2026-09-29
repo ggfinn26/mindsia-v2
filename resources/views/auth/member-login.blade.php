@@ -50,6 +50,12 @@
             <h1 class="font-jakarta font-extrabold text-[28px] md:text-[32px] text-[#111827] mb-2 tracking-tight">Welcome to MINDSIA</h1>
             <p class="text-[15px] text-[#4B5563] mb-10 font-medium">Log in to start learning</p>
 
+            @if (session('status'))
+                <div class="mb-6 p-3 bg-green-50 border border-green-200 rounded-xl text-[13px] text-green-700 font-medium">
+                    {{ session('status') }}
+                </div>
+            @endif
+
             @if (session('error'))
                 <div class="mb-6 p-3 bg-red-50 border border-red-200 rounded-xl text-[13px] text-red-600 font-medium">
                     {{ session('error') }}
