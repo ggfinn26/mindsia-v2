@@ -23,7 +23,7 @@
         </div>
     @endif
 
-    <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-6 p-4">
+    <div class="bg-white shadow sm:rounded-lg mb-6 p-4">
         <form method="GET" action="{{ route('employees.index') }}" class="flex flex-col sm:flex-row gap-4 items-end">
             <div class="flex-1">
                 <label class="block text-sm font-medium text-gray-700 mb-1">Pencarian</label>
@@ -31,13 +31,13 @@
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <span class="material-symbols-outlined text-gray-400 text-sm">search</span>
                     </div>
-                    <input type="text" name="search" value="{{ request('search') }}" class="block w-full pl-10 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Cari nama atau kode pegawai...">
+                    <input type="text" name="search" value="{{ request('search') }}" style="padding-left: 2.5rem !important" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Cari nama atau kode pegawai...">
                 </div>
             </div>
             
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Filter Status</label>
-                <select name="is_active" data-no-enhance class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500" onchange="this.form.submit()">
+                <select name="is_active" data-with-semua class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500" onchange="this.form.submit()">
                     <option value="">Semua Status</option>
                     <option value="1" {{ request('is_active') === '1' ? 'selected' : '' }}>Aktif</option>
                     <option value="0" {{ request('is_active') === '0' ? 'selected' : '' }}>Nonaktif</option>
@@ -46,7 +46,7 @@
             
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Filter Region</label>
-                <select name="region_id" data-no-enhance class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500" onchange="this.form.submit()">
+                <select name="region_id" data-with-semua class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500" onchange="this.form.submit()">
                     <option value="">Semua Region</option>
                     @foreach($regions as $region)
                         <option value="{{ $region->id }}" {{ request('region_id') == $region->id ? 'selected' : '' }}>{{ $region->name }}</option>
@@ -56,7 +56,7 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Filter Cabang</label>
-                <select name="branch_id" data-no-enhance class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500" onchange="this.form.submit()">
+                <select name="branch_id" data-with-semua class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500" onchange="this.form.submit()">
                     <option value="">Semua Cabang</option>
                     @foreach($branches as $branch)
                         <option value="{{ $branch->id }}" {{ request('branch_id') == $branch->id ? 'selected' : '' }}>{{ $branch->branch_name }}</option>
@@ -129,8 +129,12 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="{{ route('employees.show', $emp->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Detail</a>
-                                <a href="{{ route('employees.edit', $emp->id) }}" class="text-yellow-600 hover:text-yellow-900">Edit</a>
+                                <a href="{{ route('employees.show', $emp->id) }}" title="Lihat Detail" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-indigo-600 hover:bg-indigo-50 mr-1">
+                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                </a>
+                                <a href="{{ route('employees.edit', $emp->id) }}" title="Edit" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-yellow-600 hover:bg-yellow-50">
+                                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                                </a>
                             </td>
                         </tr>
                     @empty

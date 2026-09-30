@@ -11,10 +11,7 @@ class EmployeeWorkHistoryController extends Controller
 {
     private function authorizeAction(Employee $employee): void
     {
-        abort_unless(
-            auth()->id() === $employee->user_id || auth()->user()->can('employee.update'),
-            403
-        );
+        abort_unless(auth()->id() === $employee->user_id, 403);
     }
 
     private function validated(Request $request): array
@@ -49,6 +46,7 @@ class EmployeeWorkHistoryController extends Controller
     {
         abort_unless($workHistory->employee_id === $employee->id, 404);
         $this->authorizeAction($employee);
+        $workHistory->delete();
 
         return back()->with('success', 'Pengalaman kerja berhasil dihapus.');
     }

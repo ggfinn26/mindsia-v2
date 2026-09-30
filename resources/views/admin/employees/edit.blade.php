@@ -80,10 +80,30 @@
             </div>
         </div>
 
+        @php
+            $branchMap = $branches->mapWithKeys(fn($b) => [
+                $b->id => ['area_id' => $b->areas_id, 'region_id' => $b->area?->region_id]
+            ]);
+            $areaMap = $areas->mapWithKeys(fn($a) => [$a->id => $a->region_id]);
+        @endphp
+
         {{-- Penempatan --}}
         <div class="border border-slate-200 bg-white"
              x-data="{
-                 placement: '{{ old('is_hq', $employee->is_hq) ? 'hq' : (old('branch_id', $employee->branch_id) ? 'branch' : (old('area_id', $employee->area_id) ? 'area' : (old('region_id', $employee->region_id) ? 'region' : 'branch'))) }}'
+                 placement: '{{ old('is_hq', $employee->is_hq) ? 'hq' : (old('branch_id', $employee->branch_id) ? 'branch' : (old('area_id', $employee->area_id) ? 'area' : (old('region_id', $employee->region_id) ? 'region' : 'branch'))) }}',
+                 branchMap: @js($branchMap),
+                 areaMap: @js($areaMap),
+                 selectedBranch: '{{ old('branch_id', $employee->branch_id) }}',
+                 selectedArea: '{{ old('area_id', $employee->area_id) }}',
+                 get derivedRegionId() {
+                     if (this.placement === 'branch' && this.selectedBranch) return this.branchMap[this.selectedBranch]?.region_id ?? '';
+                     if (this.placement === 'area' && this.selectedArea) return this.areaMap[this.selectedArea] ?? '';
+                     return '';
+                 },
+                 get derivedAreaId() {
+                     if (this.placement === 'branch' && this.selectedBranch) return this.branchMap[this.selectedBranch]?.area_id ?? '';
+                     return '';
+                 }
              }">
             <div class="border-b border-slate-200 bg-slate-50 px-5 py-4">
                 <h3 class="font-jakarta text-sm font-bold text-slate-900">Penempatan</h3>
@@ -115,17 +135,14 @@
                 <template x-if="placement === 'branch'">
                     <div>
                         <input type="hidden" name="is_hq" value="0">
-                        <input type="hidden" name="area_id" value="">
-                        <input type="hidden" name="region_id" value="">
+                        <input type="hidden" name="area_id" :value="derivedAreaId">
+                        <input type="hidden" name="region_id" :value="derivedRegionId">
                         <label class="mb-1.5 block text-sm font-medium text-slate-700">Cabang <span class="text-rose-500">*</span></label>
-                        <select name="branch_id"
+                        <select name="branch_id" x-model="selectedBranch"
                                 class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
                             <option value="">Pilih cabang...</option>
                             @foreach ($branches as $branch)
-                                <option value="{{ $branch->id }}"
-                                        @selected(old('branch_id', $employee->branch_id) == $branch->id)>
-                                    {{ $branch->branch_name }}
-                                </option>
+                                <option value="{{ $branch->id }}">{{ $branch->branch_name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -136,16 +153,13 @@
                     <div>
                         <input type="hidden" name="is_hq" value="0">
                         <input type="hidden" name="branch_id" value="">
-                        <input type="hidden" name="region_id" value="">
+                        <input type="hidden" name="region_id" :value="derivedRegionId">
                         <label class="mb-1.5 block text-sm font-medium text-slate-700">Area <span class="text-rose-500">*</span></label>
-                        <select name="area_id"
+                        <select name="area_id" x-model="selectedArea"
                                 class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
                             <option value="">Pilih area...</option>
                             @foreach ($areas as $area)
-                                <option value="{{ $area->id }}"
-                                        @selected(old('area_id', $employee->area_id) == $area->id)>
-                                    {{ $area->name }}
-                                </option>
+                                <option value="{{ $area->id }}">{{ $area->name }}</option>
                             @endforeach
                         </select>
                     </div>

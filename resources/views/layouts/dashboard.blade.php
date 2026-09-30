@@ -53,7 +53,7 @@
     </aside>
 
     <!-- Main Content -->
-    <div class="flex-1 flex flex-col overflow-hidden relative min-w-0">
+    <div class="flex-1 flex flex-col relative min-w-0">
         <!-- Top Header -->
         <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 sm:px-6 z-10 shrink-0">
             <div class="flex items-center">
@@ -70,7 +70,7 @@
         </header>
 
         <!-- Main scrollable area -->
-        <main class="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6 lg:p-8">
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
             @yield('content')
         </main>
     </div>
