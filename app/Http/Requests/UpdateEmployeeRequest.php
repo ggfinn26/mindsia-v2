@@ -20,6 +20,7 @@ class UpdateEmployeeRequest extends FormRequest
             'full_name' => ['required', 'string', 'max:255'],
             'gender' => ['required', 'in:L,P'],
             'birthdate' => ['nullable', 'date'],
+            'join_date' => ['nullable', 'date'],
             'email' => ['nullable', 'email', Rule::unique('employees', 'email')->ignore($employee->id)],
             'whatsapp_number' => ['nullable', 'string', 'min:8', 'max:15'],
             'is_active' => ['boolean'],

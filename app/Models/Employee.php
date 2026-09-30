@@ -18,6 +18,7 @@ class Employee extends Model
         'full_name',
         'gender',
         'birthdate',
+        'join_date',
         'email',
         'whatsapp_number',
         'image_path',
@@ -34,6 +35,7 @@ class Employee extends Model
 
     protected $casts = [
         'birthdate' => 'date',
+        'join_date' => 'date',
         'is_hq' => 'boolean',
         'is_active' => 'boolean',
     ];

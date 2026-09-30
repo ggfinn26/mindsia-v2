@@ -94,6 +94,9 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Posisi / Jabatan</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Penempatan</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <a href="{{ $sortLink('tenure') }}" class="flex items-center gap-1 hover:text-gray-700">Masa Kerja <span class="text-blue-500">{{ $sortIcon('tenure') }}</span></a>
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             <a href="{{ $sortLink('newest') }}" class="flex items-center gap-1 hover:text-gray-700">Status <span class="text-blue-500">{{ $sortIcon('newest') }}</span></a>
                         </th>
                         <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
@@ -123,6 +126,23 @@
                                     -
                                 @endif
                             </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                @if($emp->join_date)
+                                    @php
+                                        $diff = $emp->join_date->diff(now());
+                                        if ($diff->y >= 1) {
+                                            $tenure = $diff->y . ' thn' . ($diff->m > 0 ? ' ' . $diff->m . ' bln' : '');
+                                        } elseif ($diff->m >= 1) {
+                                            $tenure = $diff->m . ' bulan';
+                                        } else {
+                                            $tenure = $diff->days . ' hari';
+                                        }
+                                    @endphp
+                                    {{ $tenure }}
+                                @else
+                                    —
+                                @endif
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm">
                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $emp->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                     {{ $emp->is_active ? 'Aktif' : 'Nonaktif' }}
@@ -139,7 +159,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">Belum ada data pegawai.</td>
+                            <td colspan="7" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">Belum ada data pegawai.</td>
                         </tr>
                     @endforelse
                 </tbody>

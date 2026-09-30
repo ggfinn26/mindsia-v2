@@ -80,7 +80,7 @@ class SdmHeadcountWidget implements WidgetDataProviderInterface
             'gender' => $e->gender,
             'branch' => $e->branch?->branch_name ?? '-',
             'employment_type' => $e->currentStatus?->type_employment ?? '-',
-            'join_date' => $e->currentStatus?->join_date?->format('Y-m-d') ?? '-',
+            'join_date' => $e->join_date?->format('Y-m-d') ?? '-',
         ])->toArray();
     }
 }

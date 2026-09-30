@@ -414,7 +414,7 @@ class LetterService
             'nomor_identitas_pegawai' => $employee?->employee_code ?? '',
             'tempat_tanggal_lahir_pegawai' => $employee?->birthdate ? Carbon::parse($employee->birthdate)->translatedFormat('d F Y') : '',
             'laki_laki_atau_perempuan' => $employee?->gender === 'L' ? 'Laki-Laki' : 'Perempuan',
-            'tanggal_mulai_kontrak' => $employee?->currentStatus?->join_date ? Carbon::parse($employee->currentStatus->join_date)->translatedFormat('d F Y') : '',
+            'tanggal_mulai_kontrak' => $employee?->currentStatus?->contract_start_date ? Carbon::parse($employee->currentStatus->contract_start_date)->translatedFormat('d F Y') : '',
             'tanggal_berakhir_kontrak' => $employee?->currentStatus?->contract_end_date ? Carbon::parse($employee->currentStatus->contract_end_date)->translatedFormat('d F Y') : '',
             'ttd_pegawai' => '',
         ]);
@@ -445,7 +445,7 @@ class LetterService
             'nomor_identitas_pegawai' => $employee?->employee_code ?? '',
             'tempat_tanggal_lahir_pegawai' => $employee?->birthdate ? Carbon::parse($employee->birthdate)->translatedFormat('d F Y') : '',
             'laki_laki_atau_perempuan' => $employee?->gender == 'L' ? 'Laki-Laki' : 'Perempuan',
-            'tanggal_mulai_kontrak' => $employee?->currentStatus?->join_date ? Carbon::parse($employee->currentStatus->join_date)->translatedFormat('d F Y') : '',
+            'tanggal_mulai_kontrak' => $employee?->currentStatus?->contract_start_date ? Carbon::parse($employee->currentStatus->contract_start_date)->translatedFormat('d F Y') : '',
             'tanggal_berakhir_kontrak' => $employee?->currentStatus?->contract_end_date ? Carbon::parse($employee->currentStatus->contract_end_date)->translatedFormat('d F Y') : '',
             'ttd_pegawai' => '', // $employee->signature_image
         ]);

@@ -66,7 +66,7 @@ class ContractStatusWidget implements WidgetDataProviderInterface
             'employee' => $s->employee?->full_name ?? '-',
             'position' => $s->position?->position_name ?? '-',
             'contract_status' => $s->type_employment,
-            'join_date' => $s->join_date?->format('Y-m-d'),
+            'join_date' => $s->employee?->join_date?->format('Y-m-d'),
             'contract_start' => $s->contract_start_date?->format('Y-m-d'),
             'contract_end' => $s->contract_end_date?->format('Y-m-d'),
         ])->toArray();

@@ -30,6 +30,7 @@
                       class="space-y-6">
                     @csrf
                     @method('PATCH')
+                    <input type="hidden" name="tab" value="lengkap">
 
                     <div class="grid grid-cols-2 gap-6">
                         <!-- Type Employment -->
@@ -44,21 +45,6 @@
                                    placeholder="Tetap, Kontrak, Magang"
                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('type_employment') border-red-500 @enderror">
                             @error('type_employment')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- Join Date -->
-                        <div>
-                            <label for="join_date" class="block text-sm font-medium text-gray-700 mb-2">
-                                Tanggal Mulai Kerja
-                            </label>
-                            <input type="date"
-                                   id="join_date"
-                                   name="join_date"
-                                   value="{{ old('join_date', $status->join_date?->format('Y-m-d')) }}"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('join_date') border-red-500 @enderror">
-                            @error('join_date')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>

@@ -15,9 +15,8 @@ class EmploymentStatusRequest extends FormRequest
     {
         $tab = $this->input('tab', 'lengkap');
         $common = [
-            'tab' => ['required', 'in:lengkap,cepat'],
+            'tab' => ['nullable', 'in:lengkap,cepat'],
             'type_employment' => ['required', 'string', 'in:Tetap,Kontrak,Magang'],
-            'join_date' => ['required', 'date'],
             'position_id' => ['required', 'exists:positions,id'],
         ];
 
@@ -39,8 +38,6 @@ class EmploymentStatusRequest extends FormRequest
         return [
             'type_employment.required' => 'Jenis ketenagakerjaan wajib dipilih.',
             'type_employment.in' => 'Jenis ketenagakerjaan harus salah satu dari: Tetap, Kontrak, Magang.',
-            'join_date.required' => 'Tanggal mulai kerja wajib diisi.',
-            'join_date.date' => 'Tanggal mulai kerja tidak valid.',
             'position_id.required' => 'Posisi/jabatan wajib dipilih.',
             'position_id.exists' => 'Posisi yang dipilih tidak ditemukan.',
             'contract_start_date.required' => 'Tanggal mulai kontrak wajib diisi.',

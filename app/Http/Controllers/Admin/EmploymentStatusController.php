@@ -88,7 +88,6 @@ class EmploymentStatusController extends Controller implements HasMiddleware
     {
         $employee->employmentStatuses()->create([
             'type_employment' => $validated['type_employment'],
-            'join_date' => $validated['join_date'],
             'position_id' => $validated['position_id'],
             'contract_start_date' => $validated['contract_start_date'],
             'contract_end_date' => $validated['contract_end_date'] ?? null,
@@ -108,7 +107,6 @@ class EmploymentStatusController extends Controller implements HasMiddleware
 
         $employee->employmentStatuses()->create([
             'type_employment' => $validated['type_employment'],
-            'join_date' => $validated['join_date'],
             'position_id' => $validated['position_id'],
             'contract_end_date' => $validated['contract_end_date'] ?? null,
             'contract_file_path' => $path,
@@ -131,7 +129,6 @@ class EmploymentStatusController extends Controller implements HasMiddleware
 
         $data = [
             'type_employment' => $validated['type_employment'],
-            'join_date' => $validated['join_date'],
             'position_id' => $validated['position_id'],
         ];
 
@@ -209,12 +206,15 @@ class EmploymentStatusController extends Controller implements HasMiddleware
 
         $employee = $status->employee;
 
+        $status->update([
+            'contract_end_date' => Carbon::parse($validated['contract_start_date'])->subDay(),
+        ]);
+
         $employee->employmentStatuses()->create([
             'type_employment' => $status->type_employment,
-            'join_date' => $status->join_date,
             'position_id' => $validated['position_id'],
-            'contract_start_date' => $validated['effective_date'],
-            'contract_end_date' => $status->contract_end_date,
+            'contract_start_date' => $validated['contract_start_date'],
+            'contract_end_date' => $validated['contract_end_date'] ?? null,
             'setup_incomplete' => false,
         ]);
 

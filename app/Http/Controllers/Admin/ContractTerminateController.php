@@ -26,6 +26,12 @@ class ContractTerminateController extends Controller
             'reason' => ['required', 'string', 'max:500'],
             'checklist_items' => ['required', 'array', 'min:1'],
             'checklist_items.*' => ['required', 'string', 'max:255'],
+        ], [
+            'reason.required' => 'Alasan terminasi wajib diisi.',
+            'reason.max' => 'Alasan terminasi maksimal 500 karakter.',
+            'checklist_items.required' => 'Minimal satu item checklist wajib ditambahkan.',
+            'checklist_items.min' => 'Minimal satu item checklist wajib ditambahkan.',
+            'checklist_items.*.required' => 'Item checklist tidak boleh kosong.',
         ]);
 
         $status->update(['status' => 'terminated']);
@@ -63,7 +69,7 @@ class ContractTerminateController extends Controller
         $request->validate([
             'items' => ['required', 'array'],
             'items.*.id' => ['required', 'exists:termination_checklist,id'],
-            'items.*.is_completed' => ['required', 'boolean'],
+            'items.*.is_completed' => ['nullable', 'boolean'],
         ]);
 
         $itemIds = array_column($request->input('items'), 'id');
@@ -97,6 +103,18 @@ class ContractTerminateController extends Controller
         $this->authorize('employee.termination_checklist.review');
 
         return view('admin.employees.contract-terminate.complete-confirmation', compact('status'));
+    }
+
+    public function cancel(EmploymentStatus $status): RedirectResponse
+    {
+        $this->authorize('terminateContract', $status->employee);
+
+        $status->terminationChecklist()->delete();
+        $status->update(['status' => null]);
+
+        return redirect()
+            ->route('employees.show', $status->employee)
+            ->with('success', 'Proses terminasi kontrak telah dibatalkan.');
     }
 
     public function complete(Request $request, EmploymentStatus $status): RedirectResponse

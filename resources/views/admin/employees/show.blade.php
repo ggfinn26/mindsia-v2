@@ -119,12 +119,15 @@
                             <tr>
                                 <th class="px-5 py-3 text-left">Posisi</th>
                                 <th class="px-5 py-3 text-left">Tipe</th>
-                                <th class="px-5 py-3 text-left">Mulai</th>
-                                <th class="px-5 py-3 text-left">Kontrak</th>
+                                <th class="px-5 py-3 text-left">Mulai Kontrak</th>
+                                <th class="px-5 py-3 text-left">Berakhir</th>
+                                @can('contract.manage')
+                                <th class="px-5 py-3 text-left">Aksi</th>
+                                @endcan
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
-                            @foreach ($employee->employmentStatuses->sortByDesc('join_date') as $status)
+                            @foreach ($employee->employmentStatuses->sortByDesc('id') as $status)
                                 <tr class="{{ $loop->first ? 'bg-emerald-50/40' : '' }}">
                                     <td class="px-5 py-3">
                                         <p class="font-medium text-slate-900">{{ $status->position?->position_name ?? '—' }}</p>
@@ -136,18 +139,98 @@
                                         {{ $contractTypes[$status->type_employment] ?? $status->type_employment ?? '—' }}
                                     </td>
                                     <td class="px-5 py-3 text-slate-600">
-                                        {{ $status->join_date?->format('d M Y') ?? '—' }}
+                                        {{ $status->contract_start_date?->format('d M Y') ?? '—' }}
                                     </td>
                                     <td class="px-5 py-3 text-slate-600">
-                                        @if ($status->contract_start_date)
-                                            {{ $status->contract_start_date->format('d M Y') }}
-                                            @if ($status->contract_end_date)
-                                                → {{ $status->contract_end_date->format('d M Y') }}
+                                        {{ $status->contract_end_date?->format('d M Y') ?? '—' }}
+                                    </td>
+                                    @can('contract.manage')
+                                    <td class="px-5 py-3">
+                                        @if ($loop->first)
+                                            @if ($status->status === 'terminated')
+                                                @php $allDone = $status->terminationChecklist->count() > 0 && $status->terminationChecklist->every(fn($i) => $i->is_completed); @endphp
+                                                <div class="flex items-center gap-2">
+                                                    @if ($allDone)
+                                                        <a href="{{ route('contract-terminate.complete.confirm', $status) }}"
+                                                           class="inline-flex items-center gap-1 rounded-md bg-red-50 px-2.5 py-1 text-xs font-semibold text-red-700 hover:bg-red-100">
+                                                            <span class="material-symbols-outlined text-[13px]">delete_forever</span>
+                                                            Selesaikan Terminasi
+                                                        </a>
+                                                    @else
+                                                        <a href="{{ route('contract-terminate.checklist', $status) }}"
+                                                           class="inline-flex items-center gap-1 rounded-md bg-orange-50 px-2.5 py-1 text-xs font-semibold text-orange-700 hover:bg-orange-100">
+                                                            <span class="material-symbols-outlined text-[13px]">checklist</span>
+                                                            Lanjut Checklist
+                                                        </a>
+                                                    @endif
+                                                    <div x-data="{ showCancelModal: false }" class="inline-block">
+                                                        <button type="button" @click="showCancelModal = true"
+                                                                class="inline-flex items-center gap-1 rounded-md bg-gray-50 px-2.5 py-1 text-xs font-semibold text-gray-600 hover:bg-gray-100 transition-colors">
+                                                            <span class="material-symbols-outlined text-[13px]">undo</span>
+                                                            Batalkan
+                                                        </button>
+
+                                                        <!-- Modal Batalkan Terminasi -->
+                                                        <div x-show="showCancelModal" style="display: none;" class="relative z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                                                            <div x-show="showCancelModal"
+                                                                 x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                                                                 x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                                                                 class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity"></div>
+
+                                                            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                                                                <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                                                                    <div x-show="showCancelModal" @click.away="showCancelModal = false"
+                                                                         x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                                                                         x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                                                         class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg border border-gray-100">
+                                                                        <div class="bg-white px-6 pb-4 pt-6">
+                                                                            <div class="sm:flex sm:items-start">
+                                                                                <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-50 sm:mx-0 sm:h-10 sm:w-10">
+                                                                                    <span class="material-symbols-outlined text-red-500">warning</span>
+                                                                                </div>
+                                                                                <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                                                                                    <h3 class="text-lg font-bold leading-6 text-gray-900 font-jakarta" id="modal-title">Batalkan Proses Terminasi?</h3>
+                                                                                    <div class="mt-2">
+                                                                                        <p class="text-sm text-gray-500 leading-relaxed">Seluruh progress checklist kewajiban akan dihapus permanen, dan status karyawan akan dikembalikan ke kondisi normal (Aktif). Apakah Anda yakin?</p>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="bg-gray-50/50 px-6 py-4 sm:flex sm:flex-row-reverse gap-3 border-t border-gray-100">
+                                                                            <form method="POST" action="{{ route('contract-terminate.cancel', $status) }}" class="m-0">
+                                                                                @csrf
+                                                                                <button type="submit" class="inline-flex w-full justify-center items-center gap-1.5 rounded-xl bg-red-500 px-5 py-2 text-sm font-bold text-white shadow-sm hover:bg-red-600 sm:w-auto transition-colors">
+                                                                                    <span class="material-symbols-outlined text-[16px]">undo</span>
+                                                                                    Ya, Batalkan Terminasi
+                                                                                </button>
+                                                                            </form>
+                                                                            <button type="button" @click="showCancelModal = false" class="mt-3 inline-flex w-full justify-center rounded-xl bg-white px-5 py-2 text-sm font-bold text-gray-700 shadow-sm border border-gray-200 hover:bg-gray-50 sm:mt-0 sm:w-auto transition-colors">
+                                                                                Kembali
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @else
+                                                <div class="flex items-center gap-2">
+                                                    <a href="{{ route('employment-statuses.change-position.create', $status) }}"
+                                                       class="inline-flex items-center gap-1 rounded-md bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-100">
+                                                        <span class="material-symbols-outlined text-[13px]">swap_horiz</span>
+                                                        Ubah Posisi
+                                                    </a>
+                                                    <a href="{{ route('contract-terminate.initiate', $status) }}"
+                                                       class="inline-flex items-center gap-1 rounded-md bg-red-50 px-2.5 py-1 text-xs font-semibold text-red-700 hover:bg-red-100">
+                                                        <span class="material-symbols-outlined text-[13px]">cancel</span>
+                                                        Terminasi
+                                                    </a>
+                                                </div>
                                             @endif
-                                        @else
-                                            —
                                         @endif
                                     </td>
+                                    @endcan
                                 </tr>
                             @endforeach
                         </tbody>
@@ -255,9 +338,9 @@
                         <dd class="mt-1 text-sm font-semibold text-slate-900">
                             {{ $employee->currentStatus?->position?->position_name ?? 'Belum ada jabatan' }}
                         </dd>
-                        @if ($employee->currentStatus)
+                        @if ($employee->join_date)
                             <dd class="mt-0.5 text-xs text-slate-500">
-                                Sejak {{ $employee->currentStatus->join_date?->format('d M Y') ?? '—' }}
+                                Bergabung {{ $employee->join_date->format('d M Y') }}
                             </dd>
                         @endif
                     </div>

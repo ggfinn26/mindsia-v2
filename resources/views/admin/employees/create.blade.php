@@ -5,6 +5,7 @@
 @section('content')
 <script>
 window._empFormData = {
+    allRegions:  @json($regions->map(fn($r) => ['id' => $r->id, 'name' => $r->name])),
     allAreas:    @json($areas->map(fn($a) => ['id' => $a->id, 'name' => $a->name, 'region_id' => $a->region_id])),
     allBranches: @json($branches->map(fn($b) => ['id' => $b->id, 'name' => $b->branch_name, 'area_id' => $b->areas_id])),
 };
@@ -29,7 +30,7 @@ window._empFormData = {
     @endif
 
     <div class="bg-white shadow sm:rounded-lg">
-        <form action="{{ route('employees.store') }}" method="POST" class="p-6">
+        <form action="{{ route('employees.store') }}" method="POST" class="p-6" novalidate>
             @csrf
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6" x-data="employeeForm()">
@@ -61,15 +62,22 @@ window._empFormData = {
                     <input type="date" name="birthdate" value="{{ old('birthdate') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                 </div>
 
+                <!-- Tanggal Mulai Kerja -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Tanggal Mulai Kerja <span class="text-red-500">*</span></label>
+                    <input type="date" name="join_date" value="{{ old('join_date') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    <p class="mt-1 text-xs text-gray-500">Karyawan baru: isi sesuai hari pertama bekerja, dapat berupa tanggal yang akan datang. Karyawan lama: isi tanggal pertama kali bergabung untuk keperluan kalkulasi bonus masa kerja.</p>
+                </div>
+
                 <!-- Email -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Email Utama</label>
+                    <label class="block text-sm font-medium text-gray-700">Email Utama <span class="text-red-500">*</span></label>
                     <input type="email" name="email" value="{{ old('email') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                 </div>
 
                 <!-- WhatsApp -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Nomor WhatsApp</label>
+                    <label class="block text-sm font-medium text-gray-700">Nomor WhatsApp <span class="text-red-500">*</span></label>
                     <div class="mt-1 flex rounded-md shadow-sm">
                         <span class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-sm font-bold text-gray-500">+62</span>
                         <input type="text" name="whatsapp_number" value="{{ old('whatsapp_number') }}" placeholder="8xxxxxxxxxx" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')" class="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"  minlength="8" maxlength="15">
@@ -79,40 +87,82 @@ window._empFormData = {
                 <!-- Region -->
                 <div x-show="!isHq">
                     <label class="block text-sm font-medium text-gray-700">Region</label>
-                    <select name="region_id" x-model="regionId" @change="onRegionChange()"
-                            data-no-enhance
-                            class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                        <option value="">— Tidak ada —</option>
-                        @foreach($regions as $region)
-                            <option value="{{ $region->id }}">{{ $region->name }}</option>
-                        @endforeach
-                    </select>
+                    <input type="hidden" name="region_id" :value="regionId">
+                    <div class="relative mt-1" @click.away="regionOpen = false">
+                        <div @click="regionOpen = !regionOpen" class="w-full px-3.5 py-2.5 bg-white border rounded-xl text-[13px] shadow-sm flex justify-between items-center cursor-pointer transition-all min-h-[44px]" :class="regionOpen ? 'border-[#5586DB] ring-2 ring-[#5586DB]/20' : 'border-[#E5E7EB]'">
+                            <span class="truncate block pr-4" :class="regionId ? 'text-[#111827]' : 'text-[#9CA3AF]'" x-text="regionLabel || '— Tidak ada —'"></span>
+                            <span class="material-symbols-outlined text-[16px] text-gray-400 transition-transform duration-200" :class="regionOpen ? 'rotate-180' : ''">expand_more</span>
+                        </div>
+                        <div x-show="regionOpen" x-cloak class="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
+                            <div class="p-2 bg-gray-50 border-b border-gray-100">
+                                <div class="relative">
+                                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[16px]">search</span>
+                                    <input type="text" x-model="regionSearch" placeholder="Cari region..." @click.stop style="padding-left: 2.5rem !important" class="w-full pr-3 py-2 bg-white border border-gray-200 rounded-lg text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB] transition-all">
+                                </div>
+                            </div>
+                            <ul class="max-h-48 overflow-y-auto py-1">
+                                <li @click="regionId = ''; regionOpen = false; regionSearch = ''; areaId = ''; branchId = '';" class="px-4 py-2 text-[12px] text-gray-700 hover:bg-[#5586DB] hover:text-white cursor-pointer transition-colors" :class="!regionId ? 'bg-[#EFF6FF] font-semibold' : ''">— Tidak ada —</li>
+                                <li x-show="filteredRegions.length === 0" class="px-4 py-3 text-[12px] text-gray-500 text-center">Tidak ditemukan</li>
+                                <template x-for="r in filteredRegions" :key="r.id">
+                                    <li @click="pickRegion(r)" class="px-4 py-2 text-[12px] text-gray-700 hover:bg-[#5586DB] hover:text-white cursor-pointer transition-colors" :class="regionId == r.id ? 'bg-[#EFF6FF] font-semibold' : ''" x-text="r.name"></li>
+                                </template>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Area -->
                 <div x-show="!isHq">
                     <label class="block text-sm font-medium text-gray-700">Area</label>
-                    <select name="area_id" x-model="areaId" @change="onAreaChange()"
-                            data-no-enhance
-                            class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                        <option value="">— Tidak ada —</option>
-                        <template x-for="area in filteredAreas" :key="area.id">
-                            <option :value="area.id" x-text="area.name"></option>
-                        </template>
-                    </select>
+                    <input type="hidden" name="area_id" :value="areaId">
+                    <div class="relative mt-1" @click.away="areaOpen = false">
+                        <div @click="areaOpen = !areaOpen" class="w-full px-3.5 py-2.5 bg-white border rounded-xl text-[13px] shadow-sm flex justify-between items-center cursor-pointer transition-all min-h-[44px]" :class="areaOpen ? 'border-[#5586DB] ring-2 ring-[#5586DB]/20' : 'border-[#E5E7EB]'">
+                            <span class="truncate block pr-4" :class="areaId ? 'text-[#111827]' : 'text-[#9CA3AF]'" x-text="areaLabel || '— Tidak ada —'"></span>
+                            <span class="material-symbols-outlined text-[16px] text-gray-400 transition-transform duration-200" :class="areaOpen ? 'rotate-180' : ''">expand_more</span>
+                        </div>
+                        <div x-show="areaOpen" x-cloak class="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
+                            <div class="p-2 bg-gray-50 border-b border-gray-100">
+                                <div class="relative">
+                                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[16px]">search</span>
+                                    <input type="text" x-model="areaSearch" placeholder="Cari area..." @click.stop style="padding-left: 2.5rem !important" class="w-full pr-3 py-2 bg-white border border-gray-200 rounded-lg text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB] transition-all">
+                                </div>
+                            </div>
+                            <ul class="max-h-48 overflow-y-auto py-1">
+                                <li @click="areaId = ''; areaOpen = false; areaSearch = ''; branchId = '';" class="px-4 py-2 text-[12px] text-gray-700 hover:bg-[#5586DB] hover:text-white cursor-pointer transition-colors" :class="!areaId ? 'bg-[#EFF6FF] font-semibold' : ''">— Tidak ada —</li>
+                                <li x-show="filteredAreas.length === 0" class="px-4 py-3 text-[12px] text-gray-500 text-center">Tidak ditemukan</li>
+                                <template x-for="a in filteredAreas" :key="a.id">
+                                    <li @click="pickArea(a)" class="px-4 py-2 text-[12px] text-gray-700 hover:bg-[#5586DB] hover:text-white cursor-pointer transition-colors" :class="areaId == a.id ? 'bg-[#EFF6FF] font-semibold' : ''" x-text="a.name"></li>
+                                </template>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Penempatan Branch -->
                 <div x-show="!isHq">
                     <label class="block text-sm font-medium text-gray-700">Penempatan Cabang</label>
-                    <select name="branch_id" x-model="branchId" @change="onBranchChange()"
-                            data-no-enhance
-                            class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                        <option value="">— Tidak ditempatkan di Cabang —</option>
-                        <template x-for="branch in filteredBranches" :key="branch.id">
-                            <option :value="branch.id" x-text="branch.name"></option>
-                        </template>
-                    </select>
+                    <input type="hidden" name="branch_id" :value="branchId">
+                    <div class="relative mt-1" @click.away="branchOpen = false">
+                        <div @click="branchOpen = !branchOpen" class="w-full px-3.5 py-2.5 bg-white border rounded-xl text-[13px] shadow-sm flex justify-between items-center cursor-pointer transition-all min-h-[44px]" :class="branchOpen ? 'border-[#5586DB] ring-2 ring-[#5586DB]/20' : 'border-[#E5E7EB]'">
+                            <span class="truncate block pr-4" :class="branchId ? 'text-[#111827]' : 'text-[#9CA3AF]'" x-text="branchLabel || '— Tidak ditempatkan di Cabang —'"></span>
+                            <span class="material-symbols-outlined text-[16px] text-gray-400 transition-transform duration-200" :class="branchOpen ? 'rotate-180' : ''">expand_more</span>
+                        </div>
+                        <div x-show="branchOpen" x-cloak class="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
+                            <div class="p-2 bg-gray-50 border-b border-gray-100">
+                                <div class="relative">
+                                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[16px]">search</span>
+                                    <input type="text" x-model="branchSearch" placeholder="Cari cabang..." @click.stop style="padding-left: 2.5rem !important" class="w-full pr-3 py-2 bg-white border border-gray-200 rounded-lg text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB] transition-all">
+                                </div>
+                            </div>
+                            <ul class="max-h-48 overflow-y-auto py-1">
+                                <li @click="branchId = ''; branchOpen = false; branchSearch = '';" class="px-4 py-2 text-[12px] text-gray-700 hover:bg-[#5586DB] hover:text-white cursor-pointer transition-colors" :class="!branchId ? 'bg-[#EFF6FF] font-semibold' : ''">— Tidak ditempatkan di Cabang —</li>
+                                <li x-show="filteredBranches.length === 0" class="px-4 py-3 text-[12px] text-gray-500 text-center">Tidak ditemukan</li>
+                                <template x-for="b in filteredBranches" :key="b.id">
+                                    <li @click="pickBranch(b)" class="px-4 py-2 text-[12px] text-gray-700 hover:bg-[#5586DB] hover:text-white cursor-pointer transition-colors" :class="branchId == b.id ? 'bg-[#EFF6FF] font-semibold' : ''" x-text="b.name"></li>
+                                </template>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- HQ -->
@@ -149,36 +199,67 @@ window._empFormData = {
 document.addEventListener('alpine:init', () => {
     Alpine.data('employeeForm', () => ({
         isHq:        {{ old('is_hq') ? 'true' : 'false' }},
+        allRegions:  window._empFormData.allRegions,
         allAreas:    window._empFormData.allAreas,
         allBranches: window._empFormData.allBranches,
         regionId:    '{{ old('region_id', '') }}',
         areaId:      '{{ old('area_id', '') }}',
         branchId:    '{{ old('branch_id', '') }}',
 
+        regionOpen: false, regionSearch: '',
+        areaOpen: false, areaSearch: '',
+        branchOpen: false, branchSearch: '',
+
+        get regionLabel() {
+            const r = this.allRegions.find(r => r.id == this.regionId);
+            return r ? r.name : '';
+        },
+        get areaLabel() {
+            const a = this.allAreas.find(a => a.id == this.areaId);
+            return a ? a.name : '';
+        },
+        get branchLabel() {
+            const b = this.allBranches.find(b => b.id == this.branchId);
+            return b ? b.name : '';
+        },
+        get filteredRegions() {
+            if (!this.regionSearch) return this.allRegions;
+            const s = this.regionSearch.toLowerCase();
+            return this.allRegions.filter(r => r.name.toLowerCase().includes(s));
+        },
         get filteredAreas() {
-            if (!this.regionId) return this.allAreas;
-            return this.allAreas.filter(a => a.region_id == this.regionId);
+            const areas = this.regionId ? this.allAreas.filter(a => a.region_id == this.regionId) : this.allAreas;
+            if (!this.areaSearch) return areas;
+            const s = this.areaSearch.toLowerCase();
+            return areas.filter(a => a.name.toLowerCase().includes(s));
         },
         get filteredBranches() {
-            if (!this.areaId) return this.allBranches;
-            return this.allBranches.filter(b => b.area_id == this.areaId);
+            const branches = this.areaId ? this.allBranches.filter(b => b.area_id == this.areaId) : this.allBranches;
+            if (!this.branchSearch) return branches;
+            const s = this.branchSearch.toLowerCase();
+            return branches.filter(b => b.name.toLowerCase().includes(s));
         },
-        onRegionChange() {
-            this.areaId   = '';
+        pickRegion(r) {
+            this.regionId = r.id;
+            this.regionOpen = false;
+            this.regionSearch = '';
+            this.areaId = '';
             this.branchId = '';
         },
-        onAreaChange() {
-            const area = this.allAreas.find(a => a.id == this.areaId);
+        pickArea(a) {
+            this.areaId = a.id;
+            this.regionId = a.region_id;
+            this.areaOpen = false;
+            this.areaSearch = '';
+            this.branchId = '';
+        },
+        pickBranch(b) {
+            this.branchId = b.id;
+            this.areaId = b.area_id;
+            const area = this.allAreas.find(a => a.id == b.area_id);
             if (area) this.regionId = area.region_id;
-            this.branchId = '';
-        },
-        onBranchChange() {
-            const branch = this.allBranches.find(b => b.id == this.branchId);
-            if (branch) {
-                this.areaId = branch.area_id;
-                const area = this.allAreas.find(a => a.id == branch.area_id);
-                if (area) this.regionId = area.region_id;
-            }
+            this.branchOpen = false;
+            this.branchSearch = '';
         },
     }));
 });

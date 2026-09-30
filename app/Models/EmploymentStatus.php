@@ -23,10 +23,10 @@ class EmploymentStatus extends Model
         'position_id',
         'setup_incomplete',
         'contract_file_path',
+        'status',
     ];
 
     protected $casts = [
-        'join_date' => 'date',
         'contract_start_date' => 'date',
         'contract_end_date' => 'date',
     ];

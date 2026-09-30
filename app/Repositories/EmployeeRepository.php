@@ -19,6 +19,8 @@ class EmployeeRepository
             'code_desc' => ['employee_code', 'desc'],
             'newest' => ['created_at', 'desc'],
             'newest_desc' => ['created_at', 'asc'],
+            'tenure' => ['join_date', 'asc'],
+            'tenure_desc' => ['join_date', 'desc'],
         ];
         [$col, $dir] = $sortMap[$filters['sort'] ?? ''] ?? ['full_name', 'asc'];
 
@@ -46,6 +48,7 @@ class EmployeeRepository
         return Employee::with(
             'currentStatus.position.role',
             'employmentStatuses.position',
+            'employmentStatuses.terminationChecklist',
             'educations',
             'workHistories',
             'branch',

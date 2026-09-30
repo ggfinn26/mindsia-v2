@@ -635,6 +635,7 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
         Route::patch('checklist', [ContractTerminateController::class, 'checklistUpdate'])->name('checklist.update');
         Route::get('complete', [ContractTerminateController::class, 'completeConfirmation'])->name('complete.confirm');
         Route::post('complete', [ContractTerminateController::class, 'complete'])->name('complete');
+        Route::post('cancel', [ContractTerminateController::class, 'cancel'])->name('cancel');
     });
 
     // Employee Branch Transfer (2 flows: self-service + direct)

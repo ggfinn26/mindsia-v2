@@ -86,19 +86,6 @@
                         @enderror
                     </div>
 
-                    <!-- Join Date -->
-                    <div>
-                        <label for="join_date" class="block text-sm font-semibold text-gray-700 mb-1.5">Tanggal Mulai Kerja <span class="text-rose-500">*</span></label>
-                        <input type="date" id="join_date" name="join_date" value="{{ old('join_date') }}" class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500 @error('join_date') border-rose-500 focus:border-rose-500 focus:ring-rose-500 @enderror">
-                        @error('join_date')
-                            <p class="text-rose-500 text-xs mt-1.5 font-medium">{{ $message }}</p>
-                        @enderror
-                        <p class="mt-1.5 text-xs text-gray-500">
-                            <span class="font-medium text-gray-600">Karyawan baru:</span> isi sesuai hari pertama bekerja, dapat berupa tanggal yang akan datang.
-                            <span class="font-medium text-gray-600">Karyawan lama:</span> isi tanggal pertama kali bergabung untuk keperluan kalkulasi bonus masa kerja.
-                        </p>
-                    </div>
-
                     <!-- Contract Start Date -->
                     <div>
                         <label for="contract_start_date" class="block text-sm font-semibold text-gray-700 mb-1.5">Tanggal Mulai Kontrak <span class="text-rose-500">*</span></label>
@@ -176,19 +163,6 @@
                         @error('type_employment')
                             <p class="text-rose-500 text-xs mt-1.5 font-medium">{{ $message }}</p>
                         @enderror
-                    </div>
-
-                    <!-- Join Date -->
-                    <div>
-                        <label for="cepat_join_date" class="block text-sm font-semibold text-gray-700 mb-1.5">Tanggal Mulai Kerja <span class="text-rose-500">*</span></label>
-                        <input type="date" id="cepat_join_date" name="join_date" value="{{ old('join_date') }}" class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500 @error('join_date') border-rose-500 focus:border-rose-500 focus:ring-rose-500 @enderror">
-                        @error('join_date')
-                            <p class="text-rose-500 text-xs mt-1.5 font-medium">{{ $message }}</p>
-                        @enderror
-                        <p class="mt-1.5 text-xs text-gray-500">
-                            <span class="font-medium text-gray-600">Karyawan baru:</span> isi sesuai hari pertama bekerja, dapat berupa tanggal yang akan datang.
-                            <span class="font-medium text-gray-600">Karyawan lama:</span> isi tanggal pertama kali bergabung untuk keperluan kalkulasi bonus masa kerja.
-                        </p>
                     </div>
 
                     <!-- Contract End Date -->

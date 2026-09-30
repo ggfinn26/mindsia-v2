@@ -36,9 +36,9 @@ class EmployeeDirectoryWidget implements WidgetDataProviderInterface
             ->toArray();
 
         $recentJoins = $activeWithStatus->filter(fn ($e) => $e->currentStatus
-            && $e->currentStatus->join_date
-            && $e->currentStatus->join_date->month === $now->month
-            && $e->currentStatus->join_date->year === $now->year
+            && $e->join_date
+            && $e->join_date->month === $now->month
+            && $e->join_date->year === $now->year
         )->count();
 
         $byEmploymentType = $activeWithStatus
@@ -71,7 +71,7 @@ class EmployeeDirectoryWidget implements WidgetDataProviderInterface
             'branch' => $e->branch?->branch_name ?? '-',
             'position' => $e->currentStatus?->position?->position_name ?? '-',
             'employment_type' => $e->currentStatus?->type_employment ?? '-',
-            'join_date' => $e->currentStatus?->join_date?->format('Y-m-d') ?? '-',
+            'join_date' => $e->join_date?->format('Y-m-d') ?? '-',
         ])->toArray();
     }
 }
