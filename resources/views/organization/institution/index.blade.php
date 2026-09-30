@@ -31,7 +31,7 @@
         </div>
     @endif
 
-    <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-6 p-4">
+    <div class="bg-white shadow sm:rounded-lg mb-6 p-4">
         <form method="GET" action="{{ route('institutions.index') }}" class="flex flex-col sm:flex-row gap-4 items-end">
             <!-- Retain current sort on filter -->
             @if(request('sort')) <input type="hidden" name="sort" value="{{ request('sort') }}"> @endif
@@ -43,7 +43,7 @@
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <span class="material-symbols-outlined text-gray-400 text-sm">search</span>
                     </div>
-                    <input type="text" name="search" value="{{ request('search') }}" class="block w-full pl-10 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Cari nama institusi...">
+                    <input type="text" name="search" value="{{ request('search') }}" class="block w-full pl-10 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" style="padding-left: 2.5rem !important" placeholder="Cari nama institusi...">
                 </div>
             </div>
             
@@ -133,7 +133,7 @@
             <div x-show="showConfirmModal" @click="showConfirmModal = false" class="fixed inset-0 transition-opacity" aria-hidden="true">
                 <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
             </div>
-            <div x-show="showConfirmModal" class="relative z-10 inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div x-show="showConfirmModal" class="relative z-10 inline-block align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
                 <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <div class="sm:flex sm:items-start">
                         <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
@@ -165,7 +165,7 @@
             <div x-show="showModal" @click="showModal = false" class="fixed inset-0 transition-opacity" aria-hidden="true">
                 <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
             </div>
-            <div x-show="showModal" class="relative z-10 inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div x-show="showModal" class="relative z-10 inline-block align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
                 <form :action="isEdit ? '/institutions/' + formData.id : '{{ route('institutions.store') }}'" method="POST">
                     @csrf
                     <template x-if="isEdit">
@@ -181,7 +181,12 @@
 
                         <div class="mb-4">
                             <label for="jenjang_institution" class="block text-sm font-medium text-gray-700">Jenjang</label>
-                            <input type="text" name="jenjang_institution" id="jenjang_institution" x-model="formData.jenjang_institution" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <select name="jenjang_institution" id="jenjang_institution" x-model="formData.jenjang_institution" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <option value="">-- Pilih Jenjang --</option>
+                                @foreach($jenjangs as $jenjang)
+                                    <option value="{{ $jenjang }}">{{ $jenjang }}</option>
+                                @endforeach
+                            </select>
                         </div>
 
                         <div class="mb-4">

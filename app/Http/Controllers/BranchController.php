@@ -58,7 +58,7 @@ class BranchController extends Controller
         return view('organization.branch.index', [
             'branches' => $query->get(),
             'allAreas' => Area::orderBy('name')->get(),
-            'allPics' => Employee::orderBy('full_name')->get(),
+            'allPics' => Employee::whereHas('employmentStatuses', fn ($q) => $q->whereIn('position_id', [11, 12]))->orderBy('full_name')->get(),
         ]);
     }
 

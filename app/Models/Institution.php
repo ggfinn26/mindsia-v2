@@ -17,6 +17,11 @@ class Institution extends Model
         'regions_id',
     ];
 
+    public static function jenjangs(): array
+    {
+        return ['SD', 'SMP', 'MTS', 'SMA', 'SMK', 'MA', 'PERGURUAN TINGGI'];
+    }
+
     public function region(): BelongsTo
     {
         return $this->belongsTo(Region::class, 'regions_id');

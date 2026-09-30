@@ -10,6 +10,7 @@ use App\Models\Employee;
 use App\Models\EmploymentStatus;
 use App\Repositories\PositionRepository;
 use App\Services\EmployeeAuthService;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -54,6 +55,21 @@ class EmploymentStatusController extends Controller implements HasMiddleware
 
     public function store(EmploymentStatusRequest $request, Employee $employee): RedirectResponse
     {
+        $employee->load('currentStatus.position');
+
+        if ($employee->currentStatus !== null) {
+            $status = $employee->currentStatus;
+            $posisi = $status->position?->position_name ?? '—';
+            $akhir = $status->contract_end_date
+                ? Carbon::parse($status->contract_end_date)->translatedFormat('d F Y')
+                : 'tidak ditentukan';
+
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', "Kontrak karyawan atas nama {$employee->full_name} masih berlaku (berakhir {$akhir}) sebagai {$posisi}. Ubah atau putus kontrak terlebih dahulu.");
+        }
+
         $validated = $request->validated();
         $tab = $validated['tab'];
 
@@ -94,6 +110,7 @@ class EmploymentStatusController extends Controller implements HasMiddleware
             'type_employment' => $validated['type_employment'],
             'join_date' => $validated['join_date'],
             'position_id' => $validated['position_id'],
+            'contract_end_date' => $validated['contract_end_date'] ?? null,
             'contract_file_path' => $path,
             'setup_incomplete' => true,
         ]);

@@ -23,7 +23,7 @@
         </div>
     @endif
 
-    <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-6 p-4">
+    <div class="bg-white shadow sm:rounded-lg mb-6 p-4">
         <form method="GET" action="{{ route('branches.index') }}" class="flex flex-col sm:flex-row gap-4 items-end">
             <!-- Retain current sort on filter -->
             @if(request('sort')) <input type="hidden" name="sort" value="{{ request('sort') }}"> @endif
@@ -123,7 +123,7 @@
             <div x-show="showConfirmModal" @click="showConfirmModal = false" class="fixed inset-0 transition-opacity" aria-hidden="true">
                 <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
             </div>
-            <div x-show="showConfirmModal" class="relative z-10 inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div x-show="showConfirmModal" class="relative z-10 inline-block align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
                 <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <div class="sm:flex sm:items-start">
                         <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full sm:mx-0 sm:h-10 sm:w-10" :class="confirmMethod === 'DELETE' ? 'bg-red-100' : 'bg-yellow-100'">
@@ -155,19 +155,18 @@
             <div x-show="showPicModal" @click="showPicModal = false" class="fixed inset-0 transition-opacity" aria-hidden="true">
                 <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
             </div>
-            <div x-show="showPicModal" class="relative z-10 inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div x-show="showPicModal" class="relative z-10 inline-block align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
                 <form :action="'/branches/' + branchId + '/assign-pic'" method="POST">
                     @csrf
-                    @method('PUT')
-                    <!-- Wait, BranchController has PUT/PATCH? No, wait! I need to check routes. I will just use POST unless it's a PUT. In route:list it wasn't shown or I missed it. I will use POST and method('PUT') just in case, but let me assume the route uses PUT / PATCH. -->
+                    @method('PATCH')
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Assign PIC Cabang</h3>
                         
                         <div class="mb-4">
-                            <label for="ma_pic_employee_id" class="block text-sm font-medium text-gray-700">Pilih Pegawai (PIC)</label>
+                            <label for="ma_pic_employee_id" class="block text-sm font-medium text-gray-700">Pilih MA / PIC</label>
                             <select name="ma_pic_employee_id" id="ma_pic_employee_id" x-model="employeeId" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                                 <option value="">-- Pilih Pegawai --</option>
-                                @foreach(\App\Models\Employee::all() as $emp)
+                                @foreach($allPics as $emp)
                                     <option value="{{ $emp->id }}">{{ $emp->full_name }}</option>
                                 @endforeach
                             </select>

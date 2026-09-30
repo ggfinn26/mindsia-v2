@@ -565,6 +565,7 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     Route::resource('areas', AreaController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::resource('branches', BranchController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
     Route::patch('branches/{branch}/toggle-active', [BranchController::class, 'toggleActive'])->name('branches.toggle-active');
+    Route::patch('branches/{branch}/assign-pic', [BranchController::class, 'assignPic'])->name('branches.assign-pic');
     Route::resource('institutions', InstitutionController::class)->only(['index', 'store', 'update', 'destroy']);
 
     // Admin Routes — User Management (Auth Flow 8: employee-admin-auth)

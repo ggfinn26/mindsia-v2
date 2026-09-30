@@ -27,4 +27,31 @@ class StoreBranchRequest extends FormRequest
             'ma_pic_employee_id' => ['nullable', 'exists:employees,id'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'areas_id.required' => 'Area wajib dipilih',
+            'areas_id.exists' => 'Area tidak valid',
+            'branch_name.required' => 'Nama cabang wajib diisi',
+            'branch_name.max' => 'Nama cabang maksimal 150 karakter',
+            'code_branches.required' => 'Kode cabang wajib diisi',
+            'code_branches.max' => 'Kode cabang maksimal 20 karakter',
+            'code_branches.unique' => 'Kode cabang sudah digunakan',
+            'address.required' => 'Alamat wajib diisi',
+            'whatsapp.required' => 'Nomor WhatsApp wajib diisi',
+            'whatsapp.min' => 'Nomor WhatsApp minimal 8 digit',
+            'whatsapp.max' => 'Nomor WhatsApp maksimal 15 digit',
+            'latitude.required' => 'Latitude wajib diisi',
+            'latitude.numeric' => 'Latitude harus berupa angka',
+            'latitude.between' => 'Latitude harus antara -90 dan 90',
+            'longitude.required' => 'Longitude wajib diisi',
+            'longitude.numeric' => 'Longitude harus berupa angka',
+            'longitude.between' => 'Longitude harus antara -180 dan 180',
+            'radius_meters.required' => 'Radius wajib diisi',
+            'radius_meters.integer' => 'Radius harus berupa angka bulat',
+            'radius_meters.min' => 'Radius minimal 1 meter',
+            'ma_pic_employee_id.exists' => 'Pegawai PIC tidak valid',
+        ];
+    }
 }

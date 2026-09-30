@@ -69,7 +69,7 @@ class InstitutionController extends Controller
             'institutions' => $institutions,
             'totalCount' => $totalCount,
             'provinces' => Province::orderBy('name')->get(),
-            'jenjangs' => ['SD', 'SMP', 'SMA', 'PERGURUAN TINGGI'],
+            'jenjangs' => Institution::jenjangs(),
         ]);
     }
 

@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-5xl mx-auto space-y-8">
-    
+
     <!-- Page header -->
     <div class="sm:flex sm:justify-between sm:items-end">
         <div>
@@ -19,8 +19,19 @@
         </div>
     </div>
 
+    @if (session('error'))
+    <div class="rounded-md bg-rose-50 border border-rose-200 p-4">
+        <div class="flex items-start gap-3">
+            <svg class="h-5 w-5 text-rose-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p class="text-sm text-rose-700 font-medium">{{ session('error') }}</p>
+        </div>
+    </div>
+    @endif
+
     <div x-data="{ activeTab: 'lengkap' }" class="bg-white shadow-sm border border-gray-200 rounded-lg">
-        
+
         <!-- Tab Navigation -->
         <div class="border-b border-gray-200">
             <nav class="flex -mb-px" aria-label="Tabs">
@@ -51,7 +62,7 @@
 
         <!-- Tab Panels -->
         <div class="p-6 sm:p-8">
-            
+
             <!-- Tab: Lengkap (Full Form) -->
             <form x-show="activeTab === 'lengkap'"
                   action="{{ route('employment-statuses.store', $employee->id) }}"
@@ -64,7 +75,12 @@
                     <!-- Type Employment -->
                     <div>
                         <label for="type_employment" class="block text-sm font-semibold text-gray-700 mb-1.5">Jenis Ketenagakerjaan <span class="text-rose-500">*</span></label>
-                        <input type="text" id="type_employment" name="type_employment" value="{{ old('type_employment') }}" placeholder="Tetap, Kontrak, Magang" class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500 @error('type_employment') border-rose-500 focus:border-rose-500 focus:ring-rose-500 @enderror">
+                        <select id="type_employment" name="type_employment" class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500 @error('type_employment') border-rose-500 focus:border-rose-500 focus:ring-rose-500 @enderror">
+                            <option value="">-- Pilih Jenis --</option>
+                            @foreach (['Tetap', 'Kontrak', 'Magang'] as $tipe)
+                                <option value="{{ $tipe }}" @selected(old('type_employment') === $tipe)>{{ $tipe }}</option>
+                            @endforeach
+                        </select>
                         @error('type_employment')
                             <p class="text-rose-500 text-xs mt-1.5 font-medium">{{ $message }}</p>
                         @enderror
@@ -77,6 +93,10 @@
                         @error('join_date')
                             <p class="text-rose-500 text-xs mt-1.5 font-medium">{{ $message }}</p>
                         @enderror
+                        <p class="mt-1.5 text-xs text-gray-500">
+                            <span class="font-medium text-gray-600">Karyawan baru:</span> isi sesuai hari pertama bekerja, dapat berupa tanggal yang akan datang.
+                            <span class="font-medium text-gray-600">Karyawan lama:</span> isi tanggal pertama kali bergabung untuk keperluan kalkulasi bonus masa kerja.
+                        </p>
                     </div>
 
                     <!-- Contract Start Date -->
@@ -139,7 +159,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <p class="text-sm text-indigo-800">
-                        <strong>Mode Cepat:</strong> Upload file kontrak terlebih dahulu. Tanggal kontrak spesifik dan detail lainnya dapat dilengkapi di kemudian hari.
+                        <strong>Mode Cepat:</strong> Upload file kontrak terlebih dahulu. Tanggal mulai kontrak dapat dilengkapi di kemudian hari via menu Edit.
                     </p>
                 </div>
 
@@ -147,7 +167,12 @@
                     <!-- Type Employment -->
                     <div>
                         <label for="cepat_type_employment" class="block text-sm font-semibold text-gray-700 mb-1.5">Jenis Ketenagakerjaan <span class="text-rose-500">*</span></label>
-                        <input type="text" id="cepat_type_employment" name="type_employment" value="{{ old('type_employment') }}" placeholder="Tetap, Kontrak, Magang" class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500 @error('type_employment') border-rose-500 focus:border-rose-500 focus:ring-rose-500 @enderror">
+                        <select id="cepat_type_employment" name="type_employment" class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500 @error('type_employment') border-rose-500 focus:border-rose-500 focus:ring-rose-500 @enderror">
+                            <option value="">-- Pilih Jenis --</option>
+                            @foreach (['Tetap', 'Kontrak', 'Magang'] as $tipe)
+                                <option value="{{ $tipe }}" @selected(old('type_employment') === $tipe)>{{ $tipe }}</option>
+                            @endforeach
+                        </select>
                         @error('type_employment')
                             <p class="text-rose-500 text-xs mt-1.5 font-medium">{{ $message }}</p>
                         @enderror
@@ -158,6 +183,19 @@
                         <label for="cepat_join_date" class="block text-sm font-semibold text-gray-700 mb-1.5">Tanggal Mulai Kerja <span class="text-rose-500">*</span></label>
                         <input type="date" id="cepat_join_date" name="join_date" value="{{ old('join_date') }}" class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500 @error('join_date') border-rose-500 focus:border-rose-500 focus:ring-rose-500 @enderror">
                         @error('join_date')
+                            <p class="text-rose-500 text-xs mt-1.5 font-medium">{{ $message }}</p>
+                        @enderror
+                        <p class="mt-1.5 text-xs text-gray-500">
+                            <span class="font-medium text-gray-600">Karyawan baru:</span> isi sesuai hari pertama bekerja, dapat berupa tanggal yang akan datang.
+                            <span class="font-medium text-gray-600">Karyawan lama:</span> isi tanggal pertama kali bergabung untuk keperluan kalkulasi bonus masa kerja.
+                        </p>
+                    </div>
+
+                    <!-- Contract End Date -->
+                    <div>
+                        <label for="cepat_contract_end_date" class="block text-sm font-semibold text-gray-700 mb-1.5">Tanggal Akhir Kontrak <span class="text-gray-400 font-normal">(opsional)</span></label>
+                        <input type="date" id="cepat_contract_end_date" name="contract_end_date" value="{{ old('contract_end_date') }}" class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500 @error('contract_end_date') border-rose-500 focus:border-rose-500 focus:ring-rose-500 @enderror">
+                        @error('contract_end_date')
                             <p class="text-rose-500 text-xs mt-1.5 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
@@ -181,7 +219,7 @@
 
                 <!-- File Upload -->
                 <div class="pt-2" x-data="{ fileName: null }">
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">File Kontrak <span class="text-gray-400 font-normal">(PDF, DOC, DOCX)</span></label>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">File Kontrak <span class="text-rose-500">*</span> <span class="text-gray-400 font-normal">(PDF)</span></label>
                     <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:bg-gray-50 transition-colors relative">
                         <div class="space-y-1 text-center">
                             <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
@@ -190,13 +228,11 @@
                             <div class="flex text-sm text-gray-600 justify-center">
                                 <label for="contract_file_path" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
                                     <span>Upload sebuah file</span>
-                                    <input id="contract_file_path" name="contract_file_path" type="file" class="sr-only" accept=".pdf,.doc,.docx" @change="fileName = $event.target.files[0]?.name">
+                                    <input id="contract_file_path" name="contract_file_path" type="file" class="sr-only" accept=".pdf" @change="fileName = $event.target.files[0]?.name">
                                 </label>
                                 <p class="pl-1">atau drag and drop</p>
                             </div>
-                            <p class="text-xs text-gray-500">
-                                PDF, DOC, DOCX up to 10MB
-                            </p>
+                            <p class="text-xs text-gray-500">PDF hingga 10MB</p>
                         </div>
                     </div>
                     <div x-show="fileName" x-cloak class="mt-3 flex items-center gap-2 text-sm text-emerald-600 bg-emerald-50 p-2 rounded-md border border-emerald-100">
