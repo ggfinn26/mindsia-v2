@@ -60,34 +60,20 @@
     {{-- Form perpanjangan --}}
     <div class="overflow-hidden border border-slate-200 bg-white">
         <div class="border-b border-slate-200 bg-slate-50 px-5 py-4">
-            <h3 class="font-jakarta text-sm font-bold text-slate-900">Penawaran Perpanjangan Baru</h3>
+            <h3 class="font-jakarta text-sm font-bold text-slate-900">Perpanjang Kontrak</h3>
         </div>
-        <form action="{{ route('employment-statuses.extend.store', $status) }}" method="POST" class="px-5 py-5 space-y-5">
+        <form action="{{ route('employment-statuses.extend.store', $status) }}" method="POST" class="px-5 py-5 space-y-5" novalidate>
             @csrf
             <div>
-                <label for="proposed_end_date" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                <label for="new_end_date" class="block text-sm font-semibold text-slate-700 mb-1.5">
                     Tanggal Akhir Kontrak Baru <span class="text-rose-500">*</span>
                 </label>
                 <input type="date"
-                       id="proposed_end_date"
-                       name="proposed_end_date"
-                       value="{{ old('proposed_end_date') }}"
-                       class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac] @error('proposed_end_date') border-rose-500 @enderror">
-                @error('proposed_end_date')
-                    <p class="text-rose-500 text-xs mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div>
-                <label for="notes" class="block text-sm font-semibold text-slate-700 mb-1.5">
-                    Catatan <span class="text-slate-400 font-normal">(opsional)</span>
-                </label>
-                <textarea id="notes"
-                          name="notes"
-                          rows="3"
-                          placeholder="Alasan perpanjangan atau keterangan lainnya"
-                          class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac] @error('notes') border-rose-500 @enderror">{{ old('notes') }}</textarea>
-                @error('notes')
+                       id="new_end_date"
+                       name="new_end_date"
+                       value="{{ old('new_end_date') }}"
+                       class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac] @error('new_end_date') border-rose-500 @enderror">
+                @error('new_end_date')
                     <p class="text-rose-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
             </div>
@@ -95,8 +81,8 @@
             <div class="flex gap-3 border-t border-slate-100 pt-5">
                 <button type="submit"
                         class="inline-flex min-h-10 items-center gap-2 bg-[#215aac] px-5 text-sm font-semibold text-white hover:bg-[#194a91]">
-                    <span class="material-symbols-outlined text-[18px]">send</span>
-                    Buat Penawaran
+                    <span class="material-symbols-outlined text-[18px]">update</span>
+                    Perpanjang Kontrak
                 </button>
                 <a href="{{ route('employees.show', $status->employee) }}"
                    class="inline-flex min-h-10 items-center gap-2 border border-slate-300 px-5 text-sm font-semibold text-slate-700 hover:bg-slate-50">

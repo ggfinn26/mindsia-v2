@@ -12,9 +12,11 @@ use App\Repositories\PositionRepository;
 use App\Services\EmployeeAuthService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
-use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class EmploymentStatusController extends Controller implements HasMiddleware
@@ -31,17 +33,84 @@ class EmploymentStatusController extends Controller implements HasMiddleware
         private readonly EmployeeAuthService $employeeAuthService,
     ) {}
 
-    public function index(): View
+    public function index(Request $request): View
     {
         $today = now()->toDateString();
         $soon = now()->addDays(30)->toDateString();
 
-        $employees = Employee::query()
+        $search = $request->input('search');
+        $statusFilter = $request->input('status');
+        $typeFilter = $request->input('type');
+        $sort = $request->input('sort', 'end_date_asc');
+
+        $query = Employee::query()
             ->where('is_active', true)
-            ->with(['currentStatus.position', 'currentStatus.extendOffer'])
-            ->whereHas('currentStatus')
-            ->get()
-            ->sortBy(fn ($e) => $e->currentStatus?->contract_end_date ?? '9999-12-31');
+            ->with(['currentStatus.position'])
+            ->whereHas('currentStatus', function ($q) use ($typeFilter) {
+                if ($typeFilter) {
+                    $q->where('type_employment', $typeFilter);
+                }
+            });
+
+        $employees = $query->get();
+
+        if ($search) {
+            $searchLower = strtolower($search);
+            $employees = $employees->filter(function ($e) use ($searchLower) {
+                return str_contains(strtolower($e->full_name), $searchLower);
+            });
+        }
+
+        if ($statusFilter) {
+            $employees = $employees->filter(function ($e) use ($statusFilter) {
+                $status = $e->currentStatus;
+                $expiring = $status?->contract_end_date && $status->contract_end_date->lte(now()->addDays(30));
+
+                if ($statusFilter === 'expiring') {
+                    return $expiring;
+                }
+                if ($statusFilter === 'permanent') {
+                    return empty($status?->contract_end_date);
+                }
+                if ($statusFilter === 'active') {
+                    return ! empty($status?->contract_end_date) && ! $expiring;
+                }
+
+                return true;
+            });
+        }
+
+        if ($sort === 'name_asc') {
+            $employees = $employees->sortBy(fn ($e) => strtolower($e->full_name));
+        } elseif ($sort === 'name_desc') {
+            $employees = $employees->sortByDesc(fn ($e) => strtolower($e->full_name));
+        } elseif ($sort === 'posisi_asc') {
+            $employees = $employees->sortBy(fn ($e) => strtolower($e->currentStatus?->position?->position_name ?? 'zzz'));
+        } elseif ($sort === 'posisi_desc') {
+            $employees = $employees->sortByDesc(fn ($e) => strtolower($e->currentStatus?->position?->position_name ?? ''));
+        } elseif ($sort === 'tipe_asc') {
+            $employees = $employees->sortBy(fn ($e) => strtolower($e->currentStatus?->type_employment ?? 'zzz'));
+        } elseif ($sort === 'tipe_desc') {
+            $employees = $employees->sortByDesc(fn ($e) => strtolower($e->currentStatus?->type_employment ?? ''));
+        } elseif ($sort === 'status_asc') {
+            $employees = $employees->sortBy(fn ($e) => $e->currentStatus?->contract_end_date ?? '9999-12-31');
+        } elseif ($sort === 'status_desc') {
+            $employees = $employees->sortByDesc(fn ($e) => $e->currentStatus?->contract_end_date ?? '0000-01-01');
+        } elseif ($sort === 'end_date_desc') {
+            $employees = $employees->sortByDesc(fn ($e) => $e->currentStatus?->contract_end_date ?? '0000-01-01');
+        } else {
+            $employees = $employees->sortBy(fn ($e) => $e->currentStatus?->contract_end_date ?? '9999-12-31');
+        }
+
+        $page = Paginator::resolveCurrentPage() ?: 1;
+        $perPage = 10;
+        $employees = new LengthAwarePaginator(
+            $employees->forPage($page, $perPage)->values(),
+            $employees->count(),
+            $perPage,
+            $page,
+            ['path' => Paginator::resolveCurrentPath(), 'query' => request()->query()]
+        );
 
         return view('admin.employees.employment-status.index', compact('employees', 'today', 'soon'));
     }
@@ -149,48 +218,11 @@ class EmploymentStatusController extends Controller implements HasMiddleware
 
     public function extendStore(ContractExtendRequest $request, EmploymentStatus $status): RedirectResponse
     {
-        $validated = $request->validated();
-
-        $status->extendOffer()->updateOrCreate(
-            ['employment_status_id' => $status->id],
-            [
-                'current_end_date' => $status->contract_end_date,
-                'proposed_end_date' => $validated['proposed_end_date'],
-                'status' => 'pending',
-                'notes' => $validated['notes'],
-            ]
-        );
+        $status->update(['contract_end_date' => $request->validated()['new_end_date']]);
 
         return redirect()
             ->route('employees.show', $status->employee)
-            ->with('success', 'Penawaran perpanjangan kontrak telah dibuat.');
-    }
-
-    public function extendAccept(EmploymentStatus $status): RedirectResponse
-    {
-        $offer = $status->extendOffer;
-        abort_if(! $offer || $offer->status !== 'pending', 404);
-
-        DB::transaction(function () use ($status, $offer) {
-            $offer->update(['status' => 'accepted']);
-            $status->update(['contract_end_date' => $offer->proposed_end_date]);
-        });
-
-        return redirect()
-            ->route('employees.show', $status->employee)
-            ->with('success', 'Perpanjangan kontrak disetujui.');
-    }
-
-    public function extendReject(EmploymentStatus $status): RedirectResponse
-    {
-        $offer = $status->extendOffer;
-        abort_if(! $offer || $offer->status !== 'pending', 404);
-
-        $offer->update(['status' => 'rejected']);
-
-        return redirect()
-            ->route('employees.show', $status->employee)
-            ->with('success', 'Penawaran perpanjangan ditolak.');
+            ->with('success', 'Kontrak karyawan berhasil diperpanjang.');
     }
 
     public function changePositionCreate(EmploymentStatus $status): View

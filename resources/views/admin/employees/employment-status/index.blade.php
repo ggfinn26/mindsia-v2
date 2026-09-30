@@ -1,69 +1,148 @@
 @extends('layouts.dashboard')
-
-@section('title', 'Kelola Kontrak Karyawan')
-@section('header_title', 'Kelola Kontrak Karyawan')
+@section('title', 'Kelola Status Karyawan')
 
 @section('content')
-<div class="max-w-7xl mx-auto space-y-6">
-
-    {{-- Header --}}
-    <div class="flex flex-wrap items-start justify-between gap-4">
+<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Kelola Kontrak Karyawan</h2>
-            <p class="mt-1 text-sm text-slate-500">Daftar karyawan aktif beserta status kontrak dan tindakan yang tersedia.</p>
+            <h1 class="text-2xl font-bold text-gray-900">Status Karyawan</h1>
+            <p class="mt-1 text-sm text-gray-500">Kelola dan pantau kontrak karyawan aktif.</p>
         </div>
+        
+        <form x-data x-ref="filterForm" action="{{ route('employment-statuses.index') }}" method="GET" class="flex flex-wrap items-center gap-3">
+            <input type="hidden" name="sort" value="{{ request('sort', 'end_date_asc') }}">
+            
+            <div class="relative rounded-md shadow-sm w-full md:w-[25rem]">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <span class="material-symbols-outlined text-gray-400 text-sm">search</span>
+                </div>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama..." 
+                    style="padding-left: 2.5rem !important"
+                    class="block w-full border-gray-300 rounded-md shadow-sm sm:text-sm focus:ring-blue-500 focus:border-blue-500"
+                    @change="$refs.filterForm.submit()">
+            </div>
+            
+            <select name="status" class="border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:ring-blue-500 focus:border-blue-500" @change="$refs.filterForm.submit()">
+                <option value="">Semua Status</option>
+                <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Aktif</option>
+                <option value="expiring" {{ request('status') === 'expiring' ? 'selected' : '' }}>Habis (≤30 Hari)</option>
+                <option value="permanent" {{ request('status') === 'permanent' ? 'selected' : '' }}>Permanen</option>
+            </select>
+            
+            <select name="type" class="border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:ring-blue-500 focus:border-blue-500" @change="$refs.filterForm.submit()">
+                <option value="">Semua Tipe</option>
+                <option value="permanent" {{ request('type') === 'permanent' ? 'selected' : '' }}>Tetap</option>
+                <option value="contract" {{ request('type') === 'contract' ? 'selected' : '' }}>Kontrak</option>
+                <option value="probation" {{ request('type') === 'probation' ? 'selected' : '' }}>Probasi</option>
+                <option value="intern" {{ request('type') === 'intern' ? 'selected' : '' }}>Magang</option>
+                <option value="freelance" {{ request('type') === 'freelance' ? 'selected' : '' }}>Freelance</option>
+            </select>
+            
+            @if(request()->anyFilled(['search', 'status', 'type']) || request('sort', 'end_date_asc') !== 'end_date_asc')
+                <a href="{{ route('employment-statuses.index') }}" class="text-sm font-medium text-blue-600 hover:text-blue-500">Reset Filter</a>
+            @endif
+        </form>
     </div>
 
     @if (session('success'))
-        <div class="flex gap-3 border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-            <span class="material-symbols-outlined text-[20px]">check_circle</span>
-            <p>{{ session('success') }}</p>
+        <div class="mb-4 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-md text-sm">
+            {{ session('success') }}
         </div>
     @endif
 
-    {{-- Tabel kontrak --}}
-    <div class="overflow-hidden border border-slate-200 bg-white">
-        <div class="border-b border-slate-200 bg-slate-50 px-5 py-4">
-            <h3 class="font-jakarta text-sm font-bold text-slate-900">Daftar Kontrak Aktif</h3>
-        </div>
-
+    <div class="bg-white shadow sm:rounded-lg overflow-hidden">
         @if ($employees->isEmpty())
-            <div class="px-5 py-12 text-center">
-                <span class="material-symbols-outlined text-3xl text-slate-300">work_history</span>
-                <p class="mt-2 text-sm font-medium text-slate-600">Belum ada karyawan dengan kontrak aktif.</p>
+            <div class="px-6 py-12 text-center text-sm text-gray-500">
+                Belum ada data kontrak karyawan yang sesuai dengan kriteria.
             </div>
         @else
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-slate-200 text-sm">
-                    <thead class="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-5 py-3 text-left">Karyawan</th>
-                            <th class="px-5 py-3 text-left">Posisi</th>
-                            <th class="px-5 py-3 text-left">Tipe</th>
-                            <th class="px-5 py-3 text-left">Masa Kontrak</th>
-                            <th class="px-5 py-3 text-left">Status</th>
-                            <th class="px-5 py-3 text-right">Tindakan</th>
+                            @php
+                                $currentSort = request('sort', 'end_date_asc');
+                                
+                                function getSortLink($column, $currentSort) {
+                                    $map = [
+                                        'name' => ['asc' => 'name_asc', 'desc' => 'name_desc'],
+                                        'posisi' => ['asc' => 'posisi_asc', 'desc' => 'posisi_desc'],
+                                        'tipe' => ['asc' => 'end_date_asc', 'desc' => 'end_date_desc'], // Masa kontrak sorts are end_date
+                                        'status' => ['asc' => 'status_asc', 'desc' => 'status_desc'],
+                                    ];
+                                    
+                                    $next = $map[$column]['asc'];
+                                    if ($currentSort === $map[$column]['asc']) {
+                                        $next = $map[$column]['desc'];
+                                    }
+                                    return request()->fullUrlWithQuery(['sort' => $next]);
+                                }
+
+                                function getSortIcon($column, $currentSort) {
+                                    $map = [
+                                        'name' => ['asc' => 'name_asc', 'desc' => 'name_desc'],
+                                        'posisi' => ['asc' => 'posisi_asc', 'desc' => 'posisi_desc'],
+                                        'tipe' => ['asc' => 'end_date_asc', 'desc' => 'end_date_desc'],
+                                        'status' => ['asc' => 'status_asc', 'desc' => 'status_desc'],
+                                    ];
+                                    
+                                    if ($currentSort === $map[$column]['asc']) return 'arrow_upward';
+                                    if ($currentSort === $map[$column]['desc']) return 'arrow_downward';
+                                    return 'unfold_more';
+                                }
+                            @endphp
+
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <a href="{{ getSortLink('name', $currentSort) }}" class="inline-flex items-center gap-1 group">
+                                    Karyawan
+                                    <span class="material-symbols-outlined text-[14px] {{ str_contains($currentSort, 'name') ? 'text-gray-900' : 'text-gray-400 group-hover:text-gray-600' }}">{{ getSortIcon('name', $currentSort) }}</span>
+                                </a>
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <a href="{{ getSortLink('posisi', $currentSort) }}" class="inline-flex items-center gap-1 group">
+                                    Posisi
+                                    <span class="material-symbols-outlined text-[14px] {{ str_contains($currentSort, 'posisi') ? 'text-gray-900' : 'text-gray-400 group-hover:text-gray-600' }}">{{ getSortIcon('posisi', $currentSort) }}</span>
+                                </a>
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <a href="{{ getSortLink('tipe', $currentSort) }}" class="inline-flex items-center gap-1 group">
+                                    Tipe & Masa Kontrak
+                                    <span class="material-symbols-outlined text-[14px] {{ str_contains($currentSort, 'date') ? 'text-gray-900' : 'text-gray-400 group-hover:text-gray-600' }}">{{ getSortIcon('tipe', $currentSort) }}</span>
+                                </a>
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <a href="{{ getSortLink('status', $currentSort) }}" class="inline-flex items-center gap-1 group">
+                                    Status
+                                    <span class="material-symbols-outlined text-[14px] {{ str_contains($currentSort, 'status') ? 'text-gray-900' : 'text-gray-400 group-hover:text-gray-600' }}">{{ getSortIcon('status', $currentSort) }}</span>
+                                </a>
+                            </th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Tindakan
+                            </th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100">
+                    <tbody class="divide-y divide-gray-200">
                         @foreach ($employees as $employee)
                             @php
                                 $status = $employee->currentStatus;
                                 $expiring = $status?->contract_end_date && $status->contract_end_date->lte(now()->addDays(30));
                                 $expired  = $status?->contract_end_date && $status->contract_end_date->lt(now());
-                                $hasPendingOffer = $status?->extendOffer?->status === 'pending';
+
+                                $rowClass = '';
+                                if ($expired) $rowClass = 'bg-red-50';
+                                elseif ($expiring) $rowClass = 'bg-yellow-50';
                             @endphp
-                            <tr class="{{ $expired ? 'bg-rose-50/30' : ($expiring ? 'bg-amber-50/30' : '') }}">
-                                <td class="px-5 py-3">
-                                    <a href="{{ route('employees.show', $employee) }}" class="font-medium text-slate-900 hover:text-[#215aac] hover:underline">
-                                        {{ $employee->full_name }}
-                                    </a>
-                                    <p class="font-mono text-xs text-slate-400">{{ $employee->employee_code }}</p>
+                            <tr class="{{ $rowClass }}">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">
+                                        <a href="{{ route('employees.show', $employee) }}" class="hover:text-blue-600 hover:underline">{{ $employee->full_name }}</a>
+                                    </div>
+                                    <div class="text-xs text-gray-500">{{ $employee->employee_code }}</div>
                                 </td>
-                                <td class="px-5 py-3 text-slate-600">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                     {{ $status?->position?->position_name ?? '—' }}
                                 </td>
-                                <td class="px-5 py-3 text-slate-600">
+                                <td class="px-6 py-4 whitespace-nowrap">
                                     @php
                                         $contractTypes = [
                                             'permanent' => 'Tetap',
@@ -73,97 +152,63 @@
                                             'freelance' => 'Freelance',
                                         ];
                                     @endphp
-                                    {{ $contractTypes[$status?->type_employment] ?? $status?->type_employment ?? '—' }}
-                                </td>
-                                <td class="px-5 py-3 text-slate-600">
-                                    @if ($status?->contract_start_date)
-                                        {{ $status->contract_start_date->format('d M Y') }}
-                                        @if ($status->contract_end_date)
-                                            → {{ $status->contract_end_date->format('d M Y') }}
+                                    <div class="text-sm text-gray-900">{{ $contractTypes[$status?->type_employment] ?? $status?->type_employment ?? '—' }}</div>
+                                    <div class="text-xs text-gray-500">
+                                        @if ($status?->contract_start_date)
+                                            {{ $status->contract_start_date->format('d M Y') }}
+                                            @if ($status->contract_end_date)
+                                                → {{ $status->contract_end_date->format('d M Y') }}
+                                            @else
+                                                → Tidak ada batas
+                                            @endif
                                         @else
-                                            → Tidak ada batas
+                                            —
                                         @endif
-                                    @else
-                                        —
-                                    @endif
+                                    </div>
                                 </td>
-                                <td class="px-5 py-3">
-                                    @if ($hasPendingOffer)
-                                        <span class="inline-flex rounded-full bg-blue-100 px-2.5 py-1 text-xs font-semibold text-blue-800">
-                                            Penawaran Aktif
-                                        </span>
-                                    @elseif ($expired)
-                                        <span class="inline-flex rounded-full bg-rose-100 px-2.5 py-1 text-xs font-semibold text-rose-700">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @if ($expired)
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
                                             Habis
                                         </span>
                                     @elseif ($expiring)
-                                        <span class="inline-flex rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-700">
-                                            ≤30 Hari
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                            ≤ 30 Hari
                                         </span>
                                     @elseif ($status?->contract_end_date)
-                                        <span class="inline-flex rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-800">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                             Aktif
                                         </span>
                                     @else
-                                        <span class="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
                                             Permanen
                                         </span>
                                     @endif
                                 </td>
-                                <td class="px-5 py-3 text-right">
-                                    <div class="flex items-center justify-end gap-2">
-                                        @can('contract.manage')
-                                            @if (!$status)
-                                                <a href="{{ route('employment-statuses.create', $employee) }}"
-                                                   class="inline-flex items-center gap-1 text-xs font-semibold text-[#215aac] hover:underline">
-                                                    <span class="material-symbols-outlined text-[14px]">add</span>
-                                                    Buat Kontrak
-                                                </a>
-                                            @else
-                                                @if ($status->contract_end_date && !$hasPendingOffer)
-                                                    <a href="{{ route('employment-statuses.extend.create', $status) }}"
-                                                       class="inline-flex items-center gap-1 text-xs font-semibold text-amber-600 hover:underline">
-                                                        <span class="material-symbols-outlined text-[14px]">update</span>
-                                                        Perpanjang
-                                                    </a>
-                                                @endif
-                                                @if ($hasPendingOffer)
-                                                    <form method="POST" action="{{ route('employment-statuses.extend.accept', $status) }}" class="inline">
-                                                        @csrf
-                                                        <button type="submit" class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 hover:underline">
-                                                            <span class="material-symbols-outlined text-[14px]">check_circle</span>
-                                                            Setujui
-                                                        </button>
-                                                    </form>
-                                                    <form method="POST" action="{{ route('employment-statuses.extend.reject', $status) }}" class="inline">
-                                                        @csrf
-                                                        <button type="submit" class="inline-flex items-center gap-1 text-xs font-semibold text-rose-600 hover:underline">
-                                                            <span class="material-symbols-outlined text-[14px]">cancel</span>
-                                                            Tolak
-                                                        </button>
-                                                    </form>
-                                                @endif
-                                                <a href="{{ route('employment-statuses.change-position.create', $status) }}"
-                                                   class="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 hover:underline">
-                                                    <span class="material-symbols-outlined text-[14px]">swap_horiz</span>
-                                                    Ubah Posisi
-                                                </a>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    @can('contract.manage')
+                                        @if (!$status)
+                                            <a href="{{ route('employment-statuses.create', $employee) }}" class="text-blue-600 hover:text-blue-900 ml-4">Buat Kontrak</a>
+                                        @else
+                                            @if ($status->contract_end_date)
+                                                <a href="{{ route('employment-statuses.extend.create', $status) }}" class="text-yellow-600 hover:text-yellow-900 ml-4">Perpanjang</a>
                                             @endif
-                                        @endcan
-                                        <a href="{{ route('employees.show', $employee) }}"
-                                           class="inline-flex items-center gap-1 text-xs font-medium text-slate-400 hover:text-slate-600 hover:underline">
-                                            <span class="material-symbols-outlined text-[14px]">person</span>
-                                            Profil
-                                        </a>
-                                    </div>
+                                            <a href="{{ route('employment-statuses.change-position.create', $status) }}" class="text-gray-600 hover:text-gray-900 ml-4">Ubah Posisi</a>
+                                        @endif
+                                    @endcan
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
+            
+            @if ($employees->hasPages())
+                <div class="px-6 py-4 border-t border-gray-200">
+                    {{ $employees->links() }}
+                </div>
+            @endif
         @endif
     </div>
-
 </div>
 @endsection

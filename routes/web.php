@@ -600,8 +600,6 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     Route::post('employment-statuses/{employee}', [EmploymentStatusController::class, 'store'])->name('employment-statuses.store');
     Route::get('employment-statuses/{status}/extend', [EmploymentStatusController::class, 'extendCreate'])->name('employment-statuses.extend.create');
     Route::post('employment-statuses/{status}/extend', [EmploymentStatusController::class, 'extendStore'])->name('employment-statuses.extend.store');
-    Route::post('employment-statuses/{status}/extend/accept', [EmploymentStatusController::class, 'extendAccept'])->name('employment-statuses.extend.accept');
-    Route::post('employment-statuses/{status}/extend/reject', [EmploymentStatusController::class, 'extendReject'])->name('employment-statuses.extend.reject');
     Route::get('employment-statuses/{status}/change-position', [EmploymentStatusController::class, 'changePositionCreate'])->name('employment-statuses.change-position.create');
     Route::post('employment-statuses/{status}/change-position', [EmploymentStatusController::class, 'changePositionStore'])->name('employment-statuses.change-position.store');
 

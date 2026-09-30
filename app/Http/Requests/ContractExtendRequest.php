@@ -14,8 +14,16 @@ class ContractExtendRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'proposed_end_date' => ['required', 'date', 'after:today'],
-            'notes' => ['nullable', 'string', 'max:500'],
+            'new_end_date' => ['required', 'date', 'after:today'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'new_end_date.required' => 'Tanggal akhir kontrak baru wajib diisi.',
+            'new_end_date.date' => 'Tanggal akhir kontrak baru harus berupa tanggal yang valid.',
+            'new_end_date.after' => 'Tanggal akhir kontrak baru harus setelah hari ini.',
         ];
     }
 }
