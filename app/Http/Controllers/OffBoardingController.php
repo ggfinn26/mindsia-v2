@@ -36,6 +36,10 @@ class OffBoardingController extends Controller
 
         DB::transaction(function () use ($current, $employee, $request) {
             $current->offBoarding()->create($request->validated());
+            $current->update([
+                'status' => 'terminated',
+                'contract_end_date' => today(),
+            ]);
             $this->employeeRepository->deactivate($employee);
             if ($employee->user) {
                 $employee->user->delete();

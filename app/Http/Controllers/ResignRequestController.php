@@ -10,6 +10,46 @@ use Illuminate\View\View;
 
 class ResignRequestController extends Controller
 {
+    public function myCreate(): View
+    {
+        $employee = auth()->user()->employee;
+        abort_if(! $employee, 403);
+
+        $pending = ResignRequest::where('employee_id', $employee->id)
+            ->whereIn('status', ['pending', 'review'])
+            ->latest()
+            ->first();
+
+        return view('admin.employees.resign-requests.my-create', compact('employee', 'pending'));
+    }
+
+    public function myStore(ResignRequestFormRequest $request): RedirectResponse
+    {
+        $employee = auth()->user()->employee;
+        abort_if(! $employee, 403);
+
+        $alreadyPending = ResignRequest::where('employee_id', $employee->id)
+            ->whereIn('status', ['pending', 'review'])
+            ->exists();
+
+        if ($alreadyPending) {
+            return redirect()
+                ->route('resign-requests.my-create')
+                ->with('error', 'Kamu sudah memiliki permintaan pengunduran diri yang sedang diproses.');
+        }
+
+        ResignRequest::create([
+            'employee_id' => $employee->id,
+            'resign_date' => $request->validated()['resign_date'],
+            'reason' => $request->validated()['reason'],
+            'status' => 'pending',
+        ]);
+
+        return redirect()
+            ->route('resign-requests.my-create')
+            ->with('success', 'Permintaan pengunduran diri berhasil diajukan ke HR.');
+    }
+
     public function create(Employee $employee): View
     {
         abort_unless(auth()->id() === $employee->user_id, 403);
@@ -21,6 +61,7 @@ class ResignRequestController extends Controller
     {
         $validated = $request->validated();
         $validated['employee_id'] = $employee->id;
+        $validated['status'] = 'pending';
 
         ResignRequest::create($validated);
 

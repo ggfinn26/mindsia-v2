@@ -40,7 +40,7 @@
                         @endphp
                         <tr class="hover:bg-slate-50/70">
                             <td class="px-5 py-4 font-semibold text-slate-900">{{ $req->employee?->full_name }}</td>
-                            <td class="px-5 py-4 text-slate-600">{{ $req->effective_date?->format('d M Y') ?? '—' }}</td>
+                            <td class="px-5 py-4 text-slate-600">{{ $req->resign_date?->format('d M Y') ?? '—' }}</td>
                             <td class="px-5 py-4 text-slate-500">{{ $req->created_at->format('d M Y') }}</td>
                             <td class="px-5 py-4">
                                 <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $statusClass }}">{{ ucfirst($req->status) }}</span>

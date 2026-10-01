@@ -132,7 +132,11 @@
                                     <td class="px-5 py-3">
                                         <p class="font-medium text-slate-900">{{ $status->position?->position_name ?? '—' }}</p>
                                         @if ($loop->first)
-                                            <span class="mt-0.5 inline-flex rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-800">Aktif</span>
+                                            @if ($status->status === 'terminated')
+                                                <span class="mt-0.5 inline-flex rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-600">Selesai</span>
+                                            @else
+                                                <span class="mt-0.5 inline-flex rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-800">Aktif</span>
+                                            @endif
                                         @endif
                                     </td>
                                     <td class="px-5 py-3 text-slate-600">
@@ -148,7 +152,13 @@
                                     <td class="px-5 py-3">
                                         @if ($loop->first)
                                             @if ($status->status === 'terminated')
-                                                @php $allDone = $status->terminationChecklist->count() > 0 && $status->terminationChecklist->every(fn($i) => $i->is_completed); @endphp
+                                                @php
+                                                    $isOffboarded = $status->offBoarding !== null;
+                                                    $allDone = ! $isOffboarded && $status->terminationChecklist->count() > 0 && $status->terminationChecklist->every(fn($i) => $i->is_completed);
+                                                @endphp
+                                                @if ($isOffboarded)
+                                                    <span class="text-xs text-slate-400">Offboarding selesai</span>
+                                                @else
                                                 <div class="flex items-center gap-2">
                                                     @if ($allDone)
                                                         <a href="{{ route('contract-terminate.complete.confirm', $status) }}"
@@ -214,6 +224,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                @endif {{-- isOffboarded --}}
                                             @else
                                                 <div class="flex flex-wrap items-center gap-2">
                                                     @if ($status->contract_end_date)

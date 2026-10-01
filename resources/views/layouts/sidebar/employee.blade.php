@@ -9,6 +9,9 @@
     @if (auth()->user()->employee?->branch_id && auth()->id() === auth()->user()->employee->user_id)
     <x-dashboard.nav-item href="{{ route('branch-transfers.my-request') }}" :isChild="true" :active="request()->routeIs('branch-transfers.my-request')">Ajukan Pindah Cabang</x-dashboard.nav-item>
     @endif
+    @if (auth()->user()->employee)
+    <x-dashboard.nav-item href="{{ route('resign-requests.my-create') }}" :isChild="true" :active="request()->routeIs('resign-requests.my-create')">Pengunduran Diri</x-dashboard.nav-item>
+    @endif
 </x-dashboard.nav-group>
 
 <!-- Strategic Alert Center -->

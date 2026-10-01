@@ -37,7 +37,8 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('off-boarding.store', $employee) }}" class="border border-red-100 bg-white p-6 space-y-4">
+    <div x-data="{ showConfirm: false }">
+    <form method="POST" action="{{ route('off-boarding.store', $employee) }}" class="border border-red-100 bg-white p-6 space-y-4" id="offboarding-form">
         @csrf
         <div class="flex items-start gap-3 rounded border border-red-200 bg-red-50 p-4">
             <span class="material-symbols-outlined text-red-600">warning</span>
@@ -48,19 +49,46 @@
         </div>
         <div>
             <label class="mb-1.5 block text-sm font-medium text-slate-700">Catatan offboarding</label>
-            <textarea name="notes" rows="3" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]" placeholder="Catatan tambahan (opsional)...">{{ old('notes') }}</textarea>
+            <textarea name="reason_off_boarding" rows="3" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]" placeholder="Catatan tambahan (opsional)...">{{ old('reason_off_boarding') }}</textarea>
         </div>
         <div>
             <label class="mb-1.5 block text-sm font-medium text-slate-700">Tanggal offboarding</label>
-            <input type="date" name="offboarding_date" value="{{ old('offboarding_date', today()->toDateString()) }}" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+            <input type="date" name="off_boarding_date" value="{{ old('off_boarding_date', today()->toDateString()) }}" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
         </div>
         <div class="flex gap-3 pt-2">
-            <button type="submit" onclick="return confirm('Proses offboarding dan hapus akun pegawai ini? Tindakan tidak dapat diurungkan.')"
+            <button type="button" @click="showConfirm = true"
                     class="inline-flex min-h-10 items-center gap-2 bg-red-600 px-5 text-sm font-semibold text-white hover:bg-red-700">
                 <span class="material-symbols-outlined text-[18px]">logout</span> Proses Offboarding
             </button>
             <a href="{{ route('resign-requests.index') }}" class="inline-flex min-h-10 items-center border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50">Batal</a>
         </div>
     </form>
+
+    {{-- Modal Konfirmasi Offboarding --}}
+    <template x-teleport="body">
+        <div x-show="showConfirm" class="fixed inset-0 z-[9999] flex items-center justify-center" style="display:none">
+            <div class="fixed inset-0 bg-slate-900/50" @click="showConfirm = false"></div>
+            <div class="relative w-full max-w-md border border-slate-200 bg-white shadow-xl">
+                <div class="px-6 py-5">
+                    <div class="flex items-start gap-3">
+                        <span class="material-symbols-outlined text-red-600">warning</span>
+                        <div>
+                            <h3 class="font-jakarta text-base font-bold text-slate-900">Proses Offboarding?</h3>
+                            <p class="mt-1 text-sm text-slate-600">Akun login <strong>{{ $employee->full_name }}</strong> akan dihapus permanen dan status kepegawaian dinonaktifkan. Tindakan ini tidak dapat diurungkan.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3 border-t border-slate-100 px-6 py-4">
+                    <button type="button" @click="showConfirm = false" class="inline-flex min-h-9 items-center border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50">Batal</button>
+                    <button type="button" @click="document.getElementById('offboarding-form').submit()"
+                            class="inline-flex min-h-9 items-center gap-2 bg-red-600 px-4 text-sm font-semibold text-white hover:bg-red-700">
+                        <span class="material-symbols-outlined text-[16px]">logout</span> Ya, Proses Offboarding
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    </div>
 </div>
 @endsection

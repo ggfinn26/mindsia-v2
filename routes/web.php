@@ -614,6 +614,8 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     Route::delete('employees/{employee}/work-histories/{workHistory}', [EmployeeWorkHistoryController::class, 'destroy'])->name('employees.work-histories.destroy');
 
     // Employee Resign Requests (self-service initiate + BOARD approval)
+    Route::get('my-resign', [ResignRequestController::class, 'myCreate'])->name('resign-requests.my-create');
+    Route::post('my-resign', [ResignRequestController::class, 'myStore'])->name('resign-requests.my-store');
     Route::get('employees/{employee}/resign-requests/create', [ResignRequestController::class, 'create'])->name('resign-requests.create');
     Route::post('employees/{employee}/resign-requests', [ResignRequestController::class, 'store'])->name('resign-requests.store');
     Route::get('resign-requests', [ResignRequestController::class, 'index'])->middleware('can:contract.manage')->name('resign-requests.index');
