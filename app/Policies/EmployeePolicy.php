@@ -55,7 +55,7 @@ class EmployeePolicy
 
     public function requestBranchTransfer(User $user, Employee $employee): bool
     {
-        return $user->id === $employee->user_id;
+        return $user->id === $employee->user_id && $employee->branch_id !== null;
     }
 
     public function reviewBranchTransfer(User $user): bool
@@ -65,7 +65,7 @@ class EmployeePolicy
 
     public function directBranchTransfer(User $user, Employee $employee): bool
     {
-        if (! $user->can('employee.update')) {
+        if (! $user->can('employee.update') || $employee->branch_id === null) {
             return false;
         }
 

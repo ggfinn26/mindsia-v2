@@ -26,7 +26,7 @@
         <p class="mt-1 font-semibold text-slate-900">{{ $currentBranch?->branch_name ?? '—' }}</p>
     </div>
 
-    <form method="POST" action="{{ route('employees.branch-transfer.direct', $employee) }}" class="border border-slate-200 bg-white p-6 space-y-4">
+    <form method="POST" action="{{ route('branch-transfers.direct.update', $employee) }}" class="border border-slate-200 bg-white p-6 space-y-4" novalidate>
         @csrf @method('PUT')
         <div>
             <label class="mb-1.5 block text-sm font-medium text-slate-700">Cabang tujuan</label>

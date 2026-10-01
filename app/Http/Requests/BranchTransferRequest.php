@@ -8,15 +8,19 @@ class BranchTransferRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        $employee = $this->route('employee');
+        $employee = $this->route('employee') ?? $this->user()->employee;
 
-        return $this->user()->can('requestBranchTransfer', $employee)
+        if (! $employee) {
+            return false;
+        }
+
+        return ($employee->branch_id && $this->user()->id === $employee->user_id)
             || $this->user()->can('employee.update');
     }
 
     public function rules(): array
     {
-        $employee = $this->route('employee');
+        $employee = $this->route('employee') ?? $this->user()->employee;
 
         return [
             'to_branch_id' => [

@@ -637,6 +637,8 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     });
 
     // Employee Branch Transfer (2 flows: self-service + direct)
+    Route::get('my-branch-transfer', [BranchTransferController::class, 'myRequestCreate'])->name('branch-transfers.my-request');
+    Route::post('my-branch-transfer', [BranchTransferController::class, 'myRequestStore'])->name('branch-transfers.my-request.store');
     Route::get('employees/{employee}/branch-transfer/request', [BranchTransferController::class, 'requestCreate'])->name('branch-transfers.request.create');
     Route::post('employees/{employee}/branch-transfer/request', [BranchTransferController::class, 'requestStore'])->name('branch-transfers.request.store');
     Route::get('branch-transfers/review', [BranchTransferController::class, 'reviewIndex'])->name('branch-transfers.review.index');

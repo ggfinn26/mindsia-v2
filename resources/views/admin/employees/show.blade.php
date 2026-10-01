@@ -215,12 +215,26 @@
                                                     </div>
                                                 </div>
                                             @else
-                                                <div class="flex items-center gap-2">
+                                                <div class="flex flex-wrap items-center gap-2">
+                                                    @if ($status->contract_end_date)
+                                                    <a href="{{ route('employment-statuses.extend.create', $status) }}"
+                                                       class="inline-flex items-center gap-1 rounded-md bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 hover:bg-amber-100">
+                                                        <span class="material-symbols-outlined text-[13px]">update</span>
+                                                        Perpanjang
+                                                    </a>
+                                                    @endif
                                                     <a href="{{ route('employment-statuses.change-position.create', $status) }}"
                                                        class="inline-flex items-center gap-1 rounded-md bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-100">
                                                         <span class="material-symbols-outlined text-[13px]">swap_horiz</span>
                                                         Ubah Posisi
                                                     </a>
+                                                    @can('directBranchTransfer', $employee)
+                                                    <a href="{{ route('branch-transfers.direct.edit', $employee) }}"
+                                                       class="inline-flex items-center gap-1 rounded-md bg-purple-50 px-2.5 py-1 text-xs font-semibold text-purple-700 hover:bg-purple-100">
+                                                        <span class="material-symbols-outlined text-[13px]">alt_route</span>
+                                                        Pindah Cabang
+                                                    </a>
+                                                    @endcan
                                                     <a href="{{ route('contract-terminate.initiate', $status) }}"
                                                        class="inline-flex items-center gap-1 rounded-md bg-red-50 px-2.5 py-1 text-xs font-semibold text-red-700 hover:bg-red-100">
                                                         <span class="material-symbols-outlined text-[13px]">cancel</span>

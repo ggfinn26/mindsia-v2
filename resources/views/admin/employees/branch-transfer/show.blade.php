@@ -6,7 +6,7 @@
 @section('content')
 <div class="max-w-2xl mx-auto space-y-6">
     <div>
-        <a href="{{ route('branch-transfers.review') }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700">
+        <a href="{{ route('branch-transfers.review.index') }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700">
             <span class="material-symbols-outlined text-[16px]">arrow_back</span> Daftar Permintaan
         </a>
         <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Permintaan Pindah Cabang</h2>

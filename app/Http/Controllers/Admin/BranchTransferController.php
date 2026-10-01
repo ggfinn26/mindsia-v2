@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BranchTransferRequest;
 use App\Http\Requests\ReviewBranchTransferRequest;
+use App\Models\Branch;
 use App\Models\BranchTransferRequest as BranchTransferModel;
 use App\Models\Employee;
 use Illuminate\Http\RedirectResponse;
@@ -12,15 +13,71 @@ use Illuminate\View\View;
 
 class BranchTransferController extends Controller
 {
+    public function myRequestCreate(): View
+    {
+        $employee = auth()->user()->employee;
+        abort_if(! $employee || ! $employee->branch_id, 403);
+
+        $pendingRequest = BranchTransferModel::where('employee_id', $employee->id)
+            ->where('status', 'review')
+            ->with(['fromBranch', 'toBranch'])
+            ->latest()
+            ->first();
+
+        $recentRequests = BranchTransferModel::where('employee_id', $employee->id)
+            ->with(['fromBranch', 'toBranch'])
+            ->latest()
+            ->take(5)
+            ->get();
+
+        $currentBranch = $employee->branch;
+        $otherBranches = $pendingRequest ? collect() : Branch::active()
+            ->where('id', '!=', $employee->branch_id)
+            ->get();
+
+        return view('admin.employees.branch-transfer.my-request', compact(
+            'employee',
+            'currentBranch',
+            'otherBranches',
+            'pendingRequest',
+            'recentRequests',
+        ));
+    }
+
+    public function myRequestStore(BranchTransferRequest $request): RedirectResponse
+    {
+        $employee = auth()->user()->employee;
+        abort_if(! $employee || ! $employee->branch_id, 403);
+
+        $alreadyPending = BranchTransferModel::where('employee_id', $employee->id)
+            ->where('status', 'review')
+            ->exists();
+
+        if ($alreadyPending) {
+            return redirect()
+                ->route('branch-transfers.my-request')
+                ->with('error', 'Kamu sudah memiliki permintaan pindah cabang yang sedang direview.');
+        }
+
+        BranchTransferModel::create([
+            'employee_id' => $employee->id,
+            'from_branch_id' => $employee->branch_id,
+            'to_branch_id' => $request->validated()['to_branch_id'],
+            'status' => 'review',
+        ]);
+
+        return redirect()
+            ->route('branch-transfers.my-request')
+            ->with('success', 'Permintaan pindah cabang telah dikirim ke HR.');
+    }
+
     public function requestCreate(Employee $employee): View
     {
         $this->authorize('requestBranchTransfer', $employee);
 
         $currentBranch = $employee->branch;
-        $otherBranches = $employee->region
-            ->branches()
+        $otherBranches = Branch::active()
             ->where('id', '!=', $employee->branch_id)
-            ->active()
             ->get();
 
         return view('admin.employees.branch-transfer.request', compact(
@@ -100,10 +157,8 @@ class BranchTransferController extends Controller
         $this->authorize('directBranchTransfer', $employee);
 
         $currentBranch = $employee->branch;
-        $otherBranches = $employee->region
-            ->branches()
+        $otherBranches = Branch::active()
             ->where('id', '!=', $employee->branch_id)
-            ->active()
             ->get();
 
         return view('admin.employees.branch-transfer.direct-edit', compact(

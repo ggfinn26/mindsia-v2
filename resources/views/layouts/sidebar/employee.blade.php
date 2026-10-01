@@ -3,9 +3,12 @@
     Dashboard
 </x-dashboard.nav-item>
 
-<x-dashboard.nav-group title="Pengaturan Akun" icon="settings" :active="request()->is('employee/profile*') || request()->is('employee/password*')">
+<x-dashboard.nav-group title="Pengaturan Akun" icon="settings" :active="request()->is('employee/profile*') || request()->is('employee/password*') || request()->routeIs('branch-transfers.my-request')">
     <x-dashboard.nav-item href="{{ route('employee.profile.show') }}" :isChild="true" :active="request()->routeIs('employee.profile.show')">Profile Saya</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('employee.password.edit') }}" :isChild="true" :active="request()->routeIs('employee.password.edit')">Ubah Password</x-dashboard.nav-item>
+    @if (auth()->user()->employee?->branch_id && auth()->id() === auth()->user()->employee->user_id)
+    <x-dashboard.nav-item href="{{ route('branch-transfers.my-request') }}" :isChild="true" :active="request()->routeIs('branch-transfers.my-request')">Ajukan Pindah Cabang</x-dashboard.nav-item>
+    @endif
 </x-dashboard.nav-group>
 
 <!-- Strategic Alert Center -->
@@ -185,9 +188,13 @@
 @canany(['class.manage', 'class.attendance.record', 'class.test.create', 'class.graduate'])
 <x-dashboard.nav-group title="Kelas" icon="school" :active="request()->routeIs('classrooms.*') || request()->routeIs('class-schedules.*') || request()->routeIs('class-tests.*') || request()->routeIs('member-class.*')">
     <x-dashboard.nav-item href="{{ route('classrooms.index') }}" :isChild="true" :active="request()->routeIs('classrooms.index') || request()->routeIs('classrooms.show') || request()->routeIs('member-class.*')">Semua Kelas</x-dashboard.nav-item>
+    @can('class.manage')
     <x-dashboard.nav-item href="{{ route('classrooms.create') }}" :isChild="true" :active="request()->routeIs('classrooms.create')">Buat Kelas Baru</x-dashboard.nav-item>
+    @endcan
     <x-dashboard.nav-item href="{{ route('class-schedules.index') }}" :isChild="true" :active="request()->routeIs('class-schedules.*')">Sesi & Absensi</x-dashboard.nav-item>
+    @canany(['class.test.create', 'class.certificate.update', 'class.graduate'])
     <x-dashboard.nav-item href="{{ route('class-tests.index') }}" :isChild="true" :active="request()->routeIs('class-tests.*')">Test & Sertifikat</x-dashboard.nav-item>
+    @endcan
 </x-dashboard.nav-group>
 @endcan
 
@@ -327,8 +334,12 @@
 @canany(['facility.ticket.create', 'facility.inventory.create', 'facility.rent_contract.create'])
 <x-dashboard.nav-group title="Fasilitas" icon="build" :active="request()->is('facility*') && !request()->is('facility/my-tickets*')">
     <x-dashboard.nav-item href="{{ route('facility.tickets.index') }}" :active="request()->routeIs('facility.tickets.*')" :isChild="true">Tiket Fasilitas</x-dashboard.nav-item>
+    @canany(['facility.inventory.create', 'facility.inventory.update', 'facility.inventory.dispose'])
     <x-dashboard.nav-item href="{{ route('facility.inventory.index') }}" :active="request()->routeIs('facility.inventory.*')" :isChild="true">Inventaris</x-dashboard.nav-item>
+    @endcan
+    @canany(['facility.rent_contract.create', 'facility.rent_contract.update', 'facility.rent_contract.mark_paid'])
     <x-dashboard.nav-item href="{{ route('facility.rent-contracts.index') }}" :active="request()->routeIs('facility.rent-contracts.*')" :isChild="true">Kontrak Sewa</x-dashboard.nav-item>
+    @endcan
 </x-dashboard.nav-group>
 @endcan
 
