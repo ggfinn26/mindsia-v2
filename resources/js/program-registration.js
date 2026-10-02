@@ -58,6 +58,7 @@ window.programRegistration = function (config) {
         },
 
         employees: [],
+        allEmployees: [],
         searchingEmployee: false,
 
         get filteredBranchProvinces() {
@@ -97,21 +98,30 @@ window.programRegistration = function (config) {
             return this.birthPlace || "Pilih Kota/Kabupaten";
         },
 
-        searchEmployee() {
-            if (this.employeeSearch.length < 3) {
-                this.employees = [];
-                return;
-            }
+        loadAllEmployees() {
+            if (this.employees.length > 0) return;
             this.searchingEmployee = true;
-            fetch("/api/member/employees/search?q=" + encodeURIComponent(this.employeeSearch))
+            fetch("/api/member/employees/search")
                 .then((res) => res.json())
                 .then((data) => {
                     this.employees = data;
+                    this.allEmployees = data;
                     this.searchingEmployee = false;
                 })
                 .catch(() => {
                     this.searchingEmployee = false;
                 });
+        },
+
+        searchEmployee() {
+            const q = this.employeeSearch.toLowerCase();
+            if (!q) {
+                this.employees = this.allEmployees;
+                return;
+            }
+            this.employees = this.allEmployees.filter(
+                (e) => e.full_name.toLowerCase().includes(q) || e.employee_code.toLowerCase().includes(q),
+            );
         },
 
         selectEmployee(code, name) {

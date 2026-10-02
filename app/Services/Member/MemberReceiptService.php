@@ -16,6 +16,7 @@ class MemberReceiptService
             'program',
             'paymentPlan',
             'payments',
+            'employee.branch',
         ]);
 
         $templatePath = storage_path(
@@ -38,7 +39,7 @@ class MemberReceiptService
         return $outPath;
     }
 
-    private function fill(TemplateProcessor $processor, MemberRegistration $registration): void
+    public function fill(TemplateProcessor $processor, MemberRegistration $registration): void
     {
         $member = $registration->memberData;
         $payments = $registration->payments->sortBy('installment_number');
@@ -49,7 +50,7 @@ class MemberReceiptService
         // Pelunasan = total - DP
         $pelunasan = $registration->final_price - $dp;
 
-        $processor->setValue('nomor_registrasi', (string) $registration->id);
+        $processor->setValue('nomor_registrasi', $registration->formatted_number);
         $processor->setValue('tanggal_registrasi', Carbon::parse($registration->created_at)->translatedFormat('d F Y'));
         $processor->setValue('nama_program', $registration->receipt_program_name);
         $processor->setValue('harga_program', 'Rp '.number_format($registration->original_price, 0, ',', '.'));

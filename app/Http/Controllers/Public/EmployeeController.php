@@ -23,16 +23,18 @@ class EmployeeController
     public function search(Request $request): JsonResponse
     {
         $q = trim($request->query('q', ''));
-        if (strlen($q) < 3) {
-            return response()->json([]);
+
+        $query = Employee::orderBy('full_name');
+
+        if ($q !== '') {
+            $query->where(fn ($w) => $w
+                ->where('full_name', 'like', "%{$q}%")
+                ->orWhere('employee_code', 'like', "%{$q}%")
+            );
         }
 
-        $employees = Employee::where('full_name', 'like', "%{$q}%")
-            ->orWhere('employee_code', 'like', "%{$q}%")
-            ->orderBy('full_name')
-            ->limit(15)
-            ->get(['full_name', 'employee_code']);
-
-        return response()->json($employees);
+        return response()->json(
+            $query->limit(100)->get(['full_name', 'employee_code'])
+        );
     }
 }

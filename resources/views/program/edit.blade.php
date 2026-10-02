@@ -143,13 +143,21 @@
                 @endif
                 <input type="file" name="receipt_template" accept=".docx"
                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
-                <p class="text-xs text-gray-500 mt-1">Format: .docx. Kosongkan jika tidak ingin mengubah template.</p>
+                <div class="flex items-center gap-3 mt-1">
+                    <p class="text-xs text-gray-500">Format: .docx. Kosongkan jika tidak ingin mengubah template.</p>
+                    <a href="{{ route('programs.receipt-template.download') }}"
+                       class="inline-flex items-center gap-1.5 text-xs font-semibold text-[#215aac] hover:underline shrink-0">
+                        <span class="material-symbols-outlined text-[14px]">download</span>
+                        Unduh Contoh Template
+                    </a>
+                </div>
                 @error('receipt_template')
                     <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                 @enderror
             </div>
 
             <div>
+                <input type="hidden" name="is_active" value="0">
                 <label class="flex items-center gap-2">
                     <input type="checkbox" name="is_active" value="1" {{ old('is_active', $program->is_active) ? 'checked' : '' }} class="rounded" />
                     <span class="text-sm text-gray-700">Aktif</span>

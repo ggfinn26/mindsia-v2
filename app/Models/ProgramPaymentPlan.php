@@ -31,7 +31,7 @@ class ProgramPaymentPlan extends Model
 
     public function registrations(): HasMany
     {
-        return $this->hasMany(MemberRegistration::class);
+        return $this->hasMany(MemberRegistration::class, 'payment_plan_id');
     }
 
     /** Total jumlah pembayaran (DP + angsuran). */

@@ -76,8 +76,8 @@
                                 <a href="{{ route('programs.show', $program) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Detail</a>
                                 <a href="{{ route('programs.edit', $program) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
                                 <button type="button"
-                                    @click="showConfirmModal = true; confirmTitle = 'Nonaktifkan Program'; confirmMessage = 'Program yang masih memiliki kelas aktif tidak bisa dinonaktifkan. Lanjutkan?'; confirmActionUrl = '{{ route('programs.destroy', $program) }}'; confirmMethod = 'DELETE'; confirmActionText = 'Nonaktifkan'"
-                                    class="text-red-600 hover:text-red-900">Hapus</button>
+                                    @click="showConfirmModal = true; confirmTitle = 'Nonaktifkan Program'; confirmMessage = 'Program yang masih memiliki registrasi member tidak bisa dinonaktifkan. Lanjutkan?'; confirmActionUrl = '{{ route('programs.deactivate', $program) }}'; confirmActionText = 'Nonaktifkan'"
+                                    class="text-red-600 hover:text-red-900">Nonaktifkan</button>
                             </td>
                         </tr>
                     @empty
@@ -110,12 +110,11 @@
                         </div>
                     </div>
                     <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                        <button type="button" @click="$refs.confirmForm.submit()" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto" x-text="confirmActionText"></button>
+                        <button type="button" @click="$refs.confirmForm.action = confirmActionUrl; $refs.confirmForm.submit()" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto" x-text="confirmActionText"></button>
                         <button type="button" @click="showConfirmModal = false" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Batal</button>
                     </div>
                     <form x-ref="confirmForm" :action="confirmActionUrl" method="POST" class="hidden">
                         @csrf
-                        <input type="hidden" name="_method" :value="confirmMethod">
                     </form>
                 </div>
             </div>

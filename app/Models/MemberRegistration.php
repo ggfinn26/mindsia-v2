@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -35,6 +36,16 @@ class MemberRegistration extends Model
         'discount_amount' => 'integer',
         'final_price' => 'integer',
     ];
+
+    public function getFormattedNumberAttribute(): string
+    {
+        $branchCode = $this->employee?->branch?->code_branches ?? 'XX';
+        $programCode = $this->program?->program_code ?? 'XX';
+        $monthYear = Carbon::parse($this->created_at)->format('my');
+        $seq = str_pad((string) $this->id, 4, '0', STR_PAD_LEFT);
+
+        return strtoupper("{$branchCode}/{$programCode}/{$monthYear}/{$seq}");
+    }
 
     public function getStatusLabelAttribute(): string
     {

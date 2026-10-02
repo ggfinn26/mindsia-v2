@@ -3,7 +3,8 @@
 @section('title', $program->program_name)
 
 @section('content')
-<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8"
+     x-data="{ showDeletePlanModal: false, deletePlanUrl: '' }">
     <div class="flex justify-between items-center mb-6">
         <div>
             <h1 class="text-2xl font-bold text-gray-900">{{ $program->program_name }}</h1>
@@ -18,6 +19,12 @@
     @if (session('success'))
         <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
             {{ session('success') }}
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+            {{ session('error') }}
         </div>
     @endif
 
@@ -286,13 +293,11 @@
                                             </button>
                                         </form>
                                     @endif
-                                    <form method="POST" action="{{ route('programs.payment-plans.destroy', $plan) }}"
-                                          onsubmit="return confirm('Hapus payment plan ini? Tidak bisa dibatalkan.')">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="text-red-500 hover:text-red-700 text-xs font-medium hover:underline">
-                                            Hapus
-                                        </button>
-                                    </form>
+                                    <button type="button"
+                                        @click="deletePlanUrl = '{{ route('programs.payment-plans.destroy', $plan) }}'; showDeletePlanModal = true"
+                                        class="text-red-500 hover:text-red-700 text-xs font-medium hover:underline">
+                                        Hapus
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -303,6 +308,37 @@
         @endif
     </div>
     @endcan
+
+    {{-- Modal Hapus Payment Plan --}}
+    <div x-show="showDeletePlanModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center"
+         @keydown.escape.window="showDeletePlanModal = false">
+        <div class="absolute inset-0 bg-black/40" @click="showDeletePlanModal = false"></div>
+        <div class="relative bg-white rounded-xl shadow-xl w-full max-w-sm mx-4 p-6 space-y-4">
+            <div class="flex items-start gap-3">
+                <div class="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-red-100">
+                    <span class="material-symbols-outlined text-red-600 text-[20px]">delete</span>
+                </div>
+                <div>
+                    <h3 class="text-base font-semibold text-gray-900">Hapus Payment Plan</h3>
+                    <p class="text-sm text-gray-500 mt-1">Tindakan ini tidak bisa dibatalkan.</p>
+                </div>
+            </div>
+            <div class="flex gap-3 justify-end pt-2">
+                <button type="button" @click="showDeletePlanModal = false"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                    Batal
+                </button>
+                <button type="button" @click="$refs.deletePlanForm.action = deletePlanUrl; $refs.deletePlanForm.submit()"
+                        class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700">
+                    Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <form x-ref="deletePlanForm" method="POST" class="hidden">
+        @csrf @method('DELETE')
+    </form>
 
 </div>
 @endsection

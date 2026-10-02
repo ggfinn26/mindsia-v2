@@ -14,13 +14,13 @@
         <p class="text-gray-600 mb-2">
             Waduh, sepertinya Anda kurang cepat. Kuota untuk program ini di cabang Anda sudah terisi penuh.
         </p>
-        
+
         <div class="bg-gray-50 border border-gray-100 rounded-lg p-5 my-6 max-w-lg w-full">
             <p class="text-gray-800 font-medium italic">
                 "You're too late! It's like saying <strong>'I am eating'</strong> when you meant to say <strong>'I have eaten'</strong>. The moment is gone!"
             </p>
         </div>
-        
+
         <p class="text-sm text-gray-500 mb-8">
             Jangan khawatir, tunggu pembukaan kuota (batch) selanjutnya ya, atau coba cek program lainnya!
         </p>

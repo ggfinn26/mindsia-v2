@@ -865,6 +865,11 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     Route::post('member-reviews/{review}/reject', [MemberNpsResponseController::class, 'rejectReview'])->name('member-reviews.reject');
 
     // Curriculum Domain
+    Route::post('programs/{program}/deactivate', [ProgramController::class, 'deactivate'])->name('programs.deactivate');
+    Route::get('programs/receipt-template/download', [ProgramController::class, 'downloadReceiptTemplate'])->name('programs.receipt-template.download');
+    Route::get('programs/receipt-template/test', [ProgramController::class, 'receiptTemplateTest'])->name('programs.receipt-template.test');
+    Route::post('programs/receipt-template/test', [ProgramController::class, 'receiptTemplateTestProcess'])->name('programs.receipt-template.test.process');
+    Route::get('programs/receipt-template/test/download', [ProgramController::class, 'receiptTemplateTestDownload'])->name('programs.receipt-template.test.download');
     Route::resource('programs', ProgramController::class);
     Route::resource('programs.quotas', BranchProgramQuotaController::class)->shallow();
     Route::post('programs/{program}/payment-plans', [ProgramPaymentPlanController::class, 'store'])->name('programs.payment-plans.store');

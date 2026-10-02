@@ -145,7 +145,7 @@
                 
                 <div class="p-8 flex-grow flex flex-col">
                     <div class="text-[11px] font-black text-ky-primary uppercase tracking-widest mb-2">{{ $lp->level_label ?? 'UMUM' }}</div>
-                    <h3 class="font-sans font-black text-[22px] text-[#06122B] mb-3 leading-tight">{{ $lp->code }}</h3>
+                    <h3 class="font-sans font-black text-[22px] text-[#06122B] mb-3 leading-tight">{{ $lp->program_name }}</h3>
                     <p class="text-[14px] text-ky-text/70 mb-6 flex-grow">{{ $lp->tagline ?? 'Program intensif dengan metode pengajaran berstandar internasional.' }}</p>
                     
                     <!-- Promo Box -->

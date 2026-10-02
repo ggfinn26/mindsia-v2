@@ -28,10 +28,13 @@
             <p class="text-sm text-gray-500 mt-1">Biaya Program: <span class="font-bold text-[#5586DB]">Rp {{ number_format($program->program_price, 0, ',', '.') }}</span></p>
         </div>
         @php
-            $hasBranch    = $memberData->branch_id && $memberData->branch;
-            $hasBirthPlace = !empty($memberData->birth_place);
-            $hasBirthdate  = (bool) $memberData->birthdate;
-            $existingRef = $memberData->referredBy;
+            $hasBranch      = $memberData->branch_id && $memberData->branch;
+            $hasBirthPlace  = !empty($memberData->birth_place);
+            $hasBirthdate   = (bool) $memberData->birthdate;
+            $existingRef    = $memberData->referredBy;
+            $hasEducation   = !empty($memberData->education_level);
+            $educationIsUmum = $memberData->education_level === 'Umum';
+            $hasClassFaculty = !empty($memberData->class_or_faculty);
         @endphp
 
         @php
@@ -51,7 +54,7 @@
         @endphp
         <script>window.__regConfig = @json($regConfig);</script>
 
-        <form action="{{ route('member.program.register.post', $program->id) }}" method="POST"
+        <form action="{{ route('member.program.register.post', $program->id) }}" method="POST" novalidate
               x-data="programRegistration(window.__regConfig)">
             @csrf
 
@@ -238,45 +241,82 @@
                         @endif
 
                         {{-- Jenjang Pendidikan --}}
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Jenjang Pendidikan <span class="text-sm font-normal text-gray-400">(Opsional)</span></label>
-                            <div class="relative" @click.away="showEducationDropdown = false">
-                                <div @click="showEducationDropdown = !showEducationDropdown"
-                                     class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg sm:text-sm shadow-sm flex justify-between items-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#5586DB]">
-                                    <span x-text="selectedEducationLabel" :class="educationLevel ? 'text-gray-900' : 'text-gray-500'" class="truncate block pr-4"></span>
-                                    <span class="material-symbols-outlined text-[16px] text-gray-400">expand_more</span>
+                        @if($hasEducation)
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Jenjang Pendidikan</label>
+                                <div class="flex items-center gap-3 px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg">
+                                    <span class="material-symbols-outlined text-[20px] text-green-500 shrink-0">check_circle</span>
+                                    <p class="text-sm font-medium text-gray-900">{{ $memberData->education_level }}</p>
                                 </div>
-                                <div x-show="showEducationDropdown" x-transition x-cloak
-                                     class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
-                                    <ul class="max-h-56 overflow-y-auto py-1">
-                                        <template x-for="group in educationOptions" :key="group.group">
-                                            <li>
-                                                <div class="px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-400 bg-gray-50" x-text="group.group"></div>
-                                                <template x-for="item in group.items" :key="item">
-                                                    <div @click="selectEducationLevel(item)"
-                                                         class="px-4 py-2 sm:text-sm text-gray-700 hover:bg-[#5586DB] hover:text-white cursor-pointer"
-                                                         :class="educationLevel === item ? 'bg-[#EFF6FF] font-semibold' : ''"
-                                                         x-text="item"></div>
-                                                </template>
-                                            </li>
-                                        </template>
-                                    </ul>
-                                </div>
+                                <input type="hidden" name="education_level" value="{{ $memberData->education_level }}">
                             </div>
-                            <input type="hidden" name="education_level" :value="educationLevel">
-                        </div>
+                        @else
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Jenjang Pendidikan <span class="text-red-500">*</span></label>
+                                <div class="relative" @click.away="showEducationDropdown = false">
+                                    <div @click="showEducationDropdown = !showEducationDropdown"
+                                         class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg sm:text-sm shadow-sm flex justify-between items-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#5586DB]">
+                                        <span x-text="selectedEducationLabel" :class="educationLevel ? 'text-gray-900' : 'text-gray-500'" class="truncate block pr-4"></span>
+                                        <span class="material-symbols-outlined text-[16px] text-gray-400">expand_more</span>
+                                    </div>
+                                    <div x-show="showEducationDropdown" x-transition x-cloak
+                                         class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+                                        <ul class="max-h-56 overflow-y-auto py-1">
+                                            <template x-for="group in educationOptions" :key="group.group">
+                                                <li>
+                                                    <div class="px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-400 bg-gray-50" x-text="group.group"></div>
+                                                    <template x-for="item in group.items" :key="item">
+                                                        <div @click="selectEducationLevel(item)"
+                                                             class="px-4 py-2 sm:text-sm text-gray-700 hover:bg-[#5586DB] hover:text-white cursor-pointer"
+                                                             :class="educationLevel === item ? 'bg-[#EFF6FF] font-semibold' : ''"
+                                                             x-text="item"></div>
+                                                    </template>
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="education_level" :value="educationLevel">
+                            </div>
+                        @endif
 
-                        {{-- Kelas / Jurusan (kondisional) --}}
-                        <div x-show="educationLevel && educationLevel !== 'Umum'" x-cloak>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">
-                                <span x-text="classOrFacultyLabel"></span>
-                                <span class="text-sm font-normal text-gray-400 ml-1">(Opsional)</span>
-                            </label>
-                            <input type="text" name="class_or_faculty" x-model="classOrFaculty"
-                                   :placeholder="classOrFacultyPlaceholder"
-                                   maxlength="100"
-                                   class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#5586DB] focus:ring-[#5586DB] sm:text-sm px-3 py-2 border">
-                        </div>
+                        {{-- Kelas / Jurusan --}}
+                        @if($hasEducation && ($educationIsUmum || $hasClassFaculty))
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    {{ $educationIsUmum ? 'Kelas / Jurusan' : ($memberData->education_level === 'S1' || $memberData->education_level === 'S2' || $memberData->education_level === 'S3' || $memberData->education_level === 'D1' || $memberData->education_level === 'D2' || $memberData->education_level === 'D3' || $memberData->education_level === 'D4' ? 'Jurusan / Fakultas' : 'Kelas') }}
+                                </label>
+                                <div class="flex items-center gap-3 px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg">
+                                    <span class="material-symbols-outlined text-[20px] text-green-500 shrink-0">check_circle</span>
+                                    <p class="text-sm font-medium text-gray-900">{{ $educationIsUmum ? '-' : $memberData->class_or_faculty }}</p>
+                                </div>
+                                <input type="hidden" name="class_or_faculty" value="{{ $educationIsUmum ? '-' : $memberData->class_or_faculty }}">
+                            </div>
+                        @elseif($hasEducation && !$educationIsUmum && !$hasClassFaculty)
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    {{ in_array($memberData->education_level, ['S1','S2','S3','D1','D2','D3','D4']) ? 'Jurusan / Fakultas' : 'Kelas' }}
+                                    <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" name="class_or_faculty"
+                                       value="{{ old('class_or_faculty') }}"
+                                       placeholder="{{ in_array($memberData->education_level, ['S1','S2','S3','D1','D2','D3','D4']) ? 'Contoh: Teknik Informatika' : 'Contoh: XII IPA 1' }}"
+                                       maxlength="100" required
+                                       class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#5586DB] focus:ring-[#5586DB] sm:text-sm px-3 py-2 border">
+                            </div>
+                        @else
+                            {{-- education belum diisi — tampil kondisional via Alpine --}}
+                            <div x-show="educationLevel && educationLevel !== 'Umum'" x-cloak>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    <span x-text="classOrFacultyLabel"></span> <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" name="class_or_faculty" x-model="classOrFaculty"
+                                       :placeholder="classOrFacultyPlaceholder"
+                                       :required="educationLevel && educationLevel !== 'Umum'"
+                                       maxlength="100"
+                                       class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#5586DB] focus:ring-[#5586DB] sm:text-sm px-3 py-2 border">
+                            </div>
+                        @endif
 
                     </div>{{-- end space-y-5 --}}
                 </div>
@@ -288,7 +328,7 @@
                     <h3 class="text-lg font-bold text-gray-900 font-jakarta mb-1">Kode Referral <span class="text-sm font-normal text-gray-400">(Opsional)</span></h3>
                     <p class="text-sm text-gray-500 mb-4">Masukkan kode atau cari nama Marketing Officer yang mereferensikan kamu.</p>
                     <div class="max-w-sm relative" @click.away="showEmployeeDropdown = false">
-                        <div @click="showEmployeeDropdown = !showEmployeeDropdown"
+                        <div @click="showEmployeeDropdown = !showEmployeeDropdown; if (showEmployeeDropdown) loadAllEmployees()"
                              class="w-full px-3 py-2 bg-white border rounded-lg sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#5586DB] transition-all shadow-sm flex justify-between items-center cursor-pointer border-gray-300">
                             <span x-text="referredByName ? (referredByName + ' (' + referredByCode + ')') : (referredByCode || 'Cari MO (Opsional)...')" class="truncate block pr-4"
                                   :class="(referredByName || referredByCode) ? 'text-gray-900' : 'text-gray-500'"></span>
@@ -300,17 +340,18 @@
                             <div class="p-2 bg-gray-50 border-b border-gray-100">
                                 <div class="relative">
                                     <span class="material-symbols-outlined absolute left-3 top-2 text-gray-400 text-[16px]">search</span>
-                                    <input type="text" x-model="employeeSearch" @input.debounce.500ms="searchEmployee()"
-                                           placeholder="Ketik nama atau kode..."
-                                           class="w-full pl-10 pr-8 py-1.5 bg-white border border-gray-200 rounded-md sm:text-sm focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB]">
+                                    <input type="text" x-model="employeeSearch" @input="searchEmployee()"
+                                           placeholder="Cari nama atau kode MO..."
+                                           style="padding-left: 2.5rem !important"
+                                           class="w-full pr-8 py-1.5 bg-white border border-gray-200 rounded-md sm:text-sm focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB]">
                                     <span x-show="searchingEmployee" class="absolute right-3 top-2 flex items-center">
                                         <span class="material-symbols-outlined text-gray-400 animate-spin text-[16px]">progress_activity</span>
                                     </span>
                                 </div>
                             </div>
                             <ul class="max-h-48 overflow-y-auto py-1">
-                                <li x-show="employeeSearch.length < 3" class="px-4 py-2 sm:text-sm text-gray-500 text-center">Ketik minimal 3 huruf</li>
-                                <li x-show="employeeSearch.length >= 3 && !searchingEmployee && employees.length === 0" class="px-4 py-2 sm:text-sm text-gray-500 text-center">Tidak ditemukan</li>
+                                <li x-show="searchingEmployee" class="px-4 py-2 sm:text-sm text-gray-500 text-center">Memuat...</li>
+                                <li x-show="!searchingEmployee && employees.length === 0" class="px-4 py-2 sm:text-sm text-gray-500 text-center">Tidak ditemukan</li>
                                 <template x-for="emp in employees" :key="emp.employee_code">
                                     <li @click="selectEmployee(emp.employee_code, emp.full_name)" class="px-4 py-2 sm:text-sm text-gray-700 hover:bg-[#5586DB] hover:text-white cursor-pointer"
                                         :class="referredByCode == emp.employee_code ? 'bg-[#EFF6FF] font-semibold' : ''">

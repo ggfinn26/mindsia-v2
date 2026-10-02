@@ -11,6 +11,23 @@ class StoreProgramRequest extends FormRequest
         return $this->user()->can('curriculum.program.create');
     }
 
+    public function messages(): array
+    {
+        return [
+            'program_name.required' => 'Nama program wajib diisi.',
+            'program_code.required' => 'Kode program wajib diisi.',
+            'program_code.unique' => 'Kode program sudah digunakan.',
+            'program_price.required' => 'Harga program wajib diisi.',
+            'program_price.numeric' => 'Harga program harus berupa angka.',
+            'program_price.min' => 'Harga program tidak boleh negatif.',
+            'image.image' => 'File harus berupa gambar.',
+            'image.max' => 'Ukuran gambar maksimal 2 MB.',
+            'receipt_template.required' => 'Template kwitansi wajib diupload.',
+            'receipt_template.mimes' => 'Template kwitansi harus berupa file .docx.',
+            'receipt_template.max' => 'Ukuran template maksimal 20 MB.',
+        ];
+    }
+
     public function rules(): array
     {
         return [
@@ -22,7 +39,7 @@ class StoreProgramRequest extends FormRequest
             'admin_fee_timing' => ['nullable', 'in:on_registration,on_first_payment'],
             'program_description' => ['nullable', 'string'],
             'image' => ['nullable', 'image', 'max:2048'],
-            'receipt_template' => ['nullable', 'file', 'mimes:docx', 'max:20480'],
+            'receipt_template' => ['required', 'file', 'mimes:docx', 'max:20480'],
             'is_active' => ['boolean'],
         ];
     }
