@@ -22,4 +22,19 @@ class StoreDiscountRequest extends FormRequest
             'expired_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'discount_code.required' => 'Kode diskon wajib diisi.',
+            'discount_code.unique' => 'Kode diskon sudah digunakan.',
+            'discount_code.max' => 'Kode diskon maksimal 50 karakter.',
+            'discount_type.required' => 'Tipe diskon wajib dipilih.',
+            'discount_type.in' => 'Tipe diskon tidak valid.',
+            'discount_nominal.required' => 'Nilai diskon wajib diisi.',
+            'discount_nominal.min' => 'Nilai diskon tidak boleh negatif.',
+            'discount_quota.min' => 'Kuota tidak boleh negatif.',
+            'expired_at.after_or_equal' => 'Tanggal berakhir harus setelah atau sama dengan tanggal mulai.',
+        ];
+    }
 }

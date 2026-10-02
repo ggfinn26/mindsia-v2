@@ -7,6 +7,7 @@ use App\Http\Requests\Member\StoreDiscountRequest;
 use App\Http\Requests\Member\SyncDiscountProgramsRequest;
 use App\Http\Requests\Member\UpdateDiscountRequest;
 use App\Models\Discount;
+use App\Models\Program;
 use App\Repositories\Member\DiscountRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -34,8 +35,9 @@ class DiscountController extends Controller
     public function show(Discount $discount): View
     {
         $discount->load(['programs.program', 'registrations']);
+        $programs = Program::where('is_active', true)->orderBy('program_name')->get();
 
-        return view('admin.member.discounts.show', compact('discount'));
+        return view('admin.member.discounts.show', compact('discount', 'programs'));
     }
 
     public function update(UpdateDiscountRequest $request, Discount $discount): RedirectResponse

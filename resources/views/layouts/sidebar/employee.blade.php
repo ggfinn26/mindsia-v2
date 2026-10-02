@@ -214,6 +214,7 @@
     @can('member.manage')
     <x-dashboard.nav-item href="{{ route('members.create') }}" :isChild="true" :active="request()->routeIs('members.create')">Registrasi Member</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('members.index') }}" :isChild="true" :active="request()->routeIs('members.index') || request()->routeIs('members.show') || request()->routeIs('members.edit')">Data Member</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('discounts.index') }}" :isChild="true" :active="request()->routeIs('discounts.*')">Kelola Diskon</x-dashboard.nav-item>
     @endcan
     @canany(['marketing.socialization.create', 'marketing.socialization.update'])
     <x-dashboard.nav-item href="{{ route('socializations.index') }}" :isChild="true" :active="request()->routeIs('socializations.*') && !request()->routeIs('my-socializations.*')">Kelola Sosialisasi</x-dashboard.nav-item>
