@@ -380,6 +380,24 @@
 
                 <hr class="border-gray-100">
 
+                {{-- ── Kode Diskon ── --}}
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900 font-jakarta mb-1">Kode Diskon <span class="text-sm font-normal text-gray-400">(Opsional)</span></h3>
+                    <p class="text-sm text-gray-500 mb-4">Masukkan kode promo jika kamu punya. Diskon akan diterapkan saat admin memproses pembayaran.</p>
+                    <div class="max-w-sm">
+                        <input type="text" name="discount_code" id="discount_code"
+                               value="{{ old('discount_code') }}"
+                               placeholder="Contoh: PROMO2026"
+                               oninput="this.value = this.value.toUpperCase()"
+                               class="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm font-mono uppercase focus:outline-none focus:ring-2 focus:ring-[#5586DB] focus:border-[#5586DB] transition-all shadow-sm" />
+                        @error('discount_code')
+                            <p class="mt-1.5 text-xs font-medium text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <hr class="border-gray-100">
+
                 {{-- ── Metode Pembayaran ── --}}
                 <div>
                     <h3 class="text-lg font-bold text-gray-900 font-jakarta mb-4">Metode Pembayaran</h3>
