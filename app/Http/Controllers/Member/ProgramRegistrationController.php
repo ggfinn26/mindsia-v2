@@ -43,11 +43,13 @@ class ProgramRegistrationController extends Controller
             'referred_by_code' => ['nullable', 'string', 'max:20'],
             'education_level' => ['required', 'string', 'in:'.implode(',', $educationLevels)],
             'class_or_faculty' => ['required_unless:education_level,Umum', 'nullable', 'string', 'max:100'],
+            'discount_code' => ['nullable', 'string', 'max:50', 'exists:discounts,discount_code'],
         ], [
             'branch_id.required' => 'Cabang wajib dipilih.',
             'payment_plan_id.required' => 'Skema pembayaran wajib dipilih.',
             'education_level.required' => 'Jenjang pendidikan wajib dipilih.',
             'class_or_faculty.required_unless' => 'Kelas / jurusan wajib diisi.',
+            'discount_code.exists' => 'Kode diskon tidak ditemukan.',
         ]);
 
         $branchId = $request->branch_id ?: $memberData?->branch_id;
@@ -62,47 +64,52 @@ class ProgramRegistrationController extends Controller
             $referredByEmployeeId = $employee->id;
         }
 
-        $registered = DB::transaction(function () use ($program, $memberData, $branchId, $request, $referredByEmployeeId) {
-            // Lock quota row untuk cegah race condition
-            if ($branchId) {
-                $quota = BranchProgramQuota::where('branch_id', $branchId)
-                    ->where('program_id', $program->id)
-                    ->lockForUpdate()
-                    ->first();
+        try {
+            $registered = DB::transaction(function () use ($program, $memberData, $branchId, $request, $referredByEmployeeId) {
+                // Lock quota row untuk cegah race condition
+                if ($branchId) {
+                    $quota = BranchProgramQuota::where('branch_id', $branchId)
+                        ->where('program_id', $program->id)
+                        ->lockForUpdate()
+                        ->first();
 
-                if ($quota) {
-                    $used = MemberRegistration::where('program_id', $program->id)
-                        ->whereHas('memberData', fn ($q) => $q->where('branch_id', $branchId))
-                        ->count();
+                    if ($quota) {
+                        $used = MemberRegistration::where('program_id', $program->id)
+                            ->whereHas('memberData', fn ($q) => $q->where('branch_id', $branchId))
+                            ->count();
 
-                    if ($used >= $quota->quota_limit) {
-                        return false;
+                        if ($used >= $quota->quota_limit) {
+                            return false;
+                        }
                     }
                 }
-            }
 
-            $classOrFaculty = $request->education_level === 'Umum' ? '-' : $request->class_or_faculty;
+                $classOrFaculty = $request->education_level === 'Umum' ? '-' : $request->class_or_faculty;
 
-            $updates = array_filter([
-                'branch_id' => $request->branch_id ?: null,
-                'birth_place' => $request->birth_place ?: null,
-                'birthdate' => $request->birthdate ?: null,
-                'referred_by_employee_id' => $referredByEmployeeId,
-                'education_level' => $request->education_level ?: null,
-                'class_or_faculty' => $classOrFaculty ?: null,
-            ], fn ($v) => $v !== null);
+                $updates = array_filter([
+                    'branch_id' => $request->branch_id ?: null,
+                    'birth_place' => $request->birth_place ?: null,
+                    'birthdate' => $request->birthdate ?: null,
+                    'referred_by_employee_id' => $referredByEmployeeId,
+                    'education_level' => $request->education_level ?: null,
+                    'class_or_faculty' => $classOrFaculty ?: null,
+                ], fn ($v) => $v !== null);
 
-            if ($updates) {
-                $memberData->update($updates);
-            }
+                if ($updates) {
+                    $memberData->update($updates);
+                }
 
-            $this->service->register($memberData, [
-                'program_id' => $program->id,
-                'payment_plan_id' => (int) $request->payment_plan_id,
-            ]);
+                $this->service->register($memberData, [
+                    'program_id' => $program->id,
+                    'payment_plan_id' => (int) $request->payment_plan_id,
+                    'discount_code' => $request->discount_code ?: null,
+                ]);
 
-            return true;
-        });
+                return true;
+            });
+        } catch (\RuntimeException $e) {
+            return back()->withInput()->withErrors(['discount_code' => $e->getMessage()]);
+        }
 
         if (! $registered) {
             return response()->view('errors.quota-full', [], 403);
