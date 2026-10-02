@@ -34,7 +34,11 @@ class MemberRegistrationController extends Controller
             'employee_id' => $request->user()->employee?->id ?? $request->user()->id,
         ]);
 
-        $registration = $this->service->register($member, $data);
+        try {
+            $registration = $this->service->register($member, $data);
+        } catch (\RuntimeException $e) {
+            return back()->withInput()->withErrors(['discount_code' => $e->getMessage()]);
+        }
 
         return redirect()->route('registrations.show', $registration)->with('success', 'Registrasi berhasil dibuat.');
     }

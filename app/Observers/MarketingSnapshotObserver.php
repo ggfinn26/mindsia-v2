@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Employee;
 use App\Models\MarketingPerformance;
+use App\Models\MemberPayment;
 use App\Models\ProspectiveMember;
 use App\Services\Marketing\MarketingSnapshotService;
 
@@ -41,5 +42,20 @@ class MarketingSnapshotObserver
             $model->period_month,
             $model->period_year
         );
+    }
+
+    public function paymentSaved(MemberPayment $payment): void
+    {
+        if ($payment->payment_status !== 'paid') {
+            return;
+        }
+
+        $employeeId = $payment->registration?->memberData?->referred_by_employee_id;
+        if (! $employeeId) {
+            return;
+        }
+
+        $paidAt = $payment->paid_at ?? now();
+        $this->triggerForEmployee($employeeId, (int) $paidAt->month, (int) $paidAt->year);
     }
 }

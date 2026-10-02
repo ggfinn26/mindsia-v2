@@ -11,8 +11,6 @@ class MyMonthlyRevenueController extends Controller
 {
     public function index(Request $request): View
     {
-        abort_unless($request->user()->can('marketing.monthly_revenue_data.view'), 403);
-
         $employee = $request->user()->employee;
         abort_unless($employee, 403, 'Akun ini tidak terhubung ke data karyawan.');
 
@@ -25,8 +23,10 @@ class MyMonthlyRevenueController extends Controller
             'payments' => fn ($q) => $q->orderBy('installment_number'),
         ])
             ->whereHas('memberData', fn ($q) => $q->where('referred_by_employee_id', $employee->id))
-            ->whereYear('created_at', $year)
-            ->whereMonth('created_at', $month)
+            ->whereHas('payments', fn ($q) => $q
+                ->where('payment_status', 'paid')
+                ->whereYear('paid_at', $year)
+                ->whereMonth('paid_at', $month))
             ->orderBy('created_at')
             ->paginate(25)
             ->withQueryString();

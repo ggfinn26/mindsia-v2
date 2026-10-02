@@ -30,10 +30,7 @@ class MemberPaymentStatementController extends Controller
         ])
             ->when($branchId, fn ($q) => $q->whereHas(
                 'memberData',
-                fn ($q2) => $q2->whereHas(
-                    'referredBy',
-                    fn ($q3) => $q3->where('branch_id', $branchId)
-                )
+                fn ($q2) => $q2->where('branch_id', $branchId)
             ));
 
         $registrations = $query->paginate(25)->withQueryString();

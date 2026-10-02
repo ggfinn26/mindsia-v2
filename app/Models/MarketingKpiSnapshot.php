@@ -32,6 +32,8 @@ class MarketingKpiSnapshot extends Model
         'registration_value_percentage',
         'cash_collected_actual',
         'cash_collected_percentage',
+        'admin_fee_deducted',
+        'income_actual',
         'mpi_score',
         'rank_area',
         'rank_region',
@@ -46,6 +48,8 @@ class MarketingKpiSnapshot extends Model
         'registration_value_percentage' => 'decimal:2',
         'cash_collected_actual' => 'decimal:2',
         'cash_collected_percentage' => 'decimal:2',
+        'admin_fee_deducted' => 'decimal:2',
+        'income_actual' => 'decimal:2',
         'mpi_score' => 'decimal:2',
         'finalized_at' => 'datetime',
     ];

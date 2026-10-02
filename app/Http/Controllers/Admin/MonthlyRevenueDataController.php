@@ -23,8 +23,10 @@ class MonthlyRevenueDataController extends Controller
             'program',
             'payments' => fn ($q) => $q->orderBy('installment_number'),
         ])
-            ->whereYear('created_at', $year)
-            ->whereMonth('created_at', $month);
+            ->whereHas('payments', fn ($q) => $q
+                ->where('payment_status', 'paid')
+                ->whereYear('paid_at', $year)
+                ->whereMonth('paid_at', $month));
 
         if ($filterEmployeeId) {
             $query->whereHas('memberData', fn ($q) => $q->where('referred_by_employee_id', $filterEmployeeId));

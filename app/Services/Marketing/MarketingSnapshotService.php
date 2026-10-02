@@ -7,6 +7,7 @@ use App\Models\EmployeeSocialization;
 use App\Models\MarketingKpiRankingRule;
 use App\Models\MarketingKpiSnapshot;
 use App\Models\MemberPayment;
+use App\Models\MemberRegistration;
 use App\Models\ProspectiveMember;
 use App\Repositories\Marketing\MarketingKpiRepository;
 use App\Repositories\Marketing\MarketingTargetRepository;
@@ -28,6 +29,7 @@ class MarketingSnapshotService
 
         $classesActual = $this->resolveClassesActual($employee->id, $month, $year);
         $cashCollected = $this->resolveCashCollected($employee->id, $month, $year);
+        $registrationValue = $this->resolveRegistrationValue($employee->id, $month, $year);
         $adminFeeDeducted = $this->resolveAdminFeeDeducted($employee->id, $month, $year);
         $incomeActual = max(0.0, $cashCollected - $adminFeeDeducted);
 
@@ -39,8 +41,12 @@ class MarketingSnapshotService
             ? round(($cashCollected / $target['omzet_target']) * 100, 2)
             : 0.0;
 
-        // MPI = 50% × classes_pct + 50% × registration_value_pct
-        $mpiScore = round(0.50 * $classesPct + 0.50 * $cashPct, 2);
+        $registrationValuePct = $target['omzet_target'] > 0
+            ? round(($registrationValue / $target['omzet_target']) * 100, 2)
+            : 0.0;
+
+        // MPI = 50% × classes_percentage + 50% × registration_value_percentage
+        $mpiScore = round(0.50 * $classesPct + 0.50 * $registrationValuePct, 2);
 
         [$rankArea, $rankRegion, $rankNational] = $this->resolveRanking($employee, $month, $year, $mpiScore);
 
@@ -68,8 +74,8 @@ class MarketingSnapshotService
             'classes_actual' => $classesActual,
             'classes_percentage' => $classesPct,
             'omzet_target' => $target['omzet_target'],
-            'registration_value_actual' => $cashCollected,
-            'registration_value_percentage' => $cashPct,
+            'registration_value_actual' => $registrationValue,
+            'registration_value_percentage' => $registrationValuePct,
             'cash_collected_actual' => $cashCollected,
             'cash_collected_percentage' => $cashPct,
             'admin_fee_deducted' => $adminFeeDeducted,
@@ -108,6 +114,17 @@ class MarketingSnapshotService
             ->whereYear('paid_at', $year)
             ->where('payment_status', 'paid')
             ->sum('amount');
+    }
+
+    private function resolveRegistrationValue(int $employeeId, int $month, int $year): float
+    {
+        return (float) MemberRegistration::whereHas(
+            'memberData',
+            fn ($q) => $q->where('referred_by_employee_id', $employeeId)
+        )
+            ->whereYear('created_at', $year)
+            ->whereMonth('created_at', $month)
+            ->sum('final_price');
     }
 
     private function resolveAdminFeeDeducted(int $employeeId, int $month, int $year): float

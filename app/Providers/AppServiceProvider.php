@@ -16,6 +16,7 @@ use App\Models\KpiBonusRuleTier;
 use App\Models\MarketingBonusRule;
 use App\Models\MarketingBonusRuleTier;
 use App\Models\MarketingPerformance;
+use App\Models\MemberPayment;
 use App\Models\MemberSupportTicket;
 use App\Models\ProspectiveMember;
 use App\Models\Province;
@@ -121,6 +122,7 @@ class AppServiceProvider extends ServiceProvider
         foreach (['created', 'updated'] as $event) {
             ProspectiveMember::registerModelEvent($event, Closure::fromCallable([$snapshotObserver, 'prospectiveMemberSaved']));
             MarketingPerformance::registerModelEvent($event, Closure::fromCallable([$snapshotObserver, 'marketingPerformanceSaved']));
+            MemberPayment::registerModelEvent($event, Closure::fromCallable([$snapshotObserver, 'paymentSaved']));
         }
     }
 }
