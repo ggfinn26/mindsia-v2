@@ -35,7 +35,7 @@
                 @enderror
             </div>
 
-            <div x-data="tutorDropdown({{ Illuminate\Support\Js::from($tutors) }}, {{ Illuminate\Support\Js::from(old('tutor_id', $class->tutor_id)) }})" @click.away="open = false">
+            <div x-data="tutorDropdown({{ Illuminate\Support\Js::from($tutors) }}, {{ Illuminate\Support\Js::from(old('tutor_id', $class->tutor_id)) }})" @click.away="open = false" @keydown.escape.window="open = false">
                 <label class="block text-sm font-medium text-gray-700 mb-1">Tutor <span class="text-red-500">*</span></label>
                 <div class="relative">
                     <div @click="open = !open"
@@ -82,29 +82,8 @@
     </form>
 </div>
 
-<script>
-function tutorDropdown(tutors, initialId) {
-    return {
-        tutors,
-        search: '',
-        open: false,
-        selectedId: initialId,
-        get filtered() {
-            if (!this.search) return this.tutors;
-            const q = this.search.toLowerCase();
-            return this.tutors.filter(t => t.name.toLowerCase().includes(q));
-        },
-        get selectedLabel() {
-            const t = this.tutors.find(t => t.id == this.selectedId);
-            return t ? t.name + ' (' + t.class_count + ' kelas)' : '';
-        },
-        select(t) {
-            this.selectedId = t.id;
-            this.open = false;
-            this.search = '';
-        },
-    };
-}
-</script>
-
 @endsection
+
+@push('head-scripts')
+    @vite('resources/js/classroom-edit.js')
+@endpush

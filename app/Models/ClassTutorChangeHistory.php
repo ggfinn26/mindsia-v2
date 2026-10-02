@@ -9,6 +9,8 @@ class ClassTutorChangeHistory extends Model
 {
     protected $table = 'class_tutor_change_histories';
 
+    const CREATED_AT = 'changed_at';
+
     const UPDATED_AT = null;
 
     protected $fillable = ['class_id', 'from_tutor_id', 'to_tutor_id', 'changed_by_employee_id', 'reason', 'changed_at'];

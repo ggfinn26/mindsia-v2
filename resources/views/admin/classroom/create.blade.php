@@ -64,7 +64,7 @@
             </div>
 
             {{-- Tutor dropdown --}}
-            <div @click.away="tutorOpen = false">
+            <div @click.away="tutorOpen = false" @keydown.escape.window="tutorOpen = false">
                 <label class="block text-sm font-medium text-gray-700 mb-1">Tutor <span class="text-red-500">*</span></label>
                 <div class="relative">
                     <div @click="tutorOpen = !tutorOpen"

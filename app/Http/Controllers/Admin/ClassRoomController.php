@@ -110,6 +110,32 @@ class ClassRoomController extends Controller implements HasMiddleware
         return redirect()->route('classrooms.index')->with('success', 'Kelas berhasil dihapus');
     }
 
+    public function activate(ClassRoom $classroom): RedirectResponse
+    {
+        if ($classroom->status !== 'planned') {
+            return back()->withErrors('Hanya kelas berstatus planned yang bisa diaktifkan');
+        }
+
+        if (! $classroom->schedules()->exists()) {
+            return back()->withErrors('Kelas harus memiliki jadwal sebelum diaktifkan');
+        }
+
+        $classroom->update(['status' => 'active']);
+
+        return back()->with('success', 'Kelas berhasil diaktifkan');
+    }
+
+    public function cancel(ClassRoom $classroom): RedirectResponse
+    {
+        if (! in_array($classroom->status, ['planned', 'active'])) {
+            return back()->withErrors('Hanya kelas planned atau active yang bisa dibatalkan');
+        }
+
+        $classroom->update(['status' => 'cancelled', 'end_date' => today()]);
+
+        return back()->with('success', 'Kelas berhasil dibatalkan');
+    }
+
     public function graduate(ClassRoom $classroom): RedirectResponse
     {
         $this->authorize('class.graduate');

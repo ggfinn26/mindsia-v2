@@ -12,10 +12,25 @@
         <div class="flex gap-3">
             @if($class->status === 'planned')
                 <a href="{{ route('classrooms.edit', $class) }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">Edit</a>
+                <button type="button"
+                        onclick="openConfirmModal('Aktifkan Kelas', 'Aktifkan kelas ini? Status akan berubah menjadi Aktif.', () => document.getElementById('activate-form').submit())"
+                        class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium">Aktifkan</button>
+                <form id="activate-form" action="{{ route('classrooms.activate', $class) }}" method="POST" class="hidden">
+                    @csrf @method('PATCH')
+                </form>
+            @endif
+            @if(in_array($class->status, ['planned', 'active']))
+                <button type="button"
+                        onclick="openConfirmModal('Batalkan Kelas', 'Batalkan kelas ini? Status akan berubah menjadi Dibatalkan dan tidak bisa diubah lagi.', () => document.getElementById('cancel-form').submit())"
+                        class="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-lg font-medium">Batalkan Kelas</button>
+                <form id="cancel-form" action="{{ route('classrooms.cancel', $class) }}" method="POST" class="hidden">
+                    @csrf @method('PATCH')
+                </form>
             @endif
             @can('class.graduate')
                 @if($class->status === 'active')
-                    <button type="button" onclick="if(confirm('Luluskan semua member aktif di kelas ini?')) document.getElementById('graduate-form').submit();"
+                    <button type="button"
+                            onclick="openConfirmModal('Luluskan Semua Member', 'Luluskan semua member aktif di kelas ini? Tindakan ini tidak bisa dibatalkan.', () => document.getElementById('graduate-form').submit())"
                             class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium">Luluskan Semua</button>
                     <form id="graduate-form" action="{{ route('classrooms.graduate', $class) }}" method="POST" class="hidden">
                         @csrf
@@ -205,11 +220,18 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $mc->start_date?->format('d M Y') ?? '-' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 @if($mc->status === 'active')
-                                    <form action="{{ route('member-class.destroy', $mc) }}" method="POST" class="inline" onsubmit="return confirm('Hapus member dari kelas ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900">Hapus</button>
+                                    <form id="deact-mc-{{ $mc->id }}" action="{{ route('member-class.deactivate', $mc) }}" method="POST" class="hidden">
+                                        @csrf @method('PATCH')
                                     </form>
+                                    <button type="button"
+                                            onclick="openConfirmModal('Nonaktifkan Member', 'Nonaktifkan member ini dari kelas? Data kehadiran tetap tersimpan.', () => document.getElementById('deact-mc-{{ $mc->id }}').submit())"
+                                            class="text-yellow-600 hover:text-yellow-900 mr-3">Nonaktifkan</button>
+                                    <form id="rm-mc-{{ $mc->id }}" action="{{ route('member-class.destroy', $mc) }}" method="POST" class="hidden">
+                                        @csrf @method('DELETE')
+                                    </form>
+                                    <button type="button"
+                                            onclick="openConfirmModal('Hapus Member dari Kelas', 'Hapus permanen member ini dari kelas? Progress kurikulum juga akan dihapus.', () => document.getElementById('rm-mc-{{ $mc->id }}').submit())"
+                                            class="text-red-600 hover:text-red-900">Hapus</button>
                                 @endif
                             </td>
                         </tr>
@@ -301,11 +323,13 @@
                                         <a href="{{ route('class-tests.edit', [$class, $test]) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
                                     @endcan
                                     @can('class.test.delete')
-                                        <form action="{{ route('class-tests.destroy', [$class, $test]) }}" method="POST" class="inline" onsubmit="return confirm('Hapus test ini?')">
+                                        <form id="del-test-{{ $test->id }}" action="{{ route('class-tests.destroy', [$class, $test]) }}" method="POST" class="hidden">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:text-red-900">Hapus</button>
                                         </form>
+                                        <button type="button"
+                                                onclick="openConfirmModal('Hapus Test', 'Hapus test {{ addslashes($test->test_name) }}? Semua nilai yang sudah diinput akan ikut terhapus.', () => document.getElementById('del-test-{{ $test->id }}').submit())"
+                                                class="text-red-600 hover:text-red-900">Hapus</button>
                                     @endcan
                                 </td>
                             </tr>
@@ -347,29 +371,27 @@
     </div>
     @endif
 </div>
-<script>
-function memberDropdown(members) {
-    return {
-        members,
-        search: '',
-        open: false,
-        selectedId: '',
-        get filtered() {
-            if (!this.search) return this.members;
-            const q = this.search.toLowerCase();
-            return this.members.filter(m => m.label.toLowerCase().includes(q));
-        },
-        get selectedLabel() {
-            const m = this.members.find(m => m.id == this.selectedId);
-            return m ? m.label : '';
-        },
-        select(m) {
-            this.selectedId = m.id;
-            this.open = false;
-            this.search = '';
-        },
-    };
-}
-</script>
+<!-- Confirm Modal -->
+<div id="confirm-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl shadow-xl max-w-sm w-full mx-4 p-6">
+        <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-red-600 text-[20px]">warning</span>
+            </div>
+            <div>
+                <h3 class="font-semibold text-gray-900 text-base" id="confirm-title"></h3>
+                <p class="text-sm text-gray-500 mt-1" id="confirm-message"></p>
+            </div>
+        </div>
+        <div class="flex gap-3 mt-5 justify-end">
+            <button onclick="closeConfirmModal()" class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">Batal</button>
+            <button onclick="submitConfirmAction()" class="px-4 py-2 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium">Ya, Lanjutkan</button>
+        </div>
+    </div>
+</div>
 
 @endsection
+
+@push('head-scripts')
+    @vite('resources/js/classroom-show.js')
+@endpush

@@ -50,6 +50,11 @@ class ClassRoomService
         });
     }
 
+    public function deactivateMember(MemberClass $memberClass): void
+    {
+        $memberClass->update(['status' => 'inactive', 'end_date' => today()]);
+    }
+
     public function transferMember(MemberClass $oldEnrollment, ClassRoom $newClass): MemberClass
     {
         return DB::transaction(function () use ($oldEnrollment, $newClass) {

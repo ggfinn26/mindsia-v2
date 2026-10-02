@@ -890,8 +890,11 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     // Class Domain
     Route::resource('classrooms', ClassRoomController::class);
     Route::post('classrooms/{classroom}/graduate', [ClassRoomController::class, 'graduate'])->name('classrooms.graduate');
+    Route::patch('classrooms/{classroom}/activate', [ClassRoomController::class, 'activate'])->name('classrooms.activate');
+    Route::patch('classrooms/{classroom}/cancel', [ClassRoomController::class, 'cancel'])->name('classrooms.cancel');
     Route::post('classrooms/{classroom}/members', [MemberClassController::class, 'store'])->name('member-class.store');
     Route::delete('member-class/{memberClass}', [MemberClassController::class, 'destroy'])->name('member-class.destroy');
+    Route::patch('member-class/{memberClass}/deactivate', [MemberClassController::class, 'deactivate'])->name('member-class.deactivate');
     Route::put('member-class/{memberClass}/transfer', [MemberClassController::class, 'transfer'])->name('member-class.transfer');
 
     // Class Session — material + attendance + assessment + progress

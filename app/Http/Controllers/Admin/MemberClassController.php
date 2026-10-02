@@ -36,6 +36,17 @@ class MemberClassController extends Controller implements HasMiddleware
         return redirect()->route('classrooms.show', $classId)->with('success', 'Member berhasil dihapus');
     }
 
+    public function deactivate(MemberClass $memberClass): RedirectResponse
+    {
+        if ($memberClass->status !== 'active') {
+            return back()->withErrors('Hanya member aktif yang bisa dinonaktifkan');
+        }
+
+        $this->service->deactivateMember($memberClass);
+
+        return redirect()->route('classrooms.show', $memberClass->class_id)->with('success', 'Member berhasil dinonaktifkan');
+    }
+
     public function transfer(TransferMemberClassRequest $request, MemberClass $memberClass): RedirectResponse
     {
         $newClass = ClassRoom::findOrFail($request->new_class_id);
