@@ -19,7 +19,7 @@
         </div>
     @endif
 
-    <form action="{{ route('curriculums.store') }}" method="POST" class="bg-white shadow sm:rounded-lg">
+    <form action="{{ route('curriculums.store') }}" method="POST" class="bg-white shadow sm:rounded-lg" novalidate>
         @csrf
 
         <!-- Curriculum Details -->
@@ -203,8 +203,9 @@
     function addSession() {
         const container = document.getElementById('sessions-container');
         const template = document.getElementById('session-template');
-        const clone = template.content.cloneNode(true);
-        const html = clone.innerHTML.replace(/SESSION_INDEX/g, sessionIndex);
+        const temp = document.createElement('div');
+        temp.appendChild(template.content.cloneNode(true));
+        const html = temp.innerHTML.replace(/SESSION_INDEX/g, sessionIndex);
         const wrapper = document.createElement('div');
         wrapper.innerHTML = html;
         const sessionBlock = wrapper.firstElementChild;
@@ -226,8 +227,9 @@
     function addItem(container, sIdx) {
         const template = document.getElementById('item-template');
         const itemIndex = container.querySelectorAll('.item-block').length;
-        const clone = template.content.cloneNode(true);
-        const html = clone.innerHTML.replace(/SESSION_INDEX/g, sIdx).replace(/ITEM_INDEX/g, itemIndex);
+        const temp = document.createElement('div');
+        temp.appendChild(template.content.cloneNode(true));
+        const html = temp.innerHTML.replace(/SESSION_INDEX/g, sIdx).replace(/ITEM_INDEX/g, itemIndex);
         const wrapper = document.createElement('div');
         wrapper.innerHTML = html;
         const itemBlock = wrapper.firstElementChild;

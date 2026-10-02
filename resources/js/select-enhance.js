@@ -19,6 +19,7 @@ document.addEventListener("alpine:init", () => {
                 return this.options.filter((o) => o.label.toLowerCase().includes(s));
             },
             pick(opt) {
+                if (opt.disabled) return;
                 this.value = opt.value;
                 this.label = opt.label;
                 this.open = false;
@@ -64,7 +65,7 @@ function enhanceSelect(sel) {
 
     const options = Array.from(sel.options)
         .filter((o) => o.value !== "")
-        .map((o) => ({ value: o.value, label: o.text.trim() }));
+        .map((o) => ({ value: o.value, label: o.text.trim(), disabled: o.disabled }));
 
     const emptyOpt = Array.from(sel.options).find((o) => o.value === "");
     const placeholder = emptyOpt?.text.trim() || "Pilih...";
@@ -129,8 +130,12 @@ function enhanceSelect(sel) {
                     class="px-4 py-3 text-[12px] text-gray-500 text-center">Tidak ditemukan</li>
                 <template x-for="opt in filtered" :key="opt.value">
                     <li @click="pick(opt)"
-                        class="px-4 py-2 text-[12px] text-gray-700 hover:bg-[#5586DB] hover:text-white cursor-pointer transition-colors"
-                        :class="value == opt.value ? 'bg-[#EFF6FF] font-semibold' : ''"
+                        class="px-4 py-2 text-[12px] transition-colors"
+                        :class="opt.disabled
+                            ? 'text-gray-400 cursor-not-allowed bg-gray-50 italic'
+                            : (value == opt.value
+                                ? 'bg-[#EFF6FF] font-semibold text-gray-700 cursor-pointer'
+                                : 'text-gray-700 hover:bg-[#5586DB] hover:text-white cursor-pointer')"
                         x-text="opt.label"></li>
                 </template>
             </ul>
