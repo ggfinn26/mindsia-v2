@@ -10,6 +10,18 @@
         <p class="mt-1 text-sm text-gray-500">Catat waktu masuk dan pulang kerja Anda, serta riwayat kehadiran.</p>
     </div>
 
+    @if($errors->any())
+        <div class="mb-6 bg-rose-50 border border-rose-200 rounded-lg px-4 py-3 text-sm text-rose-700">
+            {{ $errors->first() }}
+        </div>
+    @endif
+
+    @if(session('success'))
+        <div class="mb-6 bg-green-50 border border-green-200 rounded-lg px-4 py-3 text-sm text-green-700">
+            {{ session('success') }}
+        </div>
+    @endif
+
     <!-- Action Card -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-8 overflow-hidden">
         <div class="px-6 py-8 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-6">
@@ -101,6 +113,10 @@
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">Sakit</span>
                                 @elseif($log->status === 'permission')
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">Izin</span>
+                                @elseif($log->status === 'checked_in')
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200">Sedang Hadir</span>
+                                @elseif($log->status === 'holiday')
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-50 text-teal-700 border border-teal-200">Libur</span>
                                 @else
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">{{ ucfirst($log->status) }}</span>
                                 @endif
