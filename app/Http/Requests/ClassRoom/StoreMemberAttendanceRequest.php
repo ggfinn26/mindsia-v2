@@ -11,7 +11,16 @@ class StoreMemberAttendanceRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('class.attendance.record');
+        $user = $this->user();
+        if (! $user->can('class.attendance.record')) {
+            return false;
+        }
+        if ($user->can('class.manage')) {
+            return true;
+        }
+        $schedule = $this->route('schedule');
+
+        return $schedule->classRoom?->tutor_id === $user->employee?->id;
     }
 
     public function rules(): array

@@ -64,7 +64,11 @@ class ClassRoomController extends Controller implements HasMiddleware
     public function show(ClassRoom $classroom): View
     {
         $user = auth()->user();
-        if (! $user->hasPermissionTo('class.manage') && ! $user->hasPermissionTo('class.attendance.record')) {
+        $isManager = $user->hasPermissionTo('class.manage');
+        $isAssignedTutor = $user->hasPermissionTo('class.attendance.record')
+            && $classroom->tutor_id === $user->employee?->id;
+
+        if (! $isManager && ! $isAssignedTutor) {
             abort(403);
         }
 

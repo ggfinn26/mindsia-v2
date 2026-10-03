@@ -15,6 +15,15 @@ class MemberAttendanceController extends Controller
 {
     public function store(StoreMemberAttendanceRequest $request, ClassSchedule $schedule): RedirectResponse
     {
+        $user = auth()->user();
+        if (! $user->hasPermissionTo('class.manage')) {
+            abort_unless(
+                $schedule->classRoom->tutor_id === $user->employee?->id,
+                403,
+                'Anda bukan tutor kelas ini.'
+            );
+        }
+
         abort_if(
             $schedule->schedule_date > today(),
             422,

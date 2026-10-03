@@ -11,7 +11,16 @@ class UpdateClassScheduleMaterialRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('class.session.update');
+        $user = $this->user();
+        if (! $user->can('class.session.update')) {
+            return false;
+        }
+        if ($user->can('class.manage')) {
+            return true;
+        }
+        $schedule = $this->route('schedule');
+
+        return $schedule->classRoom?->tutor_id === $user->employee?->id;
     }
 
     public function rules(): array

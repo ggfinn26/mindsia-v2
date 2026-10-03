@@ -13,6 +13,15 @@ class MemberSessionAssessmentController extends Controller
 {
     public function store(StoreMemberSessionAssessmentRequest $request, ClassSchedule $schedule): RedirectResponse
     {
+        $user = auth()->user();
+        if (! $user->hasPermissionTo('class.manage')) {
+            abort_unless(
+                $schedule->classRoom->tutor_id === $user->employee?->id,
+                403,
+                'Anda bukan tutor kelas ini.'
+            );
+        }
+
         MemberSessionAssessment::updateOrCreate(
             ['member_class_id' => $request->validated('member_class_id'), 'class_schedule_id' => $schedule->id],
             [
