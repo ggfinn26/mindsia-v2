@@ -24,7 +24,7 @@ class ClassRoomController extends Controller implements HasMiddleware
 {
     public static function middleware(): array
     {
-        return [new Middleware('can:class.manage')];
+        return [new Middleware('can:class.manage', except: ['show'])];
     }
 
     public function __construct(
@@ -63,6 +63,11 @@ class ClassRoomController extends Controller implements HasMiddleware
 
     public function show(ClassRoom $classroom): View
     {
+        $user = auth()->user();
+        if (! $user->hasPermissionTo('class.manage') && ! $user->hasPermissionTo('class.attendance.record')) {
+            abort(403);
+        }
+
         $class = $this->repository->findWithDetails($classroom->id);
 
         $availableRegistrations = MemberRegistration::with(['memberData', 'program'])

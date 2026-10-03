@@ -10,6 +10,7 @@
             <p class="text-sm text-gray-500 mt-1">{{ $class->program?->program_name }} &middot; {{ $class->branch?->branch_name }}</p>
         </div>
         <div class="flex gap-3">
+            @can('class.manage')
             @if($class->status === 'planned')
                 <a href="{{ route('classrooms.edit', $class) }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">Edit</a>
                 <button type="button"
@@ -27,6 +28,7 @@
                     @csrf @method('PATCH')
                 </form>
             @endif
+            @endcan
             @can('class.graduate')
                 @if($class->status === 'active')
                     <button type="button"
@@ -219,6 +221,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $mc->start_date?->format('d M Y') ?? '-' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                @can('class.manage')
                                 @if($mc->status === 'active')
                                     <form id="deact-mc-{{ $mc->id }}" action="{{ route('member-class.deactivate', $mc) }}" method="POST" class="hidden">
                                         @csrf @method('PATCH')
@@ -233,6 +236,7 @@
                                             onclick="openConfirmModal('Hapus Member dari Kelas', 'Hapus permanen member ini dari kelas? Progress kurikulum juga akan dihapus.', () => document.getElementById('rm-mc-{{ $mc->id }}').submit())"
                                             class="text-red-600 hover:text-red-900">Hapus</button>
                                 @endif
+                                @endcan
                             </td>
                         </tr>
                     @empty
@@ -257,27 +261,121 @@
                 Jadwal sesi akan otomatis dibuat saat kelas berstatus aktif.
             </div>
         @else
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hari</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jam</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Materi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        @foreach($class->schedules->sortBy('schedule_date') as $schedule)
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $schedule->schedule_date?->format('d M Y') }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $schedule->schedule_date?->locale('id')->isoFormat('dddd') }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $schedule->start_time }} — {{ $schedule->end_time }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-500">{{ $schedule->material_taught ?? '-' }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+            @php $activeMembers = $class->memberClasses->where('status', 'active'); @endphp
+            <div class="divide-y divide-gray-200">
+                @foreach($class->schedules->sortBy('schedule_date') as $schedule)
+                    @php $isPast = $schedule->schedule_date <= today(); @endphp
+                    <div x-data="{ open: false }">
+                        {{-- Row header --}}
+                        <div class="px-6 py-4 flex items-center gap-4 cursor-pointer hover:bg-gray-50"
+                             @click="open = !open">
+                            <span class="text-sm font-medium text-gray-900 w-28">{{ $schedule->schedule_date?->format('d M Y') }}</span>
+                            <span class="text-sm text-gray-500 w-16">{{ $schedule->schedule_date?->locale('id')->isoFormat('dddd') }}</span>
+                            <span class="text-sm text-gray-500 w-36">{{ $schedule->start_time }} — {{ $schedule->end_time }}</span>
+                            <span class="text-sm text-gray-500 flex-1 truncate">
+                                {{ $schedule->material_taught ?? ($isPast ? '— belum diisi' : '— sesi mendatang') }}
+                            </span>
+                            @if(!$isPast)
+                                <span class="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded">Mendatang</span>
+                            @elseif($schedule->schedule_date->isToday())
+                                <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded">Hari ini</span>
+                            @endif
+                            <span class="material-symbols-outlined text-gray-400 text-[18px]" x-text="open ? 'expand_less' : 'expand_more'"></span>
+                        </div>
+
+                        {{-- Expanded detail --}}
+                        <div x-show="open" x-cloak class="bg-gray-50 border-t border-gray-100 px-6 py-5 space-y-5">
+
+                            {{-- Material form --}}
+                            @can('class.session.update')
+                            @if($isPast)
+                            <div>
+                                <h4 class="text-xs font-semibold text-gray-500 uppercase mb-2">Materi Sesi</h4>
+                                <form action="{{ route('class-schedules.material', $schedule) }}" method="POST" class="flex gap-2">
+                                    @csrf @method('PATCH')
+                                    <input type="text" name="material_taught"
+                                           value="{{ old('material_taught', $schedule->material_taught) }}"
+                                           placeholder="Tulis materi yang diajarkan..."
+                                           class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">Simpan</button>
+                                </form>
+                            </div>
+                            @else
+                            <p class="text-xs text-gray-400">Materi hanya bisa diisi pada atau setelah tanggal sesi.</p>
+                            @endif
+                            @endcan
+
+                            {{-- Attendance + Score --}}
+                            @can('class.attendance.record')
+                            @if($isPast && $activeMembers->isNotEmpty())
+                            <div>
+                                <h4 class="text-xs font-semibold text-gray-500 uppercase mb-2">Absensi & Nilai</h4>
+                                <form action="{{ route('member-attendance.store', $schedule) }}" method="POST">
+                                    @csrf
+                                    <table class="min-w-full text-sm">
+                                        <thead>
+                                            <tr class="text-xs text-gray-500 uppercase">
+                                                <th class="text-left pb-2 pr-4 font-medium">Member</th>
+                                                <th class="text-left pb-2 pr-4 font-medium w-36">Status</th>
+                                                <th class="text-left pb-2 pr-4 font-medium">Catatan</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-100">
+                                            @foreach($activeMembers as $mc)
+                                            <tr>
+                                                <td class="py-2 pr-4 font-medium text-gray-800">{{ $mc->memberRegistration?->memberData?->full_name ?? 'Member #'.$mc->id }}</td>
+                                                <td class="py-2 pr-4">
+                                                    <input type="hidden" name="attendances[{{ $loop->index }}][member_class_id]" value="{{ $mc->id }}">
+                                                    <select name="attendances[{{ $loop->index }}][status]"
+                                                            class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-500">
+                                                        <option value="present">Hadir</option>
+                                                        <option value="absent">Absen</option>
+                                                        <option value="late">Terlambat</option>
+                                                        <option value="excused">Izin</option>
+                                                        <option value="sick">Sakit</option>
+                                                    </select>
+                                                </td>
+                                                <td class="py-2">
+                                                    <input type="text" name="attendances[{{ $loop->index }}][notes]"
+                                                           placeholder="Catatan (opsional)"
+                                                           class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-500">
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                    <button type="submit" class="mt-3 px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700">Simpan Absensi</button>
+                                </form>
+                            </div>
+                            @endif
+                            @endcan
+
+                            {{-- Assessment --}}
+                            @can('class.assessment.record')
+                            @if($isPast && $activeMembers->isNotEmpty())
+                            <div>
+                                <h4 class="text-xs font-semibold text-gray-500 uppercase mb-2">Nilai Sesi</h4>
+                                <div class="space-y-2">
+                                    @foreach($activeMembers as $mc)
+                                    <form action="{{ route('member-assessments.store', $schedule) }}" method="POST" class="flex items-center gap-3">
+                                        @csrf
+                                        <input type="hidden" name="member_class_id" value="{{ $mc->id }}">
+                                        <span class="text-sm text-gray-700 w-40">{{ $mc->memberRegistration?->memberData?->full_name ?? 'Member #'.$mc->id }}</span>
+                                        <input type="number" name="score" min="0" max="100" placeholder="0-100"
+                                               class="w-20 px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-500">
+                                        <input type="text" name="notes" placeholder="Catatan"
+                                               class="flex-1 px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-500">
+                                        <button type="submit" class="px-3 py-1.5 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700">Simpan</button>
+                                    </form>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @endif
+                            @endcan
+
+                        </div>
+                    </div>
+                @endforeach
             </div>
         @endif
     </div>

@@ -898,6 +898,7 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     Route::put('member-class/{memberClass}/transfer', [MemberClassController::class, 'transfer'])->name('member-class.transfer');
 
     // Class Session — material + attendance + assessment + progress
+    Route::get('my-classes', [ClassScheduleController::class, 'myClasses'])->name('my-classes.index');
     Route::get('class-schedules', [ClassScheduleController::class, 'index'])->name('class-schedules.index');
     Route::patch('class-schedules/{schedule}/material', [ClassScheduleController::class, 'update'])->name('class-schedules.material');
     Route::post('class-schedules/{schedule}/attendance', [MemberAttendanceController::class, 'store'])->name('member-attendance.store');

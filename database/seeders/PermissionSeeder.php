@@ -216,6 +216,8 @@ class PermissionSeeder extends Seeder
             'class.member.assign',
             'class.attendance.record',
             'class.session.update',
+            'class.schedule.view.branchandarea',
+            'class.schedule.view.nasional',
             'class.assessment.record',
             'class.progress.update',
             'class.test.create',
