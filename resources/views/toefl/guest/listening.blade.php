@@ -162,7 +162,7 @@
     data-limit-seconds="{{ $timeLimit * 60 }}"
     data-csrf="{{ csrf_token() }}"
     data-answer-url="{{ route('toefl.guest.answer', $session) }}"
-    data-playlist="{{ e(json_encode($playlist)) }}"
+    data-playlist="{{ json_encode($playlist) }}"
 ></div>
 @vite('resources/js/toefl-guest-listening-exam.js')
 @include('toefl.partials.exam-security')
