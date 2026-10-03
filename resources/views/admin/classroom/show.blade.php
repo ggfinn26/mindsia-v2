@@ -203,7 +203,7 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($class->memberClasses as $mc)
-                        <tr>
+                        <tr x-data="{ transferOpen: false }">
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                 {{ $mc->memberRegistration?->memberData?->full_name ?? 'Member #' . $mc->member_registration_id }}
                             </td>
@@ -223,16 +223,42 @@
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 @can('class.manage')
                                 @if($mc->status === 'active')
+                                    {{-- Transfer inline form --}}
+                                    <span x-show="transferOpen" x-cloak class="inline-flex items-center gap-2 mr-3">
+                                        <form action="{{ route('member-class.transfer', $mc) }}" method="POST" class="inline-flex items-center gap-2">
+                                            @csrf @method('PUT')
+                                            <select name="new_class_id" required
+                                                    style="padding-left: 0.5rem !important"
+                                                    class="text-sm border border-gray-300 rounded px-2 py-1 focus:ring-blue-500 focus:border-blue-500">
+                                                <option value="">Pilih kelas tujuan</option>
+                                                @foreach($transferableClasses as $tc)
+                                                    <option value="{{ $tc->id }}">{{ $tc->class_name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <button type="submit" class="text-blue-600 hover:text-blue-900 font-medium">Pindah</button>
+                                        </form>
+                                        <button type="button" @click="transferOpen = false" class="text-gray-400 hover:text-gray-600">Batal</button>
+                                    </span>
+
+                                    @if($transferableClasses->isNotEmpty())
+                                        <button type="button"
+                                                x-show="!transferOpen"
+                                                @click="transferOpen = true"
+                                                class="text-blue-600 hover:text-blue-900 mr-3">Pindahkan</button>
+                                    @endif
+
                                     <form id="deact-mc-{{ $mc->id }}" action="{{ route('member-class.deactivate', $mc) }}" method="POST" class="hidden">
                                         @csrf @method('PATCH')
                                     </form>
                                     <button type="button"
+                                            x-show="!transferOpen"
                                             onclick="openConfirmModal('Nonaktifkan Member', 'Nonaktifkan member ini dari kelas? Data kehadiran tetap tersimpan.', () => document.getElementById('deact-mc-{{ $mc->id }}').submit())"
                                             class="text-yellow-600 hover:text-yellow-900 mr-3">Nonaktifkan</button>
                                     <form id="rm-mc-{{ $mc->id }}" action="{{ route('member-class.destroy', $mc) }}" method="POST" class="hidden">
                                         @csrf @method('DELETE')
                                     </form>
                                     <button type="button"
+                                            x-show="!transferOpen"
                                             onclick="openConfirmModal('Hapus Member dari Kelas', 'Hapus permanen member ini dari kelas? Progress kurikulum juga akan dihapus.', () => document.getElementById('rm-mc-{{ $mc->id }}').submit())"
                                             class="text-red-600 hover:text-red-900">Hapus</button>
                                 @endif

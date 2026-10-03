@@ -88,7 +88,12 @@ class ClassRoomController extends Controller implements HasMiddleware
             'label' => ($r->memberData?->full_name ?? 'Member #'.$r->id).' — '.($r->program?->program_name ?? ''),
         ])->values()->toArray();
 
-        return view('admin.classroom.show', compact('class', 'availableRegistrations', 'memberOptions'));
+        $transferableClasses = ClassRoom::where('program_id', $class->program_id)
+            ->where('id', '!=', $class->id)
+            ->where('status', 'active')
+            ->get(['id', 'class_name']);
+
+        return view('admin.classroom.show', compact('class', 'availableRegistrations', 'memberOptions', 'transferableClasses'));
     }
 
     public function edit(ClassRoom $classroom): View
