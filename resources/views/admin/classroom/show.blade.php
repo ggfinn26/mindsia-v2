@@ -396,47 +396,140 @@
                 Belum ada test untuk kelas ini.
             </div>
         @else
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Test</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipe</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
-                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        @foreach($class->tests as $test)
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $test->test_name }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $test->test_type === 'pre_test' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' }}">
-                                        {{ $test->test_type === 'pre_test' ? 'Pre-Test' : 'Post-Test' }}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $test->date?->format('d M Y') ?? '-' }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    @can('class.test.update')
-                                        <a href="{{ route('class-tests.edit', [$class, $test]) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
-                                    @endcan
-                                    @can('class.test.delete')
-                                        <form id="del-test-{{ $test->id }}" action="{{ route('class-tests.destroy', [$class, $test]) }}" method="POST" class="hidden">
-                                            @csrf
-                                            @method('DELETE')
-                                        </form>
-                                        <button type="button"
-                                                onclick="openConfirmModal('Hapus Test', 'Hapus test {{ addslashes($test->test_name) }}? Semua nilai yang sudah diinput akan ikut terhapus.', () => document.getElementById('del-test-{{ $test->id }}').submit())"
-                                                class="text-red-600 hover:text-red-900">Hapus</button>
-                                    @endcan
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+            @php $activeMembers = $class->memberClasses->where('status', 'active'); @endphp
+            <div class="divide-y divide-gray-200">
+                @foreach($class->tests as $test)
+                    <div x-data="{ open: false }">
+                        <div class="px-6 py-4 flex items-center gap-4 cursor-pointer hover:bg-gray-50" @click="open = !open">
+                            <span class="text-sm font-medium text-gray-900 flex-1">{{ $test->test_name }}</span>
+                            <span class="px-2 text-xs leading-5 font-semibold rounded-full {{ $test->test_type === 'pre_test' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' }}">
+                                {{ $test->test_type === 'pre_test' ? 'Pre-Test' : 'Post-Test' }}
+                            </span>
+                            <span class="text-sm text-gray-500">{{ $test->date?->format('d M Y') ?? '-' }}</span>
+                            @can('class.test.update')
+                                <a href="{{ route('class-tests.edit', [$class, $test]) }}" class="text-indigo-600 hover:text-indigo-900 text-sm" @click.stop>Edit</a>
+                            @endcan
+                            @can('class.test.delete')
+                                <form id="del-test-{{ $test->id }}" action="{{ route('class-tests.destroy', [$class, $test]) }}" method="POST" class="hidden">
+                                    @csrf @method('DELETE')
+                                </form>
+                                <button type="button"
+                                        onclick="openConfirmModal('Hapus Test', 'Hapus test {{ addslashes($test->test_name) }}? Semua nilai yang sudah diinput akan ikut terhapus.', () => document.getElementById('del-test-{{ $test->id }}').submit())"
+                                        class="text-red-600 hover:text-red-900 text-sm" @click.stop>Hapus</button>
+                            @endcan
+                            <span class="material-symbols-outlined text-gray-400 text-[18px]" x-text="open ? 'expand_less' : 'expand_more'"></span>
+                        </div>
+
+                        {{-- Score input per member --}}
+                        @can('class.test.score')
+                        <div x-show="open" x-cloak class="bg-gray-50 border-t border-gray-100 px-6 py-4">
+                            <h4 class="text-xs font-semibold text-gray-500 uppercase mb-3">Input Nilai Per Member</h4>
+                            @php
+                                $resultsByMcId = $test->memberTestResults->keyBy('member_class_id');
+                            @endphp
+                            <div class="space-y-3">
+                                @foreach($class->memberClasses as $mc)
+                                    @php $existing = $resultsByMcId->get($mc->id); @endphp
+                                    <form action="{{ route('member-test-results.store', [$mc, $test]) }}" method="POST"
+                                          class="flex items-center gap-3">
+                                        @csrf
+                                        <span class="text-sm text-gray-700 w-40">{{ $mc->memberRegistration?->memberData?->full_name ?? 'Member #'.$mc->id }}</span>
+                                        <input type="text" name="level" value="{{ old('level', $existing?->level) }}"
+                                               placeholder="Level (A/B/C/Lulus)"
+                                               class="w-32 px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-500">
+                                        <input type="number" name="final_score" value="{{ old('final_score', $existing?->final_score) }}"
+                                               min="0" placeholder="Nilai"
+                                               class="w-24 px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-500">
+                                        <button type="submit" class="px-3 py-1.5 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700">
+                                            {{ $existing ? 'Update' : 'Simpan' }}
+                                        </button>
+                                        @if($existing)
+                                            <span class="text-xs text-gray-400">Tersimpan: Level {{ $existing->level }}, Nilai {{ $existing->final_score }}</span>
+                                        @endif
+                                    </form>
+                                @endforeach
+                            </div>
+                        </div>
+                        @endcan
+                    </div>
+                @endforeach
             </div>
         @endif
     </div>
+
+    <!-- Sertifikat -->
+    @php $graduatedMembers = $class->memberClasses->filter(fn($mc) => $mc->memberRegistration?->graduation_status === 'LULUS'); @endphp
+    @if($graduatedMembers->isNotEmpty())
+    <div class="bg-white shadow sm:rounded-lg mb-6">
+        <div class="px-6 py-5 border-b border-gray-200">
+            <h2 class="text-lg font-bold text-gray-900">🎓 Sertifikat Member Lulus</h2>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Member</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">No. Sertifikat</th>
+                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Tersedia</th>
+                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Hardcopy</th>
+                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Sudah Diambil</th>
+                        @can('class.certificate.update') <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Aksi</th> @endcan
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach($graduatedMembers as $mc)
+                        @php $cert = $mc->memberRegistration?->certificate; @endphp
+                        <tr>
+                            <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ $mc->memberRegistration?->memberData?->full_name ?? '-' }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-500">{{ $cert?->certificate_number ?? '-' }}</td>
+                            <td class="px-4 py-3 text-center">
+                                @if($cert?->certificate_available === 'available')
+                                    <span class="px-2 py-0.5 text-xs rounded-full bg-green-100 text-green-800">Tersedia</span>
+                                @else
+                                    <span class="px-2 py-0.5 text-xs rounded-full bg-gray-100 text-gray-600">Belum</span>
+                                @endif
+                            </td>
+                            <td class="px-4 py-3 text-center text-sm text-gray-500">
+                                {{ $cert?->certificate_hardcopy ? 'Ya' : 'Tidak' }}
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                @if($cert?->certificate_taken === 'taken')
+                                    <span class="px-2 py-0.5 text-xs rounded-full bg-blue-100 text-blue-800">Sudah Diambil</span>
+                                @else
+                                    <span class="px-2 py-0.5 text-xs rounded-full bg-gray-100 text-gray-600">Belum Diambil</span>
+                                @endif
+                            </td>
+                            @can('class.certificate.update')
+                            <td class="px-4 py-3 text-right">
+                                @if($cert)
+                                <form action="{{ route('member-certificates.update', $cert) }}" method="POST"
+                                      class="flex items-center justify-end gap-2">
+                                    @csrf @method('PATCH')
+                                    <input type="text" name="certificate_number"
+                                           value="{{ $cert->certificate_number }}"
+                                           placeholder="No. Sertifikat"
+                                           class="w-28 px-2 py-1 border border-gray-300 rounded text-xs focus:ring-1 focus:ring-blue-500">
+                                    <select name="certificate_available" class="px-2 py-1 border border-gray-300 rounded text-xs">
+                                        <option value="not_available" @selected($cert->certificate_available === 'not_available')>Belum Tersedia</option>
+                                        <option value="available" @selected($cert->certificate_available === 'available')>Tersedia</option>
+                                    </select>
+                                    <select name="certificate_taken" class="px-2 py-1 border border-gray-300 rounded text-xs">
+                                        <option value="not_taken" @selected($cert->certificate_taken === 'not_taken')>Belum Diambil</option>
+                                        <option value="taken" @selected($cert->certificate_taken === 'taken')>Sudah Diambil</option>
+                                    </select>
+                                    <input type="hidden" name="certificate_hardcopy" value="{{ $cert->certificate_hardcopy ? '1' : '0' }}">
+                                    <button type="submit" class="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700">Simpan</button>
+                                </form>
+                                @endif
+                            </td>
+                            @endcan
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @endif
 
     <!-- Tutor Change History -->
     @if($class->tutorChangeHistories->isNotEmpty())

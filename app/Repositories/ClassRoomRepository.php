@@ -21,8 +21,10 @@ class ClassRoomRepository
     public function findWithDetails(int $id): ClassRoom
     {
         return ClassRoom::with([
-            'program', 'branch', 'tutor', 'schedules', 'tutorChangeHistories', 'tests',
+            'program', 'branch', 'tutor', 'schedules', 'tutorChangeHistories',
+            'tests.memberTestResults.memberClass',
             'memberClasses.memberRegistration.memberData',
+            'memberClasses.memberRegistration.certificate',
         ])->findOrFail($id);
     }
 
