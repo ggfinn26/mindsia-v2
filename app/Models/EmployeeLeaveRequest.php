@@ -51,6 +51,16 @@ class EmployeeLeaveRequest extends Model
         return $this->status === 'pending';
     }
 
+    public function leaveTypeLabel(): string
+    {
+        return match ($this->leave_type) {
+            'sick' => 'Sakit',
+            'permission' => 'Izin',
+            'leave' => 'Cuti',
+            default => ucfirst($this->leave_type),
+        };
+    }
+
     public function leaveStatusForDate(): string
     {
         return match ($this->leave_type) {
