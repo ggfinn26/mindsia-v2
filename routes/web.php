@@ -668,6 +668,7 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     Route::put('attendance/document-signature', [DocumentSignatureSettingController::class, 'upsert'])->name('attendance.document-signature.upsert');
 
     // Work Attendance — check-in/out + manage
+    Route::get('attendance/my-recap/export-pdf', [WorkAttendanceController::class, 'myRecapExportPdf'])->name('work-attendance.my-recap.pdf');
     Route::get('attendance/my-recap', [WorkAttendanceController::class, 'myRecap'])->name('work-attendance.my-recap');
     Route::get('work-attendance', [WorkAttendanceController::class, 'index'])->name('work-attendance.index');
     Route::post('work-attendance/check-in', [WorkAttendanceController::class, 'checkIn'])->name('work-attendance.check-in');
