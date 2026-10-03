@@ -72,8 +72,8 @@
                             @endphp
                             <tr class="hover:bg-gray-50">
                                 <td class="px-5 py-3.5">
-                                    <div class="font-medium text-gray-900">{{ $recap->employee->name }}</div>
-                                    <div class="text-xs text-gray-400">{{ $recap->employee->position?->position_name ?? '-' }}</div>
+                                    <div class="font-medium text-gray-900">{{ $recap->employee->full_name }}</div>
+                                    <div class="text-xs text-gray-400">{{ $recap->employee->currentStatus?->position?->position_name ?? '-' }}</div>
                                 </td>
                                 <td class="px-5 py-3.5 text-gray-600">{{ $recap->employee->branch?->branch_name ?? '-' }}</td>
                                 <td class="px-5 py-3.5 text-center font-medium text-green-700">{{ $recap->total_present }}</td>

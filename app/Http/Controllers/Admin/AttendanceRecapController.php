@@ -27,7 +27,7 @@ class AttendanceRecapController extends Controller implements HasMiddleware
 
         $user = auth()->user();
 
-        $recaps = EmployeeAttendanceMonthlyRecap::with(['employee.branch', 'employee.position'])
+        $recaps = EmployeeAttendanceMonthlyRecap::with(['employee.branch', 'employee.currentStatus.position'])
             ->whereHas('employee', function ($q) use ($user, $branchId) {
                 $q->inUserScope($user)->where('is_active', true);
                 if ($branchId) {
@@ -36,7 +36,7 @@ class AttendanceRecapController extends Controller implements HasMiddleware
             })
             ->forPeriod($year, $month)
             ->join('employees', 'employee_attendance_monthly_recaps.employee_id', '=', 'employees.id')
-            ->orderBy('employees.name')
+            ->orderBy('employees.full_name')
             ->select('employee_attendance_monthly_recaps.*')
             ->paginate(20)
             ->withQueryString();
