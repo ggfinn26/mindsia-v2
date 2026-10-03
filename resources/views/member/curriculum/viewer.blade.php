@@ -70,6 +70,11 @@
                     <canvas id="wm-canvas" class="absolute inset-0 w-full h-full pointer-events-none" style="opacity:0.12;"></canvas>
                 </div>
                 </div>
+            @elseif ($fileType === 'image')
+                <div class="w-full h-full flex items-center justify-center relative">
+                    <img src="{{ $mediaUrl }}" alt="{{ $item->item_name }}" class="max-h-full max-w-full object-contain pointer-events-none" draggable="false" oncontextmenu="return false">
+                    <canvas id="wm-canvas" class="absolute inset-0 w-full h-full pointer-events-none" style="opacity:0.18;"></canvas>
+                </div>
             @else
                 <div class="text-center text-gray-500 mt-10 px-6">
                     <p class="text-lg font-semibold text-gray-800 font-jakarta mb-2">{{ $item->item_name }}</p>
@@ -197,8 +202,8 @@
             }
         }
 
-        // Draw watermark for video/audio
-        if (FILE_TYPE === 'video' || FILE_TYPE === 'audio') {
+        // Draw watermark for video/audio/image
+        if (FILE_TYPE === 'video' || FILE_TYPE === 'audio' || FILE_TYPE === 'image') {
             function updateWm() {
                 const canvas = document.getElementById('wm-canvas');
                 if (!canvas) return;

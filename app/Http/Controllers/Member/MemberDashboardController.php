@@ -33,12 +33,10 @@ class MemberDashboardController extends Controller
                 $totalAbsent = $attendances->whereIn('status', ['absent', 'excused', 'sick'])->count();
                 $totalSessions = $attendances->count();
 
-                // Total curriculum items: sum through program → curriculum → sessions → items
-                $totalItems = optional($mc->classRoom->program->curriculum)
-                    ->sessions()
-                    ->withCount('items')
-                    ->get()
-                    ->sum('items_count');
+                $curriculum = $mc->classRoom->program->curriculum;
+                $totalItems = $curriculum
+                    ? $curriculum->sessions()->withCount('items')->get()->sum('items_count')
+                    : 0;
 
                 $mc->attendance_summary = [
                     'total' => $totalSessions,
