@@ -73,7 +73,10 @@ class AttendanceRecapController extends Controller implements HasMiddleware
 
     public function show(int $id): View
     {
+        $user = auth()->user();
+
         $recap = EmployeeAttendanceMonthlyRecap::with(['employee.branch'])
+            ->whereHas('employee', fn ($q) => $q->inUserScope($user))
             ->findOrFail($id);
 
         $logs = EmployeeWorkAttendanceLog::where('employee_id', $recap->employee_id)
