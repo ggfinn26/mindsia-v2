@@ -11,6 +11,21 @@ class StoreWorkScheduleRuleRequest extends FormRequest
         return $this->user()->can('attendance.schedule_rule.manage');
     }
 
+    protected function prepareForValidation(): void
+    {
+        $fields = ['start_time', 'end_time', 'break_start_time', 'break_end_time'];
+        $merged = [];
+        foreach ($fields as $field) {
+            $val = $this->input($field);
+            if ($val && strlen($val) > 5) {
+                $merged[$field] = substr($val, 0, 5);
+            }
+        }
+        if ($merged) {
+            $this->merge($merged);
+        }
+    }
+
     public function rules(): array
     {
         return [

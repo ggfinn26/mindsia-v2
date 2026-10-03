@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Attendance;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Attendance\UpdateLeavePaySettingRequest;
 use App\Models\LeavePaySetting;
+use App\Models\Position;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -21,16 +22,22 @@ class LeavePaySettingController extends Controller implements HasMiddleware
 
     public function index(): View
     {
-        return view('attendance.leave-pay-settings.index', [
-            'settings' => LeavePaySetting::all(),
-        ]);
+        $positions = Position::orderBy('role_id')->orderBy('hierarchy_order')->get();
+
+        $settings = LeavePaySetting::all()->keyBy(fn ($s) => $s->position_id.'_'.$s->leave_type);
+
+        return view('attendance.leave-pay-settings.index', compact('positions', 'settings'));
     }
 
-    public function update(UpdateLeavePaySettingRequest $request, LeavePaySetting $leavePaySetting): RedirectResponse
+    public function upsert(UpdateLeavePaySettingRequest $request): RedirectResponse
     {
-        $leavePaySetting->update($request->validated());
+        $data = $request->validated();
 
-        return redirect()->route('leave-pay-settings.index')
-            ->with('success', 'Pengaturan pembayaran izin berhasil diperbarui');
+        LeavePaySetting::updateOrCreate(
+            ['position_id' => $data['position_id'], 'leave_type' => $data['leave_type']],
+            ['is_paid' => $data['is_paid']],
+        );
+
+        return back()->with('success', 'Pengaturan berhasil disimpan.');
     }
 }

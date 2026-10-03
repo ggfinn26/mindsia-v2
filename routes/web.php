@@ -656,7 +656,8 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     Route::resource('holidays', HolidayController::class)->except(['show']);
     // Route::resource('attendance-logs', AttendanceLogController::class);
     Route::resource('attendance-rules', AttendanceRuleController::class);
-    Route::resource('leave-pay-settings', LeavePaySettingController::class)->only(['index', 'update']);
+    Route::get('leave-pay-settings', [LeavePaySettingController::class, 'index'])->name('leave-pay-settings.index');
+    Route::post('leave-pay-settings/upsert', [LeavePaySettingController::class, 'upsert'])->name('leave-pay-settings.upsert');
     Route::resource('leave-requests', LeaveRequestController::class)->only(['index', 'create', 'store']);
     Route::post('leave-requests/{leaveRequest}/cancel', [LeaveRequestController::class, 'cancel'])->name('leave-requests.cancel');
     Route::post('leave-requests/{leaveRequest}/approve', [LeaveRequestController::class, 'approve'])->name('leave-requests.approve');

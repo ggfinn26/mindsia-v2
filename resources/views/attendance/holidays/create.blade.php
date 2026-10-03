@@ -5,7 +5,7 @@
 @section('content')
 <div class="max-w-lg mx-auto py-6 px-4 sm:px-6 lg:px-8">
     <div class="mb-6 flex items-center gap-3">
-        <a href="{{ route('work-schedule-rules.index') }}" class="text-gray-400 hover:text-gray-600">
+        <a href="{{ route('holidays.index') }}" class="text-gray-400 hover:text-gray-600">
             <span class="material-symbols-outlined">arrow_back</span>
         </a>
         <h1 class="text-2xl font-bold text-gray-900">Tambah Hari Libur</h1>
@@ -46,7 +46,7 @@
         </div>
 
         <div class="px-6 py-4 flex justify-end gap-3">
-            <a href="{{ route('work-schedule-rules.index') }}"
+            <a href="{{ route('holidays.index') }}"
                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                 Batal
             </a>
