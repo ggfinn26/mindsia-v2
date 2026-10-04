@@ -28,6 +28,22 @@ class PayrollSlipService
         private readonly SessionRateResolverService $sessionRateResolver,
     ) {}
 
+    public static function resolveTemplateType(Employee $employee): string
+    {
+        $positionName = strtolower($employee->currentStatus?->position?->position_name ?? '');
+
+        if (str_contains($positionName, 'official tutor')) {
+            return self::TYPE_OFFICIAL_TUTOR;
+        }
+
+        if (str_contains($positionName, 'regular tutor')) {
+            return self::TYPE_REGULAR_TUTOR;
+        }
+
+        // MA, PIC, Marketing, dan semua posisi lain pakai template marketing
+        return self::TYPE_MARKETING;
+    }
+
     public function generate(
         EmployeePayroll $payroll,
         ?Employee $generatedBy = null,

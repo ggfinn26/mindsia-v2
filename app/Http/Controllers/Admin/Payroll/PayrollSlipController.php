@@ -23,10 +23,12 @@ class PayrollSlipController extends Controller
 
     public function generate(GenerateSlipRequest $request, PayrollPeriod $period, EmployeePayroll $payroll): RedirectResponse
     {
+        $payroll->loadMissing('employee.currentStatus.position');
         $generatedBy = auth()->user()->employee;
         $signatoryId = $request->validated('signatory_employee_id');
         $signatory = $signatoryId ? Employee::find($signatoryId) : null;
-        $slip = $this->slipService->generate($payroll, $generatedBy, $signatory);
+        $templateType = PayrollSlipService::resolveTemplateType($payroll->employee);
+        $slip = $this->slipService->generate($payroll, $generatedBy, $signatory, $templateType);
         $this->notificationService->notifySlipReady($payroll);
 
         return redirect()->route('payroll.payrolls.show', [$period, $payroll])->with('success', 'Slip gaji berhasil digenerate.');
