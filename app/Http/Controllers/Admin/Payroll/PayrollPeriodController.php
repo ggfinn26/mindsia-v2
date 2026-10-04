@@ -166,7 +166,7 @@ class PayrollPeriodController extends Controller
     {
         abort_unless(auth()->user()->can('payroll.period.generate'), 403);
 
-        $periods = PayrollPeriod::whereIn('status', ['finalized', 'review'])
+        $periods = PayrollPeriod::where('status', 'finalized')
             ->orderByDesc('period_year')
             ->orderByDesc('period_month')
             ->withCount('employeePayrolls')
@@ -179,7 +179,7 @@ class PayrollPeriodController extends Controller
     {
         abort_unless(auth()->user()->can('payroll.item.adjust'), 403);
 
-        $periods = PayrollPeriod::where('status', 'review')
+        $periods = PayrollPeriod::whereIn('status', ['review', 'finalized'])
             ->orderByDesc('period_year')
             ->orderByDesc('period_month')
             ->withCount('employeePayrolls')
