@@ -18,7 +18,7 @@
 
         <!-- Right: Actions -->
         <div class="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
-            @can('recruitment.request.create')
+            @can('recruitment.job_permintaan.create')
             <a href="{{ route('recruitment.permintaan.create') }}" class="btn bg-indigo-500 hover:bg-indigo-600 text-white">
                 <span class="hidden xs:block ml-2">Tambah Permintaan</span>
             </a>
@@ -62,7 +62,7 @@
                     @forelse($permintaans as $permintaan)
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $loop->iteration }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $permintaan->branch->name ?? '-' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ $permintaan->branch->branch_name ?? '-' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ optional($permintaan->detail)->position->name ?? '-' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap capitalize">{{ str_replace('_', ' ', optional($permintaan->detail)->request_type ?? '-') }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-center">
@@ -86,12 +86,14 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <a href="{{ route('recruitment.permintaan.show', $permintaan->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Detail</a>
-                                @can('recruitment.request.edit')
-                                    <a href="{{ route('recruitment.permintaan.edit', $permintaan->id) }}" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
-                                @endcan
-                                @can('recruitment.request.delete')
-                                    <button type="button" @click="showConfirmModal = true; confirmTitle = 'Hapus Permintaan'; confirmMessage = 'Yakin ingin menghapus permintaan ini?'; confirmActionUrl = '{{ route('recruitment.permintaan.destroy', $permintaan->id) }}'; confirmMethod = 'DELETE'; confirmActionText = 'Hapus'" class="text-red-600 hover:text-red-900">Hapus</button>
-                                @endcan
+                                @if($permintaan->status === 'draft')
+                                    @can('recruitment.job_permintaan.update')
+                                        <a href="{{ route('recruitment.permintaan.edit', $permintaan->id) }}" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
+                                    @endcan
+                                    @can('recruitment.job_permintaan.create')
+                                        <button type="button" @click="showConfirmModal = true; confirmTitle = 'Hapus Permintaan'; confirmMessage = 'Yakin ingin menghapus permintaan ini?'; confirmActionUrl = '{{ route('recruitment.permintaan.destroy', $permintaan->id) }}'; confirmMethod = 'DELETE'; confirmActionText = 'Hapus'" class="text-red-600 hover:text-red-900">Hapus</button>
+                                    @endcan
+                                @endif
                             </td>
                         </tr>
                     @empty

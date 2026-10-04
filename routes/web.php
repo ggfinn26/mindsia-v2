@@ -1033,7 +1033,7 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     // Recruitment Domain
     Route::prefix('recruitment')->name('recruitment.')->group(function () {
         // Job Permintaan
-        Route::resource('permintaan', JobPermintaanController::class);
+        Route::resource('permintaan', JobPermintaanController::class, ['parameters' => ['permintaan' => 'jobPermintaan']]);
         Route::post('permintaan/{jobPermintaan}/submit', [JobPermintaanController::class, 'submit'])->name('permintaan.submit');
         Route::post('permintaan/{jobPermintaan}/hr-review', [JobPermintaanController::class, 'hrReview'])->name('permintaan.hr-review');
         Route::post('permintaan/{jobPermintaan}/ops-approve', [JobPermintaanController::class, 'opsApprove'])->name('permintaan.ops-approve');

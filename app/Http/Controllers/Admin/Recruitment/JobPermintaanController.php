@@ -9,6 +9,7 @@ use App\Http\Requests\Recruitment\StoreJobPermintaanRequest;
 use App\Http\Requests\Recruitment\SubmitJobPermintaanRequest;
 use App\Http\Requests\Recruitment\UpdateJobPermintaanRequest;
 use App\Models\JobPermintaan;
+use App\Models\Position;
 use App\Repositories\Recruitment\JobPermintaanRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -29,7 +30,9 @@ class JobPermintaanController extends Controller
 
     public function create(): View
     {
-        return view('recruitment.permintaan.create');
+        return view('recruitment.permintaan.create', [
+            'positions' => Position::orderBy('position_name')->get(),
+        ]);
     }
 
     public function store(StoreJobPermintaanRequest $request): RedirectResponse
@@ -53,7 +56,12 @@ class JobPermintaanController extends Controller
     {
         abort_unless($jobPermintaan->status === JobPermintaan::STATUS_DRAFT, 403);
 
-        return view('recruitment.permintaan.edit', compact('jobPermintaan'));
+        $jobPermintaan->load('detail');
+
+        return view('recruitment.permintaan.edit', [
+            'jobPermintaan' => $jobPermintaan,
+            'positions' => Position::orderBy('position_name')->get(),
+        ]);
     }
 
     public function update(UpdateJobPermintaanRequest $request, JobPermintaan $jobPermintaan): RedirectResponse
@@ -89,7 +97,7 @@ class JobPermintaanController extends Controller
 
     public function destroy(Request $request, JobPermintaan $jobPermintaan): RedirectResponse
     {
-        abort_unless($request->user()->can('recruitment.job_request.manage'), 403);
+        abort_unless($request->user()->can('recruitment.job_permintaan.create'), 403);
         abort_unless($jobPermintaan->status === 'draft', 422, 'Hanya permintaan draft yang bisa dihapus.');
 
         $jobPermintaan->delete();

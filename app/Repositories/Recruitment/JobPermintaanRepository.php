@@ -19,19 +19,33 @@ class JobPermintaanRepository
 
     public function create(array $data): JobPermintaan
     {
-        return JobPermintaan::create($data);
+        $detail = $data['detail'] ?? [];
+        $permintaan = JobPermintaan::create([
+            'branch_id' => $data['branch_id'],
+            'requested_by_employee_id' => $data['requested_by_employee_id'],
+        ]);
+
+        if (! empty($detail)) {
+            $permintaan->detail()->create($detail);
+        }
+
+        return $permintaan;
     }
 
     public function update(JobPermintaan $permintaan, array $data): void
     {
-        $permintaan->update($data);
+        $detail = $data['detail'] ?? [];
+        if (! empty($detail)) {
+            $permintaan->detail()->updateOrCreate(
+                ['job_permintaan_id' => $permintaan->id],
+                $detail
+            );
+        }
     }
 
     public function submit(JobPermintaan $permintaan): void
     {
-        // validasi: detail + requirementsAuto harus ada sebelum submit
         abort_unless($permintaan->detail()->exists(), 422, 'Detail permintaan belum diisi.');
-        abort_unless($permintaan->requirementsAuto()->exists(), 422, 'Requirements auto belum diisi.');
         abort_unless($permintaan->status === JobPermintaan::STATUS_DRAFT, 422, 'Permintaan tidak dalam status draft.');
 
         $permintaan->update(['status' => JobPermintaan::STATUS_PENDING_HR_REVIEW]);
