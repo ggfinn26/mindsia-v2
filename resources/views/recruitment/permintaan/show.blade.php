@@ -230,6 +230,16 @@
             @endcan
         @endif
 
+        @if($jobPermintaan->status === 'approved')
+            @can('recruitment.job_posting.create')
+                <a href="{{ route('recruitment.postings.create', ['job_permintaan_id' => $jobPermintaan->id]) }}"
+                    class="btn bg-indigo-500 hover:bg-indigo-600 text-white text-sm inline-flex items-center gap-1">
+                    <span class="material-symbols-outlined text-base">add</span>
+                    Buat Job Posting
+                </a>
+            @endcan
+        @endif
+
         @if(in_array($jobPermintaan->status, ['rejected', 'fulfilled']))
             <p class="text-sm text-gray-500">Tidak ada tindakan tersedia untuk status ini.</p>
         @endif

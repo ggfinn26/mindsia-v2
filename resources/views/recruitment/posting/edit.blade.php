@@ -2,58 +2,82 @@
 
 @section('content')
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-4xl mx-auto">
-    <div class="mb-8">
+    <div class="mb-6 flex items-center gap-3">
+        <a href="{{ route('recruitment.postings.show', $jobPosting) }}" class="text-gray-400 hover:text-gray-600">
+            <span class="material-symbols-outlined text-xl">arrow_back</span>
+        </a>
         <h1 class="text-2xl md:text-3xl text-gray-800 font-bold">Edit Job Posting</h1>
     </div>
 
-    <div class="bg-white shadow-lg rounded-sm border border-gray-200">
-        <form action="#" method="POST" class="p-6 space-y-4">
-            @csrf
-            @method('PUT')
-            
-            <div>
-                <label class="block text-sm font-medium mb-1">Pilih Permintaan Pekerjaan (Opsional)</label>
-                <select name="job_permintaan_id" class="form-select w-full">
-                    <option value="">Tidak terikat permintaan khusus</option>
-                </select>
-            </div>
+    @if ($errors->any())
+        <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
+            <ul class="list-disc list-inside text-sm text-red-700 space-y-1">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form action="{{ route('recruitment.postings.update', $jobPosting) }}" method="POST" class="space-y-5">
+        @csrf
+        @method('PUT')
+
+        <div class="bg-white shadow-lg rounded-sm border border-gray-200 p-6 space-y-5">
+            <h2 class="text-sm font-semibold text-gray-700 uppercase tracking-wider">Informasi Posting</h2>
 
             <div>
-                <label class="block text-sm font-medium mb-1">Judul Posting <span class="text-red-500">*</span></label>
-                <input name="title" type="text" class="form-input w-full" required />
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Judul Posting <span class="text-red-500">*</span>
+                </label>
+                <input type="text" name="title"
+                    value="{{ old('title', $jobPosting->title) }}"
+                    class="form-input w-full" required />
+                @error('title') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
 
             <div>
-                <label class="block text-sm font-medium mb-1">Deskripsi Pekerjaan <span class="text-red-500">*</span></label>
-                <textarea name="description" rows="5" class="form-textarea w-full" required></textarea>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Deskripsi Pekerjaan <span class="text-red-500">*</span>
+                </label>
+                <textarea name="job_description" rows="4" class="form-textarea w-full">{{ old('job_description', $jobPosting->job_description) }}</textarea>
+                @error('job_description') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
 
             <div>
-                <label class="block text-sm font-medium mb-1">Syarat / Kualifikasi (Otomatis)</label>
-                <textarea name="job_requirements_auto" rows="3" class="form-textarea w-full" placeholder="Kualifikasi yang di-filter otomatis oleh sistem"></textarea>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Tanggung Jawab <span class="text-red-500">*</span>
+                </label>
+                <textarea name="job_responsibilities" rows="4" class="form-textarea w-full">{{ old('job_responsibilities', $jobPosting->job_responsibilities) }}</textarea>
+                @error('job_responsibilities') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
 
             <div>
-                <label class="block text-sm font-medium mb-1">Syarat / Kualifikasi (Manual)</label>
-                <textarea name="job_requirements_manual" rows="3" class="form-textarea w-full" placeholder="Kualifikasi yang dicek manual oleh HR"></textarea>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Kualifikasi (teks publik) <span class="text-red-500">*</span>
+                </label>
+                <textarea name="job_requirements_text" rows="4" class="form-textarea w-full">{{ old('job_requirements_text', $jobPosting->job_requirements_text) }}</textarea>
+                @error('job_requirements_text') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium mb-1">Tanggal Mulai Publikasi <span class="text-red-500">*</span></label>
-                    <input name="publish_date" type="date" class="form-input w-full" required />
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Tanggal Penutupan <span class="text-red-500">*</span></label>
-                    <input name="closing_date" type="date" class="form-input w-full" required />
-                </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Tanggal Penutupan (opsional)
+                </label>
+                <input type="date" name="closing_date"
+                    value="{{ old('closing_date', $jobPosting->closing_date?->format('Y-m-d')) }}"
+                    class="form-input w-full" />
+                @error('closing_date') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
+        </div>
 
-            <div class="mt-6 flex justify-end">
-                <a href="{{ route('recruitment.postings.index') }}" class="btn bg-white border-gray-200 hover:border-gray-300 text-gray-600 mr-3">Batal</a>
-                <button type="submit" class="btn bg-indigo-500 hover:bg-indigo-600 text-white">Simpan Perubahan</button>
-            </div>
-        </form>
-    </div>
+        <div class="flex justify-end gap-3">
+            <a href="{{ route('recruitment.postings.show', $jobPosting) }}"
+                class="btn bg-white border-gray-200 hover:border-gray-300 text-gray-600">Batal</a>
+            <button type="submit" class="btn bg-indigo-500 hover:bg-indigo-600 text-white">
+                Simpan Perubahan
+            </button>
+        </div>
+    </form>
 </div>
 @endsection

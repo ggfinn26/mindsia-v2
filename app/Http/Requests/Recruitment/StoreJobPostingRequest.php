@@ -21,6 +21,13 @@ class StoreJobPostingRequest extends FormRequest
             'job_responsibilities' => ['required', 'string'],
             'job_requirements_text' => ['required', 'string'],
             'closing_date' => ['nullable', 'date', 'after:today'],
+            'requirements_auto.minimum_age' => ['nullable', 'integer', 'min:15', 'max:99'],
+            'requirements_auto.maximum_age' => ['nullable', 'integer', 'min:15', 'max:99', 'gte:requirements_auto.minimum_age'],
+            'requirements_auto.minimum_year_experience' => ['nullable', 'integer', 'min:0'],
+            'requirements_auto.minimum_education_level' => ['nullable', 'string', 'max:50'],
+            'requirements_manual' => ['nullable', 'array'],
+            'requirements_manual.*.criteria_name' => ['required_with:requirements_manual', 'string', 'max:100'],
+            'requirements_manual.*.criteria_desc' => ['required_with:requirements_manual', 'string'],
         ];
     }
 }

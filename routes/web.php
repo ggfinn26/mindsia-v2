@@ -1040,7 +1040,7 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
         Route::post('permintaan/{jobPermintaan}/fulfill', [JobPermintaanController::class, 'markFulfilled'])->name('permintaan.fulfill');
 
         // Job Posting
-        Route::resource('postings', JobPostingController::class);
+        Route::resource('postings', JobPostingController::class, ['parameters' => ['postings' => 'jobPosting']]);
         Route::post('postings/{jobPosting}/publish', [JobPostingController::class, 'publish'])->name('postings.publish');
         Route::post('postings/{jobPosting}/close', [JobPostingController::class, 'close'])->name('postings.close');
 

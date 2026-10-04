@@ -59,8 +59,8 @@
                             <td class="px-6 py-4 whitespace-nowrap">{{ $loop->iteration }}</td>
                             <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{{ $posting->title }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-gray-500">
-                                {{ $posting->branch->name ?? '-' }} <br>
-                                <span class="text-xs">{{ $posting->position->name ?? '-' }}</span>
+                                {{ $posting->branch->branch_name ?? '-' }} <br>
+                                <span class="text-xs">{{ $posting->position->position_name ?? '-' }}</span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $posting->publish_date ? $posting->publish_date->format('d M Y') : '-' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $posting->closing_date ? $posting->closing_date->format('d M Y') : '-' }}</td>
@@ -79,12 +79,14 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <a href="{{ route('recruitment.postings.show', $posting->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Detail</a>
-                                @can('recruitment.posting.edit')
-                                    <a href="{{ route('recruitment.postings.edit', $posting->id) }}" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
-                                @endcan
-                                @can('recruitment.posting.delete')
-                                    <button type="button" @click="showConfirmModal = true; confirmTitle = 'Hapus Posting'; confirmMessage = 'Yakin ingin menghapus job posting ini?'; confirmActionUrl = '{{ route('recruitment.postings.destroy', $posting->id) }}'; confirmMethod = 'DELETE'; confirmActionText = 'Hapus'" class="text-red-600 hover:text-red-900">Hapus</button>
-                                @endcan
+                                @if($posting->status === 'draft')
+                                    @can('recruitment.job_posting.update')
+                                        <a href="{{ route('recruitment.postings.edit', $posting->id) }}" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
+                                    @endcan
+                                    @can('recruitment.job_posting.update')
+                                        <button type="button" @click="showConfirmModal = true; confirmTitle = 'Hapus Posting'; confirmMessage = 'Yakin ingin menghapus job posting ini?'; confirmActionUrl = '{{ route('recruitment.postings.destroy', $posting->id) }}'; confirmMethod = 'DELETE'; confirmActionText = 'Hapus'" class="text-red-600 hover:text-red-900">Hapus</button>
+                                    @endcan
+                                @endif
                             </td>
                         </tr>
                     @empty

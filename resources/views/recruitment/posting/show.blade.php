@@ -1,49 +1,185 @@
 @extends('layouts.dashboard')
 
 @section('content')
-<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-4xl mx-auto">
-    <div class="mb-8 flex justify-between items-center">
-        <h1 class="text-2xl md:text-3xl text-gray-800 font-bold">Detail Job Posting</h1>
-        <a href="{{ route('recruitment.postings.index') }}" class="btn bg-white border-gray-200 hover:border-gray-300 text-gray-600">Kembali</a>
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-4xl mx-auto" x-data="{
+    showPublishModal: false,
+    showCloseModal: false
+}">
+    {{-- Header --}}
+    <div class="mb-6 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <a href="{{ route('recruitment.postings.index') }}" class="text-gray-400 hover:text-gray-600">
+                <span class="material-symbols-outlined text-xl">arrow_back</span>
+            </a>
+            <h1 class="text-2xl md:text-3xl text-gray-800 font-bold">Detail Job Posting</h1>
+        </div>
+        <div class="flex gap-2">
+            @if($jobPosting->status === 'draft')
+                @can('recruitment.job_posting.update')
+                    <a href="{{ route('recruitment.postings.edit', $jobPosting) }}"
+                        class="btn bg-white border-gray-200 hover:border-gray-300 text-gray-600 text-sm">Edit</a>
+                @endcan
+            @endif
+        </div>
     </div>
 
-    <div class="bg-white shadow-lg rounded-sm border border-gray-200 p-6 space-y-6">
-        <div>
-            <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">Judul Posting</h3>
-            <p class="text-gray-900 font-medium text-lg">-</p>
+    @if(session('success'))
+        <div class="mb-4 p-3 bg-green-50 border border-green-200 rounded-md text-sm text-green-700">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    {{-- Status badge --}}
+    @php
+        $statusColors = ['draft'=>'bg-gray-100 text-gray-800','published'=>'bg-green-100 text-green-800','closed'=>'bg-red-100 text-red-800'];
+        $statusLabels = ['draft'=>'Draft','published'=>'Dipublikasikan','closed'=>'Ditutup'];
+    @endphp
+
+    {{-- Main info --}}
+    <div class="bg-white shadow-lg rounded-sm border border-gray-200 p-6 mb-5">
+        <div class="flex items-center justify-between mb-5">
+            <h2 class="text-base font-semibold text-gray-700">{{ $jobPosting->title }}</h2>
+            <span class="px-3 py-1 text-xs font-semibold rounded-full {{ $statusColors[$jobPosting->status] ?? 'bg-gray-100 text-gray-800' }}">
+                {{ $statusLabels[$jobPosting->status] ?? $jobPosting->status }}
+            </span>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
             <div>
-                <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">Tanggal Mulai Publikasi</h3>
-                <p class="text-gray-900 font-medium">-</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Cabang</p>
+                <p class="text-sm text-gray-900">{{ $jobPosting->branch?->branch_name ?? '-' }}</p>
             </div>
             <div>
-                <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">Tanggal Penutupan</h3>
-                <p class="text-gray-900 font-medium">-</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Posisi</p>
+                <p class="text-sm text-gray-900">{{ $jobPosting->position?->position_name ?? '-' }}</p>
+            </div>
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Tanggal Publish</p>
+                <p class="text-sm text-gray-900">{{ $jobPosting->publish_date?->format('d M Y') ?? '-' }}</p>
+            </div>
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Tanggal Tutup</p>
+                <p class="text-sm text-gray-900">{{ $jobPosting->closing_date?->format('d M Y') ?? 'Tanpa batas' }}</p>
+            </div>
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Dibuat oleh</p>
+                <p class="text-sm text-gray-900">{{ $jobPosting->createdBy?->full_name ?? '-' }}</p>
+            </div>
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Jumlah Pelamar</p>
+                <p class="text-sm text-gray-900">{{ $jobPosting->applications->count() }} lamaran</p>
             </div>
         </div>
 
-        <div>
-            <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">Deskripsi Pekerjaan</h3>
-            <div class="text-gray-900 p-4 bg-gray-50 rounded-md border border-gray-100 min-h-[100px]">
-                -
+        <div class="space-y-4">
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Deskripsi Pekerjaan</p>
+                <div class="text-sm text-gray-800 bg-gray-50 rounded-md p-4 border border-gray-100 whitespace-pre-wrap">{{ $jobPosting->job_description }}</div>
+            </div>
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Tanggung Jawab</p>
+                <div class="text-sm text-gray-800 bg-gray-50 rounded-md p-4 border border-gray-100 whitespace-pre-wrap">{{ $jobPosting->job_responsibilities }}</div>
+            </div>
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Kualifikasi (publik)</p>
+                <div class="text-sm text-gray-800 bg-gray-50 rounded-md p-4 border border-gray-100 whitespace-pre-wrap">{{ $jobPosting->job_requirements_text }}</div>
             </div>
         </div>
-        
-        <div>
-            <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">Syarat / Kualifikasi (Otomatis)</h3>
-            <div class="text-gray-900 p-4 bg-gray-50 rounded-md border border-gray-100">
-                -
-            </div>
-        </div>
+    </div>
 
-        <div>
-            <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">Syarat / Kualifikasi (Manual)</h3>
-            <div class="text-gray-900 p-4 bg-gray-50 rounded-md border border-gray-100">
-                -
-            </div>
+    {{-- Requirements dari permintaan --}}
+    @if($jobPosting->permintaan?->requirementsAuto || $jobPosting->permintaan?->requirementsManual->count())
+        <div class="bg-white shadow-lg rounded-sm border border-gray-200 p-5 mb-5">
+            <h2 class="text-sm font-semibold text-gray-700 mb-4">Kriteria Seleksi</h2>
+
+            @if($jobPosting->permintaan?->requirementsAuto)
+                @php $auto = $jobPosting->permintaan->requirementsAuto; @endphp
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+                    <div class="bg-blue-50 rounded-md p-3 text-center">
+                        <p class="text-xs text-blue-600 font-medium">Usia</p>
+                        <p class="text-sm font-semibold text-blue-800">{{ $auto->minimum_age }}–{{ $auto->maximum_age }} thn</p>
+                    </div>
+                    <div class="bg-blue-50 rounded-md p-3 text-center">
+                        <p class="text-xs text-blue-600 font-medium">Pengalaman</p>
+                        <p class="text-sm font-semibold text-blue-800">Min. {{ $auto->minimum_year_experience }} thn</p>
+                    </div>
+                    <div class="bg-blue-50 rounded-md p-3 text-center">
+                        <p class="text-xs text-blue-600 font-medium">Pendidikan</p>
+                        <p class="text-sm font-semibold text-blue-800">{{ strtoupper($auto->minimum_education_level ?? '-') }}</p>
+                    </div>
+                </div>
+            @endif
+
+            @if($jobPosting->permintaan?->requirementsManual->count())
+                <div>
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Kriteria Manual</p>
+                    <ul class="space-y-2">
+                        @foreach($jobPosting->permintaan->requirementsManual as $manual)
+                            <li class="text-sm">
+                                <span class="font-medium text-gray-800">{{ $manual->criteria_name }}</span>
+                                <span class="text-gray-500 ml-2">— {{ $manual->criteria_desc }}</span>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
         </div>
+    @endif
+
+    {{-- Tindakan --}}
+    <div class="bg-white shadow-lg rounded-sm border border-gray-200 p-5">
+        <h2 class="text-sm font-semibold text-gray-700 mb-4">Tindakan</h2>
+
+        @if($jobPosting->status === 'draft')
+            @can('recruitment.job_posting.publish')
+                <div x-show="!showPublishModal">
+                    <button @click="showPublishModal = true"
+                        class="btn bg-green-500 hover:bg-green-600 text-white text-sm">
+                        <span class="material-symbols-outlined text-base mr-1">publish</span>
+                        Publikasikan
+                    </button>
+                </div>
+                <div x-show="showPublishModal" class="space-y-3">
+                    <p class="text-sm text-gray-700">Set tanggal penutupan (opsional) sebelum publish:</p>
+                    <form action="{{ route('recruitment.postings.publish', $jobPosting) }}" method="POST">
+                        @csrf
+                        <div class="flex gap-3 items-end">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Tanggal Penutupan</label>
+                                <input type="date" name="closing_date"
+                                    value="{{ $jobPosting->closing_date?->format('Y-m-d') }}"
+                                    class="form-input text-sm" />
+                            </div>
+                            <button type="submit" class="btn bg-green-500 hover:bg-green-600 text-white text-sm"
+                                onclick="return confirm('Publikasikan posting ini sekarang?')">
+                                Konfirmasi Publikasi
+                            </button>
+                            <button type="button" @click="showPublishModal = false"
+                                class="btn bg-white border-gray-200 text-gray-600 text-sm">Batal</button>
+                        </div>
+                    </form>
+                </div>
+            @else
+                <p class="text-sm text-gray-500">Draft — belum dipublikasikan.</p>
+            @endcan
+
+        @elseif($jobPosting->status === 'published')
+            @can('recruitment.job_posting.update')
+                <form action="{{ route('recruitment.postings.close', $jobPosting) }}" method="POST"
+                    onsubmit="return confirm('Tutup lowongan ini? Pelamar baru tidak bisa melamar setelah ditutup.')">
+                    @csrf
+                    <button type="submit" class="btn bg-red-500 hover:bg-red-600 text-white text-sm">
+                        <span class="material-symbols-outlined text-base mr-1">close</span>
+                        Tutup Lowongan
+                    </button>
+                </form>
+            @else
+                <p class="text-sm text-gray-500">Aktif — lowongan terbuka untuk pelamar.</p>
+            @endcan
+
+        @elseif($jobPosting->status === 'closed')
+            <p class="text-sm text-gray-500">Lowongan sudah ditutup. Tidak ada tindakan tersedia.</p>
+        @endif
     </div>
 </div>
 @endsection

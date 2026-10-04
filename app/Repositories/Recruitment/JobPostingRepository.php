@@ -3,6 +3,8 @@
 namespace App\Repositories\Recruitment;
 
 use App\Models\JobPosting;
+use App\Models\JobRequirementsAuto;
+use App\Models\JobRequirementsManual;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class JobPostingRepository
@@ -29,7 +31,27 @@ class JobPostingRepository
 
     public function create(array $data): JobPosting
     {
-        return JobPosting::create($data);
+        $requirementsAuto = $data['requirements_auto'] ?? null;
+        $requirementsManual = $data['requirements_manual'] ?? [];
+
+        $posting = JobPosting::create(array_diff_key($data, array_flip(['requirements_auto', 'requirements_manual'])));
+
+        // requirements FK ke job_permintaan_id, shared semua posting dari permintaan yang sama
+        if (! empty($requirementsAuto)) {
+            JobRequirementsAuto::updateOrCreate(
+                ['job_permintaan_id' => $posting->job_permintaan_id],
+                $requirementsAuto
+            );
+        }
+
+        foreach ($requirementsManual as $item) {
+            JobRequirementsManual::firstOrCreate(
+                ['job_permintaan_id' => $posting->job_permintaan_id, 'criteria_name' => $item['criteria_name']],
+                ['criteria_desc' => $item['criteria_desc']]
+            );
+        }
+
+        return $posting;
     }
 
     public function update(JobPosting $posting, array $data): void

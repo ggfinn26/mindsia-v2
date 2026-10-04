@@ -29,7 +29,8 @@ class JobPostingController extends Controller
     public function create(Request $request): View
     {
         // job_permintaan_id wajib di-pass sebagai query param
-        $permintaan = JobPermintaan::findOrFail($request->integer('job_permintaan_id'));
+        $permintaan = JobPermintaan::with(['detail.position', 'branch', 'requirementsAuto', 'requirementsManual'])
+            ->findOrFail($request->integer('job_permintaan_id'));
         abort_unless($permintaan->status === JobPermintaan::STATUS_APPROVED, 422);
 
         return view('recruitment.posting.create', compact('permintaan'));
@@ -44,12 +45,12 @@ class JobPostingController extends Controller
             'created_by_employee_id' => $request->user()->employee->id,
         ]));
 
-        return redirect()->route('recruitment.posting.show', $posting)->with('success', 'Posting berhasil dibuat.');
+        return redirect()->route('recruitment.postings.show', $posting)->with('success', 'Posting berhasil dibuat.');
     }
 
     public function show(JobPosting $jobPosting): View
     {
-        $jobPosting->load(['permintaan', 'branch', 'position', 'applications']);
+        $jobPosting->load(['permintaan.requirementsAuto', 'permintaan.requirementsManual', 'branch', 'position', 'createdBy', 'applications']);
 
         return view('recruitment.posting.show', compact('jobPosting'));
     }
@@ -65,7 +66,7 @@ class JobPostingController extends Controller
     {
         $this->repository->update($jobPosting, $request->validated());
 
-        return redirect()->route('recruitment.posting.show', $jobPosting)->with('success', 'Posting diperbarui.');
+        return redirect()->route('recruitment.postings.show', $jobPosting)->with('success', 'Posting diperbarui.');
     }
 
     public function publish(PublishJobPostingRequest $request, JobPosting $jobPosting): RedirectResponse
@@ -73,17 +74,17 @@ class JobPostingController extends Controller
         // draft → published; JobPostingObserver::published() trigger notif ke reserve candidates
         $this->repository->publish($jobPosting, $request->validated());
 
-        return redirect()->route('recruitment.posting.show', $jobPosting)->with('success', 'Posting dipublikasikan.');
+        return redirect()->route('recruitment.postings.show', $jobPosting)->with('success', 'Posting dipublikasikan.');
     }
 
     public function destroy(Request $request, JobPosting $jobPosting): RedirectResponse
     {
-        abort_unless($request->user()->can('recruitment.job_posting.manage'), 403);
+        abort_unless($request->user()->can('recruitment.job_posting.update'), 403);
         abort_unless($jobPosting->status === 'draft', 422, 'Hanya posting draft yang bisa dihapus.');
 
         $jobPosting->delete();
 
-        return redirect()->route('recruitment.posting.index')->with('success', 'Posting berhasil dihapus.');
+        return redirect()->route('recruitment.postings.index')->with('success', 'Posting berhasil dihapus.');
     }
 
     public function close(Request $request, JobPosting $jobPosting): RedirectResponse
@@ -92,6 +93,6 @@ class JobPostingController extends Controller
 
         $this->repository->close($jobPosting);
 
-        return redirect()->route('recruitment.posting.show', $jobPosting)->with('success', 'Posting ditutup.');
+        return redirect()->route('recruitment.postings.show', $jobPosting)->with('success', 'Posting ditutup.');
     }
 }
