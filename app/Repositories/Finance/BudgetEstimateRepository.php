@@ -3,6 +3,7 @@
 namespace App\Repositories\Finance;
 
 use App\Models\BudgetEstimate;
+use App\Models\InventoryDraft;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
@@ -80,8 +81,13 @@ class BudgetEstimateRepository
                 'sent_at' => now(),
             ]);
 
-            // auto-generate inventory_draft: update status only (no separate table per flow decision)
             $estimate->update(['status' => 'inventory_draft']);
+
+            InventoryDraft::create([
+                'budget_estimate_id' => $estimate->id,
+                'status' => 'draft',
+                'created_by_employee_id' => $hrpEmployeeId,
+            ]);
         });
     }
 }

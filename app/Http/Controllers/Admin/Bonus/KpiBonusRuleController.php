@@ -7,11 +7,14 @@ use App\Http\Requests\Bonus\StoreKpiBonusRuleRequest;
 use App\Http\Requests\Bonus\StoreKpiBonusRuleTierRequest;
 use App\Http\Requests\Bonus\UpdateKpiBonusRuleRequest;
 use App\Http\Requests\Bonus\UpdateKpiBonusRuleTierRequest;
+use App\Models\Employee;
 use App\Models\KpiBonusRule;
 use App\Models\KpiBonusRuleTier;
+use App\Models\Position;
 use App\Repositories\Bonus\KpiBonusRuleRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use Spatie\Permission\Models\Role;
 
 class KpiBonusRuleController extends Controller
 {
@@ -25,6 +28,9 @@ class KpiBonusRuleController extends Controller
 
         return view('admin.bonus.kpi-rules.index', [
             'rules' => $this->repo->all(),
+            'positions' => Position::orderBy('position_name')->get(['id', 'position_name']),
+            'roles' => Role::orderBy('name')->get(['id', 'name']),
+            'employees' => Employee::where('is_active', true)->orderBy('full_name')->get(['id', 'full_name']),
         ]);
     }
 

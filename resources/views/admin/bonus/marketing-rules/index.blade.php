@@ -51,7 +51,7 @@
                 <p class="mt-0.5 text-sm text-slate-500">Tier reward ditambahkan setelah rule tersimpan.</p>
             </div>
         </div>
-        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div x-data="{ scope: '{{ old('scope_type', 'global') }}' }" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-slate-700">Kode rule</label>
                 <input type="text" name="rule_code" value="{{ old('rule_code') }}" required maxlength="100" placeholder="MARKETING_BONUS_GLOBAL" class="block w-full border-slate-300 text-sm uppercase focus:border-[#215aac] focus:ring-[#215aac]">
@@ -62,9 +62,36 @@
             </div>
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-slate-700">Scope</label>
-                <select name="scope_type" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                <select name="scope_type" required x-model="scope" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
                     @foreach ($scopeLabels as $val => $label)
                         <option value="{{ $val }}" @selected(old('scope_type', 'global') === $val)>{{ $label }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div x-show="scope === 'position'" x-cloak>
+                <label class="mb-1.5 block text-sm font-medium text-slate-700">Posisi</label>
+                <select name="position_id" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                    <option value="">— Pilih posisi —</option>
+                    @foreach ($positions as $pos)
+                        <option value="{{ $pos->id }}" @selected(old('position_id') == $pos->id)>{{ $pos->position_name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div x-show="scope === 'role'" x-cloak>
+                <label class="mb-1.5 block text-sm font-medium text-slate-700">Role</label>
+                <select name="role_id" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                    <option value="">— Pilih role —</option>
+                    @foreach ($roles as $role)
+                        <option value="{{ $role->id }}" @selected(old('role_id') == $role->id)>{{ $role->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div x-show="scope === 'employee'" x-cloak>
+                <label class="mb-1.5 block text-sm font-medium text-slate-700">Pegawai</label>
+                <select name="employee_id" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                    <option value="">— Pilih pegawai —</option>
+                    @foreach ($employees as $emp)
+                        <option value="{{ $emp->id }}" @selected(old('employee_id') == $emp->id)>{{ $emp->full_name }}</option>
                     @endforeach
                 </select>
             </div>

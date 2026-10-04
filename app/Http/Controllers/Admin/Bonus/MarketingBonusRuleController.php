@@ -7,11 +7,14 @@ use App\Http\Requests\Bonus\StoreMarketingBonusRuleRequest;
 use App\Http\Requests\Bonus\StoreMarketingBonusRuleTierRequest;
 use App\Http\Requests\Bonus\UpdateMarketingBonusRuleRequest;
 use App\Http\Requests\Bonus\UpdateMarketingBonusRuleTierRequest;
+use App\Models\Employee;
 use App\Models\MarketingBonusRule;
 use App\Models\MarketingBonusRuleTier;
+use App\Models\Position;
 use App\Repositories\Bonus\MarketingBonusRuleRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use Spatie\Permission\Models\Role;
 
 class MarketingBonusRuleController extends Controller
 {
@@ -25,6 +28,9 @@ class MarketingBonusRuleController extends Controller
 
         return view('admin.bonus.marketing-rules.index', [
             'rules' => $this->repo->all(),
+            'positions' => Position::orderBy('position_name')->get(['id', 'position_name']),
+            'roles' => Role::orderBy('name')->get(['id', 'name']),
+            'employees' => Employee::where('is_active', true)->orderBy('full_name')->get(['id', 'full_name']),
         ]);
     }
 

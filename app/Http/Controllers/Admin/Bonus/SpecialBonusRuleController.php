@@ -7,11 +7,14 @@ use App\Http\Requests\Bonus\StoreSpecialBonusRuleConditionRequest;
 use App\Http\Requests\Bonus\StoreSpecialBonusRuleRequest;
 use App\Http\Requests\Bonus\UpdateSpecialBonusRuleConditionRequest;
 use App\Http\Requests\Bonus\UpdateSpecialBonusRuleRequest;
+use App\Models\Employee;
+use App\Models\Position;
 use App\Models\SpecialBonusRule;
 use App\Models\SpecialBonusRuleCondition;
 use App\Repositories\Bonus\SpecialBonusRuleRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use Spatie\Permission\Models\Role;
 
 class SpecialBonusRuleController extends Controller
 {
@@ -25,6 +28,9 @@ class SpecialBonusRuleController extends Controller
 
         return view('admin.bonus.special-rules.index', [
             'rules' => $this->repo->all(),
+            'positions' => Position::orderBy('position_name')->get(['id', 'position_name']),
+            'roles' => Role::orderBy('name')->get(['id', 'name']),
+            'employees' => Employee::where('is_active', true)->orderBy('full_name')->get(['id', 'full_name']),
         ]);
     }
 

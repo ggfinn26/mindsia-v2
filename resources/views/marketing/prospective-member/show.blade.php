@@ -45,12 +45,59 @@
                 <p class="text-xs text-gray-500">Nama</p>
                 <p class="text-sm font-semibold text-gray-900">{{ $lead->full_name }}</p>
             </div>
-            <div>
+            <div x-data="{
+                open: false,
+                templates: [],
+                selected: null,
+                leadName: {{ Illuminate\Support\Js::from($lead->full_name) }},
+                marketerName: {{ Illuminate\Support\Js::from(auth()->user()->employee?->full_name ?? auth()->user()->name) }},
+                waNumber: {{ Illuminate\Support\Js::from(preg_replace('/[^0-9]/', '', ltrim($lead->whatsapp_number ?? '', '0'))) }},
+                init() {
+                    fetch('{{ route('wa-templates.json') }}')
+                        .then(r => r.json())
+                        .then(data => { this.templates = data; });
+                },
+                renderedBody() {
+                    if (!this.selected) return '';
+                    return this.selected.body
+                        .replace(/\{nama\}/g, this.leadName)
+                        .replace(/\{marketer\}/g, this.marketerName);
+                },
+                openWa() {
+                    const text = this.renderedBody();
+                    const url = 'https://wa.me/' + this.waNumber + (text ? '?text=' + encodeURIComponent(text) : '');
+                    window.open(url, '_blank');
+                    this.open = false;
+                }
+            }">
                 <p class="text-xs text-gray-500">WhatsApp</p>
-                <a href="https://wa.me/{{ ltrim($lead->whatsapp_number, '0') }}" target="_blank"
-                   class="text-sm text-green-600 hover:text-green-800 font-medium">
-                    {{ $lead->whatsapp_number }}
-                </a>
+                <p class="text-sm text-gray-700 font-medium mb-1">{{ $lead->whatsapp_number }}</p>
+                <button @click="open = !open"
+                    class="inline-flex items-center gap-1 text-xs px-2 py-1 bg-green-50 text-green-700 border border-green-200 rounded-md hover:bg-green-100">
+                    <span class="material-symbols-outlined text-[14px]">chat</span>
+                    Hubungi via WA
+                </button>
+                <div x-show="open" @click.outside="open = false" class="mt-2 p-3 bg-gray-50 rounded-lg border border-gray-200 space-y-2" style="display:none">
+                    <template x-if="templates.length === 0">
+                        <p class="text-xs text-gray-400 italic">Belum ada template. <a href="{{ route('wa-templates.index') }}" class="text-indigo-600 underline">Buat template</a></p>
+                    </template>
+                    <template x-if="templates.length > 0">
+                        <div class="space-y-2">
+                            <select @change="selected = templates.find(t => t.id == $event.target.value) || null"
+                                class="block w-full border-gray-300 rounded-md text-xs focus:ring-indigo-400 focus:border-indigo-400">
+                                <option value="">— Pilih Template —</option>
+                                <template x-for="t in templates" :key="t.id">
+                                    <option :value="t.id" x-text="t.name"></option>
+                                </template>
+                            </select>
+                            <p x-show="selected" x-text="renderedBody()" class="text-xs text-gray-600 bg-white p-2 rounded border border-gray-200 whitespace-pre-wrap"></p>
+                        </div>
+                    </template>
+                    <button @click="openWa()"
+                        class="w-full text-xs px-3 py-1.5 bg-green-600 text-white rounded-md hover:bg-green-700">
+                        Buka WhatsApp
+                    </button>
+                </div>
             </div>
             @if ($lead->email)
                 <div>

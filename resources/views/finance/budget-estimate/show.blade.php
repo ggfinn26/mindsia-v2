@@ -23,6 +23,8 @@
                 <span class="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">Diterima</span>
             @elseif ($budgetEstimate->status === 'sent')
                 <span class="inline-flex items-center rounded-full bg-purple-50 px-2.5 py-0.5 text-xs font-medium text-purple-700 ring-1 ring-inset ring-purple-700/10">Terkirim</span>
+            @elseif ($budgetEstimate->status === 'inventory_draft')
+                <span class="inline-flex items-center rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10">Draft Inventory</span>
             @endif
         </div>
     </div>
@@ -45,11 +47,11 @@
         </div>
         <div class="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
             <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Bulan</p>
-            <p class="mt-1.5 text-sm font-semibold text-slate-900">{{ Carbon\Carbon::create(null, $budgetEstimate->month)->translatedFormat('F') }} {{ $budgetEstimate->year }}</p>
+            <p class="mt-1.5 text-sm font-semibold text-slate-900">{{ Carbon\Carbon::create(null, $budgetEstimate->period_month)->translatedFormat('F') }} {{ $budgetEstimate->period_year }}</p>
         </div>
         <div class="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
             <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Estimasi</p>
-            <p class="mt-1.5 text-sm font-semibold text-emerald-600">Rp {{ number_format($budgetEstimate->total_estimated_amount, 0, ',', '.') }}</p>
+            <p class="mt-1.5 text-sm font-semibold text-emerald-600">Rp {{ number_format($budgetEstimate->total_amount, 0, ',', '.') }}</p>
         </div>
         <div class="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
             <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Cabang</p>
