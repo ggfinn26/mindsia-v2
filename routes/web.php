@@ -86,6 +86,7 @@ use App\Http\Controllers\Admin\PositionController;
 use App\Http\Controllers\Admin\ProspectiveMemberController;
 use App\Http\Controllers\Admin\Recruitment\ApplicantInterviewEvaluationController;
 use App\Http\Controllers\Admin\Recruitment\ApplicantInterviewScheduleController;
+use App\Http\Controllers\Admin\Recruitment\ApplicantProfileViewController;
 use App\Http\Controllers\Admin\Recruitment\ApplicantPsikotestController;
 use App\Http\Controllers\Admin\Recruitment\EmployeeOnboardingController;
 use App\Http\Controllers\Admin\Recruitment\JobApplicationController;
@@ -1077,6 +1078,10 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
         Route::post('applications/{jobApplication}/onboarding', [EmployeeOnboardingController::class, 'store'])->name('application.onboarding.store');
         Route::post('onboarding/{employeeOnboarding}/review', [EmployeeOnboardingController::class, 'review'])->name('onboarding.review');
         Route::post('onboarding/{employeeOnboarding}/complete', [EmployeeOnboardingController::class, 'complete'])->name('onboarding.complete');
+
+        // Applicant Profile (employee read-only view)
+        Route::get('applicants', [ApplicantProfileViewController::class, 'index'])->name('applicants.index');
+        Route::get('applicants/{applicant}', [ApplicantProfileViewController::class, 'show'])->name('applicants.show');
     });
 
     // Notification Domain

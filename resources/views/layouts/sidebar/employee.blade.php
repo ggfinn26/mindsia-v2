@@ -251,7 +251,7 @@
 @endif
 
 <!-- 1.11 Recruitment -->
-@canany(['recruitment.job_permintaan.create', 'recruitment.job_posting.create'])
+@canany(['recruitment.job_permintaan.create', 'recruitment.job_posting.create', 'applicant.view'])
 <div class="pt-4 pb-2">
     <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider font-jakarta">Rekrutmen</p>
 </div>
@@ -261,6 +261,9 @@
     <x-dashboard.nav-item href="{{ route('recruitment.application.index') }}" :isChild="true" :active="request()->routeIs('recruitment.application.*') && !request()->has('status')">Aplikasi Lowongan</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('recruitment.application.index', ['status' => 'interview']) }}" :isChild="true" :active="request()->has('status') && request('status') == 'interview'">Psikotest & Interview</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('recruitment.onboarding.index') }}" :isChild="true" :active="request()->routeIs('recruitment.onboarding.*')">Offering & Onboarding</x-dashboard.nav-item>
+    @can('applicant.view')
+    <x-dashboard.nav-item href="{{ route('recruitment.applicants.index') }}" :isChild="true" :active="request()->routeIs('recruitment.applicants.*')">Daftar Pelamar</x-dashboard.nav-item>
+    @endcan
 </x-dashboard.nav-group>
 @endcan
 
