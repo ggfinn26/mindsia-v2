@@ -42,7 +42,12 @@
             </div>
 
             <div class="w-full sm:w-auto">
-                @if(!$today || !$today->check_in)
+                @if($scheduleRequired === false)
+                    <div class="inline-flex items-center px-4 py-2 border border-emerald-300 rounded-md bg-emerald-50 text-emerald-700 text-sm font-medium">
+                        <span class="material-symbols-outlined text-base mr-2">check_circle</span>
+                        Kehadiran Anda otomatis tercatat
+                    </div>
+                @elseif(!$today || !$today->check_in)
                     <button type="button"
                         @click="open('check-in', '{{ route('work-attendance.check-in') }}')"
                         class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">

@@ -9,8 +9,15 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 use Illuminate\Validation\ValidationException;
 
+// ponytail: constructor injected — Laravel resolves via service container automatically
+
 class LeaveRequestRepository
 {
+    public function __construct(
+        private readonly HolidayRepository $holidayRepo,
+        private readonly WorkScheduleRepository $scheduleRepo,
+    ) {}
+
     public function paginateForEmployee(int $employeeId): LengthAwarePaginator
     {
         return EmployeeLeaveRequest::where('employee_id', $employeeId)
@@ -91,6 +98,28 @@ class LeaveRequestRepository
 
         while ($current->lte($end)) {
             $date = $current->toDateString();
+
+            // Skip hari libur nasional — tidak perlu log izin
+            if ($this->holidayRepo->isHoliday($date)) {
+                $current->addDay();
+
+                continue;
+            }
+
+            // Skip hari non-kerja: hanya jika employee punya jadwal tapi hari ini di luar work_days,
+            // atau jadwal is_required=false (auto-hadir). Jika tidak ada jadwal sama sekali → tetap insert.
+            $schedule = $this->scheduleRepo->resolveForEmployee($request->employee_id, $date);
+            if ($schedule && ! $schedule->is_required) {
+                $current->addDay();
+
+                continue;
+            }
+            if (! $schedule && $this->scheduleRepo->hasAnyActiveAssignment($request->employee_id, $date)) {
+                // Ada jadwal tapi hari ini bukan hari kerja
+                $current->addDay();
+
+                continue;
+            }
 
             $existing = EmployeeWorkAttendanceLog::where('employee_id', $request->employee_id)
                 ->where('attendance_date', $date)

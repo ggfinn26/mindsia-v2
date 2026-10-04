@@ -8,6 +8,7 @@ use App\Http\Requests\Attendance\CheckOutRequest;
 use App\Models\EmployeeAttendanceMonthlyRecap;
 use App\Models\EmployeeWorkAttendanceLog;
 use App\Repositories\WorkAttendanceRepository;
+use App\Repositories\WorkScheduleRepository;
 use App\Services\AttendanceService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -19,6 +20,7 @@ class WorkAttendanceController extends Controller
     public function __construct(
         private readonly AttendanceService $service,
         private readonly WorkAttendanceRepository $repository,
+        private readonly WorkScheduleRepository $scheduleRepository,
     ) {}
 
     public function myRecap(): View
@@ -114,6 +116,7 @@ class WorkAttendanceController extends Controller
     public function index(): View
     {
         $employee = auth()->user()->employee;
+        $schedule = $this->scheduleRepository->resolveForEmployee($employee->id, now()->toDateString());
 
         return view('attendance.work.index', [
             'logs' => $this->repository->paginateForEmployee(
@@ -121,6 +124,7 @@ class WorkAttendanceController extends Controller
                 request()->only('month', 'year'),
             ),
             'today' => $this->repository->findForDate($employee->id, now()->toDateString()),
+            'scheduleRequired' => $schedule ? $schedule->is_required : null,
         ]);
     }
 

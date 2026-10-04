@@ -30,6 +30,10 @@
              plans: [],
              selectedPlan: null,
              loading: false,
+             init() {
+                 const old = '{{ old('program_id') }}';
+                 if (old) { this.programId = old; this.fetchPlans(old); }
+             },
              fetchPlans(id) {
                  if (!id) { this.plans = []; this.selectedPlan = null; return; }
                  this.loading = true;

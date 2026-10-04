@@ -33,4 +33,21 @@ class WorkScheduleRule extends Model
     {
         return $this->hasMany(WorkScheduleAssignment::class);
     }
+
+    public function workDays(): HasMany
+    {
+        return $this->hasMany(WorkScheduleDay::class);
+    }
+
+    /** Empty work_schedule_days = applies every day. */
+    public function isActiveOnDate(string $date): bool
+    {
+        if ($this->workDays->isEmpty()) {
+            return true;
+        }
+
+        return $this->workDays->pluck('day_of_week')->contains(
+            (int) now()->parse($date)->dayOfWeekIso
+        );
+    }
 }

@@ -37,7 +37,9 @@ class WorkScheduleRuleController extends Controller implements HasMiddleware
 
     public function store(StoreWorkScheduleRuleRequest $request): RedirectResponse
     {
-        WorkScheduleRule::create($request->validated());
+        $validated = $request->validated();
+        $rule = WorkScheduleRule::create($validated);
+        $this->syncWorkDays($rule, $validated['work_days'] ?? []);
 
         return redirect()->route('work-schedule-rules.index')
             ->with('success', 'Aturan jadwal kerja berhasil dibuat');
@@ -45,7 +47,7 @@ class WorkScheduleRuleController extends Controller implements HasMiddleware
 
     public function show(WorkScheduleRule $workScheduleRule): View
     {
-        $workScheduleRule->load('assignments.assignable');
+        $workScheduleRule->load(['assignments.assignable', 'workDays']);
 
         return view('attendance.work-schedule.show', [
             'rule' => $workScheduleRule,
@@ -58,16 +60,26 @@ class WorkScheduleRuleController extends Controller implements HasMiddleware
     public function edit(WorkScheduleRule $workScheduleRule): View
     {
         return view('attendance.work-schedule.edit', [
-            'rule' => $workScheduleRule,
+            'rule' => $workScheduleRule->load('workDays'),
         ]);
     }
 
     public function update(UpdateWorkScheduleRuleRequest $request, WorkScheduleRule $workScheduleRule): RedirectResponse
     {
-        $workScheduleRule->update($request->validated());
+        $validated = $request->validated();
+        $workScheduleRule->update($validated);
+        $this->syncWorkDays($workScheduleRule, $validated['work_days'] ?? []);
 
         return redirect()->route('work-schedule-rules.show', $workScheduleRule)
             ->with('success', 'Aturan jadwal kerja berhasil diperbarui');
+    }
+
+    private function syncWorkDays(WorkScheduleRule $rule, array $days): void
+    {
+        $rule->workDays()->delete();
+        foreach (array_unique($days) as $dow) {
+            $rule->workDays()->create(['day_of_week' => (int) $dow]);
+        }
     }
 
     public function destroy(WorkScheduleRule $workScheduleRule): RedirectResponse

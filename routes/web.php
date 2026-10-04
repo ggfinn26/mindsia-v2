@@ -2,6 +2,7 @@
 
 // use App\Http\Controllers\Admin\AttendanceLogController;
 use App\Http\Controllers\Admin\Attendance\LeavePaySettingController;
+use App\Http\Controllers\Admin\AttendancePolicyController;
 use App\Http\Controllers\Admin\AttendanceRecapController;
 use App\Http\Controllers\Admin\AttendanceRuleController;
 use App\Http\Controllers\Admin\Bonus\BonusRuleChangeHistoryController;
@@ -655,6 +656,7 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     Route::delete('work-schedule-assignments/{workScheduleAssignment}', [WorkScheduleAssignmentController::class, 'destroy'])->name('work-schedule-assignments.destroy');
     Route::resource('holidays', HolidayController::class)->except(['show']);
     // Route::resource('attendance-logs', AttendanceLogController::class);
+    Route::resource('attendance-policies', AttendancePolicyController::class);
     Route::resource('attendance-rules', AttendanceRuleController::class);
     Route::get('leave-pay-settings', [LeavePaySettingController::class, 'index'])->name('leave-pay-settings.index');
     Route::post('leave-pay-settings/upsert', [LeavePaySettingController::class, 'upsert'])->name('leave-pay-settings.upsert');

@@ -23,10 +23,10 @@ class WorkScheduleAssignmentTest extends TestCase
         parent::setUp();
 
         $this->authorizedUser = User::factory()->create();
-        $this->authorizedUser->assignRole('Super Admin');
+        $this->authorizedUser->givePermissionTo('attendance.schedule_rule.manage');
 
         $this->unauthorizedUser = User::factory()->create();
-        $this->unauthorizedUser->assignRole('REGULAR_TUTOR');
+        $this->unauthorizedUser->assignRole('Tutor');
     }
 
     private function createEmployeeWithUser(?Role $role = null): array
@@ -63,10 +63,10 @@ class WorkScheduleAssignmentTest extends TestCase
             ])
             ->assertRedirect();
 
-        // Controller stores short type 'role' — assert what's actually stored
+        // Controller converts 'role' → Role::class (FQCN) via TYPE_MAP before storing
         $this->assertTrue(
             WorkScheduleAssignment::where('work_schedule_rule_id', $rule->id)
-                ->where('assignable_type', 'role')
+                ->where('assignable_type', Role::class)
                 ->where('assignable_id', $role->id)
                 ->exists(),
             'Assignment harus tersimpan di database'
@@ -95,7 +95,7 @@ class WorkScheduleAssignmentTest extends TestCase
         $service = app(WorkScheduleService::class);
         $resolved = $service->getCurrentScheduleForEmployee($employee);
 
-        $this->assertNotNull($resolved, 'Service harus bisa resolve role assignment dengan short type');
+        $this->assertNotNull($resolved, 'Service harus bisa resolve role assignment (FQCN match).');
         $this->assertEquals($rule->id, $resolved->id);
     }
 
@@ -110,7 +110,7 @@ class WorkScheduleAssignmentTest extends TestCase
         // Assign ke role
         WorkScheduleAssignment::create([
             'work_schedule_rule_id' => $ruleForRole->id,
-            'assignable_type' => 'role',
+            'assignable_type' => Role::class,
             'assignable_id' => $role->id,
             'effective_start_date' => now()->toDateString(),
             'is_active' => true,
@@ -121,7 +121,7 @@ class WorkScheduleAssignmentTest extends TestCase
         // Assign ke employee langsung
         WorkScheduleAssignment::create([
             'work_schedule_rule_id' => $ruleForEmployee->id,
-            'assignable_type' => 'employee',
+            'assignable_type' => Employee::class,
             'assignable_id' => $employee->id,
             'effective_start_date' => now()->toDateString(),
             'is_active' => true,
@@ -145,7 +145,7 @@ class WorkScheduleAssignmentTest extends TestCase
 
         WorkScheduleAssignment::create([
             'work_schedule_rule_id' => $ruleForRole->id,
-            'assignable_type' => 'role',
+            'assignable_type' => Role::class,
             'assignable_id' => $role->id,
             'effective_start_date' => now()->toDateString(),
             'is_active' => true,
@@ -159,7 +159,7 @@ class WorkScheduleAssignmentTest extends TestCase
 
         WorkScheduleAssignment::create([
             'work_schedule_rule_id' => $ruleForPosition->id,
-            'assignable_type' => 'position',
+            'assignable_type' => Position::class,
             'assignable_id' => $position->id,
             'effective_start_date' => now()->toDateString(),
             'is_active' => true,
@@ -171,7 +171,6 @@ class WorkScheduleAssignmentTest extends TestCase
         EmploymentStatus::create([
             'employees_id' => $employee->id,
             'type_employment' => 'permanent',
-            'join_date' => now()->toDateString(),
             'position_id' => $position->id,
         ]);
 
@@ -199,7 +198,7 @@ class WorkScheduleAssignmentTest extends TestCase
 
         WorkScheduleAssignment::create([
             'work_schedule_rule_id' => $ruleForRole->id,
-            'assignable_type' => 'role',
+            'assignable_type' => Role::class,
             'assignable_id' => $role->id,
             'effective_start_date' => now()->toDateString(),
             'is_active' => true,
@@ -211,7 +210,6 @@ class WorkScheduleAssignmentTest extends TestCase
         EmploymentStatus::create([
             'employees_id' => $employee->id,
             'type_employment' => 'permanent',
-            'join_date' => now()->toDateString(),
             'position_id' => $position->id,
         ]);
 
@@ -225,16 +223,15 @@ class WorkScheduleAssignmentTest extends TestCase
         $this->assertEquals('Role Only Rule', $resolved->setting_name);
     }
 
-    // WS-19b — GAP: Service pakai App\Models\Role tapi Spatie Role = Spatie\Permission\Models\Role
-    public function test_gap_assignable_type_mismatch_between_service_and_spatie(): void
+    // WS-19b — FIXED: Service sekarang pakai Spatie\Permission\Models\Role (FQCN konsisten)
+    public function test_service_resolves_spatie_role_assignment(): void
     {
         $rule = WorkScheduleRule::factory()->create(['setting_name' => 'Spatie Role Assignment']);
         $role = Role::first();
 
-        // Create assignment pakai Spatie Role::class (yg developer biasa pakai)
         WorkScheduleAssignment::create([
             'work_schedule_rule_id' => $rule->id,
-            'assignable_type' => Role::class,  // Spatie\Permission\Models\Role
+            'assignable_type' => Role::class,
             'assignable_id' => $role->id,
             'effective_start_date' => now()->toDateString(),
             'is_active' => true,
@@ -245,10 +242,8 @@ class WorkScheduleAssignmentTest extends TestCase
         $service = app(WorkScheduleService::class);
         $resolved = $service->getCurrentScheduleForEmployee($employee->fresh());
 
-        // GAP: service query App\Models\Role != Spatie\Permission\Models\Role
-        $this->assertNull($resolved,
-            'GAP-WS-ROLE: Service pakai App\Models\Role::class tapi Spatie pakai Spatie\Permission\Models\Role — resolve gagal'
-        );
+        $this->assertNotNull($resolved, 'Service harus resolve Spatie role assignment (FQCN konsisten)');
+        $this->assertEquals($rule->id, $resolved->id);
     }
 
     // WS-20 — Resolve schedule: tidak ada assignment apapun

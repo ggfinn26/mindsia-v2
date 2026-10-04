@@ -12,8 +12,7 @@ class EmploymentStatusFactory extends Factory
     {
         return [
             'employees_id' => Employee::factory(),
-            'type_employment' => 'TETAP',
-            'join_date' => now()->subYear(),
+            'type_employment' => 'Kontrak',
             'position_id' => Position::factory(),
         ];
     }

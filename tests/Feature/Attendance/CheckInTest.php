@@ -193,6 +193,11 @@ class CheckInTest extends TestCase
     // CI-04 — Check-in sudah dilakukan hari ini
     public function test_check_in_sudah_dilakukan(): void
     {
+        $this->assignSchedule($this->employee, [
+            'start_time' => '08:00',
+            'end_time' => '17:00',
+        ]);
+
         EmployeeWorkAttendanceLog::factory()->checkedIn()->create([
             'employee_id' => $this->employee->id,
             'attendance_date' => now()->toDateString(),
@@ -349,7 +354,7 @@ class CheckInTest extends TestCase
         ]);
     }
 
-    // CI-11 — Check-in tanpa schedule
+    // CI-11 — Check-in tanpa schedule → ditolak
     public function test_check_in_tanpa_schedule(): void
     {
         // No WorkScheduleAssignment created for this employee
@@ -357,11 +362,11 @@ class CheckInTest extends TestCase
 
         $this->actingAs($this->user)
             ->post(route('work-attendance.check-in'), $this->validCheckInData())
-            ->assertRedirect();
+            ->assertRedirect()
+            ->assertSessionHasErrors('schedule');
 
-        $this->assertDatabaseHas('employee_work_attendance_logs', [
+        $this->assertDatabaseMissing('employee_work_attendance_logs', [
             'employee_id' => $this->employee->id,
-            'late_minutes' => 0,
         ]);
     }
 

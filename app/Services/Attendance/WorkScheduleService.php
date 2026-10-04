@@ -3,9 +3,11 @@
 namespace App\Services\Attendance;
 
 use App\Models\Employee;
+use App\Models\Position;
 use App\Models\WorkScheduleAssignment;
 use App\Models\WorkScheduleRule;
 use Carbon\Carbon;
+use Spatie\Permission\Models\Role;
 
 class WorkScheduleService
 {
@@ -13,7 +15,9 @@ class WorkScheduleService
     {
         $date ??= today();
 
-        $assignment = WorkScheduleAssignment::where('assignable_type', 'employee')
+        $dateStr = $date->toDateString();
+
+        $assignment = WorkScheduleAssignment::where('assignable_type', Employee::class)
             ->where('assignable_id', $employee->id)
             ->where('is_active', true)
             ->where('effective_start_date', '<=', $date)
@@ -22,16 +26,16 @@ class WorkScheduleService
                     ->orWhere('effective_end_date', '>=', $date);
             })
             ->latest('effective_start_date')
-            ->with('workScheduleRule')
+            ->with('workScheduleRule.workDays')
             ->first();
 
-        if ($assignment) {
+        if ($assignment && $assignment->workScheduleRule?->isActiveOnDate($dateStr)) {
             return $assignment->workScheduleRule;
         }
 
         $position = $employee->currentStatus?->position;
         if ($position) {
-            $assignment = WorkScheduleAssignment::where('assignable_type', 'position')
+            $assignment = WorkScheduleAssignment::where('assignable_type', Position::class)
                 ->where('assignable_id', $position->id)
                 ->where('is_active', true)
                 ->where('effective_start_date', '<=', $date)
@@ -40,10 +44,10 @@ class WorkScheduleService
                         ->orWhere('effective_end_date', '>=', $date);
                 })
                 ->latest('effective_start_date')
-                ->with('workScheduleRule')
+                ->with('workScheduleRule.workDays')
                 ->first();
 
-            if ($assignment) {
+            if ($assignment && $assignment->workScheduleRule?->isActiveOnDate($dateStr)) {
                 return $assignment->workScheduleRule;
             }
         }
@@ -52,7 +56,7 @@ class WorkScheduleService
         if ($user) {
             $roleIds = $user->roles->pluck('id');
             if ($roleIds->isNotEmpty()) {
-                $assignment = WorkScheduleAssignment::where('assignable_type', 'role')
+                $assignment = WorkScheduleAssignment::where('assignable_type', Role::class)
                     ->whereIn('assignable_id', $roleIds)
                     ->where('is_active', true)
                     ->where('effective_start_date', '<=', $date)
@@ -61,10 +65,10 @@ class WorkScheduleService
                             ->orWhere('effective_end_date', '>=', $date);
                     })
                     ->latest('effective_start_date')
-                    ->with('workScheduleRule')
+                    ->with('workScheduleRule.workDays')
                     ->first();
 
-                if ($assignment) {
+                if ($assignment && $assignment->workScheduleRule?->isActiveOnDate($dateStr)) {
                     return $assignment->workScheduleRule;
                 }
             }

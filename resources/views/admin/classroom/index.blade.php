@@ -51,6 +51,12 @@
         </div>
     @endif
 
+    @if ($errors->any())
+        <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+            {{ $errors->first() }}
+        </div>
+    @endif
+
     <div class="bg-white shadow overflow-hidden sm:rounded-lg">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">

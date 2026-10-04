@@ -43,6 +43,14 @@ class AttendanceService
             ]);
         }
 
+        if (! $schedule) {
+            $dow = now()->dayOfWeekIso; // 1=Mon, 7=Sun
+            $msg = $dow >= 6
+                ? 'Hari ini bukan hari kerja (weekend).'
+                : 'Tidak ada jadwal kerja aktif untuk hari ini. Hubungi HR.';
+            throw ValidationException::withMessages(['schedule' => $msg]);
+        }
+
         $existing = $this->attendanceRepo->findForDate($employee->id, $today);
 
         if ($existing?->isCheckedIn()) {

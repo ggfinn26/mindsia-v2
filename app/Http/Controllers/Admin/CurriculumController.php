@@ -12,6 +12,7 @@ use App\Http\Requests\Curriculum\UpdateCurriculumSessionRequest;
 use App\Models\Curriculum;
 use App\Models\CurriculumItem;
 use App\Models\CurriculumSession;
+use App\Models\MemberCurriculumProgress;
 use App\Models\Program;
 use App\Services\CurriculumContentService;
 use Illuminate\Http\RedirectResponse;
@@ -145,6 +146,15 @@ class CurriculumController extends Controller implements HasMiddleware
     public function destroyItem(CurriculumItem $item): RedirectResponse
     {
         $curriculum = $item->session->curriculum;
+
+        if (MemberCurriculumProgress::where('curriculum_item_id', $item->id)->exists()) {
+            $item->update(['is_active' => false]);
+
+            return redirect()
+                ->route('curriculums.show', $curriculum)
+                ->with('success', 'Item dinonaktifkan karena sudah ada progress member yang terhubung.');
+        }
+
         $item->delete();
 
         return redirect()

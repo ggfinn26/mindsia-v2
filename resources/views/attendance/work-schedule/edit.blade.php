@@ -84,6 +84,29 @@
                 </div>
             </div>
 
+            <!-- Hari Kerja -->
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">
+                    Hari Kerja <span class="text-gray-400 font-normal normal-case">(kosong = semua hari)</span>
+                </label>
+                @php
+                    $days = [1=>'Senin',2=>'Selasa',3=>'Rabu',4=>'Kamis',5=>'Jumat',6=>'Sabtu',7=>'Minggu'];
+                    $activeDays = old('work_days', $rule->workDays->pluck('day_of_week')->toArray());
+                @endphp
+                <div class="flex flex-wrap gap-2">
+                    @foreach($days as $num => $label)
+                        <label class="flex items-center gap-1.5 cursor-pointer px-3 py-1.5 rounded-lg border text-sm font-medium transition-colors
+                            {{ in_array($num, (array)$activeDays) ? 'bg-blue-50 border-blue-400 text-blue-700' : 'bg-white border-gray-300 text-gray-600 hover:border-blue-300' }}">
+                            <input type="checkbox" name="work_days[]" value="{{ $num }}"
+                                   {{ in_array($num, (array)$activeDays) ? 'checked' : '' }}
+                                   class="sr-only">
+                            {{ $label }}
+                        </label>
+                    @endforeach
+                </div>
+                @error('work_days') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+            </div>
+
             <div class="flex items-center gap-6 pt-2">
                 <label class="flex items-center gap-2 cursor-pointer">
                     <input type="hidden" name="is_required" value="0">

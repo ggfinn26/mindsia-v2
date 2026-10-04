@@ -80,6 +80,25 @@
                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">Nonaktif</span>
                 @endif
             </div>
+            <div class="col-span-2">
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">Hari Kerja</p>
+                @php
+                    $dayNames = [1=>'Senin',2=>'Selasa',3=>'Rabu',4=>'Kamis',5=>'Jumat',6=>'Sabtu',7=>'Minggu'];
+                    $activeDayNums = $rule->workDays->pluck('day_of_week')->toArray();
+                @endphp
+                @if($activeDayNums)
+                    <div class="flex flex-wrap gap-1.5">
+                        @foreach($dayNames as $num => $label)
+                            <span class="px-2.5 py-1 rounded-full text-xs font-medium
+                                {{ in_array($num, $activeDayNums) ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-400 line-through' }}">
+                                {{ $label }}
+                            </span>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="text-sm text-gray-500">Semua hari (tidak dikonfigurasi)</p>
+                @endif
+            </div>
         </div>
     </div>
 

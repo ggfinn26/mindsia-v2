@@ -9,7 +9,11 @@ use App\Models\EmployeeWorkAttendanceLog;
 use App\Models\EmploymentStatus;
 use App\Models\Position;
 use App\Models\User;
+use App\Models\WorkScheduleAssignment;
+use App\Models\WorkScheduleDay;
+use App\Models\WorkScheduleRule;
 use App\Services\TelegramStorageService;
+use Carbon\Carbon;
 use Mockery\MockInterface;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -62,7 +66,6 @@ class LeaveRequestTest extends TestCase
         $status = EmploymentStatus::create([
             'employees_id' => $employee->id,
             'type_employment' => 'Kontrak',
-            'join_date' => now()->subYear(),
             'position_id' => $position->id,
             'contract_start_date' => now()->subYear(),
             'contract_end_date' => now()->addYear(),
@@ -528,5 +531,169 @@ class LeaveRequestTest extends TestCase
             ->post(route('leave-requests.approve', $leave));
 
         $response->assertStatus(403);
+    }
+
+    // =========================================================
+    // WORK DAYS FILTER — leave tidak di-insert untuk hari non-kerja
+    // =========================================================
+
+    private function assignSchedule(Employee $employee, array $workDays = []): WorkScheduleRule
+    {
+        $rule = WorkScheduleRule::factory()->create([
+            'start_time' => '08:00',
+            'end_time' => '17:00',
+            'is_required' => true,
+        ]);
+        foreach ($workDays as $dow) {
+            WorkScheduleDay::create(['work_schedule_rule_id' => $rule->id, 'day_of_week' => $dow]);
+        }
+        WorkScheduleAssignment::create([
+            'work_schedule_rule_id' => $rule->id,
+            'assignable_type' => Employee::class,
+            'assignable_id' => $employee->id,
+            'effective_start_date' => now()->subDay()->toDateString(),
+            'is_active' => true,
+        ]);
+
+        return $rule;
+    }
+
+    // LR-18: Approve leave pada hari kerja → log ter-insert
+    public function test_lr18_approve_inserts_log_on_work_day(): void
+    {
+        // Jadwal Senin-Jumat (1-5)
+        $this->assignSchedule($this->employee, [1, 2, 3, 4, 5]);
+        $this->assignPosition($this->employee, 'MARKETING', 5);
+
+        $approverEmployee = Employee::factory()->create(['branch_id' => $this->branch->id]);
+        $this->assignPosition($approverEmployee, 'CEO', 1);
+        $approverUser = User::factory()->create(['employee_id' => $approverEmployee->id]);
+        $this->grantReviewPermission($approverUser);
+
+        // Senin (ISO 1): 2026-10-05
+        $monday = Carbon::parse('2026-10-05')->toDateString();
+
+        $leave = EmployeeLeaveRequest::factory()->create([
+            'employee_id' => $this->employee->id,
+            'branch_id' => $this->branch->id,
+            'start_date' => $monday,
+            'end_date' => $monday,
+            'status' => 'pending',
+            'leave_type' => 'sick',
+        ]);
+
+        $this->actingAs($approverUser)->post(route('leave-requests.approve', $leave));
+
+        $this->assertDatabaseHas('employee_work_attendance_logs', [
+            'employee_id' => $this->employee->id,
+            'attendance_date' => $monday,
+            'status' => 'sick',
+        ]);
+    }
+
+    // LR-19: Approve leave pada hari non-kerja (Sabtu) → log TIDAK ter-insert
+    public function test_lr19_approve_skips_log_on_non_work_day(): void
+    {
+        // Jadwal Senin-Jumat saja
+        $this->assignSchedule($this->employee, [1, 2, 3, 4, 5]);
+        $this->assignPosition($this->employee, 'MARKETING', 5);
+
+        $approverEmployee = Employee::factory()->create(['branch_id' => $this->branch->id]);
+        $this->assignPosition($approverEmployee, 'CEO', 1);
+        $approverUser = User::factory()->create(['employee_id' => $approverEmployee->id]);
+        $this->grantReviewPermission($approverUser);
+
+        // Sabtu (ISO 6): 2026-10-04
+        $saturday = Carbon::parse('2026-10-04')->toDateString();
+
+        $leave = EmployeeLeaveRequest::factory()->create([
+            'employee_id' => $this->employee->id,
+            'branch_id' => $this->branch->id,
+            'start_date' => $saturday,
+            'end_date' => $saturday,
+            'status' => 'pending',
+            'leave_type' => 'sick',
+        ]);
+
+        $this->actingAs($approverUser)->post(route('leave-requests.approve', $leave));
+
+        $this->assertDatabaseMissing('employee_work_attendance_logs', [
+            'employee_id' => $this->employee->id,
+            'attendance_date' => $saturday,
+        ]);
+    }
+
+    // LR-20: Approve leave range Jumat-Minggu → hanya Jumat yang dapat log
+    public function test_lr20_approve_range_filters_weekend(): void
+    {
+        // Jadwal Senin-Jumat saja
+        $this->assignSchedule($this->employee, [1, 2, 3, 4, 5]);
+        $this->assignPosition($this->employee, 'MARKETING', 5);
+
+        $approverEmployee = Employee::factory()->create(['branch_id' => $this->branch->id]);
+        $this->assignPosition($approverEmployee, 'CEO', 1);
+        $approverUser = User::factory()->create(['employee_id' => $approverEmployee->id]);
+        $this->grantReviewPermission($approverUser);
+
+        // Jumat 2026-10-02, Sabtu 2026-10-03, Minggu 2026-10-04
+        $leave = EmployeeLeaveRequest::factory()->create([
+            'employee_id' => $this->employee->id,
+            'branch_id' => $this->branch->id,
+            'start_date' => '2026-10-02',
+            'end_date' => '2026-10-04',
+            'status' => 'pending',
+            'leave_type' => 'permission',
+        ]);
+
+        $this->actingAs($approverUser)->post(route('leave-requests.approve', $leave));
+
+        // Jumat → ada log
+        $this->assertDatabaseHas('employee_work_attendance_logs', [
+            'employee_id' => $this->employee->id,
+            'attendance_date' => '2026-10-02',
+            'status' => 'permission',
+        ]);
+        // Sabtu → tidak ada log
+        $this->assertDatabaseMissing('employee_work_attendance_logs', [
+            'employee_id' => $this->employee->id,
+            'attendance_date' => '2026-10-03',
+        ]);
+        // Minggu → tidak ada log
+        $this->assertDatabaseMissing('employee_work_attendance_logs', [
+            'employee_id' => $this->employee->id,
+            'attendance_date' => '2026-10-04',
+        ]);
+    }
+
+    // LR-21: Approve leave tanpa jadwal kerja → log tetap ter-insert (no schedule = all days)
+    public function test_lr21_approve_no_schedule_inserts_log(): void
+    {
+        // Tidak ada work schedule assignment
+        $this->assignPosition($this->employee, 'MARKETING', 5);
+
+        $approverEmployee = Employee::factory()->create(['branch_id' => $this->branch->id]);
+        $this->assignPosition($approverEmployee, 'CEO', 1);
+        $approverUser = User::factory()->create(['employee_id' => $approverEmployee->id]);
+        $this->grantReviewPermission($approverUser);
+
+        // Sabtu (hari non-kerja, tapi tidak ada jadwal → tetap insert)
+        $saturday = '2026-10-03';
+
+        $leave = EmployeeLeaveRequest::factory()->create([
+            'employee_id' => $this->employee->id,
+            'branch_id' => $this->branch->id,
+            'start_date' => $saturday,
+            'end_date' => $saturday,
+            'status' => 'pending',
+            'leave_type' => 'sick',
+        ]);
+
+        $this->actingAs($approverUser)->post(route('leave-requests.approve', $leave));
+
+        $this->assertDatabaseHas('employee_work_attendance_logs', [
+            'employee_id' => $this->employee->id,
+            'attendance_date' => $saturday,
+            'status' => 'sick',
+        ]);
     }
 }

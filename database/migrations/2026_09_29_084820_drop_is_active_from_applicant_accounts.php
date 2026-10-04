@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('applicant_accounts', function (Blueprint $table) {
-            $table->dropColumn('is_active');
+            if (Schema::hasColumn('applicant_accounts', 'is_active')) {
+                $table->dropColumn('is_active');
+            }
         });
     }
 

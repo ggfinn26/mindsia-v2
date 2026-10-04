@@ -3,6 +3,7 @@
 namespace Tests\Feature\Attendance;
 
 use App\Models\User;
+use App\Models\WorkScheduleDay;
 use App\Models\WorkScheduleRule;
 use Tests\TestCase;
 
@@ -17,10 +18,10 @@ class WorkScheduleRuleCrudTest extends TestCase
         parent::setUp();
 
         $this->authorizedUser = User::factory()->create();
-        $this->authorizedUser->assignRole('Super Admin');
+        $this->authorizedUser->givePermissionTo('attendance.schedule_rule.manage');
 
         $this->unauthorizedUser = User::factory()->create();
-        $this->unauthorizedUser->assignRole('REGULAR_TUTOR');
+        $this->unauthorizedUser->assignRole('Tutor');
     }
 
     // WS-01 — Create rule berhasil
@@ -186,5 +187,53 @@ class WorkScheduleRuleCrudTest extends TestCase
         $this->actingAs($this->unauthorizedUser)
             ->delete(route('work-schedule-rules.destroy', $rule))
             ->assertStatus(403);
+    }
+
+    // WS-11 — Create rule dengan work_days Senin-Jumat
+    public function test_create_rule_dengan_work_days(): void
+    {
+        $this->actingAs($this->authorizedUser)
+            ->post(route('work-schedule-rules.store'), [
+                'setting_name' => 'Shift Weekday',
+                'start_time' => '08:00',
+                'end_time' => '17:00',
+                'late_tolerance_minutes' => 0,
+                'early_leave_tolerance_minutes' => 0,
+                'is_required' => true,
+                'is_active' => true,
+                'work_days' => [1, 2, 3, 4, 5],
+            ])
+            ->assertRedirect(route('work-schedule-rules.index'));
+
+        $rule = WorkScheduleRule::where('setting_name', 'Shift Weekday')->first();
+        $this->assertNotNull($rule);
+        $this->assertCount(5, $rule->workDays);
+        $this->assertEqualsCanonicalizing([1, 2, 3, 4, 5], $rule->workDays->pluck('day_of_week')->toArray());
+    }
+
+    // WS-12 — isActiveOnDate: rule dengan days=[1-5], Sabtu tidak aktif
+    public function test_work_days_blocks_weekend(): void
+    {
+        $rule = WorkScheduleRule::factory()->create();
+        foreach ([1, 2, 3, 4, 5] as $dow) {
+            WorkScheduleDay::create(['work_schedule_rule_id' => $rule->id, 'day_of_week' => $dow]);
+        }
+        $rule->load('workDays');
+
+        // ISO: Sabtu=6, Minggu=7
+        $this->assertFalse($rule->isActiveOnDate('2026-10-04')); // Minggu
+        $this->assertFalse($rule->isActiveOnDate('2026-10-03')); // Sabtu
+        $this->assertTrue($rule->isActiveOnDate('2026-10-01'));  // Kamis
+    }
+
+    // WS-13 — isActiveOnDate: rule tanpa days = aktif semua hari
+    public function test_work_days_empty_all_days(): void
+    {
+        $rule = WorkScheduleRule::factory()->create();
+        $rule->load('workDays');
+
+        $this->assertTrue($rule->isActiveOnDate('2026-10-04')); // Minggu — tetap aktif
+        $this->assertTrue($rule->isActiveOnDate('2026-10-03')); // Sabtu
+        $this->assertTrue($rule->isActiveOnDate('2026-10-01')); // Kamis
     }
 }

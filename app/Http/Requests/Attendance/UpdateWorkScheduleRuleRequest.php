@@ -38,6 +38,8 @@ class UpdateWorkScheduleRuleRequest extends FormRequest
             'early_leave_tolerance_minutes' => 'required|integer|min:0|max:120',
             'is_required' => 'boolean',
             'is_active' => 'boolean',
+            'work_days' => 'nullable|array',
+            'work_days.*' => 'integer|between:1,7',
         ];
     }
 }

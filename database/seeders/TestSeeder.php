@@ -13,6 +13,7 @@ class TestSeeder extends Seeder
             RoleSeeder::class,
             BranchDataSeeder::class,
             PositionSeeder::class,
+            MarketingKpiRankingRuleSeeder::class,
         ]);
     }
 }

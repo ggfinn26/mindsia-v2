@@ -17,10 +17,10 @@ class HolidayCrudTest extends TestCase
         parent::setUp();
 
         $this->authorizedUser = User::factory()->create();
-        $this->authorizedUser->assignRole('Super Admin');
+        $this->authorizedUser->givePermissionTo('attendance.holiday.manage');
 
         $this->unauthorizedUser = User::factory()->create();
-        $this->unauthorizedUser->assignRole('REGULAR_TUTOR');
+        $this->unauthorizedUser->assignRole('Tutor');
     }
 
     // WS-11 — Create holiday berhasil
@@ -32,7 +32,7 @@ class HolidayCrudTest extends TestCase
                 'holiday_start_date' => '2026-08-17',
                 'holiday_end_date' => '2026-08-17',
             ])
-            ->assertRedirect(route('work-schedule-rules.index'));
+            ->assertRedirect(route('holidays.index'));
 
         $this->assertDatabaseHas('holidays', ['holiday_name' => 'Hari Raya Nasional']);
     }
@@ -73,7 +73,7 @@ class HolidayCrudTest extends TestCase
                 'holiday_start_date' => $holiday->holiday_start_date->toDateString(),
                 'holiday_end_date' => $holiday->holiday_end_date->toDateString(),
             ])
-            ->assertRedirect(route('work-schedule-rules.index'));
+            ->assertRedirect(route('holidays.index'));
 
         $this->assertDatabaseHas('holidays', ['id' => $holiday->id, 'holiday_name' => 'New Name']);
     }
@@ -85,7 +85,7 @@ class HolidayCrudTest extends TestCase
 
         $this->actingAs($this->authorizedUser)
             ->delete(route('holidays.destroy', $holiday))
-            ->assertRedirect(route('work-schedule-rules.index'));
+            ->assertRedirect(route('holidays.index'));
 
         $this->assertDatabaseMissing('holidays', ['id' => $holiday->id]);
     }

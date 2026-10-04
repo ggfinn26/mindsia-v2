@@ -40,14 +40,54 @@ class WorkScheduleRepository
         return $assignment?->workScheduleRule;
     }
 
+    /** True jika employee punya assignment aktif (tanpa cek hari kerja). */
+    public function hasAnyActiveAssignment(int $employeeId, string $date): bool
+    {
+        $employee = Employee::with(['currentStatus.position'])->find($employeeId);
+        if (! $employee) {
+            return false;
+        }
+
+        $positionId = $employee->currentStatus?->position_id;
+        $roleId = $employee->currentStatus?->position?->role_id;
+
+        foreach ([
+            ['App\Models\Employee', $employeeId],
+            $positionId ? ['App\Models\Position', $positionId] : null,
+            $roleId ? [Role::class, $roleId] : null,
+        ] as $pair) {
+            if (! $pair) {
+                continue;
+            }
+            [$type, $id] = $pair;
+            $exists = WorkScheduleAssignment::where('assignable_type', $type)
+                ->where('assignable_id', $id)
+                ->where('is_active', true)
+                ->where('effective_start_date', '<=', $date)
+                ->where(fn ($q) => $q->whereNull('effective_end_date')->orWhere('effective_end_date', '>=', $date))
+                ->exists();
+            if ($exists) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private function findActiveAssignment(string $type, int $id, string $date): ?WorkScheduleAssignment
     {
-        return WorkScheduleAssignment::where('assignable_type', $type)
+        $assignment = WorkScheduleAssignment::where('assignable_type', $type)
             ->where('assignable_id', $id)
             ->where('is_active', true)
             ->where('effective_start_date', '<=', $date)
             ->where(fn ($q) => $q->whereNull('effective_end_date')->orWhere('effective_end_date', '>=', $date))
-            ->with('workScheduleRule')
+            ->with('workScheduleRule.workDays')
             ->first();
+
+        if ($assignment && ! $assignment->workScheduleRule?->isActiveOnDate($date)) {
+            return null;
+        }
+
+        return $assignment;
     }
 }
