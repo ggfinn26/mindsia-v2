@@ -51,6 +51,7 @@ class ApplicantRegisterController extends Controller
 
             $applicant->applicantData()->create([
                 'full_name' => $validated['full_name'],
+                'email' => $validated['email'],
                 'whatsapp_number' => $validated['whatsapp_number'],
                 'birth_date' => $validated['birth_date'] ?? null,
                 'gender' => $validated['gender'] ?? null,

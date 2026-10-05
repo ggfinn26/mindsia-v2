@@ -60,12 +60,10 @@
                         </div>
                     </div>
 
+                    @if(!empty($job->job_responsibilities))
                     <h3 class="font-black text-[#06122B] text-[18px] mb-4">Tanggung Jawab Utama</h3>
-                    <ul class="space-y-2 mb-8">
-                        <li class="flex gap-3"><span class="text-gold font-bold">✓</span> Membimbing siswa dalam program intensif persiapan TOEFL.</li>
-                        <li class="flex gap-3"><span class="text-gold font-bold">✓</span> Menyusun laporan perkembangan akademik siswa secara berkala.</li>
-                        <li class="flex gap-3"><span class="text-gold font-bold">✓</span> Menjaga budaya berbahasa Inggris di lingkungan asrama 24 HESA.</li>
-                    </ul>
+                    <div class="mb-8 whitespace-pre-line text-ky-text/80 leading-relaxed">{{ $job->job_responsibilities }}</div>
+                    @endif
                 </div>
                 
                 <div class="mt-12 pt-8 border-t border-ky-border/50 flex justify-end">

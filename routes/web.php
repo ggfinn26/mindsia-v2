@@ -185,6 +185,7 @@ use App\Http\Controllers\WorkAttendanceController;
 use App\Http\Middleware\EnsureEmailIsVerified;
 use App\Models\Branch;
 use App\Models\BranchProgramQuota;
+use App\Models\JobPosting;
 use App\Models\MemberClass;
 use App\Models\MemberRegistration;
 use App\Models\Program;
@@ -214,29 +215,39 @@ Route::get('/api/branches-map', fn () => response()->json(
 Route::get('/', HomeController::class)->name('home');
 
 Route::get('/karir', function () {
-    $openings = collect([
-        (object) [
-            'id' => 1,
-            'position' => 'English Tutor (Full-Time)',
-            'branch' => (object) ['name' => 'MINDSIA Jakarta'],
-            'education_requirement' => 'S1 Sastra Inggris / Pendidikan Bahasa Inggris',
-            'experience_requirement' => 'Min 1 Tahun',
-            'job_description' => 'Mengajar dan membimbing siswa di asrama 24 HESA.',
-        ],
-    ]);
+    $openings = JobPosting::where('status', 'published')
+        ->with(['branch', 'permintaan.requirementsAuto'])
+        ->orderByDesc('publish_date')
+        ->get()
+        ->map(function ($p) {
+            $req = $p->permintaan?->requirementsAuto;
+
+            return (object) [
+                'id' => $p->id,
+                'position' => $p->title,
+                'branch' => (object) ['name' => $p->branch?->branch_name ?? 'MINDSIA Learning Center'],
+                'education_requirement' => $req?->minimum_education_level ?? null,
+                'experience_requirement' => $req?->minimum_year_experience ? 'Min '.$req->minimum_year_experience.' Tahun' : null,
+                'job_description' => $p->job_description,
+            ];
+        });
 
     return view('careers.index', compact('openings'));
 })->name('careers.index');
 
-Route::get('/karir/{req}', function ($req) {
-    // Dummy route for career details
+Route::get('/karir/{jobPosting}', function (JobPosting $jobPosting) {
+    abort_unless($jobPosting->status === 'published', 404);
+    $jobPosting->load(['branch', 'permintaan.requirementsAuto']);
+    $req = $jobPosting->permintaan?->requirementsAuto;
+
     $job = (object) [
-        'id' => $req,
-        'position' => 'English Tutor (Full-Time)',
-        'branch' => (object) ['name' => 'MINDSIA Jakarta'],
-        'education_requirement' => 'S1 Sastra Inggris / Pendidikan Bahasa Inggris',
-        'experience_requirement' => 'Min 1 Tahun',
-        'job_description' => 'Kami mencari individu yang berdedikasi tinggi untuk bergabung sebagai English Tutor di asrama MINDSIA. Anda akan bertanggung jawab untuk memastikan setiap siswa tidak hanya mengerti tata bahasa, tetapi juga mampu mengaplikasikannya secara aktif dalam ekosistem asrama 24 jam.',
+        'id' => $jobPosting->id,
+        'position' => $jobPosting->title,
+        'branch' => (object) ['name' => $jobPosting->branch?->branch_name ?? 'MINDSIA Learning Center'],
+        'education_requirement' => $req?->minimum_education_level ?? null,
+        'experience_requirement' => $req?->minimum_year_experience ? 'Min '.$req->minimum_year_experience.' Tahun' : null,
+        'job_description' => $jobPosting->job_description,
+        'job_responsibilities' => $jobPosting->job_responsibilities,
     ];
 
     return view('careers.show', compact('job'));
