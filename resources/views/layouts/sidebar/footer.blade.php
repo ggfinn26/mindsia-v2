@@ -4,7 +4,22 @@
     $email = '';
     $logoutRoute = '';
     
-    if (Auth::guard('web')->check()) {
+    $isMemberRoute = request()->is('member/*') || request()->routeIs('member.*');
+    $isApplicantRoute = request()->is('applicant/*') || request()->routeIs('applicant.*');
+
+    if ($isMemberRoute && Auth::guard('member')->check()) {
+        $guard = 'member';
+        $user = Auth::guard('member')->user();
+        $name = $user->memberData->full_name ?? 'Member';
+        $email = $user->email ?? '';
+        $logoutRoute = route('member.logout');
+    } elseif ($isApplicantRoute && Auth::guard('applicant')->check()) {
+        $guard = 'applicant';
+        $user = Auth::guard('applicant')->user();
+        $name = $user->applicantData->full_name ?? 'Pelamar';
+        $email = $user->email ?? '';
+        $logoutRoute = route('applicant.logout');
+    } elseif (Auth::guard('web')->check()) {
         $guard = 'web';
         $user = Auth::guard('web')->user();
         $name = $user->name ?? 'Pengguna';

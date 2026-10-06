@@ -58,6 +58,28 @@ class RoleSeeder extends Seeder
             }
         }
 
+        // Survey: CHRO (Board+HR) + CMO (Board+Marketing) kelola; Manager Area lihat hasil
+        $surveyManagePerms = [
+            'survey.form.view',
+            'survey.form.create',
+            'survey.form.update',
+            'survey.form.delete',
+            'survey.assignment.create',
+            'survey.result.view',
+        ];
+        foreach ($surveyManagePerms as $perm) {
+            if (in_array($perm, $allPermissions, true)) {
+                foreach (['Board', 'HR', 'Marketing'] as $roleName) {
+                    Role::where('name', $roleName)->first()
+                        ?->givePermissionTo($perm);
+                }
+            }
+        }
+        if (in_array('survey.result.view', $allPermissions, true)) {
+            Role::where('name', 'Manager Area')->first()
+                ?->givePermissionTo('survey.result.view');
+        }
+
         // Landing page: Board & Operasional kelola konten publik
         $landingPermissions = [
             'landing.testimonial.manage',

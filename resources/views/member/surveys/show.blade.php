@@ -85,16 +85,19 @@
                                         <span class="text-xs font-semibold text-slate-500 uppercase tracking-wide">{{ $question->scale_max_label }}</span>
                                     </div>
                                 @else
-                                    <div class="flex items-center gap-4">
+                                    <div class="flex items-center gap-4" x-data="{ selected: null }">
                                         @if($question->scale_min_label)
                                             <span class="text-xs font-semibold text-slate-500 uppercase tracking-wide">{{ $question->scale_min_label }}</span>
                                         @endif
-                                        
+
                                         <div class="flex items-center gap-2">
                                             @for($i = $question->scale_min; $i <= $question->scale_max; $i++)
-                                                <label class="relative flex cursor-pointer items-center justify-center rounded-full border border-slate-200 w-10 h-10 bg-white hover:bg-slate-50 focus-within:ring-2 focus-within:ring-[#215aac] focus-within:ring-offset-2 transition-colors">
-                                                    <input type="radio" name="answers[{{ $index }}][answer_value]" value="{{ $i }}" required class="sr-only">
-                                                    <span class="text-sm font-bold text-slate-700 pointer-events-none">{{ $i }}</span>
+                                                <label class="relative flex cursor-pointer items-center justify-center rounded-full border w-10 h-10 bg-white transition-colors"
+                                                       :class="selected === {{ $i }} ? 'bg-[#215aac] border-[#215aac] text-white' : 'border-slate-200 hover:bg-slate-50 text-slate-700'">
+                                                    <input type="radio" name="answers[{{ $index }}][answer_value]" value="{{ $i }}" required
+                                                           class="sr-only" @change="selected = {{ $i }}">
+                                                    <span class="text-sm font-bold pointer-events-none"
+                                                          :class="selected === {{ $i }} ? 'text-white' : 'text-slate-700'">{{ $i }}</span>
                                                 </label>
                                             @endfor
                                         </div>
@@ -103,22 +106,6 @@
                                             <span class="text-xs font-semibold text-slate-500 uppercase tracking-wide">{{ $question->scale_max_label }}</span>
                                         @endif
                                     </div>
-                                    <!-- Script to highlight selected scale option -->
-                                    <script>
-                                        document.addEventListener('DOMContentLoaded', () => {
-                                            const inputs = document.querySelectorAll('input[name="answers[{{ $index }}][answer_value]"]');
-                                            inputs.forEach(input => {
-                                                input.addEventListener('change', (e) => {
-                                                    inputs.forEach(i => i.parentElement.classList.remove('bg-[#215aac]', 'text-white', 'border-[#215aac]'));
-                                                    inputs.forEach(i => i.nextElementSibling.classList.remove('text-white'));
-                                                    if(e.target.checked) {
-                                                        e.target.parentElement.classList.add('bg-[#215aac]', 'text-white', 'border-[#215aac]');
-                                                        e.target.nextElementSibling.classList.add('text-white');
-                                                    }
-                                                });
-                                            });
-                                        });
-                                    </script>
                                 @endif
                             
                             @elseif($question->question_type === 'single_choice' || $question->question_type === 'multiple_choice')

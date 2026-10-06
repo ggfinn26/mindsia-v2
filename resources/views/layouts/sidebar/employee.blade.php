@@ -279,6 +279,9 @@
 </x-dashboard.nav-group>
 @endcan
 
+<!-- 1.12b Survey self-service (semua employee) -->
+<x-dashboard.nav-item href="{{ route('employee.surveys.index') }}" icon="assignment" :active="request()->routeIs('employee.surveys.*')">Survey Saya</x-dashboard.nav-item>
+
 <!-- 1.13 TOEFL -->
 @canany(['toefl.test.create', 'toefl.test.update'])
 <x-dashboard.nav-group title="TOEFL" icon="language" :active="request()->is('toefl*')">
