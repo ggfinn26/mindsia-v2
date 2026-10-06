@@ -12,10 +12,15 @@ class MemberSupportTicketReplyController extends Controller
 {
     public function store(StoreMemberSupportTicketReplyRequest $request, MemberSupportTicket $ticket): RedirectResponse
     {
-        MemberSupportTicketReply::create(array_merge(
-            $request->validated(),
-            ['member_support_ticket_id' => $ticket->id],
-        ));
+        $employeeId = auth('web')->user()?->employee_id;
+        $memberId = auth('member')->id();
+
+        MemberSupportTicketReply::create([
+            'member_support_ticket_id' => $ticket->id,
+            'reply' => $request->validated('reply'),
+            'employee_id' => $employeeId ?: null,
+            'member_id' => $employeeId ? null : $memberId,
+        ]);
 
         return redirect()->back()->with('success', 'Balasan berhasil dikirim.');
     }

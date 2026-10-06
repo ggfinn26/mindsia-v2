@@ -202,7 +202,6 @@
                 </div>
                 <form action="{{ route('support-tickets.replies.store', $ticket) }}" method="POST" class="p-6 space-y-4">
                     @csrf
-                    <input type="hidden" name="employee_id" value="{{ auth()->user()->employee_id }}">
                     <textarea name="reply" rows="4" required minlength="5"
                         placeholder="Tulis balasan kepada member..."
                         class="block w-full rounded-lg border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-[#5586DB] focus:ring-[#5586DB] shadow-sm"></textarea>
