@@ -29,7 +29,7 @@ class MemberReviewController extends Controller
         $memberId = auth('member')->user()->members_data_id;
 
         $validated = $request->validate([
-            'member_registration_id' => ['required', 'integer', 'exists:member_registrations,id'],
+            'member_registration_id' => ['required', 'integer', 'exists:members_registration,id'],
             'rating' => ['required', 'integer', 'min:1', 'max:5'],
             'review' => ['nullable', 'string', 'min:10'],
         ]);

@@ -12,7 +12,7 @@ class MemberSupportTicketReply extends Model
         'employee_id',
         'member_id',
         'reply',
-        'telegram_attachment_id',
+        'attachment_url',
     ];
 
     public function ticket(): BelongsTo

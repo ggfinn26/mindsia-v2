@@ -15,7 +15,7 @@ class MemberSupportTicket extends Model
         'subject',
         'message',
         'status',
-        'telegram_attachment_id',
+        'attachment_url',
         'category',
         'priority',
         'assigned_employee_id',

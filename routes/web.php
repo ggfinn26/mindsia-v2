@@ -165,6 +165,7 @@ use App\Http\Controllers\Member\CurriculumInteractiveController as MemberCurricu
 use App\Http\Controllers\Member\MemberAttendancePageController;
 use App\Http\Controllers\Member\MemberCurriculumController;
 use App\Http\Controllers\Member\MemberDashboardController;
+use App\Http\Controllers\Member\MemberMyTicketController;
 use App\Http\Controllers\Member\MemberNotificationController;
 use App\Http\Controllers\Member\MemberNpsPageController;
 use App\Http\Controllers\Member\MemberProfileController;
@@ -436,6 +437,14 @@ Route::middleware(['auth:member', EnsureEmailIsVerified::class, 'no.back'])->gro
     Route::post('/member/tests/{test}/submit', [OnlineTestController::class, 'submit'])->name('member.tests.submit');
     Route::get('/member/surveys/{memberSurvey}', [MemberSurveyController::class, 'show'])->name('member.surveys.show');
     Route::post('/member/surveys/{memberSurvey}/submit', [MemberSurveyController::class, 'store'])->name('member.surveys.submit');
+
+    // Member Support Tickets (self-service)
+    Route::get('/member/my-tickets', [MemberMyTicketController::class, 'index'])->name('member.tickets.index');
+    Route::get('/member/my-tickets/create', [MemberMyTicketController::class, 'create'])->name('member.tickets.create');
+    Route::post('/member/my-tickets', [MemberMyTicketController::class, 'store'])->name('member.tickets.store');
+    Route::get('/member/my-tickets/{ticket}', [MemberMyTicketController::class, 'show'])->name('member.tickets.show');
+    Route::post('/member/my-tickets/{ticket}/replies', [MemberMyTicketController::class, 'storeReply'])->name('member.tickets.replies.store');
+    Route::post('/member/my-tickets/{ticket}/rate', [MemberMyTicketController::class, 'rate'])->name('member.tickets.rate');
 
     // NPS & Review (member submit setelah lulus)
     Route::post('/member/nps-responses', [MemberNpsResponseController::class, 'store'])->name('member.nps-responses.store');

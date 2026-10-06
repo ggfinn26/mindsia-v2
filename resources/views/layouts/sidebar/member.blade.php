@@ -52,4 +52,6 @@
     <x-dashboard.nav-item href="{{ route('member.nps.index') }}" :isChild="true" :active="request()->routeIs('member.nps.index')">NPS Response</x-dashboard.nav-item>
 </x-dashboard.nav-group>
 
+<!-- 2.6 Support Ticket -->
+<x-dashboard.nav-item href="{{ route('member.tickets.index') }}" icon="confirmation_number" :active="request()->is('member/my-tickets*') || request()->routeIs('member.tickets.*')">Tiket Bantuan</x-dashboard.nav-item>
 
