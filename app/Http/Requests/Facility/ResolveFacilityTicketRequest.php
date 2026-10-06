@@ -10,7 +10,7 @@ class ResolveFacilityTicketRequest extends FormRequest
     public function authorize(): bool
     {
         /** @var FacilityTicket $ticket */
-        $ticket = $this->route('facilityTicket');
+        $ticket = $this->route('ticket');
 
         return $ticket->status === 'approved' && $this->user()->can('facility.ticket.resolve');
     }

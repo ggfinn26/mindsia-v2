@@ -45,8 +45,8 @@
     <div class="border border-slate-200 bg-white p-5 text-sm">
         <div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
             <div><p class="text-xs text-slate-500">Cabang</p><p class="mt-1 font-medium">{{ $facilityTicket->branch?->branch_name ?? '—' }}</p></div>
-            <div><p class="text-xs text-slate-500">Kategori</p><p class="mt-1 text-slate-700">{{ $facilityTicket->category }}</p></div>
-            <div><p class="text-xs text-slate-500">Prioritas</p><p class="mt-1 text-slate-700">{{ ucfirst($facilityTicket->priority) }}</p></div>
+            <div><p class="text-xs text-slate-500">Kategori</p><p class="mt-1 text-slate-700">{{ ucfirst($facilityTicket->category) }}</p></div>
+            <div><p class="text-xs text-slate-500">Prioritas</p><p class="mt-1 text-slate-700">{{ ['low'=>'Rendah','medium'=>'Sedang','high'=>'Tinggi'][$facilityTicket->priority] ?? ucfirst($facilityTicket->priority) }}</p></div>
             <div><p class="text-xs text-slate-500">Dibuat oleh</p><p class="mt-1 text-slate-700">{{ $facilityTicket->createdBy?->full_name ?? '—' }}</p></div>
             <div><p class="text-xs text-slate-500">Ditugaskan ke</p><p class="mt-1 text-slate-700">{{ $facilityTicket->assignedTo?->full_name ?? '—' }}</p></div>
             @if ($facilityTicket->cost_amount)
@@ -110,6 +110,21 @@
         @endcan
     @endif
 
+    {{-- Upload Attachment --}}
+    @can('facility.ticket.update')
+    <div class="border border-slate-200 bg-white p-5 space-y-3">
+        <h3 class="font-jakarta text-sm font-bold text-slate-900">Tambah Lampiran</h3>
+        <form method="POST" action="{{ route('facility.tickets.attachments.store', $facilityTicket) }}" enctype="multipart/form-data" class="flex items-end gap-3">
+            @csrf
+            <div class="flex-1">
+                <label class="mb-1 block text-xs font-semibold text-slate-700">File (foto/dokumen)</label>
+                <input type="file" name="file" required class="block w-full text-sm text-slate-700 file:mr-3 file:py-1.5 file:px-3 file:border file:border-slate-300 file:text-xs file:font-medium file:bg-white file:text-slate-700 hover:file:bg-slate-50">
+            </div>
+            <button type="submit" class="inline-flex min-h-9 items-center bg-[#215aac] px-3 text-xs font-semibold text-white hover:bg-[#194a91]">Upload</button>
+        </form>
+    </div>
+    @endcan
+
     {{-- Status History --}}
     @if ($facilityTicket->statusHistories->isNotEmpty())
     <div class="border border-slate-200 bg-white">
@@ -121,7 +136,7 @@
                 <li class="px-5 py-3 text-sm flex items-start gap-3">
                     <span class="mt-0.5 text-xs font-mono text-slate-400 whitespace-nowrap">{{ $h->changed_at?->format('d M H:i') }}</span>
                     <div>
-                        <span class="font-semibold text-slate-900">{{ str_replace('_', ' ', ucfirst($h->status)) }}</span>
+                        <span class="font-semibold text-slate-900">{{ str_replace('_', ' ', ucfirst($h->to_status)) }}</span>
                         @if ($h->notes)
                             <span class="text-slate-500"> — {{ $h->notes }}</span>
                         @endif

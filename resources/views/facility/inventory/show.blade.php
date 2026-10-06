@@ -76,14 +76,14 @@
     </div>
 
     {{-- Adjust Quantity --}}
-    @can('facility.inventory.adjust')
+    @can('facility.inventory.update')
         @if ($inventoryItem->isActive())
         <details class="border border-slate-200 bg-white">
             <summary class="cursor-pointer px-5 py-3 text-sm font-bold text-slate-900 hover:bg-slate-50 select-none">
                 <span class="material-symbols-outlined text-[16px] align-middle mr-1">tune</span> Sesuaikan Kuantitas
             </summary>
             <div class="border-t border-slate-200 p-5 space-y-3">
-                <form method="POST" action="{{ route('facility.inventory.adjust-quantity', $inventoryItem) }}" class="flex items-end gap-3">
+                <form method="POST" action="{{ route('facility.inventory.adjust', $inventoryItem) }}" class="flex items-end gap-3">
                     @csrf
                     <div>
                         <label class="mb-1 block text-xs font-semibold text-slate-700">Perubahan (±)</label>
@@ -135,9 +135,15 @@
                 <li class="px-5 py-3 text-sm flex items-start gap-3">
                     <span class="mt-0.5 text-xs font-mono text-slate-400 whitespace-nowrap">{{ $h->changed_at?->format('d M H:i') }}</span>
                     <div>
-                        <span class="font-semibold text-slate-900">{{ $h->change_type ?? $h->field_changed ?? 'Perubahan' }}</span>
-                        @if ($h->old_value || $h->new_value)
-                            <span class="text-slate-500">: {{ $h->old_value ?? '—' }} → {{ $h->new_value ?? '—' }}</span>
+                        <span class="font-semibold text-slate-900">{{ $h->change_type ?? 'Perubahan' }}</span>
+                        @if ($h->quantity_before !== null || $h->quantity_after !== null)
+                            <span class="text-slate-500"> qty: {{ $h->quantity_before ?? '—' }} → {{ $h->quantity_after ?? '—' }}</span>
+                        @endif
+                        @if ($h->condition_before || $h->condition_after)
+                            <span class="text-slate-500"> kondisi: {{ $h->condition_before ?? '—' }} → {{ $h->condition_after ?? '—' }}</span>
+                        @endif
+                        @if ($h->location_before || $h->location_after)
+                            <span class="text-slate-500"> lokasi: {{ $h->location_before ?? '—' }} → {{ $h->location_after ?? '—' }}</span>
                         @endif
                         @if ($h->reason)
                             <span class="text-slate-400"> — {{ $h->reason }}</span>

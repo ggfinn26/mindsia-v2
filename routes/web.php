@@ -979,14 +979,14 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     Route::prefix('facility')->name('facility.')->group(function () {
         // Tickets
         Route::resource('tickets', FacilityTicketController::class)->except(['destroy']);
-        Route::post('tickets/{facilityTicket}/review', [FacilityTicketController::class, 'review'])->name('tickets.review');
-        Route::post('tickets/{facilityTicket}/resolve', [FacilityTicketController::class, 'resolve'])->name('tickets.resolve');
-        Route::post('tickets/{facilityTicket}/assign', [FacilityTicketController::class, 'assign'])->name('tickets.assign');
+        Route::post('tickets/{ticket}/review', [FacilityTicketController::class, 'review'])->name('tickets.review');
+        Route::post('tickets/{ticket}/resolve', [FacilityTicketController::class, 'resolve'])->name('tickets.resolve');
+        Route::post('tickets/{ticket}/assign', [FacilityTicketController::class, 'assign'])->name('tickets.assign');
         Route::post('tickets/{facilityTicket}/attachments', [FacilityTicketAttachmentController::class, 'store'])->name('tickets.attachments.store');
         Route::delete('tickets/{facilityTicket}/attachments/{attachment}', [FacilityTicketAttachmentController::class, 'destroy'])->name('tickets.attachments.destroy');
 
         // Inventory
-        Route::resource('inventory', InventoryItemController::class)->except(['destroy']);
+        Route::resource('inventory', InventoryItemController::class)->except(['destroy'])->parameters(['inventory' => 'inventoryItem']);
         Route::post('inventory/{inventoryItem}/adjust', [InventoryItemController::class, 'adjustQuantity'])->name('inventory.adjust');
         Route::post('inventory/{inventoryItem}/dispose', [InventoryItemController::class, 'dispose'])->name('inventory.dispose');
 
