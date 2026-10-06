@@ -35,6 +35,7 @@ class EmployeeOnboardingController extends Controller
         $onboarding = $this->repository->create(array_merge($request->validated(), [
             'job_application_id' => $jobApplication->id,
             'offering_letter_id' => $jobApplication->offeringLetter->id,
+            'status' => 'pending_review',
         ]));
 
         return redirect()->route('recruitment.onboarding.show', $onboarding)->with('success', 'Onboarding dibuat.');

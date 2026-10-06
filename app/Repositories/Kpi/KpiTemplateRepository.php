@@ -46,6 +46,10 @@ class KpiTemplateRepository
 
     public function createIndicator(KpiTemplate $template, array $data): KpiTemplateIndicator
     {
+        if (! isset($data['sequence_number'])) {
+            $data['sequence_number'] = $template->indicators()->max('sequence_number') + 1;
+        }
+
         return $template->indicators()->create($data);
     }
 

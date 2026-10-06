@@ -59,41 +59,41 @@ class InLetterController extends Controller
         return redirect()->route('in-letters.index')->with('success', 'Surat masuk berhasil dicatat.');
     }
 
-    public function show(InLetter $inLetter): View
+    public function show(InLetter $in_letter): View
     {
-        $inLetter->load(['branch', 'pic', 'uploadedBy']);
+        $in_letter->load(['branch', 'pic', 'uploadedBy']);
 
-        return view('letter.in.show', compact('inLetter'));
+        return view('letter.in.show', ['inLetter' => $in_letter]);
     }
 
-    public function edit(InLetter $inLetter): View
+    public function edit(InLetter $in_letter): View
     {
-        return view('letter.in.edit', compact('inLetter'));
+        return view('letter.in.edit', ['inLetter' => $in_letter]);
     }
 
-    public function update(UpdateInLetterRequest $request, InLetter $inLetter): RedirectResponse
+    public function update(UpdateInLetterRequest $request, InLetter $in_letter): RedirectResponse
     {
-        $this->repository->update($inLetter, $request->validated());
+        $this->repository->update($in_letter, $request->validated());
 
-        return redirect()->route('in-letters.show', $inLetter)->with('success', 'Surat masuk berhasil diperbarui.');
+        return redirect()->route('in-letters.show', $in_letter)->with('success', 'Surat masuk berhasil diperbarui.');
     }
 
-    public function destroy(InLetter $inLetter): RedirectResponse
+    public function destroy(InLetter $in_letter): RedirectResponse
     {
-        $this->repository->delete($inLetter);
+        $this->repository->delete($in_letter);
 
         return redirect()->route('in-letters.index')->with('success', 'Surat masuk berhasil dihapus.');
     }
 
-    public function download(InLetter $inLetter): mixed
+    public function download(InLetter $in_letter): mixed
     {
-        abort_unless($inLetter->telegram_file_id, 404);
+        abort_unless($in_letter->telegram_file_id, 404);
 
-        $content = $this->telegramStorage->downloadFile($inLetter->telegram_file_id);
+        $content = $this->telegramStorage->downloadFile($in_letter->telegram_file_id);
 
         return response($content, 200, [
-            'Content-Type' => $inLetter->mime_type ?? 'application/octet-stream',
-            'Content-Disposition' => 'attachment; filename="'.($inLetter->original_name ?? 'surat-masuk.pdf').'"',
+            'Content-Type' => $in_letter->mime_type ?? 'application/octet-stream',
+            'Content-Disposition' => 'attachment; filename="'.($in_letter->original_name ?? 'surat-masuk.pdf').'"',
         ]);
     }
 }

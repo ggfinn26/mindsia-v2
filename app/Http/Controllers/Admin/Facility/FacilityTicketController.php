@@ -44,51 +44,51 @@ class FacilityTicketController extends Controller
         return redirect()->route('facility.tickets.show', $ticket)->with('success', 'Tiket berhasil dibuat.');
     }
 
-    public function show(FacilityTicket $facilityTicket): View
+    public function show(FacilityTicket $ticket): View
     {
-        $facilityTicket->load(['branch', 'createdBy', 'assignedTo', 'statusHistories.changedBy', 'attachments']);
+        $ticket->load(['branch', 'createdBy', 'assignedTo', 'statusHistories.changedBy', 'attachments']);
 
-        return view('facility.ticket.show', compact('facilityTicket'));
+        return view('facility.ticket.show', ['facilityTicket' => $ticket]);
     }
 
-    public function edit(FacilityTicket $facilityTicket): View
+    public function edit(FacilityTicket $ticket): View
     {
-        return view('facility.ticket.edit', compact('facilityTicket'));
+        return view('facility.ticket.edit', ['facilityTicket' => $ticket]);
     }
 
-    public function update(UpdateFacilityTicketRequest $request, FacilityTicket $facilityTicket): RedirectResponse
+    public function update(UpdateFacilityTicketRequest $request, FacilityTicket $ticket): RedirectResponse
     {
-        $this->repository->update($facilityTicket, $request->validated());
+        $this->repository->update($ticket, $request->validated());
 
-        return redirect()->route('facility.tickets.show', $facilityTicket)->with('success', 'Tiket berhasil diperbarui.');
+        return redirect()->route('facility.tickets.show', $ticket)->with('success', 'Tiket berhasil diperbarui.');
     }
 
-    public function review(ReviewFacilityTicketRequest $request, FacilityTicket $facilityTicket): RedirectResponse
+    public function review(ReviewFacilityTicketRequest $request, FacilityTicket $ticket): RedirectResponse
     {
         $data = $request->validated();
         $status = $data['action'] === 'approve' ? 'approved' : 'rejected';
 
-        $this->repository->changeStatus($facilityTicket, $status, $request->user()->employee->id, $data['notes'] ?? null);
+        $this->repository->changeStatus($ticket, $status, $request->user()->employee->id, $data['notes'] ?? null);
 
-        return redirect()->route('facility.tickets.show', $facilityTicket)->with('success', 'Review berhasil disimpan.');
+        return redirect()->route('facility.tickets.show', $ticket)->with('success', 'Review berhasil disimpan.');
     }
 
-    public function resolve(ResolveFacilityTicketRequest $request, FacilityTicket $facilityTicket): RedirectResponse
+    public function resolve(ResolveFacilityTicketRequest $request, FacilityTicket $ticket): RedirectResponse
     {
         $data = $request->validated();
-        $this->repository->changeStatus($facilityTicket, 'resolved', $request->user()->employee->id, $data['notes'] ?? null);
+        $this->repository->changeStatus($ticket, 'resolved', $request->user()->employee->id, $data['notes'] ?? null);
 
         if (isset($data['cost_amount'])) {
-            $this->repository->update($facilityTicket, ['cost_amount' => $data['cost_amount']]);
+            $this->repository->update($ticket, ['cost_amount' => $data['cost_amount']]);
         }
 
-        return redirect()->route('facility.tickets.show', $facilityTicket)->with('success', 'Tiket berhasil diselesaikan.');
+        return redirect()->route('facility.tickets.show', $ticket)->with('success', 'Tiket berhasil diselesaikan.');
     }
 
-    public function assign(AssignFacilityTicketRequest $request, FacilityTicket $facilityTicket): RedirectResponse
+    public function assign(AssignFacilityTicketRequest $request, FacilityTicket $ticket): RedirectResponse
     {
-        $this->repository->assign($facilityTicket, $request->validated()['assigned_to_employee_id']);
+        $this->repository->assign($ticket, $request->validated()['assigned_to_employee_id']);
 
-        return redirect()->route('facility.tickets.show', $facilityTicket)->with('success', 'Tiket berhasil di-assign.');
+        return redirect()->route('facility.tickets.show', $ticket)->with('success', 'Tiket berhasil di-assign.');
     }
 }

@@ -14,7 +14,7 @@ class UpdateKpiGradeRuleRequest extends FormRequest
 
     public function rules(): array
     {
-        $id = $this->route('kpiGradeRule')->id;
+        $id = $this->route('grade_rule')->id;
 
         return [
             'grade' => ['required', 'string', 'max:10', Rule::unique('kpi_grade_rules', 'grade')->ignore($id)],

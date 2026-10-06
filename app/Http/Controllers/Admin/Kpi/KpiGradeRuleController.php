@@ -40,21 +40,21 @@ class KpiGradeRuleController extends Controller implements HasMiddleware
         return redirect()->route('kpi.grade-rules.index')->with('success', 'Grade rule berhasil ditambahkan.');
     }
 
-    public function edit(KpiGradeRule $kpiGradeRule): View
+    public function edit(KpiGradeRule $gradeRule): View
     {
-        return view('kpi.grade-rules.edit', ['rule' => $kpiGradeRule]);
+        return view('kpi.grade-rules.edit', ['rule' => $gradeRule]);
     }
 
-    public function update(UpdateKpiGradeRuleRequest $request, KpiGradeRule $kpiGradeRule): RedirectResponse
+    public function update(UpdateKpiGradeRuleRequest $request, KpiGradeRule $gradeRule): RedirectResponse
     {
-        $kpiGradeRule->update($request->validated());
+        $gradeRule->update($request->validated());
 
         return redirect()->route('kpi.grade-rules.index')->with('success', 'Grade rule berhasil diperbarui.');
     }
 
-    public function destroy(KpiGradeRule $kpiGradeRule): RedirectResponse
+    public function destroy(KpiGradeRule $gradeRule): RedirectResponse
     {
-        $kpiGradeRule->delete();
+        $gradeRule->delete();
 
         return redirect()->route('kpi.grade-rules.index')->with('success', 'Grade rule berhasil dihapus.');
     }

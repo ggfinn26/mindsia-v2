@@ -19,6 +19,9 @@ class LetterService
         'ttd_penandatangan' => ['type' => 'auto',            'label' => 'TTD Penandatangan',        'note' => 'Belum tersedia'],
         'ttd_pegawai' => ['type' => 'auto',            'label' => 'TTD Pegawai',              'note' => 'Belum tersedia'],
         'tanggal_surat' => ['type' => 'date',            'label' => 'Tanggal Surat'],
+        'bulan_surat' => ['type' => 'auto',            'label' => 'Bulan Surat',              'note' => 'Derived dari tanggal_surat'],
+        'tahun_surat' => ['type' => 'auto',            'label' => 'Tahun Surat',              'note' => 'Derived dari tanggal_surat'],
+        'nama_hari' => ['type' => 'auto',            'label' => 'Nama Hari',                'note' => 'Derived dari tanggal_surat'],
         'kota_cabang' => ['type' => 'branch',          'label' => 'Kota / Cabang'],
         'nama_penandatangan' => ['type' => 'signer',          'label' => 'Nama Penandatangan'],
         'jabatan_penandatangan' => ['type' => 'signer_derived',  'label' => 'Jabatan Penandatangan'],
@@ -31,32 +34,40 @@ class LetterService
         'email_pegawai' => ['type' => 'employee_derived', 'label' => 'Email Pegawai'],
         'wa_pegawai' => ['type' => 'employee_derived', 'label' => 'WA Pegawai'],
         'nomor_identitas_pegawai' => ['type' => 'employee_derived', 'label' => 'Nomor Identitas'],
+        'tempat_lahir' => ['type' => 'employee_derived', 'label' => 'Tempat Lahir'],
         'tempat_tanggal_lahir_pegawai' => ['type' => 'employee_derived', 'label' => 'Tempat/Tgl Lahir'],
         'laki_laki_atau_perempuan' => ['type' => 'employee_derived', 'label' => 'Jenis Kelamin'],
         'tanggal_mulai_kontrak' => ['type' => 'employee_derived', 'label' => 'Tgl Mulai Kontrak'],
+        'bulan_mulai_kontrak' => ['type' => 'auto',            'label' => 'Bulan Mulai Kontrak',      'note' => 'Derived dari tanggal_mulai_kontrak'],
+        'tahun_mulai_kontrak' => ['type' => 'auto',            'label' => 'Tahun Mulai Kontrak',      'note' => 'Derived dari tanggal_mulai_kontrak'],
         'tanggal_berakhir_kontrak' => ['type' => 'employee_derived', 'label' => 'Tgl Akhir Kontrak'],
+        'bulan_akhir_kontrak' => ['type' => 'auto',            'label' => 'Bulan Akhir Kontrak',      'note' => 'Derived dari tanggal_berakhir_kontrak'],
+        'tahun_akhir_kontrak' => ['type' => 'auto',            'label' => 'Tahun Akhir Kontrak',      'note' => 'Derived dari tanggal_berakhir_kontrak'],
+        'signer_name' => ['type' => 'signer_derived',  'label' => 'Nama Penandatangan (alias)'],
     ];
 
     private const AUTO_FILL_KEYS = [
         'generated' => [
-            'nomor_surat', 'tanggal_surat', 'kota_cabang',
-            'nama_penandatangan', 'jabatan_penandatangan', 'email_penandatangan', 'ttd_penandatangan',
+            'nomor_surat', 'tanggal_surat', 'bulan_surat', 'tahun_surat', 'nama_hari', 'kota_cabang',
+            'nama_penandatangan', 'jabatan_penandatangan', 'email_penandatangan', 'ttd_penandatangan', 'signer_name',
             'nama_pegawai', 'jabatan_pegawai', 'divisi_pegawai', 'agama_pegawai',
             'alamat_pegawai', 'email_pegawai', 'wa_pegawai', 'nomor_identitas_pegawai',
-            'tempat_tanggal_lahir_pegawai', 'laki_laki_atau_perempuan',
-            'tanggal_mulai_kontrak', 'tanggal_berakhir_kontrak', 'ttd_pegawai',
+            'tempat_lahir', 'tempat_tanggal_lahir_pegawai', 'laki_laki_atau_perempuan',
+            'tanggal_mulai_kontrak', 'bulan_mulai_kontrak', 'tahun_mulai_kontrak',
+            'tanggal_berakhir_kontrak', 'bulan_akhir_kontrak', 'tahun_akhir_kontrak', 'ttd_pegawai',
         ],
         'marketing' => [
-            'nomor_surat', 'tanggal_surat', 'kota_cabang',
-            'nama_penandatangan', 'jabatan_penandatangan', 'email_penandatangan', 'ttd_penandatangan',
+            'nomor_surat', 'tanggal_surat', 'bulan_surat', 'tahun_surat', 'nama_hari', 'kota_cabang',
+            'nama_penandatangan', 'jabatan_penandatangan', 'email_penandatangan', 'ttd_penandatangan', 'signer_name',
             'nama_pegawai', 'jabatan_pegawai', 'divisi_pegawai', 'agama_pegawai',
             'alamat_pegawai', 'email_pegawai', 'wa_pegawai', 'nomor_identitas_pegawai',
-            'tempat_tanggal_lahir_pegawai', 'laki_laki_atau_perempuan',
-            'tanggal_mulai_kontrak', 'tanggal_berakhir_kontrak', 'ttd_pegawai',
+            'tempat_lahir', 'tempat_tanggal_lahir_pegawai', 'laki_laki_atau_perempuan',
+            'tanggal_mulai_kontrak', 'bulan_mulai_kontrak', 'tahun_mulai_kontrak',
+            'tanggal_berakhir_kontrak', 'bulan_akhir_kontrak', 'tahun_akhir_kontrak', 'ttd_pegawai',
             'institusi',
         ],
         'announcement' => [
-            'nomor_surat', 'tanggal_surat', 'kota_cabang',
+            'nomor_surat', 'tanggal_surat', 'bulan_surat', 'tahun_surat', 'kota_cabang',
             'nama_penandatangan', 'jabatan_penandatangan', 'email_penandatangan', 'ttd_penandatangan',
             'nama_pegawai', 'jabatan_pegawai',
         ],
@@ -69,6 +80,7 @@ class LetterService
             'nomor_registrasi', 'tanggal_registrasi',
             'nama_program', 'harga_program', 'harga_promo', 'status_promo',
             'uang_muka', 'total_pembayaran', 'biaya_pelunasan',
+            'signer_name',
         ],
     ];
 
@@ -391,6 +403,17 @@ class LetterService
         ];
     }
 
+    private function dateVars(?Carbon $date = null): array
+    {
+        $d = $date ?? now();
+
+        return [
+            'bulan_surat' => $d->translatedFormat('F'),
+            'tahun_surat' => $d->format('Y'),
+            'nama_hari' => $d->translatedFormat('l'),
+        ];
+    }
+
     private function generatedContext(array $ids): array
     {
         $employee = isset($ids['employee_id']) ? Employee::with(['branch', 'currentStatus.position'])->find($ids['employee_id']) : null;
@@ -398,8 +421,12 @@ class LetterService
 
         $branch = $employee?->branch ?? ($ids['branch_id'] ? Branch::find($ids['branch_id']) : null);
 
-        return array_merge($this->branchVars($branch), [
+        $startDate = $employee?->currentStatus?->contract_start_date;
+        $endDate = $employee?->currentStatus?->contract_end_date;
+
+        return array_merge($this->branchVars($branch), $this->dateVars(), [
             'nama_penandatangan' => $signer?->full_name ?? '',
+            'signer_name' => $signer?->full_name ?? '',
             'jabatan_penandatangan' => $signer?->currentStatus?->position?->position_name ?? '',
             'email_penandatangan' => $signer?->email ?? '',
             'ttd_penandatangan' => '',
@@ -412,42 +439,55 @@ class LetterService
             'email_pegawai' => $employee?->email ?? '',
             'wa_pegawai' => $employee?->whatsapp_number ?? '',
             'nomor_identitas_pegawai' => $employee?->employee_code ?? '',
+            'tempat_lahir' => '',
             'tempat_tanggal_lahir_pegawai' => $employee?->birthdate ? Carbon::parse($employee->birthdate)->translatedFormat('d F Y') : '',
             'laki_laki_atau_perempuan' => $employee?->gender === 'L' ? 'Laki-Laki' : 'Perempuan',
-            'tanggal_mulai_kontrak' => $employee?->currentStatus?->contract_start_date ? Carbon::parse($employee->currentStatus->contract_start_date)->translatedFormat('d F Y') : '',
-            'tanggal_berakhir_kontrak' => $employee?->currentStatus?->contract_end_date ? Carbon::parse($employee->currentStatus->contract_end_date)->translatedFormat('d F Y') : '',
+            'tanggal_mulai_kontrak' => $startDate ? Carbon::parse($startDate)->translatedFormat('d F Y') : '',
+            'bulan_mulai_kontrak' => $startDate ? Carbon::parse($startDate)->translatedFormat('F') : '',
+            'tahun_mulai_kontrak' => $startDate ? Carbon::parse($startDate)->format('Y') : '',
+            'tanggal_berakhir_kontrak' => $endDate ? Carbon::parse($endDate)->translatedFormat('d F Y') : '',
+            'bulan_akhir_kontrak' => $endDate ? Carbon::parse($endDate)->translatedFormat('F') : '',
+            'tahun_akhir_kontrak' => $endDate ? Carbon::parse($endDate)->format('Y') : '',
             'ttd_pegawai' => '',
         ]);
     }
 
     private function marketingContext(array $ids): array
     {
-        // For marketing contract, it's essentially a contract letter, so we also load employee data
         $employee = isset($ids['employee_id']) ? Employee::with(['branch', 'currentStatus.position'])->find($ids['employee_id']) : null;
         $branch = Branch::find($ids['branch_id']);
         $signer = isset($ids['signer_employee_id']) ? Employee::with('currentStatus.position')->find($ids['signer_employee_id']) : null;
 
-        return array_merge($this->branchVars($branch), [
+        $startDate = $employee?->currentStatus?->contract_start_date;
+        $endDate = $employee?->currentStatus?->contract_end_date;
+
+        return array_merge($this->branchVars($branch), $this->dateVars(), [
             'institusi' => $ids['institution'] ?? '',
 
             'nama_penandatangan' => $signer?->full_name ?? '',
+            'signer_name' => $signer?->full_name ?? '',
             'jabatan_penandatangan' => $signer?->currentStatus?->position?->position_name ?? '',
             'email_penandatangan' => $signer?->email ?? '',
-            'ttd_penandatangan' => '', // $signer?->signature_image
+            'ttd_penandatangan' => '',
 
             'nama_pegawai' => $employee?->full_name ?? '',
             'jabatan_pegawai' => $employee?->currentStatus?->position?->position_name ?? '',
-            'divisi_pegawai' => '', // $employee->division
-            'agama_pegawai' => '', // $employee->religion
-            'alamat_pegawai' => '', // $employee->address
+            'divisi_pegawai' => '',
+            'agama_pegawai' => '',
+            'alamat_pegawai' => '',
             'email_pegawai' => $employee?->email ?? '',
             'wa_pegawai' => $employee?->whatsapp_number ?? '',
             'nomor_identitas_pegawai' => $employee?->employee_code ?? '',
+            'tempat_lahir' => '',
             'tempat_tanggal_lahir_pegawai' => $employee?->birthdate ? Carbon::parse($employee->birthdate)->translatedFormat('d F Y') : '',
-            'laki_laki_atau_perempuan' => $employee?->gender == 'L' ? 'Laki-Laki' : 'Perempuan',
-            'tanggal_mulai_kontrak' => $employee?->currentStatus?->contract_start_date ? Carbon::parse($employee->currentStatus->contract_start_date)->translatedFormat('d F Y') : '',
-            'tanggal_berakhir_kontrak' => $employee?->currentStatus?->contract_end_date ? Carbon::parse($employee->currentStatus->contract_end_date)->translatedFormat('d F Y') : '',
-            'ttd_pegawai' => '', // $employee->signature_image
+            'laki_laki_atau_perempuan' => $employee?->gender === 'L' ? 'Laki-Laki' : 'Perempuan',
+            'tanggal_mulai_kontrak' => $startDate ? Carbon::parse($startDate)->translatedFormat('d F Y') : '',
+            'bulan_mulai_kontrak' => $startDate ? Carbon::parse($startDate)->translatedFormat('F') : '',
+            'tahun_mulai_kontrak' => $startDate ? Carbon::parse($startDate)->format('Y') : '',
+            'tanggal_berakhir_kontrak' => $endDate ? Carbon::parse($endDate)->translatedFormat('d F Y') : '',
+            'bulan_akhir_kontrak' => $endDate ? Carbon::parse($endDate)->translatedFormat('F') : '',
+            'tahun_akhir_kontrak' => $endDate ? Carbon::parse($endDate)->format('Y') : '',
+            'ttd_pegawai' => '',
         ]);
     }
 
@@ -456,13 +496,13 @@ class LetterService
         $branch = isset($ids['branch_id']) ? Branch::find($ids['branch_id']) : null;
         $signer = isset($ids['signer_employee_id']) ? Employee::with('currentStatus.position')->find($ids['signer_employee_id']) : null;
 
-        return array_merge($this->branchVars($branch), [
+        return array_merge($this->branchVars($branch), $this->dateVars(), [
             'nama_penandatangan' => $signer?->full_name ?? '',
             'jabatan_penandatangan' => $signer?->currentStatus?->position?->position_name ?? '',
             'email_penandatangan' => $signer?->email ?? '',
-            'ttd_penandatangan' => '', // $signer?->signature_image
+            'ttd_penandatangan' => '',
 
-            'nama_pegawai' => $signer?->full_name ?? '', // sender for announcement
+            'nama_pegawai' => $signer?->full_name ?? '',
             'jabatan_pegawai' => $signer?->currentStatus?->position?->position_name ?? '',
         ]);
     }

@@ -64,17 +64,19 @@ class LetterTemplateController extends Controller
         return redirect()->route('letter-templates.index')->with('success', 'Template berhasil disimpan.');
     }
 
-    public function show(LetterTemplate $letterTemplate): View
+    public function show(LetterTemplate $letter_template): View
     {
-        return view('letter.template.show', compact('letterTemplate'));
+        $letter_template->load('generatedLetters');
+
+        return view('letter.template.show', ['letterTemplate' => $letter_template]);
     }
 
-    public function edit(LetterTemplate $letterTemplate): View
+    public function edit(LetterTemplate $letter_template): View
     {
-        return view('letter.template.edit', compact('letterTemplate'));
+        return view('letter.template.edit', ['letterTemplate' => $letter_template]);
     }
 
-    public function update(UpdateLetterTemplateRequest $request, LetterTemplate $letterTemplate): RedirectResponse
+    public function update(UpdateLetterTemplateRequest $request, LetterTemplate $letter_template): RedirectResponse
     {
         $data = $request->validated();
         $updates = [
@@ -82,7 +84,7 @@ class LetterTemplateController extends Controller
             'template_name' => $data['template_name'],
             'letter_category' => $data['letter_category'],
             'letter_number_format' => $data['letter_number_format'] ?? null,
-            'is_active' => $data['is_active'] ?? $letterTemplate->is_active,
+            'is_active' => $data['is_active'] ?? $letter_template->is_active,
         ];
 
         if ($request->hasFile('file')) {
@@ -91,30 +93,30 @@ class LetterTemplateController extends Controller
                 $file->getRealPath(),
                 $file->getClientOriginalName(),
                 'letter_template',
-                $letterTemplate->id,
+                $letter_template->id,
             );
             $updates['telegram_file_id'] = $uploaded['file_id'];
             $updates['storage_path'] = $uploaded['file_id'];
         }
 
-        $this->repository->update($letterTemplate, $updates);
+        $this->repository->update($letter_template, $updates);
 
         return redirect()->route('letter-templates.index')->with('success', 'Template berhasil diperbarui.');
     }
 
-    public function destroy(LetterTemplate $letterTemplate): RedirectResponse
+    public function destroy(LetterTemplate $letter_template): RedirectResponse
     {
         abort_unless(auth()->user()->can('letter.template.manage'), 403);
-        abort_if($letterTemplate->generatedLetters()->exists(), 422, 'Template sudah digunakan, tidak bisa dihapus.');
+        abort_if($letter_template->generatedLetters()->exists(), 422, 'Template sudah digunakan, tidak bisa dihapus.');
 
-        $letterTemplate->delete();
+        $letter_template->delete();
 
         return redirect()->route('letter-templates.index')->with('success', 'Template berhasil dihapus.');
     }
 
-    public function toggleActive(LetterTemplate $letterTemplate): RedirectResponse
+    public function toggleActive(LetterTemplate $letter_template): RedirectResponse
     {
-        $this->repository->toggleActive($letterTemplate);
+        $this->repository->toggleActive($letter_template);
 
         return redirect()->route('letter-templates.index')->with('success', 'Status template diubah.');
     }

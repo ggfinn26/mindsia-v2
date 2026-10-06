@@ -152,7 +152,7 @@
     <div class="overflow-hidden border border-slate-200 bg-white">
         <div class="flex items-center justify-between border-b border-slate-200 px-5 py-3">
             <h3 class="font-jakarta text-sm font-bold text-slate-900">Dokumen Evaluasi</h3>
-            @can('kpi.document.upload')
+            @can('kpi.document.create')
                 <form method="POST" action="{{ route('kpi.documents.store') }}" enctype="multipart/form-data" class="flex items-center gap-2">
                     @csrf
                     <input type="hidden" name="employee_kpi_evaluation_id" value="{{ $evaluation->id }}">

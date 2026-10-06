@@ -24,6 +24,7 @@ class KpiTemplateIndicatorController extends Controller
             'template' => $kpiTemplate,
             'allowedSources' => KpiDataSourceService::ALLOWED_SOURCES,
             'sourceLabels' => KpiDataSourceService::SOURCE_LABELS,
+            'nextSequence' => $kpiTemplate->indicators()->max('sequence_number') + 1,
         ]);
     }
 

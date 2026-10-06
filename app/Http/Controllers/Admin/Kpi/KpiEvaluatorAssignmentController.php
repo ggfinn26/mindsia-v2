@@ -52,18 +52,18 @@ class KpiEvaluatorAssignmentController extends Controller
         return redirect()->route('kpi.evaluator-assignments.index')->with('success', 'Assignment evaluator berhasil disimpan.');
     }
 
-    public function edit(KpiEvaluatorAssignment $kpiEvaluatorAssignment): View
+    public function edit(KpiEvaluatorAssignment $evaluatorAssignment): View
     {
         return view('kpi.evaluator-assignments.edit', [
-            'assignment' => $kpiEvaluatorAssignment,
+            'assignment' => $evaluatorAssignment,
             'employees' => $this->employeeRepository->active(),
             'templates' => $this->templateRepository->active(),
         ]);
     }
 
-    public function update(UpdateKpiEvaluatorAssignmentRequest $request, KpiEvaluatorAssignment $kpiEvaluatorAssignment): RedirectResponse
+    public function update(UpdateKpiEvaluatorAssignmentRequest $request, KpiEvaluatorAssignment $evaluatorAssignment): RedirectResponse
     {
-        $kpiEvaluatorAssignment->update($request->validated());
+        $evaluatorAssignment->update($request->validated());
 
         return redirect()->route('kpi.evaluator-assignments.index')->with('success', 'Assignment evaluator berhasil diperbarui.');
     }

@@ -87,7 +87,7 @@
             <tbody class="divide-y divide-slate-100">
                 @php $totalWeight = 0; @endphp
                 @forelse ($template->indicators as $indicator)
-                    @php $totalWeight += $indicator->weight; @endphp
+                    @php if ($indicator->is_active) $totalWeight += $indicator->weight; @endphp
                     <tr class="{{ $indicator->is_active ? '' : 'opacity-50' }} hover:bg-slate-50/70">
                         <td class="px-5 py-3 text-slate-400">{{ $indicator->sequence_number }}</td>
                         <td class="px-5 py-3">
@@ -111,7 +111,13 @@
                         </td>
                         <td class="px-5 py-3 text-right">
                             @can('kpi.template.update')
-                                <a href="{{ route('kpi.templates.indicators.edit', [$template, $indicator]) }}" class="inline-flex min-h-8 items-center border border-slate-300 px-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">Edit</a>
+                                <div class="inline-flex gap-1">
+                                    <a href="{{ route('kpi.templates.indicators.edit', [$template, $indicator]) }}" class="inline-flex min-h-8 items-center border border-slate-300 px-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">Edit</a>
+                                    <form method="POST" action="{{ route('kpi.templates.indicators.destroy', [$template, $indicator]) }}" onsubmit="return confirm('Hapus indikator ini?')">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" class="inline-flex min-h-8 items-center border border-red-200 px-2 text-xs font-semibold text-red-600 hover:bg-red-50">Hapus</button>
+                                    </form>
+                                </div>
                             @endcan
                         </td>
                     </tr>
@@ -137,7 +143,7 @@
     <div class="overflow-hidden border border-slate-200 bg-white">
         <div class="flex items-center justify-between border-b border-slate-200 px-5 py-3">
             <h3 class="font-jakarta text-sm font-bold text-slate-900">Dokumen Template</h3>
-            @can('kpi.document.upload')
+            @can('kpi.document.create')
                 <form method="POST" action="{{ route('kpi.documents.store') }}" enctype="multipart/form-data" class="flex items-center gap-2">
                     @csrf
                     <input type="hidden" name="kpi_template_id" value="{{ $template->id }}">

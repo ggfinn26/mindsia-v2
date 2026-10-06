@@ -41,7 +41,7 @@ $formConfig = [
     'templateVarsUrl' => route('letter-templates.template-vars'),
 
     'old' => [
-        'template_id' => old('letter_template_id'),
+        'template_id' => old('letter_template_id') ?? $preselectedTemplateId,
         'branch_id'   => old('branch_id'),
         'employee_id' => old('employee_id'),
         'signer_id'   => old('signer_employee_id'),

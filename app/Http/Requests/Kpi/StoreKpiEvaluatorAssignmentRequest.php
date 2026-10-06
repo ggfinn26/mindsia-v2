@@ -25,6 +25,13 @@ class StoreKpiEvaluatorAssignmentRequest extends FormRequest
         ];
     }
 
+    public function messages(): array
+    {
+        return [
+            'evaluator_employee_id.different' => 'Evaluator tidak boleh sama dengan evaluatee.',
+        ];
+    }
+
     public function withValidator(Validator $validator): void
     {
         $validator->after(function ($v) {

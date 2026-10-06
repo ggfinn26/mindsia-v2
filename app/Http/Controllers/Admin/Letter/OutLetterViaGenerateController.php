@@ -28,7 +28,9 @@ class OutLetterViaGenerateController extends Controller
 
     public function create(): View
     {
-        return view('letter.out-generate.create');
+        return view('letter.out-generate.create', [
+            'preselectedTemplateId' => request()->integer('template_id') ?: null,
+        ]);
     }
 
     public function store(StoreOutLetterViaGenerateRequest $request): RedirectResponse
@@ -57,40 +59,40 @@ class OutLetterViaGenerateController extends Controller
         return redirect()->route('out-letters-generate.show', $letter)->with('success', 'Surat berhasil dibuat (DRAFT).');
     }
 
-    public function show(OutLetterViaGenerate $outLetterViaGenerate): View
+    public function show(OutLetterViaGenerate $out_letters_generate): View
     {
-        $outLetterViaGenerate->load(['template', 'branch', 'signer', 'createdBy', 'publishedBy']);
+        $out_letters_generate->load(['template', 'branch', 'signer', 'createdBy', 'publishedBy']);
 
-        return view('letter.out-generate.show', compact('outLetterViaGenerate'));
+        return view('letter.out-generate.show', ['outLetterViaGenerate' => $out_letters_generate]);
     }
 
-    public function edit(OutLetterViaGenerate $outLetterViaGenerate): View
+    public function edit(OutLetterViaGenerate $out_letters_generate): View
     {
-        abort_unless($outLetterViaGenerate->isDraft(), 403, 'Surat sudah diterbitkan dan tidak dapat diedit.');
+        abort_unless($out_letters_generate->isDraft(), 403, 'Surat sudah diterbitkan dan tidak dapat diedit.');
 
-        return view('letter.out-generate.edit', compact('outLetterViaGenerate'));
+        return view('letter.out-generate.edit', ['outLetterViaGenerate' => $out_letters_generate]);
     }
 
-    public function update(UpdateOutLetterViaGenerateRequest $request, OutLetterViaGenerate $outLetterViaGenerate): RedirectResponse
+    public function update(UpdateOutLetterViaGenerateRequest $request, OutLetterViaGenerate $out_letters_generate): RedirectResponse
     {
-        $this->repository->update($outLetterViaGenerate, $request->validated());
+        $this->repository->update($out_letters_generate, $request->validated());
 
-        return redirect()->route('out-letters-generate.show', $outLetterViaGenerate)->with('success', 'Surat berhasil diperbarui.');
+        return redirect()->route('out-letters-generate.show', $out_letters_generate)->with('success', 'Surat berhasil diperbarui.');
     }
 
-    public function publish(PublishOutLetterViaGenerateRequest $request, OutLetterViaGenerate $outLetterViaGenerate): RedirectResponse
+    public function publish(PublishOutLetterViaGenerateRequest $request, OutLetterViaGenerate $out_letters_generate): RedirectResponse
     {
-        $this->letterService->publish($outLetterViaGenerate, $request->user()->employee->id);
+        $this->letterService->publish($out_letters_generate, $request->user()->employee->id);
 
-        return redirect()->route('out-letters-generate.show', $outLetterViaGenerate)->with('success', 'Surat berhasil diterbitkan.');
+        return redirect()->route('out-letters-generate.show', $out_letters_generate)->with('success', 'Surat berhasil diterbitkan.');
     }
 
-    public function download(OutLetterViaGenerate $outLetterViaGenerate): mixed
+    public function download(OutLetterViaGenerate $out_letters_generate): mixed
     {
-        abort_unless($outLetterViaGenerate->telegram_file_id, 404);
+        abort_unless($out_letters_generate->telegram_file_id, 404);
 
-        $content = $this->telegramStorage->downloadFile($outLetterViaGenerate->telegram_file_id);
-        $filename = $outLetterViaGenerate->letter_type.'_'.($outLetterViaGenerate->letter_number ?? $outLetterViaGenerate->id).'.pdf';
+        $content = $this->telegramStorage->downloadFile($out_letters_generate->telegram_file_id);
+        $filename = $out_letters_generate->letter_type.'_'.($out_letters_generate->letter_number ?? $out_letters_generate->id).'.pdf';
 
         return response($content, 200, [
             'Content-Type' => 'application/pdf',

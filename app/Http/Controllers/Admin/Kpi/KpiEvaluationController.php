@@ -55,10 +55,10 @@ class KpiEvaluationController extends Controller
         return redirect()->route('kpi.evaluations.show', $evaluation)->with('success', 'Evaluasi KPI berhasil dibuat.');
     }
 
-    public function show(EmployeeKpiEvaluation $kpiEvaluation): View
+    public function show(EmployeeKpiEvaluation $evaluation): View
     {
         return view('kpi.evaluations.show', [
-            'evaluation' => $this->repository->find($kpiEvaluation->id),
+            'evaluation' => $this->repository->find($evaluation->id),
         ]);
     }
 

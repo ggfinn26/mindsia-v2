@@ -58,41 +58,41 @@ class OutLetterViaUploadController extends Controller
         return redirect()->route('out-letters-upload.index')->with('success', 'Surat keluar berhasil diunggah.');
     }
 
-    public function show(OutLetterViaUpload $outLetterViaUpload): View
+    public function show(OutLetterViaUpload $out_letters_upload): View
     {
-        $outLetterViaUpload->load(['branch', 'uploadedBy']);
+        $out_letters_upload->load(['branch', 'uploadedBy']);
 
-        return view('letter.out-upload.show', compact('outLetterViaUpload'));
+        return view('letter.out-upload.show', ['outLetterViaUpload' => $out_letters_upload]);
     }
 
-    public function edit(OutLetterViaUpload $outLetterViaUpload): View
+    public function edit(OutLetterViaUpload $out_letters_upload): View
     {
-        return view('letter.out-upload.edit', compact('outLetterViaUpload'));
+        return view('letter.out-upload.edit', ['outLetterViaUpload' => $out_letters_upload]);
     }
 
-    public function update(UpdateOutLetterViaUploadRequest $request, OutLetterViaUpload $outLetterViaUpload): RedirectResponse
+    public function update(UpdateOutLetterViaUploadRequest $request, OutLetterViaUpload $out_letters_upload): RedirectResponse
     {
-        $this->repository->update($outLetterViaUpload, $request->validated());
+        $this->repository->update($out_letters_upload, $request->validated());
 
-        return redirect()->route('out-letters-upload.show', $outLetterViaUpload)->with('success', 'Surat berhasil diperbarui.');
+        return redirect()->route('out-letters-upload.show', $out_letters_upload)->with('success', 'Surat berhasil diperbarui.');
     }
 
-    public function destroy(OutLetterViaUpload $outLetterViaUpload): RedirectResponse
+    public function destroy(OutLetterViaUpload $out_letters_upload): RedirectResponse
     {
-        $this->repository->delete($outLetterViaUpload);
+        $this->repository->delete($out_letters_upload);
 
         return redirect()->route('out-letters-upload.index')->with('success', 'Surat berhasil dihapus.');
     }
 
-    public function download(OutLetterViaUpload $outLetterViaUpload): mixed
+    public function download(OutLetterViaUpload $out_letters_upload): mixed
     {
-        abort_unless($outLetterViaUpload->telegram_file_id, 404);
+        abort_unless($out_letters_upload->telegram_file_id, 404);
 
-        $content = $this->telegramStorage->downloadFile($outLetterViaUpload->telegram_file_id);
+        $content = $this->telegramStorage->downloadFile($out_letters_upload->telegram_file_id);
 
         return response($content, 200, [
-            'Content-Type' => $outLetterViaUpload->mime_type ?? 'application/octet-stream',
-            'Content-Disposition' => 'attachment; filename="'.($outLetterViaUpload->original_name ?? 'surat.pdf').'"',
+            'Content-Type' => $out_letters_upload->mime_type ?? 'application/octet-stream',
+            'Content-Disposition' => 'attachment; filename="'.($out_letters_upload->original_name ?? 'surat.pdf').'"',
         ]);
     }
 }

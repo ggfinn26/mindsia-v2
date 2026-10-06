@@ -21,6 +21,15 @@
     <form method="POST" action="{{ route('out-letters-upload.store') }}" enctype="multipart/form-data" class="border border-slate-200 bg-white p-6 space-y-4">
         @csrf
         <div class="grid gap-4 sm:grid-cols-2">
+            <div class="sm:col-span-2">
+                <label class="mb-1.5 block text-sm font-medium text-slate-700">Cabang <span class="text-red-500">*</span></label>
+                <select name="branch_id" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                    <option value="">— Pilih cabang —</option>
+                    @foreach (App\Models\Branch::where('is_active', true)->orderBy('branch_name')->get() as $branch)
+                        <option value="{{ $branch->id }}" @selected(old('branch_id') == $branch->id)>{{ $branch->branch_name }}</option>
+                    @endforeach
+                </select>
+            </div>
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-slate-700">Nomor surat</label>
                 <input type="text" name="letter_number" value="{{ old('letter_number') }}" maxlength="100" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">

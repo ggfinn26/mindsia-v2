@@ -48,7 +48,7 @@
             </div>
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-slate-700">Urutan</label>
-                <input type="number" name="sequence_number" value="{{ old('sequence_number', 1) }}" required min="1" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                <input type="number" name="sequence_number" value="{{ old('sequence_number', $nextSequence) }}" required min="1" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
                 <p class="mt-1 text-xs text-slate-400">Urutan tampil di form evaluasi. Angka kecil tampil lebih atas.</p>
             </div>
         </div>
