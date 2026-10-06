@@ -42,6 +42,7 @@
     @endif
 @endauth
 <x-dashboard.nav-item href="{{ route('employee.my-tickets.index') }}" icon="confirmation_number" :active="request()->routeIs('employee.my-tickets.*')">Tiket Saya</x-dashboard.nav-item>
+<x-dashboard.nav-item href="{{ route('notifications.index') }}" icon="notifications" :active="request()->routeIs('notifications.index')">Notifikasi Saya</x-dashboard.nav-item>
 
 <!-- 1.2 Organization -->
 @canany(['organization.province.create', 'organization.branch.create', 'organization.institution.create'])
@@ -71,10 +72,11 @@
 
 <!-- 1.3A Sistem & Akses -->
 @can('system.permission.manage')
-<x-dashboard.nav-group title="Sistem & Akses" icon="shield_person" :active="request()->routeIs('system.permissions.*') || request()->routeIs('system.dashboard-widgets.*') || request()->routeIs('attendance.document-signature.*')">
+<x-dashboard.nav-group title="Sistem & Akses" icon="shield_person" :active="request()->routeIs('system.permissions.*') || request()->routeIs('system.dashboard-widgets.*') || request()->routeIs('attendance.document-signature.*') || request()->routeIs('system.notification-routings.*')">
     <x-dashboard.nav-item href="{{ route('system.permissions.index') }}" :active="request()->routeIs('system.permissions.*')" :isChild="true">Manajemen Permission</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('system.dashboard-widgets.index') }}" :active="request()->routeIs('system.dashboard-widgets.*')" :isChild="true">Widget Dashboard</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('attendance.document-signature.index') }}" :active="request()->routeIs('attendance.document-signature.*')" :isChild="true">Pengaturan TTD Dokumen</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('system.notification-routings.index') }}" :active="request()->routeIs('system.notification-routings.*')" :isChild="true">Routing Notifikasi</x-dashboard.nav-item>
 </x-dashboard.nav-group>
 @endcan
 
@@ -293,11 +295,20 @@
 @endcan
 
 <!-- 1.14 Notification -->
-@canany(['notification.template.create', 'notification.send_manual'])
-<x-dashboard.nav-group title="Notifikasi" icon="notifications_active" :active="request()->is('notification*')">
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Konfigurasi Routing</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Template Notifikasi</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="javascript:void(0)" comingSoon="true" :isChild="true">Manual Send</x-dashboard.nav-item>
+@canany(['notification.template.create', 'notification.send_manual', 'notification.log.view'])
+<x-dashboard.nav-group title="Notifikasi" icon="notifications_active" :active="request()->is('notification-templates*') || request()->is('notification-logs*') || request()->is('notification-manual-send*')">
+    @can('system.permission.manage')
+    <x-dashboard.nav-item href="{{ route('system.notification-routings.index') }}" :isChild="true" :active="request()->routeIs('system.notification-routings.*')">Konfigurasi Routing</x-dashboard.nav-item>
+    @endcan
+    @can('notification.template.create')
+    <x-dashboard.nav-item href="{{ route('notification-templates.index') }}" :isChild="true" :active="request()->routeIs('notification-templates.*')">Template Notifikasi</x-dashboard.nav-item>
+    @endcan
+    @can('notification.send_manual')
+    <x-dashboard.nav-item href="{{ route('notification-manual-send.create') }}" :isChild="true" :active="request()->routeIs('notification-manual-send.*')">Manual Send</x-dashboard.nav-item>
+    @endcan
+    @can('notification.log.view')
+    <x-dashboard.nav-item href="{{ route('notification-logs.index') }}" :isChild="true" :active="request()->routeIs('notification-logs.*')">Log Notifikasi</x-dashboard.nav-item>
+    @endcan
 </x-dashboard.nav-group>
 @endcan
 

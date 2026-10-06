@@ -48,7 +48,9 @@ class NotificationTemplateController extends Controller
 
     public function edit(NotificationTemplate $notificationTemplate): View
     {
-        return view('notification.template.edit', compact('notificationTemplate'));
+        return view('notification.template.edit', [
+            'template' => $notificationTemplate,
+        ]);
     }
 
     public function update(UpdateNotificationTemplateRequest $request, NotificationTemplate $notificationTemplate): RedirectResponse

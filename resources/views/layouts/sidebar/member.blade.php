@@ -54,4 +54,5 @@
 
 <!-- 2.6 Support Ticket -->
 <x-dashboard.nav-item href="{{ route('member.tickets.index') }}" icon="confirmation_number" :active="request()->is('member/my-tickets*') || request()->routeIs('member.tickets.*')">Tiket Bantuan</x-dashboard.nav-item>
+<x-dashboard.nav-item href="{{ route('member.notifications.index') }}" icon="notifications" :active="request()->routeIs('member.notifications.index')">Notifikasi Saya</x-dashboard.nav-item>
 

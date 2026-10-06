@@ -44,6 +44,15 @@ class RoleSeeder extends Seeder
             'system.bot.manage',
             'system.notification_routing.manage',
             'auth.user.force_reset_password',
+            'notification.template.create',
+            'notification.template.update',
+            'notification.template.delete',
+            'notification.variable.create',
+            'notification.variable.update',
+            'notification.variable.delete',
+            'notification.send_manual',
+            'notification.log.view',
+            'notification.log.resend',
         ];
         Role::where('name', 'IT')->first()
             ?->syncPermissions(array_intersect($itPermissions, $allPermissions));
