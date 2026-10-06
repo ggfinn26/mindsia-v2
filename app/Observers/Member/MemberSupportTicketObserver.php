@@ -53,12 +53,14 @@ class MemberSupportTicketObserver
             return;
         }
 
+        $employeeId = auth('web')->user()?->employee?->id;
+
         MemberSupportTicketStatusHistory::create([
             'member_support_ticket_id' => $ticket->id,
             'from_status' => $ticket->getOriginal('status'),
             'to_status' => $ticket->status,
-            'changed_by_employee_id' => auth('web')->user()?->employee?->id,
-            'changed_by_member_id' => auth('member')->id(),
+            'changed_by_employee_id' => $employeeId,
+            'changed_by_member_id' => $employeeId ? null : auth('member')->id(),
             'changed_at' => now(),
         ]);
     }

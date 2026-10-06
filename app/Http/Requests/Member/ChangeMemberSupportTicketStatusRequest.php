@@ -14,7 +14,7 @@ class ChangeMemberSupportTicketStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'new_status' => ['required', 'in:open,verified,resolved,rejected'],
+            'new_status' => ['required', 'in:open,in_progress,resolved,closed'],
             'notes' => ['nullable', 'string'],
         ];
     }

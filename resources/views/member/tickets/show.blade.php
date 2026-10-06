@@ -51,8 +51,22 @@
     <!-- Ticket Info -->
     <div class="overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm">
         <div class="px-6 py-4 border-b border-slate-100 flex flex-wrap gap-4 text-xs text-slate-500">
-            <span><strong class="text-slate-700">Kategori:</strong> {{ $ticket->category }}</span>
-            <span><strong class="text-slate-700">Prioritas:</strong> {{ ucfirst($ticket->priority) }}</span>
+            @php
+                $categoryLabel = match($ticket->category) {
+                    'complaint'  => 'Pengaduan',
+                    'suggestion' => 'Saran',
+                    'question'   => 'Pertanyaan',
+                    default      => ucfirst($ticket->category),
+                };
+                $priorityLabel = match($ticket->priority) {
+                    'low'    => 'Rendah',
+                    'medium' => 'Sedang',
+                    'high'   => 'Tinggi',
+                    default  => ucfirst($ticket->priority),
+                };
+            @endphp
+            <span><strong class="text-slate-700">Kategori:</strong> {{ $categoryLabel }}</span>
+            <span><strong class="text-slate-700">Prioritas:</strong> {{ $priorityLabel }}</span>
             <span><strong class="text-slate-700">Dibuat:</strong> {{ $ticket->created_at->format('d M Y, H:i') }}</span>
             @if($ticket->assignedEmployee)
                 <span><strong class="text-slate-700">Ditangani:</strong> {{ $ticket->assignedEmployee->full_name }}</span>
