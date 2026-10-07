@@ -49,10 +49,10 @@
         <div class="hidden md:flex items-center gap-3">
             @if(request()->is('karir*') || request()->is('applicant*'))
                 <a href="{{ route('applicant.login') }}" class="text-[14px] font-semibold bg-gray-100 text-gray-700 py-2 px-5 rounded-lg no-underline transition-all duration-200 hover:bg-gray-200 shadow-sm border border-gray-200">Login Pelamar</a>
-                <a href="{{ route('applicant.register') }}" class="text-[14px] font-semibold bg-ky-primary text-white py-2 px-5 rounded-lg no-underline transition-all duration-200 hover:bg-ky-primary-hover shadow-sm">Daftar Pelamar</a>
+                <a href="{{ route('applicant.register') }}" class="text-[14px] font-semibold bg-[#DBB940] text-[#06122B] py-2 px-5 rounded-lg no-underline transition-all duration-200 hover:opacity-90 shadow-sm">Daftar Pelamar</a>
             @else
                 <a href="{{ route('member.login', [], false) }}" class="text-[14px] font-semibold bg-gray-100 text-gray-700 py-2 px-5 rounded-lg no-underline transition-all duration-200 hover:bg-gray-200 shadow-sm border border-gray-200">Login</a>
-                <a href="/member/register" class="text-[14px] font-semibold bg-ky-primary text-white py-2 px-5 rounded-lg no-underline transition-all duration-200 hover:bg-ky-primary-hover shadow-sm">Daftar</a>
+                <a href="/member/register" class="text-[14px] font-semibold bg-[#DBB940] text-[#06122B] py-2 px-5 rounded-lg no-underline transition-all duration-200 hover:opacity-90 shadow-sm">Daftar</a>
             @endif
         </div>
         @endif
@@ -91,10 +91,10 @@
             <div class="h-[1px] bg-gray-100 w-full my-1"></div>
             @if(request()->is('karir*') || request()->is('applicant*'))
                 <a href="{{ route('applicant.login') }}" class="text-[14px] font-semibold bg-gray-100 text-gray-700 py-2 px-5 rounded-lg text-center shadow-sm border border-gray-200">Login Pelamar</a>
-                <a href="{{ route('applicant.register') }}" class="text-[14px] font-semibold bg-ky-primary text-white py-2 px-4 rounded-lg text-center shadow-sm">Daftar Pelamar</a>
+                <a href="{{ route('applicant.register') }}" class="text-[14px] font-semibold bg-[#DBB940] text-[#06122B] py-2 px-4 rounded-lg text-center shadow-sm hover:opacity-90 transition-opacity">Daftar Pelamar</a>
             @else
                 <a href="{{ route('member.login', [], false) }}" class="text-[14px] font-semibold bg-gray-100 text-gray-700 py-2 px-5 rounded-lg text-center shadow-sm border border-gray-200">Login Member</a>
-                <a href="/member/register" class="text-[14px] font-semibold bg-ky-primary text-white py-2 px-4 rounded-lg text-center shadow-sm">Daftar</a>
+                <a href="/member/register" class="text-[14px] font-semibold bg-[#DBB940] text-[#06122B] py-2 px-4 rounded-lg text-center shadow-sm hover:opacity-90 transition-opacity">Daftar</a>
             @endif
             @endif
         </div>

@@ -28,7 +28,7 @@
         <!-- Logo -->
         <div class="h-16 flex items-center justify-center border-b border-gray-100 shrink-0">
             <a href="/">
-                <img src="/img/logo/mindsia-logo.webp" alt="MINDSIA" class="h-8">
+                <img src="/img/logo/mindsia-logo.webp" alt="MINDSIA" class="h-14 w-auto">
             </a>
         </div>
 

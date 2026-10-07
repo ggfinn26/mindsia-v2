@@ -209,16 +209,20 @@
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
             @forelse($leaders as $leader)
-            <div class="bg-white p-6 rounded-2xl border border-ky-border/50 text-center shadow-sm hover:border-ky-primary/30 transition-colors">
-                <div class="w-14 h-14 mx-auto rounded-full bg-ky-primary/5 flex items-center justify-center mb-4 overflow-hidden border border-ky-primary/10">
+            <div class="bg-white p-6 rounded-2xl border border-ky-border/50 text-center shadow-sm hover:border-ky-primary/30 transition-colors flex flex-col h-full">
+                <div class="w-full mb-4 flex-grow flex items-center justify-center rounded-xl bg-ky-primary/5 overflow-hidden border border-ky-primary/10">
                     @if($leader->photo_url)
-                        <img src="{{ $leader->photo_url }}" alt="{{ $leader->name }}" class="w-full h-full object-cover">
+                        <img src="{{ $leader->photo_url }}" alt="{{ $leader->name }}" class="w-full h-auto object-contain block">
                     @else
-                        <span class="material-symbols-outlined text-[24px] text-ky-primary">person</span>
+                        <div class="w-full aspect-[3/4] flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[48px] text-ky-primary/50">person</span>
+                        </div>
                     @endif
                 </div>
-                <h4 class="text-[#06122B] font-bold text-sm leading-snug mb-1">{{ $leader->name }}</h4>
-                <div class="font-bold text-ky-primary/70 text-[11px] uppercase tracking-widest">{{ $leader->title }}</div>
+                <div>
+                    <h4 class="text-[#06122B] font-bold text-sm leading-snug mb-1">{{ $leader->name }}</h4>
+                    <div class="font-bold text-ky-primary/70 text-[11px] uppercase tracking-widest">{{ $leader->title }}</div>
+                </div>
             </div>
             @empty
             <div class="col-span-full text-center text-ky-text/50 py-8">Belum ada data struktur kepemimpinan.</div>
