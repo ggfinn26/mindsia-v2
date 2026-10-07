@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Letter;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateSopDocumentRequest extends FormRequest
 {
@@ -13,12 +14,10 @@ class UpdateSopDocumentRequest extends FormRequest
 
     public function rules(): array
     {
-        $id = $this->route('sopDocument')->id;
-
         return [
             'category' => ['sometimes', 'string', 'max:60'],
             'title' => ['sometimes', 'string', 'max:150'],
-            'document_code' => ['nullable', 'string', 'max:30', "unique:sop_documents,document_code,{$id}"],
+            'document_code' => ['nullable', 'string', 'max:30', Rule::unique('sop_documents', 'document_code')->ignore($this->route('sop_document'))],
             'version' => ['sometimes', 'string', 'max:20'],
             'effective_date' => ['sometimes', 'date'],
             'visible_to' => ['nullable', 'array'],

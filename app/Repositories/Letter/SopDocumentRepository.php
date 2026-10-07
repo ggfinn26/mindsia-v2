@@ -14,14 +14,13 @@ class SopDocumentRepository
 
     public function visibleTo(string $roleName, ?int $branchId = null): LengthAwarePaginator
     {
-        return SopDocument::where('is_active', true)
+        return SopDocument::where(fn ($q) => $q
+            ->whereNull('branch_id')
+            ->orWhere('branch_id', $branchId)
+        )
             ->where(fn ($q) => $q
-                ->whereNull('branch_id')
-                ->orWhere('branch_id', $branchId)
-            )
-            ->where(fn ($q) => $q
-                ->whereNull('visible_to')
-                ->orWhereJsonContains('visible_to', $roleName)
+            ->whereNull('visible_to')
+            ->orWhereJsonContains('visible_to', $roleName)
             )
             ->orderByDesc('created_at')
             ->paginate(15);

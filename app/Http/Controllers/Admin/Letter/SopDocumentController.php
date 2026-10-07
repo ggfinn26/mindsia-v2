@@ -10,6 +10,7 @@ use App\Repositories\Letter\SopDocumentRepository;
 use App\Services\TelegramStorageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use Spatie\Permission\Models\Role;
 
 class SopDocumentController extends Controller
 {
@@ -31,7 +32,9 @@ class SopDocumentController extends Controller
 
     public function create(): View
     {
-        return view('letter.sop.create');
+        $roles = Role::orderBy('name')->pluck('name');
+
+        return view('letter.sop.create', compact('roles'));
     }
 
     public function store(StoreSopDocumentRequest $request): RedirectResponse
@@ -72,7 +75,9 @@ class SopDocumentController extends Controller
 
     public function edit(SopDocument $sopDocument): View
     {
-        return view('letter.sop.edit', compact('sopDocument'));
+        $roles = Role::orderBy('name')->pluck('name');
+
+        return view('letter.sop.edit', compact('sopDocument', 'roles'));
     }
 
     public function update(UpdateSopDocumentRequest $request, SopDocument $sopDocument): RedirectResponse

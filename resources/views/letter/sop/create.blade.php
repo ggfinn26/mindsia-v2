@@ -43,6 +43,19 @@
                 <input type="date" name="effective_date" value="{{ old('effective_date', today()->toDateString()) }}" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
             </div>
         </div>
+        <div class="sm:col-span-2">
+            <label class="mb-1.5 block text-sm font-medium text-slate-700">Visible untuk posisi <span class="text-slate-400 font-normal text-xs">(kosong = semua posisi)</span></label>
+            <div class="mt-1 grid grid-cols-2 gap-1.5 sm:grid-cols-3">
+                @foreach ($roles as $role)
+                    <label class="flex items-center gap-2 text-sm text-slate-700">
+                        <input type="checkbox" name="visible_to[]" value="{{ $role }}"
+                            {{ in_array($role, old('visible_to', [])) ? 'checked' : '' }}
+                            class="rounded border-slate-300 text-[#215aac] focus:ring-[#215aac]">
+                        {{ $role }}
+                    </label>
+                @endforeach
+            </div>
+        </div>
         <div>
             <label class="mb-1.5 block text-sm font-medium text-slate-700">File SOP <span class="text-red-500">*</span></label>
             <input type="file" name="file" required class="block w-full text-sm text-slate-600">
