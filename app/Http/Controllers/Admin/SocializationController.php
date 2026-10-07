@@ -86,21 +86,10 @@ class SocializationController extends Controller
         $validated = $request->validated();
 
         $socialization = $this->repository->create(array_merge($validated, [
-            'branch_id' => null,
             'area_id' => $areaId,
             'created_by_employee_id' => $employee->id,
             'status' => $status,
         ]));
-
-        $socialization->schedules()->create([
-            'schedule_date' => $validated['schedule_date'],
-            'start_time' => $validated['start_time'],
-            'end_time' => $validated['end_time'],
-        ]);
-
-        foreach ($validated['employee_ids'] as $employeeId) {
-            $this->repository->assignEmployee($socialization, (int) $employeeId);
-        }
 
         return redirect()->route('socializations.show', $socialization)
             ->with('success', 'Sosialisasi berhasil dibuat.');
@@ -234,11 +223,11 @@ class SocializationController extends Controller
 
     public function assignEmployee(AssignEmployeeSocializationRequest $request, Socialization $socialization): RedirectResponse
     {
-        foreach ($request->validated('employee_ids') as $employeeId) {
+        foreach ($request->employeeIds() as $employeeId) {
             $this->repository->assignEmployee($socialization, $employeeId);
         }
 
-        $count = count($request->validated('employee_ids'));
+        $count = count($request->employeeIds());
 
         return back()->with('success', $count === 1 ? 'Marketer berhasil ditugaskan.' : "{$count} marketer berhasil ditugaskan.");
     }

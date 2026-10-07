@@ -12,11 +12,12 @@ beforeEach(function () {
 });
 
 it('board can create province', function () {
+    $name = 'Test Province '.uniqid();
     $this->actingAs($this->boardUser)
-        ->post('/provinces', ['name' => 'Jawa Barat'])
+        ->post('/provinces', ['name' => $name])
         ->assertRedirect('/provinces');
 
-    $this->assertDatabaseHas('provinces', ['name' => 'Jawa Barat']);
+    $this->assertDatabaseHas('provinces', ['name' => $name]);
 });
 
 it('board can update province', function () {

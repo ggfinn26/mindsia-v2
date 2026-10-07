@@ -15,11 +15,20 @@ class MemberSupportTicketReplyController extends Controller
         $employeeId = auth('web')->user()?->employee_id;
         $memberId = auth('member')->id();
 
+        // Allow employee to reply on behalf of the ticket owner only when they
+        // have manage permission and the member_id matches the ticket owner.
+        // Prevents identity spoofing to arbitrary members.
+        $requestedMemberId = $request->validated('member_id');
+        if ($requestedMemberId && $request->user()->can('member.support.manage') && (int) $requestedMemberId === (int) $ticket->member_id) {
+            $memberId = $requestedMemberId;
+            $employeeId = null;
+        }
+
         MemberSupportTicketReply::create([
             'member_support_ticket_id' => $ticket->id,
             'reply' => $request->validated('reply'),
-            'employee_id' => $employeeId ?: null,
-            'member_id' => $employeeId ? null : $memberId,
+            'employee_id' => $memberId ? null : ($employeeId ?: null),
+            'member_id' => $memberId ?: null,
         ]);
 
         return redirect()->back()->with('success', 'Balasan berhasil dikirim.');

@@ -10,6 +10,7 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\View\View;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
 class PositionController extends Controller implements HasMiddleware
 {
@@ -61,9 +62,21 @@ class PositionController extends Controller implements HasMiddleware
             'position_name' => ['required', 'string', 'max:255'],
             'role_id' => ['required', 'exists:roles,id'],
             'hierarchy_order' => ['required', 'integer'],
+            'permission_ids' => ['nullable', 'array'],
+            'permission_ids.*' => ['exists:permissions,id'],
         ]);
 
-        $position->update($validated);
+        $position->update([
+            'position_name' => $validated['position_name'],
+            'role_id' => $validated['role_id'],
+            'hierarchy_order' => $validated['hierarchy_order'],
+        ]);
+
+        if (isset($validated['permission_ids'])) {
+            $position->permissions()->sync($validated['permission_ids']);
+        }
+
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         return redirect()->route('positions.index')->with('success', 'Posisi berhasil diperbarui.');
     }

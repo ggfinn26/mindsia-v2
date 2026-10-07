@@ -102,6 +102,8 @@ class ReimbursementTest extends TestCase
     public function test_can_submit_draft_reimbursement(): void
     {
         $reimbursement = $this->createReimbursement(['status' => 'DRAFT']);
+        // repository guard: items().count > 0 required before submit
+        $reimbursement->items()->create(['description' => 'Test item', 'amount' => 50000, 'expense_date' => now()->toDateString()]);
 
         $this->actingAs($this->boardUser)
             ->post("/reimbursements/{$reimbursement->id}/submit")

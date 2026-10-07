@@ -11,7 +11,15 @@ class MonthlyRevenueDataController extends Controller
 {
     public function index(Request $request): View
     {
-        abort_unless($request->user()->can('marketing.monthly_revenue_data.view_branch'), 403);
+        $scope = $request->input('scope', 'branch');
+        $employee = $request->user()->employee;
+
+        if ($scope === 'self') {
+            abort_unless($request->user()->can('marketing.monthly_revenue_data.view'), 403);
+            abort_if(is_null($employee), 403);
+        } else {
+            abort_unless($request->user()->can('marketing.monthly_revenue_data.view_branch'), 403);
+        }
 
         $month = (int) $request->input('month', now()->month);
         $year = (int) $request->input('year', now()->year);

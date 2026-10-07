@@ -11,6 +11,13 @@ class StoreToeflQuestionRequest extends FormRequest
         return $this->user()->can('toefl.question.create');
     }
 
+    protected function prepareForValidation(): void
+    {
+        if (! $this->has('question_type')) {
+            $this->merge(['question_type' => 'multiple_choice']);
+        }
+    }
+
     public function rules(): array
     {
         return [

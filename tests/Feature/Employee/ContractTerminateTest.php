@@ -53,7 +53,6 @@ class ContractTerminateTest extends TestCase
         $this->activeStatus = EmploymentStatus::create([
             'employees_id' => $this->employee->id,
             'type_employment' => 'Kontrak',
-            'join_date' => now()->subYear(),
             'position_id' => $position->id,
             'contract_start_date' => now()->subYear(),
             'contract_end_date' => now()->addMonths(3),
@@ -184,25 +183,11 @@ class ContractTerminateTest extends TestCase
         ]);
     }
 
-    // CT-GAP: employment_status table missing `status` column
-    // ContractTerminateController::initiateStore does: $status->update(['status' => 'terminated'])
-    // This silently fails because the column doesn't exist
+    // CT-GAP: GAP-208 FIXED — employment_status.status column now exists
     public function test_gap_employment_status_missing_status_column(): void
     {
         $hasColumn = Schema::hasColumn('employment_status', 'status');
-        $this->assertFalse($hasColumn, 'GAP: employment_status table has NO `status` column — terminate flow will fail silently');
-
-        // Attempt to set status — will be silently ignored by Eloquent
-        $this->activeStatus->update(['status' => 'terminated']);
-
-        // Refresh and check — status won't be saved
-        $this->activeStatus->refresh();
-        $this->assertFalse(
-            Schema::hasColumn('employment_status', 'status'),
-            'Confirmed: status column does not exist in DB'
-        );
-
-        $this->addWarning('GAP-208', 'CT-GAP', 'employment_status table has NO `status` column — $status->update([\'status\' => \'terminated\']) silently fails');
+        $this->assertTrue($hasColumn, 'GAP-208 fixed: employment_status.status column now exists');
     }
 
     // CT-04: Checklist — mark all items complete → can proceed

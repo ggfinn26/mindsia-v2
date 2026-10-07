@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\Dashboard\DashboardWidgetService;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -30,14 +30,14 @@ class DashboardController extends Controller
             $key = $widget['key'];
             $widgetFilters = [
                 'branch_id' => $request->query("{$key}_branch_id", $globalFilters['branch_id']),
-                'month'     => $request->query("{$key}_month", $globalFilters['month']),
-                'year'      => $request->query("{$key}_year", $globalFilters['year']),
-                'area_id'   => $request->query("{$key}_area_id", $globalFilters['area_id']),
-                'program_id'=> $request->query("{$key}_program_id", $request->query('program_id')),
-                'scope'     => $request->query("{$key}_scope", $globalFilters['scope']),
-                'branch_a'  => $request->query("{$key}_branch_a"),
-                'branch_b'  => $request->query("{$key}_branch_b"),
-                'month_start'=> $request->query("{$key}_month_start"),
+                'month' => $request->query("{$key}_month", $globalFilters['month']),
+                'year' => $request->query("{$key}_year", $globalFilters['year']),
+                'area_id' => $request->query("{$key}_area_id", $globalFilters['area_id']),
+                'program_id' => $request->query("{$key}_program_id", $request->query('program_id')),
+                'scope' => $request->query("{$key}_scope", $globalFilters['scope']),
+                'branch_a' => $request->query("{$key}_branch_a"),
+                'branch_b' => $request->query("{$key}_branch_b"),
+                'month_start' => $request->query("{$key}_month_start"),
                 'month_end' => $request->query("{$key}_month_end"),
             ];
             $widgetData[$key] = $this->widgetService->getWidgetData($key, $widgetFilters);
@@ -50,7 +50,7 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function updateWidgetOrder(Request $request): JsonResponse
+    public function updateWidgetOrder(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'orders' => ['required', 'array'],
@@ -59,10 +59,10 @@ class DashboardController extends Controller
 
         $this->widgetService->updateWidgetOrder(auth()->user(), $validated['orders']);
 
-        return response()->json(['success' => true, 'message' => 'Urutan widget berhasil diperbarui.']);
+        return back()->with('success', 'Urutan widget berhasil diperbarui.');
     }
 
-    public function toggleWidget(Request $request): JsonResponse
+    public function toggleWidget(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'widget_key' => ['required', 'string'],
@@ -71,6 +71,6 @@ class DashboardController extends Controller
 
         $this->widgetService->toggleWidget(auth()->user(), $validated['widget_key'], $validated['is_enabled']);
 
-        return response()->json(['success' => true, 'message' => 'Widget berhasil diperbarui.']);
+        return back()->with('success', 'Widget berhasil diperbarui.');
     }
 }

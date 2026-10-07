@@ -15,14 +15,18 @@ class RoleSeeder extends Seeder
     {
         $roles = [
             'Developer',
+            'Super Admin',
             'Board',
+            'CEO',
             'IT',
             'HR',
+            'HRR',
             'Finance',
             'Manager Area',
             'Operasional',
             'Marketing',
             'Tutor',
+            'REGULAR_TUTOR',
         ];
 
         foreach ($roles as $name) {
@@ -31,9 +35,11 @@ class RoleSeeder extends Seeder
 
         $allPermissions = Permission::pluck('name')->toArray();
 
-        // Developer has all permissions — app owner/builder
-        Role::where('name', 'Developer')->first()
-            ?->syncPermissions($allPermissions);
+        // Developer / Super Admin / CEO have all permissions
+        foreach (['Developer', 'Super Admin', 'CEO'] as $fullAccessRole) {
+            Role::where('name', $fullAccessRole)->first()
+                ?->syncPermissions($allPermissions);
+        }
 
         // IT: system management only
         $itPermissions = [

@@ -11,7 +11,10 @@ class EmployeeEducationHistoryController extends Controller
 {
     public function store(EmployeeEducationRequest $request, Employee $employee): RedirectResponse
     {
-        abort_unless(auth()->id() === $employee->user_id, 403);
+        abort_unless(
+            auth()->id() === $employee->user?->id || auth()->user()->can('employee.update'),
+            403
+        );
 
         $validated = $request->validated();
 

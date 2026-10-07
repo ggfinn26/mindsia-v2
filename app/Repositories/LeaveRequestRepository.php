@@ -108,17 +108,27 @@ class LeaveRequestRepository
 
             // Skip hari non-kerja: hanya jika employee punya jadwal tapi hari ini di luar work_days,
             // atau jadwal is_required=false (auto-hadir). Jika tidak ada jadwal sama sekali → tetap insert.
+            // Fallback: jika jadwal tidak aktif di tanggal historis (effective_start_date setelahnya),
+            // gunakan jadwal aktif saat ini untuk menentukan hari kerja.
             $schedule = $this->scheduleRepo->resolveForEmployee($request->employee_id, $date);
             if ($schedule && ! $schedule->is_required) {
                 $current->addDay();
 
                 continue;
             }
-            if (! $schedule && $this->scheduleRepo->hasAnyActiveAssignment($request->employee_id, $date)) {
-                // Ada jadwal tapi hari ini bukan hari kerja
-                $current->addDay();
+            if (! $schedule) {
+                $hasAssignmentOnDate = $this->scheduleRepo->hasAnyActiveAssignment($request->employee_id, $date);
+                $today = now()->toDateString();
+                $currentSchedule = $date !== $today
+                    ? $this->scheduleRepo->resolveForEmployee($request->employee_id, $today)
+                    : null;
 
-                continue;
+                if ($hasAssignmentOnDate || ($currentSchedule && ! $currentSchedule->isActiveOnDate($date))) {
+                    // Ada jadwal tapi hari ini bukan hari kerja (atau di luar work_days berdasar jadwal saat ini)
+                    $current->addDay();
+
+                    continue;
+                }
             }
 
             $existing = EmployeeWorkAttendanceLog::where('employee_id', $request->employee_id)

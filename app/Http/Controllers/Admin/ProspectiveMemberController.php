@@ -25,6 +25,8 @@ class ProspectiveMemberController extends Controller
         abort_unless($request->user()->canAny([
             'marketing.prospective.view_area',
             'marketing.prospective.view_national',
+            'marketing.prospective_member.view',
+            'marketing.prospective_member.create',
         ]), 403);
 
         $canViewNational = $request->user()->can('marketing.prospective.view_national');

@@ -106,7 +106,7 @@ class SurveyTest extends TestCase
         $memberData = MemberData::create([
             'full_name' => 'Survey Member',
             'email' => "sv.member.{$uid}@test.com",
-            'whatsapp_number' => '628100002222',
+            'whatsapp_number' => '628'.substr(md5(uniqid()), 0, 11),
             'institution_id' => $institutionId,
             'activation_status' => 'aktif',
         ]);

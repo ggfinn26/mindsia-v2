@@ -29,7 +29,9 @@ class MarketingSnapshotService
 
         $classesActual = $this->resolveClassesActual($employee->id, $month, $year);
         $cashCollected = $this->resolveCashCollected($employee->id, $month, $year);
-        $registrationValue = $this->resolveRegistrationValue($employee->id, $month, $year);
+        $registrationValue = $rule->revenue_basis === 'cash_collected'
+            ? $cashCollected
+            : $this->resolveRegistrationValue($employee->id, $month, $year);
         $adminFeeDeducted = $this->resolveAdminFeeDeducted($employee->id, $month, $year);
         $incomeActual = max(0.0, $cashCollected - $adminFeeDeducted);
 

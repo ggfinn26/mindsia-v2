@@ -73,4 +73,10 @@ class ReimbursementRepository
             'paid_at' => now(),
         ]);
     }
+
+    public function revertToDraft(Reimbursement $reimbursement): void
+    {
+        abort_unless($reimbursement->status === 'REJECTED', 422, 'Hanya reimbursement rejected yang bisa dikembalikan ke draft.');
+        $reimbursement->update(['status' => 'DRAFT']);
+    }
 }

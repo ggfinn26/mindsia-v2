@@ -54,7 +54,6 @@ class BranchTransferTest extends TestCase
         EmploymentStatus::create([
             'employees_id' => $this->employee->id,
             'type_employment' => 'Kontrak',
-            'join_date' => now()->subYear(),
             'position_id' => $position->id,
         ]);
     }

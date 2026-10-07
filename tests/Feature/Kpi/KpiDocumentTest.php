@@ -100,7 +100,7 @@ class KpiDocumentTest extends TestCase
     {
         $this->mock(TelegramStorageService::class, fn ($m) => $m->shouldReceive('uploadFile')
             ->once()
-            ->andReturn(['file_id' => "kpi/{$fileId}.pdf"])
+            ->andReturn(['file_id' => $fileId])
         );
     }
 

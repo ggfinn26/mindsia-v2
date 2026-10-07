@@ -39,7 +39,7 @@ class StoreProgramRequest extends FormRequest
             'admin_fee_timing' => ['nullable', 'in:on_registration,on_first_payment'],
             'program_description' => ['nullable', 'string'],
             'image' => ['nullable', 'image', 'max:2048'],
-            'receipt_template' => ['required', 'file', 'mimes:docx', 'max:20480'],
+            'receipt_template' => ['nullable', 'file', 'mimes:docx', 'max:20480'],
             'is_active' => ['boolean'],
         ];
     }

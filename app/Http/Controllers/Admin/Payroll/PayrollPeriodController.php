@@ -117,7 +117,7 @@ class PayrollPeriodController extends Controller
 
         try {
             if ($period->isFinalized()) {
-                return back()->with('error', 'Periode sudah dalam status finalized.');
+                return redirect()->route('payroll.periods.show', $period)->with('error', 'Periode sudah dalam status finalized.');
             }
 
             $confirmedBy = auth()->user()->employee ?? null;

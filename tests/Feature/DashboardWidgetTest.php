@@ -21,7 +21,7 @@ function bindUserPosition(User $user, Position $position): void
 {
     $employee = Employee::factory()->create(['email' => $user->email]);
     $user->update(['employee_id' => $employee->id]);
-    EmploymentStatus::create(['employees_id' => $employee->id, 'position_id' => $position->id, 'type_employment' => 'Tetap', 'join_date' => now()]);
+    EmploymentStatus::create(['employees_id' => $employee->id, 'position_id' => $position->id, 'type_employment' => 'Tetap']);
 }
 
 // DW-01: Unauthenticated redirect

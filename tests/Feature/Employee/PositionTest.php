@@ -121,7 +121,6 @@ class PositionTest extends TestCase
         EmploymentStatus::create([
             'employees_id' => $employee->id,
             'type_employment' => 'Tetap',
-            'join_date' => now()->subYear(),
             'position_id' => $position->id,
             'setup_incomplete' => false,
         ]);

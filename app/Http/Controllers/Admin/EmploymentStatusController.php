@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ContractChangePositionRequest;
 use App\Http\Requests\ContractExtendRequest;
 use App\Http\Requests\EmploymentStatusRequest;
+use App\Models\ContractExtendOffer;
 use App\Models\Employee;
 use App\Models\EmploymentStatus;
 use App\Repositories\PositionRepository;
@@ -218,11 +219,54 @@ class EmploymentStatusController extends Controller implements HasMiddleware
 
     public function extendStore(ContractExtendRequest $request, EmploymentStatus $status): RedirectResponse
     {
-        $status->update(['contract_end_date' => $request->validated()['new_end_date']]);
+        ContractExtendOffer::create([
+            'employment_status_id' => $status->id,
+            'current_end_date' => $status->contract_end_date,
+            'proposed_end_date' => $request->validated('proposed_end_date'),
+            'status' => 'pending',
+            'notes' => $request->validated('notes'),
+        ]);
 
         return redirect()
             ->route('employees.show', $status->employee)
-            ->with('success', 'Kontrak karyawan berhasil diperpanjang.');
+            ->with('success', 'Penawaran perpanjangan kontrak berhasil dibuat.');
+    }
+
+    public function acceptExtend(Request $request, EmploymentStatus $status): RedirectResponse
+    {
+        abort_unless($request->user()->can('contract.manage'), 403);
+
+        $offer = ContractExtendOffer::where('employment_status_id', $status->id)
+            ->where('status', 'pending')
+            ->latest()
+            ->first();
+
+        abort_if(is_null($offer), 404);
+
+        $offer->update(['status' => 'accepted']);
+        $status->update(['contract_end_date' => $offer->proposed_end_date]);
+
+        return redirect()
+            ->route('employees.show', $status->employee)
+            ->with('success', 'Perpanjangan kontrak diterima.');
+    }
+
+    public function rejectExtend(Request $request, EmploymentStatus $status): RedirectResponse
+    {
+        abort_unless($request->user()->can('contract.manage'), 403);
+
+        $offer = ContractExtendOffer::where('employment_status_id', $status->id)
+            ->where('status', 'pending')
+            ->latest()
+            ->first();
+
+        abort_if(is_null($offer), 404);
+
+        $offer->update(['status' => 'rejected']);
+
+        return redirect()
+            ->route('employees.show', $status->employee)
+            ->with('success', 'Perpanjangan kontrak ditolak.');
     }
 
     public function changePositionCreate(EmploymentStatus $status): View

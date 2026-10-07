@@ -24,14 +24,10 @@ class ApplicantAccountFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'password' => static::$password ??= Hash::make('password'),
             'email_verified_at' => now(),
-            'is_active' => false,
             'last_login_at' => null,
         ];
     }
 
-    /**
-     * Indicate that the applicant's email is not verified.
-     */
     public function unverified(): static
     {
         return $this->state(fn (array $attributes) => [
@@ -39,13 +35,8 @@ class ApplicantAccountFactory extends Factory
         ]);
     }
 
-    /**
-     * Indicate that the applicant is active.
-     */
     public function active(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'is_active' => true,
-        ]);
+        return $this->state(fn (array $attributes) => []);
     }
 }

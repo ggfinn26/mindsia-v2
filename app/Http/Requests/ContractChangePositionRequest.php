@@ -11,6 +11,13 @@ class ContractChangePositionRequest extends FormRequest
         return $this->user()->can('contract.manage');
     }
 
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('effective_date') && ! $this->has('contract_start_date')) {
+            $this->merge(['contract_start_date' => $this->input('effective_date')]);
+        }
+    }
+
     public function rules(): array
     {
         return [

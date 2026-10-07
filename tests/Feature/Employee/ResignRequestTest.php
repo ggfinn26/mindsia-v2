@@ -39,7 +39,6 @@ class ResignRequestTest extends TestCase
         EmploymentStatus::create([
             'employees_id' => $this->employee->id,
             'type_employment' => 'Kontrak',
-            'join_date' => now()->subYear(),
             'position_id' => $position->id,
             'contract_start_date' => now()->subYear(),
             'contract_end_date' => now()->addMonths(3),

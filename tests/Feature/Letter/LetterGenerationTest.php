@@ -270,7 +270,6 @@ class LetterGenerationTest extends TestCase
             'employees_id' => $employeeId,
             'position_id' => $positionId,
             'type_employment' => 'part_time',
-            'join_date' => now()->subMonths(3)->toDateString(),
             'created_at' => now(),
             'updated_at' => now(),
         ]);

@@ -271,7 +271,20 @@ test('SM-09 assign employee to socialization', function () {
     $this->user->givePermissionTo('marketing.socialization.assign');
 
     $socialization = createSocialization();
-    $marketingEmpId = insertSmEmployee('SM09'.uniqid());
+    // employee must be in same area as the acting user (area scoping in AssignEmployeeSocializationRequest)
+    $marketingEmpId = DB::table('employees')->insertGetId([
+        'employee_code' => 'EC-SM09-'.uniqid(),
+        'full_name' => 'Marketing SM09',
+        'gender' => 'L',
+        'birthdate' => '1990-01-01',
+        'email' => 'sm09'.uniqid().'@test.example',
+        'whatsapp_number' => '62'.fake()->numerify('###########'),
+        'branch_id' => $this->employee->branch_id,
+        'area_id' => $this->employee->area_id,
+        'region_id' => $this->employee->region_id,
+        'is_active' => true,
+        'created_at' => now(), 'updated_at' => now(),
+    ]);
 
     $response = $this->actingAs($this->user)
         ->post(route('socializations.assign-employee', $socialization), [
@@ -302,7 +315,20 @@ test('SM-29 assign employee twice should not create duplicate or throw error saf
     $this->user->givePermissionTo('marketing.socialization.assign');
 
     $socialization = createSocialization();
-    $marketingEmpId = insertSmEmployee('SM29'.uniqid());
+    // same area as acting user
+    $marketingEmpId = DB::table('employees')->insertGetId([
+        'employee_code' => 'EC-SM29-'.uniqid(),
+        'full_name' => 'Marketing SM29',
+        'gender' => 'L',
+        'birthdate' => '1990-01-01',
+        'email' => 'sm29'.uniqid().'@test.example',
+        'whatsapp_number' => '62'.fake()->numerify('###########'),
+        'branch_id' => $this->employee->branch_id,
+        'area_id' => $this->employee->area_id,
+        'region_id' => $this->employee->region_id,
+        'is_active' => true,
+        'created_at' => now(), 'updated_at' => now(),
+    ]);
 
     $countBefore = DB::table('employee_socializations')
         ->where('socialization_id', $socialization->id)

@@ -157,7 +157,7 @@ class MemberSupportTicketTest extends TestCase
         DB::table('member_support_ticket_status_histories')->insert([
             'member_support_ticket_id' => $ticket->id,
             'from_status' => 'open',
-            'to_status' => 'verified',
+            'to_status' => 'in_progress',
             'changed_by_employee_id' => $this->employeeId,
             'changed_at' => now(),
         ]);
@@ -165,7 +165,7 @@ class MemberSupportTicketTest extends TestCase
         $this->assertDatabaseHas('member_support_ticket_status_histories', [
             'member_support_ticket_id' => $ticket->id,
             'from_status' => 'open',
-            'to_status' => 'verified',
+            'to_status' => 'in_progress',
         ]);
     }
 

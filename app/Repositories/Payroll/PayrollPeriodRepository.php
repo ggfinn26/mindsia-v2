@@ -42,10 +42,17 @@ class PayrollPeriodRepository
 
     public function advanceStatus(PayrollPeriod $period, ?Employee $confirmedBy = null): PayrollPeriod
     {
-        if ($period->status !== 'draft') {
+        if ($period->status === 'finalized') {
             throw new \LogicException('Periode sudah finalized.');
         }
 
+        if ($period->status === 'draft') {
+            $period->update(['status' => 'review']);
+
+            return $period;
+        }
+
+        // status === 'review' → advance to finalized
         $update = ['status' => 'finalized'];
 
         if ($confirmedBy) {

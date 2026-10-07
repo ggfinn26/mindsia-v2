@@ -383,6 +383,10 @@ class ProgramController extends Controller implements HasMiddleware
 
     public function destroy(Program $program): RedirectResponse
     {
+        if ($program->classes()->where('status', 'active')->exists()) {
+            return back()->with('error', 'Program tidak bisa dinonaktifkan karena masih ada kelas aktif.');
+        }
+
         if ($program->registrations()->exists()) {
             return back()->with('error', 'Program tidak bisa dinonaktifkan karena masih ada registrasi member.');
         }

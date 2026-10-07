@@ -3,6 +3,7 @@
 namespace Tests\Feature\Member;
 
 use App\Enums\Member\ActivationStatus;
+use App\Models\Branch;
 use App\Models\Employee;
 use App\Models\Institution;
 use App\Models\MemberAccount;
@@ -27,19 +28,20 @@ class RegisterMemberTest extends TestCase
 
     private Institution $institution;
 
+    private Branch $branch;
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        // BOARD_OF_DIRECTORS (CEO) bypasses all permission checks via Gate::before()
         $this->boardUser = User::factory()->create();
         $this->boardUser->assignRole('CEO');
 
-        // Regular user with no member permissions
         $this->regularUser = User::factory()->create();
         $this->regularUser->assignRole('HRR');
 
         $this->institution = Institution::factory()->create();
+        $this->branch = Branch::factory()->create();
     }
 
     private function validMemberData(array $overrides = []): array
@@ -48,9 +50,18 @@ class RegisterMemberTest extends TestCase
             'full_name' => 'Budi Santoso',
             'gender' => 'L',
             'birthdate' => '2000-01-15',
+            'birth_place' => 'Jakarta',
             'whatsapp_number' => '628123456789',
             'email' => 'budi@test.com',
             'institution_id' => $this->institution->id,
+            'branch_id' => $this->branch->id,
+            'father_name' => 'Ayah Budi',
+            'mother_name' => 'Ibu Budi',
+            'father_occupation' => 'PNS',
+            'mother_occupation' => 'IRT',
+            'father_whatsapp' => '628111222333',
+            'mother_whatsapp' => '628111222334',
+            'address' => 'Jl. Merdeka No. 1',
         ], $overrides);
     }
 

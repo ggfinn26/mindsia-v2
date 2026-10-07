@@ -211,8 +211,9 @@ class DashboardWidgetService
         return $enabledOnly ? $widgets->filter(fn (array $w) => $w['is_enabled'])->values() : $widgets;
     }
 
-    public function getWidgetData(string $widgetKey, array $filters = []): array
+    public function getWidgetData(string $widgetKey, ?array $filters = null): array
     {
+        $filters ??= [];
         $provider = $this->providers[$widgetKey] ?? null;
 
         if (! $provider) {
@@ -243,8 +244,9 @@ class DashboardWidgetService
      * Write-through refresh: force fetch fresh data and overwrite cache immediately.
      * Call this after writes that affect widget data.
      */
-    public function refreshWidgetCache(string $widgetKey, array $filters = []): void
+    public function refreshWidgetCache(string $widgetKey, ?array $filters = null): void
     {
+        $filters ??= [];
         $provider = $this->providers[$widgetKey] ?? null;
 
         if (! $provider || $this->shouldSkipCache($widgetKey)) {
@@ -256,16 +258,17 @@ class DashboardWidgetService
     }
 
     /** Bust cache for a specific widget + branch (e.g. after bulk data import). */
-    public function invalidateWidgetCache(string $widgetKey, array $filters = []): void
+    public function invalidateWidgetCache(string $widgetKey, ?array $filters = null): void
     {
+        $filters ??= [];
         cache()->forget($this->cacheKey($widgetKey, $filters));
     }
 
     private function cacheKey(string $widgetKey, array $filters): string
     {
-        $hash = md5(json_encode($filters));
+        $branchId = $filters['branch_id'] ?? '';
 
-        return "widget:{$widgetKey}:filters:{$hash}";
+        return "widget:{$widgetKey}:branch:{$branchId}";
     }
 
     private function shouldSkipCache(string $widgetKey): bool

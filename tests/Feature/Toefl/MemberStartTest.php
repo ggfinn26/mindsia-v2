@@ -14,6 +14,7 @@ beforeEach(function () {
         'full_name' => 'Member User',
         'whatsapp_number' => '08123456789',
         'status' => 'active',
+        'activation_status' => 'aktif',
     ]);
     $this->member = MemberAccount::create([
         'members_data_id' => $this->memberData->id,

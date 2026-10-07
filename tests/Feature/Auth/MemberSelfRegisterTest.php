@@ -35,6 +35,7 @@ class MemberSelfRegisterTest extends TestCase
             'full_name' => 'Budi Santoso',
             'gender' => 'L',
             'birthdate' => '2000-01-15',
+            'birth_place' => 'Jakarta',
             'whatsapp_number' => '081234567890',
             'email' => 'budi.'.uniqid().'@mindsia.test',
             'instagram' => 'budi_santoso',

@@ -31,11 +31,11 @@ class MemberRegistrationRepository
     public function syncPaymentStatus(MemberRegistration $registration): void
     {
         $payments = $registration->payments;
+        $totalCount = $payments->count();
         $paidCount = $payments->where('payment_status', 'paid')->count();
-        $expectedCount = $registration->paymentPlan?->installment_count ?? 1;
 
         $status = match (true) {
-            $paidCount >= $expectedCount && $paidCount > 0 => 'paid_full',
+            $paidCount > 0 && $totalCount > 0 && $paidCount >= $totalCount => 'paid_full',
             $paidCount > 0 => 'installments',
             default => 'unpaid',
         };

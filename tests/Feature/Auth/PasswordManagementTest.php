@@ -105,10 +105,12 @@ class PasswordManagementTest extends TestCase
         Notification::assertSentTo($user, ResetPassword::class);
     }
 
-    public function test_employee_forgot_password_email_tidak_ada_returns_error(): void
+    public function test_employee_forgot_password_email_tidak_ada_returns_uniform_status(): void
     {
+        // uniform response — tidak reveal apakah email terdaftar (cegah enumeration)
         $this->post(route('password.email'), ['email' => 'tidak.ada@mindsia.test'])
-            ->assertSessionHasErrors('email');
+            ->assertSessionHas('status')
+            ->assertSessionHasNoErrors();
     }
 
     public function test_employee_reset_password_berhasil_login_dengan_password_baru(): void

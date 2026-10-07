@@ -8,7 +8,6 @@ beforeEach(function () {
         'email' => 'pelamar@example.com',
         'password' => bcrypt('password'),
         'email_verified_at' => now(),
-        'is_active' => true,
     ]);
 
     $this->applicant = ApplicantMasterData::create([

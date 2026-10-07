@@ -21,7 +21,7 @@ class ForgotPasswordController extends Controller
             $request->only('email')
         );
 
-        // ponytail: always return same message to prevent email enumeration
+        // ponytail: uniform response prevents email enumeration — real status logged server-side only
         return back()->with(['status' => 'Jika email terdaftar, link reset password telah dikirim.']);
     }
 }

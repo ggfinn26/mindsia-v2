@@ -114,7 +114,6 @@ class PayrollGenerateTest extends TestCase
             'employees_id' => $employeeId,
             'position_id' => $position->id,
             'type_employment' => 'part_time',
-            'join_date' => now()->subMonths(3),
         ]);
 
         EmployeeAttendanceMonthlyRecap::create(array_merge([

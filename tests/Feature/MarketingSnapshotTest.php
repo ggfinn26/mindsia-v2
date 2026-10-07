@@ -6,12 +6,13 @@ use App\Models\MarketingKpiRankingRule;
 use App\Models\MarketingKpiSnapshot;
 use App\Models\MemberData;
 use App\Models\MemberPayment;
+use App\Models\MemberRegistration;
 use App\Models\Program;
 use App\Models\Socialization;
 use App\Models\SocializationSchedule;
 use App\Services\Marketing\MarketingSnapshotService;
 
-function makeRegistration(MemberData $member, int $employeeId): \App\Models\MemberRegistration
+function makeRegistration(MemberData $member, int $employeeId): MemberRegistration
 {
     $program = Program::factory()->create(['program_price' => 5_000_000]);
 
@@ -30,7 +31,7 @@ function makeRegistration(MemberData $member, int $employeeId): \App\Models\Memb
     ]);
 }
 
-function makeSchedule(Socialization $soc, string $date = null): SocializationSchedule
+function makeSchedule(Socialization $soc, ?string $date = null): SocializationSchedule
 {
     return SocializationSchedule::create([
         'socialization_id' => $soc->id,
@@ -64,7 +65,8 @@ it('creates a snapshot for an employee with no data', function () {
 });
 
 it('does not create snapshot when no active ranking rule exists', function () {
-    $this->rule->update(['is_active' => false]);
+    // deactivate ALL rules (including seeded ones) so append() early-returns
+    MarketingKpiRankingRule::query()->update(['is_active' => false]);
 
     $this->service->append($this->employee, now()->month, now()->year);
 

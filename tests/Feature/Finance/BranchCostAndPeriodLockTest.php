@@ -117,19 +117,19 @@ class BranchCostAndPeriodLockTest extends TestCase
             ->assertStatus(403);
     }
 
-    // BPL: index — controller-level can() → WORKS for CEO
+    // BPL: period lock via branch-monthly-costs (lock integrated in same page)
     public function test_can_access_period_lock_index_with_permission(): void
     {
         $this->actingAs($this->boardUser)
-            ->get('/period-locks')
+            ->get('/branch-monthly-costs')
             ->assertOk();
     }
 
-    // BPL: index — without permission → 403
+    // BPL: index — without finance.monthly_cost.view → 403
     public function test_period_lock_index_requires_permission(): void
     {
         $this->actingAs($this->regularUser)
-            ->get('/period-locks')
+            ->get('/branch-monthly-costs')
             ->assertStatus(403);
     }
 

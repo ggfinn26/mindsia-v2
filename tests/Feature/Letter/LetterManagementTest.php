@@ -25,7 +25,7 @@ class LetterManagementTest extends TestCase
         parent::setUp();
 
         $this->mock(TelegramStorageService::class, fn ($m) => $m
-            ->shouldReceive('uploadFile')->andReturn(['file_id' => 'letters/fake_tg_id.pdf'])
+            ->shouldReceive('uploadFile')->andReturn(['file_id' => 'fake_tg_id'])
             ->shouldReceive('downloadFile')->andReturn('%PDF-1.4 fake content')
         );
 

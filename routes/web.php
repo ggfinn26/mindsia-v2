@@ -622,6 +622,8 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     Route::post('employment-statuses/{employee}', [EmploymentStatusController::class, 'store'])->name('employment-statuses.store');
     Route::get('employment-statuses/{status}/extend', [EmploymentStatusController::class, 'extendCreate'])->name('employment-statuses.extend.create');
     Route::post('employment-statuses/{status}/extend', [EmploymentStatusController::class, 'extendStore'])->name('employment-statuses.extend.store');
+    Route::post('employment-statuses/{status}/extend/accept', [EmploymentStatusController::class, 'acceptExtend'])->name('employment-statuses.extend.accept');
+    Route::post('employment-statuses/{status}/extend/reject', [EmploymentStatusController::class, 'rejectExtend'])->name('employment-statuses.extend.reject');
     Route::get('employment-statuses/{status}/change-position', [EmploymentStatusController::class, 'changePositionCreate'])->name('employment-statuses.change-position.create');
     Route::post('employment-statuses/{status}/change-position', [EmploymentStatusController::class, 'changePositionStore'])->name('employment-statuses.change-position.store');
 
@@ -972,6 +974,7 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     Route::post('reimbursements/{reimbursement}/submit', [ReimbursementController::class, 'submit'])->name('reimbursements.submit');
     Route::post('reimbursements/{reimbursement}/review', [ReimbursementController::class, 'review'])->name('reimbursements.review');
     Route::post('reimbursements/{reimbursement}/mark-paid', [ReimbursementController::class, 'markPaid'])->name('reimbursements.mark-paid');
+    Route::post('reimbursements/{reimbursement}/revert', [ReimbursementController::class, 'revert'])->name('reimbursements.revert');
     Route::post('reimbursements/{reimbursement}/items', [ReimbursementItemController::class, 'store'])->name('reimbursement-items.store');
     Route::delete('reimbursements/{reimbursement}/items/{item}', [ReimbursementItemController::class, 'destroy'])->name('reimbursement-items.destroy');
     Route::get('reimbursements-review', [ReimbursementController::class, 'reviewList'])->name('reimbursements.review-list');

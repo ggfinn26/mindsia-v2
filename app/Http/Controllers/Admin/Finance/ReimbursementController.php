@@ -108,4 +108,13 @@ class ReimbursementController extends Controller
 
         return redirect()->route('reimbursements.show', $reimbursement)->with('success', 'Ditandai sudah dibayar.');
     }
+
+    public function revert(Request $request, Reimbursement $reimbursement): RedirectResponse
+    {
+        $this->authorize('finance.reimbursement.create');
+        abort_unless($reimbursement->employee_id === $request->user()->employee->id, 403);
+        $this->repository->revertToDraft($reimbursement);
+
+        return redirect()->route('reimbursements.show', $reimbursement)->with('success', 'Reimbursement dikembalikan ke draft.');
+    }
 }

@@ -10,7 +10,7 @@ class PublishOutLetterViaGenerateRequest extends FormRequest
     public function authorize(): bool
     {
         /** @var OutLetterViaGenerate $letter */
-        $letter = $this->route('outLetterViaGenerate');
+        $letter = $this->route('out_letters_generate');
 
         return $letter->isDraft() && $this->user()->can('letter.generate.publish');
     }
