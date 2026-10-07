@@ -4,7 +4,7 @@
 @section('header_title', 'Manajemen Permission')
 
 @section('content')
-<div class="max-w-6xl mx-auto space-y-6" x-data="{ tab: 'positions' }">
+<div class="max-w-6xl mx-auto space-y-6" x-data="{ tab: '{{ request('tab') === 'users' ? 'users' : 'positions' }}' }">
 
     <div>
         <p class="text-sm font-medium text-[#725c00]">Sistem & Akses</p>
@@ -55,7 +55,7 @@
                                 @endif
                             </div>
                         </div>
-                        @if ($position->role && $position->role->name !== 'Super Admin')
+                        @if ($position->role && $position->role->name !== 'IT')
                             <a href="{{ route('system.permissions.position.edit', $position) }}"
                                 class="inline-flex shrink-0 min-h-9 items-center border border-slate-300 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50">
                                 <span class="material-symbols-outlined text-[14px] mr-1">tune</span> Kelola
@@ -145,19 +145,4 @@
 
 </div>
 
-<script>
-    // Persist active tab from query param
-    const urlTab = new URLSearchParams(window.location.search).get('tab');
-    if (urlTab === 'users') {
-        document.addEventListener('alpine:init', () => {
-            Alpine.store && null; // ensure Alpine is ready
-        });
-        document.addEventListener('DOMContentLoaded', () => {
-            const el = document.querySelector('[x-data]');
-            if (el && el._x_dataStack) {
-                el._x_dataStack[0].tab = 'users';
-            }
-        });
-    }
-</script>
 @endsection

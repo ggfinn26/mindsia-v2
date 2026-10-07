@@ -50,7 +50,7 @@ class PermissionManagementController extends Controller
     public function updatePosition(Request $request, Position $position): RedirectResponse
     {
         // superadmin tidak boleh edit permission posisi Super Admin (self-lock)
-        abort_if($position->role?->name === 'Super Admin', 403);
+        abort_if($position->role?->name === 'IT', 403);
 
         $validated = $request->validate([
             'permissions' => ['nullable', 'array'],
@@ -96,7 +96,7 @@ class PermissionManagementController extends Controller
     {
         abort_if(auth()->id() === $user->id, 403);
         // hanya Super Admin yang boleh assign direct permission
-        abort_unless(auth()->user()->hasRole('Super Admin'), 403);
+        abort_unless(auth()->user()->hasRole('IT'), 403);
 
         $validated = $request->validate([
             'permissions' => ['nullable', 'array'],
