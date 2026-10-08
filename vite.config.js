@@ -17,6 +17,7 @@ export default defineConfig({
                 "resources/js/toefl-guest-listening-exam.js",
                 "resources/js/classroom-show.js",
                 "resources/js/classroom-edit.js",
+                "resources/js/employee-profile-edit.js",
             ],
             refresh: true,
             fonts: [

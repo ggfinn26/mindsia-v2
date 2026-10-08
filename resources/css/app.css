@@ -471,9 +471,69 @@
         min-height: 80px !important;
         resize: vertical !important;
     }
+
+    /* ── Dark mode: form fields ──────────────────────────────────────────────── */
+
+    .mode-dark input[type="text"],
+    .mode-dark input[type="email"],
+    .mode-dark input[type="password"],
+    .mode-dark input[type="number"],
+    .mode-dark input[type="tel"],
+    .mode-dark input[type="url"],
+    .mode-dark input[type="search"],
+    .mode-dark input[type="date"],
+    .mode-dark input[type="datetime-local"],
+    .mode-dark input[type="time"],
+    .mode-dark textarea {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #f1f5f9 !important;
+        box-shadow: none !important;
+    }
+
+    .mode-dark input::placeholder,
+    .mode-dark textarea::placeholder {
+        color: #475569 !important;
+    }
+
+    .mode-dark input:disabled,
+    .mode-dark textarea:disabled {
+        background-color: #0f172a !important;
+        color: #475569 !important;
+    }
+
+    .mode-dark select {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #f1f5f9 !important;
+    }
+
+    .mode-dark select:disabled {
+        background-color: #0f172a !important;
+        color: #475569 !important;
+    }
+
+    /* ── Canvas signature pad ────────────────────────────────────────────────── */
+    .mode-dark #signature-pad {
+        background-color: #1e293b !important;
+    }
 }
 
 @layer components {
+    /* ── Input prefix (e.g. +62) ─────────────────────────────────────────────── */
+    .input-prefix {
+        background-color: #f9fafb;
+        border-color: #e5e7eb;
+        color: var(--dash-text-muted);
+        min-height: 44px;
+    }
+
+    .mode-dark .input-prefix {
+        background-color: #1e293b;
+        border-color: #334155;
+        color: var(--dash-text-muted);
+    }
+
     /* ponytail: shared button base — inline-flex + rounded-lg only, no color. Callers add bg/text. */
     .btn {
         display: inline-flex;
