@@ -30,7 +30,14 @@ class PayrollSlipService
 
     public static function resolveTemplateType(Employee $employee): string
     {
-        $positionName = strtolower($employee->currentStatus?->position?->position_name ?? '');
+        $position = $employee->currentStatus?->position;
+
+        // DB assignment takes priority over name matching
+        if ($position?->slip_template_type) {
+            return $position->slip_template_type;
+        }
+
+        $positionName = strtolower($position?->position_name ?? '');
 
         if (str_contains($positionName, 'official tutor')) {
             return self::TYPE_OFFICIAL_TUTOR;
@@ -40,7 +47,6 @@ class PayrollSlipService
             return self::TYPE_REGULAR_TUTOR;
         }
 
-        // MA, PIC, Marketing, dan semua posisi lain pakai template marketing
         return self::TYPE_MARKETING;
     }
 

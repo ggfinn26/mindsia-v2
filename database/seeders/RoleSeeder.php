@@ -46,6 +46,7 @@ class RoleSeeder extends Seeder
             'system.permission.manage',
             'system.api_key.create',
             'system.api_key.update',
+            'system.webhook.view',
             'system.webhook.manage',
             'system.bot.manage',
             'system.notification_routing.manage',

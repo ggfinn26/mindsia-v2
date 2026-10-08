@@ -18,6 +18,7 @@ class Position extends Model
         'position_name',
         'role_id',
         'hierarchy_order',
+        'slip_template_type',
     ];
 
     public function role(): BelongsTo

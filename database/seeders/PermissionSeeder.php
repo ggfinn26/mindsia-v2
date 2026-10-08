@@ -23,6 +23,7 @@ class PermissionSeeder extends Seeder
             'system.api_key.update',
             'system.api_key.view',
             'system.api_key.delete',
+            'system.webhook.view',
             'system.webhook.manage',
             'system.bot.manage',
             'system.telegram_backup.view',

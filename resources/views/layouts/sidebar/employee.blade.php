@@ -72,11 +72,20 @@
 
 <!-- 1.3A Sistem & Akses -->
 @can('system.permission.manage')
-<x-dashboard.nav-group title="Sistem & Akses" icon="shield_person" :active="request()->routeIs('system.permissions.*') || request()->routeIs('system.dashboard-widgets.*') || request()->routeIs('attendance.document-signature.*') || request()->routeIs('system.notification-routings.*')">
+<x-dashboard.nav-group title="Sistem & Akses" icon="shield_person" :active="request()->routeIs('system.permissions.*') || request()->routeIs('system.dashboard-widgets.*') || request()->routeIs('attendance.document-signature.*') || request()->routeIs('system.notification-routings.*') || request()->routeIs('system.bots.*') || request()->routeIs('system.webhooks.*') || request()->routeIs('system.api-keys.*')">
     <x-dashboard.nav-item href="{{ route('system.permissions.index') }}" :active="request()->routeIs('system.permissions.*')" :isChild="true">Manajemen Permission</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('system.dashboard-widgets.index') }}" :active="request()->routeIs('system.dashboard-widgets.*')" :isChild="true">Widget Dashboard</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('attendance.document-signature.index') }}" :active="request()->routeIs('attendance.document-signature.*')" :isChild="true">Pengaturan TTD Dokumen</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('system.notification-routings.index') }}" :active="request()->routeIs('system.notification-routings.*')" :isChild="true">Routing Notifikasi</x-dashboard.nav-item>
+    @can('system.bot.manage')
+    <x-dashboard.nav-item href="{{ route('system.bots.index') }}" :active="request()->routeIs('system.bots.*')" :isChild="true">Kelola Bot</x-dashboard.nav-item>
+    @endcan
+    @can('system.webhook.view')
+    <x-dashboard.nav-item href="{{ route('system.webhooks.index') }}" :active="request()->routeIs('system.webhooks.*')" :isChild="true">Status Webhook</x-dashboard.nav-item>
+    @endcan
+    @can('system.api_key.view')
+    <x-dashboard.nav-item href="{{ route('system.api-keys.index') }}" :active="request()->routeIs('system.api-keys.*')" :isChild="true">API Keys</x-dashboard.nav-item>
+    @endcan
 </x-dashboard.nav-group>
 @endcan
 
@@ -142,6 +151,9 @@
     @endcan
     @canany(['payroll.period.view', 'payroll.period.generate'])
     <x-dashboard.nav-item href="{{ route('payroll.recap') }}" :active="request()->routeIs('payroll.recap')" :isChild="true">Rekap Payroll</x-dashboard.nav-item>
+    @endcanany
+    @canany(['payroll.component.create', 'payroll.component.update'])
+    <x-dashboard.nav-item href="{{ route('payroll.slip-templates.index') }}" :active="request()->routeIs('payroll.slip-templates.*')" :isChild="true">Template Slip Gaji</x-dashboard.nav-item>
     @endcanany
 </x-dashboard.nav-group>
 @endif

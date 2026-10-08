@@ -835,6 +835,18 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
         Route::patch('payrolls/{payroll}/payment/{payment}/failed', [PayrollPaymentController::class, 'markFailed'])->name('payrolls.payment.failed');
     });
 
+    Route::prefix('payroll-slip-templates')->name('payroll.slip-templates.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\Payroll\PayrollSlipTemplateController::class, 'index'])->name('index');
+        Route::post('/', [\App\Http\Controllers\Admin\Payroll\PayrollSlipTemplateController::class, 'store'])->name('store');
+        Route::post('assign', [\App\Http\Controllers\Admin\Payroll\PayrollSlipTemplateController::class, 'assignUpdate'])->name('assign.update');
+        Route::post('{type}/upload', [\App\Http\Controllers\Admin\Payroll\PayrollSlipTemplateController::class, 'upload'])->name('upload');
+        Route::delete('{type}', [\App\Http\Controllers\Admin\Payroll\PayrollSlipTemplateController::class, 'destroy'])->name('destroy');
+        Route::get('{type}/download', [\App\Http\Controllers\Admin\Payroll\PayrollSlipTemplateController::class, 'download'])->name('download');
+        Route::get('{type}/test', [\App\Http\Controllers\Admin\Payroll\PayrollSlipTemplateController::class, 'test'])->name('test');
+        Route::post('{type}/test', [\App\Http\Controllers\Admin\Payroll\PayrollSlipTemplateController::class, 'testProcess'])->name('test.process');
+        Route::get('{type}/test/download', [\App\Http\Controllers\Admin\Payroll\PayrollSlipTemplateController::class, 'testDownload'])->name('test.download');
+    });
+
     Route::prefix('employees/{employee}')->name('employees.')->group(function () {
         Route::resource('compensations', EmployeeCompensationController::class)->except(['create', 'edit', 'show'])->names([
             'index' => 'payroll.compensations.index',
@@ -1027,6 +1039,7 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
         // Route::post('force-reset', [ForceResetPasswordController::class, 'reset'])->name('force-reset.reset');
         Route::resource('api-keys', ApiKeyController::class)->except(['show']);
         Route::post('api-keys/{apiKey}/toggle', [ApiKeyController::class, 'toggleActive'])->name('api-keys.toggle');
+        Route::get('api-keys/{apiKey}/quota', [ApiKeyController::class, 'checkQuota'])->name('api-keys.quota');
 
         Route::get('telegram-backup', [TelegramBackupController::class, 'index'])->name('telegram-backup.index')->middleware('can:system.telegram_backup.view');
         Route::post('telegram-backup/retry-all', [TelegramBackupController::class, 'retryAll'])->name('telegram-backup.retry-all')->middleware('can:system.telegram_backup.retry');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\SystemAccess;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SystemAccess\StoreWebhookRequest;
 use App\Http\Requests\SystemAccess\UpdateWebhookRequest;
+use App\Models\Bot;
 use App\Models\Webhook;
 use App\Repositories\SystemAccess\WebhookRepository;
 use Illuminate\Http\RedirectResponse;
@@ -39,7 +40,9 @@ class WebhookStatusController extends Controller
 
     public function create(): View
     {
-        return view('system-access.webhook.create');
+        return view('system-access.webhook.create', [
+            'bots' => Bot::orderBy('name')->get(),
+        ]);
     }
 
     public function store(StoreWebhookRequest $request): RedirectResponse
@@ -51,7 +54,10 @@ class WebhookStatusController extends Controller
 
     public function edit(Webhook $webhook): View
     {
-        return view('system-access.webhook.edit', compact('webhook'));
+        return view('system-access.webhook.edit', [
+            'webhook' => $webhook,
+            'bots' => Bot::orderBy('name')->get(),
+        ]);
     }
 
     public function update(UpdateWebhookRequest $request, Webhook $webhook): RedirectResponse

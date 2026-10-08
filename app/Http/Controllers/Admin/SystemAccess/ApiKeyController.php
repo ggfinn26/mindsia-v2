@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SystemAccess\StoreApiKeyRequest;
 use App\Http\Requests\SystemAccess\UpdateApiKeyRequest;
 use App\Models\ApiKey;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
 
 class ApiKeyController extends Controller implements HasMiddleware
@@ -16,7 +18,7 @@ class ApiKeyController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            (new Middleware('can:system.api_key.view'))->only(['index']),
+            (new Middleware('can:system.api_key.view'))->only(['index', 'checkQuota']),
             (new Middleware('can:system.api_key.create'))->only(['create', 'store']),
             (new Middleware('can:system.api_key.update'))->only(['edit', 'update', 'toggleActive']),
             (new Middleware('can:system.api_key.delete'))->only(['destroy']),
@@ -66,5 +68,33 @@ class ApiKeyController extends Controller implements HasMiddleware
         $apiKey->update(['is_active' => ! $apiKey->is_active]);
 
         return redirect()->route('system.api-keys.index')->with('success', 'Status key diubah.');
+    }
+
+    public function checkQuota(ApiKey $apiKey): JsonResponse
+    {
+        if ($apiKey->type !== 'convertapi') {
+            return response()->json(['error' => 'Quota check tidak tersedia untuk tipe ini.'], 422);
+        }
+
+        try {
+            $response = Http::timeout(8)->get('https://v2.convertapi.com/user', [
+                'Secret' => $apiKey->key_value,
+            ]);
+
+            if (! $response->successful()) {
+                return response()->json(['error' => 'ConvertAPI menolak key ini. Cek apakah key masih valid.'], 502);
+            }
+
+            $data = $response->json();
+
+            return response()->json([
+                'seconds_left' => $data['SecondsLeft'] ?? null,
+                'conversions_consumed' => $data['ConversionsConsumed'] ?? null,
+                'reset_date' => $data['SubscriptionValidUntil'] ?? null,
+                'plan' => $data['ActivePlan'] ?? null,
+            ]);
+        } catch (\Throwable) {
+            return response()->json(['error' => 'Tidak dapat terhubung ke ConvertAPI.'], 502);
+        }
     }
 }
