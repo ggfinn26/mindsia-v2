@@ -105,36 +105,45 @@ function enhanceSelectWithSemua(sel) {
 
     wrapper.innerHTML = `
         <div @click="open = !open"
-             class="w-full px-3.5 py-2.5 bg-white border rounded-xl text-[13px] shadow-sm flex justify-between items-center cursor-pointer transition-all min-h-[44px]"
-             :class="open ? 'border-[#5586DB] ring-2 ring-[#5586DB]/20' : 'border-[#E5E7EB]'">
-            <span class="truncate block pr-4"
-                  :class="value ? 'text-[#111827]' : 'text-[#9CA3AF]'"
+             class="w-full px-3.5 py-2.5 rounded-xl text-[13px] shadow-sm flex justify-between items-center cursor-pointer transition-all min-h-[44px]"
+             :style="open
+                 ? 'background-color:var(--dash-input-bg);border:1px solid var(--dash-primary);box-shadow:0 0 0 2px color-mix(in srgb,var(--dash-primary) 20%,transparent);'
+                 : 'background-color:var(--dash-input-bg);border:1px solid var(--dash-input-border);'">
+            <span class="truncate block pr-4 text-[13px]"
+                  :style="value ? 'color: var(--dash-text-heading);' : 'color: var(--dash-text-faint);'"
                   x-text="label || placeholder"></span>
-            <span class="material-symbols-outlined text-[16px] text-gray-400 transition-transform duration-200"
+            <span class="material-symbols-outlined text-[16px] transition-transform duration-200"
+                  style="color: var(--dash-text-muted);"
                   :class="open ? 'rotate-180' : ''">expand_more</span>
         </div>
         <div x-show="open" x-transition x-cloak
-             class="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
-            <div class="p-2 bg-gray-50 border-b border-gray-100">
+             class="absolute z-50 w-full mt-2 rounded-xl shadow-xl overflow-hidden"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <div class="p-2 border-b" style="background-color: var(--dash-primary-bg); border-color: var(--dash-card-border);">
                 <div class="relative">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[16px]">search</span>
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[16px]" style="color: var(--dash-text-muted);">search</span>
                     <input type="text" x-model="search" placeholder="Cari..." @click.stop
-                           style="padding-left: 2.5rem !important"
-                           class="w-full pr-3 py-2 bg-white border border-gray-200 rounded-lg text-[13px] focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB] transition-all">
+                           style="padding-left: 2.5rem !important; background-color: var(--dash-input-bg); border-color: var(--dash-input-border); color: var(--dash-text-heading);"
+                           class="w-full pr-3 py-2 rounded-lg text-[13px] focus:outline-none transition-all border">
                 </div>
             </div>
             <ul class="max-h-48 overflow-y-auto py-1">
                 <li x-show="showSemua"
                     @click="pick({ value: '', label: '' })"
-                    class="px-4 py-2 text-[12px] text-gray-400 italic hover:bg-[#5586DB] hover:text-white cursor-pointer transition-colors"
-                    :class="value === '' ? 'bg-[#EFF6FF] font-semibold' : ''"
+                    class="px-4 py-2 text-[12px] italic cursor-pointer transition-colors"
+                    :style="value === '' ? 'background-color: var(--dash-primary-bg); color: var(--dash-primary-text); font-weight:600;' : 'color: var(--dash-text-muted);'"
+                    @mouseover="if(value !== '') { $el.style.backgroundColor='var(--dash-primary)'; $el.style.color='#ffffff'; }"
+                    @mouseout="if(value !== '') { $el.style.backgroundColor=''; $el.style.color='var(--dash-text-muted)'; }"
                     x-text="semuaLabel"></li>
                 <li x-show="filtered.length === 0 && !showSemua"
-                    class="px-4 py-3 text-[12px] text-gray-500 text-center">Tidak ditemukan</li>
+                    class="px-4 py-3 text-[12px] text-center"
+                    style="color: var(--dash-text-muted);">Tidak ditemukan</li>
                 <template x-for="opt in filtered" :key="opt.value">
                     <li @click="pick(opt)"
-                        class="px-4 py-2 text-[12px] text-gray-700 hover:bg-[#5586DB] hover:text-white cursor-pointer transition-colors"
-                        :class="value == opt.value ? 'bg-[#EFF6FF] font-semibold' : ''"
+                        class="px-4 py-2 text-[12px] cursor-pointer transition-colors"
+                        :style="value == opt.value ? 'background-color: var(--dash-primary-bg); color: var(--dash-primary-text); font-weight: 600;' : 'color: var(--dash-text-body);'"
+                        @mouseover="if(value != opt.value) { $el.style.backgroundColor='var(--dash-primary)'; $el.style.color='#ffffff'; }"
+                        @mouseout="if(value != opt.value) { $el.style.backgroundColor=''; $el.style.color='var(--dash-text-body)'; }"
                         x-text="opt.label"></li>
                 </template>
             </ul>

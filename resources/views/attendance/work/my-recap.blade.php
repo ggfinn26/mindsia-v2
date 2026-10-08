@@ -1,196 +1,229 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Riwayat Absensi Saya')
+@section('title', 'Riwayat Absensi Saya - MINDSIA')
+@section('header_title', 'Riwayat Absensi Saya')
 
 @section('content')
-<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-5xl mx-auto">
+<div class="max-w-4xl mx-auto space-y-5">
 
-    {{-- Header + filter --}}
-    <div class="flex flex-wrap justify-between items-start gap-4 mb-6">
+    {{-- Filter bar --}}
+    <form method="GET" class="flex flex-wrap items-end gap-3 px-5 py-4 rounded-2xl"
+          style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <input type="hidden" name="sort" value="{{ $sort }}">
+
         <div>
-            <h1 class="text-2xl md:text-3xl text-gray-900 font-bold tracking-tight">Rekap Absensi Saya</h1>
-            <p class="mt-1 text-sm text-gray-500">
-                @if($month)
-                    Log harian {{ \Carbon\Carbon::create($year, $month)->translatedFormat('F Y') }}
-                @else
-                    Ringkasan kehadiran per bulan untuk tahun {{ $year }}
-                @endif
-            </p>
+            <label class="block text-[11px] font-semibold uppercase tracking-wide mb-1.5" style="color: var(--dash-text-muted);">Tahun</label>
+            <select name="year" onchange="this.form.submit()" class="block w-24">
+                @foreach(range(now()->year - 2, now()->year) as $y)
+                    <option value="{{ $y }}" @selected($y == $year)>{{ $y }}</option>
+                @endforeach
+            </select>
         </div>
 
-        {{-- Filter bar --}}
-        <form method="GET" class="flex flex-wrap items-end gap-2">
-            <input type="hidden" name="sort" value="{{ $sort }}">
-            <div>
-                <label class="block text-xs text-gray-500 mb-1">Tahun</label>
-                <select name="year" data-no-enhance
-                    class="border border-gray-300 rounded-md py-2 px-3 text-sm"
-                    onchange="this.form.submit()">
-                    @foreach(range(now()->year - 2, now()->year) as $y)
-                        <option value="{{ $y }}" @selected($y == $year)>{{ $y }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div>
-                <label class="block text-xs text-gray-500 mb-1">Bulan</label>
-                <select name="month" data-no-enhance
-                    class="border border-gray-300 rounded-md py-2 px-3 text-sm"
-                    onchange="this.form.submit()">
-                    <option value="">Semua Bulan</option>
-                    @foreach(range(1, 12) as $m)
-                        <option value="{{ $m }}" @selected($m == $month)>
-                            {{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+        <div>
+            <label class="block text-[11px] font-semibold uppercase tracking-wide mb-1.5" style="color: var(--dash-text-muted);">Bulan</label>
+            <select name="month" data-with-semua onchange="this.form.submit()" class="block min-w-[140px]">
+                <option value="">Semua Bulan</option>
+                @foreach(range(1, 12) as $m)
+                    <option value="{{ $m }}" @selected($m == $month)>
+                        {{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
 
-            {{-- PDF dropdown --}}
-            <div x-data="{ open: false }" class="relative">
-                <label class="block text-xs text-gray-500 mb-1">&nbsp;</label>
-                <button type="button" @click="open = !open"
-                    class="inline-flex items-center gap-1.5 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                    <span class="material-symbols-outlined text-base">picture_as_pdf</span>
-                    Export PDF
-                    <span class="material-symbols-outlined text-base">expand_more</span>
-                </button>
-                <div x-show="open" @click.outside="open = false" x-cloak
-                    class="absolute right-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
-                    <a href="{{ route('work-attendance.my-recap.pdf', ['year' => $year, 'month' => $month ?: now()->month, 'range' => 'monthly']) }}"
-                        target="_blank"
-                        class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
-                        <span class="material-symbols-outlined text-base text-indigo-500">calendar_today</span>
-                        Bulan ini
-                    </a>
-                    <a href="{{ route('work-attendance.my-recap.pdf', ['year' => $year, 'month' => $month ?: now()->month, 'range' => 'semester']) }}"
-                        target="_blank"
-                        class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
-                        <span class="material-symbols-outlined text-base text-indigo-500">date_range</span>
-                        Semester
-                    </a>
-                    <a href="{{ route('work-attendance.my-recap.pdf', ['year' => $year, 'range' => 'annual']) }}"
-                        target="_blank"
-                        class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
-                        <span class="material-symbols-outlined text-base text-indigo-500">event_note</span>
-                        Tahunan ({{ $year }})
-                    </a>
-                </div>
+        {{-- Export PDF --}}
+        <div x-data="{ open: false }" class="relative ml-auto">
+            <label class="block text-[11px] mb-1.5">&nbsp;</label>
+            <button type="button" @click="open = !open"
+                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold transition-colors"
+                    style="background-color: var(--dash-primary-bg); border: 1px solid var(--dash-primary); color: var(--dash-primary-text);">
+                <span class="material-symbols-outlined text-[17px]">picture_as_pdf</span>
+                Export PDF
+                <span class="material-symbols-outlined text-[17px]">expand_more</span>
+            </button>
+            <div x-show="open" @click.outside="open = false" x-cloak
+                 class="absolute right-0 mt-1 w-48 rounded-2xl shadow-lg z-20 overflow-hidden"
+                 style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+                <a href="{{ route('work-attendance.my-recap.pdf', ['year' => $year, 'month' => $month ?: now()->month, 'range' => 'monthly']) }}"
+                   target="_blank"
+                   class="flex items-center gap-2 px-4 py-2.5 text-sm transition-colors"
+                   style="color: var(--dash-text-body);">
+                    <span class="material-symbols-outlined text-[16px]" style="color: var(--dash-primary);">calendar_today</span>
+                    Bulan ini
+                </a>
+                <a href="{{ route('work-attendance.my-recap.pdf', ['year' => $year, 'month' => $month ?: now()->month, 'range' => 'semester']) }}"
+                   target="_blank"
+                   class="flex items-center gap-2 px-4 py-2.5 text-sm transition-colors"
+                   style="color: var(--dash-text-body);">
+                    <span class="material-symbols-outlined text-[16px]" style="color: var(--dash-primary);">date_range</span>
+                    Semester
+                </a>
+                <a href="{{ route('work-attendance.my-recap.pdf', ['year' => $year, 'range' => 'annual']) }}"
+                   target="_blank"
+                   class="flex items-center gap-2 px-4 py-2.5 text-sm transition-colors"
+                   style="color: var(--dash-text-body);">
+                    <span class="material-symbols-outlined text-[16px]" style="color: var(--dash-primary);">event_note</span>
+                    Tahunan ({{ $year }})
+                </a>
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
 
     @if($recaps->isEmpty())
-        <div class="bg-white shadow-sm border border-gray-200 rounded-lg py-16 text-center">
-            <h3 class="mt-2 text-sm font-medium text-gray-900">Belum ada rekap</h3>
-            <p class="mt-1 text-sm text-gray-500">Data rekap absensi untuk tahun {{ $year }} belum tersedia.</p>
+        <div class="rounded-2xl py-20 text-center"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <span class="material-symbols-outlined text-4xl" style="color: var(--dash-text-faint);">event_busy</span>
+            <p class="mt-2 font-semibold text-sm" style="color: var(--dash-text-heading);">Belum ada rekap</p>
+            <p class="mt-1 text-sm" style="color: var(--dash-text-muted);">Data rekap absensi untuk tahun {{ $year }} belum tersedia.</p>
         </div>
     @else
 
-        {{-- Summary cards (always shown) --}}
-        <div class="space-y-2 mb-6">
+        {{-- Monthly summary cards --}}
+        <div class="space-y-2">
             @foreach($recaps as $recap)
                 @php
                     $effective  = $recap->total_effective_working_days ?: 1;
                     $pct        = min(100, round(($recap->total_present / $effective) * 100));
-                    $pctColor   = $pct >= 80 ? 'bg-emerald-500' : ($pct >= 60 ? 'bg-amber-500' : 'bg-rose-500');
-                    $badgeColor = $pct >= 80
-                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                        : ($pct >= 60 ? 'bg-amber-50 text-amber-700 border-amber-200'
-                                      : 'bg-rose-50 text-rose-700 border-rose-200');
                     $isActive   = $month && $month == $recap->period_month;
+                    $pctBarColor = $pct >= 80 ? '#059669' : ($pct >= 60 ? '#d97706' : '#dc2626');
+                    $badgeBg    = $pct >= 80 ? '#f0fdf4' : ($pct >= 60 ? '#fef3c7' : '#fee2e2');
+                    $badgeText  = $pct >= 80 ? '#059669' : ($pct >= 60 ? '#d97706' : '#dc2626');
+                    $badgeBorder= $pct >= 80 ? '#bbf7d0' : ($pct >= 60 ? '#fde68a' : '#fca5a5');
+                    $totalIzin  = $recap->total_sick + $recap->total_permission + $recap->total_leave;
                 @endphp
-                <a href="{{ request()->fullUrlWithQuery(['month' => $recap->period_month, 'sort' => $sort]) }}"
-                    class="block bg-white border rounded-lg px-4 py-3 transition-all hover:shadow-sm
-                        {{ $isActive ? 'border-indigo-400 ring-1 ring-indigo-400' : 'border-gray-200' }}">
-                    <div class="flex items-center justify-between mb-1.5">
-                        <span class="text-sm font-semibold text-gray-800">
+                <div class="px-5 py-4 rounded-2xl"
+                     style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-semibold" style="color: var(--dash-text-heading);">
                             {{ \Carbon\Carbon::create($year, $recap->period_month)->translatedFormat('F Y') }}
                         </span>
-                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border {{ $badgeColor }}">
-                            {{ $pct }}% hadir
-                        </span>
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs" style="color: var(--dash-text-muted);">
+                                {{ $recap->total_present }} / {{ $recap->total_effective_working_days }} hari efektif
+                            </span>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-lg text-xs font-semibold"
+                                  style="background-color: {{ $badgeBg }}; color: {{ $badgeText }}; border: 1px solid {{ $badgeBorder }};">
+                                {{ $pct }}% hadir
+                            </span>
+                        </div>
                     </div>
-                    <div class="w-full bg-gray-100 rounded-full h-1.5 mb-2">
-                        <div class="{{ $pctColor }} h-1.5 rounded-full" style="width: {{ $pct }}%"></div>
+
+                    <div class="w-full h-1.5 rounded-full mb-3" style="background-color: var(--dash-card-border);">
+                        <div class="h-1.5 rounded-full transition-all" style="width: {{ $pct }}%; background-color: {{ $pctBarColor }};"></div>
                     </div>
-                    <div class="grid grid-cols-5 text-center text-xs gap-1">
-                        <div><span class="font-semibold text-emerald-600">{{ $recap->total_present }}</span><div class="text-gray-400">Hadir</div></div>
-                        <div><span class="font-semibold text-rose-500">{{ $recap->total_absent }}</span><div class="text-gray-400">Alpha</div></div>
-                        <div><span class="font-semibold text-amber-500">{{ $recap->total_late }}</span><div class="text-gray-400">Telat</div></div>
-                        <div><span class="font-semibold text-indigo-500">{{ $recap->total_sick + $recap->total_permission + $recap->total_leave }}</span><div class="text-gray-400">Izin/S/C</div></div>
-                        <div><span class="font-semibold text-gray-400">{{ $recap->total_holiday }}</span><div class="text-gray-400">Libur</div></div>
+
+                    <div class="grid grid-cols-6 text-center text-xs gap-1">
+                        <div>
+                            <span class="font-bold text-base font-jakarta" style="color: #059669;">{{ $recap->total_present }}</span>
+                            <div style="color: var(--dash-text-muted);">Hadir</div>
+                        </div>
+                        <div>
+                            <span class="font-bold text-base font-jakarta" style="color: #dc2626;">{{ $recap->total_absent }}</span>
+                            <div style="color: var(--dash-text-muted);">Alpha</div>
+                        </div>
+                        <div>
+                            <span class="font-bold text-base font-jakarta" style="color: #d97706;">{{ $recap->total_late }}</span>
+                            <div style="color: var(--dash-text-muted);">Telat</div>
+                        </div>
+                        <div>
+                            <span class="font-bold text-base font-jakarta" style="color: var(--dash-primary);">{{ $totalIzin }}</span>
+                            <div style="color: var(--dash-text-muted);">Izin/S/C</div>
+                        </div>
+                        <div>
+                            <span class="font-bold text-base font-jakarta" style="color: var(--dash-text-faint);">{{ $recap->total_holiday }}</span>
+                            <div style="color: var(--dash-text-muted);">Libur</div>
+                        </div>
+                        <div>
+                            <span class="font-bold text-base font-jakarta" style="color: var(--dash-text-faint);">{{ $recap->total_effective_working_days }}</span>
+                            <div style="color: var(--dash-text-muted);">Efektif</div>
+                        </div>
                     </div>
-                </a>
+                </div>
             @endforeach
         </div>
 
-        {{-- Daily log table — shown only when a month is selected --}}
+        {{-- Daily log --}}
         @if($month && $logs !== null)
-            <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                <div class="px-5 py-3 border-b border-gray-200 flex items-center justify-between">
-                    <h2 class="text-sm font-semibold text-gray-700">
-                        Log Harian — {{ \Carbon\Carbon::create($year, $month)->translatedFormat('F Y') }}
-                    </h2>
-                    <div class="flex gap-2 text-xs text-gray-500">
-                        Sort:
-                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'date']) }}"
-                            class="{{ $sort === 'date' ? 'font-semibold text-indigo-600' : 'hover:text-gray-800' }}">Tanggal</a>
-                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'late_desc']) }}"
-                            class="{{ $sort === 'late_desc' ? 'font-semibold text-indigo-600' : 'hover:text-gray-800' }}">Terlambat ↓</a>
-                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'status']) }}"
-                            class="{{ $sort === 'status' ? 'font-semibold text-indigo-600' : 'hover:text-gray-800' }}">Status</a>
+            <div class="rounded-2xl overflow-hidden"
+                 style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+
+                <div class="px-5 py-4 border-b flex items-center justify-between"
+                     style="border-color: var(--dash-card-border);">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-[3px] h-5 rounded-full" style="background-color: var(--dash-primary);"></div>
+                        <h2 class="text-sm font-bold font-jakarta" style="color: var(--dash-text-heading);">
+                            Log Harian — {{ \Carbon\Carbon::create($year, $month)->translatedFormat('F Y') }}
+                        </h2>
+                    </div>
+                    <div class="flex gap-3 text-xs">
+                        <span style="color: var(--dash-text-muted);">Sort:</span>
+                        @foreach(['date' => 'Tanggal', 'late_desc' => 'Terlambat ↓', 'status' => 'Status'] as $key => $label)
+                            <a href="{{ request()->fullUrlWithQuery(['sort' => $key]) }}"
+                               class="font-medium transition-colors"
+                               style="color: {{ $sort === $key ? 'var(--dash-primary)' : 'var(--dash-text-muted)' }};">{{ $label }}</a>
+                        @endforeach
                     </div>
                 </div>
+
                 @if($logs->isEmpty())
-                    <div class="py-10 text-center text-sm text-gray-400">
-                        Tidak ada log absensi harian untuk bulan ini.<br>
-                        <span class="text-xs text-gray-300">(Posisi dengan absensi otomatis tidak menghasilkan log harian.)</span>
+                    <div class="py-10 px-6 flex items-start gap-3"
+                         style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-primary-bg);">
+                        <span class="material-symbols-outlined text-[18px] shrink-0 mt-0.5" style="color: var(--dash-primary);">info</span>
+                        <div>
+                            <p class="text-sm font-medium" style="color: var(--dash-text-heading);">Tidak ada log check-in/check-out untuk bulan ini.</p>
+                            <p class="text-xs mt-0.5" style="color: var(--dash-text-muted);">Data kehadiran Anda dihitung otomatis oleh sistem berdasarkan jadwal, bukan dari log check-in manual. Rekap bulanan di atas sudah mencerminkan kehadiran Anda.</p>
+                        </div>
                     </div>
                 @else
                     <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-100 text-sm">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase">Tanggal</th>
-                                    <th class="px-5 py-3 text-center text-xs font-bold text-gray-500 uppercase">Masuk</th>
-                                    <th class="px-5 py-3 text-center text-xs font-bold text-gray-500 uppercase">Keluar</th>
-                                    <th class="px-5 py-3 text-center text-xs font-bold text-gray-500 uppercase">Terlambat</th>
-                                    <th class="px-5 py-3 text-center text-xs font-bold text-gray-500 uppercase">Status</th>
+                        <table class="min-w-full text-sm">
+                            <thead>
+                                <tr style="border-bottom: 1px solid var(--dash-card-border);">
+                                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide" style="color: var(--dash-text-muted);">Tanggal</th>
+                                    <th class="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wide" style="color: var(--dash-text-muted);">Masuk</th>
+                                    <th class="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wide" style="color: var(--dash-text-muted);">Keluar</th>
+                                    <th class="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wide" style="color: var(--dash-text-muted);">Terlambat</th>
+                                    <th class="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wide" style="color: var(--dash-text-muted);">Status</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-100">
+                            <tbody>
                                 @foreach($logs as $log)
                                     @php
                                         $statusMap = [
-                                            'present'    => ['Hadir',        'bg-emerald-50 text-emerald-700 border-emerald-200'],
-                                            'checked_in' => ['Sedang Hadir', 'bg-indigo-50 text-indigo-700 border-indigo-200'],
-                                            'absent'     => ['Alpha',        'bg-rose-50 text-rose-700 border-rose-200'],
-                                            'sick'       => ['Sakit',        'bg-amber-50 text-amber-700 border-amber-200'],
-                                            'permission' => ['Izin',         'bg-blue-50 text-blue-700 border-blue-200'],
-                                            'leave'      => ['Cuti',         'bg-purple-50 text-purple-700 border-purple-200'],
-                                            'holiday'    => ['Libur',        'bg-teal-50 text-teal-700 border-teal-200'],
+                                            'present'    => ['Hadir',        '#f0fdf4', '#059669', '#bbf7d0'],
+                                            'checked_in' => ['Sedang Hadir', 'var(--dash-primary-bg)', 'var(--dash-primary-text)', 'var(--dash-primary)'],
+                                            'absent'     => ['Alpha',        '#fee2e2', '#dc2626', '#fca5a5'],
+                                            'sick'       => ['Sakit',        '#fef3c7', '#d97706', '#fde68a'],
+                                            'permission' => ['Izin',         '#eff6ff', '#2563eb', '#bfdbfe'],
+                                            'leave'      => ['Cuti',         '#f5f3ff', '#7c3aed', '#ddd6fe'],
+                                            'holiday'    => ['Libur',        '#f0fdfa', '#0d9488', '#99f6e4'],
                                         ];
-                                        [$label, $cls] = $statusMap[$log->status] ?? [ucfirst($log->status), 'bg-gray-100 text-gray-700 border-gray-200'];
+                                        [$label, $bg, $color, $border] = $statusMap[$log->status] ?? [ucfirst($log->status), 'var(--dash-card-border)', 'var(--dash-text-muted)', 'var(--dash-card-border)'];
                                     @endphp
-                                    <tr class="hover:bg-gray-50">
-                                        <td class="px-5 py-3 font-medium text-gray-900">
+                                    <tr style="border-bottom: 1px solid var(--dash-card-border);">
+                                        <td class="px-5 py-3 font-medium" style="color: var(--dash-text-heading);">
                                             {{ \Carbon\Carbon::parse($log->attendance_date)->translatedFormat('d M, l') }}
                                         </td>
-                                        <td class="px-5 py-3 text-center text-gray-600">
+                                        <td class="px-5 py-3 text-center" style="color: var(--dash-text-body);">
                                             {{ $log->check_in ? \Carbon\Carbon::parse($log->check_in)->format('H:i') : '-' }}
                                         </td>
-                                        <td class="px-5 py-3 text-center text-gray-600">
+                                        <td class="px-5 py-3 text-center" style="color: var(--dash-text-body);">
                                             {{ $log->check_out ? \Carbon\Carbon::parse($log->check_out)->format('H:i') : '-' }}
                                         </td>
                                         <td class="px-5 py-3 text-center">
                                             @if($log->late_minutes > 0)
-                                                <span class="text-amber-600 font-medium">{{ $log->late_minutes }}m</span>
+                                                <span class="font-semibold" style="color: #d97706;">{{ $log->late_minutes }}m</span>
                                             @else
-                                                <span class="text-gray-300">-</span>
+                                                <span style="color: var(--dash-text-faint);">-</span>
                                             @endif
                                         </td>
                                         <td class="px-5 py-3 text-center">
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border {{ $cls }}">{{ $label }}</span>
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-lg text-xs font-semibold"
+                                                  style="background-color: {{ $bg }}; color: {{ $color }}; border: 1px solid {{ $border }};">
+                                                {{ $label }}
+                                            </span>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -198,7 +231,9 @@
                         </table>
                     </div>
                     @if($logs->hasPages())
-                        <div class="px-5 py-4 border-t border-gray-100">{{ $logs->links() }}</div>
+                        <div class="px-5 py-4 border-t" style="border-color: var(--dash-card-border);">
+                            {{ $logs->links() }}
+                        </div>
                     @endif
                 @endif
             </div>

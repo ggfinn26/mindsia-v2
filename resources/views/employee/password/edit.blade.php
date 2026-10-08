@@ -4,7 +4,7 @@
 @section('header_title', 'Ubah Password')
 
 @section('content')
-<div class="max-w-2xl mx-auto flex flex-col justify-center pb-24" style="min-height: calc(100vh - 120px);">
+<div class="max-w-2xl mx-auto pt-8 sm:pt-16">
 
     @if(session('success'))
         <div class="mb-5 flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"

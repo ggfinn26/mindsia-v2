@@ -1,95 +1,126 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Pengunduran Diri')
+@section('title', 'Pengunduran Diri - MINDSIA')
 @section('header_title', 'Pengunduran Diri')
 
 @section('content')
-<div class="max-w-2xl mx-auto space-y-6">
-
-    <div>
-        <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Pengunduran Diri</h2>
-        <p class="mt-1 text-sm text-slate-500">Permintaan akan diteruskan ke HR untuk diproses.</p>
-    </div>
+<div class="max-w-2xl mx-auto pt-8 sm:pt-16">
 
     @if (session('success'))
-        <div class="flex gap-3 border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-            <span class="material-symbols-outlined text-[20px]">check_circle</span>
-            <p>{{ session('success') }}</p>
+        <div class="mb-5 flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+             style="background-color: #f0fdf4; border-color: #bbf7d0; color: #059669;">
+            <span class="material-symbols-outlined text-[18px]">check_circle</span>
+            {{ session('success') }}
         </div>
     @endif
+
     @if (session('error'))
-        <div class="flex gap-3 border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
-            <span class="material-symbols-outlined text-[20px]">error</span>
-            <p>{{ session('error') }}</p>
+        <div class="mb-5 flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+             style="background-color: #fee2e2; border-color: #fca5a5; color: #dc2626;">
+            <span class="material-symbols-outlined text-[18px]">error</span>
+            {{ session('error') }}
         </div>
     @endif
 
     @if ($pending)
-        <div class="overflow-hidden border border-amber-200 bg-amber-50">
-            <div class="flex items-center gap-3 border-b border-amber-200 bg-amber-100 px-5 py-4">
-                <span class="material-symbols-outlined text-amber-700">pending</span>
-                <h3 class="font-jakarta text-sm font-bold text-amber-900">Permintaan Sedang Diproses</h3>
+        {{-- Status permintaan pending --}}
+        <div class="rounded-2xl overflow-hidden" style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <div class="px-6 sm:px-8 py-4 border-b flex items-center gap-3"
+                 style="border-color: #fde68a; background-color: #fffbeb;">
+                <span class="material-symbols-outlined text-[18px]" style="color: #b45309;">pending</span>
+                <h3 class="text-sm font-bold font-jakarta" style="color: #92400e;">Permintaan Sedang Diproses</h3>
             </div>
-            <dl class="grid grid-cols-2 gap-4 px-5 py-5 text-sm">
-                <div>
-                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">Tanggal Efektif</dt>
-                    <dd class="mt-1 font-medium text-slate-900">{{ $pending->resign_date?->translatedFormat('d F Y') ?? '—' }}</dd>
-                </div>
-                <div>
-                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">Status</dt>
-                    <dd class="mt-1">
-                        <span class="inline-flex rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-800">Menunggu Review HR</span>
-                    </dd>
-                </div>
-                <div class="col-span-2">
-                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">Alasan</dt>
-                    <dd class="mt-1 text-slate-700">{{ $pending->reason ?? '—' }}</dd>
-                </div>
-                <div>
-                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">Diajukan</dt>
-                    <dd class="mt-1 text-slate-500">{{ $pending->created_at->translatedFormat('d F Y, H:i') }}</dd>
-                </div>
-            </dl>
+            <div class="px-6 sm:px-8 py-6">
+                <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
+                    <div>
+                        <dt class="text-xs font-medium mb-1" style="color: var(--dash-text-muted);">Tanggal Efektif</dt>
+                        <dd class="text-sm font-semibold" style="color: var(--dash-text-heading);">
+                            {{ $pending->resign_date?->translatedFormat('d F Y') ?? '-' }}
+                        </dd>
+                    </div>
+                    <div>
+                        <dt class="text-xs font-medium mb-1" style="color: var(--dash-text-muted);">Status</dt>
+                        <dd class="mt-0.5">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold"
+                                  style="background-color: #fef3c7; color: #b45309;">
+                                Menunggu Review HR
+                            </span>
+                        </dd>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <dt class="text-xs font-medium mb-1" style="color: var(--dash-text-muted);">Alasan</dt>
+                        <dd class="text-sm" style="color: var(--dash-text-body);">{{ $pending->reason ?? '-' }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-xs font-medium mb-1" style="color: var(--dash-text-muted);">Diajukan</dt>
+                        <dd class="text-sm" style="color: var(--dash-text-muted);">
+                            {{ $pending->created_at->translatedFormat('d F Y, H:i') }}
+                        </dd>
+                    </div>
+                </dl>
+            </div>
         </div>
+
     @else
+        {{-- Form pengajuan --}}
         @if ($errors->any())
-            <div class="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
-                <ul class="list-disc pl-5">@foreach ($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
+            <div class="mb-5 px-4 py-3 rounded-xl border text-sm"
+                 style="background-color: #fee2e2; border-color: #fca5a5; color: #dc2626;">
+                <ul class="list-disc list-inside space-y-0.5 font-medium">
+                    @foreach ($errors->all() as $e)<li>{{ $e }}</li>@endforeach
+                </ul>
             </div>
         @endif
 
-        <div class="overflow-hidden border border-slate-200 bg-white">
-            <div class="border-b border-slate-200 bg-slate-50 px-5 py-4">
-                <h3 class="font-jakarta text-sm font-bold text-slate-900">Ajukan Pengunduran Diri</h3>
-            </div>
-            <form method="POST" action="{{ route('resign-requests.my-store') }}" class="px-5 py-5 space-y-5" novalidate>
+        <div class="rounded-2xl overflow-hidden" style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <form method="POST" action="{{ route('resign-requests.my-store') }}" novalidate>
                 @csrf
-                <div>
-                    <label class="mb-1.5 block text-sm font-semibold text-slate-700">
-                        Tanggal efektif pengunduran <span class="text-rose-500">*</span>
-                    </label>
-                    <input type="date" name="resign_date" value="{{ old('resign_date') }}"
-                           min="{{ today()->addDay()->toDateString() }}"
-                           class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac] @error('resign_date') border-rose-500 @enderror">
-                    @error('resign_date')
-                        <p class="mt-1 text-xs text-rose-500">{{ $message }}</p>
-                    @enderror
+
+                <div class="px-6 sm:px-8 py-6">
+                    <div class="flex items-center gap-2.5 mb-5">
+                        <div class="w-[3px] h-5 rounded-full" style="background-color: var(--dash-primary);"></div>
+                        <h3 class="text-sm font-bold font-jakarta" style="color: var(--dash-text-heading);">Ajukan Pengunduran Diri</h3>
+                    </div>
+                    <p class="text-sm mb-6 -mt-4" style="color: var(--dash-text-muted);">
+                        Permintaan akan diteruskan ke HR untuk diproses.
+                    </p>
+
+                    <div class="space-y-5">
+                        <div>
+                            <label class="block text-sm font-medium mb-1.5" style="color: var(--dash-text-body);">
+                                Tanggal efektif pengunduran
+                                <span style="color: #dc2626;">*</span>
+                            </label>
+                            <input type="date" name="resign_date"
+                                   value="{{ old('resign_date') }}"
+                                   min="{{ today()->addDay()->toDateString() }}"
+                                   @class(['border-rose-500' => $errors->has('resign_date')])>
+                            @error('resign_date')
+                                <p class="mt-1 text-xs" style="color: #dc2626;">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-1.5" style="color: var(--dash-text-body);">
+                                Alasan pengunduran diri
+                                <span style="color: #dc2626;">*</span>
+                            </label>
+                            <textarea name="reason" rows="4"
+                                      placeholder="Jelaskan alasan pengunduran diri..."
+                                      @class(['border-rose-500' => $errors->has('reason')])>{{ old('reason') }}</textarea>
+                            @error('reason')
+                                <p class="mt-1 text-xs" style="color: #dc2626;">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label class="mb-1.5 block text-sm font-semibold text-slate-700">
-                        Alasan pengunduran diri <span class="text-rose-500">*</span>
-                    </label>
-                    <textarea name="reason" rows="4"
-                              class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac] @error('reason') border-rose-500 @enderror"
-                              placeholder="Jelaskan alasan pengunduran diri...">{{ old('reason') }}</textarea>
-                    @error('reason')
-                        <p class="mt-1 text-xs text-rose-500">{{ $message }}</p>
-                    @enderror
-                </div>
-                <div class="flex gap-3 border-t border-slate-100 pt-4">
+
+                <div class="px-6 sm:px-8 py-4 border-t flex items-center justify-end"
+                     style="border-color: var(--dash-card-border); background-color: var(--dash-primary-bg);">
                     <button type="submit"
-                            class="inline-flex min-h-10 items-center gap-2 bg-rose-600 px-5 text-sm font-semibold text-white hover:bg-rose-700">
-                        <span class="material-symbols-outlined text-[18px]">exit_to_app</span>
+                            class="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-white transition-colors"
+                            style="background-color: #dc2626;">
+                        <span class="material-symbols-outlined text-[17px]">exit_to_app</span>
                         Ajukan Pengunduran Diri
                     </button>
                 </div>

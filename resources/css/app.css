@@ -157,6 +157,8 @@
     --dash-page-bg: #f8fafc;
     --dash-card-bg: #ffffff;
     --dash-card-border: #e2e8f0;
+    --dash-input-border: #e5e7eb;
+    --dash-input-bg: #ffffff;
 
     /* Text */
     --dash-text-heading: #1e293b;
@@ -220,6 +222,8 @@
     --dash-page-bg: #070d1a;
     --dash-card-bg: #0f172a;
     --dash-card-border: #1e293b;
+    --dash-input-border: #475569;
+    --dash-input-bg: #1e293b;
 
     --dash-text-heading: #f1f5f9;
     --dash-text-body: #cbd5e1;

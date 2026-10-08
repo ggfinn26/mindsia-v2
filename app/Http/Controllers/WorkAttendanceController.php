@@ -27,7 +27,7 @@ class WorkAttendanceController extends Controller
     {
         $employeeId = auth()->user()->employee_id;
         $year = (int) request('year', now()->year);
-        $month = request('month') ? (int) request('month') : null;
+        $month = request()->has('month') ? (int) request('month') : now()->month;
         $sort = request('sort', 'date');
 
         // Summary cards — all months of the year
