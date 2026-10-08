@@ -11,8 +11,10 @@ use App\Repositories\WorkAttendanceRepository;
 use App\Repositories\WorkScheduleRepository;
 use App\Services\AttendanceService;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class WorkAttendanceController extends Controller
@@ -119,25 +121,43 @@ class WorkAttendanceController extends Controller
         $schedule = $this->scheduleRepository->resolveForEmployee($employee->id, now()->toDateString());
 
         return view('attendance.work.index', [
-            'logs' => $this->repository->paginateForEmployee(
-                $employee->id,
-                request()->only('month', 'year'),
-            ),
             'today' => $this->repository->findForDate($employee->id, now()->toDateString()),
             'scheduleRequired' => $schedule ? $schedule->is_required : null,
         ]);
     }
 
-    public function checkIn(CheckInRequest $request): RedirectResponse
+    public function checkIn(CheckInRequest $request): RedirectResponse|JsonResponse
     {
-        $this->service->checkIn(auth()->user()->employee, $request->validated());
+        try {
+            $this->service->checkIn(auth()->user()->employee, $request->validated());
+        } catch (ValidationException $e) {
+            if ($request->ajax()) {
+                return response()->json(['errors' => $e->errors()], 422);
+            }
+            throw $e;
+        }
+
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Check-in berhasil.']);
+        }
 
         return back()->with('success', 'Check-in berhasil.');
     }
 
-    public function checkOut(CheckOutRequest $request): RedirectResponse
+    public function checkOut(CheckOutRequest $request): RedirectResponse|JsonResponse
     {
-        $this->service->checkOut(auth()->user()->employee, $request->validated());
+        try {
+            $this->service->checkOut(auth()->user()->employee, $request->validated());
+        } catch (ValidationException $e) {
+            if ($request->ajax()) {
+                return response()->json(['errors' => $e->errors()], 422);
+            }
+            throw $e;
+        }
+
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Check-out berhasil.']);
+        }
 
         return back()->with('success', 'Check-out berhasil.');
     }

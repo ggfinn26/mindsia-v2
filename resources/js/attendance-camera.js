@@ -14,6 +14,16 @@ document.addEventListener("alpine:init", () => {
         actionType: "",
         actionUrl: "",
 
+        // auto-start for inline mode (no modal) when actionType+actionUrl passed via config
+        init() {
+            if (config.actionType && config.actionUrl) {
+                this.actionType = config.actionType;
+                this.actionUrl = config.actionUrl;
+                this._getLocation();
+                this.$nextTick(() => this._startCamera());
+            }
+        },
+
         open(type, url) {
             this.actionType = type;
             this.actionUrl = url;
@@ -121,8 +131,12 @@ document.addEventListener("alpine:init", () => {
             }
 
             try {
-                const resp = await fetch(this.actionUrl, { method: "POST", body: fd, redirect: "follow" });
-                if (resp.ok || resp.redirected) {
+                const resp = await fetch(this.actionUrl, {
+                    method: "POST",
+                    body: fd,
+                    headers: { "X-Requested-With": "XMLHttpRequest" },
+                });
+                if (resp.ok) {
                     window.location.reload();
                     return;
                 }

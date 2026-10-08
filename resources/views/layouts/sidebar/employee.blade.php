@@ -1,15 +1,15 @@
-<!-- 1.1 Umum -->
+<!-- Dashboard -->
 <x-dashboard.nav-item href="{{ route('dashboard') }}" icon="grid_view" :active="request()->routeIs('dashboard')">
     Dashboard
 </x-dashboard.nav-item>
 
-<x-dashboard.nav-group title="Pengaturan Akun" icon="settings" :active="request()->is('employee/profile*') || request()->is('employee/password*') || request()->routeIs('branch-transfers.my-request')">
+<x-dashboard.nav-group title="Pengaturan Akun" icon="settings" :active="request()->is('employee/profile*') || request()->is('employee/password*') || request()->routeIs('branch-transfers.my-request') || request()->routeIs('resign-requests.my-create')">
     <x-dashboard.nav-item href="{{ route('employee.profile.show') }}" :isChild="true" :active="request()->routeIs('employee.profile.show')">Profile Saya</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('employee.password.edit') }}" :isChild="true" :active="request()->routeIs('employee.password.edit')">Ubah Password</x-dashboard.nav-item>
-    @if (auth()->user()->employee?->branch_id && auth()->id() === auth()->user()->employee->user_id)
+    @if(auth()->user()->employee?->branch_id)
     <x-dashboard.nav-item href="{{ route('branch-transfers.my-request') }}" :isChild="true" :active="request()->routeIs('branch-transfers.my-request')">Ajukan Pindah Cabang</x-dashboard.nav-item>
     @endif
-    @if (auth()->user()->employee)
+    @if(auth()->user()->employee)
     <x-dashboard.nav-item href="{{ route('resign-requests.my-create') }}" :isChild="true" :active="request()->routeIs('resign-requests.my-create')">Pengunduran Diri</x-dashboard.nav-item>
     @endif
 </x-dashboard.nav-group>
@@ -24,27 +24,52 @@
 </x-dashboard.nav-item>
 @endcan
 
-<!-- Personal Dashboard -->
+<!-- Personal -->
 <div class="pt-4 pb-2">
-    <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider font-jakarta">Personal Dashboard</p>
+    <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider font-jakarta">Personal</p>
 </div>
-<x-dashboard.nav-item href="{{ route('employee.payslips.index') }}" icon="receipt_long" :active="request()->routeIs('employee.payslips.*')">Slip Gaji Saya</x-dashboard.nav-item>
-<x-dashboard.nav-item href="{{ route('employee.my-kpi') }}" icon="track_changes" :active="request()->routeIs('employee.my-kpi')">KPI Saya</x-dashboard.nav-item>
-<x-dashboard.nav-item href="{{ route('marketing.my-performance') }}" icon="format_list_numbered" :active="request()->routeIs('marketing.my-performance')">Ranking MPI Saya</x-dashboard.nav-item>
-<x-dashboard.nav-item href="{{ route('work-attendance.my-recap') }}" icon="history" :active="request()->is('attendance/my-recap*')">Riwayat Absensi Saya</x-dashboard.nav-item>
-<x-dashboard.nav-item href="{{ route('work-attendance.index') }}" icon="login" :active="request()->routeIs('work-attendance.index')">Absen Masuk/Keluar</x-dashboard.nav-item>
-<x-dashboard.nav-item href="{{ route('session-attendance.index') }}" icon="co_present" :active="request()->routeIs('session-attendance.index')">Absen Sesi Saya</x-dashboard.nav-item>
-<x-dashboard.nav-item href="{{ route('leave-requests.index') }}" icon="event_busy" :active="request()->routeIs('leave-requests.index') || request()->routeIs('leave-requests.create')">Izin/Sakit/Cuti Saya</x-dashboard.nav-item>
-<x-dashboard.nav-item href="{{ route('employee.my-letters.index') }}" icon="mail" :active="request()->routeIs('employee.my-letters.*')">Surat Saya</x-dashboard.nav-item>
-@auth
-    @if(auth()->user()->can('marketing.wa_template.manage') && auth()->user()->employee)
-    <x-dashboard.nav-item href="{{ route('wa-templates.index') }}" icon="chat" :active="request()->routeIs('wa-templates.*')">Template WA Saya</x-dashboard.nav-item>
+<x-dashboard.nav-group title="Dashboard Saya" icon="person" :active="
+    request()->routeIs('employee.payslips.*') ||
+    request()->routeIs('employee.my-kpi') ||
+    request()->routeIs('marketing.my-performance') ||
+    request()->is('attendance/my-recap*') ||
+    request()->routeIs('work-attendance.index') ||
+    request()->routeIs('session-attendance.index') ||
+    request()->routeIs('leave-requests.index') ||
+    request()->routeIs('leave-requests.create') ||
+    request()->routeIs('reimbursements.index') ||
+    request()->routeIs('employee.my-letters.*') ||
+    request()->routeIs('my-socializations.*') ||
+    request()->routeIs('my-prospective-members.*') ||
+    request()->routeIs('marketing.my-monthly-revenue') ||
+    request()->routeIs('wa-templates.*') ||
+    request()->routeIs('employee.my-tickets.*') ||
+    request()->routeIs('notifications.index') ||
+    request()->routeIs('employee.surveys.*')
+">
+    <x-dashboard.nav-item href="{{ route('employee.payslips.index') }}" :isChild="true" :active="request()->routeIs('employee.payslips.*')">Slip Gaji Saya</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('employee.my-kpi') }}" :isChild="true" :active="request()->routeIs('employee.my-kpi')">KPI Saya</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('marketing.my-performance') }}" :isChild="true" :active="request()->routeIs('marketing.my-performance')">Ranking MPI Saya</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('work-attendance.my-recap') }}" :isChild="true" :active="request()->is('attendance/my-recap*')">Riwayat Absensi Saya</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('work-attendance.index') }}" :isChild="true" :active="request()->routeIs('work-attendance.index')">Absen Masuk/Keluar</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('session-attendance.index') }}" :isChild="true" :active="request()->routeIs('session-attendance.index')">Absen Sesi Saya</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('leave-requests.index') }}" :isChild="true" :active="request()->routeIs('leave-requests.index') || request()->routeIs('leave-requests.create')">Izin/Sakit/Cuti Saya</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('reimbursements.index') }}" :isChild="true" :active="request()->routeIs('reimbursements.index')">Reimbursement Saya</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('employee.my-letters.index') }}" :isChild="true" :active="request()->routeIs('employee.my-letters.*')">Surat Saya</x-dashboard.nav-item>
+    @if(auth()->user()->employee && \App\Models\EmployeeSocialization::where('employee_id', auth()->user()->employee->id)->exists())
+    <x-dashboard.nav-item href="{{ route('my-socializations.index') }}" :isChild="true" :active="request()->routeIs('my-socializations.*')">Sosialisasi Saya</x-dashboard.nav-item>
     @endif
-@endauth
-<x-dashboard.nav-item href="{{ route('employee.my-tickets.index') }}" icon="confirmation_number" :active="request()->routeIs('employee.my-tickets.*')">Tiket Saya</x-dashboard.nav-item>
-<x-dashboard.nav-item href="{{ route('notifications.index') }}" icon="notifications" :active="request()->routeIs('notifications.index')">Notifikasi Saya</x-dashboard.nav-item>
+    @if(auth()->user()->employee)
+    <x-dashboard.nav-item href="{{ route('my-prospective-members.index') }}" :isChild="true" :active="request()->routeIs('my-prospective-members.*')">Calon Member Saya</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('marketing.my-monthly-revenue') }}" :isChild="true" :active="request()->routeIs('marketing.my-monthly-revenue')">Pendapatan Saya</x-dashboard.nav-item>
+    @endif
+    <x-dashboard.nav-item href="{{ route('wa-templates.index') }}" :isChild="true" :active="request()->routeIs('wa-templates.*')">Template WA Saya</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('employee.my-tickets.index') }}" :isChild="true" :active="request()->routeIs('employee.my-tickets.*')">Tiket Saya</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('notifications.index') }}" :isChild="true" :active="request()->routeIs('notifications.index')">Notifikasi Saya</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('employee.surveys.index') }}" :isChild="true" :active="request()->routeIs('employee.surveys.*')">Survey Saya</x-dashboard.nav-item>
+</x-dashboard.nav-group>
 
-<!-- 1.2 Organization -->
+<!-- Organisasi -->
 @canany(['organization.province.create', 'organization.branch.create', 'organization.institution.create'])
 <div class="pt-4 pb-2">
     <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider font-jakarta">Organisasi</p>
@@ -56,21 +81,34 @@
     <x-dashboard.nav-item href="{{ route('branches.index') }}" :isChild="true" :active="request()->routeIs('branches.*')">Kelola Cabang</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('institutions.index') }}" :isChild="true" :active="request()->routeIs('institutions.*')">Kelola Institusi</x-dashboard.nav-item>
 </x-dashboard.nav-group>
-@endcan
+@endcanany
 
-<!-- 1.3 Kelola Pengguna -->
-@if(auth()->user()->can('employee.view') || auth()->user()->can('position.view') || auth()->user()->can('position.manage'))
+<!-- SDM & Akses -->
+@if(auth()->user()->can('employee.view') || auth()->user()->can('position.view') || auth()->user()->can('position.manage') || auth()->user()->can('system.permission.manage') || auth()->user()->canAny(['employee.create', 'employee.update']))
 <div class="pt-4 pb-2">
     <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider font-jakarta">SDM & Akses</p>
 </div>
-<x-dashboard.nav-group title="Kelola Pengguna" icon="manage_accounts" :active="request()->is('admin/position*') || request()->routeIs('positions.*') || request()->routeIs('roles.*') || request()->routeIs('users.*')">
+@if(auth()->user()->can('employee.view') || auth()->user()->can('position.view') || auth()->user()->can('position.manage'))
+<x-dashboard.nav-group title="Kelola Pengguna" icon="manage_accounts" :active="request()->routeIs('positions.*') || request()->routeIs('roles.*') || request()->routeIs('users.*')">
     <x-dashboard.nav-item href="{{ route('users.index') }}" :active="request()->routeIs('users.*')" :isChild="true">Manajemen Akun Pegawai</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('roles.index') }}" :active="request()->routeIs('roles.*')" :isChild="true">Kelola Divisi</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('positions.index') }}" :active="request()->routeIs('positions.*')" :isChild="true">Kelola Posisi</x-dashboard.nav-item>
 </x-dashboard.nav-group>
 @endif
-
-<!-- 1.3A Sistem & Akses -->
+@canany(['employee.create', 'employee.update', 'employee.view'])
+<x-dashboard.nav-group title="Kelola Karyawan" icon="badge" :active="request()->is('employees*') || request()->is('employment-statuses*') || request()->is('resign-requests*') || request()->is('branch-transfers*')">
+    @canany(['employee.view', 'employee.create'])
+    <x-dashboard.nav-item href="{{ route('employees.index') }}" :active="request()->routeIs('employees.*')" :isChild="true">Data Pegawai</x-dashboard.nav-item>
+    @endcanany
+    @can('contract.manage')
+    <x-dashboard.nav-item href="{{ route('employment-statuses.index') }}" :active="request()->routeIs('employment-statuses.*')" :isChild="true">Kelola Kontrak</x-dashboard.nav-item>
+    @endcan
+    @can('employee.update')
+    <x-dashboard.nav-item href="{{ route('resign-requests.index') }}" :active="request()->routeIs('resign-requests.*')" :isChild="true">Resign & Offboarding</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('branch-transfers.review.index') }}" :active="request()->routeIs('branch-transfers.*')" :isChild="true">Review Pindah Cabang</x-dashboard.nav-item>
+    @endcan
+</x-dashboard.nav-group>
+@endcanany
 @can('system.permission.manage')
 <x-dashboard.nav-group title="Sistem & Akses" icon="shield_person" :active="request()->routeIs('system.permissions.*') || request()->routeIs('system.dashboard-widgets.*') || request()->routeIs('attendance.document-signature.*') || request()->routeIs('system.notification-routings.*') || request()->routeIs('system.bots.*') || request()->routeIs('system.webhooks.*') || request()->routeIs('system.api-keys.*')">
     <x-dashboard.nav-item href="{{ route('system.permissions.index') }}" :active="request()->routeIs('system.permissions.*')" :isChild="true">Manajemen Permission</x-dashboard.nav-item>
@@ -88,13 +126,14 @@
     @endcan
 </x-dashboard.nav-group>
 @endcan
+@endif
 
-<!-- 1.4 Attendance -->
+<!-- Manajemen Absensi -->
 @canany(['attendance.recap.view', 'attendance.leave.review', 'attendance.verify_adjust.view', 'attendance.schedule.manage', 'attendance.holiday.manage', 'attendance.policy_rules.manage', 'leave.pay_settings.manage'])
 <div class="pt-4 pb-2">
     <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider font-jakarta">Manajemen Absensi</p>
 </div>
-<x-dashboard.nav-group title="Absensi" icon="how_to_reg" :active="request()->is('attendance*') && !request()->is('attendance/check-in-out*') && !request()->is('attendance/leave-request*') && !request()->is('attendance/my-recap*')">
+<x-dashboard.nav-group title="Absensi" icon="how_to_reg" :active="request()->is('attendance*') && !request()->is('attendance/my-recap*')">
     @can('attendance.recap.view')
     <x-dashboard.nav-item href="{{ route('attendance-recaps.index') }}" :active="request()->routeIs('attendance-recaps.*')" :isChild="true">Rekap Absensi Pegawai</x-dashboard.nav-item>
     @endcan
@@ -112,6 +151,7 @@
     @endcan
     @can('attendance.policy_rules.manage')
     <x-dashboard.nav-item href="{{ route('attendance-rules.index') }}" :active="request()->routeIs('attendance-rules.*')" :isChild="true">Kelola Sanksi Absen</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('attendance.position-settings.index') }}" :active="request()->routeIs('attendance.position-settings.*')" :isChild="true">Pengaturan Absensi Posisi</x-dashboard.nav-item>
     @endcan
     @can('leave.pay_settings.manage')
     <x-dashboard.nav-item href="{{ route('leave-pay-settings.index') }}" :active="request()->routeIs('leave-pay-settings.*')" :isChild="true">Pengaturan Izin/Cuti</x-dashboard.nav-item>
@@ -119,11 +159,12 @@
 </x-dashboard.nav-group>
 @endcanany
 
-<!-- 1.5 Bonus & Payroll -->
-@if(auth()->user()->can('payroll.component.create') || auth()->user()->can('payroll.component.update') || auth()->user()->can('payroll.period.view') || auth()->user()->can('payroll.period.generate') || auth()->user()->can('payroll.period.pay') || auth()->user()->can('payroll.item.adjust') || auth()->user()->canAny(['bonus.marketing-rule.view','bonus.kpi-rule.view','bonus.special-rule.view']))
+<!-- Payroll & Insentif -->
+@if(auth()->user()->can('payroll.component.create') || auth()->user()->can('payroll.component.update') || auth()->user()->can('payroll.period.view') || auth()->user()->can('payroll.period.generate') || auth()->user()->can('payroll.period.pay') || auth()->user()->can('payroll.item.adjust') || auth()->user()->canAny(['bonus.marketing-rule.view','bonus.kpi-rule.view','bonus.special-rule.view']) || auth()->user()->canAny(['kpi.template.create', 'kpi.evaluation.create', 'kpi.grade_rule.view']))
 <div class="pt-4 pb-2">
-    <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider font-jakarta">Payroll</p>
+    <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider font-jakarta">Payroll & Insentif</p>
 </div>
+@if(auth()->user()->can('payroll.component.create') || auth()->user()->can('payroll.component.update') || auth()->user()->can('payroll.period.view') || auth()->user()->can('payroll.period.generate') || auth()->user()->can('payroll.period.pay') || auth()->user()->can('payroll.item.adjust') || auth()->user()->canAny(['bonus.marketing-rule.view','bonus.kpi-rule.view','bonus.special-rule.view']))
 <x-dashboard.nav-group title="Gaji & Bonus" icon="payments" :active="request()->is('payroll*') || request()->is('bonus*')">
     @canany(['payroll.component.create', 'payroll.component.update'])
     <x-dashboard.nav-item href="{{ route('payroll.components.index') }}" :active="request()->routeIs('payroll.components.*')" :isChild="true">Kelola Komponen Gaji</x-dashboard.nav-item>
@@ -157,8 +198,6 @@
     @endcanany
 </x-dashboard.nav-group>
 @endif
-
-<!-- 1.6 KPI -->
 @canany(['kpi.template.create', 'kpi.evaluation.create', 'kpi.grade_rule.view'])
 <x-dashboard.nav-group title="KPI" icon="target" :active="request()->is('kpi*')">
     @can('kpi.template.create')
@@ -173,35 +212,19 @@
     @endcan
 </x-dashboard.nav-group>
 @endcanany
+@endif
 
-<!-- 1.7 Kelola Karyawan -->
-@canany(['employee.create', 'employee.update', 'employee.view'])
-<x-dashboard.nav-group title="Kelola Karyawan" icon="badge" :active="request()->is('employees*') || request()->is('employment-statuses*') || request()->is('resign-requests*') || request()->is('branch-transfers*')">
-    @canany(['employee.view', 'employee.create'])
-    <x-dashboard.nav-item href="{{ route('employees.index') }}" :active="request()->routeIs('employees.*')" :isChild="true">Data Pegawai</x-dashboard.nav-item>
-    @endcanany
-    @can('contract.manage')
-    <x-dashboard.nav-item href="{{ route('employment-statuses.index') }}" :active="request()->routeIs('employment-statuses.*')" :isChild="true">Kelola Kontrak</x-dashboard.nav-item>
-    @endcan
-    @can('employee.update')
-    <x-dashboard.nav-item href="{{ route('resign-requests.index') }}" :active="request()->routeIs('resign-requests.*')" :isChild="true">Resign & Offboarding</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="{{ route('branch-transfers.review.index') }}" :active="request()->routeIs('branch-transfers.*')" :isChild="true">Review Pindah Cabang</x-dashboard.nav-item>
-    @endcan
-</x-dashboard.nav-group>
-@endcanany
-
-<!-- 1.8 Akademik -->
-@canany(['curriculum.program.create', 'curriculum.curriculum.create', 'curriculum.quota.create', 'curriculum.view'])
+<!-- Akademik -->
+@canany(['curriculum.program.create', 'curriculum.curriculum.create', 'curriculum.quota.create', 'curriculum.view', 'class.manage', 'class.attendance.record', 'class.test.create', 'class.graduate'])
 <div class="pt-4 pb-2">
     <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider font-jakarta">Akademik</p>
 </div>
+@canany(['curriculum.program.create', 'curriculum.curriculum.create', 'curriculum.quota.create', 'curriculum.view'])
 <x-dashboard.nav-group title="Program & Kurikulum" icon="menu_book" :active="request()->is('program*') || request()->is('curriculum*')">
     <x-dashboard.nav-item href="{{ route('programs.index') }}" :isChild="true" :active="request()->routeIs('programs.*')">Program & Kuota</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('curriculums.index') }}" :isChild="true" :active="request()->routeIs('curriculums.*')">Kelola Kurikulum</x-dashboard.nav-item>
 </x-dashboard.nav-group>
 @endcanany
-
-<!-- 1.9 Class -->
 @canany(['class.manage', 'class.attendance.record', 'class.test.create', 'class.graduate'])
 <x-dashboard.nav-group title="Kelas" icon="school" :active="request()->routeIs('classrooms.*') || request()->routeIs('class-schedules.*') || request()->routeIs('class-tests.*') || request()->routeIs('member-class.*')">
     <x-dashboard.nav-item href="{{ route('classrooms.index') }}" :isChild="true" :active="request()->routeIs('classrooms.index') || request()->routeIs('classrooms.show') || request()->routeIs('member-class.*')">Semua Kelas</x-dashboard.nav-item>
@@ -211,19 +234,21 @@
     <x-dashboard.nav-item href="{{ route('class-schedules.index') }}" :isChild="true" :active="request()->routeIs('class-schedules.*')">Sesi & Absensi</x-dashboard.nav-item>
     @canany(['class.test.create', 'class.certificate.update', 'class.graduate'])
     <x-dashboard.nav-item href="{{ route('class-tests.index') }}" :isChild="true" :active="request()->routeIs('class-tests.*')">Test & Sertifikat</x-dashboard.nav-item>
-    @endcan
+    @endcanany
 </x-dashboard.nav-group>
-@endcan
+@endcanany
+@endcanany
 
-<!-- 1.10 Member & Marketing -->
+<!-- Sales & Service -->
 @php
-    $hasMarketingAccess = auth()->user()->canAny(['member.manage', 'marketing.socialization.create', 'marketing.socialization.update', 'marketing.socialization.assign', 'marketing.prospective_member.create', 'marketing.prospective_member.update', 'marketing.prospective.view_area', 'marketing.prospective.view_national'])
-        || (auth()->user()->employee && \App\Models\EmployeeSocialization::where('employee_id', auth()->user()->employee->id)->exists());
+    $hasMarketingAccess = auth()->user()->canAny(['member.manage', 'marketing.socialization.create', 'marketing.socialization.update', 'marketing.socialization.assign', 'marketing.prospective_member.create', 'marketing.prospective_member.update', 'marketing.prospective.view_area', 'marketing.prospective.view_national']);
+    $hasRecruitmentAccess = auth()->user()->canAny(['recruitment.job_permintaan.create', 'recruitment.job_posting.create', 'applicant.view']);
 @endphp
-@if($hasMarketingAccess)
+@if($hasMarketingAccess || $hasRecruitmentAccess)
 <div class="pt-4 pb-2">
     <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider font-jakarta">Sales & Service</p>
 </div>
+@if($hasMarketingAccess)
 <x-dashboard.nav-group title="Member & Marketing" icon="campaign" :active="request()->is('member*') || request()->is('marketing*')">
     @can('member.manage')
     <x-dashboard.nav-item href="{{ route('members.create') }}" :isChild="true" :active="request()->routeIs('members.create')">Registrasi Member</x-dashboard.nav-item>
@@ -233,16 +258,6 @@
     @canany(['marketing.socialization.create', 'marketing.socialization.update'])
     <x-dashboard.nav-item href="{{ route('socializations.index') }}" :isChild="true" :active="request()->routeIs('socializations.*') && !request()->routeIs('my-socializations.*')">Kelola Sosialisasi</x-dashboard.nav-item>
     @endcanany
-    @auth
-    @if(auth()->user()->employee && \App\Models\EmployeeSocialization::where('employee_id', auth()->user()->employee->id)->exists())
-    <x-dashboard.nav-item href="{{ route('my-socializations.index') }}" :isChild="true" :active="request()->routeIs('my-socializations.*')">Sosialisasi Saya</x-dashboard.nav-item>
-    @endif
-    @endauth
-    @auth
-    @if(auth()->user()->employee)
-    <x-dashboard.nav-item href="{{ route('my-prospective-members.index') }}" :isChild="true" :active="request()->routeIs('my-prospective-members.*')">Calon Member Saya</x-dashboard.nav-item>
-    @endif
-    @endauth
     @canany(['marketing.prospective.view_area', 'marketing.prospective.view_national'])
     <x-dashboard.nav-item href="{{ route('prospective-members.index') }}" :isChild="true" :active="request()->routeIs('prospective-members.*')">{{ auth()->user()->can('marketing.prospective.view_national') ? 'Calon Member Nasional' : 'Calon Member Area' }}</x-dashboard.nav-item>
     @endcanany
@@ -250,11 +265,6 @@
     <x-dashboard.nav-item href="{{ route('marketing-target.index') }}" :isChild="true" :active="request()->routeIs('marketing-target.*')">Target & Performance</x-dashboard.nav-item>
     @endcan
     <x-dashboard.nav-item href="{{ route('marketing.member-payment-statement') }}" :active="request()->routeIs('marketing.member-payment-statement')" :isChild="true">Financial Statement</x-dashboard.nav-item>
-    @auth
-    @if(auth()->user()->employee)
-    <x-dashboard.nav-item href="{{ route('marketing.my-monthly-revenue') }}" :active="request()->routeIs('marketing.my-monthly-revenue')" :isChild="true">Pendapatan Saya</x-dashboard.nav-item>
-    @endif
-    @endauth
     @can('marketing.monthly_revenue_data.view_branch')
     <x-dashboard.nav-item href="{{ route('marketing.monthly-revenue-data') }}" :active="request()->routeIs('marketing.monthly-revenue-data')" :isChild="true">Data Pendapatan Area</x-dashboard.nav-item>
     @endcan
@@ -263,12 +273,7 @@
     @endcan
 </x-dashboard.nav-group>
 @endif
-
-<!-- 1.11 Recruitment -->
-@canany(['recruitment.job_permintaan.create', 'recruitment.job_posting.create', 'applicant.view'])
-<div class="pt-4 pb-2">
-    <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider font-jakarta">Rekrutmen</p>
-</div>
+@if($hasRecruitmentAccess)
 <x-dashboard.nav-group title="Rekrutmen" icon="work" :active="request()->is('recruitment*')">
     <x-dashboard.nav-item href="{{ route('recruitment.permintaan.index') }}" :isChild="true" :active="request()->routeIs('recruitment.permintaan.*')">Job Permintaan</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('recruitment.postings.index') }}" :isChild="true" :active="request()->routeIs('recruitment.postings.*')">Job Posting</x-dashboard.nav-item>
@@ -279,59 +284,18 @@
     <x-dashboard.nav-item href="{{ route('recruitment.applicants.index') }}" :isChild="true" :active="request()->routeIs('recruitment.applicants.*')">Daftar Pelamar</x-dashboard.nav-item>
     @endcan
 </x-dashboard.nav-group>
-@endcan
+@endif
+@endif
 
-<!-- 1.12 Survey -->
-@canany(['survey.form.view', 'survey.form.create'])
+<!-- Operasional -->
+@if(auth()->user()->canAny(['finance.budget_estimate.view', 'finance.reimbursement.review', 'finance.monthly_cost.view', 'finance.period.lock']) || auth()->user()->canAny(['facility.ticket.create', 'facility.inventory.create', 'facility.rent_contract.create']) || auth()->user()->canAny(['letter.template.create', 'letter.template.update', 'letter.in.create', 'letter.generate.create', 'letter.out.create', 'letter.sop.create']) || auth()->user()->canAny(['notification.template.create', 'notification.send_manual', 'notification.log.view']) || auth()->user()->canAny(['survey.form.view', 'survey.form.create']) || auth()->user()->canAny(['toefl.test.create', 'toefl.test.update']) || auth()->user()->canAny(['landing.testimonial.manage', 'landing.photo.manage', 'landing.leader.manage']))
 <div class="pt-4 pb-2">
-    <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider font-jakarta">Lainnya</p>
+    <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider font-jakarta">Operasional</p>
 </div>
-<x-dashboard.nav-group title="Survey" icon="poll" :active="request()->is('survey*')">
-    <x-dashboard.nav-item href="{{ route('surveys.index') }}" :isChild="true" :active="request()->routeIs('surveys.*') && !request()->has('tab')">Template Survey</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="{{ route('surveys.index', ['tab' => 'assign']) }}" :isChild="true" :active="request()->get('tab') == 'assign'">Assign Survey</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="{{ route('surveys.index', ['tab' => 'results']) }}" :isChild="true" :active="request()->get('tab') == 'results'">Hasil Survey</x-dashboard.nav-item>
-</x-dashboard.nav-group>
-@endcan
-
-<!-- 1.12b Survey self-service (semua employee) -->
-<x-dashboard.nav-item href="{{ route('employee.surveys.index') }}" icon="assignment" :active="request()->routeIs('employee.surveys.*')">Survey Saya</x-dashboard.nav-item>
-
-<!-- 1.13 TOEFL -->
-@canany(['toefl.test.create', 'toefl.test.update'])
-<x-dashboard.nav-group title="TOEFL" icon="language" :active="request()->is('toefl*')">
-    <x-dashboard.nav-item href="{{ route('toefl-tests.index') }}" :isChild="true" :active="request()->routeIs('toefl-tests.*')">Bank Test</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="{{ route('toefl.media.index') }}" :isChild="true" :active="request()->routeIs('toefl.media.*')">Media Audio</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="{{ route('toefl.member-session.index') }}" :isChild="true" :active="request()->routeIs('toefl.member-session.*')">Session Member</x-dashboard.nav-item>
-    <x-dashboard.nav-item href="{{ route('toefl.guest-lead.index') }}" :isChild="true" :active="request()->routeIs('toefl.guest-lead.*')">Lead Guest</x-dashboard.nav-item>
-</x-dashboard.nav-group>
-@endcan
-
-<!-- 1.14 Notification -->
-@canany(['notification.template.create', 'notification.send_manual', 'notification.log.view'])
-<x-dashboard.nav-group title="Notifikasi" icon="notifications_active" :active="request()->is('notification-templates*') || request()->is('notification-logs*') || request()->is('notification-manual-send*')">
-    @can('system.permission.manage')
-    <x-dashboard.nav-item href="{{ route('system.notification-routings.index') }}" :isChild="true" :active="request()->routeIs('system.notification-routings.*')">Konfigurasi Routing</x-dashboard.nav-item>
-    @endcan
-    @can('notification.template.create')
-    <x-dashboard.nav-item href="{{ route('notification-templates.index') }}" :isChild="true" :active="request()->routeIs('notification-templates.*')">Template Notifikasi</x-dashboard.nav-item>
-    @endcan
-    @can('notification.send_manual')
-    <x-dashboard.nav-item href="{{ route('notification-manual-send.create') }}" :isChild="true" :active="request()->routeIs('notification-manual-send.*')">Manual Send</x-dashboard.nav-item>
-    @endcan
-    @can('notification.log.view')
-    <x-dashboard.nav-item href="{{ route('notification-logs.index') }}" :isChild="true" :active="request()->routeIs('notification-logs.*')">Log Notifikasi</x-dashboard.nav-item>
-    @endcan
-</x-dashboard.nav-group>
-@endcan
-
-<!-- 1.15 Finance -->
-@canany(['finance.budget_estimate.view', 'finance.reimbursement.view', 'finance.monthly_cost.view', 'finance.period.lock'])
-<x-dashboard.nav-group title="Keuangan" icon="account_balance_wallet" :active="request()->is('budget-estimates*') || request()->is('reimbursements*') || request()->is('branch-monthly-costs*') || request()->is('period-locks*')">
+@canany(['finance.budget_estimate.view', 'finance.reimbursement.review', 'finance.monthly_cost.view', 'finance.period.lock'])
+<x-dashboard.nav-group title="Keuangan" icon="account_balance_wallet" :active="request()->is('budget-estimates*') || request()->routeIs('reimbursements.review-list') || request()->is('branch-monthly-costs*') || request()->is('period-locks*')">
     @can('finance.budget_estimate.view')
     <x-dashboard.nav-item href="{{ route('budget-estimates.index') }}" :active="request()->routeIs('budget-estimates.*')" :isChild="true">Budget Estimate</x-dashboard.nav-item>
-    @endcan
-    @can('finance.reimbursement.view')
-    <x-dashboard.nav-item href="{{ route('reimbursements.index') }}" :active="request()->routeIs('reimbursements.*') && !request()->routeIs('reimbursements-review')" :isChild="true">Reimbursement Saya</x-dashboard.nav-item>
     @endcan
     @can('finance.reimbursement.review')
     <x-dashboard.nav-item href="{{ route('reimbursements.review-list') }}" :active="request()->routeIs('reimbursements.review-list')" :isChild="true">Review Reimbursement</x-dashboard.nav-item>
@@ -341,8 +305,17 @@
     @endcan
 </x-dashboard.nav-group>
 @endcanany
-
-<!-- 1.16 Letter -->
+@canany(['facility.ticket.create', 'facility.inventory.create', 'facility.rent_contract.create'])
+<x-dashboard.nav-group title="Fasilitas" icon="build" :active="request()->is('facility*') && !request()->is('facility/my-tickets*')">
+    <x-dashboard.nav-item href="{{ route('facility.tickets.index') }}" :active="request()->routeIs('facility.tickets.*')" :isChild="true">Tiket Fasilitas</x-dashboard.nav-item>
+    @canany(['facility.inventory.create', 'facility.inventory.update', 'facility.inventory.dispose'])
+    <x-dashboard.nav-item href="{{ route('facility.inventory.index') }}" :active="request()->routeIs('facility.inventory.*')" :isChild="true">Inventaris</x-dashboard.nav-item>
+    @endcanany
+    @canany(['facility.rent_contract.create', 'facility.rent_contract.update', 'facility.rent_contract.mark_paid'])
+    <x-dashboard.nav-item href="{{ route('facility.rent-contracts.index') }}" :active="request()->routeIs('facility.rent-contracts.*')" :isChild="true">Kontrak Sewa</x-dashboard.nav-item>
+    @endcanany
+</x-dashboard.nav-group>
+@endcanany
 @canany(['letter.template.create', 'letter.template.update', 'letter.in.create', 'letter.generate.create', 'letter.out.create', 'letter.sop.create'])
 <x-dashboard.nav-group title="Surat" icon="drafts" :active="request()->is('letter-templates*') || request()->is('out-letters*') || request()->is('in-letters*') || request()->is('sop-documents*')">
     @canany(['letter.template.create', 'letter.template.update'])
@@ -362,21 +335,37 @@
     @endcanany
 </x-dashboard.nav-group>
 @endcanany
-
-<!-- 1.17 Facility -->
-@canany(['facility.ticket.create', 'facility.inventory.create', 'facility.rent_contract.create'])
-<x-dashboard.nav-group title="Fasilitas" icon="build" :active="request()->is('facility*') && !request()->is('facility/my-tickets*')">
-    <x-dashboard.nav-item href="{{ route('facility.tickets.index') }}" :active="request()->routeIs('facility.tickets.*')" :isChild="true">Tiket Fasilitas</x-dashboard.nav-item>
-    @canany(['facility.inventory.create', 'facility.inventory.update', 'facility.inventory.dispose'])
-    <x-dashboard.nav-item href="{{ route('facility.inventory.index') }}" :active="request()->routeIs('facility.inventory.*')" :isChild="true">Inventaris</x-dashboard.nav-item>
+@canany(['notification.template.create', 'notification.send_manual', 'notification.log.view'])
+<x-dashboard.nav-group title="Notifikasi" icon="notifications_active" :active="request()->is('notification-templates*') || request()->is('notification-logs*') || request()->is('notification-manual-send*')">
+    @can('system.permission.manage')
+    <x-dashboard.nav-item href="{{ route('system.notification-routings.index') }}" :isChild="true" :active="request()->routeIs('system.notification-routings.*')">Konfigurasi Routing</x-dashboard.nav-item>
     @endcan
-    @canany(['facility.rent_contract.create', 'facility.rent_contract.update', 'facility.rent_contract.mark_paid'])
-    <x-dashboard.nav-item href="{{ route('facility.rent-contracts.index') }}" :active="request()->routeIs('facility.rent-contracts.*')" :isChild="true">Kontrak Sewa</x-dashboard.nav-item>
+    @can('notification.template.create')
+    <x-dashboard.nav-item href="{{ route('notification-templates.index') }}" :isChild="true" :active="request()->routeIs('notification-templates.*')">Template Notifikasi</x-dashboard.nav-item>
+    @endcan
+    @can('notification.send_manual')
+    <x-dashboard.nav-item href="{{ route('notification-manual-send.create') }}" :isChild="true" :active="request()->routeIs('notification-manual-send.*')">Manual Send</x-dashboard.nav-item>
+    @endcan
+    @can('notification.log.view')
+    <x-dashboard.nav-item href="{{ route('notification-logs.index') }}" :isChild="true" :active="request()->routeIs('notification-logs.*')">Log Notifikasi</x-dashboard.nav-item>
     @endcan
 </x-dashboard.nav-group>
-@endcan
-
-<!-- 1.18 Landing Page -->
+@endcanany
+@canany(['survey.form.view', 'survey.form.create'])
+<x-dashboard.nav-group title="Survey" icon="poll" :active="request()->is('survey*')">
+    <x-dashboard.nav-item href="{{ route('surveys.index') }}" :isChild="true" :active="request()->routeIs('surveys.*') && !request()->has('tab')">Template Survey</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('surveys.index', ['tab' => 'assign']) }}" :isChild="true" :active="request()->get('tab') == 'assign'">Assign Survey</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('surveys.index', ['tab' => 'results']) }}" :isChild="true" :active="request()->get('tab') == 'results'">Hasil Survey</x-dashboard.nav-item>
+</x-dashboard.nav-group>
+@endcanany
+@canany(['toefl.test.create', 'toefl.test.update'])
+<x-dashboard.nav-group title="TOEFL" icon="language" :active="request()->is('toefl*')">
+    <x-dashboard.nav-item href="{{ route('toefl-tests.index') }}" :isChild="true" :active="request()->routeIs('toefl-tests.*')">Bank Test</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('toefl.media.index') }}" :isChild="true" :active="request()->routeIs('toefl.media.*')">Media Audio</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('toefl.member-session.index') }}" :isChild="true" :active="request()->routeIs('toefl.member-session.*')">Session Member</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('toefl.guest-lead.index') }}" :isChild="true" :active="request()->routeIs('toefl.guest-lead.*')">Lead Guest</x-dashboard.nav-item>
+</x-dashboard.nav-group>
+@endcanany
 @canany(['landing.testimonial.manage', 'landing.photo.manage', 'landing.leader.manage'])
 <x-dashboard.nav-group title="Landing Page" icon="public" :active="request()->routeIs('admin.landing.*')">
     @can('landing.testimonial.manage')
@@ -391,3 +380,4 @@
     @endcan
 </x-dashboard.nav-group>
 @endcanany
+@endif

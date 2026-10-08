@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -34,6 +35,11 @@ class Position extends Model
     public function employmentStatuses(): HasMany
     {
         return $this->hasMany(EmploymentStatus::class);
+    }
+
+    public function attendanceSetting(): HasOne
+    {
+        return $this->hasOne(PositionAttendanceSetting::class);
     }
 
     public function canDelete(): bool

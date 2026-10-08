@@ -81,6 +81,7 @@ use App\Http\Controllers\Admin\Payroll\PayrollComponentController;
 use App\Http\Controllers\Admin\Payroll\PayrollPaymentController;
 use App\Http\Controllers\Admin\Payroll\PayrollPeriodController;
 use App\Http\Controllers\Admin\Payroll\PayrollSlipController;
+use App\Http\Controllers\Admin\Payroll\PayrollSlipTemplateController;
 use App\Http\Controllers\Admin\Payroll\SessionCompensationRuleController;
 use App\Http\Controllers\Admin\PositionController;
 use App\Http\Controllers\Admin\ProspectiveMemberController;
@@ -175,6 +176,7 @@ use App\Http\Controllers\Member\ProgramRegistrationController;
 use App\Http\Controllers\Member\ToeflSessionController;
 use App\Http\Controllers\OffBoardingController;
 use App\Http\Controllers\PdfTestController;
+use App\Http\Controllers\PositionAttendanceSettingController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\ProgramPaymentPlanController;
 use App\Http\Controllers\ProvinceController;
@@ -681,6 +683,9 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     // Route::resource('attendance-logs', AttendanceLogController::class);
     Route::resource('attendance-policies', AttendancePolicyController::class);
     Route::resource('attendance-rules', AttendanceRuleController::class);
+    Route::get('attendance/position-settings', [PositionAttendanceSettingController::class, 'index'])->name('attendance.position-settings.index');
+    Route::get('attendance/position-settings/{position}/edit', [PositionAttendanceSettingController::class, 'edit'])->name('attendance.position-settings.edit');
+    Route::put('attendance/position-settings/{position}', [PositionAttendanceSettingController::class, 'update'])->name('attendance.position-settings.update');
     Route::get('leave-pay-settings', [LeavePaySettingController::class, 'index'])->name('leave-pay-settings.index');
     Route::post('leave-pay-settings/upsert', [LeavePaySettingController::class, 'upsert'])->name('leave-pay-settings.upsert');
     Route::resource('leave-requests', LeaveRequestController::class)->only(['index', 'create', 'store']);
@@ -836,15 +841,15 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     });
 
     Route::prefix('payroll-slip-templates')->name('payroll.slip-templates.')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Admin\Payroll\PayrollSlipTemplateController::class, 'index'])->name('index');
-        Route::post('/', [\App\Http\Controllers\Admin\Payroll\PayrollSlipTemplateController::class, 'store'])->name('store');
-        Route::post('assign', [\App\Http\Controllers\Admin\Payroll\PayrollSlipTemplateController::class, 'assignUpdate'])->name('assign.update');
-        Route::post('{type}/upload', [\App\Http\Controllers\Admin\Payroll\PayrollSlipTemplateController::class, 'upload'])->name('upload');
-        Route::delete('{type}', [\App\Http\Controllers\Admin\Payroll\PayrollSlipTemplateController::class, 'destroy'])->name('destroy');
-        Route::get('{type}/download', [\App\Http\Controllers\Admin\Payroll\PayrollSlipTemplateController::class, 'download'])->name('download');
-        Route::get('{type}/test', [\App\Http\Controllers\Admin\Payroll\PayrollSlipTemplateController::class, 'test'])->name('test');
-        Route::post('{type}/test', [\App\Http\Controllers\Admin\Payroll\PayrollSlipTemplateController::class, 'testProcess'])->name('test.process');
-        Route::get('{type}/test/download', [\App\Http\Controllers\Admin\Payroll\PayrollSlipTemplateController::class, 'testDownload'])->name('test.download');
+        Route::get('/', [PayrollSlipTemplateController::class, 'index'])->name('index');
+        Route::post('/', [PayrollSlipTemplateController::class, 'store'])->name('store');
+        Route::post('assign', [PayrollSlipTemplateController::class, 'assignUpdate'])->name('assign.update');
+        Route::post('{type}/upload', [PayrollSlipTemplateController::class, 'upload'])->name('upload');
+        Route::delete('{type}', [PayrollSlipTemplateController::class, 'destroy'])->name('destroy');
+        Route::get('{type}/download', [PayrollSlipTemplateController::class, 'download'])->name('download');
+        Route::get('{type}/test', [PayrollSlipTemplateController::class, 'test'])->name('test');
+        Route::post('{type}/test', [PayrollSlipTemplateController::class, 'testProcess'])->name('test.process');
+        Route::get('{type}/test/download', [PayrollSlipTemplateController::class, 'testDownload'])->name('test.download');
     });
 
     Route::prefix('employees/{employee}')->name('employees.')->group(function () {
