@@ -142,6 +142,117 @@
     --animate-wa-bounce: wa-bounce 3s ease-in-out infinite;
 }
 
+/* ═══════════════════════════════════════════════════════════
+   DASHBOARD THEME SYSTEM
+   Applied via class on <html>: e.g. theme-blue mode-light
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+    /* Sidebar & layout surfaces */
+    --dash-sidebar-bg: #ffffff;
+    --dash-sidebar-border: #e2e8f0;
+    --dash-sidebar-border-subtle: #f1f5f9;
+    --dash-topbar-bg: #ffffff;
+    --dash-topbar-border: #e2e8f0;
+    --dash-page-bg: #f8fafc;
+    --dash-card-bg: #ffffff;
+    --dash-card-border: #e2e8f0;
+
+    /* Text */
+    --dash-text-heading: #1e293b;
+    --dash-text-body: #374151;
+    --dash-text-muted: #64748b;
+    --dash-text-faint: #94a3b8;
+
+    /* Nav */
+    --dash-nav-inactive: #64748b;
+    --dash-nav-icon-inactive: #94a3b8;
+    --dash-nav-section: #94a3b8;
+    --dash-nav-hover-bg: #f8fafc;
+
+    /* Logout button */
+    --dash-logout-bg: #f8fafc;
+    --dash-logout-border: #e2e8f0;
+    --dash-logout-text: #64748b;
+
+    /* Scrollbar */
+    --dash-scrollbar-thumb: #e2e8f0;
+    --dash-scrollbar-hover: #cbd5e1;
+
+    /* Primary (default: blue) */
+    --dash-primary: #5586db;
+    --dash-primary-bg: #eef4ff;
+    --dash-primary-text: #5586db;
+    --dash-logo: #5586db;
+}
+
+/* ── Theme: Blue ── */
+.theme-blue {
+    --dash-primary: #5586db;
+    --dash-primary-bg: #eef4ff;
+    --dash-primary-text: #5586db;
+    --dash-logo: #5586db;
+}
+
+/* ── Theme: Cyan ── */
+.theme-cyan {
+    --dash-primary: #00aacc;
+    --dash-primary-bg: #e0f7fb;
+    --dash-primary-text: #007a99;
+    --dash-logo: #00aacc;
+}
+
+/* ── Theme: Gold ── */
+.theme-gold {
+    --dash-primary: #dbb940;
+    --dash-primary-bg: #fef8e1;
+    --dash-primary-text: #b8951f;
+    --dash-logo: #b8951f;
+}
+
+/* ── Mode: Dark ── */
+.mode-dark {
+    --dash-sidebar-bg: #0f172a;
+    --dash-sidebar-border: #1e293b;
+    --dash-sidebar-border-subtle: #1e293b;
+    --dash-topbar-bg: #0f172a;
+    --dash-topbar-border: #1e293b;
+    --dash-page-bg: #070d1a;
+    --dash-card-bg: #0f172a;
+    --dash-card-border: #1e293b;
+
+    --dash-text-heading: #f1f5f9;
+    --dash-text-body: #cbd5e1;
+    --dash-text-muted: #475569;
+    --dash-text-faint: #334155;
+
+    --dash-nav-inactive: #475569;
+    --dash-nav-icon-inactive: #334155;
+    --dash-nav-section: #334155;
+    --dash-nav-hover-bg: rgba(255, 255, 255, 0.03);
+
+    --dash-logout-bg: #0a1120;
+    --dash-logout-border: #1e293b;
+    --dash-logout-text: #475569;
+
+    --dash-scrollbar-thumb: #1e293b;
+    --dash-scrollbar-hover: #334155;
+}
+
+/* Dark mode: primary-bg uses alpha, primary-text brighter */
+.mode-dark.theme-blue {
+    --dash-primary-bg: rgba(85, 134, 219, 0.12);
+    --dash-primary-text: #5586db;
+}
+.mode-dark.theme-cyan {
+    --dash-primary-bg: rgba(0, 170, 204, 0.12);
+    --dash-primary-text: #00aacc;
+}
+.mode-dark.theme-gold {
+    --dash-primary-bg: rgba(219, 185, 64, 0.1);
+    --dash-primary-text: #dbb940;
+}
+
 @keyframes float {
     0%,
     100% {
@@ -288,8 +399,8 @@
 
     select:focus {
         outline: none !important;
-        border-color: #5586db !important;
-        box-shadow: 0 0 0 2px rgba(85, 134, 219, 0.2) !important;
+        border-color: var(--dash-primary) !important;
+        box-shadow: 0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent) !important;
     }
 
     select:disabled {
@@ -339,8 +450,8 @@
     input[type="time"]:focus,
     textarea:focus {
         outline: none !important;
-        border-color: #5586db !important;
-        box-shadow: 0 0 0 2px rgba(85, 134, 219, 0.2) !important;
+        border-color: var(--dash-primary) !important;
+        box-shadow: 0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent) !important;
     }
 
     input:disabled,
@@ -384,7 +495,7 @@
     }
 
     .btn:focus-visible {
-        outline: 2px solid rgba(85, 134, 219, 0.5);
+        outline: 2px solid color-mix(in srgb, var(--dash-primary) 50%, transparent);
         outline-offset: 2px;
     }
 

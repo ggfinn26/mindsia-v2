@@ -77,9 +77,9 @@ class ApiKeyController extends Controller implements HasMiddleware
         }
 
         try {
-            $response = Http::timeout(8)->get('https://v2.convertapi.com/user', [
-                'Secret' => $apiKey->key_value,
-            ]);
+            $response = Http::timeout(8)
+                ->withHeader('Authorization', 'Bearer '.$apiKey->key_value)
+                ->get('https://v2.convertapi.com/user');
 
             if (! $response->successful()) {
                 return response()->json(['error' => 'ConvertAPI menolak key ini. Cek apakah key masih valid.'], 502);

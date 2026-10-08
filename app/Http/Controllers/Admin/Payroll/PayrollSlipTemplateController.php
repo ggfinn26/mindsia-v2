@@ -139,9 +139,11 @@ class PayrollSlipTemplateController extends Controller
     /** Delete a custom template (base types cannot be deleted). */
     public function destroy(string $type): RedirectResponse
     {
+        abort_unless(preg_match('/^[a-z0-9_]+$/', $type), 404);
         abort_if(isset(self::BASE_LABELS[$type]), 422, 'Template bawaan tidak bisa dihapus.');
 
         $path = self::templatePath($type);
+        abort_unless(str_starts_with((string) realpath($path) ?: '', realpath(storage_path('app/templates')).'/'), 404);
         if (file_exists($path)) {
             unlink($path);
         }
@@ -155,8 +157,10 @@ class PayrollSlipTemplateController extends Controller
 
     public function download(string $type): Response
     {
+        abort_unless(preg_match('/^[a-z0-9_]+$/', $type), 404);
         $path = self::templatePath($type);
         abort_unless(file_exists($path), 404);
+        abort_unless(str_starts_with((string) realpath($path) ?: '', realpath(storage_path('app/templates')).'/'), 404);
 
         $label = self::BASE_LABELS[$type] ?? ucwords(str_replace('_', ' ', $type));
 
@@ -185,6 +189,7 @@ class PayrollSlipTemplateController extends Controller
 
     public function test(string $type): View
     {
+        abort_unless(preg_match('/^[a-z0-9_]+$/', $type), 404);
         abort_unless(file_exists(self::templatePath($type)), 404);
 
         $label = self::BASE_LABELS[$type] ?? ucwords(str_replace('_', ' ', $type));
