@@ -37,7 +37,7 @@ class DocumentSignatureSettingController extends Controller implements HasMiddle
 
         return view('attendance.document-signature.index', [
             'settings' => $settings,
-            'documentTypes' => DocumentSignatureSetting::$documentTypes,
+            'documentTypes' => config('documents.signature_types'),
             'employees' => $employees,
         ]);
     }

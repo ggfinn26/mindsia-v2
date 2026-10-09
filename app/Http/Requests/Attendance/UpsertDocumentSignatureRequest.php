@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Attendance;
 
-use App\Models\DocumentSignatureSetting;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpsertDocumentSignatureRequest extends FormRequest
@@ -14,8 +13,6 @@ class UpsertDocumentSignatureRequest extends FormRequest
 
     public function rules(): array
     {
-        $types = implode(',', DocumentSignatureSetting::$documentTypes);
-
         return [
             'signers' => ['required', 'array'],
             'signers.*.signer_name' => ['required', 'string', 'max:255'],
@@ -26,7 +23,7 @@ class UpsertDocumentSignatureRequest extends FormRequest
     public function withValidator($validator): void
     {
         $validator->after(function ($validator) {
-            $allowed = DocumentSignatureSetting::$documentTypes;
+            $allowed = array_keys(config('documents.signature_types', []));
             foreach (array_keys($this->input('signers', [])) as $type) {
                 if (! in_array($type, $allowed)) {
                     $validator->errors()->add('signers', "Tipe dokumen tidak valid: {$type}");

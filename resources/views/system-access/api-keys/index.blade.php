@@ -6,12 +6,12 @@
 <div class="max-w-6xl mx-auto space-y-6">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <p class="text-sm font-semibold uppercase tracking-wider text-slate-500">Sistem & Akses</p>
-            <h1 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">API Keys</h1>
-            <p class="mt-1 text-sm text-slate-500">Rotasi key eksternal (ConvertAPI, dll). Key aktif dipilih otomatis LRU.</p>
+            <p class="text-sm font-semibold uppercase tracking-wider text-[var(--dash-text-muted)]">Sistem & Akses</p>
+            <h1 class="font-jakarta text-2xl font-bold tracking-tight text-[var(--dash-text-heading)]">API Keys</h1>
+            <p class="mt-1 text-sm text-[var(--dash-text-muted)]">Rotasi key eksternal (ConvertAPI, dll). Key aktif dipilih otomatis LRU.</p>
         </div>
         @can('system.api_key.create')
-        <a href="{{ route('system.api-keys.create') }}" class="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-lg bg-[#215aac] px-5 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-colors">
+        <a href="{{ route('system.api-keys.create') }}" class="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-lg bg-[var(--dash-primary)] px-5 text-sm font-bold text-white shadow-sm hover:opacity-90 transition-colors">
             <span class="material-symbols-outlined text-[18px]">add</span> Tambah Key
         </a>
         @endcan
@@ -24,10 +24,10 @@
     <div class="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">{{ session('error') }}</div>
     @endif
 
-    <div class="overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm">
+    <div class="overflow-hidden rounded-xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-100 text-sm">
-                <thead class="bg-slate-50 text-left text-xs font-bold uppercase tracking-wider text-slate-500">
+            <table class="min-w-full divide-y divide-[var(--dash-card-border)] text-sm">
+                <thead class="bg-[var(--dash-page-bg)] text-left text-xs font-bold uppercase tracking-wider text-[var(--dash-text-muted)]">
                     <tr>
                         <th class="px-6 py-4">Label</th>
                         <th class="px-6 py-4">Tipe Service</th>
@@ -39,9 +39,9 @@
                 </thead>
                 <tbody>
                     @forelse($keys as $key)
-                    <tbody x-data="quotaChecker('{{ route('system.api-keys.quota', $key) }}')" class="divide-y divide-slate-50">
-                        <tr class="hover:bg-slate-50/50 transition-colors">
-                            <td class="px-6 py-4 font-medium text-slate-800">{{ $key->label }}</td>
+                    <tbody x-data="quotaChecker('{{ route('system.api-keys.quota', $key) }}')" class="divide-y divide-[var(--dash-card-border)]">
+                        <tr class="hover:bg-[var(--dash-page-bg)] transition-colors">
+                            <td class="px-6 py-4 font-medium text-[var(--dash-text-heading)]">{{ $key->label }}</td>
                             <td class="px-6 py-4">
                                 @php
                                     $typeColors = [
@@ -51,12 +51,12 @@
                                         'email'      => 'bg-orange-100 text-orange-800',
                                     ];
                                 @endphp
-                                <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {{ $typeColors[$key->type] ?? 'bg-slate-100 text-slate-700' }}">{{ $key->type }}</span>
+                                <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {{ $typeColors[$key->type] ?? 'bg-[var(--dash-input-bg)] text-[var(--dash-text-body)]' }}">{{ $key->type }}</span>
                             </td>
                             <td class="px-6 py-4">
-                                <code class="rounded bg-slate-100 px-2 py-0.5 text-xs font-mono text-slate-500">••••••••</code>
+                                <code class="rounded bg-[var(--dash-input-bg)] px-2 py-0.5 text-xs font-mono text-[var(--dash-text-muted)]">••••••••</code>
                             </td>
-                            <td class="px-6 py-4 text-slate-500 text-xs">
+                            <td class="px-6 py-4 text-[var(--dash-text-muted)] text-xs">
                                 {{ $key->last_used_at ? $key->last_used_at->diffForHumans() : 'Belum pernah' }}
                             </td>
                             <td class="px-6 py-4">
@@ -70,24 +70,40 @@
                                 <div class="flex items-center justify-end gap-2">
                                     @if($key->type === 'convertapi')
                                     <button @click="check()" :disabled="loading"
-                                        class="inline-flex items-center gap-1 rounded-lg border border-violet-200 px-3 py-1.5 text-xs font-medium text-violet-600 hover:bg-violet-50 transition-colors disabled:opacity-50 disabled:cursor-wait">
-                                        <span class="material-symbols-outlined text-[13px]" x-text="loading ? 'hourglass_empty' : 'analytics'">analytics</span>
+                                        class="inline-flex items-center gap-1.5 rounded-lg border border-[var(--dash-card-border)] px-3 py-1.5 text-xs font-semibold text-violet-600 bg-[var(--dash-card-bg)] transition-colors disabled:opacity-50 disabled:cursor-wait"
+                                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                        <span class="material-symbols-outlined text-[14px]" x-text="loading ? 'hourglass_empty' : 'analytics'">analytics</span>
                                         <span x-text="loading ? 'Memuat...' : 'Cek Quota'">Cek Quota</span>
                                     </button>
                                     @endif
                                     @can('system.api_key.update')
-                                    <a href="{{ route('system.api-keys.edit', $key) }}" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50 transition-colors">Edit</a>
-                                    <form method="POST" action="{{ route('system.api-keys.toggle', $key) }}">
+                                    <a href="{{ route('system.api-keys.edit', $key) }}" 
+                                       class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors"
+                                       style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                                       onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                       onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                        <span class="material-symbols-outlined text-[14px]">edit</span>Edit
+                                    </a>
+                                    <form method="POST" action="{{ route('system.api-keys.toggle', $key) }}" class="inline">
                                         @csrf
-                                        <button type="submit" class="rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors {{ $key->is_active ? 'border-orange-200 text-orange-600 hover:bg-orange-50' : 'border-green-200 text-green-600 hover:bg-green-50' }}">
-                                            {{ $key->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
+                                        <button type="submit" 
+                                                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg text-white hover:opacity-90 transition-opacity"
+                                                style="background-color: {{ $key->is_active ? '#dc2626' : '#059669' }};">
+                                            <span class="material-symbols-outlined text-[14px]">swap_horiz</span>{{ $key->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
                                         </button>
                                     </form>
                                     @endcan
                                     @can('system.api_key.delete')
-                                    <form method="POST" action="{{ route('system.api-keys.destroy', $key) }}" onsubmit="return confirm('Hapus key ini?')">
+                                    <form method="POST" action="{{ route('system.api-keys.destroy', $key) }}" class="inline" onsubmit="return confirm('Hapus key ini?')">
                                         @csrf @method('DELETE')
-                                        <button type="submit" class="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors">Hapus</button>
+                                        <button type="submit" 
+                                                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors"
+                                                style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: #dc2626;"
+                                                onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                                onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                            <span class="material-symbols-outlined text-[14px]">delete</span>Hapus
+                                        </button>
                                     </form>
                                     @endcan
                                 </div>
@@ -107,29 +123,29 @@
                                     <div class="flex flex-wrap items-center gap-6">
                                         <div class="flex items-center gap-2">
                                             <span class="material-symbols-outlined text-violet-500 text-[16px]">timer</span>
-                                            <span class="text-xs text-slate-500">Sisa detik</span>
+                                            <span class="text-xs text-[var(--dash-text-muted)]">Sisa detik</span>
                                             <span class="text-sm font-bold text-violet-700" x-text="result.seconds_left ?? '—'"></span>
                                         </div>
                                         <div class="flex items-center gap-2">
-                                            <span class="material-symbols-outlined text-slate-400 text-[16px]">swap_horiz</span>
-                                            <span class="text-xs text-slate-500">Konversi terpakai</span>
-                                            <span class="text-sm font-bold text-slate-700" x-text="result.conversions_consumed ?? '—'"></span>
+                                            <span class="material-symbols-outlined text-[var(--dash-text-faint)] text-[16px]">swap_horiz</span>
+                                            <span class="text-xs text-[var(--dash-text-muted)]">Konversi terpakai</span>
+                                            <span class="text-sm font-bold text-[var(--dash-text-body)]" x-text="result.conversions_consumed ?? '—'"></span>
                                         </div>
                                         <template x-if="result.reset_date">
                                             <div class="flex items-center gap-2">
-                                                <span class="material-symbols-outlined text-slate-400 text-[16px]">calendar_today</span>
-                                                <span class="text-xs text-slate-500">Reset</span>
-                                                <span class="text-sm font-semibold text-slate-700" x-text="result.reset_date"></span>
+                                                <span class="material-symbols-outlined text-[var(--dash-text-faint)] text-[16px]">calendar_today</span>
+                                                <span class="text-xs text-[var(--dash-text-muted)]">Reset</span>
+                                                <span class="text-sm font-semibold text-[var(--dash-text-body)]" x-text="result.reset_date"></span>
                                             </div>
                                         </template>
                                         <template x-if="result.plan">
                                             <div class="flex items-center gap-2">
-                                                <span class="material-symbols-outlined text-slate-400 text-[16px]">workspace_premium</span>
-                                                <span class="text-xs text-slate-500">Plan</span>
-                                                <span class="text-sm font-semibold text-slate-700 capitalize" x-text="result.plan"></span>
+                                                <span class="material-symbols-outlined text-[var(--dash-text-faint)] text-[16px]">workspace_premium</span>
+                                                <span class="text-xs text-[var(--dash-text-muted)]">Plan</span>
+                                                <span class="text-sm font-semibold text-[var(--dash-text-body)] capitalize" x-text="result.plan"></span>
                                             </div>
                                         </template>
-                                        <span class="text-xs text-slate-400 ml-auto">Data live dari ConvertAPI</span>
+                                        <span class="text-xs text-[var(--dash-text-faint)] ml-auto">Data live dari ConvertAPI</span>
                                     </div>
                                 </template>
                             </td>
@@ -138,7 +154,7 @@
                     @empty
                     <tbody>
                         <tr>
-                            <td colspan="6" class="px-6 py-10 text-center text-slate-400">Belum ada API key. Tambah key ConvertAPI untuk fitur docx → PDF.</td>
+                            <td colspan="6" class="px-6 py-10 text-center text-[var(--dash-text-faint)]">Belum ada API key. Tambah key ConvertAPI untuk fitur docx → PDF.</td>
                         </tr>
                     </tbody>
                     @endforelse

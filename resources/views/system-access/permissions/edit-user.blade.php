@@ -1,22 +1,29 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Direct Permission: ' . $user->name)
+@section('title', 'Direct Permission: ' . $user->name . ' - MINDSIA')
 @section('header_title', 'Direct Permission User')
 
 @section('content')
-<div class="max-w-4xl mx-auto space-y-6">
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-4xl mx-auto space-y-6">
 
+    {{-- Back + header --}}
     <div>
-        <a href="{{ route('system.permissions.index') }}?tab=users" class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700">
-            <span class="material-symbols-outlined text-[16px]">arrow_back</span> Manajemen Permission
+        <a href="{{ route('system.permissions.index') }}?tab=users"
+           class="mb-2 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider hover:opacity-75 transition-opacity"
+           style="color: var(--dash-text-muted);">
+            <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+            Manajemen Permission
         </a>
-        <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">{{ $user->name }}</h2>
-        <p class="mt-1 text-sm text-slate-500">
-            {{ $user->email }}
-            · {{ count($assigned) }} direct permission aktif
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+            style="color: var(--dash-text-heading);">{{ $user->name }}</h1>
+        <p class="mt-1 text-sm" style="color: var(--dash-text-muted);">
+            {{ $user->email }} · {{ count($assigned) }} direct permission aktif
         </p>
-        <div class="mt-2 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
-            <span class="material-symbols-outlined text-[14px] align-middle">info</span>
+
+        {{-- Info banner --}}
+        <div class="mt-3 flex items-start gap-2 px-3 py-2 rounded-xl text-xs"
+             style="background-color: #fef3c7; border: 1px solid #fcd34d; color: #d97706;">
+            <span class="material-symbols-outlined text-[14px] flex-shrink-0 mt-0.5">info</span>
             Direct permission bersifat tambahan — tidak mengganti permission dari role/posisi user ini.
         </div>
     </div>
@@ -25,43 +32,67 @@
         @csrf
         @method('PUT')
 
-        <div class="space-y-4">
-            @foreach ($allPermissions as $domain => $perms)
-                <div class="overflow-hidden border border-slate-200 bg-white" x-data="{ open: {{ $perms->contains(fn($p) => in_array($p->id, $assigned)) ? 'true' : 'false' }} }">
+        <div class="space-y-3">
+            @foreach($allPermissions as $domain => $perms)
+                @php $activeCount = $perms->filter(fn($p) => in_array($p->id, $assigned))->count(); @endphp
+                <div class="rounded-2xl overflow-hidden"
+                     style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);"
+                     x-data="{ open: {{ $activeCount > 0 ? 'true' : 'false' }} }">
+
+                    {{-- Accordion header --}}
                     <button type="button" @click="open = !open"
-                        class="flex w-full items-center justify-between border-b border-slate-200 bg-slate-50 px-5 py-3 text-left">
+                            class="flex w-full items-center justify-between px-5 py-3 text-left transition-colors"
+                            style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);"
+                            onmouseover="this.style.opacity='0.85'"
+                            onmouseout="this.style.opacity='1'">
                         <div class="flex items-center gap-2">
-                            <h3 class="font-jakarta text-xs font-bold uppercase tracking-wider text-slate-700">{{ $domain }}</h3>
-                            @php $activeCount = $perms->filter(fn($p) => in_array($p->id, $assigned))->count(); @endphp
-                            @if ($activeCount > 0)
-                                <span class="inline-flex rounded-full bg-blue-100 px-1.5 py-0.5 text-xs font-semibold text-blue-700">{{ $activeCount }}/{{ $perms->count() }}</span>
+                            <h3 class="font-jakarta text-xs font-bold uppercase tracking-wider"
+                                style="color: var(--dash-text-heading);">{{ $domain }}</h3>
+                            @if($activeCount > 0)
+                                <span class="inline-flex rounded-full px-1.5 py-0.5 text-xs font-semibold"
+                                      style="background-color: var(--dash-primary-bg); color: var(--dash-primary);">
+                                    {{ $activeCount }}/{{ $perms->count() }}
+                                </span>
                             @else
-                                <span class="text-xs text-slate-400">{{ $perms->count() }} tersedia</span>
+                                <span class="text-xs" style="color: var(--dash-text-faint);">
+                                    {{ $perms->count() }} tersedia
+                                </span>
                             @endif
                         </div>
-                        <span class="material-symbols-outlined text-[16px] text-slate-400" x-text="open ? 'expand_less' : 'expand_more'"></span>
+                        <span class="material-symbols-outlined text-[16px]"
+                              style="color: var(--dash-text-muted);"
+                              x-text="open ? 'expand_less' : 'expand_more'"></span>
                     </button>
-                    <div x-show="open" class="divide-y divide-slate-50 px-5 py-2">
-                        <div class="flex justify-end gap-3 py-2">
+
+                    {{-- Accordion body --}}
+                    <div x-show="open" class="px-5 py-2">
+                        <div class="flex justify-end gap-4 py-2" style="border-bottom: 1px solid var(--dash-card-border);">
                             <button type="button"
-                                @click="$el.closest('[x-data]').querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = true)"
-                                class="text-xs font-semibold text-[#215aac] hover:underline">Pilih semua</button>
+                                    @click="$el.closest('[x-data]').querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = true)"
+                                    class="text-xs font-semibold hover:opacity-75 transition-opacity"
+                                    style="color: var(--dash-primary);">Pilih semua</button>
                             <button type="button"
-                                @click="$el.closest('[x-data]').querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false)"
-                                class="text-xs font-semibold text-slate-500 hover:underline">Hapus semua</button>
+                                    @click="$el.closest('[x-data]').querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false)"
+                                    class="text-xs font-semibold hover:opacity-75 transition-opacity"
+                                    style="color: var(--dash-text-muted);">Hapus semua</button>
                         </div>
-                        @foreach ($perms as $perm)
+                        @foreach($perms as $perm)
                             @php $meta = \App\Support\PermissionLabels::get($perm->name); @endphp
-                            <label class="flex cursor-pointer items-start gap-3 py-2.5 hover:bg-slate-50/70">
+                            <label class="flex cursor-pointer items-start gap-3 py-2.5"
+                                   style="border-bottom: 1px solid var(--dash-card-border);"
+                                   onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                   onmouseout="this.style.backgroundColor=''">
                                 <input type="checkbox" name="permissions[]" value="{{ $perm->id }}"
-                                    {{ in_array($perm->id, $assigned) ? 'checked' : '' }}
-                                    class="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-[#215aac] focus:ring-[#215aac]">
+                                       {{ in_array($perm->id, $assigned) ? 'checked' : '' }}
+                                       class="mt-0.5 h-4 w-4 shrink-0 rounded"
+                                       style="accent-color: var(--dash-primary);">
                                 <div class="min-w-0">
-                                    <p class="text-sm font-medium text-slate-800 leading-snug">{{ $meta['label'] }}</p>
+                                    <p class="text-sm font-medium leading-snug"
+                                       style="color: var(--dash-text-body);">{{ $meta['label'] }}</p>
                                     @if($meta['description'])
-                                        <p class="text-xs text-slate-400 mt-0.5">{{ $meta['description'] }}</p>
+                                        <p class="text-xs mt-0.5" style="color: var(--dash-text-muted);">{{ $meta['description'] }}</p>
                                     @endif
-                                    <p class="font-mono text-[10px] text-slate-400 mt-0.5">{{ $perm->name }}</p>
+                                    <p class="font-mono text-[10px] mt-0.5" style="color: var(--dash-text-faint);">{{ $perm->name }}</p>
                                 </div>
                             </label>
                         @endforeach
@@ -70,11 +101,22 @@
             @endforeach
         </div>
 
-        <div class="sticky bottom-0 mt-6 flex justify-end gap-3 border-t border-slate-200 bg-white px-0 py-4">
+        {{-- Sticky footer --}}
+        <div class="sticky bottom-0 mt-6 flex flex-col sm:flex-row justify-end gap-3 py-4"
+             style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);">
             <a href="{{ route('system.permissions.index') }}?tab=users"
-                class="inline-flex min-h-10 items-center border border-slate-300 px-5 text-sm font-semibold text-slate-700 hover:bg-slate-50">Batal</a>
+               class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors"
+               style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
+               onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+               onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                Batal
+            </a>
             <button type="submit"
-                class="inline-flex min-h-10 items-center bg-[#215aac] px-6 text-sm font-semibold text-white hover:bg-[#194a91]">Simpan Permission</button>
+                    class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                    style="background-color: var(--dash-primary);">
+                <span class="material-symbols-outlined text-[18px]">save</span>
+                Simpan Permission
+            </button>
         </div>
     </form>
 </div>

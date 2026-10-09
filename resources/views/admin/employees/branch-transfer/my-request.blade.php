@@ -70,7 +70,7 @@
                 <div>
                     <label class="mb-1.5 block text-sm font-semibold text-slate-700">Cabang tujuan <span class="text-rose-500">*</span></label>
                     <select name="to_branch_id" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac] @error('to_branch_id') border-rose-500 @enderror">
-                        <option value="">— Pilih cabang tujuan —</option>
+                        <option value="">Pilih Cabang Tujuan</option>
                         @foreach ($otherBranches as $branch)
                             <option value="{{ $branch->id }}" @selected(old('to_branch_id') == $branch->id)>{{ $branch->branch_name }}</option>
                         @endforeach

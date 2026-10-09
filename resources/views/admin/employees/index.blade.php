@@ -1,175 +1,310 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Daftar Pegawai')
+@section('title', 'Daftar Pegawai - MINDSIA')
+@section('header_title', 'Daftar Pegawai')
 
 @section('content')
-<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">Daftar Pegawai</h1>
-        <a href="{{ route('employees.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto">
+
+    {{-- Page header --}}
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+        <div>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+                style="color: var(--dash-text-heading);">Daftar Pegawai</h1>
+            <p class="mt-1 text-sm" style="color: var(--dash-text-muted);">
+                Kelola data seluruh pegawai aktif dan nonaktif.
+            </p>
+        </div>
+        <a href="{{ route('employees.create') }}"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity self-start sm:self-auto"
+           style="background-color: var(--dash-primary);">
+            <span class="material-symbols-outlined text-[18px]">person_add</span>
             Tambah Pegawai
         </a>
     </div>
 
-    @if (session('success'))
-        <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
+    @if(session('success'))
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium mb-6"
+             style="background-color: #f0fdf4; border-color: #bbf7d0; color: #059669;">
+            <span class="material-symbols-outlined text-[18px]">check_circle</span>
             {{ session('success') }}
         </div>
     @endif
-    
-    @if (session('error'))
-        <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+
+    @if(session('error'))
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium mb-6"
+             style="background-color: #fee2e2; border-color: #fca5a5; color: #dc2626;">
+            <span class="material-symbols-outlined text-[18px]">error</span>
             {{ session('error') }}
         </div>
     @endif
 
-    <div class="bg-white shadow sm:rounded-lg mb-6 p-4">
-        <form method="GET" action="{{ route('employees.index') }}" class="flex flex-col sm:flex-row gap-4 items-end">
-            <div class="flex-1">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Pencarian</label>
-                <div class="relative rounded-md shadow-sm">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <span class="material-symbols-outlined text-gray-400 text-sm">search</span>
-                    </div>
-                    <input type="text" name="search" value="{{ request('search') }}" style="padding-left: 2.5rem !important" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Cari nama atau kode pegawai...">
+    {{-- Filter bar --}}
+    <div class="rounded-2xl p-4 mb-6"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <form method="GET" action="{{ route('employees.index') }}"
+              class="flex flex-col sm:flex-row flex-wrap gap-3 items-end">
+
+            {{-- Search --}}
+            <div class="w-full sm:flex-1 sm:min-w-[200px]">
+                <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5"
+                       style="color: var(--dash-text-muted);">Pencarian</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-3 flex items-center pointer-events-none material-symbols-outlined text-[18px]"
+                          style="color: var(--dash-text-faint);">search</span>
+                    <input type="text" name="search" value="{{ request('search') }}"
+                           placeholder="Nama atau kode pegawai..."
+                           style="padding-left: 2.5rem !important;">
                 </div>
             </div>
-            
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Filter Status</label>
-                <select name="is_active" data-with-semua class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500" onchange="this.form.submit()">
+
+            {{-- Status --}}
+            <div class="w-full sm:w-auto">
+                <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5"
+                       style="color: var(--dash-text-muted);">Status</label>
+                <select name="is_active" onchange="this.form.submit()">
                     <option value="">Semua Status</option>
-                    <option value="1" {{ request('is_active') === '1' ? 'selected' : '' }}>Aktif</option>
-                    <option value="0" {{ request('is_active') === '0' ? 'selected' : '' }}>Nonaktif</option>
+                    <option value="1" @if(request('is_active') === '1') selected @endif>Aktif</option>
+                    <option value="0" @if(request('is_active') === '0') selected @endif>Nonaktif</option>
                 </select>
             </div>
-            
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Filter Region</label>
-                <select name="region_id" data-with-semua class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500" onchange="this.form.submit()">
+
+            {{-- Region --}}
+            <div class="w-full sm:w-auto">
+                <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5"
+                       style="color: var(--dash-text-muted);">Region</label>
+                <select name="region_id" onchange="this.form.submit()">
                     <option value="">Semua Region</option>
                     @foreach($regions as $region)
-                        <option value="{{ $region->id }}" {{ request('region_id') == $region->id ? 'selected' : '' }}>{{ $region->name }}</option>
+                        <option value="{{ $region->id }}"
+                                @if(request('region_id') == $region->id) selected @endif>
+                            {{ $region->name }}
+                        </option>
                     @endforeach
                 </select>
             </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Filter Cabang</label>
-                <select name="branch_id" data-with-semua class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500" onchange="this.form.submit()">
+            {{-- Cabang --}}
+            <div class="w-full sm:w-auto">
+                <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5"
+                       style="color: var(--dash-text-muted);">Cabang</label>
+                <select name="branch_id" onchange="this.form.submit()">
                     <option value="">Semua Cabang</option>
                     @foreach($branches as $branch)
-                        <option value="{{ $branch->id }}" {{ request('branch_id') == $branch->id ? 'selected' : '' }}>{{ $branch->branch_name }}</option>
+                        <option value="{{ $branch->id }}"
+                                @if(request('branch_id') == $branch->id) selected @endif>
+                            {{ $branch->branch_name }}
+                        </option>
                     @endforeach
                 </select>
             </div>
 
-            @if(request('search') || request('is_active') !== null || request('region_id') || request('branch_id') || request('sort'))
-                <a href="{{ route('employees.index') }}" class="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 text-center">Reset</a>
-            @endif
-            
-            <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">Cari</button>
+            {{-- Actions --}}
+            <div class="flex gap-2 w-full sm:w-auto">
+                <button type="submit"
+                        class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                        style="background-color: var(--dash-primary);">
+                    <span class="material-symbols-outlined text-[16px]">search</span>
+                    Cari
+                </button>
+                @if(request('search') || request('is_active') !== null && request('is_active') !== '' || request('region_id') || request('branch_id') || request('sort'))
+                    <a href="{{ route('employees.index') }}"
+                       class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-colors"
+                       style="border: 1px solid var(--dash-card-border); color: var(--dash-text-muted); background-color: var(--dash-card-bg);"
+                       onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                       onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                        <span class="material-symbols-outlined text-[16px]">close</span>
+                        Reset
+                    </a>
+                @endif
+            </div>
         </form>
     </div>
 
-    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+    {{-- Table card --}}
+    <div class="rounded-2xl overflow-hidden"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    @php
-                        $currentSort = request('sort', 'name');
-                        $q = request()->except('sort');
-                        $sortLink = fn(string $key) => route('employees.index', array_merge($q, ['sort' => $currentSort === $key ? $key.'_desc' : $key]));
-                        $sortIcon = fn(string $key) => str_starts_with($currentSort, $key)
-                            ? ($currentSort === $key.'_desc' ? '↑' : '↓')
-                            : '';
-                    @endphp
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            <a href="{{ $sortLink('code') }}" class="flex items-center gap-1 hover:text-gray-700">Kode Pegawai <span class="text-blue-500">{{ $sortIcon('code') }}</span></a>
+            @php
+                $currentSort = request('sort', 'name');
+                $q = request()->except('sort');
+                $sortLink = fn(string $key) => route('employees.index', array_merge($q, ['sort' => $currentSort === $key ? $key.'_desc' : $key]));
+                $sortIcon = fn(string $key) => str_starts_with($currentSort, $key)
+                    ? ($currentSort === $key.'_desc' ? '↑' : '↓')
+                    : '';
+            @endphp
+            <table class="min-w-full">
+                <thead>
+                    <tr style="border-bottom: 1px solid var(--dash-card-border);">
+                        {{-- Kode: hidden on mobile --}}
+                        <th class="hidden sm:table-cell px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider"
+                            style="color: var(--dash-text-muted);">
+                            <a href="{{ $sortLink('code') }}"
+                               class="inline-flex items-center gap-1 hover:opacity-75 transition-opacity">
+                                Kode
+                                <span style="color: var(--dash-primary);">{{ $sortIcon('code') }}</span>
+                            </a>
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            <a href="{{ $sortLink('name') }}" class="flex items-center gap-1 hover:text-gray-700">Nama Pegawai <span class="text-blue-500">{{ $sortIcon('name') }}</span></a>
+                        {{-- Nama: always shown --}}
+                        <th class="px-4 sm:px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider"
+                            style="color: var(--dash-text-muted);">
+                            <a href="{{ $sortLink('name') }}"
+                               class="inline-flex items-center gap-1 hover:opacity-75 transition-opacity">
+                                Pegawai
+                                <span style="color: var(--dash-primary);">{{ $sortIcon('name') }}</span>
+                            </a>
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Posisi / Jabatan</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Penempatan</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            <a href="{{ $sortLink('tenure') }}" class="flex items-center gap-1 hover:text-gray-700">Masa Kerja <span class="text-blue-500">{{ $sortIcon('tenure') }}</span></a>
+                        {{-- Posisi: always shown --}}
+                        <th class="px-4 sm:px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider"
+                            style="color: var(--dash-text-muted);">Posisi</th>
+                        {{-- Penempatan: hidden on mobile --}}
+                        <th class="hidden md:table-cell px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider"
+                            style="color: var(--dash-text-muted);">Penempatan</th>
+                        {{-- Masa Kerja: hidden on mobile --}}
+                        <th class="hidden lg:table-cell px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider"
+                            style="color: var(--dash-text-muted);">
+                            <a href="{{ $sortLink('tenure') }}"
+                               class="inline-flex items-center gap-1 hover:opacity-75 transition-opacity">
+                                Masa Kerja
+                                <span style="color: var(--dash-primary);">{{ $sortIcon('tenure') }}</span>
+                            </a>
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            <a href="{{ $sortLink('newest') }}" class="flex items-center gap-1 hover:text-gray-700">Status <span class="text-blue-500">{{ $sortIcon('newest') }}</span></a>
+                        {{-- Status: always shown --}}
+                        <th class="px-4 sm:px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider"
+                            style="color: var(--dash-text-muted);">
+                            <a href="{{ $sortLink('newest') }}"
+                               class="inline-flex items-center gap-1 hover:opacity-75 transition-opacity">
+                                Status
+                                <span style="color: var(--dash-primary);">{{ $sortIcon('newest') }}</span>
+                            </a>
                         </th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                        {{-- Aksi: always shown --}}
+                        <th class="px-4 sm:px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider"
+                            style="color: var(--dash-text-muted);">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
+                <tbody>
                     @forelse($employees as $emp)
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $emp->employee_code }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                <div class="flex items-center">
-                                    <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold uppercase mr-3">
+                        <tr style="border-bottom: 1px solid var(--dash-card-border);"
+                            onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                            onmouseout="this.style.backgroundColor=''">
+
+                            {{-- Kode --}}
+                            <td class="hidden sm:table-cell px-6 py-4 text-sm whitespace-nowrap font-mono"
+                                style="color: var(--dash-text-muted);">
+                                {{ $emp->employee_code }}
+                            </td>
+
+                            {{-- Nama + avatar --}}
+                            <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center gap-3">
+                                    <div class="flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold uppercase"
+                                         style="background-color: var(--dash-primary-bg); color: var(--dash-primary);">
                                         {{ substr($emp->full_name, 0, 1) }}
                                     </div>
-                                    <a href="{{ route('employees.show', $emp->id) }}" class="text-blue-600 hover:underline">{{ $emp->full_name }}</a>
+                                    <a href="{{ route('employees.show', $emp->id) }}"
+                                       class="text-sm font-semibold hover:opacity-75 transition-opacity"
+                                       style="color: var(--dash-primary);">
+                                        {{ $emp->full_name }}
+                                    </a>
                                 </div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $emp->currentStatus?->position?->position_name ?? 'Belum ada jabatan' }}
+
+                            {{-- Posisi --}}
+                            <td class="px-4 sm:px-6 py-4 text-sm"
+                                style="color: var(--dash-text-muted);">
+                                {{ $emp->currentStatus?->position?->position_name ?? '—' }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+
+                            {{-- Penempatan: hidden on mobile --}}
+                            <td class="hidden md:table-cell px-6 py-4 text-sm whitespace-nowrap"
+                                style="color: var(--dash-text-muted);">
                                 @if($emp->branch)
-                                    Cabang: {{ $emp->branch->branch_name }}
+                                    {{ $emp->branch->branch_name }}
                                 @elseif($emp->region)
-                                    Region: {{ $emp->region->name }}
-                                @else
-                                    -
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                @if($emp->join_date)
-                                    @php
-                                        $diff = $emp->join_date->diff(now());
-                                        if ($diff->y >= 1) {
-                                            $tenure = $diff->y . ' thn' . ($diff->m > 0 ? ' ' . $diff->m . ' bln' : '');
-                                        } elseif ($diff->m >= 1) {
-                                            $tenure = $diff->m . ' bulan';
-                                        } else {
-                                            $tenure = $diff->days . ' hari';
-                                        }
-                                    @endphp
-                                    {{ $tenure }}
+                                    {{ $emp->region->name }}
                                 @else
                                     —
                                 @endif
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $emp->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                    {{ $emp->is_active ? 'Aktif' : 'Nonaktif' }}
-                                </span>
+
+                            {{-- Masa Kerja: hidden on mobile --}}
+                            <td class="hidden lg:table-cell px-6 py-4 text-sm whitespace-nowrap"
+                                style="color: var(--dash-text-muted);">
+                                @if($emp->join_date)
+                                    @php
+                                        $diff = $emp->join_date->diff(now());
+                                        if ($diff->y >= 1) {
+                                            echo $diff->y . ' thn' . ($diff->m > 0 ? ' ' . $diff->m . ' bln' : '');
+                                        } elseif ($diff->m >= 1) {
+                                            echo $diff->m . ' bulan';
+                                        } else {
+                                            echo $diff->days . ' hari';
+                                        }
+                                    @endphp
+                                @else
+                                    —
+                                @endif
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="{{ route('employees.show', $emp->id) }}" title="Lihat Detail" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-indigo-600 hover:bg-indigo-50 mr-1">
-                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
-                                </a>
-                                <a href="{{ route('employees.edit', $emp->id) }}" title="Edit" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-yellow-600 hover:bg-yellow-50">
-                                    <span class="material-symbols-outlined text-[18px]">edit</span>
-                                </a>
+
+                            {{-- Status --}}
+                            <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
+                                @if($emp->is_active)
+                                    <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                                          style="background-color: #f0fdf4; color: #059669;">Aktif</span>
+                                @else
+                                    <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                                          style="background-color: #fee2e2; color: #dc2626;">Nonaktif</span>
+                                @endif
+                            </td>
+
+                            {{-- Aksi --}}
+                            <td class="px-4 sm:px-6 py-4 whitespace-nowrap text-right">
+                                <div class="inline-flex items-center gap-1">
+                                    <a href="{{ route('employees.show', $emp->id) }}"
+                                       title="Lihat Detail"
+                                       class="inline-flex items-center justify-center w-8 h-8 rounded-lg transition-colors"
+                                       style="color: var(--dash-primary);"
+                                       onmouseover="this.style.backgroundColor='var(--dash-primary-bg)'"
+                                       onmouseout="this.style.backgroundColor=''">
+                                        <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                    </a>
+                                    <a href="{{ route('employees.edit', $emp->id) }}"
+                                       title="Edit"
+                                       class="inline-flex items-center justify-center w-8 h-8 rounded-lg transition-colors"
+                                       style="color: #d97706;"
+                                       onmouseover="this.style.backgroundColor='#fef3c7'"
+                                       onmouseout="this.style.backgroundColor=''">
+                                        <span class="material-symbols-outlined text-[18px]">edit</span>
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">Belum ada data pegawai.</td>
+                            <td colspan="7" class="px-6 py-16 text-center">
+                                <span class="material-symbols-outlined text-[48px] block mx-auto mb-3"
+                                      style="color: var(--dash-text-faint);">group</span>
+                                <p class="text-sm font-semibold mb-1" style="color: var(--dash-text-heading);">
+                                    Belum ada data pegawai.
+                                </p>
+                                <p class="text-sm" style="color: var(--dash-text-muted);">
+                                    Coba ubah filter atau tambah pegawai baru.
+                                </p>
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
+
         @if($employees->hasPages())
-            <div class="px-6 py-4 border-t border-gray-200">
+            <div class="px-4 sm:px-6 py-4"
+                 style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
                 {{ $employees->withQueryString()->links() }}
             </div>
         @endif
     </div>
+
 </div>
 @endsection

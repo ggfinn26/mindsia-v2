@@ -1,19 +1,19 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Konfigurasi Widget Dashboard')
-@section('header_title', 'Konfigurasi Widget Dashboard')
+@section('title', 'Widget Dashboard - MINDSIA')
+@section('header_title', 'Widget Dashboard')
 
 @section('content')
 @php
     $categoryLabel = [
-        'financial'    => 'Finansial & Bisnis',
-        'operations'   => 'Operasional',
-        'hr'           => 'HR & Rekrutmen',
-        'marketing'    => 'Marketing & Growth',
-        'finance_admin'=> 'Finance & Administrasi',
-        'personal'     => 'Personal Performance',
-        'analytics'    => 'Analitik & Insight',
-        'system'       => 'Sistem & Administrasi',
+        'financial'     => 'Finansial & Bisnis',
+        'operations'    => 'Operasional',
+        'hr'            => 'HR & Rekrutmen',
+        'marketing'     => 'Marketing & Growth',
+        'finance_admin' => 'Finance & Administrasi',
+        'personal'      => 'Personal Performance',
+        'analytics'     => 'Analitik & Insight',
+        'system'        => 'Sistem & Administrasi',
     ];
 @endphp
 
@@ -21,47 +21,69 @@
 window._widgetPositions = @json($positions->map(fn($p) => ['id' => $p->id, 'name' => $p->position_name]));
 </script>
 
-<div class="max-w-6xl mx-auto space-y-6" x-data="widgetConfig()">
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-5xl mx-auto space-y-6"
+     x-data="widgetConfig()">
 
-    <div class="flex items-start justify-between gap-4">
-        <div>
-            <p class="text-sm font-medium text-[#725c00]">Sistem & Akses</p>
-            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Widget Dashboard</h2>
-            <p class="mt-1 text-sm text-slate-500">Atur widget mana yang tampil untuk posisi/jabatan tertentu.</p>
-        </div>
+    {{-- Page header --}}
+    <div>
+        <p class="text-xs font-semibold uppercase tracking-wider mb-1"
+           style="color: var(--dash-primary-text);">Sistem & Akses</p>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+            style="color: var(--dash-text-heading);">Widget Dashboard</h1>
+        <p class="mt-1 text-sm" style="color: var(--dash-text-muted);">
+            Atur widget mana yang tampil untuk posisi/jabatan tertentu.
+        </p>
     </div>
 
-    @if (session('success'))
-        <div class="flex gap-3 border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-            <span class="material-symbols-outlined text-[20px]">check_circle</span>
-            <p>{{ session('success') }}</p>
+    @if(session('success'))
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+             style="background-color: #f0fdf4; border-color: #bbf7d0; color: #059669;">
+            <span class="material-symbols-outlined text-[18px]">check_circle</span>
+            {{ session('success') }}
         </div>
     @endif
 
-    @foreach ($widgetKeys as $category => $keys)
-        <div class="overflow-hidden border border-slate-200 bg-white">
-            <div class="border-b border-slate-200 bg-slate-50 px-5 py-3">
-                <h3 class="font-jakarta text-xs font-bold uppercase tracking-wider text-slate-500">
+    {{-- Widget categories --}}
+    @foreach($widgetKeys as $category => $keys)
+        <div class="rounded-2xl overflow-hidden"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <div class="px-5 py-3"
+                 style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                <h3 class="font-jakarta text-xs font-bold uppercase tracking-wider"
+                    style="color: var(--dash-text-muted);">
                     {{ $categoryLabel[$category] ?? ucfirst($category) }}
                 </h3>
             </div>
-            <div class="divide-y divide-slate-100">
-                @foreach ($keys as $wk)
-                    @php
-                        $assigned = $byWidget->get($wk->value, collect());
-                    @endphp
-                    <div class="flex items-start gap-4 px-5 py-4">
+            <div>
+                @foreach($keys as $wk)
+                    @php $assigned = $byWidget->get($wk->value, collect()); @endphp
+                    <div class="flex items-start gap-4 px-5 py-4"
+                         style="border-bottom: 1px solid var(--dash-card-border);"
+                         onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                         onmouseout="this.style.backgroundColor=''">
                         <div class="flex min-w-0 flex-1 items-start gap-3">
-                            <span class="material-symbols-outlined mt-0.5 text-[18px] text-slate-400">{{ $wk->icon() }}</span>
+                            <span class="material-symbols-outlined mt-0.5 text-[18px]"
+                                  style="color: var(--dash-text-faint);">{{ $wk->icon() }}</span>
                             <div class="min-w-0 flex-1">
-                                <p class="text-sm font-semibold text-slate-900">{{ $wk->label() }}</p>
-                                <p class="font-mono text-xs text-slate-400">{{ $wk->value }}</p>
-                                @if ($assigned->isEmpty())
-                                    <p class="mt-1.5 text-xs italic text-slate-400">Belum di-assign ke posisi manapun</p>
+                                <p class="text-sm font-semibold" style="color: var(--dash-text-heading);">
+                                    {{ $wk->label() }}
+                                </p>
+                                <p class="font-mono text-xs" style="color: var(--dash-text-faint);">
+                                    {{ $wk->value }}
+                                </p>
+                                @if($assigned->isEmpty())
+                                    <p class="mt-1.5 text-xs italic" style="color: var(--dash-text-faint);">
+                                        Belum di-assign ke posisi manapun
+                                    </p>
                                 @else
                                     <div class="mt-1.5 flex flex-wrap gap-1.5">
-                                        @foreach ($assigned->sortBy('order') as $cfg)
-                                            <span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium {{ $cfg->is_enabled ? 'bg-blue-50 text-blue-700' : 'bg-slate-100 text-slate-500 line-through' }}">
+                                        @foreach($assigned->sortBy('order') as $cfg)
+                                            <span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium"
+                                                  @if($cfg->is_enabled)
+                                                      style="background-color: var(--dash-primary-bg); color: var(--dash-primary);"
+                                                  @else
+                                                      style="background-color: var(--dash-nav-hover-bg); color: var(--dash-text-muted); text-decoration: line-through; border: 1px solid var(--dash-card-border);"
+                                                  @endif>
                                                 {{ $cfg->position?->position_name ?? '?' }}
                                                 <span class="text-[10px] opacity-60">#{{ $cfg->order }}</span>
                                             </span>
@@ -71,12 +93,15 @@ window._widgetPositions = @json($positions->map(fn($p) => ['id' => $p->id, 'name
                             </div>
                         </div>
                         <button type="button"
-                            @click="openModal($el)"
-                            data-widget-key="{{ $wk->value }}"
-                            data-widget-label="{{ $wk->label() }}"
-                            data-assigned="{{ htmlspecialchars(json_encode($assigned->map(fn($c) => ['position_id' => $c->position_id, 'order' => $c->order, 'is_enabled' => (bool) $c->is_enabled])->values()), ENT_QUOTES) }}"
-                            class="inline-flex shrink-0 min-h-9 items-center border border-slate-300 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50">
-                            <span class="material-symbols-outlined text-[14px] mr-1">tune</span>
+                                @click="openModal($el)"
+                                data-widget-key="{{ $wk->value }}"
+                                data-widget-label="{{ $wk->label() }}"
+                                data-assigned="{{ htmlspecialchars(json_encode($assigned->map(fn($c) => ['position_id' => $c->position_id, 'order' => $c->order, 'is_enabled' => (bool) $c->is_enabled])->values()), ENT_QUOTES) }}"
+                                class="inline-flex shrink-0 items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+                                style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
+                                onmouseover="this.style.backgroundColor='var(--dash-primary-bg)'; this.style.color='var(--dash-primary)'"
+                                onmouseout="this.style.backgroundColor='var(--dash-card-bg)'; this.style.color='var(--dash-text-body)'">
+                            <span class="material-symbols-outlined text-[14px]">tune</span>
                             Kelola
                         </button>
                     </div>
@@ -86,15 +111,32 @@ window._widgetPositions = @json($positions->map(fn($p) => ['id' => $p->id, 'name
     @endforeach
 
     {{-- Modal kelola posisi per widget --}}
-    <div x-show="activeModal !== null" class="fixed inset-0 z-50 flex items-center justify-center" style="display:none;">
-        <div class="absolute inset-0 bg-black/40" @click="closeModal()"></div>
-        <div class="relative w-full max-w-lg bg-white shadow-xl" @click.stop>
-            <div class="flex items-center justify-between border-b border-slate-200 px-6 py-4">
+    <div x-show="activeModal !== null"
+         x-cloak
+         class="fixed inset-0 z-50 flex items-center justify-center p-4"
+         style="display:none;">
+        <div class="absolute inset-0 bg-black/50"
+             x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+             @click="closeModal()"></div>
+        <div class="relative rounded-2xl shadow-xl w-full max-w-lg overflow-hidden"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);"
+             x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+             @click.stop>
+
+            <div class="flex items-center justify-between px-6 py-4"
+                 style="border-bottom: 1px solid var(--dash-card-border);">
                 <div>
-                    <h3 class="font-jakarta text-base font-bold text-slate-900" x-text="modalLabel"></h3>
-                    <p class="text-xs text-slate-500">Pilih posisi yang dapat melihat widget ini</p>
+                    <h3 class="font-jakarta text-base font-bold" style="color: var(--dash-text-heading);"
+                        x-text="modalLabel"></h3>
+                    <p class="text-xs" style="color: var(--dash-text-muted);">
+                        Pilih posisi yang dapat melihat widget ini
+                    </p>
                 </div>
-                <button @click="closeModal()" class="text-slate-400 hover:text-slate-600">
+                <button @click="closeModal()"
+                        class="flex items-center justify-center w-8 h-8 rounded-lg hover:opacity-75 transition-opacity"
+                        style="color: var(--dash-text-muted);">
                     <span class="material-symbols-outlined text-[20px]">close</span>
                 </button>
             </div>
@@ -105,47 +147,70 @@ window._widgetPositions = @json($positions->map(fn($p) => ['id' => $p->id, 'name
 
                 <div class="max-h-[50vh] overflow-y-auto px-6 py-4 space-y-3">
                     <template x-if="modalPositions.length === 0">
-                        <p class="py-4 text-center text-sm text-slate-400 italic">Belum ada posisi. Klik tombol di bawah untuk menambah.</p>
+                        <p class="py-4 text-center text-sm italic" style="color: var(--dash-text-faint);">
+                            Belum ada posisi. Klik tombol di bawah untuk menambah.
+                        </p>
                     </template>
 
                     <template x-for="(row, index) in modalPositions" :key="index">
                         <div class="flex items-center gap-2">
-                            <select :name="'positions[' + index + '][position_id]'" x-model="row.position_id" required
+                            <select :name="'positions[' + index + '][position_id]'"
+                                    x-model="row.position_id"
+                                    required
                                     data-no-enhance
-                                    class="flex-1 border-slate-300 rounded-lg text-sm px-2 py-2 focus:border-[#215aac] focus:ring-[#215aac]">
-                                <option value="">— Pilih posisi —</option>
-                                @foreach ($positions as $pos)
+                                    class="flex-1">
+                                <option value="">Pilih Posisi</option>
+                                @foreach($positions as $pos)
                                     <option value="{{ $pos->id }}">{{ $pos->position_name }}</option>
                                 @endforeach
                             </select>
-                            <div class="flex items-center gap-1">
-                                <span class="text-xs text-slate-500">Urutan</span>
-                                <input type="number" :name="'positions[' + index + '][order]'" x-model="row.order"
-                                    min="1" required class="w-16 border-slate-300 text-sm text-center focus:border-[#215aac] focus:ring-[#215aac]">
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                <span class="text-xs" style="color: var(--dash-text-muted);">#</span>
+                                <input type="number" :name="'positions[' + index + '][order]'"
+                                       x-model="row.order"
+                                       min="1" required
+                                       class="w-14 text-center">
                             </div>
-                            <div class="flex items-center">
+                            <div class="flex items-center shrink-0">
                                 <input type="hidden" :name="'positions[' + index + '][is_enabled]'" value="0">
                                 <input type="checkbox" :name="'positions[' + index + '][is_enabled]'" value="1"
-                                    :checked="row.is_enabled" @change="row.is_enabled = $event.target.checked"
-                                    class="h-4 w-4 rounded border-slate-300 text-[#215aac]" title="Aktifkan">
+                                       :checked="row.is_enabled"
+                                       @change="row.is_enabled = $event.target.checked"
+                                       title="Aktifkan"
+                                       style="accent-color: var(--dash-primary);"
+                                       class="h-4 w-4 rounded">
                             </div>
-                            <button type="button" @click="removePosition(index)" class="text-red-400 hover:text-red-600">
+                            <button type="button" @click="removePosition(index)"
+                                    class="flex-shrink-0 hover:opacity-75 transition-opacity"
+                                    style="color: #dc2626;">
                                 <span class="material-symbols-outlined text-[18px]">delete</span>
                             </button>
                         </div>
                     </template>
                 </div>
 
-                <div class="border-t border-slate-100 px-6 py-3">
+                <div class="px-6 py-3" style="border-top: 1px solid var(--dash-card-border);">
                     <button type="button" @click="addPosition()"
-                        class="inline-flex items-center gap-1 text-sm font-semibold text-[#215aac] hover:underline">
-                        <span class="material-symbols-outlined text-[16px]">add</span> Tambah posisi
+                            class="inline-flex items-center gap-1.5 text-sm font-semibold hover:opacity-75 transition-opacity"
+                            style="color: var(--dash-primary);">
+                        <span class="material-symbols-outlined text-[16px]">add</span>
+                        Tambah posisi
                     </button>
                 </div>
 
-                <div class="flex justify-end gap-3 border-t border-slate-200 bg-slate-50 px-6 py-4">
-                    <button type="button" @click="closeModal()" class="inline-flex min-h-10 items-center border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-100">Batal</button>
-                    <button type="submit" class="inline-flex min-h-10 items-center bg-[#215aac] px-5 text-sm font-semibold text-white hover:bg-[#194a91]">Simpan</button>
+                <div class="flex justify-end gap-3 px-6 py-4"
+                     style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                    <button type="button" @click="closeModal()"
+                            class="px-4 py-2 rounded-xl text-sm font-semibold transition-colors"
+                            style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);">
+                        Batal
+                    </button>
+                    <button type="submit"
+                            class="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                            style="background-color: var(--dash-primary);">
+                        <span class="material-symbols-outlined text-[16px]">save</span>
+                        Simpan
+                    </button>
                 </div>
             </form>
         </div>
