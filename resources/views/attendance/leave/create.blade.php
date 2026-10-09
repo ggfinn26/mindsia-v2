@@ -48,7 +48,7 @@
                         Jenis Permohonan <span style="color: #dc2626;" aria-hidden="true">*</span>
                     </label>
                     <select id="leave_type" name="leave_type" required
-                            class="block w-full rounded-xl text-sm transition-colors focus:outline-none focus:ring-2 px-3 py-2.5 @error('leave_type') ring-2 ring-red-400 @enderror"
+                            class="block w-full rounded-lg text-sm transition-colors focus:outline-none focus:ring-2 px-3 py-2.5 @error('leave_type') ring-2 ring-red-400 @enderror"
                             style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-body); --tw-ring-color: var(--dash-primary);">
                         <option value="" disabled @if(!old('leave_type')) selected @endif>Pilih Jenis</option>
                         <option value="permission" @if(old('leave_type') === 'permission') selected @endif>Izin</option>
@@ -69,7 +69,7 @@
                         </label>
                         <input id="start_date" name="start_date" type="date"
                                value="{{ old('start_date') }}" required
-                               class="block w-full rounded-xl text-sm transition-colors focus:outline-none focus:ring-2 px-3 py-2.5 @error('start_date') ring-2 ring-red-400 @enderror"
+                               class="block w-full rounded-lg text-sm transition-colors focus:outline-none focus:ring-2 px-3 py-2.5 @error('start_date') ring-2 ring-red-400 @enderror"
                                style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-body); --tw-ring-color: var(--dash-primary);" />
                         @error('start_date')
                             <p class="mt-1.5 text-xs" style="color: #dc2626;">{{ $message }}</p>
@@ -82,7 +82,7 @@
                         </label>
                         <input id="end_date" name="end_date" type="date"
                                value="{{ old('end_date') }}" required
-                               class="block w-full rounded-xl text-sm transition-colors focus:outline-none focus:ring-2 px-3 py-2.5 @error('end_date') ring-2 ring-red-400 @enderror"
+                               class="block w-full rounded-lg text-sm transition-colors focus:outline-none focus:ring-2 px-3 py-2.5 @error('end_date') ring-2 ring-red-400 @enderror"
                                style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-body); --tw-ring-color: var(--dash-primary);" />
                         @error('end_date')
                             <p class="mt-1.5 text-xs" style="color: #dc2626;">{{ $message }}</p>
@@ -98,7 +98,7 @@
                     </label>
                     <textarea id="reason" name="reason" rows="4" required
                               placeholder="Tuliskan keterangan detail..."
-                              class="block w-full rounded-xl text-sm transition-colors focus:outline-none focus:ring-2 px-3 py-2.5 @error('reason') ring-2 ring-red-400 @enderror"
+                              class="block w-full rounded-lg text-sm transition-colors focus:outline-none focus:ring-2 px-3 py-2.5 @error('reason') ring-2 ring-red-400 @enderror"
                               style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-body); --tw-ring-color: var(--dash-primary);">{{ old('reason') }}</textarea>
                     @error('reason')
                         <p class="mt-1.5 text-xs" style="color: #dc2626;">{{ $message }}</p>
@@ -136,12 +136,12 @@
             <div class="px-6 py-4 flex items-center justify-end gap-3"
                  style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
                 <a href="{{ route('leave-requests.index') }}"
-                   class="inline-flex items-center justify-center px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                   class="inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                    style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);">
                     Batal
                 </a>
                 <button type="submit"
-                        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                         style="background-color: var(--dash-primary);">
                     <span class="material-symbols-outlined text-[18px]">send</span>
                     Ajukan Permohonan

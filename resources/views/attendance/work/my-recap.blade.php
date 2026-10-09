@@ -36,7 +36,7 @@
         <div x-data="{ open: false }" class="relative ml-auto">
             <label class="block text-[11px] mb-1.5">&nbsp;</label>
             <button type="button" @click="open = !open"
-                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold transition-colors"
+                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-colors"
                     style="background-color: var(--dash-primary-bg); border: 1px solid var(--dash-primary); color: var(--dash-primary-text);">
                 <span class="material-symbols-outlined text-[17px]">picture_as_pdf</span>
                 Export PDF

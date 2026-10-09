@@ -129,7 +129,7 @@
                                   :class="open ? 'rotate-180' : ''">expand_more</span>
                         </div>
                         <div x-show="open" x-transition
-                             class="absolute z-50 w-full mt-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl shadow-xl overflow-hidden">
+                             class="absolute z-50 w-full mt-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl shadow-xl overflow-hidden">
                             <ul class="py-1">
                                 <template x-for="opt in options" :key="opt.value">
                                     <li @click="pick(opt.value, opt.label)"

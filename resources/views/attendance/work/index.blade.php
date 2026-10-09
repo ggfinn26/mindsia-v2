@@ -60,7 +60,7 @@
                 @elseif(!$today || !$today->check_in)
                     <button type="button"
                             @click="open('check-in', '{{ route('work-attendance.check-in') }}')"
-                            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             style="background-color: var(--dash-primary);">
                         <span class="material-symbols-outlined text-lg">login</span>
                         Catat Check-In
@@ -68,7 +68,7 @@
                 @elseif($today->check_in && !$today->check_out)
                     <button type="button"
                             @click="open('check-out', '{{ route('work-attendance.check-out') }}')"
-                            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
+                            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
                         <span class="material-symbols-outlined text-lg">logout</span>
                         Catat Check-Out
                     </button>

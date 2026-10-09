@@ -54,7 +54,7 @@
                     </select>
                 </div>
                 <button type="submit"
-                        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                         style="background-color: var(--dash-primary);">
                     <span class="material-symbols-outlined text-[16px]">filter_list</span>
                     Filter
@@ -276,21 +276,21 @@
                         Alasan Penolakan <span style="color: #dc2626;">*</span>
                     </label>
                     <textarea name="rejection_reason" rows="3" required
-                              class="block w-full rounded-xl text-sm focus:outline-none focus:ring-2"
+                              class="block w-full rounded-lg text-sm focus:outline-none focus:ring-2"
                               style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-body); padding: 0.625rem 0.75rem; --tw-ring-color: #dc2626;"
                               placeholder="Tuliskan alasan penolakan..."></textarea>
                 </div>
                 <div class="flex items-center justify-end gap-3">
                     <button type="button"
                             @click="showRejectModal = false"
-                            class="px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                            class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                             style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
                             onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                             onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
                         Batal
                     </button>
                     <button type="submit"
-                            class="px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                            class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                             style="background-color: #dc2626;">
                         Tolak Pengajuan
                     </button>

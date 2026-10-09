@@ -114,13 +114,13 @@
 
             <div class="flex items-center gap-3 pt-2">
                 <button type="submit"
-                        class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                        class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                         style="background-color: var(--dash-primary);">
                     <span class="material-symbols-outlined text-base">save</span>
                     Simpan
                 </button>
                 <a href="{{ route('attendance.position-settings.index') }}"
-                   class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold transition-colors"
+                   class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold transition-colors"
                    style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body);">
                     Batal
                 </a>

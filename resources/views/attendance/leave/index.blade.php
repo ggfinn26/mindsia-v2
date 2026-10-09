@@ -38,7 +38,7 @@
             </p>
         </div>
         <a href="{{ route('leave-requests.create') }}"
-           class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2"
            style="background-color: var(--dash-primary); --tw-ring-color: var(--dash-primary);">
             <span class="material-symbols-outlined text-[18px]">add</span>
             Ajukan Permohonan
@@ -155,7 +155,7 @@
                                     Ajukan permohonan izin, sakit, atau cuti pertama Anda.
                                 </p>
                                 <a href="{{ route('leave-requests.create') }}"
-                                   class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                                   class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                                    style="background-color: var(--dash-primary);">
                                     <span class="material-symbols-outlined text-[18px]">add</span>
                                     Ajukan Permohonan
@@ -215,14 +215,14 @@
             <div class="flex items-center justify-end gap-3 mt-6">
                 <button type="button"
                         @click="showConfirmModal = false"
-                        class="px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                        class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                         style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);">
                     Batal
                 </button>
                 <form :action="confirmActionUrl" method="POST" class="inline">
                     @csrf
                     <button type="submit"
-                            class="px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                            class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                             style="background-color: #dc2626;">
                         Batalkan Permohonan
                     </button>
