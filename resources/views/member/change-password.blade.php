@@ -4,6 +4,7 @@
 @section('header_title', 'Ubah Password')
 
 @section('content')
+<h1 class="sr-only">Ubah Password</h1>
 <div class="max-w-2xl mx-auto">
     @if(session('status'))
         <div class="mb-6 p-4 bg-green-50 border border-green-200 text-green-700 rounded-xl flex items-start gap-3">

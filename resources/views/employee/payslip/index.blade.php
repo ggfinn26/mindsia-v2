@@ -4,6 +4,7 @@
 @section('header_title', 'Slip Gaji Saya')
 
 @section('content')
+<h1 class="sr-only">Slip Gaji Saya</h1>
 <div class="max-w-4xl mx-auto space-y-5 pt-8 sm:pt-16">
 
     @if (session('success'))

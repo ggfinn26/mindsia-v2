@@ -24,6 +24,7 @@ $statusColor = [
 @endphp
 
 @section('content')
+<h1 class="sr-only">Applicant Portal</h1>
     <div class="mb-8">
         <p class="text-[color:var(--dash-text-muted)] font-medium text-sm sm:text-base">Selamat datang, <span class="font-semibold text-[color:var(--dash-text-heading)]">{{ $applicantData->full_name ?? 'Pelamar' }}</span> 👋</p>
     </div>

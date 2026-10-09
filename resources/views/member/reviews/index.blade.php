@@ -7,7 +7,7 @@
 <div class="max-w-3xl mx-auto space-y-5">
 
     <div>
-        <h2 class="text-xl font-bold font-jakarta text-[color:var(--dash-text-heading)]">Review Program</h2>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Review Program</h1>
         <p class="text-sm text-[color:var(--dash-text-muted)] mt-0.5">Berikan ulasan untuk program yang telah Anda selesaikan.</p>
     </div>
 

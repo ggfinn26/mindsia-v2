@@ -4,6 +4,7 @@
 @section('header_title', 'Jadwal Interview')
 
 @section('content')
+<h1 class="sr-only">Jadwal Interview</h1>
 <div class="max-w-4xl mx-auto space-y-4">
 
     @forelse($schedules as $schedule)

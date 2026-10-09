@@ -4,6 +4,7 @@
 @section('header_title', 'Edit Cabang')
 
 @section('content')
+<h1 class="sr-only">Edit Cabang</h1>
 <div class="max-w-3xl mx-auto">
 
     @if($errors->any())

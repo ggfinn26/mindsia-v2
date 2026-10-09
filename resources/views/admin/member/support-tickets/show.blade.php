@@ -4,6 +4,7 @@
 @section('header_title', 'Detail Tiket')
 
 @section('content')
+<h1 class="sr-only">Detail Tiket</h1>
 <div class="max-w-6xl mx-auto">
     <div class="mb-6">
         <a href="{{ route('support-tickets.index') }}"

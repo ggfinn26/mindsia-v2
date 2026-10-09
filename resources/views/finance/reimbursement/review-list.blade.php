@@ -7,7 +7,7 @@
 <div class="max-w-7xl mx-auto space-y-6">
     <div>
         <p class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--dash-primary-text);">Finance</p>
-        <h2 class="font-jakarta text-[var(--dash-text-muted)]xl font-bold tracking-tight text-[var(--dash-text-heading)]">Review Reimbursement</h2>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Review Reimbursement</h1>
         <p class="mt-1 text-sm text-[var(--dash-text-muted)]">Reimbursement yang menunggu persetujuan finance.</p>
     </div>
 
@@ -43,7 +43,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-5 py-12 text-[var(--dash-text-muted)]enter">
+                            <td colspan="5" class="px-5 py-12 text-center">
                                 <span class="material-symbols-outlined text-3xl text-[var(--dash-text-faint)]">check_circle</span>
                                 <p class="mt-2 font-semibold text-[var(--dash-text-body)]">Tidak ada reimbursement yang perlu direviu.</p>
                             </td>

@@ -5,7 +5,7 @@
 @section('content')
 <div class="max-w-5xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
     <div class="mb-6">
-        <h2 class="text-2xl font-bold text-[color:var(--dash-text-heading)]">Materi Kurikulum</h2>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Materi Kurikulum</h1>
         <p class="text-sm text-[color:var(--dash-text-muted)] mt-1">Akses materi belajar dan latihan interaktif dari kelas aktif Anda.</p>
     </div>
 

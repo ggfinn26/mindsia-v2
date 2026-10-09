@@ -9,7 +9,7 @@
 <div class="w-full space-y-6">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-            <h2 class="font-jakarta text-xl font-bold tracking-tight text-[var(--dash-text-heading)]">Data Pendapatan Saya</h2>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Data Pendapatan Saya</h1>
             <p class="mt-1 text-sm text-[var(--dash-text-muted)]">Laporan pembayaran dari member referral Anda.</p>
         </div>
     </div>

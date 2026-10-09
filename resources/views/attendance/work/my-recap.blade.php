@@ -4,6 +4,7 @@
 @section('header_title', 'Riwayat Absensi Saya')
 
 @section('content')
+<h1 class="sr-only">Riwayat Absensi Saya</h1>
 <div class="max-w-4xl mx-auto space-y-5">
 
     {{-- Filter bar --}}

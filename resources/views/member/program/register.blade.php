@@ -4,6 +4,7 @@
 @section('header_title', 'Pendaftaran Program')
 
 @section('content')
+<h1 class="sr-only">Pendaftaran Program</h1>
 <div class="max-w-4xl mx-auto">
     <div class="mb-6">
         <a href="{{ route('member.program.browse') }}" class="inline-flex items-center text-sm font-medium text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-heading)] transition-colors">

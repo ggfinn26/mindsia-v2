@@ -77,7 +77,7 @@
     {{-- Page header --}}
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-            <h2 class="text-xl font-bold font-jakarta text-[color:var(--dash-text-heading)]">Jadwal Kelas</h2>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Jadwal Kelas</h1>
             <p class="text-sm text-[color:var(--dash-text-muted)] mt-0.5">Kalender pertemuan untuk semua kelas aktif Anda.</p>
         </div>
         <div class="flex items-center gap-1.5 text-xs bg-red-50 border border-red-100 rounded-lg px-3 py-1.5 self-start sm:self-auto">

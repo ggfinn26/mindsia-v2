@@ -12,7 +12,7 @@
 
     <div class="flex items-center justify-between mb-4">
         <div>
-            <h2 class="text-xl font-bold text-[var(--dash-text-heading)]">Hari Libur</h2>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Hari Libur</h1>
             <p class="text-sm text-[var(--dash-text-muted)] mt-0.5">Hari libur nasional dan khusus yang mempengaruhi perhitungan hari kerja.</p>
         </div>
         @can('attendance.holiday.manage')

@@ -4,6 +4,7 @@
 @section('header_title', 'Terminasi Kontrak')
 
 @section('content')
+<h1 class="sr-only">Terminasi Kontrak</h1>
 <div class="max-w-2xl mx-auto">
 
     @if($errors->any())

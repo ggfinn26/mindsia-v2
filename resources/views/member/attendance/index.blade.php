@@ -28,7 +28,7 @@
 <div class="max-w-5xl mx-auto space-y-6">
 
     <div>
-        <h2 class="text-xl font-bold font-jakarta text-[color:var(--dash-text-heading)]">Kehadiran & Nilai</h2>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Kehadiran & Nilai</h1>
         <p class="text-sm text-[color:var(--dash-text-muted)] mt-0.5">Rekap kehadiran dan nilai per pertemuan untuk semua kelas aktif Anda.</p>
     </div>
 

@@ -4,6 +4,7 @@
 @section('header_title', 'Kehadiran Harian')
 
 @section('content')
+<h1 class="sr-only">Kehadiran Harian</h1>
 <div class="max-w-4xl mx-auto pt-8 sm:pt-16 space-y-4"
      x-data="attendanceCamera({ csrfToken: '{{ csrf_token() }}' })">
 

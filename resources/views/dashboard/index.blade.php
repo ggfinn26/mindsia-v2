@@ -51,6 +51,7 @@
 @endpush
 
 @section('content')
+<h1 class="sr-only">Overview</h1>
     <div x-data="{}" >
         <div class="mb-6 flex items-center justify-between">
             <p class="text-[color:var(--dash-text-muted)] font-medium text-sm sm:text-base">Selamat datang kembali, <span class="font-semibold text-[color:var(--dash-text-heading)]">{{ Auth::user()->name ?? 'Pengguna' }}</span> 👋</p>

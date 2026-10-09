@@ -4,6 +4,7 @@
 @section('header_title', 'Pengunduran Diri')
 
 @section('content')
+<h1 class="sr-only">Pengunduran Diri</h1>
 <div class="max-w-2xl mx-auto pt-8 sm:pt-16">
 
     @if (session('success'))

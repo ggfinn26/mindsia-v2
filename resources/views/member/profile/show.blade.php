@@ -4,6 +4,7 @@
 @section('header_title', 'Profile Saya')
 
 @section('content')
+<h1 class="sr-only">Profile Saya</h1>
 <div class="max-w-4xl mx-auto">
     @if(session('success'))
         <div class="mb-6 p-4 bg-green-50 border border-green-200 text-green-700 rounded-xl flex items-start gap-3">

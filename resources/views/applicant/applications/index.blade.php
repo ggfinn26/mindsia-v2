@@ -4,6 +4,7 @@
 @section('header_title', 'Status Lamaran')
 
 @section('content')
+<h1 class="sr-only">Status Lamaran</h1>
 @php
 $statusConfig = [
     'applied'   => ['label' => 'Dikirim',    'color' => 'text-blue-700 bg-blue-50 border-blue-200',   'icon' => 'send'],

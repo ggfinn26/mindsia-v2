@@ -9,7 +9,7 @@
         <a href="{{ route('reimbursements.show', $reimbursement) }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-[var(--dash-text-muted)] hover:text-[var(--dash-text-body)]">
             <span class="material-symbols-outlined text-[16px]">arrow_back</span> {{ $reimbursement->business_purpose }}
         </a>
-        <h2 class="font-jakarta text-[var(--dash-text-muted)]xl font-bold tracking-tight text-[var(--dash-text-heading)]">Edit Reimbursement</h2>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Edit Reimbursement</h1>
     </div>
 
     @if ($errors->any())

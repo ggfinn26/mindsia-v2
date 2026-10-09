@@ -4,6 +4,7 @@
 @section('header_title', 'Edit Data Diri')
 
 @section('content')
+<h1 class="sr-only">Edit Data Diri</h1>
 <div class="max-w-2xl mx-auto">
 
     @if($errors->any())

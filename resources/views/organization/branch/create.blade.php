@@ -4,6 +4,7 @@
 @section('header_title', 'Tambah Cabang Baru')
 
 @section('content')
+<h1 class="sr-only">Tambah Cabang Baru</h1>
 <div class="max-w-3xl mx-auto">
 
     @if($errors->any())

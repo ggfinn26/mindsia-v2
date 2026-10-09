@@ -4,6 +4,7 @@
 @section('header_title', 'Member Portal')
 
 @section('content')
+<h1 class="sr-only">Member Portal</h1>
 <div class="max-w-6xl mx-auto space-y-6">
 
     @if(!$memberData->branch_id)

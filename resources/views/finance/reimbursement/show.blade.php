@@ -20,7 +20,7 @@
             <a href="{{ route('reimbursements.index') }}" class="mb-2 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[var(--dash-text-muted)] hover:text-[var(--dash-primary)] transition-colors">
                 <span class="material-symbols-outlined text-[16px]">arrow_back</span> Kembali ke Daftar
             </a>
-            <h2 class="font-jakarta text-3xl font-bold tracking-tight text-[var(--dash-text-heading)]">{{ $reimbursement->business_purpose }}</h2>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">{{ $reimbursement->business_purpose }}</h1>
             <div class="mt-2 flex items-center gap-3">
                 <span class="inline-flex rounded-md px-2.5 py-1 text-xs font-bold uppercase tracking-wide {{ $statusBadge[$reimbursement->status] ?? 'bg-[var(--dash-input-bg)]' }} shadow-sm">{{ $reimbursement->status }}</span>
                 <span class="text-sm font-medium text-[var(--dash-text-muted)] flex items-center gap-1.5">
@@ -151,9 +151,9 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="{{ $reimbursement->isDraft() ? 5 : 4 }}" class="px-6 py-12 text-[var(--dash-text-muted)]enter">
+                            <td colspan="{{ $reimbursement->isDraft() ? 5 : 4 }}" class="px-6 py-12 text-center">
                                 <div class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[var(--dash-page-bg)] mb-3">
-                                    <span class="material-symbols-outlined text-[var(--dash-text-faint)] text-[var(--dash-text-muted)]xl">receipt_long</span>
+                                    <span class="material-symbols-outlined text-[var(--dash-text-faint)] text-2xl">receipt_long</span>
                                 </div>
                                 <h3 class="text-sm font-medium text-[var(--dash-text-heading)]">Belum ada item pengeluaran</h3>
                                 <p class="mt-1 text-sm text-[var(--dash-text-muted)]">Silakan tambahkan rincian pengeluaran di bawah.</p>

@@ -3,6 +3,7 @@
 @section('title', 'Hasil TOEFL')
 
 @section('content')
+<h1 class="sr-only">Hasil Ujian TOEFL</h1>
 @php
     $score = $session->score_total;
 

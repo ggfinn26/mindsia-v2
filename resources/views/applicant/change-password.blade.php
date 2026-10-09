@@ -4,6 +4,7 @@
 @section('header_title', 'Ubah Password')
 
 @section('content')
+<h1 class="sr-only">Ubah Password</h1>
 <div class="max-w-md mx-auto">
     <div class="mb-6">
         <p class="text-sm text-[color:var(--dash-text-muted)]">Masukkan password lama dan password baru Anda.</p>

@@ -7,7 +7,7 @@
 
     {{-- Page header --}}
     <div class="mb-8">
-        <h2 class="text-2xl font-bold text-[color:var(--dash-text-heading)]">Ujian TOEFL</h2>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Ujian TOEFL</h1>
         <p class="mt-1 text-sm text-[color:var(--dash-text-muted)]">Pilih test yang tersedia, atau lihat riwayat hasil ujian kamu.</p>
     </div>
 

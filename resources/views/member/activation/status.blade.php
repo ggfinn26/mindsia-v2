@@ -4,6 +4,7 @@
 @section('header_title', 'Status Aktivasi')
 
 @section('content')
+<h1 class="sr-only">Status Aktivasi</h1>
 <div class="max-w-3xl mx-auto mt-8">
     <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] overflow-hidden">
         <div class="p-6 sm:p-8 text-center">

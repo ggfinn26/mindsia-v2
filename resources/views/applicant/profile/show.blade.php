@@ -6,6 +6,7 @@
 
 
 @section('content')
+<h1 class="sr-only">Profil Saya</h1>
 <div class="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 items-start">
 
     <!-- Messages -->

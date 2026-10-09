@@ -9,7 +9,7 @@
         <a href="{{ route('reimbursements.index') }}" class="mb-2 inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--dash-text-muted)] hover:text-[var(--dash-text-heading)] transition-colors">
             <span class="material-symbols-outlined text-[16px]">arrow_back</span> Kembali ke Reimbursement Saya
         </a>
-        <h2 class="font-jakarta text-[var(--dash-text-muted)]xl font-bold tracking-tight text-[var(--dash-text-heading)]">Buat Reimbursement</h2>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Buat Reimbursement</h1>
         <p class="mt-1 text-sm text-[var(--dash-text-muted)]">Isi tujuan dan periode reimbursement. Rincian pengeluaran (item) dapat ditambahkan setelah disimpan.</p>
     </div>
 

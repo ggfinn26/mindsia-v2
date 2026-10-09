@@ -4,6 +4,7 @@
 @section('header_title', 'Ranking MPI Saya')
 
 @section('content')
+<h1 class="sr-only">Ranking MPI Saya</h1>
 @php
     $months = ['','Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
     $latest = $snapshots->last();

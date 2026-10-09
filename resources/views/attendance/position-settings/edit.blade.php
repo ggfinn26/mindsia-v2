@@ -4,6 +4,7 @@
 @section('header_title', 'Pengaturan Absensi Per Posisi')
 
 @section('content')
+<h1 class="sr-only">Pengaturan Absensi Per Posisi</h1>
 <div class="max-w-2xl mx-auto pt-8 sm:pt-16 space-y-4">
 
     @if($errors->any())

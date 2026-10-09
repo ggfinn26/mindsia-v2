@@ -8,6 +8,7 @@
 @endpush
 
 @section('content')
+<h1 class="sr-only">Edit Profile</h1>
 <div class="max-w-3xl mx-auto">
 
     @if ($errors->any())

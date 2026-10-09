@@ -18,7 +18,7 @@
     <div class="flex items-start justify-between gap-4">
         <div>
             <p class="text-sm font-medium text-[var(--dash-text-muted)]">Finance</p>
-            <h2 class="font-jakarta text-[var(--dash-text-muted)]xl font-bold tracking-tight text-[var(--dash-text-heading)]">Reimbursement Saya</h2>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Reimbursement Saya</h1>
         </div>
         @can('finance.reimbursement.create')
             <a href="{{ route('reimbursements.create') }}" class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-[var(--dash-primary)] px-5 text-sm font-semibold text-white shadow-sm hover:opacity-90 transition-all">
@@ -63,9 +63,9 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-16 text-[var(--dash-text-muted)]enter">
+                            <td colspan="5" class="px-6 py-16 text-center">
                                 <div class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[var(--dash-page-bg)] mb-3">
-                                    <span class="material-symbols-outlined text-[var(--dash-text-faint)] text-[var(--dash-text-muted)]xl">receipt</span>
+                                    <span class="material-symbols-outlined text-[var(--dash-text-faint)] text-2xl">receipt</span>
                                 </div>
                                 <h3 class="text-sm font-medium text-[var(--dash-text-heading)]">Belum ada reimbursement</h3>
                                 <p class="mt-1 text-sm text-[var(--dash-text-muted)]">Klik "Buat Reimbursement" untuk mulai mengajukan.</p>

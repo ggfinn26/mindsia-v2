@@ -8,7 +8,7 @@
 
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-            <h2 class="font-jakarta text-xl font-bold tracking-tight text-[color:var(--dash-text-heading)]">Pengaturan Ranking Rules MPI</h2>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Pengaturan Ranking Rules MPI</h1>
             <p class="mt-1 text-sm text-[color:var(--dash-text-muted)]">Kelola aturan dan metadata yang digunakan saat menghitung skor MPI marketing.</p>
         </div>
     </div>

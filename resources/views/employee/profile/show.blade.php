@@ -4,6 +4,7 @@
 @section('header_title', 'Profile Saya')
 
 @section('content')
+<h1 class="sr-only">Profile Saya</h1>
 <div class="max-w-3xl mx-auto" x-data="{ showConfirmModal: false, confirmTitle: '', confirmMessage: '', confirmActionUrl: '', confirmMethod: 'DELETE', confirmActionText: 'Hapus' }">
 
     @if(session('success'))

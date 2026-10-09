@@ -7,7 +7,7 @@
 <div class="max-w-6xl mx-auto">
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
-            <h2 class="text-2xl font-bold font-jakarta text-[color:var(--dash-text-heading)]">Program Saya</h2>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Program Saya</h1>
             <p class="text-sm text-[color:var(--dash-text-muted)] mt-1">Daftar program yang sedang aktif dan pernah Anda ikuti.</p>
         </div>
         <a href="{{ route('member.program.browse') }}" class="px-5 py-2 bg-[#5586DB] text-white font-medium rounded-lg hover:bg-[#4370BC] transition-colors shadow-sm inline-flex items-center gap-2">

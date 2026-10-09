@@ -7,7 +7,7 @@
 <div class="max-w-6xl mx-auto">
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
-            <h2 class="text-2xl font-bold font-jakarta text-[color:var(--dash-text-heading)]">Riwayat Registrasi</h2>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Riwayat Registrasi</h1>
             <p class="text-sm text-[color:var(--dash-text-muted)] mt-1">Daftar program yang pernah Anda daftarkan.</p>
         </div>
     </div>

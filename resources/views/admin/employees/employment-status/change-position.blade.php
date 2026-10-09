@@ -4,6 +4,7 @@
 @section('header_title', 'Ubah Posisi Karyawan')
 
 @section('content')
+<h1 class="sr-only">Ubah Posisi Karyawan</h1>
 <div class="max-w-2xl mx-auto">
 
     @if($errors->any())

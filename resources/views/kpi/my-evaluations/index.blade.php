@@ -4,6 +4,7 @@
 @section('header_title', 'KPI Saya')
 
 @section('content')
+<h1 class="sr-only">KPI Saya</h1>
 <div class="max-w-4xl mx-auto pt-8 sm:pt-16 space-y-4">
 
     @if ($evaluations->isEmpty())

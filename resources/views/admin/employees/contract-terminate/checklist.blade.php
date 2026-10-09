@@ -4,6 +4,7 @@
 @section('header_title', 'Checklist Terminasi')
 
 @section('content')
+<h1 class="sr-only">Checklist Terminasi</h1>
 <div class="max-w-2xl mx-auto">
 
     @if($errors->any())

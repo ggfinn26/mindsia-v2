@@ -4,6 +4,7 @@
 @section('header_title', 'Papan Krisis')
 
 @section('content')
+<h1 class="sr-only">Papan Krisis</h1>
 <div class="max-w-7xl mx-auto space-y-5">
 
     {{-- Subheader row --}}

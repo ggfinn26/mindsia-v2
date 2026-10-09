@@ -6,7 +6,7 @@
 @section('content')
 <div class="max-w-6xl mx-auto space-y-6">
     <div>
-        <h2 class="text-2xl font-bold font-jakarta text-[color:var(--dash-text-heading)]">Status Cicilan</h2>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Status Cicilan</h1>
         <p class="text-sm text-[color:var(--dash-text-muted)] mt-1">Pantau tagihan dan jadwal pembayaran cicilan program Anda.</p>
     </div>
 
