@@ -76,7 +76,7 @@ $formConfig = [
     @endif
 
     <form method="POST" action="{{ route('out-letters-generate.store') }}"
-          class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] shadow-sm rounded-xl"
+          class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] shadow-sm rounded-2xl"
           @submit="isSubmitting = true">
         @csrf
 

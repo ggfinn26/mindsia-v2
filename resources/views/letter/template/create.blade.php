@@ -31,7 +31,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('letter-templates.store') }}" enctype="multipart/form-data" class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] shadow-sm rounded-xl overflow-hidden" x-data="{ isSubmitting: false }" @submit="isSubmitting = true">
+    <form method="POST" action="{{ route('letter-templates.store') }}" enctype="multipart/form-data" class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] shadow-sm rounded-2xl overflow-hidden" x-data="{ isSubmitting: false }" @submit="isSubmitting = true">
         @csrf
         <div class="p-5 sm:p-7 space-y-6">
             <div class="grid gap-5 sm:grid-cols-2">

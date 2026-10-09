@@ -56,7 +56,7 @@
     @endcan
 
     <!-- Details Card -->
-    <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] shadow-sm rounded-xl overflow-hidden">
+    <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] shadow-sm rounded-2xl overflow-hidden">
         <div class="border-b border-[color:var(--dash-card-border)] bg-slate-50/50 px-5 sm:px-6 py-4">
             <h3 class="font-jakarta text-[15px] font-bold text-[color:var(--dash-text-heading)]">Informasi Template</h3>
         </div>
@@ -101,7 +101,7 @@
     </div>
 
     <!-- Generated Letters Card -->
-    <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] shadow-sm rounded-xl overflow-hidden">
+    <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] shadow-sm rounded-2xl overflow-hidden">
         <div class="border-b border-[color:var(--dash-card-border)] bg-slate-50/50 px-5 sm:px-6 py-4 flex items-center justify-between">
             <h3 class="font-jakarta text-[15px] font-bold text-[color:var(--dash-text-heading)]">Riwayat Penggunaan</h3>
             <span class="bg-slate-200 text-[color:var(--dash-text-body)] text-[11px] font-bold px-2 py-0.5 rounded-full">
