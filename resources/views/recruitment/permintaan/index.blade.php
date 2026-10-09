@@ -20,7 +20,7 @@
         </div>
         @can('recruitment.job_permintaan.create')
         <a href="{{ route('recruitment.permintaan.create') }}"
-           class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity shrink-0"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity shrink-0"
            style="background-color: var(--dash-primary);">
             <span class="material-symbols-outlined text-[18px]">add</span>
             Tambah Permintaan
@@ -152,12 +152,12 @@
             </div>
             <div class="flex gap-3 mt-5 justify-end">
                 <button type="button" @click="showConfirmModal = false"
-                        class="px-4 py-2 text-sm font-semibold rounded-xl transition-colors"
+                        class="px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
                         style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
                         onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                         onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">Batal</button>
                 <button type="button" @click="$refs.confirmForm.submit()"
-                        class="px-4 py-2 text-sm font-semibold text-white rounded-xl hover:opacity-90 transition-opacity"
+                        class="px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
                         :style="confirmMethod === 'DELETE' ? 'background-color: #dc2626;' : 'background-color: #d97706;'"
                         x-text="confirmActionText"></button>
             </div>
