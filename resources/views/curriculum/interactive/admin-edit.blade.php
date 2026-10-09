@@ -29,7 +29,7 @@
         @csrf
         <div id="blocks-container" class="space-y-6">
             @forelse($item->interactiveBlocks as $bi => $block)
-                <div class="block-item bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl p-6 shadow-sm">
+                <div class="block-item bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl p-6 shadow-sm">
                     <input type="hidden" name="blocks[{{ $bi }}][sort_order]" value="{{ $block->sort_order }}">
                     @if($block->audio_media_id)
                         <input type="hidden" name="blocks[{{ $bi }}][existing_audio_id]" value="{{ $block->audio_media_id }}">
@@ -147,7 +147,7 @@
 </div>
 
 <template id="tpl-block">
-    <div class="block-item bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl p-6 shadow-sm">
+    <div class="block-item bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl p-6 shadow-sm">
         <input type="hidden" name="__BN__[sort_order]" value="__SORT__">
         <div class="flex justify-between items-center mb-4">
             <h3 class="font-semibold text-[color:var(--dash-text-heading)] font-jakarta">Blok __LABEL__</h3>

@@ -41,7 +41,7 @@ foreach ($item->interactiveBlocks as $bi => $block) {
     </div>
 
     @if ($item->interactiveBlocks->isEmpty())
-        <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl p-8 text-center text-[color:var(--dash-text-faint)]">
+        <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl p-8 text-center text-[color:var(--dash-text-faint)]">
             Modul ini belum memiliki konten.
         </div>
     @else
@@ -63,7 +63,7 @@ foreach ($item->interactiveBlocks as $bi => $block) {
 
                     {{-- Image --}}
                     @if ($block->image)
-                        <div class="mb-4 rounded-xl overflow-hidden border border-[color:var(--dash-card-border)]">
+                        <div class="mb-4 rounded-2xl overflow-hidden border border-[color:var(--dash-card-border)]">
                             <img src="{{ Storage::url($block->image->file_path) }}"
                                 alt="{{ $block->image->original_name }}"
                                 class="w-full object-contain max-h-80"
@@ -90,7 +90,7 @@ foreach ($item->interactiveBlocks as $bi => $block) {
 
                     {{-- Questions: teks diganti canvas --}}
                     @forelse ($block->questions as $qi => $question)
-                        <div class="mb-6 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl p-5">
+                        <div class="mb-6 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl p-5">
                             <p class="text-sm text-[color:var(--dash-text-muted)] mb-2">Soal {{ $qi + 1 }}</p>
                             {{-- Question text: canvas --}}
                             <canvas class="q-canvas w-full block mb-4"
@@ -144,7 +144,7 @@ foreach ($item->interactiveBlocks as $bi => $block) {
             {{-- Modal Konfirmasi --}}
             <div id="confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
                 <div class="absolute inset-0 bg-gray-900/50 backdrop-blur-sm" onclick="document.getElementById('confirm-modal').classList.add('hidden')"></div>
-                <div class="relative bg-[var(--dash-card-bg)] rounded-xl shadow-xl border border-[color:var(--dash-card-border)] max-w-sm w-full mx-4 p-6 text-center transform transition-all">
+                <div class="relative bg-[var(--dash-card-bg)] rounded-2xl shadow-xl border border-[color:var(--dash-card-border)] max-w-sm w-full mx-4 p-6 text-center transform transition-all">
                     <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
                         <span class="material-symbols-outlined text-green-600 text-2xl">check_circle</span>
                     </div>

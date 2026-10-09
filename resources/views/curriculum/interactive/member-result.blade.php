@@ -10,7 +10,7 @@
     </div>
 
     {{-- Score card --}}
-    <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl p-6 mb-6 text-center shadow-sm">
+    <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl p-6 mb-6 text-center shadow-sm">
         <p class="text-sm text-[color:var(--dash-text-muted)] mb-1">Skor Kamu</p>
         <p class="text-5xl font-bold {{ $attempt->score >= 70 ? 'text-green-600' : ($attempt->score >= 50 ? 'text-amber-500' : 'text-red-500') }}">
             {{ $attempt->score }}<span class="text-2xl text-[color:var(--dash-text-faint)]">%</span>
@@ -33,7 +33,7 @@
                 <h2 class="text-sm font-semibold text-[color:var(--dash-text-body)] uppercase tracking-wide mb-3">Blok {{ $bi + 1 }}</h2>
                 @foreach($block->questions as $qi => $question)
                     @php $ans = $answerMap->get($question->id); @endphp
-                    <div class="bg-[var(--dash-card-bg)] border rounded-xl p-5 mb-3
+                    <div class="bg-[var(--dash-card-bg)] border rounded-2xl p-5 mb-3
                         {{ $ans?->is_correct ? 'border-green-300 bg-green-50' : 'border-red-200 bg-red-50' }}">
                         <div class="flex items-start justify-between mb-2">
                             <p class="text-sm font-medium text-[color:var(--dash-text-heading)] font-jakarta">{{ $qi + 1 }}. {{ $question->question_text }}</p>

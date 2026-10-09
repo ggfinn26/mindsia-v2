@@ -14,11 +14,11 @@
     </div>
 
     @if($attempts->isEmpty())
-        <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl p-8 text-center text-[color:var(--dash-text-faint)]">
+        <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl p-8 text-center text-[color:var(--dash-text-faint)]">
             Belum ada riwayat latihan.
         </div>
     @else
-        <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl overflow-hidden shadow-sm">
+        <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl overflow-hidden shadow-sm">
             <table class="w-full text-sm">
                 <thead class="bg-[var(--dash-nav-hover-bg)] border-b border-[color:var(--dash-card-border)]">
                     <tr>
