@@ -41,7 +41,7 @@
     @endif
 
     <!-- Info template -->
-    <div class="overflow-hidden rounded-xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm p-6 space-y-4">
+    <div class="overflow-hidden rounded-2xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm p-6 space-y-4">
         <div class="grid grid-cols-2 gap-4">
             <div>
                 <p class="text-xs font-bold uppercase tracking-wider text-[var(--dash-text-faint)]">Template Key</p>
@@ -68,7 +68,7 @@
     </div>
 
     <!-- Variabel -->
-    <div class="overflow-hidden rounded-xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
+    <div class="overflow-hidden rounded-2xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
         <div class="flex items-center justify-between px-6 py-4 border-b border-[var(--dash-card-border)]">
             <h2 class="font-semibold text-[var(--dash-text-heading)]">Dokumentasi Variabel</h2>
             @can('notification.variable.create')

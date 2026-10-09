@@ -41,7 +41,7 @@
         </form>
     </div>
 
-    <div class="overflow-hidden rounded-xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
+    <div class="overflow-hidden rounded-2xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-[var(--dash-card-border)] text-sm">
                 <thead class="bg-[var(--dash-page-bg)] text-left text-xs font-bold uppercase tracking-wider text-[var(--dash-text-muted)]">

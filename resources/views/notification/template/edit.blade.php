@@ -19,7 +19,7 @@
     </div>
     @endif
 
-    <div class="overflow-hidden rounded-xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
+    <div class="overflow-hidden rounded-2xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
         <form action="{{ route('notification-templates.update', $template) }}" method="POST" class="p-6 space-y-5">
             @csrf
             @method('PUT')
