@@ -1,57 +1,101 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Buat Template KPI')
+@section('title', 'Buat Template KPI - MINDSIA')
 @section('header_title', 'Buat Template KPI')
 
 @section('content')
-<div class="max-w-2xl mx-auto space-y-6">
-    <div>
-        <a href="{{ route('kpi.templates.index') }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700">
-            <span class="material-symbols-outlined text-[16px]">arrow_back</span> Template KPI
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-2xl mx-auto space-y-6">
+
+    <div class="flex items-center gap-4">
+        <a href="{{ route('kpi.templates.index') }}"
+           class="flex-shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-xl transition-colors"
+           style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-muted);"
+           onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+           onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+            <span class="material-symbols-outlined text-[20px]">arrow_back</span>
         </a>
-        <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Buat Template Baru</h2>
+        <div>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+                style="color: var(--dash-text-heading);">Buat Template Baru</h1>
+            <p class="mt-1 text-sm" style="color: var(--dash-text-muted);">KPI → Template</p>
+        </div>
     </div>
 
-    @if ($errors->any())
-        <div class="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
-            <ul class="list-disc pl-5">@foreach ($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
+    @if($errors->any())
+        <div class="flex items-start gap-3 px-4 py-3 rounded-xl border text-sm"
+             style="background-color: #fee2e2; border-color: #fca5a5; color: #dc2626;">
+            <span class="material-symbols-outlined text-[18px] flex-shrink-0 mt-0.5">error</span>
+            <ul class="list-disc pl-4 space-y-0.5">
+                @foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach
+            </ul>
         </div>
     @endif
 
-    <form method="POST" action="{{ route('kpi.templates.store') }}" class="border border-slate-200 bg-white p-6 space-y-4">
-        @csrf
-        <div>
-            <label class="mb-1.5 block text-sm font-medium text-slate-700">Kode template</label>
-            <input type="text" name="template_code" value="{{ old('template_code') }}" required maxlength="100" placeholder="KPI_TUTOR_2026" class="block w-full border-slate-300 text-sm uppercase focus:border-[#215aac] focus:ring-[#215aac]">
-        </div>
-        <div>
-            <label class="mb-1.5 block text-sm font-medium text-slate-700">Nama template</label>
-            <input type="text" name="template_name" value="{{ old('template_name') }}" required maxlength="255" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
-        </div>
-        <div>
-            <label class="mb-1.5 block text-sm font-medium text-slate-700">Posisi <span class="text-slate-400">(opsional)</span></label>
-            <select name="position_id" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
-                <option value="">— Pilih posisi —</option>
-                @foreach ($positions as $position)
-                    <option value="{{ $position->id }}" @selected(old('position_id') == $position->id)>{{ $position->position_name }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div>
-            <label class="mb-1.5 block text-sm font-medium text-slate-700">Deskripsi</label>
-            <textarea name="description" rows="3" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">{{ old('description') }}</textarea>
-        </div>
-        <div class="flex items-center gap-2">
-            <input type="hidden" name="is_active" value="0">
-            <input type="checkbox" name="is_active" value="1" id="is_active" @checked(old('is_active', true)) class="border-slate-300 text-[#215aac] focus:ring-[#215aac]">
-            <label for="is_active" class="text-sm font-medium text-slate-700">Aktif</label>
-        </div>
-        <div class="flex gap-3 pt-2">
-            <button type="submit" class="inline-flex min-h-10 items-center gap-2 bg-[#215aac] px-5 text-sm font-semibold text-white hover:bg-[#194a91]">
-                Simpan Template
-            </button>
-            <a href="{{ route('kpi.templates.index') }}" class="inline-flex min-h-10 items-center border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50">Batal</a>
-        </div>
-    </form>
+    <div class="rounded-2xl p-6 space-y-5"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <form method="POST" action="{{ route('kpi.templates.store') }}" class="space-y-5">
+            @csrf
+            <div>
+                <label class="block text-sm font-medium mb-1.5" style="color: var(--dash-text-body);">
+                    Kode Template <span style="color:#dc2626;">*</span>
+                </label>
+                <input type="text" name="template_code" value="{{ old('template_code') }}"
+                       required maxlength="100" placeholder="KPI_TUTOR_2026"
+                       class="block w-full rounded-lg px-3 py-2 text-sm uppercase focus:outline-none"
+                       style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-body);">
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1.5" style="color: var(--dash-text-body);">
+                    Nama Template <span style="color:#dc2626;">*</span>
+                </label>
+                <input type="text" name="template_name" value="{{ old('template_name') }}"
+                       required maxlength="255"
+                       class="block w-full rounded-lg px-3 py-2 text-sm focus:outline-none"
+                       style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-body);">
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1.5" style="color: var(--dash-text-body);">
+                    Posisi <span class="text-xs font-normal" style="color: var(--dash-text-muted);">(opsional)</span>
+                </label>
+                <select name="position_id"
+                        class="block w-full rounded-lg px-3 py-2 text-sm focus:outline-none"
+                        style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-body);">
+                    <option value="">Pilih posisi</option>
+                    @foreach($positions as $position)
+                        <option value="{{ $position->id }}" @selected(old('position_id') == $position->id)>
+                            {{ $position->position_name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1.5" style="color: var(--dash-text-body);">Deskripsi</label>
+                <textarea name="description" rows="3"
+                          class="block w-full rounded-lg px-3 py-2 text-sm focus:outline-none"
+                          style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-body);">{{ old('description') }}</textarea>
+            </div>
+            <div class="flex items-center gap-2">
+                <input type="hidden" name="is_active" value="0">
+                <input type="checkbox" name="is_active" value="1" id="is_active"
+                       @checked(old('is_active', true)) class="h-4 w-4 rounded">
+                <label for="is_active" class="text-sm font-medium" style="color: var(--dash-text-body);">Aktif</label>
+            </div>
+            <div class="flex items-center gap-3 pt-2" style="border-top: 1px solid var(--dash-card-border);">
+                <button type="submit"
+                        class="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                        style="background-color: var(--dash-primary);">
+                    <span class="material-symbols-outlined text-[16px]">save</span>Simpan Template
+                </button>
+                <a href="{{ route('kpi.templates.index') }}"
+                   class="px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                   style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
+                   onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                   onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                    Batal
+                </a>
+            </div>
+        </form>
+    </div>
+
 </div>
 @endsection

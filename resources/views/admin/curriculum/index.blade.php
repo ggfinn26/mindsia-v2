@@ -1,93 +1,153 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Kelola Kurikulum')
+@section('title', 'Kelola Kurikulum - MINDSIA')
+@section('header_title', 'Kelola Kurikulum')
 
 @section('content')
-<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center mb-4">
-        <h1 class="text-2xl font-bold text-gray-900">Kelola Kurikulum</h1>
-        <a href="{{ route('curriculums.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
-            Tambah Kurikulum
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6">
+
+    <div class="flex items-start justify-between gap-4">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-wider mb-1"
+               style="color: var(--dash-primary-text);">Kurikulum</p>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+                style="color: var(--dash-text-heading);">Kelola Kurikulum</h1>
+        </div>
+        <a href="{{ route('curriculums.create') }}"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity shrink-0"
+           style="background-color: var(--dash-primary);">
+            <span class="material-symbols-outlined text-[18px]">add</span>Tambah Kurikulum
         </a>
     </div>
 
-    <form method="GET" action="{{ route('curriculums.index') }}" class="mb-6 flex gap-3 items-center">
-        <select name="program_id" onchange="this.form.submit()" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
-            <option value="">Semua Program</option>
-            @foreach($programs as $program)
-                <option value="{{ $program->id }}" {{ request('program_id') == $program->id ? 'selected' : '' }}>
-                    {{ $program->program_name }}
-                </option>
-            @endforeach
-        </select>
-        @if(request('program_id'))
-            <a href="{{ route('curriculums.index') }}" class="text-sm text-gray-500 hover:text-gray-700">Reset</a>
-        @endif
-    </form>
-
-    @if (session('success'))
-        <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
+    @if(session('success'))
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+             style="background-color: #f0fdf4; border-color: #bbf7d0; color: #059669;">
+            <span class="material-symbols-outlined text-[18px]">check_circle</span>
             {{ session('success') }}
         </div>
     @endif
 
-    @if($curriculums->isEmpty())
-        <div class="bg-white shadow sm:rounded-lg p-8 text-center">
-            <span class="material-symbols-outlined text-gray-300 text-5xl mb-3">menu_book</span>
-            <p class="text-gray-500">Belum ada kurikulum. Kurikulum dibuat dari halaman detail Program (relasi 1:1).</p>
-            <a href="{{ route('programs.index') }}" class="mt-4 inline-block text-blue-600 hover:text-blue-900 text-sm font-medium">Lihat daftar Program &rarr;</a>
-        </div>
-    @else
-        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kurikulum</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Program</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sesi Mingguan</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item Materi</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        @forelse($curriculums as $curriculum)
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $curriculum->curriculum_name }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $curriculum->program->program_name }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $curriculum->sessions->count() }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $curriculum->sessions->sum(fn($s) => $s->items->count()) }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $curriculum->is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
-                                        {{ $curriculum->is_active ? 'Aktif' : 'Nonaktif' }}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <a href="{{ route('curriculums.show', $curriculum) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Detail</a>
-                                    <a href="{{ route('curriculums.edit', $curriculum) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
+    {{-- Filter --}}
+    <div class="rounded-2xl px-5 py-4"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <form method="GET" action="{{ route('curriculums.index') }}" class="flex flex-wrap items-end gap-3">
+            <div>
+                <label class="block text-xs font-medium mb-1.5" style="color: var(--dash-text-muted);">Program</label>
+                <select name="program_id" onchange="this.form.submit()"
+                        class="rounded-lg px-3 py-2 text-sm focus:outline-none"
+                        style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-body);">
+                    <option value="">Semua Program</option>
+                    @foreach($programs as $program)
+                        <option value="{{ $program->id }}" {{ request('program_id') == $program->id ? 'selected' : '' }}>
+                            {{ $program->program_name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            @if(request('program_id'))
+                <a href="{{ route('curriculums.index') }}"
+                   class="inline-flex items-center gap-1 text-xs font-medium transition-opacity hover:opacity-75 pb-2.5"
+                   style="color: var(--dash-text-muted);">
+                    <span class="material-symbols-outlined text-[14px]">close</span>Reset
+                </a>
+            @endif
+        </form>
+    </div>
+
+    <div class="rounded-2xl overflow-hidden"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <div class="overflow-x-auto">
+            <table class="w-full table-fixed text-sm">
+                <colgroup>
+                    <col class="w-[26%]"><col class="w-[24%]"><col class="w-[13%]">
+                    <col class="w-[11%]"><col class="w-[10%]"><col class="w-[16%]">
+                </colgroup>
+                <thead>
+                    <tr style="border-bottom: 1px solid var(--dash-card-border);">
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Kurikulum</th>
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Program</th>
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Sesi</th>
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Materi</th>
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Status</th>
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($curriculums as $curriculum)
+                        <tr style="border-bottom: 1px solid var(--dash-card-border);"
+                            onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                            onmouseout="this.style.backgroundColor=''">
+                            <td class="px-5 py-4 font-medium truncate" style="color: var(--dash-text-heading);">{{ $curriculum->curriculum_name }}</td>
+                            <td class="px-5 py-4 truncate" style="color: var(--dash-text-body);">{{ $curriculum->program->program_name }}</td>
+                            <td class="px-5 py-4 text-right" style="color: var(--dash-text-body);">{{ $curriculum->sessions->count() }}</td>
+                            <td class="px-5 py-4 text-right" style="color: var(--dash-text-body);">{{ $curriculum->sessions->sum(fn($s) => $s->items->count()) }}</td>
+                            <td class="px-5 py-4">
+                                @if($curriculum->is_active)
+                                    <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold"
+                                          style="background-color: #f0fdf4; color: #059669;">Aktif</span>
+                                @else
+                                    <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold"
+                                          style="background-color: var(--dash-nav-hover-bg); color: var(--dash-text-muted);">Nonaktif</span>
+                                @endif
+                            </td>
+                            <td class="px-3 py-4 text-right">
+                                <div class="inline-flex items-center justify-end gap-1.5 flex-wrap">
+                                    <a href="{{ route('curriculums.show', $curriculum) }}"
+                                       class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+                                       style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
+                                       onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                       onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                        <span class="material-symbols-outlined text-[13px]">open_in_new</span>Detail
+                                    </a>
+                                    <a href="{{ route('curriculums.edit', $curriculum) }}"
+                                       class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+                                       style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
+                                       onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                       onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                        <span class="material-symbols-outlined text-[13px]">edit</span>Edit
+                                    </a>
                                     <form action="{{ route('curriculums.destroy', $curriculum) }}" method="POST" class="inline"
                                           onsubmit="return confirm('Yakin ingin menghapus kurikulum ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900">Hapus</button>
+                                        @csrf @method('DELETE')
+                                        <button type="submit"
+                                                class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+                                                style="background-color: #fee2e2; color: #dc2626; border: 1px solid #fca5a5;"
+                                                onmouseover="this.style.backgroundColor='#fecaca'"
+                                                onmouseout="this.style.backgroundColor='#fee2e2'">
+                                            <span class="material-symbols-outlined text-[13px]">delete</span>Hapus
+                                        </button>
                                     </form>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">Belum ada kurikulum.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-            @if($curriculums->hasPages())
-                <div class="px-6 py-4 border-t border-gray-200">
-                    {{ $curriculums->links() }}
-                </div>
-            @endif
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="px-5 py-16 text-center">
+                                <span class="material-symbols-outlined text-[48px] block mx-auto mb-3"
+                                      style="color: var(--dash-text-faint);">menu_book</span>
+                                <p class="text-sm font-semibold" style="color: var(--dash-text-muted);">Belum ada kurikulum.</p>
+                                <p class="text-xs mt-1" style="color: var(--dash-text-faint);">
+                                    Kurikulum dibuat dari halaman detail Program (relasi 1:1).
+                                </p>
+                                <a href="{{ route('programs.index') }}"
+                                   class="inline-flex items-center gap-1 mt-4 text-sm font-semibold hover:underline"
+                                   style="color: var(--dash-primary);">
+                                    Lihat daftar Program <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                                </a>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
-    @endif
+        @if($curriculums->hasPages())
+            <div class="px-5 py-4"
+                 style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                {{ $curriculums->links() }}
+            </div>
+        @endif
+    </div>
+
 </div>
 @endsection

@@ -232,7 +232,7 @@
                                 <td class="px-5 py-4">
                                     @if($component->is_active)
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"
-                                              style="background-color: #eff6ff; color: #2563eb;">
+                                              style="background-color: var(--dash-primary-bg); color: var(--dash-primary-text);">
                                             Aktif
                                         </span>
                                     @else

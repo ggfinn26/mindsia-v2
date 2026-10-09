@@ -8,7 +8,15 @@
     $months = ['','Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 @endphp
 
-<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6">
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6" x-data="{
+        showConfirmModal: false,
+        confirmActionUrl: '',
+        confirmMethod: 'POST',
+        confirmMessage: '',
+        confirmTitle: '',
+        confirmButtonText: 'Konfirmasi',
+        confirmButtonClass: 'bg-red-600 hover:bg-red-700'
+    }">
 
     {{-- Header --}}
     <div class="flex flex-wrap items-start justify-between gap-4">
@@ -49,57 +57,77 @@
             @if($period->isDraft())
                 @can('payroll.period.generate')
                     @if($payrolls->isEmpty())
-                        <form method="POST" action="{{ route('payroll.periods.generate', $period) }}" class="inline">
-                            @csrf
-                            <button type="submit"
-                                    onclick="return confirm('Generate payroll untuk semua pegawai aktif periode ini?')"
-                                    class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
-                                    style="background-color: var(--dash-primary);">
-                                <span class="material-symbols-outlined text-[18px]">bolt</span>
-                                Generate Payroll
-                            </button>
-                        </form>
+                        <button type="button" 
+                                @click="
+                                    showConfirmModal = true; 
+                                    confirmActionUrl = '{{ route('payroll.periods.generate', $period) }}'; 
+                                    confirmMethod = 'POST'; 
+                                    confirmTitle = 'Generate Payroll'; 
+                                    confirmMessage = 'Generate payroll untuk semua pegawai aktif periode ini?'; 
+                                    confirmButtonText = 'Generate'; 
+                                    confirmButtonClass = 'bg-[var(--dash-primary)] hover:opacity-90';
+                                "
+                                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                                style="background-color: var(--dash-primary);">
+                            <span class="material-symbols-outlined text-[18px]">bolt</span>
+                            Generate Payroll
+                        </button>
                     @endif
                 @endcan
                 @can('payroll.period.update')
-                    <form method="POST" action="{{ route('payroll.periods.advance-status', $period) }}" class="inline">
-                        @csrf @method('PATCH')
-                        <button type="submit"
-                                onclick="return confirm('Pindahkan ke status Review?')"
-                                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors"
-                                style="background-color: #fef3c7; color: #d97706; border: 1px solid #fcd34d;"
-                                onmouseover="this.style.backgroundColor='#fde68a'"
-                                onmouseout="this.style.backgroundColor='#fef3c7'">
-                            Maju ke Review
-                        </button>
-                    </form>
+                    <button type="button" 
+                            @click="
+                                showConfirmModal = true; 
+                                confirmActionUrl = '{{ route('payroll.periods.advance-status', $period) }}'; 
+                                confirmMethod = 'PATCH'; 
+                                confirmTitle = 'Maju ke Review'; 
+                                confirmMessage = 'Pindahkan ke status Review?'; 
+                                confirmButtonText = 'Maju ke Review'; 
+                                confirmButtonClass = 'bg-amber-600 hover:bg-amber-700';
+                            "
+                            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors"
+                            style="background-color: #fef3c7; color: #d97706; border: 1px solid #fcd34d;"
+                            onmouseover="this.style.backgroundColor='#fde68a'"
+                            onmouseout="this.style.backgroundColor='#fef3c7'">
+                        Maju ke Review
+                    </button>
                 @endcan
             @elseif($period->isReview())
                 @can('payroll.period.update')
-                    <form method="POST" action="{{ route('payroll.periods.advance-status', $period) }}" class="inline">
-                        @csrf @method('PATCH')
-                        <button type="submit"
-                                onclick="return confirm('Finalisasi periode payroll ini?')"
-                                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
-                                style="background-color: #059669;">
-                            <span class="material-symbols-outlined text-[18px]">check_circle</span>
-                            Finalisasi
-                        </button>
-                    </form>
+                    <button type="button" 
+                            @click="
+                                showConfirmModal = true; 
+                                confirmActionUrl = '{{ route('payroll.periods.advance-status', $period) }}'; 
+                                confirmMethod = 'PATCH'; 
+                                confirmTitle = 'Finalisasi Periode'; 
+                                confirmMessage = 'Finalisasi periode payroll ini?'; 
+                                confirmButtonText = 'Finalisasi'; 
+                                confirmButtonClass = 'bg-[#059669] hover:bg-[#047857]';
+                            "
+                            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                            style="background-color: #059669;">
+                        <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                        Finalisasi
+                    </button>
                 @endcan
             @elseif($period->isFinalized())
                 @can('payroll.period.update')
-                    <form method="POST" action="{{ route('payroll.periods.revert', $period) }}" class="inline">
-                        @csrf @method('PATCH')
-                        <button type="submit"
-                                onclick="return confirm('Revert ke Draft? Pastikan belum ada pembayaran.')"
-                                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors"
-                                style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
-                                onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
-                                onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
-                            Revert ke Draft
-                        </button>
-                    </form>
+                    <button type="button" 
+                            @click="
+                                showConfirmModal = true; 
+                                confirmActionUrl = '{{ route('payroll.periods.revert', $period) }}'; 
+                                confirmMethod = 'PATCH'; 
+                                confirmTitle = 'Revert ke Draft'; 
+                                confirmMessage = 'Revert ke Draft? Pastikan belum ada pembayaran.'; 
+                                confirmButtonText = 'Revert'; 
+                                confirmButtonClass = 'bg-red-600 hover:bg-red-700';
+                            "
+                            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors"
+                            style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
+                            onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                            onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                        Revert ke Draft
+                    </button>
                 @endcan
             @endif
         </div>
@@ -267,5 +295,43 @@
         </div>
     </div>
 
+    {{-- Confirm Modal --}}
+    <div x-show="showConfirmModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;" x-cloak>
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
+            <div @click="showConfirmModal = false" class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-900 opacity-75"></div>
+            </div>
+            <div class="relative z-10 inline-block align-bottom bg-[var(--dash-card-bg)] rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-[var(--dash-card-bg)] px-4 pt-5 pb-4 sm:p-6 sm:pb-4 rounded-t-lg">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full sm:mx-0 sm:h-10 sm:w-10"
+                             :class="confirmMethod === 'DELETE' ? 'bg-red-100' : (confirmMethod === 'PATCH' ? 'bg-amber-100' : 'bg-blue-100')">
+                            <span class="material-symbols-outlined"
+                                  :class="confirmMethod === 'DELETE' ? 'text-red-600' : (confirmMethod === 'PATCH' ? 'text-amber-600' : 'text-[var(--dash-primary)]')"
+                                  x-text="confirmMethod === 'DELETE' ? 'warning' : 'help'"></span>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                            <h3 class="text-lg leading-6 font-medium text-[var(--dash-text-heading)]" x-text="confirmTitle"></h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-[var(--dash-text-muted)]" x-text="confirmMessage"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-[var(--dash-page-bg)] px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse rounded-b-lg">
+                    <button type="button" @click="$refs.confirmForm.submit()"
+                            :class="confirmButtonClass"
+                            class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none sm:ml-3 sm:w-auto sm:text-sm"
+                            x-text="confirmButtonText"></button>
+                    <button type="button" @click="showConfirmModal = false"
+                            class="mt-3 w-full inline-flex justify-center rounded-lg border border-[var(--dash-card-border)] shadow-sm px-4 py-2 bg-[var(--dash-card-bg)] text-base font-medium text-[var(--dash-text-body)] hover:bg-[var(--dash-page-bg)] focus:outline-none sm:mt-0 sm:w-auto sm:text-sm">Batal</button>
+                </div>
+                <form x-ref="confirmForm" :action="confirmActionUrl" method="POST" class="hidden">
+                    @csrf
+                    <input type="hidden" name="_method" :value="confirmMethod">
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

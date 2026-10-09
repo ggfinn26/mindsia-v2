@@ -90,13 +90,29 @@ class PayrollSlipTemplateController extends Controller
         };
     }
 
-    public function index(): View
+    public function index(Request $request): View
     {
         $templates = self::discoverTemplates();
         $typeLabels = self::allTypeLabels();
         $positions = Position::orderBy('hierarchy_order')->orderBy('position_name')->get();
 
-        return view('payroll.slip-templates.index', compact('templates', 'typeLabels', 'positions'));
+        $testType = $request->query('type');
+        $testResult = $testType ? session('slip_test_result_'.$testType) : null;
+        $testLabel = $testType ? (self::BASE_LABELS[$testType] ?? ucwords(str_replace('_', ' ', $testType))) : null;
+        $sample = $testType ? $this->findSamplePayroll($testType) : null;
+        $testSampleInfo = $sample
+            ? $sample->employee?->full_name.' — Periode '.$sample->period?->period_month.'/'.$sample->period?->period_year
+            : null;
+
+        $allKnownVars = [];
+        foreach (array_keys($typeLabels) as $t) {
+            $allKnownVars[$t] = self::knownVars($t);
+        }
+
+        return view('payroll.slip-templates.index', compact(
+            'templates', 'typeLabels', 'positions',
+            'testType', 'testResult', 'testLabel', 'testSampleInfo', 'allKnownVars'
+        ));
     }
 
     /** Create a brand-new template type. */
@@ -243,9 +259,9 @@ class PayrollSlipTemplateController extends Controller
             $error = $e->getMessage();
         }
 
-        session()->flash('slip_test_result_'.$type, compact('foundVars', 'missingVars', 'extraVars', 'error', 'resultToken', 'dataSource'));
-
-        return redirect()->route('payroll.slip-templates.test', $type);
+        return redirect()
+            ->route('payroll.slip-templates.index', ['tab' => 'tes', 'type' => $type])
+            ->with('slip_test_result_'.$type, compact('foundVars', 'missingVars', 'extraVars', 'error', 'resultToken', 'dataSource'));
     }
 
     public function testDownload(Request $request, string $type): Response

@@ -1,88 +1,150 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Program & Kuota')
+@section('title', 'Program - MINDSIA')
+@section('header_title', 'Program')
 
 @section('content')
-<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8" x-data="{ showConfirmModal: false, confirmTitle: '', confirmMessage: '', confirmActionUrl: '', confirmMethod: 'DELETE', confirmActionText: 'Hapus' }">
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">Program</h1>
-        <a href="{{ route('programs.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
-            Tambah Program
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6"
+     x-data="{ showConfirmModal: false, confirmTitle: '', confirmMessage: '', confirmActionUrl: '', confirmMethod: 'POST', confirmActionText: 'Konfirmasi' }">
+
+    <div class="flex items-start justify-between gap-4">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-wider mb-1"
+               style="color: var(--dash-primary-text);">Kurikulum</p>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+                style="color: var(--dash-text-heading);">Program</h1>
+        </div>
+        <a href="{{ route('programs.create') }}"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity shrink-0"
+           style="background-color: var(--dash-primary);">
+            <span class="material-symbols-outlined text-[18px]">add</span>Tambah Program
         </a>
     </div>
 
-    @if (session('success'))
-        <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
+    @if(session('success'))
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+             style="background-color: #f0fdf4; border-color: #bbf7d0; color: #059669;">
+            <span class="material-symbols-outlined text-[18px]">check_circle</span>
             {{ session('success') }}
         </div>
     @endif
-
-    @if (session('error'))
-        <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+    @if(session('error'))
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+             style="background-color: #fee2e2; border-color: #fca5a5; color: #dc2626;">
+            <span class="material-symbols-outlined text-[18px]">error</span>
             {{ session('error') }}
         </div>
     @endif
 
-    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+    <div class="rounded-2xl overflow-hidden"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kode</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Program</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Biaya Admin</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Template</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kurikulum</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+            <table class="w-full table-fixed text-sm">
+                <colgroup>
+                    <col class="w-[9%]">
+                    <col class="w-[17%]">
+                    <col class="w-[11%]">
+                    <col class="w-[10%]">
+                    <col class="w-[7%]">
+                    <col class="w-[13%]">
+                    <col class="w-[8%]">
+                    <col class="w-[25%]">
+                </colgroup>
+                <thead>
+                    <tr style="border-bottom: 1px solid var(--dash-card-border);">
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Kode</th>
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Nama Program</th>
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Harga</th>
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Biaya Admin</th>
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Template</th>
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Kurikulum</th>
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Status</th>
+                        <th class="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
+                <tbody>
                     @forelse($programs as $program)
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">{{ $program->program_code }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $program->program_name }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Rp {{ number_format($program->program_price, 0, ',', '.') }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <tr style="border-bottom: 1px solid var(--dash-card-border);"
+                            onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                            onmouseout="this.style.backgroundColor=''">
+                            <td class="px-5 py-4 font-mono text-xs" style="color: var(--dash-text-muted);">
+                                {{ $program->program_code }}
+                            </td>
+                            <td class="px-5 py-4 font-medium truncate" style="color: var(--dash-text-heading);">
+                                {{ $program->program_name }}
+                            </td>
+                            <td class="px-5 py-4 text-right tabular-nums text-xs" style="color: var(--dash-text-body);">
+                                Rp {{ number_format($program->program_price, 0, ',', '.') }}
+                            </td>
+                            <td class="px-5 py-4 text-right tabular-nums text-xs" style="color: var(--dash-text-body);">
                                 @if($program->admin_fee > 0)
                                     Rp {{ number_format($program->admin_fee, 0, ',', '.') }}
                                 @else
-                                    <span class="text-gray-400">-</span>
+                                    <span style="color: var(--dash-text-faint);">—</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <td class="px-5 py-4">
                                 @if($program->receipt_template_path)
-                                    <span class="inline-flex items-center gap-1 text-green-700 text-xs">
-                                        <span class="material-symbols-outlined text-[14px]">description</span> Ada
+                                    <span class="inline-flex items-center gap-1 text-xs" style="color: #059669;">
+                                        <span class="material-symbols-outlined text-[14px]">description</span>Ada
                                     </span>
                                 @else
-                                    <span class="text-gray-400 text-xs">-</span>
+                                    <span style="color: var(--dash-text-faint);" class="text-xs">—</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <td class="px-5 py-4 text-xs truncate">
                                 @if($program->curriculum)
-                                    <a href="{{ route('curriculums.show', $program->curriculum) }}" class="text-blue-600 hover:text-blue-900">{{ $program->curriculum->curriculum_name }}</a>
+                                    <a href="{{ route('curriculums.show', $program->curriculum) }}"
+                                       class="hover:underline" style="color: var(--dash-primary);">
+                                        {{ $program->curriculum->curriculum_name }}
+                                    </a>
                                 @else
-                                    <span class="text-gray-400 italic">Belum ada</span>
+                                    <span class="italic" style="color: var(--dash-text-faint);">Belum ada</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $program->is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
-                                    {{ $program->is_active ? 'Aktif' : 'Nonaktif' }}
-                                </span>
+                            <td class="px-5 py-4">
+                                @if($program->is_active)
+                                    <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold"
+                                          style="background-color: #f0fdf4; color: #059669;">Aktif</span>
+                                @else
+                                    <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold"
+                                          style="background-color: var(--dash-nav-hover-bg); color: var(--dash-text-muted);">Nonaktif</span>
+                                @endif
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="{{ route('programs.show', $program) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Detail</a>
-                                <a href="{{ route('programs.edit', $program) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
-                                <button type="button"
-                                    @click="showConfirmModal = true; confirmTitle = 'Nonaktifkan Program'; confirmMessage = 'Program yang masih memiliki registrasi member tidak bisa dinonaktifkan. Lanjutkan?'; confirmActionUrl = '{{ route('programs.deactivate', $program) }}'; confirmActionText = 'Nonaktifkan'"
-                                    class="text-red-600 hover:text-red-900">Nonaktifkan</button>
+                            <td class="px-3 py-4 text-right">
+                                <div class="inline-flex items-center justify-end gap-1.5 flex-wrap">
+                                    <a href="{{ route('programs.show', $program) }}"
+                                       class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+                                       style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
+                                       onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                       onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                        <span class="material-symbols-outlined text-[13px]">open_in_new</span>Detail
+                                    </a>
+                                    <a href="{{ route('programs.edit', $program) }}"
+                                       class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+                                       style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
+                                       onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                       onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                        <span class="material-symbols-outlined text-[13px]">edit</span>Edit
+                                    </a>
+                                    <button type="button"
+                                            @click="showConfirmModal = true; confirmTitle = 'Nonaktifkan Program'; confirmMessage = 'Program yang masih memiliki registrasi member tidak bisa dinonaktifkan. Lanjutkan?'; confirmActionUrl = '{{ route('programs.deactivate', $program) }}'; confirmActionText = 'Nonaktifkan'"
+                                            class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+                                            style="background-color: #fee2e2; color: #dc2626; border: 1px solid #fca5a5;"
+                                            onmouseover="this.style.backgroundColor='#fecaca'"
+                                            onmouseout="this.style.backgroundColor='#fee2e2'">
+                                        <span class="material-symbols-outlined text-[13px]">block</span>Nonaktif
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">Belum ada program.</td>
+                            <td colspan="8" class="px-5 py-16 text-center">
+                                <span class="material-symbols-outlined text-[48px] block mx-auto mb-3"
+                                      style="color: var(--dash-text-faint);">school</span>
+                                <p class="text-sm font-semibold" style="color: var(--dash-text-muted);">Belum ada program.</p>
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -90,35 +152,41 @@
         </div>
     </div>
 
-    <!-- Modal Konfirmasi -->
-    <div x-show="showConfirmModal" class="relative z-10" style="display: none;">
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" @click="showConfirmModal = false"></div>
-        <div class="fixed inset-0 z-10 overflow-y-auto">
-            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                <div x-show="showConfirmModal" class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <div class="sm:flex sm:items-start">
-                            <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                                <span class="material-symbols-outlined text-red-600">warning</span>
-                            </div>
-                            <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                                <h3 class="text-base font-semibold leading-6 text-gray-900" x-text="confirmTitle"></h3>
-                                <div class="mt-2">
-                                    <p class="text-sm text-gray-500" x-text="confirmMessage"></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                        <button type="button" @click="$refs.confirmForm.action = confirmActionUrl; $refs.confirmForm.submit()" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto" x-text="confirmActionText"></button>
-                        <button type="button" @click="showConfirmModal = false" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Batal</button>
-                    </div>
-                    <form x-ref="confirmForm" :action="confirmActionUrl" method="POST" class="hidden">
-                        @csrf
-                    </form>
+    {{-- Confirm modal --}}
+    <div x-show="showConfirmModal" x-cloak
+         class="fixed inset-0 z-50 flex items-center justify-center p-4"
+         style="display: none;">
+        <div class="absolute inset-0 bg-black/50"
+             x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+             @click="showConfirmModal = false"></div>
+        <div class="relative rounded-2xl p-6 max-w-md w-full shadow-xl"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);"
+             x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95">
+            <div class="flex items-start gap-4 mb-5">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full" style="background-color: #fee2e2;">
+                    <span class="material-symbols-outlined text-[20px]" style="color: #dc2626;">warning</span>
                 </div>
+                <div>
+                    <h3 class="text-base font-semibold" style="color: var(--dash-text-heading);" x-text="confirmTitle"></h3>
+                    <p class="text-sm mt-0.5" style="color: var(--dash-text-muted);" x-text="confirmMessage"></p>
+                </div>
+            </div>
+            <div class="flex items-center justify-end gap-3">
+                <button type="button" @click="showConfirmModal = false"
+                        class="px-4 py-2 rounded-xl text-sm font-medium"
+                        style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);">
+                    Batal
+                </button>
+                <button type="button"
+                        @click="$refs.confirmForm.action = confirmActionUrl; $refs.confirmForm.submit()"
+                        class="px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                        style="background-color: #dc2626;" x-text="confirmActionText"></button>
             </div>
         </div>
     </div>
+    <form x-ref="confirmForm" method="POST" class="hidden">@csrf</form>
+
 </div>
 @endsection
