@@ -16,7 +16,7 @@
             </p>
         </div>
         <button x-data @click="$dispatch('open-add-template')"
-                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2"
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2"
                 style="background-color: var(--dash-primary); --tw-ring-color: var(--dash-primary);">
             <span class="material-symbols-outlined text-[18px]">add</span>
             Buat Template
@@ -104,17 +104,17 @@
                                 Isi Pesan
                             </label>
                             <textarea name="template_body" rows="4" required
-                                      class="block w-full rounded-xl text-sm font-mono text-[13px] px-3 py-2.5 focus:outline-none focus:ring-2"
+                                      class="block w-full rounded-lg text-sm font-mono text-[13px] px-3 py-2.5 focus:outline-none focus:ring-2"
                                       style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-body); --tw-ring-color: var(--dash-primary);">{{ old('template_body', $template->template_body) }}</textarea>
                         </div>
                         <div class="flex items-center justify-end gap-3 pt-2">
                             <button type="button" @click="editing = false"
-                                    class="px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                                    class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                                     style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);">
                                 Batal
                             </button>
                             <button type="submit"
-                                    class="px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                                    class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                                     style="background-color: var(--dash-primary);">
                                 Simpan Perubahan
                             </button>
@@ -134,7 +134,7 @@
                     Buat template pesan pertama untuk mempercepat pengiriman ke calon member.
                 </p>
                 <button @click="$dispatch('open-add-template')" type="button"
-                        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                         style="background-color: var(--dash-primary);">
                     <span class="material-symbols-outlined text-[18px]">add</span>
                     Buat Template
@@ -196,7 +196,7 @@
                         <input type="text" name="template_name" value="{{ old('template_name') }}"
                                placeholder="cth: Sapaan Pagi"
                                maxlength="100" required
-                               class="block w-full rounded-xl text-sm px-3 py-2.5 focus:outline-none focus:ring-2"
+                               class="block w-full rounded-lg text-sm px-3 py-2.5 focus:outline-none focus:ring-2"
                                style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-body); --tw-ring-color: var(--dash-primary);">
                     </div>
                     <div>
@@ -206,7 +206,7 @@
                         <textarea name="template_body" rows="5"
                                   placeholder="Halo {nama}, kami dari Mindsia..."
                                   required
-                                  class="block w-full rounded-xl text-sm font-mono text-[13px] px-3 py-2.5 focus:outline-none focus:ring-2 resize-none"
+                                  class="block w-full rounded-lg text-sm font-mono text-[13px] px-3 py-2.5 focus:outline-none focus:ring-2 resize-none"
                                   style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-body); --tw-ring-color: var(--dash-primary);">{{ old('template_body') }}</textarea>
 
                         {{-- Variable hints --}}
@@ -243,12 +243,12 @@
                 <div class="flex items-center justify-end gap-3 mt-6 pt-4"
                      style="border-top: 1px solid var(--dash-card-border);">
                     <button type="button" @click="open = false"
-                            class="px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                            class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                             style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);">
                         Batal
                     </button>
                     <button type="submit"
-                            class="px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                            class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                             style="background-color: var(--dash-primary);">
                         Simpan Template
                     </button>

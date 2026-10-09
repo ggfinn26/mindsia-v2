@@ -154,27 +154,27 @@
 
     {{-- Stats --}}
     <div class="grid grid-cols-3 sm:grid-cols-6 gap-3 mb-5">
-        <div class="bg-[var(--dash-card-bg)] rounded-xl border border-[var(--dash-card-border)] shadow-sm p-4 text-center">
+        <div class="bg-[var(--dash-card-bg)] rounded-2xl border border-[var(--dash-card-border)] shadow-sm p-4 text-center">
             <p class="text-2xl font-bold text-[var(--dash-text-heading)]">{{ $totalLeads }}</p>
             <p class="text-xs text-[var(--dash-text-faint)] mt-0.5">Total PM</p>
         </div>
-        <div class="bg-[var(--dash-card-bg)] rounded-xl border border-yellow-100 shadow-sm p-4 text-center">
+        <div class="bg-[var(--dash-card-bg)] rounded-2xl border border-yellow-100 shadow-sm p-4 text-center">
             <p class="text-2xl font-bold text-yellow-600">{{ $countAlmost }}</p>
             <p class="text-xs text-yellow-500 mt-0.5">Hampir</p>
         </div>
-        <div class="bg-[var(--dash-card-bg)] rounded-xl border border-blue-100 shadow-sm p-4 text-center">
+        <div class="bg-[var(--dash-card-bg)] rounded-2xl border border-blue-100 shadow-sm p-4 text-center">
             <p class="text-2xl font-bold text-blue-600">{{ $countYes }}</p>
             <p class="text-xs text-blue-500 mt-0.5">Berminat</p>
         </div>
-        <div class="bg-[var(--dash-card-bg)] rounded-xl border border-green-100 shadow-sm p-4 text-center">
+        <div class="bg-[var(--dash-card-bg)] rounded-2xl border border-green-100 shadow-sm p-4 text-center">
             <p class="text-2xl font-bold text-green-600">{{ $countFixed }}</p>
             <p class="text-xs text-green-500 mt-0.5">Pasti</p>
         </div>
-        <div class="bg-[var(--dash-card-bg)] rounded-xl border border-red-100 shadow-sm p-4 text-center">
+        <div class="bg-[var(--dash-card-bg)] rounded-2xl border border-red-100 shadow-sm p-4 text-center">
             <p class="text-2xl font-bold text-red-500">{{ $countNo }}</p>
             <p class="text-xs text-red-400 mt-0.5">Tidak</p>
         </div>
-        <div class="bg-[var(--dash-card-bg)] rounded-xl border border-[var(--dash-card-border)] shadow-sm p-4 text-center">
+        <div class="bg-[var(--dash-card-bg)] rounded-2xl border border-[var(--dash-card-border)] shadow-sm p-4 text-center">
             <p class="text-2xl font-bold text-[var(--dash-text-heading)]">{{ $totalKelas }}</p>
             <p class="text-xs text-[var(--dash-text-faint)] mt-0.5">Total Kelas</p>
         </div>
@@ -187,7 +187,7 @@
 
             {{-- Per-employee progress + override (MA/PIC view) --}}
             @can('marketing.socialization.update')
-            <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[var(--dash-card-border)] overflow-hidden">
+            <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[var(--dash-card-border)] overflow-hidden">
                 <div class="flex items-center justify-between px-5 py-4 border-b border-gray-50">
                     <p class="text-xs font-semibold text-[var(--dash-text-faint)] uppercase tracking-widest">Progress Marketer</p>
                     @if (!in_array($socialization->status, ['completed', 'cancelled']) && $eligibleEmployees->isNotEmpty())
@@ -303,7 +303,7 @@
             </form>
 
             {{-- Lead list --}}
-            <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[var(--dash-card-border)]">
+            <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[var(--dash-card-border)]">
                 <div class="flex items-center justify-between px-5 py-3 border-b border-gray-50">
                     <p class="text-xs font-semibold text-[var(--dash-text-faint)] uppercase tracking-widest">
                         Semua Prospective Member ({{ $totalLeads }})
@@ -414,7 +414,7 @@
 
             {{-- Jadwal --}}
             @if ($socialization->schedules->isNotEmpty())
-                <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[var(--dash-card-border)] p-5">
+                <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[var(--dash-card-border)] p-5">
                     <p class="text-xs font-semibold text-[var(--dash-text-faint)] uppercase tracking-widest mb-3">Jadwal</p>
                     <ul class="space-y-2">
                         @foreach ($socialization->schedules as $schedule)
@@ -433,7 +433,7 @@
 
             {{-- Fee Partner --}}
             @if ($socialization->partner_fee_amount)
-                <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[var(--dash-card-border)] p-5">
+                <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[var(--dash-card-border)] p-5">
                     <div class="flex items-center justify-between mb-3">
                         <p class="text-xs font-semibold text-[var(--dash-text-faint)] uppercase tracking-widest">Fee Partner</p>
                         @can('marketing.socialization.partner_fee.update')

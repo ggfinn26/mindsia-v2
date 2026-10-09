@@ -27,7 +27,7 @@
     @endif
 
     {{-- Buat Rule Baru --}}
-    <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)]">
+    <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)]">
         <div class="border-b border-[color:var(--dash-card-border)] px-5 py-4 bg-slate-50/50 rounded-t-xl">
             <h3 class="font-jakarta text-sm font-bold text-[color:var(--dash-text-heading)]">Buat Rule Baru</h3>
         </div>
@@ -71,7 +71,7 @@
     </div>
 
     {{-- Daftar Rules --}}
-    <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)]">
+    <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)]">
         <div class="border-b border-[color:var(--dash-card-border)] px-5 py-4 flex items-center justify-between bg-slate-50/50 rounded-t-xl">
             <h3 class="font-jakarta text-sm font-bold text-[color:var(--dash-text-heading)]">Daftar Rules</h3>
             <span class="px-2.5 py-1 bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-xs font-semibold rounded-full">{{ $rules->count() }} rule</span>

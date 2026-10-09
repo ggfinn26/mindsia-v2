@@ -27,7 +27,7 @@
         </div>
     @endif
 
-    <form method="GET" class="flex flex-wrap gap-4 items-end bg-[var(--dash-card-bg)] p-4 sm:p-5 rounded-xl border border-[var(--dash-card-border)] shadow-sm">
+    <form method="GET" class="flex flex-wrap gap-4 items-end bg-[var(--dash-card-bg)] p-4 sm:p-5 rounded-2xl border border-[var(--dash-card-border)] shadow-sm">
         <div>
             <label class="mb-1.5 block text-[11px] font-semibold text-[var(--dash-text-faint)] uppercase tracking-wide whitespace-nowrap">Bulan</label>
             <select name="month" class="block w-full min-w-[140px] bg-[var(--dash-page-bg)] border border-[var(--dash-input-border)] rounded-lg text-sm px-3 py-2 outline-none focus:border-[var(--dash-primary)] focus:ring-1 focus:ring-[var(--dash-primary)] transition-colors">
@@ -51,7 +51,7 @@
         </div>
     </form>
 
-    <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[var(--dash-card-border)]">
+    <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[var(--dash-card-border)]">
         <div class="border-b border-[var(--dash-card-border)] px-5 py-4 flex items-center justify-between bg-[var(--dash-page-bg)] rounded-t-xl">
             <h3 class="font-jakarta text-sm font-bold text-[var(--dash-text-heading)]">Pendapatan {{ $months[$month] }} {{ $year }}</h3>
             <span class="px-2.5 py-1 bg-[var(--dash-input-bg)] text-[var(--dash-text-muted)] text-xs font-semibold rounded-full">{{ $registrations->total() }} pendaftaran</span>

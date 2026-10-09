@@ -55,7 +55,7 @@
             <div>
                 <label for="gender" class="block text-sm font-medium text-[var(--dash-text-body)] mb-1">Jenis Kelamin</label>
                 <select name="gender" id="gender" data-no-enhance
-                    class="block w-full bg-[var(--dash-card-bg)] border border-[var(--dash-card-border)] rounded-xl px-3.5 py-2.5 text-[13px] text-[var(--dash-text-heading)] shadow-sm focus:outline-none focus:border-[var(--dash-primary)] focus:ring-2 focus:ring-[var(--dash-primary)]/30 transition-all">
+                    class="block w-full bg-[var(--dash-card-bg)] border border-[var(--dash-card-border)] rounded-lg px-3.5 py-2.5 text-[13px] text-[var(--dash-text-heading)] shadow-sm focus:outline-none focus:border-[var(--dash-primary)] focus:ring-2 focus:ring-[var(--dash-primary)]/30 transition-all">
                     <option value="">Tidak Diketahui</option>
                     <option value="L" {{ old('gender') === 'L' ? 'selected' : '' }}>Laki-laki</option>
                     <option value="P" {{ old('gender') === 'P' ? 'selected' : '' }}>Perempuan</option>
@@ -64,7 +64,7 @@
             <div>
                 <label for="status" class="block text-sm font-medium text-[var(--dash-text-body)] mb-1">Status Awal</label>
                 <select name="status" id="status" data-no-enhance
-                    class="block w-full bg-[var(--dash-card-bg)] border border-[var(--dash-card-border)] rounded-xl px-3.5 py-2.5 text-[13px] text-[var(--dash-text-heading)] shadow-sm focus:outline-none focus:border-[var(--dash-primary)] focus:ring-2 focus:ring-[var(--dash-primary)]/30 transition-all">
+                    class="block w-full bg-[var(--dash-card-bg)] border border-[var(--dash-card-border)] rounded-lg px-3.5 py-2.5 text-[13px] text-[var(--dash-text-heading)] shadow-sm focus:outline-none focus:border-[var(--dash-primary)] focus:ring-2 focus:ring-[var(--dash-primary)]/30 transition-all">
                     <option value="ALMOST" {{ old('status', 'ALMOST') === 'ALMOST' ? 'selected' : '' }}>Hampir (ALMOST)</option>
                     <option value="YES" {{ old('status') === 'YES' ? 'selected' : '' }}>Berminat (YES)</option>
                     <option value="NO" {{ old('status') === 'NO' ? 'selected' : '' }}>Tidak (NO)</option>
@@ -73,14 +73,14 @@
             <div>
                 <label for="email" class="block text-sm font-medium text-[var(--dash-text-body)] mb-1">Email (opsional)</label>
                 <input type="email" name="email" id="email" value="{{ old('email') }}"
-                    class="block w-full bg-[var(--dash-card-bg)] border border-[var(--dash-card-border)] rounded-xl px-3.5 py-2.5 text-[13px] text-[var(--dash-text-heading)] shadow-sm focus:outline-none focus:border-[var(--dash-primary)] focus:ring-2 focus:ring-[var(--dash-primary)]/30 transition-all">
+                    class="block w-full bg-[var(--dash-card-bg)] border border-[var(--dash-card-border)] rounded-lg px-3.5 py-2.5 text-[13px] text-[var(--dash-text-heading)] shadow-sm focus:outline-none focus:border-[var(--dash-primary)] focus:ring-2 focus:ring-[var(--dash-primary)]/30 transition-all">
             </div>
         </div>
 
         <div>
             <label for="institution_id" class="block text-sm font-medium text-[var(--dash-text-body)] mb-1">Sekolah (opsional)</label>
             <select name="institution_id" id="institution_id"
-                class="block w-full bg-[var(--dash-card-bg)] border border-[var(--dash-card-border)] rounded-xl px-3.5 py-2.5 text-[13px] text-[var(--dash-text-heading)] shadow-sm focus:outline-none focus:border-[var(--dash-primary)] focus:ring-2 focus:ring-[var(--dash-primary)]/30 transition-all">
+                class="block w-full bg-[var(--dash-card-bg)] border border-[var(--dash-card-border)] rounded-lg px-3.5 py-2.5 text-[13px] text-[var(--dash-text-heading)] shadow-sm focus:outline-none focus:border-[var(--dash-primary)] focus:ring-2 focus:ring-[var(--dash-primary)]/30 transition-all">
                 <option value="">Tidak Ada</option>
                 @foreach (\App\Models\Institution::orderBy('institution_name')->get() as $inst)
                     <option value="{{ $inst->id }}" {{ old('institution_id') == $inst->id ? 'selected' : '' }}>
@@ -94,13 +94,13 @@
             <label for="instagram" class="block text-sm font-medium text-[var(--dash-text-body)] mb-1">Instagram (opsional)</label>
             <input type="text" name="instagram" id="instagram" value="{{ old('instagram') }}"
                 placeholder="@username"
-                class="block w-full bg-[var(--dash-card-bg)] border border-[var(--dash-card-border)] rounded-xl px-3.5 py-2.5 text-[13px] text-[var(--dash-text-heading)] shadow-sm focus:outline-none focus:border-[var(--dash-primary)] focus:ring-2 focus:ring-[var(--dash-primary)]/30 transition-all">
+                class="block w-full bg-[var(--dash-card-bg)] border border-[var(--dash-card-border)] rounded-lg px-3.5 py-2.5 text-[13px] text-[var(--dash-text-heading)] shadow-sm focus:outline-none focus:border-[var(--dash-primary)] focus:ring-2 focus:ring-[var(--dash-primary)]/30 transition-all">
         </div>
 
         <div>
             <label for="notes" class="block text-sm font-medium text-[var(--dash-text-body)] mb-1">Catatan Awal</label>
             <textarea name="notes" id="notes" rows="3"
-                class="block w-full bg-[var(--dash-card-bg)] border border-[var(--dash-card-border)] rounded-xl px-3.5 py-2.5 text-[13px] text-[var(--dash-text-heading)] shadow-sm focus:outline-none focus:border-[var(--dash-primary)] focus:ring-2 focus:ring-[var(--dash-primary)]/30 transition-all">{{ old('notes') }}</textarea>
+                class="block w-full bg-[var(--dash-card-bg)] border border-[var(--dash-card-border)] rounded-lg px-3.5 py-2.5 text-[13px] text-[var(--dash-text-heading)] shadow-sm focus:outline-none focus:border-[var(--dash-primary)] focus:ring-2 focus:ring-[var(--dash-primary)]/30 transition-all">{{ old('notes') }}</textarea>
         </div>
 
         <div class="flex justify-end gap-3 pt-2">

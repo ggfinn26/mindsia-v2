@@ -216,7 +216,7 @@
 
         {{-- Filter Pegawai --}}
         <form method="GET" action="{{ route('marketing-target.index') }}"
-              class="mb-4 flex flex-wrap gap-3 items-end p-4 rounded-xl"
+              class="mb-4 flex flex-wrap gap-3 items-end p-4 rounded-2xl"
               style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
             <input type="hidden" name="month" value="{{ $month }}">
             <input type="hidden" name="year" value="{{ $year }}">
@@ -353,14 +353,14 @@
             <p class="text-sm mb-5" style="color: var(--dash-text-muted);">Data target akan diperbarui untuk periode yang dipilih.</p>
             <div class="flex gap-3 justify-center">
                 <button @click="confirm.open = false"
-                        class="px-4 py-2 text-sm font-semibold rounded-xl transition-colors"
+                        class="px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
                         style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
                         onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                         onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
                     Batal
                 </button>
                 <button @click="submitConfirmed()"
-                        class="px-4 py-2 text-sm font-semibold text-white rounded-xl hover:opacity-90 transition-opacity"
+                        class="px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
                         style="background-color: var(--dash-primary);">
                     Ya, Simpan
                 </button>

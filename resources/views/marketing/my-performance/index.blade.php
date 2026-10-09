@@ -47,13 +47,13 @@
         </div>
         <div class="flex items-center gap-2">
             <button type="submit"
-                    class="px-4 py-2 rounded-xl text-sm font-semibold text-white transition-colors"
+                    class="px-4 py-2 rounded-lg text-sm font-semibold text-white transition-colors"
                     style="background-color: var(--dash-primary);">
                 Terapkan Filter
             </button>
             @if(request('month') != now()->month || request('year') != now()->year)
                 <a href="{{ route('marketing.my-performance') }}"
-                   class="px-3 py-2 rounded-xl text-sm font-medium transition-colors"
+                   class="px-3 py-2 rounded-lg text-sm font-medium transition-colors"
                    style="background-color: var(--dash-primary-bg); color: var(--dash-text-muted);">Reset</a>
             @endif
         </div>

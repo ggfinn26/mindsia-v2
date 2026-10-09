@@ -41,7 +41,7 @@
     @endif
 
     @if ($socializations->isEmpty())
-        <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl shadow-sm p-12 text-center">
+        <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl shadow-sm p-12 text-center">
             <span class="material-symbols-outlined text-4xl text-gray-300">groups</span>
             <p class="mt-3 text-[color:var(--dash-text-muted)] text-sm">Belum ada sosialisasi yang ditugaskan ke Anda.</p>
         </div>

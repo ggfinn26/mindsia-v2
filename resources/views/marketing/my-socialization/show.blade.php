@@ -101,7 +101,7 @@
         <div class="lg:col-span-2 space-y-5">
 
             {{-- Input Jumlah Kelas --}}
-            <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl shadow-sm p-5">
+            <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl shadow-sm p-5">
                 <p class="text-xs font-semibold text-[color:var(--dash-text-faint)] uppercase tracking-widest mb-4">Laporan Kelas</p>
 
                 @if ($confirmed)
@@ -135,7 +135,7 @@
             </div>
 
             {{-- Daftar Prospective Member --}}
-            <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl shadow-sm overflow-hidden">
+            <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl shadow-sm overflow-hidden">
                 <div class="px-5 py-4 flex items-center justify-between border-b border-gray-50">
                     <div>
                         <p class="text-xs font-semibold text-[color:var(--dash-text-faint)] uppercase tracking-widest">Calon Member Saya</p>
@@ -268,7 +268,7 @@
 
         {{-- Sidebar: Info sosialisasi --}}
         <div class="space-y-4">
-            <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl shadow-sm p-5">
+            <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl shadow-sm p-5">
                 <p class="text-xs font-semibold text-[color:var(--dash-text-faint)] uppercase tracking-widest mb-3">Info Sosialisasi</p>
                 <dl class="space-y-3 text-sm">
                     <div>
