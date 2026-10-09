@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="max-w-3xl mx-auto py-12">
-    <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] p-10 flex flex-col items-center justify-center text-center">
+    <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] p-10 flex flex-col items-center justify-center text-center">
         <div class="h-24 w-24 rounded-full bg-red-50 flex items-center justify-center mb-6">
             <span class="material-symbols-outlined text-red-500 text-5xl">event_busy</span>
         </div>
