@@ -17,8 +17,8 @@
         </div>
     @endif
 
-    <div class="bg-[var(--dash-card-bg)] rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-8">
-        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+    <div class="bg-[var(--dash-card-bg)] rounded-2xl border border-[color:var(--dash-card-border)] shadow-sm overflow-hidden mb-8">
+        <div class="px-6 py-4 border-b border-[color:var(--dash-card-border)] flex items-center justify-between">
             <div class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-[#5586DB] text-[20px]">swap_horiz</span>
                 <h2 class="font-bold text-[var(--dash-text-heading)] font-jakarta">Form Ubah Posisi</h2>
@@ -28,7 +28,7 @@
             </a>
         </div>
 
-        <div class="px-6 py-4 bg-[var(--dash-page-bg)]/50 border-b border-gray-100">
+        <div class="px-6 py-4 bg-[var(--dash-page-bg)]/50 border-b border-[color:var(--dash-card-border)]">
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <p class="text-[11px] font-bold text-[var(--dash-text-muted)] uppercase tracking-wider mb-1">Nama Karyawan</p>
@@ -86,9 +86,9 @@
                           class="w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] focus:ring-[var(--dash-primary)]/30">{{ old('notes') }}</textarea>
             </div>
 
-            <div class="pt-4 mt-6 border-t border-gray-100 flex justify-end gap-3">
+            <div class="pt-4 mt-6 border-t border-[color:var(--dash-card-border)] flex justify-end gap-3">
                 <a href="{{ route('employees.show', $status->employee) }}"
-                   class="px-5 py-2.5 text-[13px] font-bold text-gray-600 bg-[var(--dash-card-bg)] border border-[var(--dash-card-border)] rounded-xl hover:bg-[var(--dash-page-bg)] transition-colors">
+                   class="px-5 py-2.5 text-[13px] font-bold text-[color:var(--dash-text-body)] bg-[var(--dash-card-bg)] border border-[var(--dash-card-border)] rounded-xl hover:bg-[var(--dash-page-bg)] transition-colors">
                     Batal
                 </a>
                 <button type="submit"

@@ -137,7 +137,7 @@
                         <td class="px-5 py-4">
                             @if($snap->rank_national <= 3)
                                 <span class="inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm
-                                    {{ $snap->rank_national === 1 ? 'bg-amber-100 text-amber-700' : ($snap->rank_national === 2 ? 'bg-slate-200 text-slate-600' : 'bg-orange-100 text-orange-600') }}">
+                                    {{ $snap->rank_national === 1 ? 'bg-amber-100 text-amber-700' : ($snap->rank_national === 2 ? 'bg-slate-200 text-[color:var(--dash-text-body)]' : 'bg-orange-100 text-orange-600') }}">
                                     {{ $snap->rank_national }}
                                 </span>
                             @else

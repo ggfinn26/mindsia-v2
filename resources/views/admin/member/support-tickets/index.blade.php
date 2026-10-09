@@ -14,21 +14,21 @@
 
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900 font-jakarta">Support Ticket Member</h1>
-            <p class="text-sm text-gray-500 mt-1">Kelola tiket bantuan dari member.</p>
+            <h1 class="text-2xl font-bold text-[color:var(--dash-text-heading)] font-jakarta">Support Ticket Member</h1>
+            <p class="text-sm text-[color:var(--dash-text-muted)] mt-1">Kelola tiket bantuan dari member.</p>
         </div>
         <a href="{{ route('ticket-assignment-rules.index') }}"
-           class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm">
+           class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-[color:var(--dash-text-body)] bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg hover:bg-[var(--dash-nav-hover-bg)] transition-colors shadow-sm">
             <span class="material-symbols-outlined text-[18px]">settings</span>
             Pengaturan Assignment
         </a>
     </div>
 
     <!-- Filter -->
-    <form method="GET" class="bg-white border border-gray-100 rounded-xl shadow-sm p-4 mb-6 flex flex-wrap gap-3 items-end">
+    <form method="GET" class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl shadow-sm p-4 mb-6 flex flex-wrap gap-3 items-end">
         <div class="flex flex-col gap-1 min-w-[140px]">
-            <label class="text-xs font-medium text-gray-600">Status</label>
-            <select name="status" class="rounded-lg border-gray-300 text-sm px-3 py-2 shadow-sm">
+            <label class="text-xs font-medium text-[color:var(--dash-text-body)]">Status</label>
+            <select name="status" class="rounded-lg border-[color:var(--dash-input-border)] text-sm px-3 py-2 shadow-sm">
                 <option value="">Semua Status</option>
                 <option value="open" @selected(request('status') === 'open')>Terbuka</option>
                 <option value="in_progress" @selected(request('status') === 'in_progress')>Diproses</option>
@@ -37,8 +37,8 @@
             </select>
         </div>
         <div class="flex flex-col gap-1 min-w-[140px]">
-            <label class="text-xs font-medium text-gray-600">Kategori</label>
-            <select name="category" class="rounded-lg border-gray-300 text-sm px-3 py-2 shadow-sm">
+            <label class="text-xs font-medium text-[color:var(--dash-text-body)]">Kategori</label>
+            <select name="category" class="rounded-lg border-[color:var(--dash-input-border)] text-sm px-3 py-2 shadow-sm">
                 <option value="">Semua Kategori</option>
                 <option value="complaint" @selected(request('category') === 'complaint')>Pengaduan</option>
                 <option value="suggestion" @selected(request('category') === 'suggestion')>Saran</option>
@@ -49,23 +49,23 @@
             Filter
         </button>
         @if(request()->hasAny(['status', 'category', 'branch_id']))
-            <a href="{{ route('support-tickets.index') }}" class="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">Reset</a>
+            <a href="{{ route('support-tickets.index') }}" class="px-4 py-2 text-sm font-medium text-[color:var(--dash-text-body)] bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg hover:bg-[var(--dash-nav-hover-bg)] transition-colors">Reset</a>
         @endif
     </form>
 
-    <div class="bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden">
+    <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
-                <thead class="bg-gray-50 border-b border-gray-100">
+                <thead class="bg-[var(--dash-nav-hover-bg)] border-b border-[color:var(--dash-card-border)]">
                     <tr>
-                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Nomor Tiket</th>
-                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Member</th>
-                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Subjek</th>
-                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Kategori</th>
-                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Ditugaskan</th>
-                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Status</th>
-                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Dibuat</th>
-                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">Aksi</th>
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[color:var(--dash-text-muted)]">Nomor Tiket</th>
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[color:var(--dash-text-muted)]">Member</th>
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[color:var(--dash-text-muted)]">Subjek</th>
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[color:var(--dash-text-muted)]">Kategori</th>
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[color:var(--dash-text-muted)]">Ditugaskan</th>
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[color:var(--dash-text-muted)]">Status</th>
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[color:var(--dash-text-muted)]">Dibuat</th>
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider text-[color:var(--dash-text-muted)]">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
@@ -75,8 +75,8 @@
                                 'open'        => 'bg-amber-100 text-amber-700',
                                 'in_progress' => 'bg-blue-100 text-blue-700',
                                 'resolved'    => 'bg-emerald-100 text-emerald-700',
-                                'closed'      => 'bg-gray-100 text-gray-600',
-                                default       => 'bg-gray-100 text-gray-600',
+                                'closed'      => 'bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)]',
+                                default       => 'bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)]',
                             };
                             $statusLabel = match($ticket->status) {
                                 'open'        => 'Terbuka',
@@ -92,16 +92,16 @@
                                 default      => ucfirst($ticket->category),
                             };
                         @endphp
-                        <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="px-5 py-3.5 font-mono text-xs text-gray-600">{{ $ticket->ticket_number }}</td>
-                            <td class="px-5 py-3.5 text-gray-900 font-medium">{{ $ticket->member->full_name ?? '-' }}</td>
-                            <td class="px-5 py-3.5 text-gray-700 max-w-[240px] truncate">{{ $ticket->subject }}</td>
-                            <td class="px-5 py-3.5 text-gray-600">{{ $categoryLabel }}</td>
-                            <td class="px-5 py-3.5 text-gray-600">{{ $ticket->assignedEmployee->full_name ?? '-' }}</td>
+                        <tr class="hover:bg-[var(--dash-nav-hover-bg)] transition-colors">
+                            <td class="px-5 py-3.5 font-mono text-xs text-[color:var(--dash-text-body)]">{{ $ticket->ticket_number }}</td>
+                            <td class="px-5 py-3.5 text-[color:var(--dash-text-heading)] font-medium">{{ $ticket->member->full_name ?? '-' }}</td>
+                            <td class="px-5 py-3.5 text-[color:var(--dash-text-body)] max-w-[240px] truncate">{{ $ticket->subject }}</td>
+                            <td class="px-5 py-3.5 text-[color:var(--dash-text-body)]">{{ $categoryLabel }}</td>
+                            <td class="px-5 py-3.5 text-[color:var(--dash-text-body)]">{{ $ticket->assignedEmployee->full_name ?? '-' }}</td>
                             <td class="px-5 py-3.5">
                                 <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-semibold {{ $statusColor }}">{{ $statusLabel }}</span>
                             </td>
-                            <td class="px-5 py-3.5 text-gray-500 text-xs">{{ $ticket->created_at->format('d M Y') }}</td>
+                            <td class="px-5 py-3.5 text-[color:var(--dash-text-muted)] text-xs">{{ $ticket->created_at->format('d M Y') }}</td>
                             <td class="px-5 py-3.5 text-right">
                                 <a href="{{ route('support-tickets.show', $ticket) }}"
                                    class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-[#5586DB] bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
@@ -111,7 +111,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="px-5 py-10 text-center text-gray-400 text-sm">
+                            <td colspan="8" class="px-5 py-10 text-center text-[color:var(--dash-text-faint)] text-sm">
                                 <span class="material-symbols-outlined text-4xl text-gray-200 block mb-2">confirmation_number</span>
                                 Belum ada support ticket.
                             </td>
@@ -121,7 +121,7 @@
             </table>
         </div>
         @if($tickets->hasPages())
-            <div class="px-5 py-4 border-t border-gray-100">
+            <div class="px-5 py-4 border-t border-[color:var(--dash-card-border)]">
                 {{ $tickets->links() }}
             </div>
         @endif

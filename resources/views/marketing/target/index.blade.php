@@ -276,7 +276,7 @@
                             $sourceLabel = match($source) {
                                 'employee' => ['Override', 'bg-indigo-100 text-indigo-700'],
                                 'position' => ['Posisi',   'bg-blue-100 text-blue-700'],
-                                default    => ['Auto',     'bg-gray-100 text-gray-500'],
+                                default    => ['Auto',     'bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-muted)]'],
                             };
                         @endphp
                         <tr style="border-bottom: 1px solid var(--dash-card-border);"

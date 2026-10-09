@@ -6,7 +6,7 @@
     <div class="sm:flex sm:justify-between sm:items-center mb-8">
         <!-- Left: Title -->
         <div class="mb-4 sm:mb-0">
-            <h1 class="text-2xl md:text-3xl text-gray-800 font-bold">Lead Guest TOEFL</h1>
+            <h1 class="text-2xl md:text-3xl text-[color:var(--dash-text-heading)] font-bold">Lead Guest TOEFL</h1>
         </div>
 
         <!-- Right: Actions -->
@@ -18,7 +18,7 @@
     <!-- Filters -->
     <div class="mb-5 flex flex-wrap gap-2 items-center">
         <form method="GET" action="{{ route('toefl.guest-lead.index') }}" class="flex gap-2">
-            <select name="city" class="form-select text-sm border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" onchange="this.form.submit()">
+            <select name="city" class="form-select text-sm border-[color:var(--dash-input-border)] rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" onchange="this.form.submit()">
                 <option value="">Semua Kota</option>
                 @foreach($cities as $city)
                     <option value="{{ $city }}" {{ request('city') === $city ? 'selected' : '' }}>{{ $city }}</option>
@@ -28,11 +28,11 @@
     </div>
 
     <!-- Table -->
-    <div class="bg-white shadow-lg rounded-sm border border-gray-200">
+    <div class="bg-[var(--dash-card-bg)] shadow-lg rounded-sm border border-[color:var(--dash-card-border)]">
         <div class="overflow-x-auto">
             <table class="table-auto w-full">
                 <!-- Table header -->
-                <thead class="text-xs font-semibold uppercase text-gray-500 bg-gray-50 border-t border-b border-gray-200">
+                <thead class="text-xs font-semibold uppercase text-[color:var(--dash-text-muted)] bg-[var(--dash-nav-hover-bg)] border-t border-b border-[color:var(--dash-card-border)]">
                     <tr>
                         <th class="px-6 py-3 text-left">No</th>
                         <th class="px-6 py-3 text-left">Nama Lengkap</th>
@@ -44,43 +44,43 @@
                     </tr>
                 </thead>
                 <!-- Table body -->
-                <tbody class="text-sm divide-y divide-gray-200">
+                <tbody class="text-sm divide-y divide-[color:var(--dash-card-border)]">
                     @forelse($sessions as $session)
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $loop->iteration }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium text-[color:var(--dash-text-heading)]">
                                 {{ $session->guest_name }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-gray-500">
+                            <td class="px-6 py-4 whitespace-nowrap text-[color:var(--dash-text-muted)]">
                                 {{ $session->guest_email }}<br>
                                 <span class="text-xs">{{ $session->guest_whatsapp }}</span>
                                 @if($session->guest_instagram)
                                     <br><span class="text-xs text-blue-500">{{ $session->guest_instagram }}</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-gray-500">
+                            <td class="px-6 py-4 whitespace-nowrap text-[color:var(--dash-text-muted)]">
                                 {{ $session->guest_city }}<br>
                                 <span class="text-xs">{{ $session->guest_institution }}</span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-gray-900">
+                            <td class="px-6 py-4 whitespace-nowrap text-[color:var(--dash-text-heading)]">
                                 {{ optional($session->test)->test_name ?? '-' }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap font-bold text-gray-900">
+                            <td class="px-6 py-4 whitespace-nowrap font-bold text-[color:var(--dash-text-heading)]">
                                 {{ $session->score_total }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-gray-500">
+                            <td class="px-6 py-4 whitespace-nowrap text-[color:var(--dash-text-muted)]">
                                 {{ $session->completed_at ? $session->completed_at->format('d M Y H:i') : '-' }}
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">Belum ada data lead guest.</td>
+                            <td colspan="7" class="px-6 py-4 whitespace-nowrap text-sm text-[color:var(--dash-text-muted)] text-center">Belum ada data lead guest.</td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
-        <div class="px-6 py-4 border-t border-gray-200">
+        <div class="px-6 py-4 border-t border-[color:var(--dash-card-border)]">
             {{ $sessions->links() }}
         </div>
     </div>

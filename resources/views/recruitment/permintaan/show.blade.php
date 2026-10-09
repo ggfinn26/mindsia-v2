@@ -6,7 +6,7 @@
 @section('content')
 @php
     $statusColors = [
-        'draft'                => 'bg-gray-100 text-gray-700',
+        'draft'                => 'bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)]',
         'pending_hr_review'    => 'bg-amber-100 text-amber-700',
         'pending_ops_approval' => 'bg-blue-100 text-blue-700',
         'approved'             => 'bg-emerald-100 text-emerald-700',
@@ -21,7 +21,7 @@
         'rejected'             => 'Ditolak',
         'fulfilled'            => 'Terpenuhi',
     ];
-    $statusColor = $statusColors[$jobPermintaan->status] ?? 'bg-gray-100 text-gray-700';
+    $statusColor = $statusColors[$jobPermintaan->status] ?? 'bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)]';
     $statusLabel = $statusLabels[$jobPermintaan->status] ?? $jobPermintaan->status;
 @endphp
 

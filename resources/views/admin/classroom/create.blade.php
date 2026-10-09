@@ -72,21 +72,21 @@
                 <div class="relative">
                     <div @click="tutorOpen = !tutorOpen"
                          class="w-full px-4 py-2 border border-[var(--dash-input-border)] rounded-lg bg-[var(--dash-card-bg)] cursor-pointer flex justify-between items-center">
-                        <span :class="selectedTutorId ? 'text-[var(--dash-text-heading)]' : 'text-gray-400'" x-text="tutorLabel || 'Pilih tutor...'"></span>
-                        <span class="material-symbols-outlined text-[18px] text-gray-400">expand_more</span>
+                        <span :class="selectedTutorId ? 'text-[var(--dash-text-heading)]' : 'text-[color:var(--dash-text-faint)]'" x-text="tutorLabel || 'Pilih tutor...'"></span>
+                        <span class="material-symbols-outlined text-[18px] text-[color:var(--dash-text-faint)]">expand_more</span>
                     </div>
                     <div x-show="tutorOpen" x-transition x-cloak
                          class="absolute z-50 w-full mt-1 bg-[var(--dash-card-bg)] border border-[var(--dash-card-border)] rounded-lg shadow-lg overflow-hidden">
-                        <div class="p-2 bg-[var(--dash-page-bg)] border-b border-gray-100">
+                        <div class="p-2 bg-[var(--dash-page-bg)] border-b border-[color:var(--dash-card-border)]">
                             <div class="relative">
-                                <span class="material-symbols-outlined absolute left-3 top-2 text-gray-400 text-[16px]">search</span>
+                                <span class="material-symbols-outlined absolute left-3 top-2 text-[color:var(--dash-text-faint)] text-[16px]">search</span>
                                 <input type="text" x-model="tutorSearch" placeholder="Cari tutor..."
                                        style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-[var(--dash-card-bg)] border border-[var(--dash-card-border)] rounded-md text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-[var(--dash-primary)]/30 focus:border-[var(--dash-primary)]"
                                        @click.stop>
                             </div>
                         </div>
                         <template x-if="!selectedBranchId">
-                            <p class="px-4 py-3 text-sm text-gray-400 text-center">Pilih cabang terlebih dahulu</p>
+                            <p class="px-4 py-3 text-sm text-[color:var(--dash-text-faint)] text-center">Pilih cabang terlebih dahulu</p>
                         </template>
                         <template x-if="selectedBranchId">
                             <ul class="max-h-56 overflow-y-auto py-1">

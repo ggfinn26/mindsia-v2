@@ -20,7 +20,7 @@
             <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight text-[var(--dash-text-heading)] truncate">{{ $member->full_name }}</h1>
             <div class="flex items-center gap-2 mt-1">
                 @php $status = $member->activation_status; @endphp
-                <span class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider {{ $status instanceof ActivationStatus ? $status->badgeClass() : 'bg-slate-100 text-[var(--dash-text-body)]' }}">
+                <span class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider {{ $status instanceof ActivationStatus ? $status->badgeClass() : 'bg-[var(--dash-nav-hover-bg)] text-[var(--dash-text-body)]' }}">
                     {{ $status instanceof ActivationStatus ? $status->label() : '—' }}
                 </span>
                 <span class="text-sm text-[var(--dash-text-muted)]">&bull; Member & Marketing</span>

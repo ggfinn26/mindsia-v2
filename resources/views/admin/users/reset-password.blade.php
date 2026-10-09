@@ -6,14 +6,14 @@
         <h1 class="text-2xl md:text-3xl text-red-600 font-bold">Reset Password User</h1>
     </div>
 
-    <div class="bg-white shadow-lg rounded-sm border border-red-200 p-6">
-        <p class="text-gray-600 mb-4">Anda akan mereset password untuk user tertentu. Silakan konfirmasi tindakan ini.</p>
+    <div class="bg-[var(--dash-card-bg)] shadow-lg rounded-sm border border-red-200 p-6">
+        <p class="text-[color:var(--dash-text-body)] mb-4">Anda akan mereset password untuk user tertentu. Silakan konfirmasi tindakan ini.</p>
         
         <form action="#" method="POST">
             @csrf
             
             <div class="mt-4 flex">
-                <a href="{{ route('users.index') }}" class="btn bg-white border-gray-200 hover:border-gray-300 text-gray-600 mr-3">Batal</a>
+                <a href="{{ route('users.index') }}" class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] mr-3">Batal</a>
                 <button type="submit" class="btn bg-red-500 hover:bg-red-600 text-white">Kirim Email Reset Password</button>
             </div>
         </form>

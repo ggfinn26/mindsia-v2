@@ -7,10 +7,10 @@
         <div class="flex items-center justify-between mb-6">
             <div>
                 <h1 class="text-3xl font-bold text-[var(--dash-text-heading)]">Edit Kontrak</h1>
-                <p class="text-gray-600 mt-2">{{ $status->employee->full_name }}</p>
+                <p class="text-[color:var(--dash-text-body)] mt-2">{{ $status->employee->full_name }}</p>
             </div>
             <a href="{{ route('employees.show', $status->employee) }}"
-               class="px-4 py-2 text-gray-600 border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)]">
+               class="px-4 py-2 text-[color:var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)]">
                 Kembali
             </a>
         </div>
@@ -118,7 +118,7 @@
                             Simpan Perubahan
                         </button>
                         <a href="{{ route('employees.show', $status->employee) }}"
-                           class="px-6 py-2 text-gray-600 border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)]">
+                           class="px-6 py-2 text-[color:var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)]">
                             Batal
                         </a>
                     </div>

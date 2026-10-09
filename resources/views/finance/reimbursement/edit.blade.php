@@ -22,21 +22,21 @@
         @csrf @method('PUT')
         <div>
             <label class="mb-1.5 block text-sm font-medium text-[var(--dash-text-body)]">Tujuan bisnis</label>
-            <input type="text" name="business_purpose" value="{{ old('business_purpose', $reimbursement->business_purpose) }}" required maxlength="255" class="block w-full border-slate-300 text-sm focus:border-[var(--dash-primary)] focus:ring-[var(--dash-primary)]">
+            <input type="text" name="business_purpose" value="{{ old('business_purpose', $reimbursement->business_purpose) }}" required maxlength="255" class="block w-full border-[color:var(--dash-input-border)] text-sm focus:border-[var(--dash-primary)] focus:ring-[var(--dash-primary)]">
         </div>
         <div class="grid gap-4 sm:grid-cols-2">
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-[var(--dash-text-body)]">Periode mulai</label>
-                <input type="date" name="expense_period_start" value="{{ old('expense_period_start', $reimbursement->expense_period_start?->toDateString()) }}" required class="block w-full border-slate-300 text-sm focus:border-[var(--dash-primary)] focus:ring-[var(--dash-primary)]">
+                <input type="date" name="expense_period_start" value="{{ old('expense_period_start', $reimbursement->expense_period_start?->toDateString()) }}" required class="block w-full border-[color:var(--dash-input-border)] text-sm focus:border-[var(--dash-primary)] focus:ring-[var(--dash-primary)]">
             </div>
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-[var(--dash-text-body)]">Periode selesai</label>
-                <input type="date" name="expense_period_end" value="{{ old('expense_period_end', $reimbursement->expense_period_end?->toDateString()) }}" required class="block w-full border-slate-300 text-sm focus:border-[var(--dash-primary)] focus:ring-[var(--dash-primary)]">
+                <input type="date" name="expense_period_end" value="{{ old('expense_period_end', $reimbursement->expense_period_end?->toDateString()) }}" required class="block w-full border-[color:var(--dash-input-border)] text-sm focus:border-[var(--dash-primary)] focus:ring-[var(--dash-primary)]">
             </div>
         </div>
         <div class="flex gap-3 pt-2">
             <button type="submit" class="inline-flex min-h-10 items-center gap-2 bg-[var(--dash-primary)] px-5 text-sm font-semibold text-white hover:opacity-90">Simpan</button>
-            <a href="{{ route('reimbursements.show', $reimbursement) }}" class="inline-flex min-h-10 items-center border border-slate-300 px-4 text-sm font-semibold text-[var(--dash-text-body)] hover:bg-[var(--dash-page-bg)]">Batal</a>
+            <a href="{{ route('reimbursements.show', $reimbursement) }}" class="inline-flex min-h-10 items-center border border-[color:var(--dash-input-border)] px-4 text-sm font-semibold text-[var(--dash-text-body)] hover:bg-[var(--dash-page-bg)]">Batal</a>
         </div>
     </form>
 </div>

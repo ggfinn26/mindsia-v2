@@ -8,12 +8,12 @@
         removeItem(i) { this.manualItems.splice(i,1) }
     }">
     <div class="mb-6 flex items-center gap-3">
-        <a href="{{ route('recruitment.postings.index') }}" class="text-gray-400 hover:text-gray-600">
+        <a href="{{ route('recruitment.postings.index') }}" class="text-[color:var(--dash-text-faint)] hover:text-[color:var(--dash-text-body)]">
             <span class="material-symbols-outlined text-xl">arrow_back</span>
         </a>
         <div>
-            <h1 class="text-2xl md:text-3xl text-gray-800 font-bold">Buat Job Posting</h1>
-            <p class="text-sm text-gray-500 mt-0.5">
+            <h1 class="text-2xl md:text-3xl text-[color:var(--dash-text-heading)] font-bold">Buat Job Posting</h1>
+            <p class="text-sm text-[color:var(--dash-text-muted)] mt-0.5">
                 Dari permintaan: <span class="font-medium">{{ $permintaan->detail?->position?->position_name ?? '-' }}</span>
                 — {{ $permintaan->branch?->branch_name ?? '-' }}
             </p>
@@ -36,11 +36,11 @@
         <input type="hidden" name="position_id" value="{{ $permintaan->detail?->position_id }}">
 
         {{-- Informasi Posting --}}
-        <div class="bg-white shadow-lg rounded-sm border border-gray-200 p-6 space-y-5">
-            <h2 class="text-sm font-semibold text-gray-700 uppercase tracking-wider">Informasi Posting</h2>
+        <div class="bg-[var(--dash-card-bg)] shadow-lg rounded-sm border border-[color:var(--dash-card-border)] p-6 space-y-5">
+            <h2 class="text-sm font-semibold text-[color:var(--dash-text-body)] uppercase tracking-wider">Informasi Posting</h2>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
+                <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">
                     Judul Posting <span class="text-red-500">*</span>
                 </label>
                 <input type="text" name="title" value="{{ old('title') }}"
@@ -49,7 +49,7 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
+                <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">
                     Deskripsi Pekerjaan <span class="text-red-500">*</span>
                 </label>
                 <textarea name="job_description" rows="4" class="form-textarea w-full"
@@ -58,7 +58,7 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
+                <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">
                     Tanggung Jawab <span class="text-red-500">*</span>
                 </label>
                 <textarea name="job_responsibilities" rows="4" class="form-textarea w-full"
@@ -67,7 +67,7 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
+                <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">
                     Kualifikasi (teks publik) <span class="text-red-500">*</span>
                 </label>
                 <textarea name="job_requirements_text" rows="4" class="form-textarea w-full"
@@ -76,47 +76,47 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
+                <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">
                     Tanggal Penutupan (opsional)
                 </label>
                 <input type="date" name="closing_date" value="{{ old('closing_date') }}"
                     class="form-input w-full" />
-                <p class="mt-1 text-xs text-gray-500">Kosongkan untuk lowongan tanpa batas waktu.</p>
+                <p class="mt-1 text-xs text-[color:var(--dash-text-muted)]">Kosongkan untuk lowongan tanpa batas waktu.</p>
                 @error('closing_date') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
         </div>
 
         {{-- Requirements Auto (kriteria filter sistem) --}}
-        <div class="bg-white shadow-lg rounded-sm border border-gray-200 p-6 space-y-4">
+        <div class="bg-[var(--dash-card-bg)] shadow-lg rounded-sm border border-[color:var(--dash-card-border)] p-6 space-y-4">
             <div>
-                <h2 class="text-sm font-semibold text-gray-700 uppercase tracking-wider">Kriteria Otomatis</h2>
-                <p class="text-xs text-gray-500 mt-1">Dipakai sistem untuk menandai label "tidak memenuhi syarat" di portal pelamar.</p>
+                <h2 class="text-sm font-semibold text-[color:var(--dash-text-body)] uppercase tracking-wider">Kriteria Otomatis</h2>
+                <p class="text-xs text-[color:var(--dash-text-muted)] mt-1">Dipakai sistem untuk menandai label "tidak memenuhi syarat" di portal pelamar.</p>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Usia Minimum</label>
+                    <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Usia Minimum</label>
                     <input type="number" name="requirements_auto[minimum_age]" min="15" max="99"
                         value="{{ old('requirements_auto.minimum_age', $permintaan->requirementsAuto?->minimum_age) }}"
                         class="form-input w-full" placeholder="e.g. 21" />
                     @error('requirements_auto.minimum_age') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Usia Maksimum</label>
+                    <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Usia Maksimum</label>
                     <input type="number" name="requirements_auto[maximum_age]" min="15" max="99"
                         value="{{ old('requirements_auto.maximum_age', $permintaan->requirementsAuto?->maximum_age) }}"
                         class="form-input w-full" placeholder="e.g. 35" />
                     @error('requirements_auto.maximum_age') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Min. Pengalaman (tahun)</label>
+                    <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Min. Pengalaman (tahun)</label>
                     <input type="number" name="requirements_auto[minimum_year_experience]" min="0"
                         value="{{ old('requirements_auto.minimum_year_experience', $permintaan->requirementsAuto?->minimum_year_experience) }}"
                         class="form-input w-full" placeholder="e.g. 2" />
                     @error('requirements_auto.minimum_year_experience') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Min. Pendidikan</label>
+                    <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Min. Pendidikan</label>
                     <select name="requirements_auto[minimum_education_level]" class="form-select w-full">
                         <option value="">Tidak ada minimum</option>
                         @foreach(['sd','smp','sma','d1','d2','d3','d4','s1','s2','s3'] as $level)
@@ -132,14 +132,14 @@
         </div>
 
         {{-- Requirements Manual (kriteria dicek manual HR) --}}
-        <div class="bg-white shadow-lg rounded-sm border border-gray-200 p-6 space-y-4">
+        <div class="bg-[var(--dash-card-bg)] shadow-lg rounded-sm border border-[color:var(--dash-card-border)] p-6 space-y-4">
             <div class="flex items-center justify-between">
                 <div>
-                    <h2 class="text-sm font-semibold text-gray-700 uppercase tracking-wider">Kriteria Manual</h2>
-                    <p class="text-xs text-gray-500 mt-1">Dicek manual oleh HR saat screening, bukan filter otomatis.</p>
+                    <h2 class="text-sm font-semibold text-[color:var(--dash-text-body)] uppercase tracking-wider">Kriteria Manual</h2>
+                    <p class="text-xs text-[color:var(--dash-text-muted)] mt-1">Dicek manual oleh HR saat screening, bukan filter otomatis.</p>
                 </div>
                 <button type="button" @click="addItem()"
-                    class="btn bg-white border-gray-300 hover:border-gray-400 text-gray-600 text-xs py-1">
+                    class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-input-border)] hover:border-gray-400 text-[color:var(--dash-text-body)] text-xs py-1">
                     + Tambah Kriteria
                 </button>
             </div>
@@ -167,13 +167,13 @@
             </template>
 
             <template x-if="manualItems.length === 0">
-                <p class="text-sm text-gray-400 text-center py-3">Belum ada kriteria manual. Klik "+ Tambah Kriteria" untuk menambah.</p>
+                <p class="text-sm text-[color:var(--dash-text-faint)] text-center py-3">Belum ada kriteria manual. Klik "+ Tambah Kriteria" untuk menambah.</p>
             </template>
         </div>
 
         <div class="flex justify-end gap-3">
             <a href="{{ route('recruitment.postings.index') }}"
-                class="btn bg-white border-gray-200 hover:border-gray-300 text-gray-600">Batal</a>
+                class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)]">Batal</a>
             <button type="submit" class="btn bg-indigo-500 hover:bg-indigo-600 text-white">
                 Simpan sebagai Draft
             </button>

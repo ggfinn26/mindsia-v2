@@ -34,12 +34,12 @@
 
     <div class="flex justify-between items-center mb-6">
         <div>
-            <a href="{{ route('surveys.index') }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700">
+            <a href="{{ route('surveys.index') }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-body)]">
                 <span class="material-symbols-outlined text-[16px]">arrow_back</span> Daftar Survey
             </a>
-            <h1 class="text-2xl font-bold text-gray-900">Buat Survey Baru</h1>
+            <h1 class="text-2xl font-bold text-[color:var(--dash-text-heading)]">Buat Survey Baru</h1>
         </div>
-        <a href="{{ route('surveys.index') }}" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium border border-gray-300">Batal</a>
+        <a href="{{ route('surveys.index') }}" class="bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 text-[color:var(--dash-text-body)] px-4 py-2 rounded-lg font-medium border border-[color:var(--dash-input-border)]">Batal</a>
     </div>
 
     @if ($errors->any())
@@ -52,27 +52,27 @@
         @csrf
 
         <!-- Survey Info -->
-        <div class="bg-white shadow sm:rounded-lg divide-y divide-gray-200 mb-6">
+        <div class="bg-[var(--dash-card-bg)] shadow sm:rounded-lg divide-y divide-[color:var(--dash-card-border)] mb-6">
             <div class="px-6 py-5">
-                <h3 class="text-base font-medium text-gray-900 mb-4">Informasi Survey</h3>
+                <h3 class="text-base font-medium text-[color:var(--dash-text-heading)] mb-4">Informasi Survey</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700">Nama Survey <span class="text-red-500">*</span></label>
-                        <input type="text" name="survey_name" value="{{ old('survey_name') }}" required maxlength="255" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <label class="block text-sm font-medium text-[color:var(--dash-text-body)]">Nama Survey <span class="text-red-500">*</span></label>
+                        <input type="text" name="survey_name" value="{{ old('survey_name') }}" required maxlength="255" class="mt-1 block w-full border border-[color:var(--dash-input-border)] rounded-md shadow-sm py-2 px-3 sm:text-sm focus:border-indigo-500 focus:ring-indigo-500">
                         @error('survey_name')
                             <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700">Deskripsi <span class="text-gray-400">(opsional)</span></label>
-                        <textarea name="survey_description" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('survey_description') }}</textarea>
+                        <label class="block text-sm font-medium text-[color:var(--dash-text-body)]">Deskripsi <span class="text-[color:var(--dash-text-faint)]">(opsional)</span></label>
+                        <textarea name="survey_description" rows="3" class="mt-1 block w-full border border-[color:var(--dash-input-border)] rounded-md shadow-sm py-2 px-3 sm:text-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('survey_description') }}</textarea>
                         @error('survey_description')
                             <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Batas Waktu <span class="text-gray-400">(opsional)</span></label>
-                        <input type="datetime-local" name="deadline_at" value="{{ old('deadline_at') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <label class="block text-sm font-medium text-[color:var(--dash-text-body)]">Batas Waktu <span class="text-[color:var(--dash-text-faint)]">(opsional)</span></label>
+                        <input type="datetime-local" name="deadline_at" value="{{ old('deadline_at') }}" class="mt-1 block w-full border border-[color:var(--dash-input-border)] rounded-md shadow-sm py-2 px-3 sm:text-sm focus:border-indigo-500 focus:ring-indigo-500">
                         @error('deadline_at')
                             <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                         @enderror
@@ -84,18 +84,18 @@
         <!-- Questions -->
         <div class="space-y-4 mb-6">
             <div class="flex justify-between items-center">
-                <h3 class="text-base font-medium text-gray-900">Pertanyaan</h3>
+                <h3 class="text-base font-medium text-[color:var(--dash-text-heading)]">Pertanyaan</h3>
                 <button type="button" @click="addQuestion()" class="inline-flex items-center gap-1 text-indigo-600 hover:text-indigo-800 text-sm font-medium">
                     <span class="material-symbols-outlined text-[18px]">add</span> Tambah Pertanyaan
                 </button>
             </div>
 
             <template x-for="(question, qi) in questions" :key="qi">
-                <div class="bg-white shadow sm:rounded-lg border border-gray-200">
+                <div class="bg-[var(--dash-card-bg)] shadow sm:rounded-lg border border-[color:var(--dash-card-border)]">
                     <div class="px-6 py-4">
                         <!-- Question Header -->
                         <div class="flex items-center justify-between mb-4">
-                            <h4 class="text-sm font-semibold text-gray-800">
+                            <h4 class="text-sm font-semibold text-[color:var(--dash-text-heading)]">
                                 Pertanyaan <span x-text="qi + 1"></span>
                             </h4>
                             <button type="button" @click="removeQuestion(qi)" x-show="questions.length > 1" class="text-red-500 hover:text-red-700">
@@ -105,14 +105,14 @@
 
                         <!-- Question Text -->
                         <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700">Teks Pertanyaan <span class="text-red-500">*</span></label>
-                            <input type="text" :name="`questions[${qi}][question_text]`" x-model="question.question_text" required maxlength="500" placeholder="Masukkan pertanyaan..." class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <label class="block text-sm font-medium text-[color:var(--dash-text-body)]">Teks Pertanyaan <span class="text-red-500">*</span></label>
+                            <input type="text" :name="`questions[${qi}][question_text]`" x-model="question.question_text" required maxlength="500" placeholder="Masukkan pertanyaan..." class="mt-1 block w-full border border-[color:var(--dash-input-border)] rounded-md shadow-sm py-2 px-3 sm:text-sm focus:border-indigo-500 focus:ring-indigo-500">
                         </div>
 
                         <!-- Question Type -->
                         <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700">Tipe Jawaban <span class="text-red-500">*</span></label>
-                            <select :name="`questions[${qi}][question_type]`" x-model="question.question_type" @change="resetQuestionFields(qi)" required class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <label class="block text-sm font-medium text-[color:var(--dash-text-body)]">Tipe Jawaban <span class="text-red-500">*</span></label>
+                            <select :name="`questions[${qi}][question_type]`" x-model="question.question_type" @change="resetQuestionFields(qi)" required class="mt-1 block w-full bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] rounded-md shadow-sm py-2 px-3 sm:text-sm focus:border-indigo-500 focus:ring-indigo-500">
                                 <option value="single_choice">Pilihan Tunggal</option>
                                 <option value="multiple_choice">Pilihan Ganda</option>
                                 <option value="scale">Skala</option>
@@ -123,34 +123,34 @@
                         <!-- Scale Options -->
                         <div x-show="typeHasScale(question.question_type)" x-transition class="mb-4 grid grid-cols-2 md:grid-cols-4 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Nilai Min</label>
-                                <input type="number" :name="`questions[${qi}][scale_min]`" x-model.number="question.scale_min" min="0" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                <label class="block text-sm font-medium text-[color:var(--dash-text-body)]">Nilai Min</label>
+                                <input type="number" :name="`questions[${qi}][scale_min]`" x-model.number="question.scale_min" min="0" class="mt-1 block w-full border border-[color:var(--dash-input-border)] rounded-md shadow-sm py-2 px-3 sm:text-sm focus:border-indigo-500 focus:ring-indigo-500">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Nilai Max</label>
-                                <input type="number" :name="`questions[${qi}][scale_max]`" x-model.number="question.scale_max" min="1" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                <label class="block text-sm font-medium text-[color:var(--dash-text-body)]">Nilai Max</label>
+                                <input type="number" :name="`questions[${qi}][scale_max]`" x-model.number="question.scale_max" min="1" class="mt-1 block w-full border border-[color:var(--dash-input-border)] rounded-md shadow-sm py-2 px-3 sm:text-sm focus:border-indigo-500 focus:ring-indigo-500">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Label Min</label>
-                                <input type="text" :name="`questions[${qi}][scale_min_label]`" x-model="question.scale_min_label" maxlength="100" placeholder="Sangat Buruk" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                <label class="block text-sm font-medium text-[color:var(--dash-text-body)]">Label Min</label>
+                                <input type="text" :name="`questions[${qi}][scale_min_label]`" x-model="question.scale_min_label" maxlength="100" placeholder="Sangat Buruk" class="mt-1 block w-full border border-[color:var(--dash-input-border)] rounded-md shadow-sm py-2 px-3 sm:text-sm focus:border-indigo-500 focus:ring-indigo-500">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Label Max</label>
-                                <input type="text" :name="`questions[${qi}][scale_max_label]`" x-model="question.scale_max_label" maxlength="100" placeholder="Sangat Baik" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                <label class="block text-sm font-medium text-[color:var(--dash-text-body)]">Label Max</label>
+                                <input type="text" :name="`questions[${qi}][scale_max_label]`" x-model="question.scale_max_label" maxlength="100" placeholder="Sangat Baik" class="mt-1 block w-full border border-[color:var(--dash-input-border)] rounded-md shadow-sm py-2 px-3 sm:text-sm focus:border-indigo-500 focus:ring-indigo-500">
                             </div>
                         </div>
 
                         <!-- Choices -->
                         <div x-show="typeHasChoices(question.question_type)" x-transition>
                             <div class="flex justify-between items-center mb-2">
-                                <label class="block text-sm font-medium text-gray-700">Pilihan Jawaban</label>
+                                <label class="block text-sm font-medium text-[color:var(--dash-text-body)]">Pilihan Jawaban</label>
                                 <button type="button" @click="addChoice(qi)" class="text-indigo-600 hover:text-indigo-800 text-xs font-medium">+ Tambah Pilihan</button>
                             </div>
                             <div class="space-y-2">
                                 <template x-for="(choice, ci) in question.choices" :key="ci">
                                     <div class="flex items-center gap-2">
-                                        <span class="text-xs font-medium text-gray-400 w-5" x-text="String.fromCharCode(65 + ci) + '.'"></span>
-                                        <input type="text" :name="`questions[${qi}][choices][${ci}][choice_text]`" x-model="choice.choice_text" required placeholder="Teks pilihan..." class="flex-1 border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                        <span class="text-xs font-medium text-[color:var(--dash-text-faint)] w-5" x-text="String.fromCharCode(65 + ci) + '.'"></span>
+                                        <input type="text" :name="`questions[${qi}][choices][${ci}][choice_text]`" x-model="choice.choice_text" required placeholder="Teks pilihan..." class="flex-1 border border-[color:var(--dash-input-border)] rounded-md shadow-sm py-2 px-3 sm:text-sm focus:border-indigo-500 focus:ring-indigo-500">
                                         <button type="button" @click="removeChoice(qi, ci)" x-show="question.choices.length > 1" class="text-red-500 hover:text-red-700 flex-shrink-0">
                                             <span class="material-symbols-outlined text-lg">close</span>
                                         </button>
@@ -172,7 +172,7 @@
             <button type="submit" class="inline-flex min-h-10 items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-5 rounded-md text-sm">
                 <span class="material-symbols-outlined text-[18px]">save</span> Simpan Survey
             </button>
-            <a href="{{ route('surveys.index') }}" class="inline-flex min-h-10 items-center border border-gray-300 px-4 text-sm font-semibold text-gray-700 hover:bg-gray-50 rounded-md">Batal</a>
+            <a href="{{ route('surveys.index') }}" class="inline-flex min-h-10 items-center border border-[color:var(--dash-input-border)] px-4 text-sm font-semibold text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] rounded-md">Batal</a>
         </div>
     </form>
 </div>

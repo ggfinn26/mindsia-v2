@@ -20,52 +20,52 @@
     @endif
 
     <div class="mb-8 flex justify-between items-center">
-        <h1 class="text-2xl md:text-3xl text-gray-800 font-bold">Detail Aplikasi Lowongan</h1>
-        <a href="{{ route('recruitment.application.index') }}" class="btn bg-white border-gray-200 hover:border-gray-300 text-gray-600">Kembali</a>
+        <h1 class="text-2xl md:text-3xl text-[color:var(--dash-text-heading)] font-bold">Detail Aplikasi Lowongan</h1>
+        <a href="{{ route('recruitment.application.index') }}" class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)]">Kembali</a>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         {{-- Sidebar: Profil Pelamar --}}
-        <div class="bg-white shadow-lg rounded-sm border border-gray-200 p-6 md:col-span-1">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">Profil Pelamar</h2>
+        <div class="bg-[var(--dash-card-bg)] shadow-lg rounded-sm border border-[color:var(--dash-card-border)] p-6 md:col-span-1">
+            <h2 class="text-xl font-bold text-[color:var(--dash-text-heading)] mb-4">Profil Pelamar</h2>
             <div class="space-y-4">
                 <div>
-                    <h3 class="text-sm font-semibold text-gray-500 mb-1">Nama Lengkap</h3>
-                    <p class="text-gray-900 font-medium">{{ $jobApplication->applicant->full_name ?? '-' }}</p>
+                    <h3 class="text-sm font-semibold text-[color:var(--dash-text-muted)] mb-1">Nama Lengkap</h3>
+                    <p class="text-[color:var(--dash-text-heading)] font-medium">{{ $jobApplication->applicant->full_name ?? '-' }}</p>
                 </div>
                 <div>
-                    <h3 class="text-sm font-semibold text-gray-500 mb-1">Email</h3>
-                    <p class="text-gray-900 font-medium">{{ $jobApplication->applicant->email ?? '-' }}</p>
+                    <h3 class="text-sm font-semibold text-[color:var(--dash-text-muted)] mb-1">Email</h3>
+                    <p class="text-[color:var(--dash-text-heading)] font-medium">{{ $jobApplication->applicant->email ?? '-' }}</p>
                 </div>
                 <div>
-                    <h3 class="text-sm font-semibold text-gray-500 mb-1">WhatsApp</h3>
-                    <p class="text-gray-900 font-medium">
+                    <h3 class="text-sm font-semibold text-[color:var(--dash-text-muted)] mb-1">WhatsApp</h3>
+                    <p class="text-[color:var(--dash-text-heading)] font-medium">
                         {{ $jobApplication->applicant->whatsapp_number ? '+62'.$jobApplication->applicant->whatsapp_number : '-' }}
                     </p>
                 </div>
                 <div>
-                    <h3 class="text-sm font-semibold text-gray-500 mb-1">Tanggal Lamar</h3>
-                    <p class="text-gray-900 font-medium">
+                    <h3 class="text-sm font-semibold text-[color:var(--dash-text-muted)] mb-1">Tanggal Lamar</h3>
+                    <p class="text-[color:var(--dash-text-heading)] font-medium">
                         {{ $jobApplication->applied_at?->format('d M Y H:i') ?? '-' }}
                     </p>
                 </div>
                 <div>
-                    <h3 class="text-sm font-semibold text-gray-500 mb-1">Sumber</h3>
-                    <p class="text-gray-900 font-medium capitalize">{{ str_replace('_', ' ', $jobApplication->application_source) }}</p>
+                    <h3 class="text-sm font-semibold text-[color:var(--dash-text-muted)] mb-1">Sumber</h3>
+                    <p class="text-[color:var(--dash-text-heading)] font-medium capitalize">{{ str_replace('_', ' ', $jobApplication->application_source) }}</p>
                 </div>
                 @if($jobApplication->applicant?->educations?->count())
                     <div>
-                        <h3 class="text-sm font-semibold text-gray-500 mb-2">Pendidikan</h3>
+                        <h3 class="text-sm font-semibold text-[color:var(--dash-text-muted)] mb-2">Pendidikan</h3>
                         @foreach($jobApplication->applicant->educations as $edu)
-                            <p class="text-sm text-gray-700">{{ $edu->institution_name }} — {{ $edu->major ?? '-' }} ({{ $edu->graduation_year ?? '-' }})</p>
+                            <p class="text-sm text-[color:var(--dash-text-body)]">{{ $edu->institution_name }} — {{ $edu->major ?? '-' }} ({{ $edu->graduation_year ?? '-' }})</p>
                         @endforeach
                     </div>
                 @endif
                 @if($jobApplication->applicant?->workExperiences?->count())
                     <div>
-                        <h3 class="text-sm font-semibold text-gray-500 mb-2">Pengalaman Kerja</h3>
+                        <h3 class="text-sm font-semibold text-[color:var(--dash-text-muted)] mb-2">Pengalaman Kerja</h3>
                         @foreach($jobApplication->applicant->workExperiences as $exp)
-                            <p class="text-sm text-gray-700">{{ $exp->company_name }} — {{ $exp->position }}</p>
+                            <p class="text-sm text-[color:var(--dash-text-body)]">{{ $exp->company_name }} — {{ $exp->position }}</p>
                         @endforeach
                     </div>
                 @endif
@@ -73,22 +73,22 @@
         </div>
 
         {{-- Main: Tahapan --}}
-        <div class="bg-white shadow-lg rounded-sm border border-gray-200 p-6 md:col-span-2">
+        <div class="bg-[var(--dash-card-bg)] shadow-lg rounded-sm border border-[color:var(--dash-card-border)] p-6 md:col-span-2">
             <div class="flex justify-between items-start mb-6">
                 <div>
-                    <h2 class="text-xl font-bold text-gray-800 mb-1">Progres Recruitment</h2>
-                    <p class="text-sm text-gray-500">Posisi: <span class="font-semibold text-gray-700">{{ $jobApplication->posting->title ?? 'Reserve/Manual' }}</span></p>
+                    <h2 class="text-xl font-bold text-[color:var(--dash-text-heading)] mb-1">Progres Recruitment</h2>
+                    <p class="text-sm text-[color:var(--dash-text-muted)]">Posisi: <span class="font-semibold text-[color:var(--dash-text-body)]">{{ $jobApplication->posting->title ?? 'Reserve/Manual' }}</span></p>
                 </div>
                 @php
                     $statusColors = [
-                        'applied'   => 'bg-gray-100 text-gray-800',
+                        'applied'   => 'bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-heading)]',
                         'screening' => 'bg-blue-100 text-blue-800',
                         'interview' => 'bg-yellow-100 text-yellow-800',
                         'offering'  => 'bg-purple-100 text-purple-800',
                         'hired'     => 'bg-green-100 text-green-800',
                         'rejected'  => 'bg-red-100 text-red-800',
                     ];
-                    $statusColor = $statusColors[$jobApplication->status] ?? 'bg-gray-100 text-gray-800';
+                    $statusColor = $statusColors[$jobApplication->status] ?? 'bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-heading)]';
                 @endphp
                 <span class="px-3 py-1 text-sm font-semibold rounded-full {{ $statusColor }}">
                     {{ Str::title($jobApplication->status) }}
@@ -100,16 +100,16 @@
                 @forelse($jobApplication->stages as $stage)
                     <div class="mb-6 ml-6">
                         <span class="absolute flex items-center justify-center w-6 h-6 {{ $stage->result === 'rejected' ? 'bg-red-400' : 'bg-indigo-500' }} rounded-full -left-3 ring-4 ring-white"></span>
-                        <h3 class="font-bold text-gray-800 capitalize">{{ str_replace('_', ' ', $stage->stage) }}</h3>
-                        <p class="text-xs text-gray-400 mt-0.5">{{ $stage->created_at->format('d M Y H:i') }}</p>
+                        <h3 class="font-bold text-[color:var(--dash-text-heading)] capitalize">{{ str_replace('_', ' ', $stage->stage) }}</h3>
+                        <p class="text-xs text-[color:var(--dash-text-faint)] mt-0.5">{{ $stage->created_at->format('d M Y H:i') }}</p>
                         @if($stage->notes)
-                            <p class="text-sm text-gray-600 mt-1">{{ $stage->notes }}</p>
+                            <p class="text-sm text-[color:var(--dash-text-body)] mt-1">{{ $stage->notes }}</p>
                         @endif
                     </div>
                 @empty
                     <div class="mb-6 ml-6">
                         <span class="absolute flex items-center justify-center w-6 h-6 bg-gray-200 rounded-full -left-3 ring-4 ring-white"></span>
-                        <p class="text-sm text-gray-500">Belum ada tahapan tercatat.</p>
+                        <p class="text-sm text-[color:var(--dash-text-muted)]">Belum ada tahapan tercatat.</p>
                     </div>
                 @endforelse
             </div>
@@ -130,7 +130,7 @@
             {{-- Interview schedules (jika ada) --}}
             @if($jobApplication->interviewSchedules->count())
                 <div class="mb-6">
-                    <h3 class="font-semibold text-gray-700 mb-3">Jadwal Interview</h3>
+                    <h3 class="font-semibold text-[color:var(--dash-text-body)] mb-3">Jadwal Interview</h3>
                     @foreach($jobApplication->interviewSchedules as $schedule)
                         <div class="p-4 bg-yellow-50 rounded-lg border border-yellow-200 mb-3">
                             <div class="flex justify-between items-start">
@@ -175,7 +175,7 @@
 
             {{-- Action buttons --}}
             @if(!in_array($jobApplication->status, ['hired', 'rejected']))
-                <div class="mt-6 pt-6 border-t border-gray-200 flex flex-wrap justify-end gap-3">
+                <div class="mt-6 pt-6 border-t border-[color:var(--dash-card-border)] flex flex-wrap justify-end gap-3">
 
                     {{-- Reject --}}
                     @can('recruitment.job_application.review')
@@ -247,18 +247,18 @@
                     <div class="grid grid-cols-2 gap-3 text-sm mb-3">
                         <div>
                             <span class="text-purple-600 font-medium">Gaji Ditawarkan:</span>
-                            <span class="text-gray-900 ml-1">Rp {{ number_format($letter->offered_salary, 0, ',', '.') }}</span>
+                            <span class="text-[color:var(--dash-text-heading)] ml-1">Rp {{ number_format($letter->offered_salary, 0, ',', '.') }}</span>
                         </div>
                         @if($letter->agreed_salary)
                             <div>
                                 <span class="text-purple-600 font-medium">Gaji Disepakati:</span>
-                                <span class="text-gray-900 ml-1">Rp {{ number_format($letter->agreed_salary, 0, ',', '.') }}</span>
+                                <span class="text-[color:var(--dash-text-heading)] ml-1">Rp {{ number_format($letter->agreed_salary, 0, ',', '.') }}</span>
                             </div>
                         @endif
                         @if($letter->start_date)
                             <div>
                                 <span class="text-purple-600 font-medium">Tanggal Mulai:</span>
-                                <span class="text-gray-900 ml-1">{{ \Carbon\Carbon::parse($letter->start_date)->format('d M Y') }}</span>
+                                <span class="text-[color:var(--dash-text-heading)] ml-1">{{ \Carbon\Carbon::parse($letter->start_date)->format('d M Y') }}</span>
                             </div>
                         @endif
                         <div>
@@ -299,13 +299,13 @@
     {{-- ── MACRO: modal shell ── color = Tailwind color class prefix (e.g. green, purple) ──────── --}}
     @php
     // input class helper reused across all modals
-    $inp = 'w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 bg-gray-50';
+    $inp = 'w-full border border-[color:var(--dash-card-border)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 bg-[var(--dash-nav-hover-bg)]';
     @endphp
 
     {{-- ── Modal: Buat Onboarding (green) ─────────────────────────────── --}}
     <div x-show="showOnboardingModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display:none;">
         <div @click="showOnboardingModal = false" class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
-        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+        <div class="relative bg-[var(--dash-card-bg)] rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
             <div class="bg-green-600 px-6 py-4 flex items-center justify-between">
                 <div class="flex items-center gap-2 text-white">
                     <span class="material-symbols-outlined text-xl">work_history</span>
@@ -318,7 +318,7 @@
             <form action="{{ route('recruitment.application.onboarding.store', $jobApplication) }}" method="POST" class="p-6 space-y-4">
                 @csrf
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Cabang <span class="text-red-500">*</span></label>
+                    <label class="block text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1.5">Cabang <span class="text-red-500">*</span></label>
                     <select name="branch_id" required class="{{ $inp }}">
                         <option value="">Pilih cabang...</option>
                         @foreach(\App\Models\Branch::orderBy('branch_name')->get() as $branch)
@@ -327,7 +327,7 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Posisi <span class="text-red-500">*</span></label>
+                    <label class="block text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1.5">Posisi <span class="text-red-500">*</span></label>
                     <select name="position_id" required class="{{ $inp }}">
                         <option value="">Pilih posisi...</option>
                         @foreach(\App\Models\Position::orderBy('position_name')->get() as $pos)
@@ -336,7 +336,7 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Tipe Karyawan <span class="text-red-500">*</span></label>
+                    <label class="block text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1.5">Tipe Karyawan <span class="text-red-500">*</span></label>
                     <select name="employment_type" required class="{{ $inp }}">
                         <option value="">Pilih tipe...</option>
                         <option value="kontrak">Kontrak</option>
@@ -346,11 +346,11 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Tanggal Mulai <span class="text-red-500">*</span></label>
+                    <label class="block text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1.5">Tanggal Mulai <span class="text-red-500">*</span></label>
                     <input type="date" name="start_date" required class="{{ $inp }}">
                 </div>
-                <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
-                    <button type="button" @click="showOnboardingModal = false" class="btn border border-gray-200 text-gray-600 hover:bg-gray-50">Batal</button>
+                <div class="flex justify-end gap-2 pt-2 border-t border-[color:var(--dash-card-border)]">
+                    <button type="button" @click="showOnboardingModal = false" class="btn border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]">Batal</button>
                     <button type="submit" class="btn bg-green-600 hover:bg-green-700 text-white">Buat Onboarding</button>
                 </div>
             </form>
@@ -360,7 +360,7 @@
     {{-- ── Modal: Buat Offering Letter (purple) ────────────────────────── --}}
     <div x-show="showOfferingModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display:none;">
         <div @click="showOfferingModal = false" class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
-        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
+        <div class="relative bg-[var(--dash-card-bg)] rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
             <div class="bg-purple-600 px-6 py-4 flex items-center justify-between">
                 <div class="flex items-center gap-2 text-white">
                     <span class="material-symbols-outlined text-xl">description</span>
@@ -373,15 +373,15 @@
             <form action="{{ route('recruitment.application.offering-letter.store', $jobApplication) }}" method="POST" class="p-6 space-y-4">
                 @csrf
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Gaji Ditawarkan (Rp) <span class="text-red-500">*</span></label>
+                    <label class="block text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1.5">Gaji Ditawarkan (Rp) <span class="text-red-500">*</span></label>
                     <input type="number" name="offered_salary" min="0" step="1000" required class="{{ $inp }}" placeholder="6.500.000">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Tanggal Mulai Kerja</label>
+                    <label class="block text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1.5">Tanggal Mulai Kerja</label>
                     <input type="date" name="start_date" class="{{ $inp }}">
                 </div>
                 <div x-data="{ meetType: '' }">
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Pertemuan Penandatanganan</label>
+                    <label class="block text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1.5">Pertemuan Penandatanganan</label>
                     <select name="meeting_type" x-model="meetType" class="{{ $inp }} mb-2">
                         <option value="">Tidak ada pertemuan</option>
                         <option value="offline">Offline</option>
@@ -397,11 +397,11 @@
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Catatan</label>
+                    <label class="block text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1.5">Catatan</label>
                     <textarea name="notes" rows="2" class="{{ $inp }}"></textarea>
                 </div>
-                <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
-                    <button type="button" @click="showOfferingModal = false" class="btn border border-gray-200 text-gray-600 hover:bg-gray-50">Batal</button>
+                <div class="flex justify-end gap-2 pt-2 border-t border-[color:var(--dash-card-border)]">
+                    <button type="button" @click="showOfferingModal = false" class="btn border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]">Batal</button>
                     <button type="submit" class="btn bg-purple-600 hover:bg-purple-700 text-white">Buat Offering Letter</button>
                 </div>
             </form>
@@ -412,7 +412,7 @@
     @if($jobApplication->offeringLetter)
     <div x-show="showNegotiateModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display:none;">
         <div @click="showNegotiateModal = false" class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
-        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+        <div class="relative bg-[var(--dash-card-bg)] rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
             <div class="bg-amber-500 px-6 py-4 flex items-center justify-between">
                 <div class="flex items-center gap-2 text-white">
                     <span class="material-symbols-outlined text-xl">currency_exchange</span>
@@ -428,17 +428,17 @@
                     Gaji ditawarkan: <strong>Rp {{ number_format($jobApplication->offeringLetter->offered_salary, 0, ',', '.') }}</strong>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Gaji Disepakati (Rp)</label>
+                    <label class="block text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1.5">Gaji Disepakati (Rp)</label>
                     <input type="number" name="agreed_salary" min="0" step="1000"
                         value="{{ $jobApplication->offeringLetter->agreed_salary }}"
                         class="{{ $inp }}" placeholder="{{ $jobApplication->offeringLetter->offered_salary }}">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Catatan Negosiasi</label>
+                    <label class="block text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1.5">Catatan Negosiasi</label>
                     <textarea name="notes" rows="3" class="{{ $inp }}">{{ $jobApplication->offeringLetter->notes }}</textarea>
                 </div>
-                <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
-                    <button type="button" @click="showNegotiateModal = false" class="btn border border-gray-200 text-gray-600 hover:bg-gray-50">Batal</button>
+                <div class="flex justify-end gap-2 pt-2 border-t border-[color:var(--dash-card-border)]">
+                    <button type="button" @click="showNegotiateModal = false" class="btn border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]">Batal</button>
                     <button type="submit" class="btn bg-amber-500 hover:bg-amber-600 text-white">Simpan Negosiasi</button>
                 </div>
             </form>
@@ -449,7 +449,7 @@
     {{-- ── Modal: Reject Pelamar (red) ─────────────────────────────────── --}}
     <div x-show="showRejectModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display:none;">
         <div @click="showRejectModal = false" class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
-        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+        <div class="relative bg-[var(--dash-card-bg)] rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
             <div class="bg-red-500 px-6 py-4 flex items-center justify-between">
                 <div class="flex items-center gap-2 text-white">
                     <span class="material-symbols-outlined text-xl">cancel</span>
@@ -461,13 +461,13 @@
             </div>
             <form action="{{ route('recruitment.application.reject', $jobApplication->id) }}" method="POST" class="p-6 space-y-4">
                 @csrf
-                <p class="text-sm text-gray-600">Penolakan bersifat final. Isi alasan dengan jelas agar bisa dikomunikasikan ke pelamar.</p>
+                <p class="text-sm text-[color:var(--dash-text-body)]">Penolakan bersifat final. Isi alasan dengan jelas agar bisa dikomunikasikan ke pelamar.</p>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Alasan Penolakan <span class="text-red-500">*</span></label>
+                    <label class="block text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1.5">Alasan Penolakan <span class="text-red-500">*</span></label>
                     <textarea name="reason" rows="3" required class="{{ $inp }} focus:ring-red-300 focus:border-red-400"></textarea>
                 </div>
-                <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
-                    <button type="button" @click="showRejectModal = false" class="btn border border-gray-200 text-gray-600 hover:bg-gray-50">Batal</button>
+                <div class="flex justify-end gap-2 pt-2 border-t border-[color:var(--dash-card-border)]">
+                    <button type="button" @click="showRejectModal = false" class="btn border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]">Batal</button>
                     <button type="submit" class="btn bg-red-500 hover:bg-red-600 text-white">Tolak Lamaran</button>
                 </div>
             </form>
@@ -477,7 +477,7 @@
     {{-- ── Modal: Jadwalkan Psikotest (blue) ───────────────────────────── --}}
     <div x-show="showPsikotestModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display:none;">
         <div @click="showPsikotestModal = false" class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
-        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+        <div class="relative bg-[var(--dash-card-bg)] rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
             <div class="bg-blue-600 px-6 py-4 flex items-center justify-between">
                 <div class="flex items-center gap-2 text-white">
                     <span class="material-symbols-outlined text-xl">psychology</span>
@@ -490,15 +490,15 @@
             <form action="{{ route('recruitment.application.psikotest.store', $jobApplication->id) }}" method="POST" class="p-6 space-y-4">
                 @csrf
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Tanggal Psikotest</label>
+                    <label class="block text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1.5">Tanggal Psikotest</label>
                     <input type="date" name="psikotest_date" class="{{ $inp }}">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Link Tes <span class="text-gray-400 font-normal normal-case">(opsional)</span></label>
+                    <label class="block text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1.5">Link Tes <span class="text-[color:var(--dash-text-faint)] font-normal normal-case">(opsional)</span></label>
                     <input type="url" name="psikotest_link" placeholder="https://psikotes.link/..." class="{{ $inp }}">
                 </div>
-                <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
-                    <button type="button" @click="showPsikotestModal = false" class="btn border border-gray-200 text-gray-600 hover:bg-gray-50">Batal</button>
+                <div class="flex justify-end gap-2 pt-2 border-t border-[color:var(--dash-card-border)]">
+                    <button type="button" @click="showPsikotestModal = false" class="btn border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]">Batal</button>
                     <button type="submit" class="btn bg-blue-600 hover:bg-blue-700 text-white">Simpan</button>
                 </div>
             </form>
@@ -508,7 +508,7 @@
     {{-- ── Modal: Evaluasi Interview (indigo) ──────────────────────────── --}}
     <div x-show="showEvalModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto" style="display:none;">
         <div @click="showEvalModal = false" class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
-        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg my-auto overflow-hidden">
+        <div class="relative bg-[var(--dash-card-bg)] rounded-2xl shadow-2xl w-full max-w-lg my-auto overflow-hidden">
             <div class="bg-indigo-600 px-6 py-4 flex items-center justify-between">
                 <div class="flex items-center gap-2 text-white">
                     <span class="material-symbols-outlined text-xl">rate_review</span>
@@ -520,7 +520,7 @@
             </div>
             <form method="POST" :action="'{{ url('recruitment/interviews') }}/' + evalScheduleId + '/evaluation'" class="p-6 space-y-4">
                 @csrf
-                <p class="text-xs text-gray-500">Skor 1=Kurang · 2=Cukup · 3=Baik · 4=Sangat Baik &nbsp;|&nbsp; Total: 5–8 Buruk · 9–12 Sedang · 13–17 Bagus · 18–20 Sangat Bagus</p>
+                <p class="text-xs text-[color:var(--dash-text-muted)]">Skor 1=Kurang · 2=Cukup · 3=Baik · 4=Sangat Baik &nbsp;|&nbsp; Total: 5–8 Buruk · 9–12 Sedang · 13–17 Bagus · 18–20 Sangat Bagus</p>
                 @php
                     $criteria = [
                         'score_education'     => 'Pendidikan & Kompetensi Teknis',
@@ -532,7 +532,7 @@
                 @endphp
                 @foreach($criteria as $field => $label)
                     <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">{{ $label }} <span class="text-red-500">*</span></label>
+                        <label class="block text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1.5">{{ $label }} <span class="text-red-500">*</span></label>
                         <select name="{{ $field }}" required class="{{ $inp }}">
                             <option value="">Pilih skor...</option>
                             <option value="1">1 — Kurang</option>
@@ -544,16 +544,16 @@
                 @endforeach
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Gaji Sekarang</label>
+                        <label class="block text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1.5">Gaji Sekarang</label>
                         <input type="number" name="current_salary" min="0" step="1000" class="{{ $inp }}" placeholder="0">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Gaji Diinginkan</label>
+                        <label class="block text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1.5">Gaji Diinginkan</label>
                         <input type="number" name="desired_salary" min="0" step="1000" class="{{ $inp }}" placeholder="0">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Kesimpulan <span class="text-red-500">*</span></label>
+                    <label class="block text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1.5">Kesimpulan <span class="text-red-500">*</span></label>
                     <select name="decision" required class="{{ $inp }}">
                         <option value="">Pilih kesimpulan...</option>
                         <option value="accepted">✅ Diterima</option>
@@ -562,11 +562,11 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Catatan Tambahan</label>
+                    <label class="block text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1.5">Catatan Tambahan</label>
                     <textarea name="notes" rows="2" class="{{ $inp }}"></textarea>
                 </div>
-                <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
-                    <button type="button" @click="showEvalModal = false" class="btn border border-gray-200 text-gray-600 hover:bg-gray-50">Batal</button>
+                <div class="flex justify-end gap-2 pt-2 border-t border-[color:var(--dash-card-border)]">
+                    <button type="button" @click="showEvalModal = false" class="btn border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]">Batal</button>
                     <button type="submit" class="btn bg-indigo-600 hover:bg-indigo-700 text-white">Simpan Evaluasi</button>
                 </div>
             </form>
@@ -576,7 +576,7 @@
     {{-- ── Modal: Jadwalkan Interview (yellow) ─────────────────────────── --}}
     <div x-show="showInterviewModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto" style="display:none;">
         <div @click="showInterviewModal = false" class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
-        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md my-auto overflow-hidden">
+        <div class="relative bg-[var(--dash-card-bg)] rounded-2xl shadow-2xl w-full max-w-md my-auto overflow-hidden">
             <div class="bg-yellow-500 px-6 py-4 flex items-center justify-between">
                 <div class="flex items-center gap-2 text-white">
                     <span class="material-symbols-outlined text-xl">event_available</span>
@@ -589,26 +589,26 @@
             <form action="{{ route('recruitment.application.interviews.store', $jobApplication->id) }}" method="POST" class="p-6 space-y-4">
                 @csrf
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Tipe Interview <span class="text-red-500">*</span></label>
+                    <label class="block text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1.5">Tipe Interview <span class="text-red-500">*</span></label>
                     <select name="interview_type" required class="{{ $inp }}" x-model="interviewType" x-init="interviewType = 'offline'">
                         <option value="offline">Offline</option>
                         <option value="online">Online</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Waktu Interview <span class="text-red-500">*</span></label>
+                    <label class="block text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1.5">Waktu Interview <span class="text-red-500">*</span></label>
                     <input type="datetime-local" name="scheduled_at" required class="{{ $inp }}">
                 </div>
                 <div x-show="interviewType === 'offline'">
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Lokasi</label>
+                    <label class="block text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1.5">Lokasi</label>
                     <input type="text" name="location" class="{{ $inp }}" placeholder="Ruang Wawancara, Lt. 2">
                 </div>
                 <div x-show="interviewType === 'online'">
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Link Meeting</label>
+                    <label class="block text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1.5">Link Meeting</label>
                     <input type="url" name="meeting_link" class="{{ $inp }}" placeholder="https://meet.google.com/...">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Interviewer <span class="text-red-500">*</span></label>
+                    <label class="block text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1.5">Interviewer <span class="text-red-500">*</span></label>
                     <select name="interviewer_employee_id" required class="{{ $inp }}">
                         <option value="">Pilih interviewer...</option>
                         @foreach(\App\Models\Employee::orderBy('full_name')->get() as $emp)
@@ -617,11 +617,11 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Catatan</label>
+                    <label class="block text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1.5">Catatan</label>
                     <textarea name="notes" rows="2" class="{{ $inp }}"></textarea>
                 </div>
-                <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
-                    <button type="button" @click="showInterviewModal = false" class="btn border border-gray-200 text-gray-600 hover:bg-gray-50">Batal</button>
+                <div class="flex justify-end gap-2 pt-2 border-t border-[color:var(--dash-card-border)]">
+                    <button type="button" @click="showInterviewModal = false" class="btn border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]">Batal</button>
                     <button type="submit" class="btn bg-yellow-500 hover:bg-yellow-600 text-white">Jadwalkan</button>
                 </div>
             </form>

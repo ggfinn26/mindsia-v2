@@ -77,8 +77,8 @@
     {{-- Page header --}}
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-            <h2 class="text-xl font-bold font-jakarta text-gray-900">Jadwal Kelas</h2>
-            <p class="text-sm text-gray-500 mt-0.5">Kalender pertemuan untuk semua kelas aktif Anda.</p>
+            <h2 class="text-xl font-bold font-jakarta text-[color:var(--dash-text-heading)]">Jadwal Kelas</h2>
+            <p class="text-sm text-[color:var(--dash-text-muted)] mt-0.5">Kalender pertemuan untuk semua kelas aktif Anda.</p>
         </div>
         <div class="flex items-center gap-1.5 text-xs bg-red-50 border border-red-100 rounded-lg px-3 py-1.5 self-start sm:self-auto">
             <span class="w-2 h-2 rounded-full bg-red-400 flex-shrink-0"></span>
@@ -87,12 +87,12 @@
     </div>
 
     @if($memberClasses->isEmpty())
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-12 flex flex-col items-center justify-center text-center">
+    <div class="bg-[var(--dash-card-bg)] rounded-2xl border border-[color:var(--dash-card-border)] shadow-sm p-12 flex flex-col items-center justify-center text-center">
         <div class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center mb-4">
             <span class="material-symbols-outlined text-[#5586DB] text-3xl">calendar_today</span>
         </div>
-        <h3 class="text-base font-bold text-gray-900 font-jakarta mb-1">Belum Ada Kelas Aktif</h3>
-        <p class="text-sm text-gray-500 max-w-xs mx-auto mb-5">Anda belum terdaftar di kelas manapun. Silakan cek riwayat registrasi.</p>
+        <h3 class="text-base font-bold text-[color:var(--dash-text-heading)] font-jakarta mb-1">Belum Ada Kelas Aktif</h3>
+        <p class="text-sm text-[color:var(--dash-text-muted)] max-w-xs mx-auto mb-5">Anda belum terdaftar di kelas manapun. Silakan cek riwayat registrasi.</p>
         <a href="{{ route('member.dashboard') }}"
            class="px-5 py-2 bg-[#5586DB] text-white text-sm font-semibold rounded-lg hover:bg-[#4370BC] transition-colors">
             Kembali ke Dashboard
@@ -105,7 +105,7 @@
     @if(count($classLegend) > 0)
     <div class="flex flex-wrap gap-x-5 gap-y-2">
         @foreach($classLegend as $item)
-        <span class="flex items-center gap-1.5 text-xs font-medium text-gray-600">
+        <span class="flex items-center gap-1.5 text-xs font-medium text-[color:var(--dash-text-body)]">
             <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background-color: {{ $item['color'] }}"></span>
             {{ $item['name'] }}
         </span>
@@ -114,18 +114,18 @@
     @endif
 
     {{-- Calendar card --}}
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm">
+    <div class="bg-[var(--dash-card-bg)] rounded-2xl border border-[color:var(--dash-card-border)] shadow-sm">
         <div class="p-5 sm:p-6">
 
             {{-- Nav bar: prev/title/next centered, today button pinned right --}}
             <div class="relative flex items-center justify-center gap-1 mb-5">
                 <button id="cal-prev"
-                    class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 transition-colors">
+                    class="w-8 h-8 flex items-center justify-center rounded-lg text-[color:var(--dash-text-muted)] hover:bg-[var(--dash-nav-hover-bg)] transition-colors">
                     <span class="material-symbols-outlined" style="font-size:20px">chevron_left</span>
                 </button>
-                <h3 id="cal-title" class="text-sm font-bold text-gray-900 font-jakarta w-44 text-center select-none"></h3>
+                <h3 id="cal-title" class="text-sm font-bold text-[color:var(--dash-text-heading)] font-jakarta w-44 text-center select-none"></h3>
                 <button id="cal-next"
-                    class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 transition-colors">
+                    class="w-8 h-8 flex items-center justify-center rounded-lg text-[color:var(--dash-text-muted)] hover:bg-[var(--dash-nav-hover-bg)] transition-colors">
                     <span class="material-symbols-outlined" style="font-size:20px">chevron_right</span>
                 </button>
                 <button id="cal-today"

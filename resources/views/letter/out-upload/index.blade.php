@@ -24,10 +24,10 @@
         </div>
     @endif
 
-    <div class="overflow-hidden border border-slate-200 bg-white">
+    <div class="overflow-hidden border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)]">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-200 text-sm">
-                <thead class="bg-slate-50 text-left text-xs font-semibold text-slate-500">
+            <table class="min-w-full divide-y divide-[color:var(--dash-card-border)] text-sm">
+                <thead class="bg-[var(--dash-nav-hover-bg)] text-left text-xs font-semibold text-[color:var(--dash-text-muted)]">
                     <tr>
                         <th class="px-5 py-3">Nomor / Perihal</th>
                         <th class="px-5 py-3">Tanggal</th>
@@ -35,25 +35,25 @@
                         <th class="px-5 py-3 text-right">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100">
+                <tbody class="divide-y divide-[color:var(--dash-card-border)]">
                     @php $letters = \App\Models\OutLetterViaUpload::latest()->paginate(20); @endphp
                     @forelse ($letters as $letter)
                         <tr class="hover:bg-slate-50/70">
                             <td class="px-5 py-4">
-                                <p class="font-semibold text-slate-900">{{ $letter->subject }}</p>
-                                <p class="font-mono text-xs text-slate-400">{{ $letter->letter_number ?? '—' }}</p>
+                                <p class="font-semibold text-[color:var(--dash-text-heading)]">{{ $letter->subject }}</p>
+                                <p class="font-mono text-xs text-[color:var(--dash-text-faint)]">{{ $letter->letter_number ?? '—' }}</p>
                             </td>
-                            <td class="px-5 py-4 text-slate-600">{{ $letter->letter_date?->format('d M Y') ?? '—' }}</td>
-                            <td class="px-5 py-4 text-slate-600">{{ $letter->recipient ?? '—' }}</td>
+                            <td class="px-5 py-4 text-[color:var(--dash-text-body)]">{{ $letter->letter_date?->format('d M Y') ?? '—' }}</td>
+                            <td class="px-5 py-4 text-[color:var(--dash-text-body)]">{{ $letter->recipient ?? '—' }}</td>
                             <td class="px-5 py-4 text-right">
-                                <a href="{{ route('out-letters-upload.show', $letter) }}" class="inline-flex min-h-9 items-center border border-slate-300 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50">Detail</a>
+                                <a href="{{ route('out-letters-upload.show', $letter) }}" class="inline-flex min-h-9 items-center border border-[color:var(--dash-input-border)] px-3 text-xs font-semibold text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]">Detail</a>
                             </td>
                         </tr>
                     @empty
                         <tr>
                             <td colspan="4" class="px-5 py-12 text-center">
                                 <span class="material-symbols-outlined text-3xl text-slate-300">outbox</span>
-                                <p class="mt-2 font-semibold text-slate-700">Belum ada arsip surat keluar.</p>
+                                <p class="mt-2 font-semibold text-[color:var(--dash-text-body)]">Belum ada arsip surat keluar.</p>
                             </td>
                         </tr>
                     @endforelse
@@ -61,7 +61,7 @@
             </table>
         </div>
         @if ($letters->hasPages())
-            <div class="border-t border-slate-200 px-5 py-4">{{ $letters->links() }}</div>
+            <div class="border-t border-[color:var(--dash-card-border)] px-5 py-4">{{ $letters->links() }}</div>
         @endif
     </div>
 </div>

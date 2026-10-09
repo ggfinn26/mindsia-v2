@@ -246,7 +246,7 @@
                                onmouseout="this.style.backgroundColor='transparent'">
                             <input type="checkbox" name="program_ids[]" value="{{ $program->id }}"
                                    {{ in_array($program->id, $assignedProgramIds) ? 'checked' : '' }}
-                                   class="w-4 h-4 rounded border-gray-300"
+                                   class="w-4 h-4 rounded border-[color:var(--dash-input-border)]"
                                    style="accent-color: var(--dash-primary);" />
                             <span class="text-sm font-medium" style="color: var(--dash-text-body);">{{ $program->program_name }}</span>
                             <span class="text-xs font-mono ml-auto" style="color: var(--dash-text-faint);">{{ $program->program_code }}</span>

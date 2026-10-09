@@ -6,15 +6,15 @@
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-3xl mx-auto">
 
     <div class="mb-8">
-        <h1 class="text-2xl md:text-3xl text-gray-800 font-bold">Audio Instruksi TOEFL</h1>
-        <p class="text-sm text-gray-500 mt-0.5">Path file audio instruksi yang diputar sebelum tiap bagian Listening.</p>
+        <h1 class="text-2xl md:text-3xl text-[color:var(--dash-text-heading)] font-bold">Audio Instruksi TOEFL</h1>
+        <p class="text-sm text-[color:var(--dash-text-muted)] mt-0.5">Path file audio instruksi yang diputar sebelum tiap bagian Listening.</p>
     </div>
 
     @if (session('success'))
         <div class="mb-6 bg-green-50 border border-green-300 text-green-700 px-4 py-3 rounded text-sm">{{ session('success') }}</div>
     @endif
 
-    <div class="bg-white shadow-lg rounded-sm border border-gray-200 divide-y divide-gray-100">
+    <div class="bg-[var(--dash-card-bg)] shadow-lg rounded-sm border border-[color:var(--dash-card-border)] divide-y divide-[color:var(--dash-card-border)]">
 
         @foreach (['A' => 'Part A — Short Conversations', 'B' => 'Part B — Longer Conversations', 'C' => 'Part C — Talks'] as $part => $label)
             @php $audio = $audios[$part] ?? null; @endphp
@@ -22,9 +22,9 @@
                 <div class="flex items-start justify-between gap-4 mb-3">
                     <div>
                         <p class="text-xs font-bold uppercase tracking-wider text-indigo-600 mb-0.5">Part {{ $part }}</p>
-                        <p class="text-sm font-medium text-gray-800">{{ $label }}</p>
+                        <p class="text-sm font-medium text-[color:var(--dash-text-heading)]">{{ $label }}</p>
                         @if ($audio)
-                            <p class="text-xs text-gray-400 mt-0.5 font-mono break-all">{{ $audio->file_path }}</p>
+                            <p class="text-xs text-[color:var(--dash-text-faint)] mt-0.5 font-mono break-all">{{ $audio->file_path }}</p>
                         @else
                             <p class="text-xs text-amber-600 mt-0.5">Belum diatur — pakai fallback hardcoded.</p>
                         @endif
@@ -32,7 +32,7 @@
                     @can('toefl.direction-audio.update')
                         <button type="button" @click="editing = !editing"
                             class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-md text-sm font-medium transition-colors shrink-0"
-                            :class="editing ? 'bg-gray-100 text-gray-600' : 'text-indigo-600 bg-indigo-50 hover:bg-indigo-100'"
+                            :class="editing ? 'bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)]' : 'text-indigo-600 bg-indigo-50 hover:bg-indigo-100'"
                             x-text="editing ? 'Batal' : 'Ubah'">
                         </button>
                     @endcan
@@ -59,7 +59,7 @@
                                 Simpan
                             </button>
                         </div>
-                        <p class="text-xs text-gray-400 mt-1">Path relatif dari folder <code class="font-mono">public/</code>, contoh: <code class="font-mono">toefl-audio/SECTION-A-INSTRUCTIONS.mp3</code></p>
+                        <p class="text-xs text-[color:var(--dash-text-faint)] mt-1">Path relatif dari folder <code class="font-mono">public/</code>, contoh: <code class="font-mono">toefl-audio/SECTION-A-INSTRUCTIONS.mp3</code></p>
                     </form>
                 @endcan
             </div>
@@ -69,7 +69,7 @@
 
     <div class="mt-4">
         <a href="{{ route('toefl-tests.index') }}"
-            class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-white border border-gray-300 hover:bg-gray-50 text-gray-600 text-sm font-medium transition-colors">
+            class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium transition-colors">
             &larr; Kembali ke Daftar Test
         </a>
     </div>

@@ -3,10 +3,10 @@
 @section('content')
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-3xl mx-auto">
     <div class="mb-6 flex items-center gap-3">
-        <a href="{{ route('recruitment.permintaan.show', $jobPermintaan) }}" class="text-gray-400 hover:text-gray-600">
+        <a href="{{ route('recruitment.permintaan.show', $jobPermintaan) }}" class="text-[color:var(--dash-text-faint)] hover:text-[color:var(--dash-text-body)]">
             <span class="material-symbols-outlined text-xl">arrow_back</span>
         </a>
-        <h1 class="text-2xl md:text-3xl text-gray-800 font-bold">Edit Job Permintaan</h1>
+        <h1 class="text-2xl md:text-3xl text-[color:var(--dash-text-heading)] font-bold">Edit Job Permintaan</h1>
     </div>
 
     @if ($errors->any())
@@ -19,13 +19,13 @@
         </div>
     @endif
 
-    <div class="bg-white shadow-lg rounded-sm border border-gray-200">
+    <div class="bg-[var(--dash-card-bg)] shadow-lg rounded-sm border border-[color:var(--dash-card-border)]">
         <form action="{{ route('recruitment.permintaan.update', $jobPermintaan) }}" method="POST" class="p-6 space-y-5">
             @csrf
             @method('PUT')
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
+                <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">
                     Posisi yang Diminta <span class="text-red-500">*</span>
                 </label>
                 <select name="detail[position_id]" class="form-select w-full" required>
@@ -42,7 +42,7 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                    <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">
                         Jenis Permintaan <span class="text-red-500">*</span>
                     </label>
                     <select name="detail[request_type]" class="form-select w-full" required>
@@ -60,7 +60,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                    <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">
                         Tipe Pekerjaan <span class="text-red-500">*</span>
                     </label>
                     @php $empType = old('detail.employment_type', $jobPermintaan->detail?->employment_type); @endphp
@@ -77,7 +77,7 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                    <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">
                         Jumlah yang Dibutuhkan <span class="text-red-500">*</span>
                     </label>
                     <input type="number" name="detail[headcount]" min="1"
@@ -87,7 +87,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                    <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">
                         Jumlah Saat Ini (opsional)
                     </label>
                     <input type="number" name="detail[current_headcount]" min="0"
@@ -98,7 +98,7 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
+                <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">
                     Target Tanggal Mulai (opsional)
                 </label>
                 <input type="date" name="detail[target_start_date]"
@@ -108,7 +108,7 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
+                <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">
                     Deskripsi Pekerjaan (opsional)
                 </label>
                 <textarea name="detail[job_description]" rows="4" class="form-textarea w-full"
@@ -118,7 +118,7 @@
 
             <div class="pt-2 flex justify-end gap-3">
                 <a href="{{ route('recruitment.permintaan.show', $jobPermintaan) }}"
-                    class="btn bg-white border-gray-200 hover:border-gray-300 text-gray-600">Batal</a>
+                    class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)]">Batal</a>
                 <button type="submit" class="btn bg-indigo-500 hover:bg-indigo-600 text-white">
                     Simpan Perubahan
                 </button>

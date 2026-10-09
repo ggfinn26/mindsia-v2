@@ -12,7 +12,7 @@
     <!-- Page header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <p class="text-sm font-semibold uppercase tracking-wider text-slate-500">
+            <p class="text-sm font-semibold uppercase tracking-wider text-[color:var(--dash-text-muted)]">
                 @if(request('tab') == 'assign')
                     Manajemen
                 @elseif(request('tab') == 'results')
@@ -21,7 +21,7 @@
                     Konfigurasi
                 @endif
             </p>
-            <h1 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">
+            <h1 class="font-jakarta text-2xl font-bold tracking-tight text-[color:var(--dash-text-heading)]">
                 @if(request('tab') == 'assign')
                     Assign Survey
                 @elseif(request('tab') == 'results')
@@ -44,10 +44,10 @@
     </div>
 
     <!-- Table -->
-    <div class="overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm">
+    <div class="overflow-hidden rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-100 text-sm">
-                <thead class="bg-slate-50 text-left text-xs font-bold uppercase tracking-wider text-slate-500">
+            <table class="min-w-full divide-y divide-[color:var(--dash-card-border)] text-sm">
+                <thead class="bg-[var(--dash-nav-hover-bg)] text-left text-xs font-bold uppercase tracking-wider text-[color:var(--dash-text-muted)]">
                     <tr>
                         <th class="px-6 py-4">Nama Survey</th>
                         <th class="px-6 py-4">Batas Waktu</th>
@@ -58,14 +58,14 @@
                 <tbody class="divide-y divide-slate-50">
                     @forelse($surveys as $survey)
                         <tr class="hover:bg-slate-50/50 transition-colors">
-                            <td class="px-6 py-4 font-semibold text-slate-900">
+                            <td class="px-6 py-4 font-semibold text-[color:var(--dash-text-heading)]">
                                 {{ $survey->survey_name }}
                             </td>
-                            <td class="px-6 py-4 text-slate-600 font-medium">
+                            <td class="px-6 py-4 text-[color:var(--dash-text-body)] font-medium">
                                 @if ($survey->deadline_at)
-                                    <span class="inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-slate-400">calendar_month</span> {{ $survey->deadline_at->format('d M Y H:i') }}</span>
+                                    <span class="inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-[color:var(--dash-text-faint)]">calendar_month</span> {{ $survey->deadline_at->format('d M Y H:i') }}</span>
                                 @else
-                                    <span class="text-slate-400 italic">Tanpa Batas</span>
+                                    <span class="text-[color:var(--dash-text-faint)] italic">Tanpa Batas</span>
                                 @endif
                             </td>
                             <td class="px-6 py-4">
@@ -98,11 +98,11 @@
                     @empty
                         <tr>
                             <td colspan="4" class="px-6 py-12 text-center">
-                                <div class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-50 mb-3">
-                                    <span class="material-symbols-outlined text-slate-400 text-2xl">fact_check</span>
+                                <div class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[var(--dash-nav-hover-bg)] mb-3">
+                                    <span class="material-symbols-outlined text-[color:var(--dash-text-faint)] text-2xl">fact_check</span>
                                 </div>
-                                <h3 class="text-sm font-medium text-slate-900">Belum ada data survey</h3>
-                                <p class="mt-1 text-sm text-slate-500">
+                                <h3 class="text-sm font-medium text-[color:var(--dash-text-heading)]">Belum ada data survey</h3>
+                                <p class="mt-1 text-sm text-[color:var(--dash-text-muted)]">
                                     @if(request('tab') == 'assign') Belum ada survey yang bisa di-assign. @elseif(request('tab') == 'results') Belum ada hasil survey yang tersedia. @else Silakan buat template survey baru. @endif
                                 </p>
                             </td>
@@ -121,23 +121,23 @@
             </div>
             
             <!-- Modal panel -->
-            <div class="relative inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-slate-100">
-                <div class="bg-white px-6 pt-6 pb-6">
+            <div class="relative inline-block align-bottom bg-[var(--dash-card-bg)] rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-[color:var(--dash-card-border)]">
+                <div class="bg-[var(--dash-card-bg)] px-6 pt-6 pb-6">
                     <div class="sm:flex sm:items-start">
                         <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-50 sm:mx-0 sm:h-10 sm:w-10">
                             <span class="material-symbols-outlined text-red-600">warning</span>
                         </div>
                         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                            <h3 class="font-jakarta text-lg font-bold text-slate-900" x-text="confirmTitle"></h3>
+                            <h3 class="font-jakarta text-lg font-bold text-[color:var(--dash-text-heading)]" x-text="confirmTitle"></h3>
                             <div class="mt-2">
-                                <p class="text-sm text-slate-500" x-text="confirmMessage"></p>
+                                <p class="text-sm text-[color:var(--dash-text-muted)]" x-text="confirmMessage"></p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="bg-slate-50 px-6 py-4 sm:flex sm:flex-row-reverse gap-3 border-t border-slate-100">
+                <div class="bg-[var(--dash-nav-hover-bg)] px-6 py-4 sm:flex sm:flex-row-reverse gap-3 border-t border-[color:var(--dash-card-border)]">
                     <button type="button" @click="$refs.confirmForm.submit()" class="w-full inline-flex justify-center rounded-lg bg-red-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-red-700 transition-colors sm:w-auto" x-text="confirmActionText"></button>
-                    <button type="button" @click="showConfirmModal = false" class="mt-3 w-full inline-flex justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-colors sm:mt-0 sm:w-auto">Batal</button>
+                    <button type="button" @click="showConfirmModal = false" class="mt-3 w-full inline-flex justify-center rounded-lg border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] px-5 py-2.5 text-sm font-bold text-[color:var(--dash-text-body)] shadow-sm hover:bg-[var(--dash-nav-hover-bg)] transition-colors sm:mt-0 sm:w-auto">Batal</button>
                 </div>
                 <form x-ref="confirmForm" :action="confirmActionUrl" method="POST" class="hidden">
                     @csrf

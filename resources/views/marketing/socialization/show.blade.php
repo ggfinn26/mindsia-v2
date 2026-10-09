@@ -100,7 +100,7 @@
     </div>
 
     {{-- Main Content Wrap --}}
-    <div class="bg-[var(--dash-card-bg)] rounded-2xl border border-[var(--dash-card-border)] border-l-4 {{ $statusBorderLeft[$socialization->status] ?? 'border-l-gray-300' }} overflow-hidden mb-5">
+    <div class="bg-[var(--dash-card-bg)] rounded-2xl border border-[var(--dash-card-border)] border-l-4 {{ $statusBorderLeft[$socialization->status] ?? 'border-l-[color:var(--dash-input-border)]' }} overflow-hidden mb-5">
         <div class="p-5 sm:p-6 border-b border-[var(--dash-card-border)] flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div class="flex items-start gap-3 min-w-0">
                 <div class="min-w-0">

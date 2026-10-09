@@ -5,12 +5,12 @@
 @section('content')
 <div class="max-w-2xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
     <div class="mb-6 flex items-center gap-3">
-        <a href="{{ route('work-schedule-rules.show', $rule) }}" class="text-gray-400 hover:text-gray-600">
+        <a href="{{ route('work-schedule-rules.show', $rule) }}" class="text-[color:var(--dash-text-faint)] hover:text-[color:var(--dash-text-body)]">
             <span class="material-symbols-outlined">arrow_back</span>
         </a>
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">Edit Aturan Jadwal Kerja</h1>
-            <p class="text-sm text-gray-500 mt-0.5">{{ $rule->setting_name }}</p>
+            <h1 class="text-2xl font-bold text-[color:var(--dash-text-heading)]">Edit Aturan Jadwal Kerja</h1>
+            <p class="text-sm text-[color:var(--dash-text-muted)] mt-0.5">{{ $rule->setting_name }}</p>
         </div>
     </div>
 
@@ -20,74 +20,74 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('work-schedule-rules.update', $rule) }}" x-data="{ isRequired: {{ old('is_required', $rule->is_required) ? 'true' : 'false' }} }" class="bg-white shadow rounded-lg divide-y divide-gray-100">
+    <form method="POST" action="{{ route('work-schedule-rules.update', $rule) }}" x-data="{ isRequired: {{ old('is_required', $rule->is_required) ? 'true' : 'false' }} }" class="bg-[var(--dash-card-bg)] shadow rounded-lg divide-y divide-[color:var(--dash-card-border)]">
         @csrf @method('PUT')
 
         <div class="px-6 py-5 space-y-4">
             <div>
-                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Nama Aturan <span class="text-red-500">*</span></label>
+                <label class="block text-xs font-bold text-[color:var(--dash-text-muted)] uppercase tracking-wide mb-1">Nama Aturan <span class="text-red-500">*</span></label>
                 <input type="text" name="setting_name" value="{{ old('setting_name', $rule->setting_name) }}"
-                       class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                       class="w-full px-3.5 py-2.5 border border-[color:var(--dash-input-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                 @error('setting_name') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
 
             <div class="grid grid-cols-2 gap-4" x-show="isRequired">
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">
+                    <label class="block text-xs font-bold text-[color:var(--dash-text-muted)] uppercase tracking-wide mb-1">
                         Jam Mulai <span class="text-red-500">*</span>
                     </label>
                     <input type="time" name="start_time" value="{{ old('start_time', $rule->start_time) }}"
                            :required="isRequired"
-                           class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                           class="w-full px-3.5 py-2.5 border border-[color:var(--dash-input-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                     @error('start_time') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">
+                    <label class="block text-xs font-bold text-[color:var(--dash-text-muted)] uppercase tracking-wide mb-1">
                         Jam Selesai <span class="text-red-500">*</span>
                     </label>
                     <input type="time" name="end_time" value="{{ old('end_time', $rule->end_time) }}"
                            :required="isRequired"
-                           class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                           class="w-full px-3.5 py-2.5 border border-[color:var(--dash-input-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                     @error('end_time') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Jam Istirahat Mulai</label>
+                    <label class="block text-xs font-bold text-[color:var(--dash-text-muted)] uppercase tracking-wide mb-1">Jam Istirahat Mulai</label>
                     <input type="time" name="break_start_time" value="{{ old('break_start_time', $rule->break_start_time) }}"
-                           class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                           class="w-full px-3.5 py-2.5 border border-[color:var(--dash-input-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                     @error('break_start_time') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Jam Istirahat Selesai</label>
+                    <label class="block text-xs font-bold text-[color:var(--dash-text-muted)] uppercase tracking-wide mb-1">Jam Istirahat Selesai</label>
                     <input type="time" name="break_end_time" value="{{ old('break_end_time', $rule->break_end_time) }}"
-                           class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                           class="w-full px-3.5 py-2.5 border border-[color:var(--dash-input-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                     @error('break_end_time') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Toleransi Telat (menit) <span class="text-red-500">*</span></label>
+                    <label class="block text-xs font-bold text-[color:var(--dash-text-muted)] uppercase tracking-wide mb-1">Toleransi Telat (menit) <span class="text-red-500">*</span></label>
                     <input type="number" name="late_tolerance_minutes" value="{{ old('late_tolerance_minutes', $rule->late_tolerance_minutes) }}"
                            min="0" max="120"
-                           class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                           class="w-full px-3.5 py-2.5 border border-[color:var(--dash-input-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                     @error('late_tolerance_minutes') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Toleransi Pulang Cepat (menit) <span class="text-red-500">*</span></label>
+                    <label class="block text-xs font-bold text-[color:var(--dash-text-muted)] uppercase tracking-wide mb-1">Toleransi Pulang Cepat (menit) <span class="text-red-500">*</span></label>
                     <input type="number" name="early_leave_tolerance_minutes" value="{{ old('early_leave_tolerance_minutes', $rule->early_leave_tolerance_minutes) }}"
                            min="0" max="120"
-                           class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                           class="w-full px-3.5 py-2.5 border border-[color:var(--dash-input-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                     @error('early_leave_tolerance_minutes') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
             </div>
 
             <!-- Hari Kerja -->
             <div>
-                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">
-                    Hari Kerja <span class="text-gray-400 font-normal normal-case">(kosong = semua hari)</span>
+                <label class="block text-xs font-bold text-[color:var(--dash-text-muted)] uppercase tracking-wide mb-2">
+                    Hari Kerja <span class="text-[color:var(--dash-text-faint)] font-normal normal-case">(kosong = semua hari)</span>
                 </label>
                 @php
                     $days = [1=>'Senin',2=>'Selasa',3=>'Rabu',4=>'Kamis',5=>'Jumat',6=>'Sabtu',7=>'Minggu'];
@@ -96,7 +96,7 @@
                 <div class="flex flex-wrap gap-2">
                     @foreach($days as $num => $label)
                         <label class="flex items-center gap-1.5 cursor-pointer px-3 py-1.5 rounded-lg border text-sm font-medium transition-colors
-                            {{ in_array($num, (array)$activeDays) ? 'bg-blue-50 border-blue-400 text-blue-700' : 'bg-white border-gray-300 text-gray-600 hover:border-blue-300' }}">
+                            {{ in_array($num, (array)$activeDays) ? 'bg-blue-50 border-blue-400 text-blue-700' : 'bg-[var(--dash-card-bg)] border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] hover:border-blue-300' }}">
                             <input type="checkbox" name="work_days[]" value="{{ $num }}"
                                    {{ in_array($num, (array)$activeDays) ? 'checked' : '' }}
                                    class="sr-only">
@@ -112,21 +112,21 @@
                     <input type="hidden" name="is_required" value="0">
                     <input type="checkbox" name="is_required" value="1" {{ old('is_required', $rule->is_required) ? 'checked' : '' }}
                            @change="isRequired = $event.target.checked"
-                           class="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
-                    <span class="text-sm font-medium text-gray-700">Absensi Wajib</span>
+                           class="h-4 w-4 text-blue-600 rounded border-[color:var(--dash-input-border)] focus:ring-blue-500">
+                    <span class="text-sm font-medium text-[color:var(--dash-text-body)]">Absensi Wajib</span>
                 </label>
                 <label class="flex items-center gap-2 cursor-pointer">
                     <input type="hidden" name="is_active" value="0">
                     <input type="checkbox" name="is_active" value="1" {{ old('is_active', $rule->is_active) ? 'checked' : '' }}
-                           class="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
-                    <span class="text-sm font-medium text-gray-700">Aktif</span>
+                           class="h-4 w-4 text-blue-600 rounded border-[color:var(--dash-input-border)] focus:ring-blue-500">
+                    <span class="text-sm font-medium text-[color:var(--dash-text-body)]">Aktif</span>
                 </label>
             </div>
         </div>
 
         <div class="px-6 py-4 flex justify-end gap-3">
             <a href="{{ route('work-schedule-rules.show', $rule) }}"
-               class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+               class="px-4 py-2 text-sm font-medium text-[color:var(--dash-text-body)] bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-nav-hover-bg)] transition-colors">
                 Batal
             </a>
             <button type="submit"

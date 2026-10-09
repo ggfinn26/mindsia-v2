@@ -153,7 +153,7 @@
                             'paid_full'    => ['label' => 'Lunas',             'class' => 'bg-green-100 text-green-700'],
                             'paid'         => ['label' => 'Lunas',             'class' => 'bg-green-100 text-green-700'],
                         ];
-                        $st = $statusMap[$registration->payment_status] ?? ['label' => $registration->payment_status, 'class' => 'bg-gray-100 text-gray-700'];
+                        $st = $statusMap[$registration->payment_status] ?? ['label' => $registration->payment_status, 'class' => 'bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)]'];
                     @endphp
                     <span class="inline-flex text-xs font-semibold px-2.5 py-1 rounded-full {{ $st['class'] }}">{{ $st['label'] }}</span>
                 </dd>

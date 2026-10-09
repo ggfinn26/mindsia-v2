@@ -5,21 +5,21 @@
 @section('content')
 <div class="max-w-3xl mx-auto space-y-6">
     <div>
-        <a href="{{ route('member.tickets.index') }}" class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-[color:var(--dash-primary-text,#215aac)] transition-colors">
+        <a href="{{ route('member.tickets.index') }}" class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-primary-text,#215aac)] transition-colors">
             <span class="material-symbols-outlined text-[16px]">arrow_back</span> Daftar Tiket
         </a>
         <div class="mt-2 flex items-center justify-between flex-wrap gap-3">
             <div>
-                <h1 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">{{ $ticket->subject }}</h1>
-                <p class="text-xs text-slate-400 mt-1 font-mono">{{ $ticket->ticket_number }}</p>
+                <h1 class="font-jakarta text-2xl font-bold tracking-tight text-[color:var(--dash-text-heading)]">{{ $ticket->subject }}</h1>
+                <p class="text-xs text-[color:var(--dash-text-faint)] mt-1 font-mono">{{ $ticket->ticket_number }}</p>
             </div>
             @php
                 $statusColor = match($ticket->status) {
                     'open'        => 'bg-amber-100 text-amber-800',
                     'in_progress' => 'bg-blue-100 text-blue-800',
                     'resolved'    => 'bg-emerald-100 text-emerald-800',
-                    'closed'      => 'bg-slate-100 text-slate-700',
-                    default       => 'bg-slate-100 text-slate-700',
+                    'closed'      => 'bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)]',
+                    default       => 'bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)]',
                 };
                 $statusLabel = match($ticket->status) {
                     'open'        => 'Terbuka',
@@ -49,8 +49,8 @@
     @endif
 
     <!-- Ticket Info -->
-    <div class="overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm">
-        <div class="px-6 py-4 border-b border-slate-100 flex flex-wrap gap-4 text-xs text-slate-500">
+    <div class="overflow-hidden rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
+        <div class="px-6 py-4 border-b border-[color:var(--dash-card-border)] flex flex-wrap gap-4 text-xs text-[color:var(--dash-text-muted)]">
             @php
                 $categoryLabel = match($ticket->category) {
                     'complaint'  => 'Pengaduan',
@@ -65,22 +65,22 @@
                     default  => ucfirst($ticket->priority),
                 };
             @endphp
-            <span><strong class="text-slate-700">Kategori:</strong> {{ $categoryLabel }}</span>
-            <span><strong class="text-slate-700">Prioritas:</strong> {{ $priorityLabel }}</span>
-            <span><strong class="text-slate-700">Dibuat:</strong> {{ $ticket->created_at->format('d M Y, H:i') }}</span>
+            <span><strong class="text-[color:var(--dash-text-body)]">Kategori:</strong> {{ $categoryLabel }}</span>
+            <span><strong class="text-[color:var(--dash-text-body)]">Prioritas:</strong> {{ $priorityLabel }}</span>
+            <span><strong class="text-[color:var(--dash-text-body)]">Dibuat:</strong> {{ $ticket->created_at->format('d M Y, H:i') }}</span>
             @if($ticket->assignedEmployee)
-                <span><strong class="text-slate-700">Ditangani:</strong> {{ $ticket->assignedEmployee->full_name }}</span>
+                <span><strong class="text-[color:var(--dash-text-body)]">Ditangani:</strong> {{ $ticket->assignedEmployee->full_name }}</span>
             @endif
         </div>
         <div class="p-6">
-            <p class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{{ $ticket->message }}</p>
+            <p class="text-sm text-[color:var(--dash-text-body)] leading-relaxed whitespace-pre-wrap">{{ $ticket->message }}</p>
         </div>
     </div>
 
     <!-- Reply Thread -->
     @if($ticket->replies->isNotEmpty())
     <div class="space-y-4">
-        <h3 class="font-jakarta text-sm font-bold text-slate-700 uppercase tracking-wider">Balasan</h3>
+        <h3 class="font-jakarta text-sm font-bold text-[color:var(--dash-text-body)] uppercase tracking-wider">Balasan</h3>
         @foreach($ticket->replies as $reply)
             @php $isEmployee = !is_null($reply->employee_id); @endphp
             <div class="flex gap-3 {{ $isEmployee ? '' : 'flex-row-reverse' }}">
@@ -88,11 +88,11 @@
                     {{ $isEmployee ? substr($reply->employee->full_name ?? 'A', 0, 1) : 'S' }}
                 </div>
                 <div class="max-w-[75%] {{ $isEmployee ? '' : 'items-end' }} flex flex-col gap-1">
-                    <p class="text-xs text-slate-400 {{ $isEmployee ? '' : 'text-right' }}">
+                    <p class="text-xs text-[color:var(--dash-text-faint)] {{ $isEmployee ? '' : 'text-right' }}">
                         {{ $isEmployee ? ($reply->employee->full_name ?? 'Admin') : 'Saya' }}
                         · {{ $reply->created_at->format('d M Y, H:i') }}
                     </p>
-                    <div class="rounded-xl px-4 py-3 text-sm {{ $isEmployee ? 'bg-slate-100 text-slate-800 rounded-tl-none' : 'bg-[var(--dash-primary,#215aac)] text-white rounded-tr-none' }}">
+                    <div class="rounded-xl px-4 py-3 text-sm {{ $isEmployee ? 'bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-heading)] rounded-tl-none' : 'bg-[var(--dash-primary,#215aac)] text-white rounded-tr-none' }}">
                         {{ $reply->reply }}
                     </div>
                 </div>
@@ -103,15 +103,15 @@
 
     <!-- Reply Form -->
     @if(!in_array($ticket->status, ['closed']))
-    <div class="overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm">
-        <div class="px-6 py-4 border-b border-slate-100">
-            <h3 class="font-jakarta text-sm font-bold text-slate-800">Tulis Balasan</h3>
+    <div class="overflow-hidden rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
+        <div class="px-6 py-4 border-b border-[color:var(--dash-card-border)]">
+            <h3 class="font-jakarta text-sm font-bold text-[color:var(--dash-text-heading)]">Tulis Balasan</h3>
         </div>
         <form action="{{ route('member.tickets.replies.store', $ticket) }}" method="POST" class="p-6 space-y-4">
             @csrf
             <textarea name="reply" rows="4" required minlength="5"
                 placeholder="Tulis balasan Anda..."
-                class="block w-full rounded-lg border-slate-200 bg-white px-3 py-2.5 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)] shadow-sm"></textarea>
+                class="block w-full rounded-lg border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] px-3 py-2.5 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)] shadow-sm"></textarea>
             <div class="flex justify-end">
                 <button type="submit" class="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-lg bg-[var(--dash-primary,#215aac)] px-5 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-colors">
                     <span class="material-symbols-outlined text-[18px]">send</span> Kirim Balasan
@@ -138,12 +138,12 @@
                                 :class="rating >= {{ $i }} ? 'text-amber-400' : 'text-slate-200'">star</span>
                         </button>
                     @endfor
-                    <span class="text-sm text-slate-500 ml-2" x-text="rating ? rating + '/5' : 'Pilih rating'"></span>
+                    <span class="text-sm text-[color:var(--dash-text-muted)] ml-2" x-text="rating ? rating + '/5' : 'Pilih rating'"></span>
                     <input type="hidden" name="rating" :value="rating">
                 </div>
                 <textarea name="rating_notes" rows="2"
                     placeholder="Komentar tambahan (opsional)..."
-                    class="block w-full rounded-lg border-emerald-200 bg-white px-3 py-2.5 text-sm focus:border-emerald-500 focus:ring-emerald-500 shadow-sm"></textarea>
+                    class="block w-full rounded-lg border-emerald-200 bg-[var(--dash-card-bg)] px-3 py-2.5 text-sm focus:border-emerald-500 focus:ring-emerald-500 shadow-sm"></textarea>
                 <div class="flex justify-end mt-3">
                     <button type="submit" class="inline-flex min-h-[38px] items-center justify-center gap-2 rounded-lg bg-emerald-600 px-5 text-sm font-bold text-white shadow-sm hover:bg-emerald-700 transition-colors">
                         Kirim Penilaian
@@ -155,14 +155,14 @@
     @endif
 
     @if($ticket->rating)
-    <div class="flex items-center gap-2 rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
-        <span class="text-sm text-slate-500">Penilaian Anda:</span>
+    <div class="flex items-center gap-2 rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] p-4 shadow-sm">
+        <span class="text-sm text-[color:var(--dash-text-muted)]">Penilaian Anda:</span>
         @for($i = 1; $i <= 5; $i++)
             <span class="material-symbols-outlined text-[20px] {{ $i <= $ticket->rating ? 'text-amber-400' : 'text-slate-200' }}">star</span>
         @endfor
-        <span class="text-sm font-bold text-slate-700">{{ $ticket->rating }}/5</span>
+        <span class="text-sm font-bold text-[color:var(--dash-text-body)]">{{ $ticket->rating }}/5</span>
         @if($ticket->rating_notes)
-            <span class="text-sm text-slate-500 ml-2">— {{ $ticket->rating_notes }}</span>
+            <span class="text-sm text-[color:var(--dash-text-muted)] ml-2">— {{ $ticket->rating_notes }}</span>
         @endif
     </div>
     @endif

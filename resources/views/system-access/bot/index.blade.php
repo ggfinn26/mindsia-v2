@@ -43,7 +43,7 @@
                         <td class="px-6 py-4 font-bold text-[var(--dash-text-heading)]">{{ $bot->name }}</td>
                         <td class="px-6 py-4">
                             @php $typeColors = ['telegram' => 'bg-sky-50 text-sky-700 border-sky-200 [.mode-dark_&]:bg-sky-500/10 [.mode-dark_&]:text-sky-400 [.mode-dark_&]:border-sky-500/20', 'whatsapp' => 'bg-emerald-50 text-emerald-700 border-emerald-200 [.mode-dark_&]:bg-emerald-500/10 [.mode-dark_&]:text-emerald-400 [.mode-dark_&]:border-emerald-500/20']; @endphp
-                            <span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-bold {{ $typeColors[$bot->type] ?? 'bg-gray-50 text-gray-700 border-gray-200 [.mode-dark_&]:bg-gray-500/10 [.mode-dark_&]:text-gray-400 [.mode-dark_&]:border-gray-500/20' }}">{{ ucfirst($bot->type) }}</span>
+                            <span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-bold {{ $typeColors[$bot->type] ?? 'bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] border-[color:var(--dash-card-border)] [.mode-dark_&]:bg-gray-500/10 [.mode-dark_&]:text-[color:var(--dash-text-faint)] [.mode-dark_&]:border-gray-500/20' }}">{{ ucfirst($bot->type) }}</span>
                         </td>
                         <td class="px-6 py-4">
                             <code class="rounded bg-[var(--dash-input-bg)] px-2 py-0.5 text-xs font-mono text-[var(--dash-text-body)] border border-[var(--dash-input-border)]">••••••••</code>

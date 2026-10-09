@@ -5,7 +5,7 @@
 @section('content')
 <div class="max-w-5xl mx-auto px-4 py-8" x-data="{ showModal: false, deleteUrl: '' }" @keydown.escape.window="showModal = false">
     <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">Testimoni Landing Page</h1>
+        <h1 class="text-2xl font-bold text-[color:var(--dash-text-heading)]">Testimoni Landing Page</h1>
         @can('landing.testimonial.manage')
         <div class="flex gap-2">
             <a href="{{ route('admin.landing.testimonials.create') }}"
@@ -22,31 +22,31 @@
     @endif
 
     @if($testimonials->isEmpty())
-    <div class="p-12 border-2 border-dashed border-gray-200 rounded-xl text-center text-gray-400">
+    <div class="p-12 border-2 border-dashed border-[color:var(--dash-card-border)] rounded-xl text-center text-[color:var(--dash-text-faint)]">
         Belum ada testimoni. Klik "Tambah Testimoni" untuk memulai.
     </div>
     @else
-    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+    <div class="bg-[var(--dash-card-bg)] rounded-xl border border-[color:var(--dash-card-border)] shadow-sm overflow-hidden">
         <table class="w-full text-sm">
-            <thead class="bg-gray-50 border-b border-gray-200">
+            <thead class="bg-[var(--dash-nav-hover-bg)] border-b border-[color:var(--dash-card-border)]">
                 <tr>
-                    <th class="px-4 py-3 text-left font-semibold text-gray-600">Tipe</th>
-                    <th class="px-4 py-3 text-left font-semibold text-gray-600">Nama</th>
-                    <th class="px-4 py-3 text-left font-semibold text-gray-600">Konten</th>
-                    <th class="px-4 py-3 text-center font-semibold text-gray-600">Status</th>
-                    <th class="px-4 py-3 text-right font-semibold text-gray-600">Aksi</th>
+                    <th class="px-4 py-3 text-left font-semibold text-[color:var(--dash-text-body)]">Tipe</th>
+                    <th class="px-4 py-3 text-left font-semibold text-[color:var(--dash-text-body)]">Nama</th>
+                    <th class="px-4 py-3 text-left font-semibold text-[color:var(--dash-text-body)]">Konten</th>
+                    <th class="px-4 py-3 text-center font-semibold text-[color:var(--dash-text-body)]">Status</th>
+                    <th class="px-4 py-3 text-right font-semibold text-[color:var(--dash-text-body)]">Aksi</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100">
+            <tbody class="divide-y divide-[color:var(--dash-card-border)]">
                 @foreach($testimonials as $testi)
-                <tr class="hover:bg-gray-50 transition-colors">
+                <tr class="hover:bg-[var(--dash-nav-hover-bg)] transition-colors">
                     <td class="px-4 py-3">
                         <span class="px-2 py-1 rounded-full text-xs font-medium {{ $testi->type->value === 'image' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700' }}">
                             {{ $testi->type->value === 'image' ? 'Gambar' : 'Teks' }}
                         </span>
                     </td>
-                    <td class="px-4 py-3 font-medium text-gray-900">{{ $testi->name }}</td>
-                    <td class="px-4 py-3 text-gray-500 max-w-xs">
+                    <td class="px-4 py-3 font-medium text-[color:var(--dash-text-heading)]">{{ $testi->name }}</td>
+                    <td class="px-4 py-3 text-[color:var(--dash-text-muted)] max-w-xs">
                         @if($testi->isImage())
                             <img src="{{ $testi->image_url }}" alt="{{ $testi->name }}" class="h-10 w-16 object-cover rounded">
                         @else
@@ -54,7 +54,7 @@
                         @endif
                     </td>
                     <td class="px-4 py-3 text-center">
-                        <span class="px-2 py-1 rounded-full text-xs font-medium {{ $testi->is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500' }}">
+                        <span class="px-2 py-1 rounded-full text-xs font-medium {{ $testi->is_active ? 'bg-green-100 text-green-700' : 'bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-muted)]' }}">
                             {{ $testi->is_active ? 'Aktif' : 'Nonaktif' }}
                         </span>
                     </td>
@@ -81,19 +81,19 @@
     {{-- Delete Confirmation Modal --}}
     <div x-show="showModal" class="fixed inset-0 z-50 flex items-center justify-center" style="display:none" @click.self="showModal = false">
         <div class="absolute inset-0 bg-black/40"></div>
-        <div class="relative bg-white rounded-xl shadow-xl p-6 w-full max-w-sm mx-4">
+        <div class="relative bg-[var(--dash-card-bg)] rounded-xl shadow-xl p-6 w-full max-w-sm mx-4">
             <div class="flex items-center gap-3 mb-4">
                 <div class="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
                     <span class="material-symbols-outlined text-red-600 text-[20px]">delete</span>
                 </div>
                 <div>
-                    <h3 class="font-semibold text-gray-900">Hapus Testimoni</h3>
-                    <p class="text-sm text-gray-500">Tindakan ini tidak dapat dibatalkan.</p>
+                    <h3 class="font-semibold text-[color:var(--dash-text-heading)]">Hapus Testimoni</h3>
+                    <p class="text-sm text-[color:var(--dash-text-muted)]">Tindakan ini tidak dapat dibatalkan.</p>
                 </div>
             </div>
             <div class="flex justify-end gap-3">
                 <button type="button" @click="showModal = false"
-                    class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">Batal</button>
+                    class="px-4 py-2 text-sm font-medium text-[color:var(--dash-text-body)] border border-[color:var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-nav-hover-bg)]">Batal</button>
                 <form :action="deleteUrl" method="POST">
                     @csrf @method('DELETE')
                     <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg">Hapus</button>

@@ -8,7 +8,7 @@
 
     <div>
         <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Pindah Cabang</h1>
-        <p class="mt-1 text-sm text-slate-500">Cabang saat ini: <strong>{{ $currentBranch?->branch_name ?? '—' }}</strong></p>
+        <p class="mt-1 text-sm text-[color:var(--dash-text-muted)]">Cabang saat ini: <strong>{{ $currentBranch?->branch_name ?? '—' }}</strong></p>
     </div>
 
     @if (session('success'))
@@ -33,25 +33,25 @@
             </div>
             <dl class="grid grid-cols-2 gap-4 px-5 py-5 text-sm">
                 <div>
-                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">Dari Cabang</dt>
-                    <dd class="mt-1 font-medium text-slate-900">{{ $pendingRequest->fromBranch?->branch_name ?? '—' }}</dd>
+                    <dt class="text-xs font-semibold uppercase tracking-wider text-[color:var(--dash-text-muted)]">Dari Cabang</dt>
+                    <dd class="mt-1 font-medium text-[color:var(--dash-text-heading)]">{{ $pendingRequest->fromBranch?->branch_name ?? '—' }}</dd>
                 </div>
                 <div>
-                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">Ke Cabang</dt>
+                    <dt class="text-xs font-semibold uppercase tracking-wider text-[color:var(--dash-text-muted)]">Ke Cabang</dt>
                     <dd class="mt-1 font-medium text-[color:var(--dash-primary-text,#215aac)]">{{ $pendingRequest->toBranch?->branch_name ?? '—' }}</dd>
                 </div>
                 <div>
-                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">Diajukan</dt>
-                    <dd class="mt-1 text-slate-700">{{ $pendingRequest->created_at->translatedFormat('d F Y, H:i') }}</dd>
+                    <dt class="text-xs font-semibold uppercase tracking-wider text-[color:var(--dash-text-muted)]">Diajukan</dt>
+                    <dd class="mt-1 text-[color:var(--dash-text-body)]">{{ $pendingRequest->created_at->translatedFormat('d F Y, H:i') }}</dd>
                 </div>
                 <div>
-                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">Status</dt>
+                    <dt class="text-xs font-semibold uppercase tracking-wider text-[color:var(--dash-text-muted)]">Status</dt>
                     <dd class="mt-1">
                         <span class="inline-flex rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-800">Menunggu Review</span>
                     </dd>
                 </div>
             </dl>
-            <p class="px-5 pb-4 text-xs text-slate-500">Kamu tidak bisa mengajukan permintaan baru selama ada permintaan yang sedang direview.</p>
+            <p class="px-5 pb-4 text-xs text-[color:var(--dash-text-muted)]">Kamu tidak bisa mengajukan permintaan baru selama ada permintaan yang sedang direview.</p>
         </div>
     @else
         {{-- Tidak ada pending — tampilkan form --}}
@@ -61,15 +61,15 @@
             </div>
         @endif
 
-        <div class="overflow-hidden border border-slate-200 bg-white">
-            <div class="border-b border-slate-200 bg-slate-50 px-5 py-4">
-                <h3 class="font-jakarta text-sm font-bold text-slate-900">Ajukan Pindah Cabang</h3>
+        <div class="overflow-hidden border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)]">
+            <div class="border-b border-[color:var(--dash-card-border)] bg-[var(--dash-nav-hover-bg)] px-5 py-4">
+                <h3 class="font-jakarta text-sm font-bold text-[color:var(--dash-text-heading)]">Ajukan Pindah Cabang</h3>
             </div>
             <form method="POST" action="{{ route('branch-transfers.my-request.store') }}" class="px-5 py-5 space-y-4" novalidate>
                 @csrf
                 <div>
-                    <label class="mb-1.5 block text-sm font-semibold text-slate-700">Cabang tujuan <span class="text-rose-500">*</span></label>
-                    <select name="to_branch_id" class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)] @error('to_branch_id') border-rose-500 @enderror">
+                    <label class="mb-1.5 block text-sm font-semibold text-[color:var(--dash-text-body)]">Cabang tujuan <span class="text-rose-500">*</span></label>
+                    <select name="to_branch_id" class="block w-full border-[color:var(--dash-input-border)] text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)] @error('to_branch_id') border-rose-500 @enderror">
                         <option value="">Pilih Cabang Tujuan</option>
                         @foreach ($otherBranches as $branch)
                             <option value="{{ $branch->id }}" @selected(old('to_branch_id') == $branch->id)>{{ $branch->branch_name }}</option>
@@ -82,7 +82,7 @@
                         <p class="mt-1 text-xs text-amber-600">Tidak ada cabang aktif lain yang tersedia.</p>
                     @endif
                 </div>
-                <div class="flex gap-3 border-t border-slate-100 pt-4">
+                <div class="flex gap-3 border-t border-[color:var(--dash-card-border)] pt-4">
                     <button type="submit" class="inline-flex min-h-10 items-center gap-2 bg-[var(--dash-primary,#215aac)] px-5 text-sm font-semibold text-white hover:bg-[#194a91]">
                         <span class="material-symbols-outlined text-[18px]">send</span>
                         Ajukan Permintaan
@@ -94,23 +94,23 @@
 
     {{-- Riwayat permintaan --}}
     @if ($recentRequests->isNotEmpty())
-        <div class="overflow-hidden border border-slate-200 bg-white">
-            <div class="border-b border-slate-200 bg-slate-50 px-5 py-4">
-                <h3 class="font-jakarta text-sm font-bold text-slate-900">Riwayat Permintaan</h3>
+        <div class="overflow-hidden border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)]">
+            <div class="border-b border-[color:var(--dash-card-border)] bg-[var(--dash-nav-hover-bg)] px-5 py-4">
+                <h3 class="font-jakarta text-sm font-bold text-[color:var(--dash-text-heading)]">Riwayat Permintaan</h3>
             </div>
-            <table class="min-w-full divide-y divide-slate-200 text-sm">
-                <thead class="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <table class="min-w-full divide-y divide-[color:var(--dash-card-border)] text-sm">
+                <thead class="bg-[var(--dash-nav-hover-bg)] text-xs font-semibold uppercase tracking-wider text-[color:var(--dash-text-muted)]">
                     <tr>
                         <th class="px-5 py-3 text-left">Ke Cabang</th>
                         <th class="px-5 py-3 text-left">Tanggal</th>
                         <th class="px-5 py-3 text-left">Status</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100">
+                <tbody class="divide-y divide-[color:var(--dash-card-border)]">
                     @foreach ($recentRequests as $req)
                         <tr>
-                            <td class="px-5 py-3 font-medium text-slate-900">{{ $req->toBranch?->branch_name ?? '—' }}</td>
-                            <td class="px-5 py-3 text-slate-500">{{ $req->created_at->format('d M Y') }}</td>
+                            <td class="px-5 py-3 font-medium text-[color:var(--dash-text-heading)]">{{ $req->toBranch?->branch_name ?? '—' }}</td>
+                            <td class="px-5 py-3 text-[color:var(--dash-text-muted)]">{{ $req->created_at->format('d M Y') }}</td>
                             <td class="px-5 py-3">
                                 @if ($req->status === 'review')
                                     <span class="inline-flex rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-800">Menunggu</span>

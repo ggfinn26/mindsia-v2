@@ -6,33 +6,33 @@
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-5xl mx-auto">
     <div class="mb-6 flex justify-between items-center">
         <div>
-            <h1 class="text-2xl font-bold text-slate-900">Hasil Latihan</h1>
-            <p class="text-sm text-slate-500 mt-1">{{ $item->item_name }} — {{ $classroom->class_name }}</p>
+            <h1 class="text-2xl font-bold text-[color:var(--dash-text-heading)]">Hasil Latihan</h1>
+            <p class="text-sm text-[color:var(--dash-text-muted)] mt-1">{{ $item->item_name }} — {{ $classroom->class_name }}</p>
         </div>
         <a href="{{ route('curriculum-items.interactive.show', $item) }}"
-            class="btn bg-white border border-slate-200 text-slate-600 text-sm">Edit Modul</a>
+            class="btn bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] text-sm">Edit Modul</a>
     </div>
 
-    <div class="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+    <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg overflow-hidden shadow-sm">
         <table class="w-full text-sm">
-            <thead class="bg-slate-50 border-b border-slate-200">
+            <thead class="bg-[var(--dash-nav-hover-bg)] border-b border-[color:var(--dash-card-border)]">
                 <tr>
-                    <th class="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Nama Member</th>
-                    <th class="text-center px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Percobaan</th>
-                    <th class="text-center px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Skor Terakhir</th>
-                    <th class="text-center px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Terakhir Latihan</th>
-                    <th class="text-center px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Aksi</th>
+                    <th class="text-left px-4 py-3 text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase">Nama Member</th>
+                    <th class="text-center px-4 py-3 text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase">Percobaan</th>
+                    <th class="text-center px-4 py-3 text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase">Skor Terakhir</th>
+                    <th class="text-center px-4 py-3 text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase">Terakhir Latihan</th>
+                    <th class="text-center px-4 py-3 text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase">Aksi</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-slate-100">
+            <tbody class="divide-y divide-[color:var(--dash-card-border)]">
                 @forelse($results as $r)
                     @php
                         $member = $r['member_class']->registration->memberData;
                         $latest = $r['latest_attempt'];
                     @endphp
-                    <tr class="hover:bg-slate-50">
-                        <td class="px-4 py-3 font-medium text-slate-800">{{ $member->full_name }}</td>
-                        <td class="px-4 py-3 text-center text-slate-500">{{ $r['attempt_count'] }}</td>
+                    <tr class="hover:bg-[var(--dash-nav-hover-bg)]">
+                        <td class="px-4 py-3 font-medium text-[color:var(--dash-text-heading)]">{{ $member->full_name }}</td>
+                        <td class="px-4 py-3 text-center text-[color:var(--dash-text-muted)]">{{ $r['attempt_count'] }}</td>
                         <td class="px-4 py-3 text-center">
                             @if($latest)
                                 <span class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold
@@ -40,10 +40,10 @@
                                     {{ $latest->score }}%
                                 </span>
                             @else
-                                <span class="text-slate-400 text-xs">Belum</span>
+                                <span class="text-[color:var(--dash-text-faint)] text-xs">Belum</span>
                             @endif
                         </td>
-                        <td class="px-4 py-3 text-center text-slate-500 text-xs">
+                        <td class="px-4 py-3 text-center text-[color:var(--dash-text-muted)] text-xs">
                             {{ $latest ? $latest->completed_at->format('d M Y') : '—' }}
                         </td>
                         <td class="px-4 py-3 text-center">
@@ -57,7 +57,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="px-4 py-8 text-center text-slate-400">Belum ada member di kelas ini.</td>
+                        <td colspan="5" class="px-4 py-8 text-center text-[color:var(--dash-text-faint)]">Belum ada member di kelas ini.</td>
                     </tr>
                 @endforelse
             </tbody>

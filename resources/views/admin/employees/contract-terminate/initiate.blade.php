@@ -17,36 +17,36 @@
         </div>
     @endif
 
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-8">
-        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+    <div class="bg-[var(--dash-card-bg)] rounded-2xl border border-[color:var(--dash-card-border)] shadow-sm overflow-hidden mb-8">
+        <div class="px-6 py-4 border-b border-[color:var(--dash-card-border)] flex items-center justify-between">
             <div class="flex items-center gap-2">
                 <div class="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center">
                     <span class="material-symbols-outlined text-red-500 text-[18px]">person_remove</span>
                 </div>
-                <h2 class="font-bold text-gray-800 font-jakarta">Mulai Terminasi Kontrak</h2>
+                <h2 class="font-bold text-[color:var(--dash-text-heading)] font-jakarta">Mulai Terminasi Kontrak</h2>
             </div>
-            <a href="{{ route('employees.show', $status->employee) }}" class="text-[13px] font-medium text-gray-500 hover:text-gray-800 flex items-center gap-1 transition-colors">
+            <a href="{{ route('employees.show', $status->employee) }}" class="text-[13px] font-medium text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-heading)] flex items-center gap-1 transition-colors">
                 <span class="material-symbols-outlined text-[16px]">arrow_back</span> Kembali
             </a>
         </div>
 
-        <div class="px-6 py-4 bg-gray-50/50 border-b border-gray-100">
+        <div class="px-6 py-4 bg-gray-50/50 border-b border-[color:var(--dash-card-border)]">
             <div class="grid grid-cols-2 gap-y-4 gap-x-6">
                 <div>
-                    <p class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Nama Karyawan</p>
-                    <p class="text-sm font-semibold text-gray-800">{{ $status->employee->full_name }}</p>
+                    <p class="text-[11px] font-bold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1">Nama Karyawan</p>
+                    <p class="text-sm font-semibold text-[color:var(--dash-text-heading)]">{{ $status->employee->full_name }}</p>
                 </div>
                 <div>
-                    <p class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Kode Karyawan</p>
-                    <p class="text-sm font-semibold text-gray-800">{{ $status->employee->employee_code }}</p>
+                    <p class="text-[11px] font-bold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1">Kode Karyawan</p>
+                    <p class="text-sm font-semibold text-[color:var(--dash-text-heading)]">{{ $status->employee->employee_code }}</p>
                 </div>
                 <div>
-                    <p class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Posisi</p>
-                    <p class="text-sm font-semibold text-gray-800">{{ $status->position->position_name }}</p>
+                    <p class="text-[11px] font-bold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1">Posisi</p>
+                    <p class="text-sm font-semibold text-[color:var(--dash-text-heading)]">{{ $status->position->position_name }}</p>
                 </div>
                 <div>
-                    <p class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Tipe Pekerjaan</p>
-                    <p class="text-sm font-semibold text-gray-800">{{ $status->type_employment }}</p>
+                    <p class="text-[11px] font-bold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1">Tipe Pekerjaan</p>
+                    <p class="text-sm font-semibold text-[color:var(--dash-text-heading)]">{{ $status->type_employment }}</p>
                 </div>
             </div>
         </div>
@@ -55,41 +55,41 @@
             @csrf
 
             <div>
-                <label for="reason" class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">
+                <label for="reason" class="block text-[11px] font-bold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1">
                     Alasan Terminasi <span class="text-red-500">*</span>
                 </label>
                 <textarea name="reason" id="reason" rows="3" placeholder="Deskripsikan alasan terminasi..."
-                          class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500/20 transition-all">{{ old('reason') }}</textarea>
+                          class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500/20 transition-all">{{ old('reason') }}</textarea>
                 @error('reason')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
             </div>
 
             <div>
-                <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">
+                <label class="block text-[11px] font-bold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1">
                     Daftar Kewajiban yang Harus Diselesaikan <span class="text-red-500">*</span>
                 </label>
-                <p class="text-xs text-gray-400 mb-3">Minimal satu item wajib diisi. Jika tidak ada kewajiban yang perlu diselesaikan, isikan "Tidak ada kewajiban yang perlu diselesaikan."</p>
+                <p class="text-xs text-[color:var(--dash-text-faint)] mb-3">Minimal satu item wajib diisi. Jika tidak ada kewajiban yang perlu diselesaikan, isikan "Tidak ada kewajiban yang perlu diselesaikan."</p>
                 @error('checklist_items')<p class="mb-2 text-xs text-red-600">{{ $message }}</p>@enderror
                 
                 <div id="checklist-items" class="space-y-3">
                     <div class="flex items-center gap-2 group">
                         <input type="text" name="checklist_items[]" placeholder="Contoh: Pengembalian laptop / ID Card" 
-                               class="flex-1 px-3.5 py-2.5 bg-[#F8FAFC] border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20" required>
-                        <button type="button" onclick="removeItem(this)" class="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                               class="flex-1 px-3.5 py-2.5 bg-[#F8FAFC] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20" required>
+                        <button type="button" onclick="removeItem(this)" class="w-10 h-10 flex items-center justify-center text-[color:var(--dash-text-faint)] hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors">
                             <span class="material-symbols-outlined text-[20px]">delete</span>
                         </button>
                     </div>
                 </div>
 
                 <div class="mt-4">
-                    <button type="button" onclick="addItem()" class="inline-flex items-center gap-1.5 px-4 py-2 text-[12px] font-bold text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                    <button type="button" onclick="addItem()" class="inline-flex items-center gap-1.5 px-4 py-2 text-[12px] font-bold text-[color:var(--dash-text-body)] bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg hover:bg-[var(--dash-nav-hover-bg)] transition-colors">
                         <span class="material-symbols-outlined text-[16px]">add</span> Tambah Item
                     </button>
                 </div>
             </div>
 
-            <div class="pt-4 mt-6 border-t border-gray-100 flex justify-end gap-3">
+            <div class="pt-4 mt-6 border-t border-[color:var(--dash-card-border)] flex justify-end gap-3">
                 <a href="{{ route('employees.show', $status->employee) }}"
-                   class="px-5 py-2.5 text-[13px] font-bold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
+                   class="px-5 py-2.5 text-[13px] font-bold text-[color:var(--dash-text-body)] bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl hover:bg-[var(--dash-nav-hover-bg)] transition-colors">
                     Batal
                 </a>
                 <button type="submit"
@@ -105,8 +105,8 @@
 <template id="itemTemplate">
     <div class="flex items-center gap-2 group">
         <input type="text" name="checklist_items[]" placeholder="Contoh: Pengembalian laptop / ID Card" 
-               class="flex-1 px-3.5 py-2.5 bg-[#F8FAFC] border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20" required>
-        <button type="button" onclick="removeItem(this)" class="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+               class="flex-1 px-3.5 py-2.5 bg-[#F8FAFC] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20" required>
+        <button type="button" onclick="removeItem(this)" class="w-10 h-10 flex items-center justify-center text-[color:var(--dash-text-faint)] hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors">
             <span class="material-symbols-outlined text-[20px]">delete</span>
         </button>
     </div>

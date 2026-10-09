@@ -3,12 +3,12 @@
 @section('content')
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-4xl mx-auto">
     <div class="mb-8">
-        <h1 class="text-2xl md:text-3xl text-gray-800 font-bold">Kelola Role & Akses User</h1>
+        <h1 class="text-2xl md:text-3xl text-[color:var(--dash-text-heading)] font-bold">Kelola Role & Akses User</h1>
     </div>
 
-    <div class="bg-white shadow-lg rounded-sm border border-gray-200 p-6">
+    <div class="bg-[var(--dash-card-bg)] shadow-lg rounded-sm border border-[color:var(--dash-card-border)] p-6">
         <div class="mb-4">
-            <h2 class="text-lg font-bold text-gray-800">User: -</h2>
+            <h2 class="text-lg font-bold text-[color:var(--dash-text-heading)]">User: -</h2>
         </div>
         
         <form action="#" method="POST" class="space-y-4">
@@ -30,7 +30,7 @@
             </div>
 
             <div class="mt-8 flex justify-end">
-                <a href="{{ route('users.index') }}" class="btn bg-white border-gray-200 hover:border-gray-300 text-gray-600 mr-3">Batal</a>
+                <a href="{{ route('users.index') }}" class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] mr-3">Batal</a>
                 <button type="submit" class="btn bg-indigo-500 hover:bg-indigo-600 text-white">Update Role</button>
             </div>
         </form>

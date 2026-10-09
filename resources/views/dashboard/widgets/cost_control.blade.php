@@ -12,15 +12,15 @@
     ];
 @endphp
 
-<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow relative overflow-hidden flex flex-col h-full">
+<div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] p-5 hover:shadow-md transition-shadow relative overflow-hidden flex flex-col h-full">
     <div class="flex items-center justify-between mb-4 z-10">
         <div class="flex items-center gap-3">
             <div class="h-10 w-10 rounded-lg {{ $isOverBudget ? 'bg-red-50' : 'bg-violet-50' }} flex items-center justify-center">
                 <span class="material-symbols-outlined {{ $isOverBudget ? 'text-red-500' : 'text-violet-600' }} text-xl">account_balance_wallet</span>
             </div>
             <div>
-                <h3 class="text-sm font-semibold text-gray-800">Cost Control</h3>
-                <p class="text-xs text-gray-400">{{ $data['period'] ?? '-' }}</p>
+                <h3 class="text-sm font-semibold text-[color:var(--dash-text-heading)]">Cost Control</h3>
+                <p class="text-xs text-[color:var(--dash-text-faint)]">{{ $data['period'] ?? '-' }}</p>
             </div>
         </div>
         @if(isset($data['pending_budget_count']) && $data['pending_budget_count'] > 0)
@@ -34,21 +34,21 @@
         <div>
             <div class="flex items-end justify-between mb-1">
                 <div>
-                    <p class="text-xs text-gray-400 mb-0.5">Budget</p>
-                    <p class="text-lg font-bold text-gray-900 font-jakarta leading-none">Rp {{ number_format($data['budget_total'] ?? 0, 0, ',', '.') }}</p>
+                    <p class="text-xs text-[color:var(--dash-text-faint)] mb-0.5">Budget</p>
+                    <p class="text-lg font-bold text-[color:var(--dash-text-heading)] font-jakarta leading-none">Rp {{ number_format($data['budget_total'] ?? 0, 0, ',', '.') }}</p>
                 </div>
                 <div class="text-right">
-                    <p class="text-xs text-gray-400 mb-0.5">Actual</p>
-                    <p class="text-lg font-bold {{ $isOverBudget ? 'text-red-600' : 'text-gray-900' }} font-jakarta leading-none">Rp {{ number_format($data['actual_total'] ?? 0, 0, ',', '.') }}</p>
+                    <p class="text-xs text-[color:var(--dash-text-faint)] mb-0.5">Actual</p>
+                    <p class="text-lg font-bold {{ $isOverBudget ? 'text-red-600' : 'text-[color:var(--dash-text-heading)]' }} font-jakarta leading-none">Rp {{ number_format($data['actual_total'] ?? 0, 0, ',', '.') }}</p>
                 </div>
             </div>
             
             <div class="mt-3">
                 <div class="flex items-center justify-between mb-1">
-                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Utilization</span>
-                    <span class="text-xs font-bold {{ $isOverBudget ? 'text-red-600' : 'text-gray-700' }}">{{ $utilization }}%</span>
+                    <span class="text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider">Utilization</span>
+                    <span class="text-xs font-bold {{ $isOverBudget ? 'text-red-600' : 'text-[color:var(--dash-text-body)]' }}">{{ $utilization }}%</span>
                 </div>
-                <div class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                <div class="w-full bg-[var(--dash-nav-hover-bg)] rounded-full h-2.5 overflow-hidden">
                     <div class="{{ $barColor }} h-2.5 rounded-full transition-all" style="width: {{ min($utilization, 100) }}%"></div>
                 </div>
             </div>
@@ -56,7 +56,7 @@
 
         @if(isset($data['variance']))
         <div class="flex items-center justify-between pt-2 border-t border-gray-50">
-            <span class="text-xs font-medium text-gray-500">Variance</span>
+            <span class="text-xs font-medium text-[color:var(--dash-text-muted)]">Variance</span>
             <span class="text-sm font-bold {{ $data['variance'] >= 0 ? 'text-emerald-600' : 'text-red-500' }}">
                 {{ $data['variance'] >= 0 ? '+' : '' }}Rp {{ number_format($data['variance'], 0, ',', '.') }}
             </span>
@@ -65,7 +65,7 @@
 
         @if(!empty($data['cost_by_category']))
         <div class="pt-3 border-t border-gray-50">
-            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Cost Breakdown</p>
+            <p class="text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-2">Cost Breakdown</p>
             <div class="relative" style="height: 140px;">
                 @php
                     $chartData = array_values($data['cost_by_category']);

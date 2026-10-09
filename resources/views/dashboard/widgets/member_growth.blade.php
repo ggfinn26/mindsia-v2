@@ -1,4 +1,4 @@
-<div class="bg-white rounded-lg shadow-sm overflow-hidden font-sans border border-[#cfc6af] w-full" x-data="{
+<div class="bg-[var(--dash-card-bg)] rounded-lg shadow-sm overflow-hidden font-sans border border-[#cfc6af] w-full" x-data="{
     activeTab: 'segmentasi',
     activeProgram: '{{ $data['by_program'][0]['program'] ?? '' }}',
     branchId: '{{ $data['filters']['branch_id'] ?? '' }}',
@@ -29,18 +29,18 @@
     <div class="bg-[#f3f4f3] px-5 py-0 border-b border-[#cfc6af] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div class="py-4">
             <h3 class="text-sm font-bold text-[#1E293B] uppercase tracking-wide">Analisis Segmentasi & Demografi</h3>
-            <p class="text-xs text-gray-500 mt-0.5">Cabang, Area & Nasional • {{ $data['period'] }}</p>
+            <p class="text-xs text-[color:var(--dash-text-muted)] mt-0.5">Cabang, Area & Nasional • {{ $data['period'] }}</p>
         </div>
         
         <div class="flex items-center gap-3 py-4 md:py-0 h-full">
             <nav class="flex h-full space-x-1" aria-label="Tabs">
                 <button @click="activeTab = 'segmentasi'"
-                        :class="activeTab === 'segmentasi' ? 'bg-white text-[#1E293B] shadow-sm border-t border-x border-[#cfc6af] -mb-[1px]' : 'text-[#7e7663] hover:text-[#1E293B]'"
+                        :class="activeTab === 'segmentasi' ? 'bg-[var(--dash-card-bg)] text-[#1E293B] shadow-sm border-t border-x border-[#cfc6af] -mb-[1px]' : 'text-[#7e7663] hover:text-[#1E293B]'"
                         class="px-4 py-3 text-xs font-semibold rounded-t transition-colors h-full flex items-center">
                     Peta Segmentasi
                 </button>
                 <button @click="activeTab = 'table'"
-                        :class="activeTab === 'table' ? 'bg-white text-[#1E293B] shadow-sm border-t border-x border-[#cfc6af] -mb-[1px]' : 'text-[#7e7663] hover:text-[#1E293B]'"
+                        :class="activeTab === 'table' ? 'bg-[var(--dash-card-bg)] text-[#1E293B] shadow-sm border-t border-x border-[#cfc6af] -mb-[1px]' : 'text-[#7e7663] hover:text-[#1E293B]'"
                         class="px-4 py-3 text-xs font-semibold rounded-t transition-colors h-full flex items-center">
                     Detail Data
                 </button>
@@ -65,25 +65,25 @@
                 </select>
             </form>
             <div x-data="{ downloadModalOpen: false, dlType: 'tahunan', dlYear: year, dlSemester: '1', dlMonth: month }">
-                <button @click="downloadModalOpen = true" class="p-1.5 rounded bg-white shadow-sm border border-[#cfc6af] hover:bg-gray-50 transition-colors flex items-center gap-1">
-                    <span class="material-symbols-outlined text-gray-600 text-sm">download</span>
+                <button @click="downloadModalOpen = true" class="p-1.5 rounded bg-[var(--dash-card-bg)] shadow-sm border border-[#cfc6af] hover:bg-[var(--dash-nav-hover-bg)] transition-colors flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[color:var(--dash-text-body)] text-sm">download</span>
                     <span class="text-xs font-bold text-[#4c4635] pr-1">Unduh Laporan</span>
                 </button>
                 
                 {{-- Modal --}}
                 <div x-show="downloadModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" style="display: none;" @keydown.escape.window="downloadModalOpen = false">
-                    <div @click.away="downloadModalOpen = false" class="bg-white rounded-lg shadow-xl border border-[#cfc6af] w-full max-w-md">
+                    <div @click.away="downloadModalOpen = false" class="bg-[var(--dash-card-bg)] rounded-lg shadow-xl border border-[#cfc6af] w-full max-w-md">
                         <div class="px-5 py-4 border-b border-[#cfc6af] flex justify-between items-center bg-[#f9f9f8] rounded-t-lg">
                             <h3 class="text-sm font-bold text-[#1E293B]">Unduh Laporan PDF</h3>
-                            <button @click="downloadModalOpen = false" class="text-gray-400 hover:text-gray-600">
+                            <button @click="downloadModalOpen = false" class="text-[color:var(--dash-text-faint)] hover:text-[color:var(--dash-text-body)]">
                                 <span class="material-symbols-outlined text-sm">close</span>
                             </button>
                         </div>
                         <div class="p-5">
                             <div class="flex border-b border-[#cfc6af] mb-4">
-                                <button @click="dlType = 'tahunan'" :class="dlType === 'tahunan' ? 'border-b-2 border-[#dbb940] text-[#1E293B]' : 'text-gray-500 hover:text-gray-700'" class="px-3 py-2 text-xs font-bold transition-colors">Tahunan</button>
-                                <button @click="dlType = 'semester'" :class="dlType === 'semester' ? 'border-b-2 border-[#dbb940] text-[#1E293B]' : 'text-gray-500 hover:text-gray-700'" class="px-3 py-2 text-xs font-bold transition-colors">Semester</button>
-                                <button @click="dlType = 'bulanan'" :class="dlType === 'bulanan' ? 'border-b-2 border-[#dbb940] text-[#1E293B]' : 'text-gray-500 hover:text-gray-700'" class="px-3 py-2 text-xs font-bold transition-colors">Bulanan</button>
+                                <button @click="dlType = 'tahunan'" :class="dlType === 'tahunan' ? 'border-b-2 border-[#dbb940] text-[#1E293B]' : 'text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-body)]'" class="px-3 py-2 text-xs font-bold transition-colors">Tahunan</button>
+                                <button @click="dlType = 'semester'" :class="dlType === 'semester' ? 'border-b-2 border-[#dbb940] text-[#1E293B]' : 'text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-body)]'" class="px-3 py-2 text-xs font-bold transition-colors">Semester</button>
+                                <button @click="dlType = 'bulanan'" :class="dlType === 'bulanan' ? 'border-b-2 border-[#dbb940] text-[#1E293B]' : 'text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-body)]'" class="px-3 py-2 text-xs font-bold transition-colors">Bulanan</button>
                             </div>
 
                             <form action="{{ route('dashboard.widget-export', ['widgetKey' => 'member_growth', 'format' => 'pdf']) }}" method="GET">
@@ -147,7 +147,7 @@
                                 </template>
 
                                 <div class="mt-6 flex justify-end gap-2">
-                                    <button type="button" @click="downloadModalOpen = false" class="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-700">Batal</button>
+                                    <button type="button" @click="downloadModalOpen = false" class="px-4 py-2 text-xs font-bold text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-body)]">Batal</button>
                                     <button type="submit" class="px-4 py-2 bg-[#1E293B] text-white text-xs font-bold rounded hover:bg-[#0f172a] shadow">Unduh PDF</button>
                                 </div>
                             </form>
@@ -162,14 +162,14 @@
     <div x-show="activeTab === 'segmentasi'" class="flex flex-col md:flex-row h-auto md:h-[600px]">
         {{-- Sidebar: List of Programs --}}
         <div class="w-full md:w-1/3 lg:w-1/4 border-r border-[#cfc6af] bg-[#f9f9f8] flex flex-col h-full">
-            <div class="p-3 border-b border-[#cfc6af] bg-white">
+            <div class="p-3 border-b border-[#cfc6af] bg-[var(--dash-card-bg)]">
                 <p class="text-[10px] font-bold text-[#7e7663] uppercase tracking-wide">Pilih Program</p>
             </div>
             <div class="overflow-y-auto flex-1 p-2 space-y-1">
                 <template x-for="prog in programs" :key="prog.program">
                     <button @click="activeProgram = prog.program" 
                             class="w-full text-left p-3 rounded border transition-colors flex flex-col gap-1"
-                            :class="activeProgram === prog.program ? 'bg-white border-[#dbb940] shadow-sm ring-1 ring-[#dbb940]' : 'border-transparent hover:bg-[#ebebeb]'">
+                            :class="activeProgram === prog.program ? 'bg-[var(--dash-card-bg)] border-[#dbb940] shadow-sm ring-1 ring-[#dbb940]' : 'border-transparent hover:bg-[#ebebeb]'">
                         <span class="text-xs font-bold text-[#1E293B] truncate" x-text="prog.program"></span>
                         <div class="flex justify-between items-center text-[10px] text-[#7e7663]">
                             <span class="font-mono font-bold text-[#4c4635]" x-text="new Intl.NumberFormat('id-ID').format(prog.member_count) + ' Member'"></span>
@@ -178,20 +178,20 @@
                     </button>
                 </template>
                 <template x-if="programs.length === 0">
-                    <p class="text-xs text-center text-gray-500 py-4">Belum ada data program aktif.</p>
+                    <p class="text-xs text-center text-[color:var(--dash-text-muted)] py-4">Belum ada data program aktif.</p>
                 </template>
             </div>
         </div>
 
         {{-- Main Content: Segmentation Details --}}
-        <div class="w-full md:w-2/3 lg:w-3/4 bg-white overflow-y-auto p-5">
+        <div class="w-full md:w-2/3 lg:w-3/4 bg-[var(--dash-card-bg)] overflow-y-auto p-5">
             <template x-if="activeData">
                 <div>
                     {{-- Title Row --}}
                     <div class="mb-6 flex justify-between items-end border-b border-[#cfc6af] pb-3">
                         <div>
                             <h4 class="text-xl font-bold text-[#1E293B]" x-text="activeData.program"></h4>
-                            <p class="text-xs text-gray-500 mt-1">Peta Segmentasi & Demografi</p>
+                            <p class="text-xs text-[color:var(--dash-text-muted)] mt-1">Peta Segmentasi & Demografi</p>
                         </div>
                         <div class="text-right">
                             <p class="text-[10px] uppercase font-bold text-[#7e7663]">Total Member / Revenue</p>
@@ -221,7 +221,7 @@
                                     </li>
                                 </template>
                                 <template x-if="activeData.payments.length === 0">
-                                    <li class="text-xs text-gray-500 italic">Tidak ada data pembayaran.</li>
+                                    <li class="text-xs text-[color:var(--dash-text-muted)] italic">Tidak ada data pembayaran.</li>
                                 </template>
                             </ul>
                         </div>
@@ -237,7 +237,7 @@
                                     </li>
                                 </template>
                                 <template x-if="activeData.demographics.length === 0">
-                                    <li class="text-xs text-gray-500 italic">Tidak ada data institusi.</li>
+                                    <li class="text-xs text-[color:var(--dash-text-muted)] italic">Tidak ada data institusi.</li>
                                 </template>
                             </ul>
                         </div>
@@ -259,7 +259,7 @@
                                     </li>
                                 </template>
                                 <template x-if="topBranches.length === 0">
-                                    <li class="text-xs text-gray-500 italic">Tidak ada data cabang.</li>
+                                    <li class="text-xs text-[color:var(--dash-text-muted)] italic">Tidak ada data cabang.</li>
                                 </template>
                             </ul>
                         </div>
@@ -278,7 +278,7 @@
                                     </li>
                                 </template>
                                 <template x-if="topAreas.length === 0">
-                                    <li class="text-xs text-gray-500 italic">Tidak ada data area.</li>
+                                    <li class="text-xs text-[color:var(--dash-text-muted)] italic">Tidak ada data area.</li>
                                 </template>
                             </ul>
                         </div>
@@ -309,8 +309,8 @@
         },
         sortIcon(col) { return this.sortCol === col ? (this.sortDir === 'desc' ? ' ↓' : ' ↑') : ''; }
     }">
-        <div class="bg-white rounded-lg border border-[#cfc6af] overflow-hidden">
-            <div class="p-5 border-b border-[#cfc6af] flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white">
+        <div class="bg-[var(--dash-card-bg)] rounded-lg border border-[#cfc6af] overflow-hidden">
+            <div class="p-5 border-b border-[#cfc6af] flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[var(--dash-card-bg)]">
                 <h3 class="text-sm font-bold text-[#1E293B] uppercase tracking-wide">Data Terperinci per Cabang</h3>
                 <div class="flex items-center gap-3">
                     <div class="relative">
@@ -353,7 +353,7 @@
                                         </div>
                                     </template>
                                     <template x-if="!b.demographics || b.demographics.length === 0">
-                                        <span class="text-gray-400 italic">Belum ada data</span>
+                                        <span class="text-[color:var(--dash-text-faint)] italic">Belum ada data</span>
                                     </template>
                                 </td>
                                 <td class="py-3 px-5">
@@ -364,7 +364,7 @@
                                         </div>
                                     </template>
                                     <template x-if="!b.programs || b.programs.length === 0">
-                                        <span class="text-gray-400 italic">Belum ada data</span>
+                                        <span class="text-[color:var(--dash-text-faint)] italic">Belum ada data</span>
                                     </template>
                                 </td>
                             </tr>

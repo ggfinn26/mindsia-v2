@@ -6,7 +6,7 @@
 @section('content')
 <div class="max-w-4xl mx-auto">
     <div class="mb-6">
-        <a href="{{ route('member.program.browse') }}" class="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">
+        <a href="{{ route('member.program.browse') }}" class="inline-flex items-center text-sm font-medium text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-heading)] transition-colors">
             <span class="material-symbols-outlined text-[20px] mr-1">arrow_back</span>
             Kembali ke Katalog
         </a>
@@ -22,10 +22,10 @@
         </div>
     @endif
 
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="p-6 sm:p-8 border-b border-gray-100 bg-[#5586DB]/5">
-            <h2 class="text-2xl font-bold font-jakarta text-gray-900">{{ $program->program_name }}</h2>
-            <p class="text-sm text-gray-500 mt-1">Biaya Program: <span class="font-bold text-[#5586DB]">Rp {{ number_format($program->program_price, 0, ',', '.') }}</span></p>
+    <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] overflow-hidden">
+        <div class="p-6 sm:p-8 border-b border-[color:var(--dash-card-border)] bg-[#5586DB]/5">
+            <h2 class="text-2xl font-bold font-jakarta text-[color:var(--dash-text-heading)]">{{ $program->program_name }}</h2>
+            <p class="text-sm text-[color:var(--dash-text-muted)] mt-1">Biaya Program: <span class="font-bold text-[#5586DB]">Rp {{ number_format($program->program_price, 0, ',', '.') }}</span></p>
         </div>
         @php
             $hasBranch      = $memberData->branch_id && $memberData->branch;
@@ -62,20 +62,20 @@
 
                 {{-- ── Data Diri ── --}}
                 <div>
-                    <h3 class="text-lg font-bold text-gray-900 font-jakarta mb-1">Data Diri</h3>
-                    <p class="text-sm text-gray-500 mb-6">Data yang sudah terisi tidak perlu diubah.</p>
+                    <h3 class="text-lg font-bold text-[color:var(--dash-text-heading)] font-jakarta mb-1">Data Diri</h3>
+                    <p class="text-sm text-[color:var(--dash-text-muted)] mb-6">Data yang sudah terisi tidak perlu diubah.</p>
 
                     <div class="space-y-5">
 
                         {{-- Cabang --}}
                         @if($hasBranch)
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Cabang MINDSIA</label>
-                                <div class="flex items-center gap-3 px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg">
+                                <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Cabang MINDSIA</label>
+                                <div class="flex items-center gap-3 px-4 py-3 bg-[var(--dash-nav-hover-bg)] border border-[color:var(--dash-card-border)] rounded-lg">
                                     <span class="material-symbols-outlined text-[20px] text-green-500 shrink-0">check_circle</span>
                                     <div>
-                                        <p class="text-sm font-medium text-gray-900">{{ $memberData->branch->branch_name }}</p>
-                                        <p class="text-xs text-gray-400">{{ $memberData->branch->code_branches }}</p>
+                                        <p class="text-sm font-medium text-[color:var(--dash-text-heading)]">{{ $memberData->branch->branch_name }}</p>
+                                        <p class="text-xs text-[color:var(--dash-text-faint)]">{{ $memberData->branch->code_branches }}</p>
                                     </div>
                                 </div>
                                 <input type="hidden" name="branch_id" value="{{ $memberData->branch_id }}">
@@ -84,27 +84,27 @@
                             <!-- Cabang Pilihan -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Provinsi Cabang <span class="text-red-500">*</span></label>
+                                <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Provinsi Cabang <span class="text-red-500">*</span></label>
                                 <div class="relative" @click.away="showBranchProvinceDropdown = false">
                                     <div @click="showBranchProvinceDropdown = !showBranchProvinceDropdown"
-                                         class="w-full px-3 py-2 bg-gray-50 border rounded-lg sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#5586DB] transition-all shadow-sm flex justify-between items-center cursor-pointer border-gray-300">
+                                         class="w-full px-3 py-2 bg-[var(--dash-nav-hover-bg)] border rounded-lg sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#5586DB] transition-all shadow-sm flex justify-between items-center cursor-pointer border-[color:var(--dash-input-border)]">
                                         <span x-text="selectedBranchProvinceName" class="truncate block pr-4"
-                                              :class="branchProvinceId ? 'text-gray-900' : 'text-gray-500'"></span>
-                                        <span class="material-symbols-outlined text-[16px] text-gray-400">expand_more</span>
+                                              :class="branchProvinceId ? 'text-[color:var(--dash-text-heading)]' : 'text-[color:var(--dash-text-muted)]'"></span>
+                                        <span class="material-symbols-outlined text-[16px] text-[color:var(--dash-text-faint)]">expand_more</span>
                                     </div>
                                     <div x-show="showBranchProvinceDropdown" x-transition x-cloak
-                                         class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
-                                        <div class="p-2 bg-gray-50 border-b border-gray-100">
+                                         class="absolute z-50 w-full mt-1 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg shadow-lg overflow-hidden">
+                                        <div class="p-2 bg-[var(--dash-nav-hover-bg)] border-b border-[color:var(--dash-card-border)]">
                                             <div class="relative">
-                                                <span class="material-symbols-outlined absolute left-3 top-2 text-gray-400 text-[16px]">search</span>
+                                                <span class="material-symbols-outlined absolute left-3 top-2 text-[color:var(--dash-text-faint)] text-[16px]">search</span>
                                                 <input type="text" x-model="branchProvinceSearch" placeholder="Cari provinsi..."
-                                                       style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-white border border-gray-200 rounded-md sm:text-sm focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB]">
+                                                       style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-md sm:text-sm focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB]">
                                             </div>
                                         </div>
                                         <ul class="max-h-48 overflow-y-auto py-1">
-                                            <li x-show="filteredBranchProvinces.length === 0" class="px-4 py-2 sm:text-sm text-gray-500 text-center">Tidak ditemukan</li>
+                                            <li x-show="filteredBranchProvinces.length === 0" class="px-4 py-2 sm:text-sm text-[color:var(--dash-text-muted)] text-center">Tidak ditemukan</li>
                                             <template x-for="p in filteredBranchProvinces" :key="p.id">
-                                                <li @click="selectBranchProvince(p.id)" class="px-4 py-2 sm:text-sm text-gray-700 hover:bg-[#5586DB] hover:text-white cursor-pointer"
+                                                <li @click="selectBranchProvince(p.id)" class="px-4 py-2 sm:text-sm text-[color:var(--dash-text-body)] hover:bg-[#5586DB] hover:text-white cursor-pointer"
                                                     :class="branchProvinceId == p.id ? 'bg-[#EFF6FF] font-semibold' : ''" x-text="p.name"></li>
                                             </template>
                                         </ul>
@@ -112,29 +112,29 @@
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Cabang Pilihan <span class="text-red-500">*</span></label>
+                                <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Cabang Pilihan <span class="text-red-500">*</span></label>
                                 <div class="relative" @click.away="showBranchDropdown = false">
                                     <div @click="if (branchProvinceId) showBranchDropdown = !showBranchDropdown"
-                                         class="w-full px-3 py-2 bg-gray-50 border rounded-lg sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#5586DB] transition-all shadow-sm flex justify-between items-center cursor-pointer border-gray-300"
+                                         class="w-full px-3 py-2 bg-[var(--dash-nav-hover-bg)] border rounded-lg sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#5586DB] transition-all shadow-sm flex justify-between items-center cursor-pointer border-[color:var(--dash-input-border)]"
                                          :class="!branchProvinceId ? 'opacity-50 cursor-not-allowed' : ''">
                                         <span x-text="selectedBranchName" class="truncate block pr-4"
-                                              :class="branchId ? 'text-gray-900' : 'text-gray-500'"></span>
-                                        <span class="material-symbols-outlined text-[16px] text-gray-400">expand_more</span>
+                                              :class="branchId ? 'text-[color:var(--dash-text-heading)]' : 'text-[color:var(--dash-text-muted)]'"></span>
+                                        <span class="material-symbols-outlined text-[16px] text-[color:var(--dash-text-faint)]">expand_more</span>
                                     </div>
                                     <div x-show="showBranchDropdown" x-transition x-cloak
-                                         class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
-                                        <div class="p-2 bg-gray-50 border-b border-gray-100">
+                                         class="absolute z-50 w-full mt-1 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg shadow-lg overflow-hidden">
+                                        <div class="p-2 bg-[var(--dash-nav-hover-bg)] border-b border-[color:var(--dash-card-border)]">
                                             <div class="relative">
-                                                <span class="material-symbols-outlined absolute left-3 top-2 text-gray-400 text-[16px]">search</span>
+                                                <span class="material-symbols-outlined absolute left-3 top-2 text-[color:var(--dash-text-faint)] text-[16px]">search</span>
                                                 <input type="text" x-model="branchSearch" placeholder="Cari cabang..."
-                                                       style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-white border border-gray-200 rounded-md sm:text-sm focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB]">
+                                                       style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-md sm:text-sm focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB]">
                                             </div>
                                         </div>
                                         <ul class="max-h-48 overflow-y-auto py-1">
-                                            <li x-show="branches.length === 0" class="px-4 py-2 sm:text-sm text-gray-500 text-center">Pilih Provinsi terlebih dahulu</li>
-                                            <li x-show="branches.length > 0 && filteredBranches.length === 0" class="px-4 py-2 sm:text-sm text-gray-500 text-center">Tidak ditemukan</li>
+                                            <li x-show="branches.length === 0" class="px-4 py-2 sm:text-sm text-[color:var(--dash-text-muted)] text-center">Pilih Provinsi terlebih dahulu</li>
+                                            <li x-show="branches.length > 0 && filteredBranches.length === 0" class="px-4 py-2 sm:text-sm text-[color:var(--dash-text-muted)] text-center">Tidak ditemukan</li>
                                             <template x-for="b in filteredBranches" :key="b.id">
-                                                <li @click="selectBranch(b.id)" class="px-4 py-2 sm:text-sm text-gray-700 hover:bg-[#5586DB] hover:text-white cursor-pointer"
+                                                <li @click="selectBranch(b.id)" class="px-4 py-2 sm:text-sm text-[color:var(--dash-text-body)] hover:bg-[#5586DB] hover:text-white cursor-pointer"
                                                     :class="branchId == b.id ? 'bg-[#EFF6FF] font-semibold' : ''" x-text="b.branch_name"></li>
                                             </template>
                                         </ul>
@@ -148,10 +148,10 @@
                         {{-- Tempat Lahir --}}
                         @if($hasBirthPlace)
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Tempat Lahir</label>
-                                <div class="flex items-center gap-3 px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg">
+                                <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Tempat Lahir</label>
+                                <div class="flex items-center gap-3 px-4 py-3 bg-[var(--dash-nav-hover-bg)] border border-[color:var(--dash-card-border)] rounded-lg">
                                     <span class="material-symbols-outlined text-[20px] text-green-500 shrink-0">check_circle</span>
-                                    <p class="text-sm font-medium text-gray-900">{{ $memberData->birth_place }}</p>
+                                    <p class="text-sm font-medium text-[color:var(--dash-text-heading)]">{{ $memberData->birth_place }}</p>
                                 </div>
                                 <input type="hidden" name="birth_place" value="{{ $memberData->birth_place }}">
                             </div>
@@ -159,27 +159,27 @@
                         <!-- Tempat Lahir -->
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Provinsi Lahir <span class="text-red-500">*</span></label>
+                                <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Provinsi Lahir <span class="text-red-500">*</span></label>
                                 <div class="relative" @click.away="showBirthProvinceDropdown = false">
                                     <div @click="showBirthProvinceDropdown = !showBirthProvinceDropdown"
-                                         class="w-full px-3 py-2 bg-white border rounded-lg sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#5586DB] transition-all shadow-sm flex justify-between items-center cursor-pointer border-gray-300">
+                                         class="w-full px-3 py-2 bg-[var(--dash-card-bg)] border rounded-lg sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#5586DB] transition-all shadow-sm flex justify-between items-center cursor-pointer border-[color:var(--dash-input-border)]">
                                         <span x-text="selectedBirthProvinceName" class="truncate block pr-4"
-                                              :class="birthProvinceId ? 'text-gray-900' : 'text-gray-500'"></span>
-                                        <span class="material-symbols-outlined text-[16px] text-gray-400">expand_more</span>
+                                              :class="birthProvinceId ? 'text-[color:var(--dash-text-heading)]' : 'text-[color:var(--dash-text-muted)]'"></span>
+                                        <span class="material-symbols-outlined text-[16px] text-[color:var(--dash-text-faint)]">expand_more</span>
                                     </div>
                                     <div x-show="showBirthProvinceDropdown" x-transition x-cloak
-                                         class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
-                                        <div class="p-2 bg-gray-50 border-b border-gray-100">
+                                         class="absolute z-50 w-full mt-1 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg shadow-lg overflow-hidden">
+                                        <div class="p-2 bg-[var(--dash-nav-hover-bg)] border-b border-[color:var(--dash-card-border)]">
                                             <div class="relative">
-                                                <span class="material-symbols-outlined absolute left-3 top-2 text-gray-400 text-[16px]">search</span>
+                                                <span class="material-symbols-outlined absolute left-3 top-2 text-[color:var(--dash-text-faint)] text-[16px]">search</span>
                                                 <input type="text" x-model="birthProvinceSearch" placeholder="Cari provinsi..."
-                                                       style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-white border border-gray-200 rounded-md sm:text-sm focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB]">
+                                                       style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-md sm:text-sm focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB]">
                                             </div>
                                         </div>
                                         <ul class="max-h-48 overflow-y-auto py-1">
-                                            <li x-show="filteredBirthProvinces.length === 0" class="px-4 py-2 sm:text-sm text-gray-500 text-center">Tidak ditemukan</li>
+                                            <li x-show="filteredBirthProvinces.length === 0" class="px-4 py-2 sm:text-sm text-[color:var(--dash-text-muted)] text-center">Tidak ditemukan</li>
                                             <template x-for="p in filteredBirthProvinces" :key="p.id">
-                                                <li @click="selectBirthProvince(p.id)" class="px-4 py-2 sm:text-sm text-gray-700 hover:bg-[#5586DB] hover:text-white cursor-pointer"
+                                                <li @click="selectBirthProvince(p.id)" class="px-4 py-2 sm:text-sm text-[color:var(--dash-text-body)] hover:bg-[#5586DB] hover:text-white cursor-pointer"
                                                     :class="birthProvinceId == p.id ? 'bg-[#EFF6FF] font-semibold' : ''" x-text="p.nama"></li>
                                             </template>
                                         </ul>
@@ -187,29 +187,29 @@
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Tempat Lahir <span class="text-red-500">*</span></label>
+                                <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Tempat Lahir <span class="text-red-500">*</span></label>
                                 <div class="relative" @click.away="showBirthPlaceDropdown = false">
                                     <div @click="if (birthProvinceId) showBirthPlaceDropdown = !showBirthPlaceDropdown"
-                                         class="w-full px-3 py-2 bg-white border rounded-lg sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#5586DB] transition-all shadow-sm flex justify-between items-center cursor-pointer border-gray-300"
-                                         :class="!birthProvinceId ? 'opacity-50 cursor-not-allowed bg-gray-50' : ''">
+                                         class="w-full px-3 py-2 bg-[var(--dash-card-bg)] border rounded-lg sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#5586DB] transition-all shadow-sm flex justify-between items-center cursor-pointer border-[color:var(--dash-input-border)]"
+                                         :class="!birthProvinceId ? 'opacity-50 cursor-not-allowed bg-[var(--dash-nav-hover-bg)]' : ''">
                                         <span x-text="selectedBirthPlaceName" class="truncate block pr-4"
-                                              :class="birthPlace ? 'text-gray-900' : 'text-gray-500'"></span>
-                                        <span class="material-symbols-outlined text-[16px] text-gray-400">expand_more</span>
+                                              :class="birthPlace ? 'text-[color:var(--dash-text-heading)]' : 'text-[color:var(--dash-text-muted)]'"></span>
+                                        <span class="material-symbols-outlined text-[16px] text-[color:var(--dash-text-faint)]">expand_more</span>
                                     </div>
                                     <div x-show="showBirthPlaceDropdown" x-transition x-cloak
-                                         class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
-                                        <div class="p-2 bg-gray-50 border-b border-gray-100">
+                                         class="absolute z-50 w-full mt-1 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg shadow-lg overflow-hidden">
+                                        <div class="p-2 bg-[var(--dash-nav-hover-bg)] border-b border-[color:var(--dash-card-border)]">
                                             <div class="relative">
-                                                <span class="material-symbols-outlined absolute left-3 top-2 text-gray-400 text-[16px]">search</span>
+                                                <span class="material-symbols-outlined absolute left-3 top-2 text-[color:var(--dash-text-faint)] text-[16px]">search</span>
                                                 <input type="text" x-model="birthPlaceSearch" placeholder="Cari kota/kabupaten..."
-                                                       style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-white border border-gray-200 rounded-md sm:text-sm focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB]">
+                                                       style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-md sm:text-sm focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB]">
                                             </div>
                                         </div>
                                         <ul class="max-h-48 overflow-y-auto py-1">
-                                            <li x-show="indoCities.length === 0" class="px-4 py-2 sm:text-sm text-gray-500 text-center">Pilih Provinsi terlebih dahulu</li>
-                                            <li x-show="indoCities.length > 0 && filteredBirthPlaces.length === 0" class="px-4 py-2 sm:text-sm text-gray-500 text-center">Tidak ditemukan</li>
+                                            <li x-show="indoCities.length === 0" class="px-4 py-2 sm:text-sm text-[color:var(--dash-text-muted)] text-center">Pilih Provinsi terlebih dahulu</li>
+                                            <li x-show="indoCities.length > 0 && filteredBirthPlaces.length === 0" class="px-4 py-2 sm:text-sm text-[color:var(--dash-text-muted)] text-center">Tidak ditemukan</li>
                                             <template x-for="c in filteredBirthPlaces" :key="c.id">
-                                                <li @click="selectBirthPlace(c.nama)" class="px-4 py-2 sm:text-sm text-gray-700 hover:bg-[#5586DB] hover:text-white cursor-pointer"
+                                                <li @click="selectBirthPlace(c.nama)" class="px-4 py-2 sm:text-sm text-[color:var(--dash-text-body)] hover:bg-[#5586DB] hover:text-white cursor-pointer"
                                                     :class="birthPlace == c.nama ? 'bg-[#EFF6FF] font-semibold' : ''" x-text="c.nama"></li>
                                             </template>
                                         </ul>
@@ -223,19 +223,19 @@
                         {{-- Tanggal Lahir --}}
                         @if($hasBirthdate)
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Lahir</label>
-                                <div class="flex items-center gap-3 px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg">
+                                <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Tanggal Lahir</label>
+                                <div class="flex items-center gap-3 px-4 py-3 bg-[var(--dash-nav-hover-bg)] border border-[color:var(--dash-card-border)] rounded-lg">
                                     <span class="material-symbols-outlined text-[20px] text-green-500 shrink-0">check_circle</span>
-                                    <p class="text-sm font-medium text-gray-900">{{ $memberData->birthdate->translatedFormat('d F Y') }}</p>
+                                    <p class="text-sm font-medium text-[color:var(--dash-text-heading)]">{{ $memberData->birthdate->translatedFormat('d F Y') }}</p>
                                 </div>
                                 <input type="hidden" name="birthdate" value="{{ $memberData->birthdate->format('Y-m-d') }}">
                             </div>
                         @else
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Lahir <span class="text-red-500">*</span></label>
+                                <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Tanggal Lahir <span class="text-red-500">*</span></label>
                                 <input type="date" name="birthdate"
                                        value="{{ old('birthdate') }}"
-                                       class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#5586DB] focus:ring-[#5586DB] sm:text-sm px-3 py-2 border"
+                                       class="w-full rounded-lg border-[color:var(--dash-input-border)] shadow-sm focus:border-[#5586DB] focus:ring-[#5586DB] sm:text-sm px-3 py-2 border"
                                        required>
                             </div>
                         @endif
@@ -243,31 +243,31 @@
                         {{-- Jenjang Pendidikan --}}
                         @if($hasEducation)
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Jenjang Pendidikan</label>
-                                <div class="flex items-center gap-3 px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg">
+                                <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Jenjang Pendidikan</label>
+                                <div class="flex items-center gap-3 px-4 py-3 bg-[var(--dash-nav-hover-bg)] border border-[color:var(--dash-card-border)] rounded-lg">
                                     <span class="material-symbols-outlined text-[20px] text-green-500 shrink-0">check_circle</span>
-                                    <p class="text-sm font-medium text-gray-900">{{ $memberData->education_level }}</p>
+                                    <p class="text-sm font-medium text-[color:var(--dash-text-heading)]">{{ $memberData->education_level }}</p>
                                 </div>
                                 <input type="hidden" name="education_level" value="{{ $memberData->education_level }}">
                             </div>
                         @else
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Jenjang Pendidikan <span class="text-red-500">*</span></label>
+                                <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Jenjang Pendidikan <span class="text-red-500">*</span></label>
                                 <div class="relative" @click.away="showEducationDropdown = false">
                                     <div @click="showEducationDropdown = !showEducationDropdown"
-                                         class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg sm:text-sm shadow-sm flex justify-between items-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#5586DB]">
-                                        <span x-text="selectedEducationLabel" :class="educationLevel ? 'text-gray-900' : 'text-gray-500'" class="truncate block pr-4"></span>
-                                        <span class="material-symbols-outlined text-[16px] text-gray-400">expand_more</span>
+                                         class="w-full px-3 py-2 bg-[var(--dash-nav-hover-bg)] border border-[color:var(--dash-input-border)] rounded-lg sm:text-sm shadow-sm flex justify-between items-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#5586DB]">
+                                        <span x-text="selectedEducationLabel" :class="educationLevel ? 'text-[color:var(--dash-text-heading)]' : 'text-[color:var(--dash-text-muted)]'" class="truncate block pr-4"></span>
+                                        <span class="material-symbols-outlined text-[16px] text-[color:var(--dash-text-faint)]">expand_more</span>
                                     </div>
                                     <div x-show="showEducationDropdown" x-transition x-cloak
-                                         class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+                                         class="absolute z-50 w-full mt-1 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg shadow-lg overflow-hidden">
                                         <ul class="max-h-56 overflow-y-auto py-1">
                                             <template x-for="group in educationOptions" :key="group.group">
                                                 <li>
-                                                    <div class="px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-400 bg-gray-50" x-text="group.group"></div>
+                                                    <div class="px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[color:var(--dash-text-faint)] bg-[var(--dash-nav-hover-bg)]" x-text="group.group"></div>
                                                     <template x-for="item in group.items" :key="item">
                                                         <div @click="selectEducationLevel(item)"
-                                                             class="px-4 py-2 sm:text-sm text-gray-700 hover:bg-[#5586DB] hover:text-white cursor-pointer"
+                                                             class="px-4 py-2 sm:text-sm text-[color:var(--dash-text-body)] hover:bg-[#5586DB] hover:text-white cursor-pointer"
                                                              :class="educationLevel === item ? 'bg-[#EFF6FF] font-semibold' : ''"
                                                              x-text="item"></div>
                                                     </template>
@@ -283,18 +283,18 @@
                         {{-- Kelas / Jurusan --}}
                         @if($hasEducation && ($educationIsUmum || $hasClassFaculty))
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">
                                     {{ $educationIsUmum ? 'Kelas / Jurusan' : ($memberData->education_level === 'S1' || $memberData->education_level === 'S2' || $memberData->education_level === 'S3' || $memberData->education_level === 'D1' || $memberData->education_level === 'D2' || $memberData->education_level === 'D3' || $memberData->education_level === 'D4' ? 'Jurusan / Fakultas' : 'Kelas') }}
                                 </label>
-                                <div class="flex items-center gap-3 px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg">
+                                <div class="flex items-center gap-3 px-4 py-3 bg-[var(--dash-nav-hover-bg)] border border-[color:var(--dash-card-border)] rounded-lg">
                                     <span class="material-symbols-outlined text-[20px] text-green-500 shrink-0">check_circle</span>
-                                    <p class="text-sm font-medium text-gray-900">{{ $educationIsUmum ? '-' : $memberData->class_or_faculty }}</p>
+                                    <p class="text-sm font-medium text-[color:var(--dash-text-heading)]">{{ $educationIsUmum ? '-' : $memberData->class_or_faculty }}</p>
                                 </div>
                                 <input type="hidden" name="class_or_faculty" value="{{ $educationIsUmum ? '-' : $memberData->class_or_faculty }}">
                             </div>
                         @elseif($hasEducation && !$educationIsUmum && !$hasClassFaculty)
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">
                                     {{ in_array($memberData->education_level, ['S1','S2','S3','D1','D2','D3','D4']) ? 'Jurusan / Fakultas' : 'Kelas' }}
                                     <span class="text-red-500">*</span>
                                 </label>
@@ -302,58 +302,58 @@
                                        value="{{ old('class_or_faculty') }}"
                                        placeholder="{{ in_array($memberData->education_level, ['S1','S2','S3','D1','D2','D3','D4']) ? 'Contoh: Teknik Informatika' : 'Contoh: XII IPA 1' }}"
                                        maxlength="100" required
-                                       class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#5586DB] focus:ring-[#5586DB] sm:text-sm px-3 py-2 border">
+                                       class="w-full rounded-lg border-[color:var(--dash-input-border)] shadow-sm focus:border-[#5586DB] focus:ring-[#5586DB] sm:text-sm px-3 py-2 border">
                             </div>
                         @else
                             {{-- education belum diisi — tampil kondisional via Alpine --}}
                             <div x-show="educationLevel && educationLevel !== 'Umum'" x-cloak>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">
                                     <span x-text="classOrFacultyLabel"></span> <span class="text-red-500">*</span>
                                 </label>
                                 <input type="text" name="class_or_faculty" x-model="classOrFaculty"
                                        :placeholder="classOrFacultyPlaceholder"
                                        :required="educationLevel && educationLevel !== 'Umum'"
                                        maxlength="100"
-                                       class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#5586DB] focus:ring-[#5586DB] sm:text-sm px-3 py-2 border">
+                                       class="w-full rounded-lg border-[color:var(--dash-input-border)] shadow-sm focus:border-[#5586DB] focus:ring-[#5586DB] sm:text-sm px-3 py-2 border">
                             </div>
                         @endif
 
                     </div>{{-- end space-y-5 --}}
                 </div>
 
-                <hr class="border-gray-100">
+                <hr class="border-[color:var(--dash-card-border)]">
 
                 {{-- ── Kode Referral MO ── --}}
                 <div>
-                    <h3 class="text-lg font-bold text-gray-900 font-jakarta mb-1">Kode Referral <span class="text-sm font-normal text-gray-400">(Opsional)</span></h3>
-                    <p class="text-sm text-gray-500 mb-4">Masukkan kode atau cari nama Marketing Officer yang mereferensikan kamu.</p>
+                    <h3 class="text-lg font-bold text-[color:var(--dash-text-heading)] font-jakarta mb-1">Kode Referral <span class="text-sm font-normal text-[color:var(--dash-text-faint)]">(Opsional)</span></h3>
+                    <p class="text-sm text-[color:var(--dash-text-muted)] mb-4">Masukkan kode atau cari nama Marketing Officer yang mereferensikan kamu.</p>
                     <div class="max-w-sm relative" @click.away="showEmployeeDropdown = false">
                         <div @click="showEmployeeDropdown = !showEmployeeDropdown; if (showEmployeeDropdown) loadAllEmployees()"
-                             class="w-full px-3 py-2 bg-white border rounded-lg sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#5586DB] transition-all shadow-sm flex justify-between items-center cursor-pointer border-gray-300">
+                             class="w-full px-3 py-2 bg-[var(--dash-card-bg)] border rounded-lg sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#5586DB] transition-all shadow-sm flex justify-between items-center cursor-pointer border-[color:var(--dash-input-border)]">
                             <span x-text="referredByName ? (referredByName + ' (' + referredByCode + ')') : (referredByCode || 'Cari MO (Opsional)...')" class="truncate block pr-4"
-                                  :class="(referredByName || referredByCode) ? 'text-gray-900' : 'text-gray-500'"></span>
-                            <span class="material-symbols-outlined text-[16px] text-gray-400">expand_more</span>
+                                  :class="(referredByName || referredByCode) ? 'text-[color:var(--dash-text-heading)]' : 'text-[color:var(--dash-text-muted)]'"></span>
+                            <span class="material-symbols-outlined text-[16px] text-[color:var(--dash-text-faint)]">expand_more</span>
                         </div>
                         
                         <div x-show="showEmployeeDropdown" x-transition x-cloak
-                             class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
-                            <div class="p-2 bg-gray-50 border-b border-gray-100">
+                             class="absolute z-50 w-full mt-1 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg shadow-lg overflow-hidden">
+                            <div class="p-2 bg-[var(--dash-nav-hover-bg)] border-b border-[color:var(--dash-card-border)]">
                                 <div class="relative">
-                                    <span class="material-symbols-outlined absolute left-3 top-2 text-gray-400 text-[16px]">search</span>
+                                    <span class="material-symbols-outlined absolute left-3 top-2 text-[color:var(--dash-text-faint)] text-[16px]">search</span>
                                     <input type="text" x-model="employeeSearch" @input="searchEmployee()"
                                            placeholder="Cari nama atau kode MO..."
                                            style="padding-left: 2.5rem !important"
-                                           class="w-full pr-8 py-1.5 bg-white border border-gray-200 rounded-md sm:text-sm focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB]">
+                                           class="w-full pr-8 py-1.5 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-md sm:text-sm focus:outline-none focus:border-[#5586DB] focus:ring-1 focus:ring-[#5586DB]">
                                     <span x-show="searchingEmployee" class="absolute right-3 top-2 flex items-center">
-                                        <span class="material-symbols-outlined text-gray-400 animate-spin text-[16px]">progress_activity</span>
+                                        <span class="material-symbols-outlined text-[color:var(--dash-text-faint)] animate-spin text-[16px]">progress_activity</span>
                                     </span>
                                 </div>
                             </div>
                             <ul class="max-h-48 overflow-y-auto py-1">
-                                <li x-show="searchingEmployee" class="px-4 py-2 sm:text-sm text-gray-500 text-center">Memuat...</li>
-                                <li x-show="!searchingEmployee && employees.length === 0" class="px-4 py-2 sm:text-sm text-gray-500 text-center">Tidak ditemukan</li>
+                                <li x-show="searchingEmployee" class="px-4 py-2 sm:text-sm text-[color:var(--dash-text-muted)] text-center">Memuat...</li>
+                                <li x-show="!searchingEmployee && employees.length === 0" class="px-4 py-2 sm:text-sm text-[color:var(--dash-text-muted)] text-center">Tidak ditemukan</li>
                                 <template x-for="emp in employees" :key="emp.employee_code">
-                                    <li @click="selectEmployee(emp.employee_code, emp.full_name)" class="px-4 py-2 sm:text-sm text-gray-700 hover:bg-[#5586DB] hover:text-white cursor-pointer"
+                                    <li @click="selectEmployee(emp.employee_code, emp.full_name)" class="px-4 py-2 sm:text-sm text-[color:var(--dash-text-body)] hover:bg-[#5586DB] hover:text-white cursor-pointer"
                                         :class="referredByCode == emp.employee_code ? 'bg-[#EFF6FF] font-semibold' : ''">
                                         <div x-text="emp.full_name"></div>
                                         <div class="text-xs opacity-75" x-text="emp.employee_code"></div>
@@ -378,41 +378,41 @@
                     </div>
                 </div>
 
-                <hr class="border-gray-100">
+                <hr class="border-[color:var(--dash-card-border)]">
 
                 {{-- ── Kode Diskon ── --}}
                 <div>
-                    <h3 class="text-lg font-bold text-gray-900 font-jakarta mb-1">Kode Diskon <span class="text-sm font-normal text-gray-400">(Opsional)</span></h3>
-                    <p class="text-sm text-gray-500 mb-4">Masukkan kode promo jika kamu punya. Diskon akan diterapkan saat admin memproses pembayaran.</p>
+                    <h3 class="text-lg font-bold text-[color:var(--dash-text-heading)] font-jakarta mb-1">Kode Diskon <span class="text-sm font-normal text-[color:var(--dash-text-faint)]">(Opsional)</span></h3>
+                    <p class="text-sm text-[color:var(--dash-text-muted)] mb-4">Masukkan kode promo jika kamu punya. Diskon akan diterapkan saat admin memproses pembayaran.</p>
                     <div class="max-w-sm">
                         <input type="text" name="discount_code" id="discount_code"
                                value="{{ old('discount_code') }}"
                                placeholder="Contoh: PROMO2026"
                                oninput="this.value = this.value.toUpperCase()"
-                               class="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm font-mono uppercase focus:outline-none focus:ring-2 focus:ring-[#5586DB] focus:border-[#5586DB] transition-all shadow-sm" />
+                               class="w-full px-3 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] rounded-lg text-sm font-mono uppercase focus:outline-none focus:ring-2 focus:ring-[#5586DB] focus:border-[#5586DB] transition-all shadow-sm" />
                         @error('discount_code')
                             <p class="mt-1.5 text-xs font-medium text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
 
-                <hr class="border-gray-100">
+                <hr class="border-[color:var(--dash-card-border)]">
 
                 {{-- ── Metode Pembayaran ── --}}
                 <div>
-                    <h3 class="text-lg font-bold text-gray-900 font-jakarta mb-4">Metode Pembayaran</h3>
+                    <h3 class="text-lg font-bold text-[color:var(--dash-text-heading)] font-jakarta mb-4">Metode Pembayaran</h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         @foreach($paymentPlans as $plan)
-                            <label class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none transition-all"
-                                   :class="paymentPlanId == '{{ $plan->id }}' ? 'border-[#5586DB] ring-1 ring-[#5586DB]' : 'border-gray-200'">
+                            <label class="relative flex cursor-pointer rounded-lg border bg-[var(--dash-card-bg)] p-4 shadow-sm focus:outline-none transition-all"
+                                   :class="paymentPlanId == '{{ $plan->id }}' ? 'border-[#5586DB] ring-1 ring-[#5586DB]' : 'border-[color:var(--dash-card-border)]'">
                                 <input type="radio" name="payment_plan_id" value="{{ $plan->id }}" class="sr-only" required
                                        x-model="paymentPlanId">
                                 <span class="flex flex-1">
                                     <span class="flex flex-col">
-                                        <span class="block text-sm font-medium text-gray-900">{{ $plan->label }}</span>
-                                        <span class="mt-1 flex items-center text-xs text-gray-500">DP: Rp {{ number_format($plan->dp_amount, 0, ',', '.') }}</span>
+                                        <span class="block text-sm font-medium text-[color:var(--dash-text-heading)]">{{ $plan->label }}</span>
+                                        <span class="mt-1 flex items-center text-xs text-[color:var(--dash-text-muted)]">DP: Rp {{ number_format($plan->dp_amount, 0, ',', '.') }}</span>
                                         @if($plan->installment_count)
-                                            <span class="mt-1 text-xs text-gray-500">{{ $plan->installment_count }}x Rp {{ number_format($plan->per_installment_amount, 0, ',', '.') }}</span>
+                                            <span class="mt-1 text-xs text-[color:var(--dash-text-muted)]">{{ $plan->installment_count }}x Rp {{ number_format($plan->per_installment_amount, 0, ',', '.') }}</span>
                                         @endif
                                     </span>
                                 </span>
@@ -424,8 +424,8 @@
 
             </div>
 
-            <div class="bg-gray-50 px-6 py-4 sm:px-8 border-t border-gray-100 flex items-center justify-end gap-3">
-                <a href="{{ route('member.program.browse') }}" class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+            <div class="bg-[var(--dash-nav-hover-bg)] px-6 py-4 sm:px-8 border-t border-[color:var(--dash-card-border)] flex items-center justify-end gap-3">
+                <a href="{{ route('member.program.browse') }}" class="px-5 py-2.5 text-sm font-medium text-[color:var(--dash-text-body)] bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-nav-hover-bg)] transition-colors">
                     Batal
                 </a>
                 <button type="submit" class="px-5 py-2.5 text-sm font-medium text-white bg-[#5586DB] border border-transparent rounded-lg shadow-[0_4px_12px_-2px_rgba(85,134,219,0.3)] hover:bg-[#4370BC] transition-colors inline-flex items-center gap-2">

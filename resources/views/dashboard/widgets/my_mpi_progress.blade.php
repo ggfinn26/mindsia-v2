@@ -3,13 +3,13 @@
 @php
     $score = $data['mpi_score'] ?? null;
     $scoreColor = match(true) {
-        $score === null => 'text-gray-400',
+        $score === null => 'text-[color:var(--dash-text-faint)]',
         $score >= 80 => 'text-emerald-600',
         $score >= 60 => 'text-amber-500',
         default => 'text-red-500',
     };
     $bgColor = match(true) {
-        $score === null => 'bg-gray-50',
+        $score === null => 'bg-[var(--dash-nav-hover-bg)]',
         $score >= 80 => 'bg-emerald-50',
         $score >= 60 => 'bg-amber-50',
         default => 'bg-red-50',
@@ -32,7 +32,7 @@
     };
 @endphp
 
-<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow flex flex-col h-full">
+<div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] p-5 hover:shadow-md transition-shadow flex flex-col h-full">
     {{-- Header --}}
     <div class="flex items-start justify-between mb-4">
         <div class="flex items-center gap-3">
@@ -40,8 +40,8 @@
                 <span class="material-symbols-outlined text-violet-600 text-xl">speed</span>
             </div>
             <div>
-                <h3 class="text-sm font-bold font-jakarta text-gray-900">MPI Progress</h3>
-                <p class="text-xs font-medium text-gray-500">Periode {{ $data['period'] ?? '-' }}</p>
+                <h3 class="text-sm font-bold font-jakarta text-[color:var(--dash-text-heading)]">MPI Progress</h3>
+                <p class="text-xs font-medium text-[color:var(--dash-text-muted)]">Periode {{ $data['period'] ?? '-' }}</p>
             </div>
         </div>
         @if($score !== null)
@@ -54,14 +54,14 @@
     @if($score === null)
         <div class="flex-1 flex flex-col items-center justify-center py-6">
             <span class="material-symbols-outlined text-gray-200 text-4xl mb-2">pending_actions</span>
-            <p class="text-sm font-medium text-gray-400 text-center">Belum ada data MPI bulan ini</p>
+            <p class="text-sm font-medium text-[color:var(--dash-text-faint)] text-center">Belum ada data MPI bulan ini</p>
         </div>
     @else
         {{-- MPI score bar --}}
         <div class="{{ $bgColor }} rounded-xl p-4 mb-5 border {{ $score >= 80 ? 'border-emerald-100' : ($score >= 60 ? 'border-amber-100' : 'border-red-100') }}">
             <div class="flex items-end gap-1.5 mb-2">
                 <span class="text-4xl font-black font-jakarta {{ $scoreColor }} leading-none">{{ number_format($score, 1, ',', '.') }}</span>
-                <span class="text-sm font-bold text-gray-400 mb-1">/ 100</span>
+                <span class="text-sm font-bold text-[color:var(--dash-text-faint)] mb-1">/ 100</span>
             </div>
             <div class="h-2.5 bg-white/60 rounded-full overflow-hidden border border-black/5 shadow-inner">
                 <div class="h-full rounded-full transition-all duration-1000 ease-out
@@ -75,7 +75,7 @@
         <div class="mb-5 overflow-x-auto custom-scrollbar">
             <table class="w-full text-xs">
                 <thead>
-                    <tr class="text-[10px] text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                    <tr class="text-[10px] text-[color:var(--dash-text-faint)] uppercase tracking-wider border-b border-[color:var(--dash-card-border)]">
                         <th class="text-left pb-2 font-semibold">Metrik</th>
                         <th class="text-right pb-2 font-semibold whitespace-nowrap">Target</th>
                         <th class="text-right pb-2 font-semibold whitespace-nowrap">Aktual</th>
@@ -87,21 +87,21 @@
                         @php
                             $pct = $m['pct'];
                             $pctColor = match(true) {
-                                $pct === null => 'text-gray-400',
+                                $pct === null => 'text-[color:var(--dash-text-faint)]',
                                 $pct >= 100 => 'text-emerald-600 font-bold',
                                 $pct >= 80 => 'text-amber-500 font-semibold',
                                 default => 'text-red-500 font-semibold',
                             };
                         @endphp
                         <tr class="hover:bg-gray-50/50 transition-colors">
-                            <td class="py-2 flex items-center gap-2 text-gray-700 font-medium whitespace-nowrap">
-                                <span class="material-symbols-outlined text-gray-400 text-[18px]">{{ $m['icon'] }}</span>
+                            <td class="py-2 flex items-center gap-2 text-[color:var(--dash-text-body)] font-medium whitespace-nowrap">
+                                <span class="material-symbols-outlined text-[color:var(--dash-text-faint)] text-[18px]">{{ $m['icon'] }}</span>
                                 {{ $m['label'] }}
                             </td>
-                            <td class="py-2 text-right text-gray-500 whitespace-nowrap">
+                            <td class="py-2 text-right text-[color:var(--dash-text-muted)] whitespace-nowrap">
                                 {{ $formatCompact($m['target']) }}
                             </td>
-                            <td class="py-2 text-right text-gray-900 font-bold whitespace-nowrap">
+                            <td class="py-2 text-right text-[color:var(--dash-text-heading)] font-bold whitespace-nowrap">
                                 {{ $formatCompact($m['actual']) }}
                             </td>
                             <td class="py-2 text-right whitespace-nowrap {{ $pctColor }}">
@@ -133,11 +133,11 @@
 
         {{-- Criteria breakdown --}}
         @if(!empty($data['criteria']))
-            <div class="pt-4 border-t border-gray-100 space-y-2 mb-4">
-                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Komponen Nilai</p>
+            <div class="pt-4 border-t border-[color:var(--dash-card-border)] space-y-2 mb-4">
+                <p class="text-[10px] font-bold text-[color:var(--dash-text-faint)] uppercase tracking-wider mb-2">Komponen Nilai</p>
                 @foreach($data['criteria'] as $c)
                     <div class="flex items-center justify-between group">
-                        <span class="text-xs font-medium text-gray-600 truncate max-w-[70%] group-hover:text-gray-900 transition-colors">{{ $c['name'] }}</span>
+                        <span class="text-xs font-medium text-[color:var(--dash-text-body)] truncate max-w-[70%] group-hover:text-[color:var(--dash-text-heading)] transition-colors">{{ $c['name'] }}</span>
                         <span class="text-xs font-bold text-violet-600 bg-violet-50 px-2 py-0.5 rounded">{{ number_format($c['value'], 1, ',', '.') }}</span>
                     </div>
                 @endforeach
@@ -148,9 +148,9 @@
         <div class="flex-1"></div>
 
         {{-- Trend history --}}
-        <div class="pt-4 border-t border-gray-100 mt-2">
+        <div class="pt-4 border-t border-[color:var(--dash-card-border)] mt-2">
             <div class="flex items-center justify-between mb-3">
-                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Riwayat 6 Bulan Terakhir</p>
+                <p class="text-[10px] font-bold text-[color:var(--dash-text-faint)] uppercase tracking-wider">Riwayat 6 Bulan Terakhir</p>
                 <span class="material-symbols-outlined text-gray-300 text-[16px]">show_chart</span>
             </div>
             
@@ -198,7 +198,7 @@
                         $hasData = $h['mpi_score'] !== null;
                         $barH = $hasData ? max(15, round(($h['mpi_score'] / $maxScore) * 100)) : 100; 
                         $barColor = match(true) {
-                            !$hasData => 'bg-gray-100',
+                            !$hasData => 'bg-[var(--dash-nav-hover-bg)]',
                             $h['mpi_score'] >= 80 => 'bg-emerald-500',
                             $h['mpi_score'] >= 60 => 'bg-amber-400',
                             default => 'bg-red-500',
@@ -215,7 +215,7 @@
             <div class="flex gap-1.5 mt-1.5">
                 @foreach($filledHistory as $h)
                     @php $monthLabel = explode('/', $h['period'])[0]; @endphp
-                    <div class="flex-1 text-center text-[9px] font-medium {{ $h['mpi_score'] !== null ? 'text-gray-600' : 'text-gray-300' }}">{{ $monthLabel }}</div>
+                    <div class="flex-1 text-center text-[9px] font-medium {{ $h['mpi_score'] !== null ? 'text-[color:var(--dash-text-body)]' : 'text-gray-300' }}">{{ $monthLabel }}</div>
                 @endforeach
             </div>
         </div>

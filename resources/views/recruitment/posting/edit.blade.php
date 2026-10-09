@@ -3,10 +3,10 @@
 @section('content')
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-4xl mx-auto">
     <div class="mb-6 flex items-center gap-3">
-        <a href="{{ route('recruitment.postings.show', $jobPosting) }}" class="text-gray-400 hover:text-gray-600">
+        <a href="{{ route('recruitment.postings.show', $jobPosting) }}" class="text-[color:var(--dash-text-faint)] hover:text-[color:var(--dash-text-body)]">
             <span class="material-symbols-outlined text-xl">arrow_back</span>
         </a>
-        <h1 class="text-2xl md:text-3xl text-gray-800 font-bold">Edit Job Posting</h1>
+        <h1 class="text-2xl md:text-3xl text-[color:var(--dash-text-heading)] font-bold">Edit Job Posting</h1>
     </div>
 
     @if ($errors->any())
@@ -23,11 +23,11 @@
         @csrf
         @method('PUT')
 
-        <div class="bg-white shadow-lg rounded-sm border border-gray-200 p-6 space-y-5">
-            <h2 class="text-sm font-semibold text-gray-700 uppercase tracking-wider">Informasi Posting</h2>
+        <div class="bg-[var(--dash-card-bg)] shadow-lg rounded-sm border border-[color:var(--dash-card-border)] p-6 space-y-5">
+            <h2 class="text-sm font-semibold text-[color:var(--dash-text-body)] uppercase tracking-wider">Informasi Posting</h2>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
+                <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">
                     Judul Posting <span class="text-red-500">*</span>
                 </label>
                 <input type="text" name="title"
@@ -37,7 +37,7 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
+                <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">
                     Deskripsi Pekerjaan <span class="text-red-500">*</span>
                 </label>
                 <textarea name="job_description" rows="4" class="form-textarea w-full">{{ old('job_description', $jobPosting->job_description) }}</textarea>
@@ -45,7 +45,7 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
+                <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">
                     Tanggung Jawab <span class="text-red-500">*</span>
                 </label>
                 <textarea name="job_responsibilities" rows="4" class="form-textarea w-full">{{ old('job_responsibilities', $jobPosting->job_responsibilities) }}</textarea>
@@ -53,7 +53,7 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
+                <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">
                     Kualifikasi (teks publik) <span class="text-red-500">*</span>
                 </label>
                 <textarea name="job_requirements_text" rows="4" class="form-textarea w-full">{{ old('job_requirements_text', $jobPosting->job_requirements_text) }}</textarea>
@@ -61,7 +61,7 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
+                <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">
                     Tanggal Penutupan (opsional)
                 </label>
                 <input type="date" name="closing_date"
@@ -73,7 +73,7 @@
 
         <div class="flex justify-end gap-3">
             <a href="{{ route('recruitment.postings.show', $jobPosting) }}"
-                class="btn bg-white border-gray-200 hover:border-gray-300 text-gray-600">Batal</a>
+                class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)]">Batal</a>
             <button type="submit" class="btn bg-indigo-500 hover:bg-indigo-600 text-white">
                 Simpan Perubahan
             </button>

@@ -1,4 +1,4 @@
-<div class="bg-white rounded-lg shadow-sm overflow-hidden font-sans border border-[#cfc6af] w-full" x-data="{
+<div class="bg-[var(--dash-card-bg)] rounded-lg shadow-sm overflow-hidden font-sans border border-[#cfc6af] w-full" x-data="{
     activeTab: 'nasional',
     scope: '{{ $data['filters']['branch_id'] ? 'cabang' : ($data['filters']['area_id'] ? 'area' : 'nasional') }}',
     areaId: '{{ $data['filters']['area_id'] ?? '' }}',
@@ -54,24 +54,24 @@
     <div class="bg-[#f3f4f3] px-5 py-0 border-b border-[#cfc6af] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div class="py-4">
             <h3 class="text-sm font-bold text-[#1E293B] uppercase tracking-wide">Progress Marketing</h3>
-            <p class="text-xs text-gray-500 mt-0.5">Omzet, Sosialisasi, Member & Prospek • {{ $data['period'] }}</p>
+            <p class="text-xs text-[color:var(--dash-text-muted)] mt-0.5">Omzet, Sosialisasi, Member & Prospek • {{ $data['period'] }}</p>
         </div>
 
         <div class="flex items-center gap-3 py-4 md:py-0 h-full flex-wrap">
             {{-- Tabs --}}
             <nav class="flex h-full space-x-1" aria-label="Tabs">
                 <button @click="activeTab = 'cabang'"
-                        :class="activeTab === 'cabang' ? 'bg-white text-[#1E293B] shadow-sm border-t border-x border-[#cfc6af] -mb-[1px]' : 'text-[#7e7663] hover:text-[#1E293B]'"
+                        :class="activeTab === 'cabang' ? 'bg-[var(--dash-card-bg)] text-[#1E293B] shadow-sm border-t border-x border-[#cfc6af] -mb-[1px]' : 'text-[#7e7663] hover:text-[#1E293B]'"
                         class="px-4 py-3 text-xs font-semibold rounded-t transition-colors h-full flex items-center">
                     Cabang
                 </button>
                 <button @click="activeTab = 'area'"
-                        :class="activeTab === 'area' ? 'bg-white text-[#1E293B] shadow-sm border-t border-x border-[#cfc6af] -mb-[1px]' : 'text-[#7e7663] hover:text-[#1E293B]'"
+                        :class="activeTab === 'area' ? 'bg-[var(--dash-card-bg)] text-[#1E293B] shadow-sm border-t border-x border-[#cfc6af] -mb-[1px]' : 'text-[#7e7663] hover:text-[#1E293B]'"
                         class="px-4 py-3 text-xs font-semibold rounded-t transition-colors h-full flex items-center">
                     Area
                 </button>
                 <button @click="activeTab = 'nasional'"
-                        :class="activeTab === 'nasional' ? 'bg-white text-[#1E293B] shadow-sm border-t border-x border-[#cfc6af] -mb-[1px]' : 'text-[#7e7663] hover:text-[#1E293B]'"
+                        :class="activeTab === 'nasional' ? 'bg-[var(--dash-card-bg)] text-[#1E293B] shadow-sm border-t border-x border-[#cfc6af] -mb-[1px]' : 'text-[#7e7663] hover:text-[#1E293B]'"
                         class="px-4 py-3 text-xs font-semibold rounded-t transition-colors h-full flex items-center">
                     Nasional
                 </button>
@@ -119,24 +119,24 @@
 
             {{-- Download modal --}}
             <div x-data="{ open: false, dlType: 'bulanan', dlYear: year, dlSemester: '1', dlMonth: month }">
-                <button @click="open = true" class="p-1.5 rounded bg-white shadow-sm border border-[#cfc6af] hover:bg-gray-50 transition-colors flex items-center gap-1">
-                    <span class="material-symbols-outlined text-gray-600 text-sm">download</span>
+                <button @click="open = true" class="p-1.5 rounded bg-[var(--dash-card-bg)] shadow-sm border border-[#cfc6af] hover:bg-[var(--dash-nav-hover-bg)] transition-colors flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[color:var(--dash-text-body)] text-sm">download</span>
                     <span class="text-xs font-bold text-[#4c4635] pr-1">Unduh Laporan</span>
                 </button>
 
                 <div x-show="open" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" style="display:none;" @keydown.escape.window="open = false">
-                    <div @click.away="open = false" class="bg-white rounded-lg shadow-xl border border-[#cfc6af] w-full max-w-md">
+                    <div @click.away="open = false" class="bg-[var(--dash-card-bg)] rounded-lg shadow-xl border border-[#cfc6af] w-full max-w-md">
                         <div class="px-5 py-4 border-b border-[#cfc6af] flex justify-between items-center bg-[#f9f9f8] rounded-t-lg">
                             <h3 class="text-sm font-bold text-[#1E293B]">Unduh Laporan PDF</h3>
-                            <button @click="open = false" class="text-gray-400 hover:text-gray-600">
+                            <button @click="open = false" class="text-[color:var(--dash-text-faint)] hover:text-[color:var(--dash-text-body)]">
                                 <span class="material-symbols-outlined text-sm">close</span>
                             </button>
                         </div>
                         <div class="p-5">
                             <div class="flex border-b border-[#cfc6af] mb-4">
-                                <button @click="dlType = 'tahunan'" :class="dlType === 'tahunan' ? 'border-b-2 border-[#dbb940] text-[#1E293B]' : 'text-gray-500 hover:text-gray-700'" class="px-3 py-2 text-xs font-bold transition-colors">Tahunan</button>
-                                <button @click="dlType = 'semester'" :class="dlType === 'semester' ? 'border-b-2 border-[#dbb940] text-[#1E293B]' : 'text-gray-500 hover:text-gray-700'" class="px-3 py-2 text-xs font-bold transition-colors">Semester</button>
-                                <button @click="dlType = 'bulanan'" :class="dlType === 'bulanan' ? 'border-b-2 border-[#dbb940] text-[#1E293B]' : 'text-gray-500 hover:text-gray-700'" class="px-3 py-2 text-xs font-bold transition-colors">Bulanan</button>
+                                <button @click="dlType = 'tahunan'" :class="dlType === 'tahunan' ? 'border-b-2 border-[#dbb940] text-[#1E293B]' : 'text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-body)]'" class="px-3 py-2 text-xs font-bold transition-colors">Tahunan</button>
+                                <button @click="dlType = 'semester'" :class="dlType === 'semester' ? 'border-b-2 border-[#dbb940] text-[#1E293B]' : 'text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-body)]'" class="px-3 py-2 text-xs font-bold transition-colors">Semester</button>
+                                <button @click="dlType = 'bulanan'" :class="dlType === 'bulanan' ? 'border-b-2 border-[#dbb940] text-[#1E293B]' : 'text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-body)]'" class="px-3 py-2 text-xs font-bold transition-colors">Bulanan</button>
                             </div>
 
                             <form :action="'{{ route('dashboard.widget-export', ['widgetKey' => 'marketing_progress', 'format' => 'pdf']) }}'" method="GET">
@@ -196,7 +196,7 @@
                                 </template>
 
                                 <div class="mt-6 flex justify-end gap-2">
-                                    <button type="button" @click="open = false" class="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-700">Batal</button>
+                                    <button type="button" @click="open = false" class="px-4 py-2 text-xs font-bold text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-body)]">Batal</button>
                                     <button type="submit" class="px-4 py-2 bg-[#1E293B] text-white text-xs font-bold rounded hover:bg-[#0f172a] shadow">Unduh PDF</button>
                                 </div>
                             </form>
@@ -210,27 +210,27 @@
     {{-- National KPI Cards --}}
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-0 border-b border-[#cfc6af]">
         <div class="p-4 border-r border-[#cfc6af]">
-            <p class="text-[10px] uppercase tracking-wide text-gray-500 font-bold mb-1">Total Omzet</p>
+            <p class="text-[10px] uppercase tracking-wide text-[color:var(--dash-text-muted)] font-bold mb-1">Total Omzet</p>
             <p class="text-lg font-mono font-bold text-[#00677d]">Rp {{ number_format($data['national']['omzet'] / 1000000, 2) }} Juta</p>
         </div>
         <div class="p-4 sm:border-r border-[#cfc6af]">
-            <p class="text-[10px] uppercase tracking-wide text-gray-500 font-bold mb-1">Sosialisasi</p>
+            <p class="text-[10px] uppercase tracking-wide text-[color:var(--dash-text-muted)] font-bold mb-1">Sosialisasi</p>
             <p class="text-lg font-mono font-bold text-[#1E293B]">{{ number_format($data['national']['sosialisasi']) }}</p>
         </div>
         <div class="p-4 border-t sm:border-t-0 border-r border-[#cfc6af]">
-            <p class="text-[10px] uppercase tracking-wide text-gray-500 font-bold mb-1">Member Baru</p>
+            <p class="text-[10px] uppercase tracking-wide text-[color:var(--dash-text-muted)] font-bold mb-1">Member Baru</p>
             <p class="text-lg font-mono font-bold text-[#1E293B]">{{ number_format($data['national']['member']) }}</p>
         </div>
         <div class="p-4 border-t sm:border-t-0">
-            <p class="text-[10px] uppercase tracking-wide text-gray-500 font-bold mb-1">Prospek</p>
+            <p class="text-[10px] uppercase tracking-wide text-[color:var(--dash-text-muted)] font-bold mb-1">Prospek</p>
             <p class="text-lg font-mono font-bold text-[#dbb940]">{{ number_format($data['national']['prospective']) }}</p>
         </div>
     </div>
 
     {{-- Tab: Per Cabang --}}
     <div x-show="activeTab === 'cabang'" class="p-5 bg-[#f9f9f8]" style="display:none;">
-        <div class="bg-white rounded-lg border border-[#cfc6af] overflow-hidden">
-            <div class="p-4 border-b border-[#cfc6af] flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white">
+        <div class="bg-[var(--dash-card-bg)] rounded-lg border border-[#cfc6af] overflow-hidden">
+            <div class="p-4 border-b border-[#cfc6af] flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[var(--dash-card-bg)]">
                 <h3 class="text-sm font-bold text-[#1E293B] uppercase tracking-wide">Rincian per Cabang</h3>
                 <div class="relative">
                     <input type="text" x-model="search" placeholder="Cari cabang atau area..."
@@ -321,8 +321,8 @@
 
     {{-- Tab: Nasional (Employee Ranking) --}}
     <div x-show="activeTab === 'nasional'" class="p-5 bg-[#f9f9f8]">
-        <div class="bg-white rounded-lg border border-[#cfc6af] overflow-hidden">
-            <div class="p-4 border-b border-[#cfc6af] flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white">
+        <div class="bg-[var(--dash-card-bg)] rounded-lg border border-[#cfc6af] overflow-hidden">
+            <div class="p-4 border-b border-[#cfc6af] flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[var(--dash-card-bg)]">
                 <h3 class="text-sm font-bold text-[#1E293B] uppercase tracking-wide">Ranking Marketing</h3>
                 <div class="relative">
                     <input type="text" x-model="search" placeholder="Cari nama atau cabang..."
