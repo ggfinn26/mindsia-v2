@@ -42,7 +42,8 @@
                         <input type="file" name="avatar" id="avatar" accept="image/*"
                             class="w-full sm:w-auto text-sm text-[color:var(--dash-text-muted)] file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-[color:var(--dash-input-border)] rounded-lg px-3 py-2 bg-[var(--dash-card-bg)]"
                             required>
-                        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-gray-800 rounded-lg hover:bg-gray-900 shadow-sm whitespace-nowrap">
+                        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-gray-800 rounded-lg hover:bg-gray-900 shadow-sm whitespace-nowrap inline-flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[16px]">upload</span>
                             Upload Foto
                         </button>
                     </div>

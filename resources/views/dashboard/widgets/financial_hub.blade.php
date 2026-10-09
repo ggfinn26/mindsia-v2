@@ -61,7 +61,7 @@
                         <option value="{{ $y }}" {{ $yVal == $y ? 'selected' : '' }}>{{ $y }}</option>
                     @endforeach
                 </select>
-                <button type="submit" class="bg-[#1E293B] hover:bg-[#314865] text-white px-2 py-1 rounded text-xs font-semibold transition-colors">Filter</button>
+                <button type="submit" class="bg-[#1E293B] hover:bg-[#314865] text-white px-2 py-1 rounded text-xs font-semibold transition-colors inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px]">filter_list</span>Filter</button>
             </form>
 
             <button @click="downloadModalOpen = true" class="p-1.5 rounded bg-[var(--dash-card-bg)] shadow-sm border border-[#cfc6af] hover:bg-[var(--dash-nav-hover-bg)] transition-colors flex items-center gap-1">
@@ -147,7 +147,7 @@
 
                             <div class="mt-6 flex justify-end gap-2">
                                 <button type="button" @click="downloadModalOpen = false" class="px-4 py-2 text-xs font-bold text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-body)]">Batal</button>
-                                <button type="submit" class="px-4 py-2 bg-[#1E293B] text-white text-xs font-bold rounded hover:bg-[#0f172a] shadow">Unduh PDF</button>
+                                <button type="submit" class="px-4 py-2 bg-[#1E293B] text-white text-xs font-bold rounded hover:bg-[#0f172a] shadow inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px]">download</span>Unduh PDF</button>
                             </div>
                         </form>
                     </div>
@@ -163,8 +163,8 @@
                         :class="activeTab === 'comparison' ? 'bg-[var(--dash-card-bg)] text-[#1E293B] shadow-sm' : 'text-[#7e7663] hover:text-[#1E293B]'"
                         class="px-4 py-1.5 rounded transition">Komparasi</button>
                 <button @click="activeTab = 'table'"
-                        :class="activeTab === 'table' ? 'bg-[var(--dash-card-bg)] text-[#1E293B] shadow-sm' : 'text-[#7e7663] hover:text-[#1E293B]'"
-                        class="px-4 py-1.5 rounded transition">Detail Data</button>
+                        :class="activeTab === 'table' ? 'bg-[var(--dash-card-bg)] text-[#1E293B] shadow-sm' : 'text-[#7e7663] hover:text-[#1E293B]' inline-flex items-center gap-1.5"
+                        class="px-4 py-1.5 rounded transition"><span class="material-symbols-outlined text-[16px]">visibility</span>Detail Data</button>
             </nav>
         </div>
     </div>

@@ -19,7 +19,8 @@
         <!-- Right: Actions -->
         <div class="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             @can('toefl.test.create')
-            <a href="{{ route('toefl-tests.create') }}" class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium transition-colors">
+            <a href="{{ route('toefl-tests.create') }}" class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium transition-colors gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">add</span>
                 Tambah Test
             </a>
             @endcan
@@ -113,7 +114,7 @@
                 </div>
                 <div class="bg-[var(--dash-nav-hover-bg)] px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                     <button type="button" @click="$refs.confirmForm.submit()" class="w-full sm:w-auto inline-flex justify-center items-center rounded-md border border-transparent shadow-sm px-4 py-2 min-h-[44px] min-w-[44px] bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none sm:ml-3 sm:text-sm transition-colors" x-text="confirmActionText"></button>
-                    <button type="button" @click="showConfirmModal = false" class="mt-3 sm:mt-0 sm:ml-3 w-full sm:w-auto inline-flex justify-center items-center rounded-md border border-[color:var(--dash-input-border)] shadow-sm px-4 py-2 min-h-[44px] min-w-[44px] bg-[var(--dash-card-bg)] text-base font-medium text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] focus:outline-none sm:text-sm transition-colors">Batal</button>
+                    <button type="button" @click="showConfirmModal = false" class="mt-3 sm:mt-0 sm:ml-3 w-full sm:w-auto inline-flex justify-center items-center rounded-md border border-[color:var(--dash-input-border)] shadow-sm px-4 py-2 min-h-[44px] min-w-[44px] bg-[var(--dash-card-bg)] text-base font-medium text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] focus:outline-none sm:text-sm transition-colors gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                 </div>
                 <form x-ref="confirmForm" :action="confirmActionUrl" method="POST" class="hidden">
                     @csrf

@@ -63,7 +63,8 @@
                 </div>
             </div>
             <div>
-                <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-[var(--dash-primary,#215aac)] rounded-lg hover:bg-[#194a91] transition-colors">
+                <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-[var(--dash-primary,#215aac)] rounded-lg hover:bg-[#194a91] transition-colors inline-flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px]">add</span>
                     Buat Rule
                 </button>
             </div>

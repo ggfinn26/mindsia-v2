@@ -125,7 +125,8 @@
                     <input type="number" name="employee_id" placeholder="Employee ID"
                            value="{{ $ticket->assigned_employee_id }}"
                            class="flex-1 rounded-lg border-[color:var(--dash-input-border)] text-sm px-3 py-2 shadow-sm">
-                    <button type="submit" class="px-3 py-2 text-sm font-medium text-white bg-[#5586DB] rounded-lg hover:bg-[#4370BC] transition-colors shadow-sm whitespace-nowrap">
+                    <button type="submit" class="px-3 py-2 text-sm font-medium text-white bg-[#5586DB] rounded-lg hover:bg-[#4370BC] transition-colors shadow-sm whitespace-nowrap inline-flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">assignment_ind</span>
                         Tugaskan
                     </button>
                 </form>

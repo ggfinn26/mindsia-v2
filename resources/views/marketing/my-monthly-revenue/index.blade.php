@@ -42,11 +42,12 @@
                 class="block w-28 bg-[var(--dash-page-bg)] border border-[var(--dash-input-border)] rounded-lg text-sm px-3 py-2 outline-none focus:border-[var(--dash-primary)] focus:ring-1 focus:ring-[var(--dash-primary)] transition-colors">
         </div>
         <div class="flex items-center gap-2">
-            <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90 focus:outline-none transition-colors">
+            <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90 focus:outline-none transition-colors inline-flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">filter_list</span>
                 Terapkan Filter
             </button>
             @if(request('month') != now()->month || request('year') != now()->year)
-                <a href="{{ route('marketing.my-monthly-revenue') }}" class="px-3 py-2 text-sm text-[var(--dash-text-muted)] bg-[var(--dash-input-bg)] rounded-lg hover:bg-[var(--dash-input-border)] transition-colors">Reset</a>
+                <a href="{{ route('marketing.my-monthly-revenue') }}" class="px-3 py-2 text-sm text-[var(--dash-text-muted)] bg-[var(--dash-input-bg)] rounded-lg hover:bg-[var(--dash-input-border)] transition-colors inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">restart_alt</span>Reset</a>
             @endif
         </div>
     </form>

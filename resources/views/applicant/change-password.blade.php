@@ -87,8 +87,9 @@
 
         <button
             type="submit"
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition inline-flex items-center justify-center gap-1.5"
         >
+            <span class="material-symbols-outlined text-[16px]">lock_reset</span>
             Ubah Password
         </button>
     </form>

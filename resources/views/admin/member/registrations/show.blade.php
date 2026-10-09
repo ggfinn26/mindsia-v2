@@ -212,8 +212,8 @@
                                    onfocus="this.style.borderColor='var(--dash-primary)'"
                                    onblur="this.style.borderColor='var(--dash-input-border)'">
                             <button type="submit"
-                                    class="text-[10px] font-semibold text-white px-2 py-1 rounded hover:opacity-90"
-                                    style="background-color: var(--dash-primary);">Simpan</button>
+                                    class="text-[10px] font-semibold text-white px-2 py-1 rounded hover:opacity-90 inline-flex items-center gap-1.5"
+                                    style="background-color: var(--dash-primary);"><span class="material-symbols-outlined text-[16px]">save</span>Simpan</button>
                             <button type="button" @click="editDue = false"
                                     class="text-[10px] font-medium hover:opacity-70"
                                     style="color: var(--dash-text-muted);">Batal</button>
@@ -316,15 +316,17 @@
                                     </div>
                                     <div class="flex gap-2 justify-end">
                                         <button type="button" @click="open = false; methodOpen = false; method = ''"
-                                                class="px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                                                class="px-4 py-2 text-sm font-semibold rounded-lg transition-colors inline-flex items-center gap-1.5"
                                                 style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
                                                 onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                                                 onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                            <span class="material-symbols-outlined text-[16px]">close</span>
                                             Batal
                                         </button>
                                         <button type="submit"
-                                                class="px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                                                class="px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity inline-flex items-center gap-1.5"
                                                 style="background-color: #059669;">
+                                            <span class="material-symbols-outlined text-[16px]">check_circle</span>
                                             Konfirmasi
                                         </button>
                                     </div>

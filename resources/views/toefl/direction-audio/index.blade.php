@@ -55,7 +55,8 @@
                                 class="form-input flex-1 text-sm font-mono min-h-[44px]"
                                 placeholder="toefl-audio/SECTION-A-INSTRUCTIONS.mp3" />
                             <button type="submit"
-                                class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors shrink-0">
+                                class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors shrink-0 gap-1.5">
+                                <span class="material-symbols-outlined text-[16px]">save</span>
                                 Simpan
                             </button>
                         </div>
@@ -69,8 +70,9 @@
 
     <div class="mt-4">
         <a href="{{ route('toefl-tests.index') }}"
-            class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium transition-colors">
-            &larr; Kembali ke Daftar Test
+            class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium transition-colors gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+            Kembali ke Daftar Test
         </a>
     </div>
 

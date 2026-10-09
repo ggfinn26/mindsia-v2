@@ -124,7 +124,8 @@
                                 class="block w-full border-[color:var(--dash-input-border)] rounded-lg shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500">
                         </div>
                         <button type="submit"
-                            class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                            class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors inline-flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[16px]">save</span>
                             Simpan
                         </button>
                     </form>

@@ -271,10 +271,10 @@
                 <div class="flex gap-2">
                     <button type="submit"
                             class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
-                            style="background-color: var(--dash-primary);">Simpan</button>
+                            style="background-color: var(--dash-primary);"><span class="material-symbols-outlined text-[16px]">save</span>Simpan</button>
                     <button type="button" @click="showForm = false"
-                            class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-                            style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);">Batal</button>
+                            class="px-4 py-2 rounded-lg text-sm font-medium transition-colors inline-flex items-center gap-1.5"
+                            style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                 </div>
             </form>
         </div>
@@ -395,14 +395,15 @@
             </div>
             <div class="flex items-center justify-end gap-3">
                 <button type="button" @click="showDeletePlanModal = false"
-                        class="px-4 py-2 rounded-lg text-sm font-medium"
+                        class="px-4 py-2 rounded-lg text-sm font-medium inline-flex items-center gap-1.5"
                         style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);">
+                    <span class="material-symbols-outlined text-[16px]">close</span>
                     Batal
                 </button>
                 <button type="button"
                         @click="$refs.deletePlanForm.action = deletePlanUrl; $refs.deletePlanForm.submit()"
-                        class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
-                        style="background-color: #dc2626;">Hapus</button>
+                        class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity inline-flex items-center gap-1.5"
+                        style="background-color: #dc2626;"><span class="material-symbols-outlined text-[16px]">delete</span>Hapus</button>
             </div>
         </div>
     </div>

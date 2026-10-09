@@ -45,11 +45,12 @@
                 <option value="question" @selected(request('category') === 'question')>Pertanyaan</option>
             </select>
         </div>
-        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-[#5586DB] rounded-lg hover:bg-[#4370BC] transition-colors shadow-sm">
+        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-[#5586DB] rounded-lg hover:bg-[#4370BC] transition-colors shadow-sm inline-flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">filter_list</span>
             Filter
         </button>
         @if(request()->hasAny(['status', 'category', 'branch_id']))
-            <a href="{{ route('support-tickets.index') }}" class="px-4 py-2 text-sm font-medium text-[color:var(--dash-text-body)] bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg hover:bg-[var(--dash-nav-hover-bg)] transition-colors">Reset</a>
+            <a href="{{ route('support-tickets.index') }}" class="px-4 py-2 text-sm font-medium text-[color:var(--dash-text-body)] bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg hover:bg-[var(--dash-nav-hover-bg)] transition-colors inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">restart_alt</span>Reset</a>
         @endif
     </form>
 

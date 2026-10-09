@@ -149,7 +149,8 @@
             <!-- Actions -->
             <div class="flex justify-end gap-3 pt-2 border-t border-[var(--dash-card-border)]">
                 <a href="{{ route('members.show', $member) }}"
-                   class="px-4 py-2 text-sm font-medium text-[var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)]">
+                   class="px-4 py-2 text-sm font-medium text-[var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)] inline-flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px]">close</span>
                     Batal
                 </a>
                 <button type="submit"

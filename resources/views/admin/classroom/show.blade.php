@@ -379,8 +379,8 @@
                                            class="flex-1 rounded-lg px-3 py-2 text-sm focus:outline-none"
                                            style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-body);">
                                     <button type="submit"
-                                            class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
-                                            style="background-color: var(--dash-primary);">Simpan</button>
+                                            class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity inline-flex items-center gap-1.5"
+                                            style="background-color: var(--dash-primary);"><span class="material-symbols-outlined text-[16px]">save</span>Simpan</button>
                                 </form>
                             </div>
                             @else
@@ -431,8 +431,8 @@
                                         </tbody>
                                     </table>
                                     <button type="submit"
-                                            class="mt-3 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
-                                            style="background-color: #059669;">Simpan Absensi</button>
+                                            class="mt-3 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity inline-flex items-center gap-1.5"
+                                            style="background-color: #059669;"><span class="material-symbols-outlined text-[16px]">save</span>Simpan Absensi</button>
                                 </form>
                             </div>
                             @endif
@@ -458,8 +458,8 @@
                                                class="flex-1 rounded-lg px-2 py-1.5 text-sm focus:outline-none"
                                                style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-body);">
                                         <button type="submit"
-                                                class="px-3 py-1.5 rounded-lg text-xs font-semibold text-white hover:opacity-90 transition-opacity shrink-0"
-                                                style="background-color: var(--dash-primary);">Simpan</button>
+                                                class="px-3 py-1.5 rounded-lg text-xs font-semibold text-white hover:opacity-90 transition-opacity shrink-0 inline-flex items-center gap-1.5"
+                                                style="background-color: var(--dash-primary);"><span class="material-symbols-outlined text-[14px]">save</span>Simpan</button>
                                     </form>
                                     @endforeach
                                 </div>
@@ -661,8 +661,8 @@
                                 </select>
                                 <input type="hidden" name="certificate_hardcopy" value="{{ $cert->certificate_hardcopy ? '1' : '0' }}">
                                 <button type="submit"
-                                        class="px-2 py-1 rounded-lg text-xs font-semibold text-white hover:opacity-90 transition-opacity"
-                                        style="background-color: #059669;">Simpan</button>
+                                        class="px-2 py-1 rounded-lg text-xs font-semibold text-white hover:opacity-90 transition-opacity inline-flex items-center gap-1.5"
+                                        style="background-color: #059669;"><span class="material-symbols-outlined text-[14px]">save</span>Simpan</button>
                             </form>
                             @endif
                         </td>
@@ -730,10 +730,10 @@
         </div>
         <div class="flex gap-3 justify-end">
             <button onclick="closeConfirmModal()"
-                    class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                    class="px-4 py-2 rounded-lg text-sm font-medium transition-colors inline-flex items-center gap-1.5"
                     style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
                     onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
-                    onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">Batal</button>
+                    onmouseout="this.style.backgroundColor='var(--dash-card-bg)'"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
             <button onclick="submitConfirmAction()"
                     class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                     style="background-color: #dc2626;">Ya, Lanjutkan</button>

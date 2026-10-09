@@ -152,10 +152,10 @@
             </div>
             <div class="flex gap-3 mt-5 justify-end">
                 <button type="button" @click="showConfirmModal = false"
-                        class="px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                        class="px-4 py-2 text-sm font-semibold rounded-lg transition-colors inline-flex items-center gap-1.5"
                         style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
                         onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
-                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">Batal</button>
+                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                 <button type="button" @click="$refs.confirmForm.submit()"
                         class="px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
                         :style="confirmMethod === 'DELETE' ? 'background-color: #dc2626;' : 'background-color: #d97706;'"

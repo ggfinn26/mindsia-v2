@@ -161,13 +161,15 @@
             <div class="px-6 sm:px-8 py-4 border-t flex items-center justify-end gap-3"
                  style="border-color: var(--dash-card-border); background-color: var(--dash-primary-bg);">
                 <a href="{{ route('employee.profile.show') }}"
-                   class="px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                   class="px-4 py-2 text-sm font-semibold rounded-lg transition-colors inline-flex items-center gap-1.5"
                    style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-body);">
+                    <span class="material-symbols-outlined text-[16px]">close</span>
                     Batal
                 </a>
                 <button type="submit"
-                        class="px-4 py-2 text-sm font-semibold rounded-lg text-white transition-colors"
+                        class="px-4 py-2 text-sm font-semibold rounded-lg text-white transition-colors inline-flex items-center gap-1.5"
                         style="background-color: var(--dash-primary);">
+                    <span class="material-symbols-outlined text-[16px]">save</span>
                     Simpan Perubahan
                 </button>
             </div>

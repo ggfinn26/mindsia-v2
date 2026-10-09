@@ -73,7 +73,8 @@
 
             <div class="pt-6 mt-6 border-t border-[color:var(--dash-card-border)] flex justify-end gap-3">
                 <a href="{{ route('contract-terminate.checklist', $status) }}"
-                   class="px-5 py-2.5 text-[13px] font-bold text-[color:var(--dash-text-body)] bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg hover:bg-[var(--dash-nav-hover-bg)] transition-colors">
+                   class="px-5 py-2.5 text-[13px] font-bold text-[color:var(--dash-text-body)] bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg hover:bg-[var(--dash-nav-hover-bg)] transition-colors inline-flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px]">close</span>
                     Batal
                 </a>
                 <button type="submit"

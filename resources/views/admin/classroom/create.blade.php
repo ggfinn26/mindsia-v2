@@ -202,8 +202,8 @@
         </div>
 
         <div class="px-6 py-4 bg-[var(--dash-page-bg)] border-t border-[var(--dash-card-border)] flex gap-3 justify-end">
-            <a href="{{ route('classrooms.index') }}" class="px-6 py-2 text-[var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)]">Batal</a>
-            <button type="submit" class="px-6 py-2 bg-[var(--dash-primary)] text-white rounded-lg hover:opacity-90">Buat Kelas</button>
+            <a href="{{ route('classrooms.index') }}" class="px-6 py-2 text-[var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)] inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</a>
+            <button type="submit" class="px-6 py-2 bg-[var(--dash-primary)] text-white rounded-lg hover:opacity-90 inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">add</span>Buat Kelas</button>
         </div>
     </form>
 </div>

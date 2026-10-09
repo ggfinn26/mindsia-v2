@@ -37,10 +37,11 @@
                 Belum ada survei yang ditugaskan kepada Anda saat ini.
             </p>
             <a href="{{ route('dashboard') }}"
-               class="inline-flex items-center px-5 py-2 rounded-lg text-sm font-semibold transition-colors"
+               class="inline-flex items-center px-5 py-2 rounded-lg text-sm font-semibold transition-colors gap-1.5"
                style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
                onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                <span class="material-symbols-outlined text-[16px]">arrow_back</span>
                 Kembali ke Dashboard
             </a>
         </div>
@@ -106,16 +107,18 @@
                                 <td class="px-6 py-4 text-right">
                                     @if($employeeSurvey->answers_exists)
                                         <a href="{{ route('employee.surveys.show', $employeeSurvey) }}"
-                                           class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold transition-colors"
+                                           class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold transition-colors gap-1.5"
                                            style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
                                            onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                                            onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                            <span class="material-symbols-outlined text-[16px]">visibility</span>
                                             Lihat Jawaban
                                         </a>
                                     @else
                                         <a href="{{ route('employee.surveys.show', $employeeSurvey) }}"
-                                           class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold text-white hover:opacity-90 transition-opacity"
+                                           class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold text-white hover:opacity-90 transition-opacity gap-1.5"
                                            style="background-color: var(--dash-primary);">
+                                            <span class="material-symbols-outlined text-[16px]">edit_note</span>
                                             Mulai Isi
                                         </a>
                                     @endif

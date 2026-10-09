@@ -34,9 +34,9 @@
                     <option value="telegram" {{ request('type') === 'telegram' ? 'selected' : '' }}>Telegram</option>
                 </select>
             </div>
-            <button type="submit" class="rounded-lg bg-[var(--dash-primary)] px-4 py-2 text-sm font-bold text-white hover:opacity-90 transition-colors">Filter</button>
+            <button type="submit" class="rounded-lg bg-[var(--dash-primary)] px-4 py-2 text-sm font-bold text-white hover:opacity-90 transition-colors inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">filter_list</span>Filter</button>
             @if(request()->hasAny(['status', 'type', 'employee_id', 'member_id']))
-            <a href="{{ route('notification-logs.index') }}" class="rounded-lg border border-[var(--dash-input-border)] px-4 py-2 text-sm font-medium text-[var(--dash-text-muted)] hover:bg-[var(--dash-page-bg)] transition-colors">Reset</a>
+            <a href="{{ route('notification-logs.index') }}" class="rounded-lg border border-[var(--dash-input-border)] px-4 py-2 text-sm font-medium text-[var(--dash-text-muted)] hover:bg-[var(--dash-page-bg)] transition-colors inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">restart_alt</span>Reset</a>
             @endif
         </form>
     </div>
@@ -96,7 +96,8 @@
                             @can('notification.log.resend')
                             <form method="POST" action="{{ route('notification-logs.resend', $log->id) }}">
                                 @csrf
-                                <button type="submit" class="rounded-lg border border-[var(--dash-input-border)] px-3 py-1.5 text-xs font-medium text-[var(--dash-text-muted)] hover:bg-[var(--dash-page-bg)] transition-colors">
+                                <button type="submit" class="rounded-lg border border-[var(--dash-input-border)] px-3 py-1.5 text-xs font-medium text-[var(--dash-text-muted)] hover:bg-[var(--dash-page-bg)] transition-colors inline-flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-[14px]">send</span>
                                     Kirim Ulang
                                 </button>
                             </form>

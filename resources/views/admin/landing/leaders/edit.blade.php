@@ -64,7 +64,8 @@
                 Simpan Perubahan
             </button>
             <a href="{{ route('admin.landing.leaders.index') }}"
-               class="px-4 py-2.5 border border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] rounded-lg text-sm font-medium hover:bg-[var(--dash-nav-hover-bg)] transition-colors">
+               class="px-4 py-2.5 border border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] rounded-lg text-sm font-medium hover:bg-[var(--dash-nav-hover-bg)] transition-colors inline-flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">close</span>
                 Batal
             </a>
         </div>

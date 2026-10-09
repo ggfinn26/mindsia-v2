@@ -18,6 +18,7 @@
                 </p>
                 <div class="flex justify-center gap-3">
                     <a href="{{ route('member.dashboard') }}" class="inline-flex items-center gap-2 px-5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] font-medium rounded-lg text-sm transition-colors">
+                        <span class="material-symbols-outlined text-[16px]">arrow_back</span>
                         Kembali ke Dashboard
                     </a>
                 </div>
@@ -31,6 +32,7 @@
                 </p>
                 <div class="flex justify-center gap-3">
                     <a href="{{ route('member.dashboard') }}" class="inline-flex items-center gap-2 px-5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] font-medium rounded-lg text-sm transition-colors">
+                        <span class="material-symbols-outlined text-[16px]">arrow_back</span>
                         Kembali ke Dashboard
                     </a>
                 </div>

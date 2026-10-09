@@ -197,7 +197,7 @@
 
                                 <div class="mt-6 flex justify-end gap-2">
                                     <button type="button" @click="open = false" class="px-4 py-2 text-xs font-bold text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-body)]">Batal</button>
-                                    <button type="submit" class="px-4 py-2 bg-[#1E293B] text-white text-xs font-bold rounded hover:bg-[#0f172a] shadow">Unduh PDF</button>
+                                    <button type="submit" class="px-4 py-2 bg-[#1E293B] text-white text-xs font-bold rounded hover:bg-[#0f172a] shadow inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px]">download</span>Unduh PDF</button>
                                 </div>
                             </form>
                         </div>

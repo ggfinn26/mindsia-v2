@@ -88,10 +88,10 @@
             </div>
             <div class="flex justify-end gap-3">
                 <button type="button" @click="showModal = false"
-                    class="px-4 py-2 text-sm font-medium text-[color:var(--dash-text-body)] border border-[color:var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-nav-hover-bg)]">Batal</button>
+                    class="px-4 py-2 text-sm font-medium text-[color:var(--dash-text-body)] border border-[color:var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-nav-hover-bg)] inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                 <form :action="deleteUrl" method="POST">
                     @csrf @method('DELETE')
-                    <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg">Hapus</button>
+                    <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">delete</span>Hapus</button>
                 </form>
             </div>
         </div>

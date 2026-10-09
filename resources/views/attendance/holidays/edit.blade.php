@@ -46,11 +46,13 @@
 
         <div class="px-6 py-4 flex justify-end gap-3">
             <a href="{{ route('holidays.index') }}"
-               class="px-4 py-2 text-sm font-medium text-[var(--dash-text-body)] bg-[var(--dash-card-bg)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)] transition-colors">
+               class="px-4 py-2 text-sm font-medium text-[var(--dash-text-body)] bg-[var(--dash-card-bg)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)] transition-colors inline-flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">close</span>
                 Batal
             </a>
             <button type="submit"
-                    class="px-4 py-2 text-sm font-medium text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90 transition-colors">
+                    class="px-4 py-2 text-sm font-medium text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90 transition-colors inline-flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">save</span>
                 Simpan
             </button>
         </div>

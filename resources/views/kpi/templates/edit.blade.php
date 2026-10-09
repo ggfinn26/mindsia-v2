@@ -90,10 +90,11 @@
                     <span class="material-symbols-outlined text-[16px]">save</span>Simpan
                 </button>
                 <a href="{{ route('kpi.templates.show', $template) }}"
-                   class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                   class="px-4 py-2 rounded-lg text-sm font-medium transition-colors inline-flex items-center gap-1.5"
                    style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
                    onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                    onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                    <span class="material-symbols-outlined text-[16px]">close</span>
                     Batal
                 </a>
             </div>

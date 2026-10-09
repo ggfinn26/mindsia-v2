@@ -235,13 +235,13 @@
 
             <div class="flex gap-3 pt-2">
                 <button type="button" onclick="closeCreateModal()"
-                        class="flex-1 px-4 py-2 text-sm rounded-lg transition-colors"
+                        class="flex-1 px-4 py-2 text-sm rounded-lg transition-colors inline-flex items-center justify-center gap-1.5"
                         style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
                         onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
-                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">Batal</button>
+                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                 <button type="submit" id="create-submit"
-                        class="flex-1 px-4 py-2 text-sm text-white rounded-lg hover:opacity-90 font-semibold transition-opacity disabled:opacity-60"
-                        style="background-color: var(--dash-primary);">Simpan</button>
+                        class="flex-1 px-4 py-2 text-sm text-white rounded-lg hover:opacity-90 font-semibold transition-opacity disabled:opacity-60 inline-flex items-center justify-center gap-1.5"
+                        style="background-color: var(--dash-primary);"><span class="material-symbols-outlined text-[16px]">save</span>Simpan</button>
             </div>
         </form>
     </div>
@@ -326,12 +326,12 @@ document.addEventListener('keydown', function(e) {
         </div>
         <div class="flex gap-3 mt-5 justify-end">
             <button onclick="closeDeleteModal()"
-                    class="px-4 py-2 text-sm rounded-lg transition-colors"
+                    class="px-4 py-2 text-sm rounded-lg transition-colors inline-flex items-center gap-1.5"
                     style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
                     onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
-                    onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">Batal</button>
+                    onmouseout="this.style.backgroundColor='var(--dash-card-bg)'"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
             <button id="delete-confirm-btn" onclick="submitDeleteForm()"
-                    class="px-4 py-2 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 font-semibold">Ya, Hapus</button>
+                    class="px-4 py-2 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 font-semibold inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">delete</span>Ya, Hapus</button>
         </div>
     </div>
 </div>

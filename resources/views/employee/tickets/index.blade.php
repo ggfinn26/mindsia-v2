@@ -122,6 +122,7 @@
                                    style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
                                    onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                                    onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                    <span class="material-symbols-outlined text-[14px]">visibility</span>
                                     Detail
                                 </a>
                             </td>

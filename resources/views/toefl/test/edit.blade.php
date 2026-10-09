@@ -6,7 +6,7 @@
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-3xl mx-auto">
     <div class="mb-6 flex items-center justify-between">
         <h1 class="text-2xl font-bold text-[color:var(--dash-text-heading)]">Edit Test TOEFL</h1>
-        <a href="{{ route('toefl-tests.show', $toeflTest) }}" class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium transition-colors">Kembali</a>
+        <a href="{{ route('toefl-tests.show', $toeflTest) }}" class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium transition-colors gap-1.5"><span class="material-symbols-outlined text-[16px]">arrow_back</span>Kembali</a>
     </div>
 
     @if ($errors->any())
@@ -86,8 +86,8 @@
             </div>
 
             <div class="flex flex-col sm:flex-row sm:justify-end gap-3 pt-4 mt-2 border-t border-[color:var(--dash-card-border)]">
-                <a href="{{ route('toefl-tests.show', $toeflTest) }}" class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium transition-colors">Batal</a>
-                <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium transition-colors">Simpan Perubahan</button>
+                <a href="{{ route('toefl-tests.show', $toeflTest) }}" class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium transition-colors gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</a>
+                <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium transition-colors gap-1.5"><span class="material-symbols-outlined text-[16px]">save</span>Simpan Perubahan</button>
             </div>
         </form>
     </div>

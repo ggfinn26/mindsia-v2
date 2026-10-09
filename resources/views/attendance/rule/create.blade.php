@@ -11,7 +11,7 @@
     }">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-[color:var(--dash-text-heading)]">Tambah Aturan Sanksi</h1>
-        <a href="{{ route('attendance-rules.index') }}" class="bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 text-[color:var(--dash-text-body)] px-4 py-2 rounded-lg font-medium border border-[color:var(--dash-input-border)]">Batal</a>
+        <a href="{{ route('attendance-rules.index') }}" class="bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 text-[color:var(--dash-text-body)] px-4 py-2 rounded-lg font-medium border border-[color:var(--dash-input-border)] inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</a>
     </div>
 
     @if ($errors->any())
@@ -110,7 +110,7 @@
             </div>
 
             <div class="px-6 py-4 flex justify-end">
-                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md">Simpan Aturan</button>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">save</span>Simpan Aturan</button>
             </div>
         </div>
     </form>

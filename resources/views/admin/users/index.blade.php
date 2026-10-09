@@ -72,11 +72,13 @@
                 <input type="hidden" name="sort" value="{{ request('sort', 'created_at') }}">
                 <input type="hidden" name="dir" value="{{ request('dir', 'desc') }}">
                 <div class="flex gap-2">
-                    <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-[var(--dash-primary)] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90 transition-colors">
+                    <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-[var(--dash-primary)] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90 transition-colors gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">filter_list</span>
                         Filter
                     </button>
                     @if(request()->anyFilled(['search', 'role', 'status']))
-                        <a href="{{ route('users.index') }}" class="inline-flex items-center justify-center rounded-lg border border-[var(--dash-input-border)] bg-[var(--dash-card-bg)] px-4 py-2 text-sm font-semibold text-[var(--dash-text-body)] shadow-sm hover:bg-[var(--dash-page-bg)] transition-colors">
+                        <a href="{{ route('users.index') }}" class="inline-flex items-center justify-center rounded-lg border border-[var(--dash-input-border)] bg-[var(--dash-card-bg)] px-4 py-2 text-sm font-semibold text-[var(--dash-text-body)] shadow-sm hover:bg-[var(--dash-page-bg)] transition-colors gap-1.5">
+                            <span class="material-symbols-outlined text-[16px]">restart_alt</span>
                             Reset
                         </a>
                     @endif

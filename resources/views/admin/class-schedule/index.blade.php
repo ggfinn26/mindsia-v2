@@ -78,7 +78,7 @@
                    class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                    style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
                    onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
-                   onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">Reset</a>
+                   onmouseout="this.style.backgroundColor='var(--dash-card-bg)'"><span class="material-symbols-outlined text-[16px]">restart_alt</span>Reset</a>
             </div>
         </form>
     </div>

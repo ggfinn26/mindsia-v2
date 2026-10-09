@@ -83,16 +83,17 @@
         @endcan
         <div class="flex items-center gap-2">
             <button type="submit"
-                    class="px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                    class="px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity inline-flex items-center gap-1.5"
                     style="background-color: var(--dash-primary);">
+                <span class="material-symbols-outlined text-[16px]">filter_list</span>
                 Terapkan Filter
             </button>
             @if(request()->hasAny(['branch_id', 'employee_id']) || request('month') != now()->month || request('year') != now()->year)
                 <a href="{{ route('marketing.monthly-revenue-data') }}"
-                   class="px-3 py-2 text-sm font-semibold rounded-lg transition-colors"
+                   class="px-3 py-2 text-sm font-semibold rounded-lg transition-colors inline-flex items-center gap-1.5"
                    style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
                    onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
-                   onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">Reset</a>
+                   onmouseout="this.style.backgroundColor='var(--dash-card-bg)'"><span class="material-symbols-outlined text-[16px]">restart_alt</span>Reset</a>
             @endif
         </div>
     </form>

@@ -175,8 +175,9 @@
             </div>
             <div class="flex items-center justify-end gap-3">
                 <button type="button" @click="showConfirmModal = false"
-                        class="px-4 py-2 rounded-lg text-sm font-medium"
+                        class="px-4 py-2 rounded-lg text-sm font-medium inline-flex items-center gap-1.5"
                         style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);">
+                    <span class="material-symbols-outlined text-[16px]">close</span>
                     Batal
                 </button>
                 <button type="button"

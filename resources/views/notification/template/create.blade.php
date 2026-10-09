@@ -57,8 +57,8 @@
             </div>
 
             <div class="flex justify-end gap-3 pt-2">
-                <a href="{{ route('notification-templates.index') }}" class="rounded-lg border border-[var(--dash-input-border)] px-5 py-2 text-sm font-medium text-[var(--dash-text-muted)] hover:bg-[var(--dash-page-bg)] transition-colors">Batal</a>
-                <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-[var(--dash-primary)] px-5 py-2 text-sm font-bold text-white hover:opacity-90 transition-colors">Simpan Template</button>
+                <a href="{{ route('notification-templates.index') }}" class="rounded-lg border border-[var(--dash-input-border)] px-5 py-2 text-sm font-medium text-[var(--dash-text-muted)] hover:bg-[var(--dash-page-bg)] transition-colors inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</a>
+                <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-[var(--dash-primary)] px-5 py-2 text-sm font-bold text-white hover:opacity-90 transition-colors"><span class="material-symbols-outlined text-[16px]">save</span>Simpan Template</button>
             </div>
         </form>
     </div>

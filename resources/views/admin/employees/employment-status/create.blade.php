@@ -123,7 +123,8 @@
 
                 <!-- Submit -->
                 <div class="flex items-center gap-3 pt-6 border-t border-[color:var(--dash-card-border)] mt-8">
-                    <button type="submit" class="inline-flex justify-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--dash-primary)]">
+                    <button type="submit" class="inline-flex justify-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--dash-primary)] gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">save</span>
                         Simpan Kontrak Lengkap
                     </button>
                     <a href="{{ route('employees.show', $employee->id) }}" class="inline-flex justify-center px-4 py-2 border border-[var(--dash-input-border)] shadow-sm text-sm font-medium rounded-md text-[var(--dash-text-body)] bg-[var(--dash-card-bg)] hover:bg-[var(--dash-page-bg)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--dash-primary)]">
@@ -222,7 +223,8 @@
 
                 <!-- Submit -->
                 <div class="flex items-center gap-3 pt-6 border-t border-[color:var(--dash-card-border)] mt-8">
-                    <button type="submit" class="inline-flex justify-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--dash-primary)]">
+                    <button type="submit" class="inline-flex justify-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--dash-primary)] gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">upload</span>
                         Upload & Buat Kontrak
                     </button>
                     <a href="{{ route('employees.show', $employee->id) }}" class="inline-flex justify-center px-4 py-2 border border-[var(--dash-input-border)] shadow-sm text-sm font-medium rounded-md text-[var(--dash-text-body)] bg-[var(--dash-card-bg)] hover:bg-[var(--dash-page-bg)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--dash-primary)]">

@@ -123,6 +123,7 @@
                 <a href="{{ route('attendance.position-settings.index') }}"
                    class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold transition-colors"
                    style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body);">
+                    <span class="material-symbols-outlined text-[16px]">close</span>
                     Batal
                 </a>
             </div>

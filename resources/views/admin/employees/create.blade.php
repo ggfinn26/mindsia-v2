@@ -13,7 +13,8 @@ window._empFormData = {
 <div class="max-w-4xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-[color:var(--dash-text-heading)]">Tambah Pegawai Baru</h1>
-        <a href="{{ route('employees.index') }}" class="bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 text-[color:var(--dash-text-body)] px-4 py-2 rounded-lg font-medium border border-[color:var(--dash-input-border)]">
+        <a href="{{ route('employees.index') }}" class="bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 text-[color:var(--dash-text-body)] px-4 py-2 rounded-lg font-medium border border-[color:var(--dash-input-border)] inline-flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">close</span>
             Batal
         </a>
     </div>
@@ -185,7 +186,8 @@ window._empFormData = {
             </div>
 
             <div class="mt-8 flex justify-end">
-                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 border border-transparent rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 border border-transparent rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 inline-flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px]">save</span>
                     Simpan Data Pegawai
                 </button>
             </div>

@@ -127,8 +127,9 @@
                     <div class="flex justify-end gap-3 px-6 py-4"
                          style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
                         <button type="button" @click="showApprove = false"
-                                class="px-4 py-2 rounded-lg text-sm font-medium"
+                                class="px-4 py-2 rounded-lg text-sm font-medium inline-flex items-center gap-1.5"
                                 style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);">
+                            <span class="material-symbols-outlined text-[16px]">close</span>
                             Batal
                         </button>
                         <form method="POST" action="{{ route('resign-requests.approve', $resignRequest) }}" class="m-0">
@@ -177,15 +178,17 @@
                     <div class="flex justify-end gap-3 px-6 py-4"
                          style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
                         <button type="button" @click="showReject = false"
-                                class="px-4 py-2 rounded-lg text-sm font-medium"
+                                class="px-4 py-2 rounded-lg text-sm font-medium inline-flex items-center gap-1.5"
                                 style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);">
+                            <span class="material-symbols-outlined text-[16px]">close</span>
                             Batal
                         </button>
                         <form method="POST" action="{{ route('resign-requests.reject', $resignRequest) }}" class="m-0">
                             @csrf
                             <button type="submit"
-                                    class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                                    class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity inline-flex items-center gap-1.5"
                                     style="background-color: #dc2626;">
+                                <span class="material-symbols-outlined text-[16px]">close</span>
                                 Ya, Tolak
                             </button>
                         </form>

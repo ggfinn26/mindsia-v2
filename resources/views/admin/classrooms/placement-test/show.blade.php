@@ -16,7 +16,8 @@
             </p>
         </div>
         <a href="{{ route('classrooms.show', $classroom) }}"
-           class="text-[color:var(--dash-text-body)] border border-[color:var(--dash-input-border)] px-4 py-2 rounded-lg hover:bg-[var(--dash-nav-hover-bg)] text-sm font-medium">
+           class="text-[color:var(--dash-text-body)] border border-[color:var(--dash-input-border)] px-4 py-2 rounded-lg hover:bg-[var(--dash-nav-hover-bg)] text-sm font-medium inline-flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">arrow_back</span>
             Kembali ke Kelas
         </a>
     </div>
@@ -65,7 +66,8 @@
                     @enderror
                 </div>
                 <button type="submit"
-                        class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors">
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors inline-flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px]">save</span>
                     Simpan Jadwal
                 </button>
             </form>
@@ -198,7 +200,8 @@
 
                 <div class="px-6 py-4 border-t border-[color:var(--dash-card-border)] flex justify-end">
                     <button type="submit"
-                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-colors">
+                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-colors inline-flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">save</span>
                         Simpan Semua Hasil
                     </button>
                 </div>

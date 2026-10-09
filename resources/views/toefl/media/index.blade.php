@@ -65,7 +65,7 @@
                 <option value="image" {{ request('type') === 'image' ? 'selected' : '' }}>Gambar</option>
             </select>
             @if (request('type'))
-                <a href="{{ route('toefl.media.index') }}" class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-md text-[color:var(--dash-text-muted)] hover:bg-[var(--dash-nav-hover-bg)] hover:text-[color:var(--dash-text-body)] transition-colors text-sm">Reset</a>
+                <a href="{{ route('toefl.media.index') }}" class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-md text-[color:var(--dash-text-muted)] hover:bg-[var(--dash-nav-hover-bg)] hover:text-[color:var(--dash-text-body)] transition-colors text-sm gap-1.5"><span class="material-symbols-outlined text-[16px]">restart_alt</span>Reset</a>
             @endif
         </form>
     </div>
@@ -163,7 +163,7 @@
 
                 <div class="flex flex-col sm:flex-row sm:justify-end gap-3 pt-4 mt-2 border-t border-[color:var(--dash-card-border)]">
                     <button type="button" @click="showUploadModal = false"
-                        class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium transition-colors">Batal</button>
+                        class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium transition-colors gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                     <button type="submit" :disabled="uploading"
                         class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium disabled:opacity-60 transition-colors"
                         x-text="uploading ? 'Mengupload...' : 'Upload'"></button>
@@ -192,11 +192,13 @@
                 </div>
                 <div class="bg-[var(--dash-nav-hover-bg)] px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                     <button type="button" @click="$refs.deleteForm.submit()"
-                        class="w-full sm:w-auto inline-flex items-center justify-center rounded-md border border-transparent shadow-sm px-4 py-2 min-h-[44px] min-w-[44px] bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none sm:ml-3 sm:text-sm transition-colors">
+                        class="w-full sm:w-auto inline-flex items-center justify-center rounded-md border border-transparent shadow-sm px-4 py-2 min-h-[44px] min-w-[44px] bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none sm:ml-3 sm:text-sm transition-colors gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">delete</span>
                         Hapus
                     </button>
                     <button type="button" @click="showConfirmModal = false"
-                        class="mt-3 sm:mt-0 sm:ml-3 w-full sm:w-auto inline-flex items-center justify-center rounded-md border border-[color:var(--dash-input-border)] shadow-sm px-4 py-2 min-h-[44px] min-w-[44px] bg-[var(--dash-card-bg)] text-base font-medium text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] focus:outline-none sm:text-sm transition-colors">
+                        class="mt-3 sm:mt-0 sm:ml-3 w-full sm:w-auto inline-flex items-center justify-center rounded-md border border-[color:var(--dash-input-border)] shadow-sm px-4 py-2 min-h-[44px] min-w-[44px] bg-[var(--dash-card-bg)] text-base font-medium text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] focus:outline-none sm:text-sm transition-colors gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">close</span>
                         Batal
                     </button>
                 </div>

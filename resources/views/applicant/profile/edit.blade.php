@@ -79,11 +79,13 @@
 
             <div class="flex items-center justify-end gap-3 pt-2 border-t border-[color:var(--dash-card-border)]">
                 <a href="{{ route('applicant.profile.show') }}"
-                   class="px-5 py-2.5 text-sm font-semibold text-[color:var(--dash-text-body)] bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 rounded-lg transition-colors">
+                   class="px-5 py-2.5 text-sm font-semibold text-[color:var(--dash-text-body)] bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 rounded-lg transition-colors inline-flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px]">close</span>
                     Batal
                 </a>
                 <button type="submit"
-                        class="px-6 py-2.5 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-lg transition-colors shadow-sm">
+                        class="px-6 py-2.5 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-lg transition-colors shadow-sm inline-flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px]">save</span>
                     Simpan Perubahan
                 </button>
             </div>

@@ -49,14 +49,14 @@
                         <td class="px-6 py-4 text-[var(--dash-text-muted)]">{{ $tpl->variables->count() }} variabel</td>
                         <td class="px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-2">
-                                <a href="{{ route('notification-templates.show', $tpl) }}" class="rounded-lg border border-[var(--dash-input-border)] px-3 py-1.5 text-xs font-medium text-[var(--dash-text-muted)] hover:bg-[var(--dash-page-bg)] transition-colors">Detail</a>
+                                <a href="{{ route('notification-templates.show', $tpl) }}" class="rounded-lg border border-[var(--dash-input-border)] px-3 py-1.5 text-xs font-medium text-[var(--dash-text-muted)] hover:bg-[var(--dash-page-bg)] transition-colors inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px]">visibility</span>Detail</a>
                                 @can('notification.template.update')
-                                <a href="{{ route('notification-templates.edit', $tpl) }}" class="rounded-lg border border-[var(--dash-input-border)] px-3 py-1.5 text-xs font-medium text-[var(--dash-text-muted)] hover:bg-[var(--dash-page-bg)] transition-colors">Edit</a>
+                                <a href="{{ route('notification-templates.edit', $tpl) }}" class="rounded-lg border border-[var(--dash-input-border)] px-3 py-1.5 text-xs font-medium text-[var(--dash-text-muted)] hover:bg-[var(--dash-page-bg)] transition-colors inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px]">edit</span>Edit</a>
                                 @endcan
                                 @can('notification.template.delete')
                                 <form method="POST" action="{{ route('notification-templates.destroy', $tpl) }}" onsubmit="return confirm('Hapus template ini?')">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="rounded-lg border border-red-200 [.mode-dark_&]:border-red-500/20 px-3 py-1.5 text-xs font-medium text-red-600 [.mode-dark_&]:text-red-400 hover:bg-red-50 [.mode-dark_&]:hover:bg-red-500/10 transition-colors">Hapus</button>
+                                    <button type="submit" class="rounded-lg border border-red-200 [.mode-dark_&]:border-red-500/20 px-3 py-1.5 text-xs font-medium text-red-600 [.mode-dark_&]:text-red-400 hover:bg-red-50 [.mode-dark_&]:hover:bg-red-500/10 transition-colors inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px]">delete</span>Hapus</button>
                                 </form>
                                 @endcan
                             </div>

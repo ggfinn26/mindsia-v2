@@ -48,14 +48,15 @@
         </div>
         <div class="flex items-center gap-2">
             <button type="submit"
-                    class="px-4 py-2 rounded-lg text-sm font-semibold text-white transition-colors"
+                    class="px-4 py-2 rounded-lg text-sm font-semibold text-white transition-colors inline-flex items-center gap-1.5"
                     style="background-color: var(--dash-primary);">
+                <span class="material-symbols-outlined text-[16px]">filter_list</span>
                 Terapkan Filter
             </button>
             @if(request('month') != now()->month || request('year') != now()->year)
                 <a href="{{ route('marketing.my-performance') }}"
-                   class="px-3 py-2 rounded-lg text-sm font-medium transition-colors"
-                   style="background-color: var(--dash-primary-bg); color: var(--dash-text-muted);">Reset</a>
+                   class="px-3 py-2 rounded-lg text-sm font-medium transition-colors inline-flex items-center gap-1.5"
+                   style="background-color: var(--dash-primary-bg); color: var(--dash-text-muted);"><span class="material-symbols-outlined text-[16px]">restart_alt</span>Reset</a>
             @endif
         </div>
     </form>

@@ -109,13 +109,15 @@
                         </div>
                         <div class="flex items-center justify-end gap-3 pt-2">
                             <button type="button" @click="editing = false"
-                                    class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                                    class="px-4 py-2 rounded-lg text-sm font-medium transition-colors inline-flex items-center gap-1.5"
                                     style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);">
+                                <span class="material-symbols-outlined text-[16px]">close</span>
                                 Batal
                             </button>
                             <button type="submit"
-                                    class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                                    class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity inline-flex items-center gap-1.5"
                                     style="background-color: var(--dash-primary);">
+                                <span class="material-symbols-outlined text-[16px]">save</span>
                                 Simpan Perubahan
                             </button>
                         </div>
@@ -243,13 +245,15 @@
                 <div class="flex items-center justify-end gap-3 mt-6 pt-4"
                      style="border-top: 1px solid var(--dash-card-border);">
                     <button type="button" @click="open = false"
-                            class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                            class="px-4 py-2 rounded-lg text-sm font-medium transition-colors inline-flex items-center gap-1.5"
                             style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);">
+                        <span class="material-symbols-outlined text-[16px]">close</span>
                         Batal
                     </button>
                     <button type="submit"
-                            class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                            class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity inline-flex items-center gap-1.5"
                             style="background-color: var(--dash-primary);">
+                        <span class="material-symbols-outlined text-[16px]">save</span>
                         Simpan Template
                     </button>
                 </div>

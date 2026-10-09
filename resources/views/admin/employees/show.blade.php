@@ -214,7 +214,8 @@
                                                                                     Ya, Batalkan Terminasi
                                                                                 </button>
                                                                             </form>
-                                                                            <button type="button" @click="showCancelModal = false" class="mt-3 inline-flex w-full justify-center rounded-lg bg-[var(--dash-card-bg)] px-5 py-2 text-sm font-bold text-[color:var(--dash-text-body)] shadow-sm border border-[color:var(--dash-card-border)] hover:bg-[var(--dash-nav-hover-bg)] sm:mt-0 sm:w-auto transition-colors">
+                                                                            <button type="button" @click="showCancelModal = false" class="mt-3 inline-flex w-full justify-center rounded-lg bg-[var(--dash-card-bg)] px-5 py-2 text-sm font-bold text-[color:var(--dash-text-body)] shadow-sm border border-[color:var(--dash-card-border)] hover:bg-[var(--dash-nav-hover-bg)] sm:mt-0 sm:w-auto transition-colors gap-1.5">
+                                                                                <span class="material-symbols-outlined text-[16px]">arrow_back</span>
                                                                                 Kembali
                                                                             </button>
                                                                         </div>

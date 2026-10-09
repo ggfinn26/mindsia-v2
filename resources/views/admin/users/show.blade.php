@@ -6,7 +6,8 @@
 <div class="max-w-4xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-[color:var(--dash-text-heading)]">Profil Akun Pegawai</h1>
-        <a href="{{ route('users.index') }}" class="bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 text-[color:var(--dash-text-body)] px-4 py-2 rounded-lg font-medium border border-[color:var(--dash-input-border)]">
+        <a href="{{ route('users.index') }}" class="bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 text-[color:var(--dash-text-body)] px-4 py-2 rounded-lg font-medium border border-[color:var(--dash-input-border)] inline-flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">arrow_back</span>
             Kembali
         </a>
     </div>

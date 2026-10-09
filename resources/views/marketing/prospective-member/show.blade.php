@@ -182,7 +182,8 @@
                         </select>
                         <input type="text" name="change_reason" placeholder="Alasan perubahan (opsional)"
                             class="block w-full bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-input-border)] rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[var(--dash-primary)]/30 focus:border-[var(--dash-primary)] focus:outline-none">
-                        <button type="submit" class="w-full px-3 py-2 text-sm text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90">
+                        <button type="submit" class="w-full px-3 py-2 text-sm text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90 inline-flex items-center justify-center gap-1.5">
+                            <span class="material-symbols-outlined text-[16px]">save</span>
                             Simpan
                         </button>
                     </form>
@@ -222,7 +223,8 @@
                     <textarea name="note" rows="3" required placeholder="Catatan hasil follow-up..."
                         class="block w-full bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-input-border)] rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[var(--dash-primary)]/30 focus:border-[var(--dash-primary)] focus:outline-none"></textarea>
                     <div class="flex justify-end">
-                        <button type="submit" class="px-4 py-2 text-sm text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90">
+                        <button type="submit" class="px-4 py-2 text-sm text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90 inline-flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[16px]">save</span>
                             Simpan Catatan
                         </button>
                     </div>

@@ -99,10 +99,10 @@
             @endif
             <div class="flex gap-2">
                 <button type="submit"
-                    class="px-3 py-2 text-sm font-medium text-white bg-gray-700 rounded-lg hover:bg-gray-800">Cari</button>
+                    class="px-3 py-2 text-sm font-medium text-white bg-gray-700 rounded-lg hover:bg-gray-800 inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">search</span>Cari</button>
                 @if (request()->hasAny(['search', 'status', 'branch_id', 'employee_id']))
                     <a href="{{ route('prospective-members.index') }}"
-                        class="px-3 py-2 text-sm text-[var(--dash-text-muted)] bg-[var(--dash-input-bg)] rounded-lg hover:bg-gray-200">Reset</a>
+                        class="px-3 py-2 text-sm text-[var(--dash-text-muted)] bg-[var(--dash-input-bg)] rounded-lg hover:bg-gray-200 inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">restart_alt</span>Reset</a>
                 @endif
             </div>
         </div>

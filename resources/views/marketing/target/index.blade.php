@@ -134,8 +134,9 @@
                                 onblur="this.style.borderColor='var(--dash-input-border)'">
                         </div>
                         <button type="submit"
-                                class="px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                                class="px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity inline-flex items-center gap-1.5"
                                 style="background-color: var(--dash-primary);">
+                            <span class="material-symbols-outlined text-[16px]">save</span>
                             Simpan
                         </button>
                     </div>
@@ -192,8 +193,9 @@
                                 onblur="this.style.borderColor='var(--dash-input-border)'">
                         </div>
                         <button type="submit"
-                                class="px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                                class="px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity inline-flex items-center gap-1.5"
                                 style="background-color: var(--dash-primary);">
+                            <span class="material-symbols-outlined text-[16px]">save</span>
                             Simpan
                         </button>
                     </div>
@@ -243,8 +245,8 @@
             </div>
             <div class="flex gap-2">
                 <button type="submit"
-                        class="px-3 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
-                        style="background-color: var(--dash-primary);">Filter</button>
+                        class="px-3 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity inline-flex items-center gap-1.5"
+                        style="background-color: var(--dash-primary);"><span class="material-symbols-outlined text-[16px]">filter_list</span>Filter</button>
                 @if(request()->hasAny(['search', 'branch_id']))
                     <a href="{{ route('marketing-target.index', ['month' => $month, 'year' => $year]) }}"
                        class="px-3 py-2 text-sm font-semibold rounded-lg transition-colors"
@@ -318,8 +320,9 @@
                             </td>
                             <td class="px-4 py-3 text-right">
                                     <button type="submit"
-                                            class="px-3 py-1.5 text-xs font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                                            class="px-3 py-1.5 text-xs font-semibold text-white rounded-lg hover:opacity-90 transition-opacity inline-flex items-center gap-1.5"
                                             style="background-color: var(--dash-primary);">
+                                        <span class="material-symbols-outlined text-[14px]">save</span>
                                         Simpan
                                     </button>
                                 </form>
@@ -353,15 +356,17 @@
             <p class="text-sm mb-5" style="color: var(--dash-text-muted);">Data target akan diperbarui untuk periode yang dipilih.</p>
             <div class="flex gap-3 justify-center">
                 <button @click="confirm.open = false"
-                        class="px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                        class="px-4 py-2 text-sm font-semibold rounded-lg transition-colors inline-flex items-center gap-1.5"
                         style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
                         onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                         onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                    <span class="material-symbols-outlined text-[16px]">close</span>
                     Batal
                 </button>
                 <button @click="submitConfirmed()"
-                        class="px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                        class="px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity inline-flex items-center gap-1.5"
                         style="background-color: var(--dash-primary);">
+                    <span class="material-symbols-outlined text-[16px]">save</span>
                     Ya, Simpan
                 </button>
             </div>

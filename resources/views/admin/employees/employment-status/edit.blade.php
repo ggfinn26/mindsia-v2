@@ -114,7 +114,8 @@
                     <!-- Submit -->
                     <div class="flex gap-3 pt-6 border-t">
                         <button type="submit"
-                                class="px-6 py-2 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600">
+                                class="px-6 py-2 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 inline-flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[16px]">save</span>
                             Simpan Perubahan
                         </button>
                         <a href="{{ route('employees.show', $status->employee) }}"

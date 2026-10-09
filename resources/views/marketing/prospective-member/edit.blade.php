@@ -82,10 +82,12 @@
         </div>
 
         <div class="flex justify-end gap-3 pt-4 border-t border-[var(--dash-card-border)]">
-            <a href="{{ route('prospective-members.show', $lead) }}" class="px-4 py-2 text-sm font-medium text-[var(--dash-text-body)] bg-[var(--dash-card-bg)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]">
+            <a href="{{ route('prospective-members.show', $lead) }}" class="px-4 py-2 text-sm font-medium text-[var(--dash-text-body)] bg-[var(--dash-card-bg)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)] inline-flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">close</span>
                 Batal
             </a>
-            <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]">
+            <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)] inline-flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">save</span>
                 Simpan Perubahan
             </button>
         </div>

@@ -17,7 +17,8 @@
             </div>
             <h3 class="text-lg font-bold text-[color:var(--dash-text-heading)] font-jakarta mb-2">Tidak Ada Tagihan Aktif</h3>
             <p class="text-[color:var(--dash-text-muted)] max-w-md mx-auto mb-6">Saat ini Anda tidak memiliki tagihan atau cicilan program yang sedang berjalan.</p>
-            <a href="{{ route('member.dashboard') }}" class="px-5 py-2.5 bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] font-medium rounded-lg hover:bg-[var(--dash-nav-hover-bg)] transition-colors shadow-sm">
+            <a href="{{ route('member.dashboard') }}" class="px-5 py-2.5 bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] font-medium rounded-lg hover:bg-[var(--dash-nav-hover-bg)] transition-colors shadow-sm inline-flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">arrow_back</span>
                 Kembali ke Dashboard
             </a>
         </div>

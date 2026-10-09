@@ -155,6 +155,7 @@
                             onclick="return confirm('Konfirmasi keputusan HR?')"
                             class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
                             style="background-color: #d97706;">
+                        <span class="material-symbols-outlined text-[16px]">save</span>
                         Simpan Review HR
                     </button>
                 </form>
@@ -189,6 +190,7 @@
                             onclick="return confirm('Konfirmasi keputusan Ops?')"
                             class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
                             style="background-color: var(--dash-primary);">
+                        <span class="material-symbols-outlined text-[16px]">save</span>
                         Simpan Keputusan Ops
                     </button>
                 </form>

@@ -35,11 +35,11 @@
         <div class="flex items-center gap-2 flex-wrap">
             @if ($toeflTest->status === 'draft')
                 @can('toefl.test.update')
-                    <a href="{{ route('toefl-tests.edit', $toeflTest) }}" class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium transition-colors">Edit</a>
+                    <a href="{{ route('toefl-tests.edit', $toeflTest) }}" class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium transition-colors gap-1.5"><span class="material-symbols-outlined text-[16px]">edit</span>Edit</a>
                 @endcan
                 @can('toefl.test.publish')
                     <button type="button" @click="showPublishModal = true"
-                        class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-green-500 hover:bg-green-600 text-white text-sm font-medium transition-colors">Publish</button>
+                        class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-green-500 hover:bg-green-600 text-white text-sm font-medium transition-colors gap-1.5"><span class="material-symbols-outlined text-[16px]">publish</span>Publish</button>
                 @endcan
             @endif
             @if ($toeflTest->status === 'published' && $toeflTest->is_trial)
@@ -53,11 +53,11 @@
                     <form action="{{ route('toefl-tests.destroy', $toeflTest) }}" method="POST" class="inline"
                         onsubmit="return confirm('Hapus test ini?')">
                         @csrf @method('DELETE')
-                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] hover:bg-red-50 hover:border-red-400 text-red-600 text-sm font-medium transition-colors">Hapus</button>
+                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] hover:bg-red-50 hover:border-red-400 text-red-600 text-sm font-medium transition-colors gap-1.5"><span class="material-symbols-outlined text-[16px]">delete</span>Hapus</button>
                     </form>
                 @endif
             @endcan
-            <a href="{{ route('toefl-tests.index') }}" class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium transition-colors">Kembali</a>
+            <a href="{{ route('toefl-tests.index') }}" class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium transition-colors gap-1.5"><span class="material-symbols-outlined text-[16px]">arrow_back</span>Kembali</a>
         </div>
     </div>
 
@@ -107,7 +107,7 @@
                             @if ($toeflTest->status === 'draft')
                                 @can('toefl.passage.create')
                                     <button type="button" @click="openPassageModal('{{ $section }}')"
-                                        class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-md text-indigo-600 bg-indigo-50 hover:bg-indigo-100 hover:text-indigo-900 transition-colors text-sm font-medium">+ Tambah Passage</button>
+                                        class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-md text-indigo-600 bg-indigo-50 hover:bg-indigo-100 hover:text-indigo-900 transition-colors text-sm font-medium gap-1.5"><span class="material-symbols-outlined text-[16px]">add</span>Tambah Passage</button>
                                 @endcan
                             @endif
                         </div>
@@ -134,7 +134,7 @@
                                                 <form action="{{ route('toefl.passages.destroy', $passage) }}" method="POST" class="inline"
                                                     onsubmit="return confirm('Hapus passage ini?')">
                                                     @csrf @method('DELETE')
-                                                    <button type="submit" class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-md text-red-500 hover:bg-red-50 hover:text-red-700 transition-colors">Hapus</button>
+                                                    <button type="submit" class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-md text-red-500 hover:bg-red-50 hover:text-red-700 transition-colors gap-1.5"><span class="material-symbols-outlined text-[16px]">delete</span>Hapus</button>
                                                 </form>
                                             </div>
                                         @endif
@@ -152,7 +152,7 @@
                         @if ($toeflTest->status === 'draft')
                             @can('toefl.question.create')
                                 <button type="button" @click="openQuestionModal('{{ $section }}')"
-                                    class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-indigo-500 hover:bg-indigo-600 text-white transition-colors text-sm font-medium">+ Tambah Soal</button>
+                                    class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-indigo-500 hover:bg-indigo-600 text-white transition-colors text-sm font-medium gap-1.5"><span class="material-symbols-outlined text-[16px]">add</span>Tambah Soal</button>
                             @endcan
                         @endif
                     </div>
@@ -226,7 +226,7 @@
                                                             <form action="{{ route('toefl.questions.destroy', $q) }}" method="POST" class="inline"
                                                                 onsubmit="return confirm('Hapus soal ini?')">
                                                                 @csrf @method('DELETE')
-                                                                <button type="submit" class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-md text-red-500 hover:bg-red-50 hover:text-red-700 transition-colors text-sm">Hapus</button>
+                                                                <button type="submit" class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-md text-red-500 hover:bg-red-50 hover:text-red-700 transition-colors text-sm gap-1.5"><span class="material-symbols-outlined text-[16px]">delete</span>Hapus</button>
                                                             </form>
                                                         @endcan
                                                     </div>
@@ -389,7 +389,7 @@
                 {{-- Footer --}}
                 <div class="px-6 py-4 flex flex-col sm:flex-row sm:justify-end gap-3">
                     <button type="button" @click="showQuestionModal = false"
-                        class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 min-h-[44px] rounded-lg border border-[color:var(--dash-input-border)] bg-[var(--dash-card-bg)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium transition-colors">Batal</button>
+                        class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 min-h-[44px] rounded-lg border border-[color:var(--dash-input-border)] bg-[var(--dash-card-bg)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium transition-colors gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                     <button type="submit"
                         class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 min-h-[44px] rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors"
                         x-text="questionMode === 'create' ? 'Tambah Soal' : 'Simpan Perubahan'"></button>
@@ -462,8 +462,8 @@
                         </label>
                         <div class="flex items-center gap-1 bg-[var(--dash-nav-hover-bg)] rounded-lg p-0.5">
                             <button type="button" @click="preview = false"
-                                class="px-3 py-1.5 rounded-md text-xs font-medium transition-colors"
-                                :class="!preview ? 'bg-[var(--dash-card-bg)] text-[color:var(--dash-text-heading)] shadow-sm' : 'text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-body)]'">Edit</button>
+                                class="px-3 py-1.5 rounded-md text-xs font-medium transition-colors inline-flex items-center gap-1.5"
+                                :class="!preview ? 'bg-[var(--dash-card-bg)] text-[color:var(--dash-text-heading)] shadow-sm' : 'text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-body)]'"><span class="material-symbols-outlined text-[14px]">edit</span>Edit</button>
                             <button type="button" @click="preview = true" data-passage-preview
                                 class="px-3 py-1.5 rounded-md text-xs font-medium transition-colors"
                                 :class="preview ? 'bg-[var(--dash-card-bg)] text-[color:var(--dash-text-heading)] shadow-sm' : 'text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-body)]'">Preview</button>
@@ -499,7 +499,7 @@
                 {{-- Footer --}}
                 <div class="px-6 py-4 flex flex-col sm:flex-row sm:justify-end gap-3">
                     <button type="button" @click="showPassageModal = false"
-                        class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 min-h-[44px] rounded-lg border border-[color:var(--dash-input-border)] bg-[var(--dash-card-bg)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium transition-colors">Batal</button>
+                        class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 min-h-[44px] rounded-lg border border-[color:var(--dash-input-border)] bg-[var(--dash-card-bg)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium transition-colors gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                     <button type="submit"
                         class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 min-h-[44px] rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors"
                         x-text="passageMode === 'create' ? 'Tambah Passage' : 'Simpan Perubahan'"></button>
@@ -528,11 +528,11 @@
         </div>
         <div class="flex justify-end gap-3 pt-2">
             <button type="button" @click="showPublishModal = false"
-                class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] rounded-lg border border-[color:var(--dash-input-border)] bg-[var(--dash-card-bg)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium transition-colors">Batal</button>
+                class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] rounded-lg border border-[color:var(--dash-input-border)] bg-[var(--dash-card-bg)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium transition-colors gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
             <form action="{{ route('toefl-tests.publish', $toeflTest) }}" method="POST">
                 @csrf
                 <button type="submit"
-                    class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] rounded-lg bg-green-500 hover:bg-green-600 text-white text-sm font-medium transition-colors">Ya, Publish</button>
+                    class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] rounded-lg bg-green-500 hover:bg-green-600 text-white text-sm font-medium transition-colors gap-1.5"><span class="material-symbols-outlined text-[16px]">publish</span>Ya, Publish</button>
             </form>
         </div>
     </div>

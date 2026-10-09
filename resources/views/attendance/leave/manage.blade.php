@@ -283,15 +283,17 @@
                 <div class="flex items-center justify-end gap-3">
                     <button type="button"
                             @click="showRejectModal = false"
-                            class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                            class="px-4 py-2 rounded-lg text-sm font-medium transition-colors inline-flex items-center gap-1.5"
                             style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
                             onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                             onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                        <span class="material-symbols-outlined text-[16px]">close</span>
                         Batal
                     </button>
                     <button type="submit"
-                            class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                            class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity inline-flex items-center gap-1.5"
                             style="background-color: #dc2626;">
+                        <span class="material-symbols-outlined text-[16px]">close</span>
                         Tolak Pengajuan
                     </button>
                 </div>

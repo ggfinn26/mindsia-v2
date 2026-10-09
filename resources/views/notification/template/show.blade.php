@@ -89,7 +89,7 @@
                     class="w-40 rounded-lg border border-[var(--dash-input-border)] px-3 py-2 text-sm focus:border-[var(--dash-primary)] focus:ring-1 focus:ring-[var(--dash-primary)]" required />
                 <input name="variable_description" type="text" placeholder="Deskripsi (opsional)" value="{{ old('variable_description') }}"
                     class="flex-1 rounded-lg border border-[var(--dash-input-border)] px-3 py-2 text-sm focus:border-[var(--dash-primary)] focus:ring-1 focus:ring-[var(--dash-primary)]" />
-                <button type="submit" class="rounded-lg bg-[var(--dash-primary)] px-4 py-2 text-sm font-bold text-white hover:opacity-90 transition-colors whitespace-nowrap">Simpan</button>
+                <button type="submit" class="rounded-lg bg-[var(--dash-primary)] px-4 py-2 text-sm font-bold text-white hover:opacity-90 transition-colors whitespace-nowrap inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">save</span>Simpan</button>
             </form>
         </div>
         @endcan

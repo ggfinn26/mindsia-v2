@@ -248,7 +248,7 @@
                 </div>
 
                 <div class="bg-[var(--dash-nav-hover-bg)] px-6 py-3 flex justify-end gap-3">
-                    <button type="button" @click="showAssignModal = false" class="border border-[color:var(--dash-input-border)] shadow-sm px-4 py-2 bg-[var(--dash-card-bg)] text-sm font-medium text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] rounded-md">Batal</button>
+                    <button type="button" @click="showAssignModal = false" class="border border-[color:var(--dash-input-border)] shadow-sm px-4 py-2 bg-[var(--dash-card-bg)] text-sm font-medium text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] rounded-md inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                     <button type="button" @click="$refs.assignForm.submit()" class="inline-flex items-center gap-1 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium">
                         <span class="material-symbols-outlined text-[18px]">send</span> Assign
                     </button>

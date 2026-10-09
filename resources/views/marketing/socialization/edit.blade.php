@@ -56,10 +56,12 @@
         </div>
 
         <div class="flex justify-end gap-3 pt-2">
-            <a href="{{ route('socializations.show', $socialization) }}" class="px-4 py-2 text-sm font-medium text-[var(--dash-text-body)] bg-[var(--dash-card-bg)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)]">
+            <a href="{{ route('socializations.show', $socialization) }}" class="px-4 py-2 text-sm font-medium text-[var(--dash-text-body)] bg-[var(--dash-card-bg)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)] inline-flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">close</span>
                 Batal
             </a>
-            <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90">
+            <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90 inline-flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">save</span>
                 Simpan Perubahan
             </button>
         </div>

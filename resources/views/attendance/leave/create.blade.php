@@ -136,8 +136,9 @@
             <div class="px-6 py-4 flex items-center justify-end gap-3"
                  style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
                 <a href="{{ route('leave-requests.index') }}"
-                   class="inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                   class="inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-medium transition-colors gap-1.5"
                    style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);">
+                    <span class="material-symbols-outlined text-[16px]">close</span>
                     Batal
                 </a>
                 <button type="submit"

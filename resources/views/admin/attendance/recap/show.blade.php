@@ -30,6 +30,7 @@
                 <span class="material-symbols-outlined text-base">print</span> Cetak / PDF
             </button>
             <a href="{{ route('attendance-recaps.index') }}" class="inline-flex items-center gap-1.5 px-4 py-2 border border-[var(--dash-input-border)] rounded-lg text-sm font-medium text-[var(--dash-text-body)] bg-[var(--dash-card-bg)] hover:bg-[var(--dash-page-bg)]">
+                <span class="material-symbols-outlined text-[16px]">arrow_back</span>
                 Kembali
             </a>
         </div>

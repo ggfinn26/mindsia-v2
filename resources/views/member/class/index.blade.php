@@ -94,7 +94,8 @@
         <h3 class="text-base font-bold text-[color:var(--dash-text-heading)] font-jakarta mb-1">Belum Ada Kelas Aktif</h3>
         <p class="text-sm text-[color:var(--dash-text-muted)] max-w-xs mx-auto mb-5">Anda belum terdaftar di kelas manapun. Silakan cek riwayat registrasi.</p>
         <a href="{{ route('member.dashboard') }}"
-           class="px-5 py-2 bg-[#5586DB] text-white text-sm font-semibold rounded-lg hover:bg-[#4370BC] transition-colors">
+           class="px-5 py-2 bg-[#5586DB] text-white text-sm font-semibold rounded-lg hover:bg-[#4370BC] transition-colors inline-flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">arrow_back</span>
             Kembali ke Dashboard
         </a>
     </div>

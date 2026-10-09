@@ -24,7 +24,8 @@
             </div>
             <h3 class="text-lg font-bold text-[color:var(--dash-text-heading)] font-jakarta mb-2">Belum Ada Program Aktif</h3>
             <p class="text-[color:var(--dash-text-muted)] max-w-md mx-auto mb-6">Anda belum mendaftar di program apapun. Temukan program yang sesuai dengan kebutuhan belajar Anda sekarang!</p>
-            <a href="{{ route('member.program.browse') }}" class="px-5 py-2.5 bg-[#5586DB] text-white font-medium rounded-lg hover:bg-[#4370BC] transition-colors shadow-sm">
+            <a href="{{ route('member.program.browse') }}" class="px-5 py-2.5 bg-[#5586DB] text-white font-medium rounded-lg hover:bg-[#4370BC] transition-colors shadow-sm inline-flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">visibility</span>
                 Lihat Katalog Program
             </a>
         </div>
@@ -50,7 +51,8 @@
                         
                         <div class="flex items-center justify-between mt-auto pt-4 border-t border-[color:var(--dash-card-border)]">
                             <span class="text-lg font-bold text-[color:var(--dash-text-heading)]">Rp {{ number_format($registration->final_price, 0, ',', '.') }}</span>
-                            <a href="#" class="px-4 py-2 bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors">
+                            <a href="#" class="px-4 py-2 bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors inline-flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-[16px]">visibility</span>
                                 Detail
                             </a>
                         </div>

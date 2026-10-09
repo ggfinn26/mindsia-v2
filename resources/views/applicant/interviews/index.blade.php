@@ -81,6 +81,7 @@
             <p class="text-sm text-[color:var(--dash-text-faint)] mt-3">Belum ada jadwal interview.</p>
             <a href="{{ route('applicant.applications.index') }}"
                class="inline-flex items-center gap-1.5 mt-4 px-4 py-2 text-sm font-semibold text-[#5586DB] bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
+                <span class="material-symbols-outlined text-[16px]">visibility</span>
                 Lihat Status Lamaran
             </a>
         </div>

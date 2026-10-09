@@ -39,7 +39,7 @@
             </a>
             <h1 class="text-2xl font-bold text-[color:var(--dash-text-heading)]">Buat Survey Baru</h1>
         </div>
-        <a href="{{ route('surveys.index') }}" class="bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 text-[color:var(--dash-text-body)] px-4 py-2 rounded-lg font-medium border border-[color:var(--dash-input-border)]">Batal</a>
+        <a href="{{ route('surveys.index') }}" class="bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 text-[color:var(--dash-text-body)] px-4 py-2 rounded-lg font-medium border border-[color:var(--dash-input-border)] inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</a>
     </div>
 
     @if ($errors->any())

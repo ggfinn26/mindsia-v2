@@ -129,11 +129,12 @@ foreach ($item->interactiveBlocks as $bi => $block) {
                         @endif
 
                         @if ($i < $item->interactiveBlocks->count() - 1)
-                            <button type="button" class="btn-next px-4 py-2 font-medium rounded-lg bg-[#5586DB] text-white text-sm transition-colors" data-next="{{ $i + 1 }}">Selanjutnya →</button>
+                            <button type="button" class="btn-next px-4 py-2 font-medium rounded-lg bg-[#5586DB] text-white text-sm transition-colors inline-flex items-center gap-1.5" data-next="{{ $i + 1 }}"><span class="material-symbols-outlined text-[16px]">arrow_forward</span>Selanjutnya</button>
                         @else
                             <button type="button"
-                                class="px-4 py-2 font-medium rounded-lg bg-green-600 hover:bg-green-700 text-white text-sm transition-colors"
+                                class="px-4 py-2 font-medium rounded-lg bg-green-600 hover:bg-green-700 text-white text-sm transition-colors inline-flex items-center gap-1.5"
                                 onclick="document.getElementById('confirm-modal').classList.remove('hidden')">
+                                <span class="material-symbols-outlined text-[16px]">send</span>
                                 Selesai & Kirim Jawaban
                             </button>
                         @endif
@@ -152,8 +153,9 @@ foreach ($item->interactiveBlocks as $bi => $block) {
                     <p class="text-sm text-[color:var(--dash-text-muted)] mb-6">Apakah Anda yakin ingin mengirim semua jawaban sekarang? Anda tidak dapat mengulangi jawaban setelah dikirim.</p>
                     <div class="flex gap-3 justify-center">
                         <button type="button" 
-                            class="px-4 py-2 font-medium rounded-lg text-[color:var(--dash-text-body)] bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 transition-colors w-full"
+                            class="px-4 py-2 font-medium rounded-lg text-[color:var(--dash-text-body)] bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 transition-colors w-full inline-flex items-center justify-center gap-1.5"
                             onclick="document.getElementById('confirm-modal').classList.add('hidden')">
+                            <span class="material-symbols-outlined text-[16px]">close</span>
                             Batal
                         </button>
                         <button type="submit" 

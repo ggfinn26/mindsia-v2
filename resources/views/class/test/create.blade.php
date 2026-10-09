@@ -76,8 +76,9 @@
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-md font-semibold text-[var(--dash-text-heading)]">Kriteria Penilaian</h3>
                     <button type="button" x-data x-on:click="addCriterion()"
-                            class="bg-[var(--dash-input-bg)] hover:opacity-90 text-[var(--dash-text-body)] px-3 py-1.5 rounded text-sm font-medium">
-                        + Tambah Kriteria
+                            class="bg-[var(--dash-input-bg)] hover:opacity-90 text-[var(--dash-text-body)] px-3 py-1.5 rounded text-sm font-medium inline-flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">add</span>
+                        Tambah Kriteria
                     </button>
                 </div>
                 <p class="text-sm text-[var(--dash-text-muted)] mb-4">Tambahkan kriteria penilaian yang relevan untuk test ini.</p>
@@ -118,8 +119,8 @@
         </div>
 
         <div class="px-6 py-4 bg-[var(--dash-page-bg)] border-t border-[var(--dash-card-border)] flex gap-3 justify-end">
-            <a href="{{ route('classrooms.show', $classroom) }}" class="px-6 py-2 text-[var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)]">Batal</a>
-            <button type="submit" class="px-6 py-2 bg-[var(--dash-primary)] text-white rounded-lg hover:opacity-90">Simpan Test</button>
+            <a href="{{ route('classrooms.show', $classroom) }}" class="px-6 py-2 text-[var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)] inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</a>
+            <button type="submit" class="px-6 py-2 bg-[var(--dash-primary)] text-white rounded-lg hover:opacity-90 inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">save</span>Simpan Test</button>
         </div>
     </form>
 </div>

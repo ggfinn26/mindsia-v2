@@ -9,7 +9,7 @@
             <h1 class="text-2xl font-bold text-[color:var(--dash-text-heading)] font-jakarta">Edit Modul Interaktif</h1>
             <p class="text-sm text-[color:var(--dash-text-muted)] mt-1">{{ $item->item_name }}</p>
         </div>
-        <button onclick="history.back()" class="px-4 py-2 font-medium rounded-lg transition-colors bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] text-sm">← Kembali</button>
+        <button onclick="history.back()" class="px-4 py-2 font-medium rounded-lg transition-colors bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">arrow_back</span>Kembali</button>
     </div>
 
     @if(session('success'))
@@ -139,9 +139,9 @@
 
         <div class="mt-6 flex gap-3">
             <button type="button" id="add-block"
-                class="px-4 py-2 font-medium rounded-lg transition-colors bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] text-sm">+ Tambah Blok</button>
+                class="px-4 py-2 font-medium rounded-lg transition-colors bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">add</span>Tambah Blok</button>
             <button type="submit"
-                class="px-4 py-2 font-medium rounded-lg transition-colors bg-[#5586DB] hover:bg-[#4370BC] text-white text-sm">Simpan Semua</button>
+                class="px-4 py-2 font-medium rounded-lg transition-colors bg-[#5586DB] hover:bg-[#4370BC] text-white text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">save</span>Simpan Semua</button>
         </div>
     </form>
 </div>

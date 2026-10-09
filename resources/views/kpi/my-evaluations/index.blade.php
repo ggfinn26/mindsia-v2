@@ -57,6 +57,7 @@
                         <a href="{{ route('kpi.evaluations.show', $eval) }}"
                            class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors"
                            style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body);">
+                            <span class="material-symbols-outlined text-[14px]">visibility</span>
                             Lihat Detail
                         </a>
                     </div>

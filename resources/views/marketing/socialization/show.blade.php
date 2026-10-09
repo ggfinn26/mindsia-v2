@@ -115,7 +115,8 @@
                 @can('marketing.socialization.update')
                     @if ($socialization->status === 'draft')
                         <a href="{{ route('socializations.edit', $socialization) }}"
-                            class="inline-flex items-center px-3 py-2 text-sm font-medium text-[var(--dash-text-body)] bg-[var(--dash-card-bg)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)]">
+                            class="inline-flex items-center px-3 py-2 text-sm font-medium text-[var(--dash-text-body)] bg-[var(--dash-card-bg)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)] gap-1.5">
+                            <span class="material-symbols-outlined text-[16px]">edit</span>
                             Edit
                         </a>
                         <button type="button"
@@ -127,7 +128,8 @@
                     @endif
                     @if (in_array($socialization->status, ['draft', 'scheduled']))
                         <button @click="showCancelModal = true"
-                            class="inline-flex items-center px-3 py-2 text-sm font-medium text-red-500 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100">
+                            class="inline-flex items-center px-3 py-2 text-sm font-medium text-red-500 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 gap-1.5">
+                            <span class="material-symbols-outlined text-[16px]">close</span>
                             Batalkan
                         </button>
                     @endif
@@ -143,7 +145,8 @@
                     @if ($socialization->status === 'draft')
                         <button type="button"
                             @click="showConfirmModal = true; confirmTitle = 'Hapus Sosialisasi'; confirmMessage = 'Yakin hapus sosialisasi ini? Data yang sudah dihapus tidak dapat dikembalikan.'; confirmActionUrl = '{{ route('socializations.destroy', $socialization) }}'; confirmMethod = 'DELETE'; confirmActionText = 'Hapus'; confirmActionClass = 'bg-red-600 hover:bg-red-700'"
-                            class="inline-flex items-center px-3 py-2 text-sm font-medium text-red-700 bg-[var(--dash-card-bg)] border border-red-200 rounded-lg hover:bg-red-50">
+                            class="inline-flex items-center px-3 py-2 text-sm font-medium text-red-700 bg-[var(--dash-card-bg)] border border-red-200 rounded-lg hover:bg-red-50 gap-1.5">
+                            <span class="material-symbols-outlined text-[16px]">delete</span>
                             Hapus
                         </button>
                     @endif
@@ -253,11 +256,13 @@
                                                 class="block w-full border-[var(--dash-input-border)] rounded-lg text-sm focus:ring-[var(--dash-primary)]/30 focus:border-[var(--dash-primary)] focus:border-[var(--dash-primary)]">
                                         </div>
                                         <button type="submit"
-                                            class="px-3 py-2 text-sm font-medium text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90">
+                                            class="px-3 py-2 text-sm font-medium text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90 inline-flex items-center gap-1.5">
+                                            <span class="material-symbols-outlined text-[16px]">save</span>
                                             Simpan
                                         </button>
                                         <button type="button" @click="editKelas = false"
-                                            class="px-3 py-2 text-sm font-medium text-[var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)]">
+                                            class="px-3 py-2 text-sm font-medium text-[var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)] inline-flex items-center gap-1.5">
+                                            <span class="material-symbols-outlined text-[16px]">close</span>
                                             Batal
                                         </button>
                                     </form>
@@ -290,12 +295,14 @@
                 </div>
                 <div class="flex gap-2">
                     <button type="submit"
-                        class="px-3 py-2 text-sm font-medium text-white bg-gray-700 rounded-lg hover:bg-gray-800">
+                        class="px-3 py-2 text-sm font-medium text-white bg-gray-700 rounded-lg hover:bg-gray-800 inline-flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">search</span>
                         Cari
                     </button>
                     @if (request()->hasAny(['pm_search', 'pm_status']))
                         <a href="{{ route('socializations.show', $socialization) }}"
-                            class="px-3 py-2 text-sm text-[var(--dash-text-body)] bg-[var(--dash-input-bg)] rounded-lg hover:opacity-90">
+                            class="px-3 py-2 text-sm text-[var(--dash-text-body)] bg-[var(--dash-input-bg)] rounded-lg hover:opacity-90 inline-flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[16px]">restart_alt</span>
                             Reset
                         </a>
                     @endif
@@ -519,9 +526,9 @@
                 @endif
                 <div class="flex justify-end gap-3">
                     <button type="button" @click="showAssignModal = false"
-                        class="px-4 py-2 text-sm font-medium text-[var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)]">Batal</button>
+                        class="px-4 py-2 text-sm font-medium text-[var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)] inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                     <button type="submit" :disabled="selected.length === 0"
-                        class="px-4 py-2 text-sm font-medium text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed">Tugaskan</button>
+                        class="px-4 py-2 text-sm font-medium text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">assignment_ind</span>Tugaskan</button>
                 </div>
             </form>
         </div>
@@ -552,9 +559,9 @@
                 </div>
                 <div class="flex justify-end gap-3">
                     <button type="button" @click="showFeeModal = false"
-                        class="px-4 py-2 text-sm font-medium text-[var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)]">Batal</button>
+                        class="px-4 py-2 text-sm font-medium text-[var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)] inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                     <button type="submit"
-                        class="px-4 py-2 text-sm font-medium text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90">Simpan</button>
+                        class="px-4 py-2 text-sm font-medium text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90 inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">save</span>Simpan</button>
                 </div>
             </form>
         </div>
@@ -569,7 +576,7 @@
             <p class="text-sm text-[var(--dash-text-muted)] mb-5">Status tidak bisa dikembalikan setelah dibatalkan.</p>
             <div class="flex justify-end gap-3">
                 <button type="button" @click="showCancelModal = false"
-                    class="px-4 py-2 text-sm font-medium text-[var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)]">Kembali</button>
+                    class="px-4 py-2 text-sm font-medium text-[var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)] inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">arrow_back</span>Kembali</button>
                 <form action="{{ route('socializations.cancel', $socialization) }}" method="POST" class="inline">
                     @csrf
                     <button type="submit"
@@ -610,9 +617,9 @@
                 @endif
                 <div class="flex justify-end gap-3">
                     <button type="button" @click="showCompleteModal = false"
-                        class="px-4 py-2 text-sm font-medium text-[var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)]">Batal</button>
+                        class="px-4 py-2 text-sm font-medium text-[var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)] inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                     <button type="submit"
-                        class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700">Selesaikan</button>
+                        class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">check_circle</span>Selesaikan</button>
                 </div>
             </form>
         </div>
@@ -640,7 +647,7 @@
                 </div>
                 <div class="bg-[var(--dash-page-bg)] px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse rounded-b-lg">
                     <button type="button" @click="$refs.confirmForm.submit()" :class="confirmActionClass" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none sm:ml-3 sm:w-auto sm:text-sm" x-text="confirmActionText"></button>
-                    <button type="button" @click="showConfirmModal = false" class="mt-3 w-full inline-flex justify-center rounded-lg border border-[var(--dash-card-border)] shadow-sm px-4 py-2 bg-[var(--dash-card-bg)] text-base font-medium text-[var(--dash-text-body)] hover:bg-[var(--dash-page-bg)] focus:outline-none sm:mt-0 sm:w-auto sm:text-sm">Batal</button>
+                    <button type="button" @click="showConfirmModal = false" class="mt-3 w-full inline-flex justify-center rounded-lg border border-[var(--dash-card-border)] shadow-sm px-4 py-2 bg-[var(--dash-card-bg)] text-base font-medium text-[var(--dash-text-body)] hover:bg-[var(--dash-page-bg)] focus:outline-none sm:mt-0 sm:w-auto sm:text-sm gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                 </div>
                 <form x-ref="confirmForm" :action="confirmActionUrl" method="POST" class="hidden">
                     @csrf

@@ -158,6 +158,7 @@
                                                         <a href="{{ route('curriculum-items.interactive.show', $item) }}"
                                                            class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition-colors"
                                                            style="background-color: var(--dash-primary-bg); color: var(--dash-primary-text); border: 1px solid var(--dash-card-border);">
+                                                            <span class="material-symbols-outlined text-[14px]">edit</span>
                                                             Edit Modul
                                                         </a>
                                                     @else
@@ -237,13 +238,13 @@
             </label>
             <div class="flex gap-3 pt-2">
                 <button type="button" onclick="closeModal('session-modal','session-errors')"
-                        class="flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                        class="flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors inline-flex items-center justify-center gap-1.5"
                         style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
                         onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
-                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">Batal</button>
+                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                 <button type="submit"
-                        class="flex-1 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
-                        style="background-color: var(--dash-primary);">Simpan</button>
+                        class="flex-1 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity inline-flex items-center justify-center gap-1.5"
+                        style="background-color: var(--dash-primary);"><span class="material-symbols-outlined text-[16px]">save</span>Simpan</button>
             </div>
         </form>
     </div>
@@ -334,13 +335,13 @@
             </label>
             <div class="flex gap-3 pt-2">
                 <button type="button" onclick="closeModal('item-modal','item-errors')"
-                        class="flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                        class="flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors inline-flex items-center justify-center gap-1.5"
                         style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
                         onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
-                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">Batal</button>
+                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                 <button type="submit"
-                        class="flex-1 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
-                        style="background-color: var(--dash-primary);">Simpan</button>
+                        class="flex-1 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity inline-flex items-center justify-center gap-1.5"
+                        style="background-color: var(--dash-primary);"><span class="material-symbols-outlined text-[16px]">save</span>Simpan</button>
             </div>
         </form>
     </div>

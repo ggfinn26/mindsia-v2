@@ -182,6 +182,7 @@
                     <input type="hidden" name="action" value="reject">
                     <input type="text" name="rejection_notes" placeholder="Catatan penolakan..." required class="block w-full min-w-[200px] rounded-lg border-[color:var(--dash-card-border)] bg-[var(--dash-nav-hover-bg)] px-3 py-2 text-sm focus:border-red-500 focus:bg-[var(--dash-card-bg)] focus:ring-red-500">
                     <button type="submit" class="inline-flex min-h-10 items-center gap-2 rounded-lg border border-red-200 bg-[var(--dash-card-bg)] px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 transition-colors">
+                        <span class="material-symbols-outlined text-[16px]">close</span>
                         Tolak
                     </button>
                 </form>

@@ -135,7 +135,8 @@
                            class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
                 </div>
                 <div class="sm:col-span-2 flex justify-end">
-                    <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-lg transition-colors">
+                    <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-lg transition-colors inline-flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">save</span>
                         Simpan Pendidikan
                     </button>
                 </div>
@@ -209,8 +210,8 @@
                                    class="w-full px-3.5 py-2 bg-[#F8FAFC] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
                         </div>
                         <div class="sm:col-span-2 flex items-center gap-2 justify-end">
-                            <button type="button" @click="editing = false" class="px-4 py-2 text-sm font-semibold text-[color:var(--dash-text-body)] bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 rounded-lg transition-colors">Batal</button>
-                            <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-lg transition-colors">Simpan</button>
+                            <button type="button" @click="editing = false" class="px-4 py-2 text-sm font-semibold text-[color:var(--dash-text-body)] bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 rounded-lg transition-colors inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
+                            <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-lg transition-colors inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">save</span>Simpan</button>
                         </div>
                     </form>
                 </div>
@@ -264,7 +265,8 @@
                               class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">{{ old('reason_for_leaving') }}</textarea>
                 </div>
                 <div class="sm:col-span-2 flex justify-end">
-                    <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-lg transition-colors">
+                    <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-lg transition-colors inline-flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">save</span>
                         Simpan Pengalaman
                     </button>
                 </div>
@@ -329,8 +331,8 @@
                                       class="w-full px-3.5 py-2 bg-[#F8FAFC] border border-[color:var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">{{ $exp->reason_for_leaving }}</textarea>
                         </div>
                         <div class="sm:col-span-2 flex items-center gap-2 justify-end">
-                            <button type="button" @click="editing = false" class="px-4 py-2 text-sm font-semibold text-[color:var(--dash-text-body)] bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 rounded-lg transition-colors">Batal</button>
-                            <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-lg transition-colors">Simpan</button>
+                            <button type="button" @click="editing = false" class="px-4 py-2 text-sm font-semibold text-[color:var(--dash-text-body)] bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 rounded-lg transition-colors inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
+                            <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-lg transition-colors inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">save</span>Simpan</button>
                         </div>
                     </form>
                 </div>
@@ -379,7 +381,8 @@
                            class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
                 </div>
                 <div class="sm:col-span-2 flex justify-end">
-                    <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-lg transition-colors">
+                    <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-lg transition-colors inline-flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">save</span>
                         Simpan Sertifikasi
                     </button>
                 </div>
@@ -438,8 +441,8 @@
                                    class="w-full px-3.5 py-2 bg-[#F8FAFC] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
                         </div>
                         <div class="sm:col-span-2 flex items-center gap-2 justify-end">
-                            <button type="button" @click="editing = false" class="px-4 py-2 text-sm font-semibold text-[color:var(--dash-text-body)] bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 rounded-lg transition-colors">Batal</button>
-                            <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-lg transition-colors">Simpan</button>
+                            <button type="button" @click="editing = false" class="px-4 py-2 text-sm font-semibold text-[color:var(--dash-text-body)] bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 rounded-lg transition-colors inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
+                            <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-lg transition-colors inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">save</span>Simpan</button>
                         </div>
                     </form>
                 </div>

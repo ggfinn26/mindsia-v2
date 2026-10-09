@@ -96,10 +96,10 @@
                 <span class="material-symbols-outlined text-[16px]">search</span>Filter
             </button>
             <a href="{{ route('members.index') }}"
-               class="inline-flex items-center px-3 py-2 rounded-lg text-sm transition-colors"
+               class="inline-flex items-center px-3 py-2 rounded-lg text-sm transition-colors gap-1.5"
                style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
                onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
-               onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">Reset</a>
+               onmouseout="this.style.backgroundColor='var(--dash-card-bg)'"><span class="material-symbols-outlined text-[16px]">restart_alt</span>Reset</a>
         </form>
     </div>
 

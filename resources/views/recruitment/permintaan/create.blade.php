@@ -142,13 +142,14 @@
 
             <div class="pt-2 flex justify-end gap-3" style="border-top: 1px solid var(--dash-card-border); padding-top: 1.25rem;">
                 <a href="{{ route('recruitment.permintaan.index') }}"
-                   class="px-5 py-2.5 text-sm font-semibold rounded-lg transition-colors"
+                   class="px-5 py-2.5 text-sm font-semibold rounded-lg transition-colors inline-flex items-center gap-1.5"
                    style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
                    onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
-                   onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">Batal</a>
+                   onmouseout="this.style.backgroundColor='var(--dash-card-bg)'"><span class="material-symbols-outlined text-[16px]">close</span>Batal</a>
                 <button type="submit"
-                        class="px-5 py-2.5 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                        class="px-5 py-2.5 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity inline-flex items-center gap-1.5"
                         style="background-color: var(--dash-primary);">
+                    <span class="material-symbols-outlined text-[16px]">save</span>
                     Simpan sebagai Draft
                 </button>
             </div>
