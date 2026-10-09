@@ -124,7 +124,7 @@
                                 class="block w-full border-[color:var(--dash-input-border)] rounded-lg shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500">
                         </div>
                         <button type="submit"
-                            class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors inline-flex items-center gap-1.5">
+                            class="px-4 py-2 bg-[var(--dash-primary)] hover:opacity-90 text-white text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[color:var(--dash-primary)] transition-colors inline-flex items-center gap-1.5">
                             <span class="material-symbols-outlined text-[16px]">save</span>
                             Simpan
                         </button>
@@ -214,7 +214,8 @@
                                         <div x-show="open" x-transition
                                             class="absolute right-0 top-8 z-20 w-52 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl shadow-lg py-1">
                                             <button @click="send(null)"
-                                                class="w-full text-left px-3 py-2 text-xs text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]">
+                                                class="w-full text-left px-3 py-2 text-xs border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] font-semibold inline-flex items-center justify-center gap-1.5">
+                                                <span class="material-symbols-outlined text-[14px]">send</span>
                                                 Kirim langsung
                                             </button>
                                             <template x-if="templates.length > 0">

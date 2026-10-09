@@ -178,7 +178,7 @@
 
         <!-- Submit -->
         <div class="flex gap-3">
-            <button type="submit" class="inline-flex min-h-10 items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-5 rounded-md text-sm">
+            <button type="submit" class="inline-flex min-h-10 items-center gap-2 bg-[var(--dash-primary)] hover:opacity-90 text-white font-medium py-2 px-5 rounded-lg text-sm">
                 <span class="material-symbols-outlined text-[18px]">save</span> Perbarui Survey
             </button>
             <a href="{{ route('surveys.show', $survey) }}" class="inline-flex min-h-10 items-center border border-[color:var(--dash-input-border)] px-4 text-sm font-semibold text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] rounded-md">Batal</a>

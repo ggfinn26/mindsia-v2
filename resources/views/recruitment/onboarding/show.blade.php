@@ -11,7 +11,7 @@
 
     <div class="mb-8 flex justify-between items-center">
         <h1 class="text-2xl md:text-3xl text-[color:var(--dash-text-heading)] font-bold">Detail Onboarding</h1>
-        <a href="{{ route('recruitment.onboarding.index') }}" class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)]">Kembali</a>
+        <a href="{{ route('recruitment.onboarding.index') }}" class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">arrow_back</span>Kembali</a>
     </div>
 
     <div class="bg-[var(--dash-card-bg)] shadow-lg rounded-sm border border-[color:var(--dash-card-border)] p-6 space-y-6">
@@ -114,13 +114,15 @@
                                 <textarea name="rejection_reason" rows="2" class="w-full border border-[color:var(--dash-input-border)] rounded-md px-3 py-2 text-sm"></textarea>
                             </div>
                             <div class="flex gap-3">
-                                <button type="submit" name="decision" value="approved" class="btn bg-blue-600 hover:bg-blue-700 text-white">
+                                <button type="submit" name="decision" value="approved" class="btn bg-[var(--dash-primary)] hover:opacity-90 text-white">
                                     Approve Onboarding
                                 </button>
-                                <button type="button" @click="showReject = !showReject" class="btn bg-[var(--dash-card-bg)] border-red-300 text-red-600 hover:bg-red-50">
+                                <button type="button" @click="showReject = !showReject" class="btn bg-[var(--dash-card-bg)] border-red-300 text-red-600 hover:bg-red-50 inline-flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-[16px]">close</span>
                                     Tolak
                                 </button>
-                                <button type="submit" name="decision" value="rejected" x-show="showReject" class="btn bg-red-500 hover:bg-red-600 text-white">
+                                <button type="submit" name="decision" value="rejected" x-show="showReject" class="btn bg-[#dc2626] hover:opacity-90 text-white inline-flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-[16px]">check_circle</span>
                                     Konfirmasi Tolak
                                 </button>
                             </div>
@@ -134,7 +136,8 @@
                 @can('recruitment.onboarding.update')
                     <form action="{{ route('recruitment.onboarding.complete', $employeeOnboarding) }}" method="POST" onsubmit="return confirm('Selesaikan onboarding dan buat akun employee baru?')">
                         @csrf
-                        <button type="submit" class="btn bg-green-600 hover:bg-green-700 text-white">
+                        <button type="submit" class="btn bg-green-600 hover:bg-green-700 text-white inline-flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[16px]">check_circle</span>
                             Selesaikan Onboarding — Buat Employee
                         </button>
                     </form>

@@ -86,7 +86,7 @@
             </div>
 
             <div class="bg-[var(--dash-nav-hover-bg)] px-6 py-4 sm:px-8 border-t border-[color:var(--dash-card-border)] flex items-center justify-end">
-                <button type="submit" class="px-5 py-2.5 text-sm font-medium text-white bg-[#5586DB] border border-transparent rounded-lg shadow-[0_4px_12px_-2px_rgba(85,134,219,0.3)] hover:bg-[#4370BC] focus:outline-none transition-colors inline-flex items-center gap-1.5">
+                <button type="submit" class="px-5 py-2.5 text-sm font-medium text-white bg-[var(--dash-primary)] border border-transparent rounded-lg shadow-[0_4px_12px_-2px_rgba(85,134,219,0.3)] hover:opacity-90 focus:outline-none transition-colors inline-flex items-center gap-1.5">
                     <span class="material-symbols-outlined text-[16px]">lock_reset</span>
                     Perbarui Password
                 </button>

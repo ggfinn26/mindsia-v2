@@ -171,7 +171,8 @@
                                         <div x-show="open" x-transition
                                             class="absolute left-0 top-7 z-20 w-56 bg-[var(--dash-card-bg)] border border-[var(--dash-card-border)] rounded-xl shadow-lg py-1">
                                             <button @click="send(null)"
-                                                class="w-full text-left px-4 py-2 text-xs text-[var(--dash-text-body)] hover:bg-[var(--dash-page-bg)]">
+                                                class="w-full text-left px-4 py-2 text-xs text-[var(--dash-text-body)] border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] font-semibold inline-flex items-center justify-center gap-1.5">
+                                                <span class="material-symbols-outlined text-[14px]">send</span>
                                                 Kirim langsung (tanpa template)
                                             </button>
                                             <template x-if="templates.length > 0">

@@ -14,9 +14,9 @@
             <input type="text" name="search" value="{{ request('search') }}"
                 placeholder="Cari nama, email, atau WA..."
                 class="form-input text-sm w-64" />
-            <button type="submit" class="btn bg-indigo-500 hover:bg-indigo-600 text-white text-sm">Cari</button>
+            <button type="submit" class="btn bg-[var(--dash-primary)] hover:opacity-90 text-white text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">search</span>Cari</button>
             @if(request('search'))
-                <a href="{{ route('recruitment.applicants.index') }}" class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] text-sm">Reset</a>
+                <a href="{{ route('recruitment.applicants.index') }}" class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">restart_alt</span>Reset</a>
             @endif
         </form>
     </div>

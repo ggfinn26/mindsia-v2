@@ -81,7 +81,7 @@
                             <td class="px-5 py-4 text-right">
                                 @if ($slipExists)
                                     <a href="{{ route('employee.payslips.download', $payroll) }}"
-                                       class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+                                       class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]"
                                        style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body);">
                                         <span class="material-symbols-outlined text-[15px]">download</span>
                                         Unduh

@@ -107,7 +107,7 @@
                 </div>
                 <div class="flex items-center gap-2 shrink-0 flex-wrap justify-end">
                     <a href="{{ route('payroll.slip-templates.download', $tpl['type']) }}"
-                       class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+                       class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]"
                        style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
@@ -150,7 +150,7 @@
             <p class="text-sm font-semibold" style="color: var(--dash-text-muted);">Belum ada template.</p>
             <p class="text-xs mt-1 mb-4" style="color: var(--dash-text-faint);">Upload template pertama untuk mulai generate slip gaji.</p>
             <button @click="tab = 'upload'"
-                    class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]"
                     style="background-color: var(--dash-primary);">
                 <span class="material-symbols-outlined text-[16px]">upload_file</span>Upload Template
             </button>
@@ -385,7 +385,7 @@
                         <p class="text-xs mt-0.5" style="color: var(--dash-text-muted);">Download dan buka di Word untuk cek tampilan.</p>
                     </div>
                     <a href="{{ route('payroll.slip-templates.test.download', ['type' => $testType, 'token' => $testResult['resultToken']]) }}"
-                       class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity shrink-0"
+                       class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity shrink-0 border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]"
                        style="background-color: #059669;">
                         <span class="material-symbols-outlined text-[16px]">download</span>Download Hasil
                     </a>
@@ -399,7 +399,7 @@
                         <p class="text-xs mt-0.5" style="color: var(--dash-text-muted);">Lanjut upload template ke server.</p>
                     </div>
                     <button type="button" @click="tab = 'upload'"
-                            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity shrink-0"
+                            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity shrink-0 border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]"
                             style="background-color: var(--dash-primary);">
                         <span class="material-symbols-outlined text-[16px]">upload_file</span>Upload Template
                     </button>

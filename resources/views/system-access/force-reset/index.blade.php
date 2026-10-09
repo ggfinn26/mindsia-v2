@@ -18,7 +18,7 @@
                 <label class="block text-sm font-medium mb-1">Email / Username Pengguna</label>
                 <div class="flex gap-2">
                     <input name="search" type="text" class="form-input flex-1" placeholder="Masukkan email atau username" />
-                    <button type="button" class="btn bg-gray-200 hover:bg-gray-300 text-[color:var(--dash-text-body)]">Cari</button>
+                    <button type="button" class="btn bg-gray-200 hover:bg-gray-300 text-[color:var(--dash-text-body)] inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">search</span>Cari</button>
                 </div>
             </div>
             
@@ -26,7 +26,7 @@
             <div class="hidden border border-[color:var(--dash-card-border)] p-4 rounded bg-[var(--dash-nav-hover-bg)] mt-4">
                 <p class="font-medium text-[color:var(--dash-text-heading)]">User ditemukan: <span class="text-indigo-600">John Doe (john@example.com)</span></p>
                 <div class="mt-4 flex gap-3">
-                    <button type="submit" class="btn bg-red-500 hover:bg-red-600 text-white">Reset Password (Kirim Link via Email)</button>
+                    <button type="submit" class="btn bg-[#dc2626] hover:opacity-90 text-white">Reset Password (Kirim Link via Email)</button>
                 </div>
             </div>
         </form>

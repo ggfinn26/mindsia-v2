@@ -93,7 +93,7 @@
                                                         <div class="shrink-0">
                                                             @if ($item->material_type === 'interactive')
                                                                 <a href="{{ route('member.curriculum.interactive.show', [$classroom, $item]) }}"
-                                                                    class="btn btn-sm bg-indigo-500 hover:bg-indigo-600 text-white text-xs px-3 py-1.5">
+                                                                    class="btn btn-sm bg-[var(--dash-primary)] hover:opacity-90 text-white text-xs px-3 py-1.5">
                                                                     Latihan
                                                                 </a>
                                                             @elseif ($item->material_type === 'external_link')
@@ -103,7 +103,8 @@
                                                                 </a>
                                                             @elseif ($item->material_type === 'file')
                                                                 <a href="{{ route('member.curriculum.view', [$classroom, $item]) }}"
-                                                                    class="btn btn-sm bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] text-xs px-3 py-1.5">
+                                                                    class="btn btn-sm bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] text-xs px-3 py-1.5 inline-flex items-center gap-1.5">
+                                                                    <span class="material-symbols-outlined text-[14px]">visibility</span>
                                                                     Lihat
                                                                 </a>
                                                             @endif

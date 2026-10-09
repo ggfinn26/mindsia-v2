@@ -136,7 +136,7 @@
                     </div>
                 </div>
                 <div class="bg-[var(--dash-nav-hover-bg)] px-6 py-4 sm:flex sm:flex-row-reverse gap-3 border-t border-[color:var(--dash-card-border)]">
-                    <button type="button" @click="$refs.confirmForm.submit()" class="w-full inline-flex justify-center rounded-lg bg-red-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-red-700 transition-colors sm:w-auto" x-text="confirmActionText"></button>
+                    <button type="button" @click="$refs.confirmForm.submit()" class="w-full inline-flex justify-center rounded-lg bg-[#dc2626] px-5 py-2.5 text-sm font-bold text-white shadow-sm hover:opacity-90 transition-colors sm:w-auto" x-text="confirmActionText"></button>
                     <button type="button" @click="showConfirmModal = false" class="mt-3 w-full inline-flex justify-center rounded-lg border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] px-5 py-2.5 text-sm font-bold text-[color:var(--dash-text-body)] shadow-sm hover:bg-[var(--dash-nav-hover-bg)] transition-colors sm:mt-0 sm:w-auto gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                 </div>
                 <form x-ref="confirmForm" :action="confirmActionUrl" method="POST" class="hidden">

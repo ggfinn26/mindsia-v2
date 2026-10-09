@@ -171,7 +171,7 @@
             <h3 class="font-jakarta text-sm font-bold mb-3" style="color: var(--dash-text-heading);">Slip Gaji</h3>
             @if($payroll->slip)
                 <a href="{{ route('payroll.payrolls.slip.download', [$period, $payroll]) }}"
-                   class="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold transition-colors"
+                   class="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold transition-colors border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]"
                    style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
                    onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                    onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">

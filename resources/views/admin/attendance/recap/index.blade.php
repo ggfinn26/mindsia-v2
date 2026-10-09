@@ -59,7 +59,7 @@
                 Hanya tampilkan pegawai yang pernah terlambat
             </label>
             <div class="flex gap-2">
-                <a href="{{ route('attendance-recaps.index') }}" class="text-xs text-[var(--dash-text-muted)] hover:text-[var(--dash-text-body)] px-3 py-2">Reset</a>
+                <a href="{{ route('attendance-recaps.index') }}" class="text-xs text-[var(--dash-text-muted)] px-3 py-2 border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] font-semibold inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px]">restart_alt</span>Reset</a>
                 <button type="submit" class="bg-[var(--dash-primary)] hover:opacity-90 text-white font-medium py-2 px-5 rounded-md text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">filter_list</span>Filter</button>
             </div>
         </div>

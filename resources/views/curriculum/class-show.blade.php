@@ -4,7 +4,7 @@
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
     <div class="mb-8 flex justify-between items-center">
         <h1 class="text-2xl md:text-3xl text-[color:var(--dash-text-heading)] font-bold">Ruang Kelas</h1>
-        <a href="{{ route('class-curriculum.index', $classroom) }}" class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)]">Kembali</a>
+        <a href="{{ route('class-curriculum.index', $classroom) }}" class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">arrow_back</span>Kembali</a>
     </div>
 
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
@@ -49,7 +49,7 @@
                 </ul>
                 
                 <div class="mt-6 pt-6 border-t border-[color:var(--dash-card-border)]">
-                    <a href="#" class="btn w-full bg-blue-500 hover:bg-blue-600 text-white flex justify-center items-center">
+                    <a href="#" class="btn w-full bg-[var(--dash-primary)] hover:opacity-90 text-white flex justify-center items-center">
                         <span class="material-symbols-outlined mr-2">videocam</span> Join Zoom Meeting
                     </a>
                 </div>

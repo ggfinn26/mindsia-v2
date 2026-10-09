@@ -21,7 +21,7 @@
 
     <div class="mb-8 flex justify-between items-center">
         <h1 class="text-2xl md:text-3xl text-[color:var(--dash-text-heading)] font-bold">Detail Aplikasi Lowongan</h1>
-        <a href="{{ route('recruitment.application.index') }}" class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)]">Kembali</a>
+        <a href="{{ route('recruitment.application.index') }}" class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">arrow_back</span>Kembali</a>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -179,7 +179,7 @@
 
                     {{-- Reject --}}
                     @can('recruitment.job_application.review')
-                        <button type="button" @click="showRejectModal = true" class="btn bg-red-500 hover:bg-red-600 text-white">
+                        <button type="button" @click="showRejectModal = true" class="btn bg-[#dc2626] hover:opacity-90 text-white">
                             Reject Pelamar
                         </button>
                     @endcan
@@ -187,7 +187,7 @@
                     {{-- Advance: applied → psikotest --}}
                     @if($jobApplication->status === 'applied')
                         @can('recruitment.psikotest.create')
-                            <button type="button" @click="showPsikotestModal = true" class="btn bg-indigo-500 hover:bg-indigo-600 text-white">
+                            <button type="button" @click="showPsikotestModal = true" class="btn bg-[var(--dash-primary)] hover:opacity-90 text-white">
                                 Mulai Psikotest
                             </button>
                         @endcan
@@ -196,7 +196,7 @@
                     {{-- Advance: screening → interview --}}
                     @if($jobApplication->status === 'screening')
                         @can('recruitment.interview.create')
-                            <button type="button" @click="showInterviewModal = true" class="btn bg-indigo-500 hover:bg-indigo-600 text-white">
+                            <button type="button" @click="showInterviewModal = true" class="btn bg-[var(--dash-primary)] hover:opacity-90 text-white">
                                 Jadwalkan Interview
                             </button>
                         @endcan
@@ -212,7 +212,8 @@
                         {{-- Buat offering letter jika evaluasi accepted & belum ada letter --}}
                         @if($jobApplication->interviewEvaluation?->decision === 'accepted' && !$jobApplication->offeringLetter)
                             @can('recruitment.offering_letter.create')
-                                <button type="button" @click="showOfferingModal = true" class="btn bg-purple-600 hover:bg-purple-700 text-white">
+                                <button type="button" @click="showOfferingModal = true" class="btn bg-purple-600 hover:bg-purple-700 text-white inline-flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-[16px]">add</span>
                                     Buat Offering Letter
                                 </button>
                             @endcan
@@ -226,7 +227,8 @@
             @if($jobApplication->offeringLetter?->status === 'accepted' && !$jobApplication->onboarding)
                 @can('recruitment.onboarding.create')
                     <div class="mt-4 flex justify-end">
-                        <button type="button" @click="showOnboardingModal = true" class="btn bg-green-600 hover:bg-green-700 text-white">
+                        <button type="button" @click="showOnboardingModal = true" class="btn bg-green-600 hover:bg-green-700 text-white inline-flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[16px]">add</span>
                             Buat Onboarding
                         </button>
                     </div>
@@ -286,7 +288,7 @@
                                 </form>
                                 <form action="{{ route('recruitment.offering-letters.decline', $letter) }}" method="POST" onsubmit="return confirm('Penawaran ditolak? Lamaran akan ditutup.')">
                                     @csrf
-                                    <button type="submit" class="btn btn-sm bg-red-500 hover:bg-red-600 text-white text-xs">Tolak Penawaran</button>
+                                    <button type="submit" class="btn btn-sm bg-[#dc2626] hover:opacity-90 text-white text-xs inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px]">close</span>Tolak Penawaran</button>
                                 </form>
                             @endcan
                         </div>
@@ -350,8 +352,8 @@
                     <input type="date" name="start_date" required class="{{ $inp }}">
                 </div>
                 <div class="flex justify-end gap-2 pt-2 border-t border-[color:var(--dash-card-border)]">
-                    <button type="button" @click="showOnboardingModal = false" class="btn border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]">Batal</button>
-                    <button type="submit" class="btn bg-green-600 hover:bg-green-700 text-white">Buat Onboarding</button>
+                    <button type="button" @click="showOnboardingModal = false" class="btn border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
+                    <button type="submit" class="btn bg-green-600 hover:bg-green-700 text-white inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">add</span>Buat Onboarding</button>
                 </div>
             </form>
         </div>
@@ -401,8 +403,8 @@
                     <textarea name="notes" rows="2" class="{{ $inp }}"></textarea>
                 </div>
                 <div class="flex justify-end gap-2 pt-2 border-t border-[color:var(--dash-card-border)]">
-                    <button type="button" @click="showOfferingModal = false" class="btn border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]">Batal</button>
-                    <button type="submit" class="btn bg-purple-600 hover:bg-purple-700 text-white">Buat Offering Letter</button>
+                    <button type="button" @click="showOfferingModal = false" class="btn border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
+                    <button type="submit" class="btn bg-purple-600 hover:bg-purple-700 text-white inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">add</span>Buat Offering Letter</button>
                 </div>
             </form>
         </div>
@@ -438,8 +440,8 @@
                     <textarea name="notes" rows="3" class="{{ $inp }}">{{ $jobApplication->offeringLetter->notes }}</textarea>
                 </div>
                 <div class="flex justify-end gap-2 pt-2 border-t border-[color:var(--dash-card-border)]">
-                    <button type="button" @click="showNegotiateModal = false" class="btn border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]">Batal</button>
-                    <button type="submit" class="btn bg-amber-500 hover:bg-amber-600 text-white">Simpan Negosiasi</button>
+                    <button type="button" @click="showNegotiateModal = false" class="btn border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
+                    <button type="submit" class="btn bg-amber-500 hover:bg-amber-600 text-white inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">save</span>Simpan Negosiasi</button>
                 </div>
             </form>
         </div>
@@ -467,8 +469,8 @@
                     <textarea name="reason" rows="3" required class="{{ $inp }} focus:ring-red-300 focus:border-red-400"></textarea>
                 </div>
                 <div class="flex justify-end gap-2 pt-2 border-t border-[color:var(--dash-card-border)]">
-                    <button type="button" @click="showRejectModal = false" class="btn border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]">Batal</button>
-                    <button type="submit" class="btn bg-red-500 hover:bg-red-600 text-white">Tolak Lamaran</button>
+                    <button type="button" @click="showRejectModal = false" class="btn border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
+                    <button type="submit" class="btn bg-[#dc2626] hover:opacity-90 text-white inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Tolak Lamaran</button>
                 </div>
             </form>
         </div>
@@ -498,8 +500,8 @@
                     <input type="url" name="psikotest_link" placeholder="https://psikotes.link/..." class="{{ $inp }}">
                 </div>
                 <div class="flex justify-end gap-2 pt-2 border-t border-[color:var(--dash-card-border)]">
-                    <button type="button" @click="showPsikotestModal = false" class="btn border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]">Batal</button>
-                    <button type="submit" class="btn bg-blue-600 hover:bg-blue-700 text-white">Simpan</button>
+                    <button type="button" @click="showPsikotestModal = false" class="btn border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
+                    <button type="submit" class="btn bg-[var(--dash-primary)] hover:opacity-90 text-white inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">save</span>Simpan</button>
                 </div>
             </form>
         </div>
@@ -566,8 +568,8 @@
                     <textarea name="notes" rows="2" class="{{ $inp }}"></textarea>
                 </div>
                 <div class="flex justify-end gap-2 pt-2 border-t border-[color:var(--dash-card-border)]">
-                    <button type="button" @click="showEvalModal = false" class="btn border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]">Batal</button>
-                    <button type="submit" class="btn bg-indigo-600 hover:bg-indigo-700 text-white">Simpan Evaluasi</button>
+                    <button type="button" @click="showEvalModal = false" class="btn border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
+                    <button type="submit" class="btn bg-[var(--dash-primary)] hover:opacity-90 text-white inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">save</span>Simpan Evaluasi</button>
                 </div>
             </form>
         </div>
@@ -621,7 +623,7 @@
                     <textarea name="notes" rows="2" class="{{ $inp }}"></textarea>
                 </div>
                 <div class="flex justify-end gap-2 pt-2 border-t border-[color:var(--dash-card-border)]">
-                    <button type="button" @click="showInterviewModal = false" class="btn border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]">Batal</button>
+                    <button type="button" @click="showInterviewModal = false" class="btn border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                     <button type="submit" class="btn bg-yellow-500 hover:bg-yellow-600 text-white">Jadwalkan</button>
                 </div>
             </form>

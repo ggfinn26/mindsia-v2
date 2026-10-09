@@ -107,12 +107,13 @@
 
             <div class="pt-4 mt-6 border-t border-[color:var(--dash-card-border)] flex justify-end gap-3">
                 <a href="{{ route('employees.show', $status->employee) }}"
-                   class="px-5 py-2.5 text-[13px] font-bold text-[color:var(--dash-text-body)] bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl hover:bg-[var(--dash-nav-hover-bg)] transition-colors">
+                   class="px-5 py-2.5 text-[13px] font-bold text-[color:var(--dash-text-body)] bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg hover:bg-[var(--dash-nav-hover-bg)] transition-colors inline-flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px]">arrow_back</span>
                     Kembali
                 </a>
                 @if($checklist->count() > 0)
                     <button type="submit"
-                            class="bg-[#5586DB] hover:bg-[#4A78C4] text-white px-6 py-2.5 rounded-lg text-[13px] font-bold shadow-sm transition-colors flex items-center gap-2">
+                            class="bg-[var(--dash-primary)] hover:opacity-90 text-white px-6 py-2.5 rounded-lg text-[13px] font-bold shadow-sm transition-colors flex items-center gap-2">
                         <span class="material-symbols-outlined text-[18px]">save</span>
                         Simpan Progress
                     </button>

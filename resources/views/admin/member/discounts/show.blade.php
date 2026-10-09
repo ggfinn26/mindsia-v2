@@ -357,7 +357,7 @@
                     onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                     onmouseout="this.style.backgroundColor='var(--dash-card-bg)'"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
             <button onclick="document.getElementById('delete-form').submit()"
-                    class="px-4 py-2 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 font-semibold inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">delete</span>Ya, Hapus</button>
+                    class="px-4 py-2 text-sm bg-[#dc2626] text-white rounded-lg hover:opacity-90 font-semibold inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">delete</span>Ya, Hapus</button>
         </div>
     </div>
 </div>

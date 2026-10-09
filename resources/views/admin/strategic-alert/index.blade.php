@@ -85,8 +85,8 @@
                                         </td>
                                         <td class="px-5 py-4 text-right">
                                             <a href="{{ $alert->url }}"
-                                               class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors"
-                                               style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body);">Lihat</a>
+                                               class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] gap-1.5"
+                                               style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body);"><span class="material-symbols-outlined text-[14px]">visibility</span>Lihat</a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -147,8 +147,8 @@
                                         </td>
                                         <td class="px-5 py-4 text-right">
                                             <a href="{{ $alert->url }}"
-                                               class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors"
-                                               style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body);">Lihat</a>
+                                               class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] gap-1.5"
+                                               style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body);"><span class="material-symbols-outlined text-[14px]">visibility</span>Lihat</a>
                                         </td>
                                     </tr>
                                 @endforeach

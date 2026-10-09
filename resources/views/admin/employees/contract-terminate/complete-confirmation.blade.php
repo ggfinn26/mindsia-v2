@@ -78,7 +78,7 @@
                     Batal
                 </a>
                 <button type="submit"
-                        class="bg-red-500 hover:bg-red-600 text-white px-6 py-2.5 rounded-lg text-[13px] font-bold shadow-sm transition-colors flex items-center gap-2">
+                        class="bg-[#dc2626] hover:opacity-90 text-white px-6 py-2.5 rounded-lg text-[13px] font-bold shadow-sm transition-colors flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">delete_forever</span>
                     Hard Delete Akun
                 </button>

@@ -249,10 +249,10 @@
                         style="background-color: var(--dash-primary);"><span class="material-symbols-outlined text-[16px]">filter_list</span>Filter</button>
                 @if(request()->hasAny(['search', 'branch_id']))
                     <a href="{{ route('marketing-target.index', ['month' => $month, 'year' => $year]) }}"
-                       class="px-3 py-2 text-sm font-semibold rounded-lg transition-colors"
+                       class="px-3 py-2 text-sm font-semibold rounded-lg transition-colors border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] inline-flex items-center gap-1.5"
                        style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
-                       onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">Reset</a>
+                       onmouseout="this.style.backgroundColor='var(--dash-card-bg)'"><span class="material-symbols-outlined text-[16px]">restart_alt</span>Reset</a>
                 @endif
             </div>
         </form>

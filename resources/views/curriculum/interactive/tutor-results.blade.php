@@ -10,7 +10,7 @@
             <p class="text-sm text-[color:var(--dash-text-muted)] mt-1">{{ $item->item_name }} — {{ $classroom->class_name }}</p>
         </div>
         <a href="{{ route('curriculum-items.interactive.show', $item) }}"
-            class="btn bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] text-sm">Edit Modul</a>
+            class="btn bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">edit</span>Edit Modul</a>
     </div>
 
     <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg overflow-hidden shadow-sm">

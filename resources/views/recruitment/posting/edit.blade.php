@@ -73,8 +73,9 @@
 
         <div class="flex justify-end gap-3">
             <a href="{{ route('recruitment.postings.show', $jobPosting) }}"
-                class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)]">Batal</a>
-            <button type="submit" class="btn bg-indigo-500 hover:bg-indigo-600 text-white">
+                class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</a>
+            <button type="submit" class="btn bg-[var(--dash-primary)] hover:opacity-90 text-white inline-flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">save</span>
                 Simpan Perubahan
             </button>
         </div>

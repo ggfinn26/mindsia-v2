@@ -55,7 +55,7 @@
                                 class="form-input flex-1 text-sm font-mono min-h-[44px]"
                                 placeholder="toefl-audio/SECTION-A-INSTRUCTIONS.mp3" />
                             <button type="submit"
-                                class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors shrink-0 gap-1.5">
+                                class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-lg bg-[var(--dash-primary)] hover:opacity-90 text-white text-sm font-medium transition-colors shrink-0 gap-1.5">
                                 <span class="material-symbols-outlined text-[16px]">save</span>
                                 Simpan
                             </button>

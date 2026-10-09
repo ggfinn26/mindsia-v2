@@ -64,7 +64,7 @@
                               onsubmit="return confirm('Lamar posisi {{ $posting->title }}?')">
                             @csrf
                             <button type="submit"
-                                    class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-lg transition-colors shadow-sm">
+                                    class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[var(--dash-primary)] hover:opacity-90 rounded-lg transition-colors shadow-sm">
                                 <span class="material-symbols-outlined text-[14px]">send</span>
                                 Lamar
                             </button>

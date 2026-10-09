@@ -30,8 +30,8 @@
             </div>
 
             <div class="mt-8 flex justify-end">
-                <a href="{{ route('users.index') }}" class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] mr-3">Batal</a>
-                <button type="submit" class="btn bg-indigo-500 hover:bg-indigo-600 text-white">Update Role</button>
+                <a href="{{ route('users.index') }}" class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] mr-3 inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</a>
+                <button type="submit" class="btn bg-[var(--dash-primary)] hover:opacity-90 text-white">Update Role</button>
             </div>
         </form>
     </div>

@@ -66,7 +66,7 @@
                     @enderror
                 </div>
                 <button type="submit"
-                        class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors inline-flex items-center gap-1.5">
+                        class="bg-[var(--dash-primary)] hover:opacity-90 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors inline-flex items-center gap-1.5">
                     <span class="material-symbols-outlined text-[16px]">save</span>
                     Simpan Jadwal
                 </button>

@@ -22,11 +22,13 @@
         <div class="px-6 py-5 border-b border-[color:var(--dash-card-border)] flex justify-between items-center">
             <h3 class="text-base font-semibold text-[color:var(--dash-text-heading)]">Informasi Akun</h3>
             <div class="flex gap-2">
-                <a href="{{ route('users.edit', $user->id) }}" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded text-sm font-medium">
+                <a href="{{ route('users.edit', $user->id) }}" class="bg-[var(--dash-primary)] hover:opacity-90 text-white px-3 py-1.5 rounded-lg text-sm font-medium inline-flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px]">edit</span>
                     Edit
                 </a>
                 @can('auth.user.force_reset_password')
-                    <a href="{{ route('users.reset-password.show', $user->id) }}" class="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1.5 rounded text-sm font-medium">
+                    <a href="{{ route('users.reset-password.show', $user->id) }}" class="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium inline-flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">lock_reset</span>
                         Reset Password
                     </a>
                 @endcan

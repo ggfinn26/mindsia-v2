@@ -84,7 +84,7 @@
                     Batal
                 </a>
                 <button type="submit"
-                        class="px-6 py-2.5 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-lg transition-colors shadow-sm inline-flex items-center gap-1.5">
+                        class="px-6 py-2.5 text-sm font-semibold text-white bg-[var(--dash-primary)] hover:opacity-90 rounded-lg transition-colors shadow-sm inline-flex items-center gap-1.5">
                     <span class="material-symbols-outlined text-[16px]">save</span>
                     Simpan Perubahan
                 </button>

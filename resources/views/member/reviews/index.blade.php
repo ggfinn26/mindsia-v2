@@ -105,7 +105,7 @@
                     placeholder="Tulis ulasan Anda... (opsional, min. 10 karakter)">{{ old('review') }}</textarea>
                 @error('rating')<p class="text-xs text-red-500">{{ $message }}</p>@enderror
                 @error('review')<p class="text-xs text-red-500">{{ $message }}</p>@enderror
-                <button type="submit" class="px-4 py-2 text-sm font-semibold bg-[#5586DB] text-white rounded-lg hover:bg-[#4370BC] transition-colors inline-flex items-center gap-1.5">
+                <button type="submit" class="px-4 py-2 text-sm font-semibold bg-[var(--dash-primary)] text-white rounded-lg hover:opacity-90 transition-colors inline-flex items-center gap-1.5">
                     <span class="material-symbols-outlined text-[16px]">send</span>
                     Kirim Review
                 </button>

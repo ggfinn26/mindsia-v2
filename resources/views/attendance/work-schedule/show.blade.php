@@ -225,7 +225,7 @@
                 </div>
 
                 <button type="submit"
-                    class="inline-flex items-center gap-1.5 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                    class="inline-flex items-center gap-1.5 px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-[var(--dash-primary)] hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[color:var(--dash-primary)] transition-colors">
                     <span class="material-symbols-outlined text-[16px]">add</span>
                     Assign
                 </button>
@@ -309,7 +309,7 @@
                 </div>
                 <div class="bg-[var(--dash-nav-hover-bg)] px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                     <button type="button" @click="$refs.confirmForm.submit()"
-                            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 hover:bg-red-700 text-base font-medium text-white focus:outline-none sm:ml-3 sm:w-auto sm:text-sm"
+                            class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-[#dc2626] hover:opacity-90 text-base font-medium text-white focus:outline-none sm:ml-3 sm:w-auto sm:text-sm"
                             x-text="confirmActionText"></button>
                     <button type="button" @click="showConfirmModal = false"
                             class="mt-3 w-full inline-flex justify-center rounded-md border border-[color:var(--dash-input-border)] shadow-sm px-4 py-2 bg-[var(--dash-card-bg)] text-base font-medium text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] focus:outline-none sm:mt-0 sm:w-auto sm:text-sm gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>

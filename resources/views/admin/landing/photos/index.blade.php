@@ -11,7 +11,7 @@
         </div>
         @can('landing.photo.manage')
         <a href="{{ route('admin.landing.photos.create', ['section' => $section]) }}"
-           class="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+           class="inline-flex items-center gap-2 bg-[var(--dash-primary)] text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-colors">
             <span class="material-symbols-outlined text-[18px]">add_photo_alternate</span>
             Tambah Foto
         </a>
@@ -91,7 +91,7 @@
                     class="px-4 py-2 text-sm font-medium text-[color:var(--dash-text-body)] border border-[color:var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-nav-hover-bg)] inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                 <form :action="deleteUrl" method="POST">
                     @csrf @method('DELETE')
-                    <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">delete</span>Hapus</button>
+                    <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-[#dc2626] hover:opacity-90 rounded-lg inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">delete</span>Hapus</button>
                 </form>
             </div>
         </div>

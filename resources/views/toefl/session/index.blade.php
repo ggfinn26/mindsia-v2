@@ -43,7 +43,7 @@
                                 type="button"
                                 @click="showForm = !showForm"
                                 :aria-expanded="showForm"
-                                class="btn bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-4"
+                                class="btn bg-[var(--dash-primary)] hover:opacity-90 text-white text-sm px-4"
                             >
                                 Mulai Ujian
                             </button>
@@ -83,8 +83,8 @@
                                 </div>
                             </div>
                             <div class="flex gap-2 shrink-0">
-                                <button type="submit" class="btn bg-indigo-600 hover:bg-indigo-700 text-white text-sm">Konfirmasi &amp; Mulai</button>
-                                <button type="button" @click="showForm = false" class="btn bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] text-sm">Batal</button>
+                                <button type="submit" class="btn bg-[var(--dash-primary)] hover:opacity-90 text-white text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">check_circle</span>Konfirmasi &amp; Mulai</button>
+                                <button type="button" @click="showForm = false" class="btn bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                             </div>
                         </form>
                     </div>

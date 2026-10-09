@@ -117,7 +117,8 @@
             {{-- Actions --}}
             <div class="pt-2 flex flex-wrap gap-3 justify-end border-t border-[color:var(--dash-card-border)]">
                 <a href="{{ route('toefl.session.index') }}"
-                    class="btn bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)]">
+                    class="btn bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] inline-flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px]">arrow_back</span>
                     Kembali ke Daftar
                 </a>
                 <a href="{{ route('member.dashboard') }}"

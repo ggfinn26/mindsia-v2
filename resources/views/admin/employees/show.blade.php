@@ -209,7 +209,7 @@
                                                                         <div class="bg-gray-50/50 px-6 py-4 sm:flex sm:flex-row-reverse gap-3 border-t border-[color:var(--dash-card-border)]">
                                                                             <form method="POST" action="{{ route('contract-terminate.cancel', $status) }}" class="m-0">
                                                                                 @csrf
-                                                                                <button type="submit" class="inline-flex w-full justify-center items-center gap-1.5 rounded-lg bg-red-500 px-5 py-2 text-sm font-bold text-white shadow-sm hover:bg-red-600 sm:w-auto transition-colors">
+                                                                                <button type="submit" class="inline-flex w-full justify-center items-center gap-1.5 rounded-lg bg-[#dc2626] px-5 py-2 text-sm font-bold text-white shadow-sm hover:opacity-90 sm:w-auto transition-colors">
                                                                                     <span class="material-symbols-outlined text-[16px]">undo</span>
                                                                                     Ya, Batalkan Terminasi
                                                                                 </button>

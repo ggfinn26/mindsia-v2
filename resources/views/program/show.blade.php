@@ -35,7 +35,7 @@
             </div>
         </div>
         <a href="{{ route('programs.edit', $program) }}"
-           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shrink-0"
+           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shrink-0 border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]"
            style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
            onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
            onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">

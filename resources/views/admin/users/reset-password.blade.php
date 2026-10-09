@@ -13,8 +13,8 @@
             @csrf
             
             <div class="mt-4 flex">
-                <a href="{{ route('users.index') }}" class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] mr-3">Batal</a>
-                <button type="submit" class="btn bg-red-500 hover:bg-red-600 text-white">Kirim Email Reset Password</button>
+                <a href="{{ route('users.index') }}" class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] mr-3 inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</a>
+                <button type="submit" class="btn bg-[#dc2626] hover:opacity-90 text-white inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">lock_reset</span>Kirim Email Reset Password</button>
             </div>
         </form>
     </div>

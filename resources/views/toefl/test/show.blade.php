@@ -35,7 +35,7 @@
         <div class="flex items-center gap-2 flex-wrap">
             @if ($toeflTest->status === 'draft')
                 @can('toefl.test.update')
-                    <a href="{{ route('toefl-tests.edit', $toeflTest) }}" class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium transition-colors gap-1.5"><span class="material-symbols-outlined text-[16px]">edit</span>Edit</a>
+                    <a href="{{ route('toefl-tests.edit', $toeflTest) }}" class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-lg bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium transition-colors gap-1.5"><span class="material-symbols-outlined text-[16px]">edit</span>Edit</a>
                 @endcan
                 @can('toefl.test.publish')
                     <button type="button" @click="showPublishModal = true"
@@ -130,7 +130,7 @@
                                             <div class="flex items-center gap-3 ml-4 shrink-0">
                                                 <button type="button"
                                                     @click="openPassageModal('{{ $section }}', 'edit', {{ json_encode(['id'=>$passage->id,'section'=>$passage->section,'title'=>$passage->title,'body_text'=>$passage->body_text,'display_order'=>$passage->display_order,'audio_media_id'=>$passage->audio_media_id]) }})"
-                                                    class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-md text-blue-600 hover:bg-blue-50 hover:text-blue-800 transition-colors">Edit</button>
+                                                    class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-lg transition-colors border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] font-semibold gap-1.5"><span class="material-symbols-outlined text-[16px]">edit</span>Edit</button>
                                                 <form action="{{ route('toefl.passages.destroy', $passage) }}" method="POST" class="inline"
                                                     onsubmit="return confirm('Hapus passage ini?')">
                                                     @csrf @method('DELETE')
@@ -152,7 +152,7 @@
                         @if ($toeflTest->status === 'draft')
                             @can('toefl.question.create')
                                 <button type="button" @click="openQuestionModal('{{ $section }}')"
-                                    class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-indigo-500 hover:bg-indigo-600 text-white transition-colors text-sm font-medium gap-1.5"><span class="material-symbols-outlined text-[16px]">add</span>Tambah Soal</button>
+                                    class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-lg bg-[var(--dash-primary)] hover:opacity-90 text-white transition-colors text-sm font-medium gap-1.5"><span class="material-symbols-outlined text-[16px]">add</span>Tambah Soal</button>
                             @endcan
                         @endif
                     </div>
@@ -214,7 +214,7 @@
                                                         @can('toefl.question.update')
                                                             <button type="button"
                                                                 @click="openQuestionModal('{{ $section }}', 'edit', {{ json_encode(['id'=>$q->id,'section'=>$q->section,'question_type'=>$q->question_type ?? 'multiple_choice','display_order'=>$q->display_order,'passage_id'=>$q->passage_id,'question_text'=>$q->question_text,'option_a'=>$q->option_a,'option_b'=>$q->option_b,'option_c'=>$q->option_c,'option_d'=>$q->option_d,'correct_option'=>$q->correct_option,'difficulty'=>$q->difficulty,'explanation'=>$q->explanation]) }})"
-                                                                class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-md text-blue-600 hover:bg-blue-50 hover:text-blue-800 transition-colors text-sm">Edit</button>
+                                                                class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-lg transition-colors text-sm border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] font-semibold gap-1.5"><span class="material-symbols-outlined text-[16px]">edit</span>Edit</button>
                                                             <form action="{{ route('toefl.questions.toggle-active', $q) }}" method="POST" class="inline">
                                                                 @csrf @method('PATCH')
                                                                 <button type="submit" class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-md text-[color:var(--dash-text-muted)] hover:bg-[var(--dash-nav-hover-bg)] hover:text-[color:var(--dash-text-body)] transition-colors text-sm">
@@ -391,7 +391,7 @@
                     <button type="button" @click="showQuestionModal = false"
                         class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 min-h-[44px] rounded-lg border border-[color:var(--dash-input-border)] bg-[var(--dash-card-bg)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium transition-colors gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                     <button type="submit"
-                        class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 min-h-[44px] rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors"
+                        class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 min-h-[44px] rounded-lg bg-[var(--dash-primary)] hover:opacity-90 text-white text-sm font-medium transition-colors"
                         x-text="questionMode === 'create' ? 'Tambah Soal' : 'Simpan Perubahan'"></button>
                 </div>
             </form>
@@ -462,7 +462,7 @@
                         </label>
                         <div class="flex items-center gap-1 bg-[var(--dash-nav-hover-bg)] rounded-lg p-0.5">
                             <button type="button" @click="preview = false"
-                                class="px-3 py-1.5 rounded-md text-xs font-medium transition-colors inline-flex items-center gap-1.5"
+                                class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors inline-flex items-center gap-1.5 border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]"
                                 :class="!preview ? 'bg-[var(--dash-card-bg)] text-[color:var(--dash-text-heading)] shadow-sm' : 'text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-body)]'"><span class="material-symbols-outlined text-[14px]">edit</span>Edit</button>
                             <button type="button" @click="preview = true" data-passage-preview
                                 class="px-3 py-1.5 rounded-md text-xs font-medium transition-colors inline-flex items-center gap-1.5"
@@ -501,7 +501,7 @@
                     <button type="button" @click="showPassageModal = false"
                         class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 min-h-[44px] rounded-lg border border-[color:var(--dash-input-border)] bg-[var(--dash-card-bg)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium transition-colors gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                     <button type="submit"
-                        class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 min-h-[44px] rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors"
+                        class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 min-h-[44px] rounded-lg bg-[var(--dash-primary)] hover:opacity-90 text-white text-sm font-medium transition-colors"
                         x-text="passageMode === 'create' ? 'Tambah Passage' : 'Simpan Perubahan'"></button>
                 </div>
             </form>

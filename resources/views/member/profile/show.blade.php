@@ -216,7 +216,7 @@
                 <!-- Submit -->
                 <div class="flex justify-end pt-2 border-t border-[color:var(--dash-card-border)]">
                     <button type="submit"
-                        class="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-white bg-[#5586DB] rounded-lg hover:bg-[#4370BC] shadow-sm transition-colors">
+                        class="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90 shadow-sm transition-colors">
                         <span class="material-symbols-outlined text-[18px]">save</span>
                         Simpan Perubahan
                     </button>

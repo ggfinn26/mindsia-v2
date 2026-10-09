@@ -19,7 +19,7 @@
         <!-- Right: Actions -->
         <div class="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             @can('toefl.test.create')
-            <a href="{{ route('toefl-tests.create') }}" class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium transition-colors gap-1.5">
+            <a href="{{ route('toefl-tests.create') }}" class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-lg bg-[var(--dash-primary)] hover:opacity-90 text-white text-sm font-medium transition-colors gap-1.5">
                 <span class="material-symbols-outlined text-[16px]">add</span>
                 Tambah Test
             </a>
@@ -69,12 +69,12 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <div class="flex items-center justify-end gap-1">
-                                    <a href="{{ route('toefl-tests.show', $test->id) }}" class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-md text-indigo-600 hover:bg-indigo-50 hover:text-indigo-900 transition-colors">Detail & Soal</a>
+                                    <a href="{{ route('toefl-tests.show', $test->id) }}" class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-lg transition-colors border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] font-semibold gap-1.5"><span class="material-symbols-outlined text-[16px]">visibility</span>Detail & Soal</a>
                                     @can('toefl.test.update')
-                                        <a href="{{ route('toefl-tests.edit', $test->id) }}" class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-md text-blue-600 hover:bg-blue-50 hover:text-blue-900 transition-colors">Edit</a>
+                                        <a href="{{ route('toefl-tests.edit', $test->id) }}" class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-lg transition-colors border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] font-semibold gap-1.5"><span class="material-symbols-outlined text-[16px]">edit</span>Edit</a>
                                     @endcan
                                     @can('toefl.test.delete')
-                                        <button type="button" @click="showConfirmModal = true; confirmTitle = 'Hapus Test'; confirmMessage = 'Yakin ingin menghapus test ini?'; confirmActionUrl = '{{ route('toefl-tests.destroy', $test->id) }}'; confirmMethod = 'DELETE'; confirmActionText = 'Hapus'" class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-md text-red-600 hover:bg-red-50 hover:text-red-900 transition-colors">Hapus</button>
+                                        <button type="button" @click="showConfirmModal = true; confirmTitle = 'Hapus Test'; confirmMessage = 'Yakin ingin menghapus test ini?'; confirmActionUrl = '{{ route('toefl-tests.destroy', $test->id) }}'; confirmMethod = 'DELETE'; confirmActionText = 'Hapus'" class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-lg transition-colors text-white bg-[#dc2626] hover:opacity-90 font-semibold gap-1.5"><span class="material-symbols-outlined text-[16px]">delete</span>Hapus</button>
                                     @endcan
                                 </div>
                             </td>
@@ -113,7 +113,7 @@
                     </div>
                 </div>
                 <div class="bg-[var(--dash-nav-hover-bg)] px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="button" @click="$refs.confirmForm.submit()" class="w-full sm:w-auto inline-flex justify-center items-center rounded-md border border-transparent shadow-sm px-4 py-2 min-h-[44px] min-w-[44px] bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none sm:ml-3 sm:text-sm transition-colors" x-text="confirmActionText"></button>
+                    <button type="button" @click="$refs.confirmForm.submit()" class="w-full sm:w-auto inline-flex justify-center items-center rounded-lg border border-transparent shadow-sm px-4 py-2 min-h-[44px] min-w-[44px] bg-[#dc2626] text-base font-medium text-white hover:opacity-90 focus:outline-none sm:ml-3 sm:text-sm transition-colors" x-text="confirmActionText"></button>
                     <button type="button" @click="showConfirmModal = false" class="mt-3 sm:mt-0 sm:ml-3 w-full sm:w-auto inline-flex justify-center items-center rounded-md border border-[color:var(--dash-input-border)] shadow-sm px-4 py-2 min-h-[44px] min-w-[44px] bg-[var(--dash-card-bg)] text-base font-medium text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] focus:outline-none sm:text-sm transition-colors gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                 </div>
                 <form x-ref="confirmForm" :action="confirmActionUrl" method="POST" class="hidden">

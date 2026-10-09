@@ -246,7 +246,7 @@
                                     @can('payroll.component.update')
                                         <div x-data="{ open: false }" class="relative inline-block text-left">
                                             <button @click="open = !open" @click.outside="open = false" type="button"
-                                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+                                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]"
                                                     style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
                                                     onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                                                     onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">

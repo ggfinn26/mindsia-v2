@@ -138,7 +138,7 @@
                                     </button>
                                     <div x-show="open" x-transition
                                         class="absolute left-0 top-7 z-20 w-56 bg-[var(--dash-card-bg)] border border-[var(--dash-card-border)] rounded-xl shadow-lg py-1">
-                                        <button @click="send(null)" class="w-full text-left px-4 py-2 text-xs text-[var(--dash-text-body)] hover:bg-[var(--dash-page-bg)]">Kirim langsung</button>
+                                        <button @click="send(null)" class="w-full text-left px-4 py-2 text-xs text-[var(--dash-text-body)] border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] font-semibold inline-flex items-center justify-center gap-1.5"><span class="material-symbols-outlined text-[14px]">send</span>Kirim langsung</button>
                                         <template x-if="templates.length > 0">
                                             <div>
                                                 <p class="px-4 py-1 text-[10px] font-semibold text-[var(--dash-text-faint)] uppercase tracking-widest border-t border-[var(--dash-card-border)] mt-1">Template</p>
@@ -179,7 +179,7 @@
                         </td>
                         <td class="px-4 py-3 text-right">
                             <a href="{{ route('prospective-members.show', $lead) }}"
-                               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+                               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]"
                                style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
                                onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'; this.style.color='var(--dash-primary)'"
                                onmouseout="this.style.backgroundColor='var(--dash-card-bg)'; this.style.color='var(--dash-text-body)'">

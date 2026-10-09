@@ -46,7 +46,7 @@
             </div>
 
             <a href="{{ route('employee.profile.edit') }}"
-               class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors shrink-0"
+               class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors shrink-0 border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]"
                style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-body);"
                onmouseover="this.style.backgroundColor='var(--dash-primary-bg)'; this.style.borderColor='var(--dash-primary)'; this.style.color='var(--dash-primary-text)';"
                onmouseout="this.style.backgroundColor='var(--dash-card-bg)'; this.style.borderColor='var(--dash-card-border)'; this.style.color='var(--dash-text-body)';">

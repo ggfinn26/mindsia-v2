@@ -97,7 +97,8 @@
             </button>
 
             @if(request()->anyFilled(['branch_id', 'program_id', 'payment_status', 'sort', 'direction']) && (request('sort') !== 'member_name' || request('direction') !== 'asc' || request('branch_id') || request('program_id') || request('payment_status')))
-                <a href="{{ route('marketing.member-payment-statement') }}" class="text-sm font-medium hover:underline px-2 py-2 h-[38px] inline-flex items-center" style="color: var(--dash-primary-text);">
+                <a href="{{ route('marketing.member-payment-statement') }}" class="text-sm font-semibold hover:underline px-2 py-2 h-[38px] inline-flex items-center border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] gap-1.5" style="color: var(--dash-primary-text);">
+                    <span class="material-symbols-outlined text-[16px]">restart_alt</span>
                     Reset
                 </a>
             @endif

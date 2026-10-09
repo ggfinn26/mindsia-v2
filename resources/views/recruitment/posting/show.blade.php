@@ -17,7 +17,7 @@
             @if($jobPosting->status === 'draft')
                 @can('recruitment.job_posting.update')
                     <a href="{{ route('recruitment.postings.edit', $jobPosting) }}"
-                        class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] text-sm">Edit</a>
+                        class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">edit</span>Edit</a>
                 @endcan
             @endif
         </div>
@@ -150,12 +150,13 @@
                                     value="{{ $jobPosting->closing_date?->format('Y-m-d') }}"
                                     class="form-input text-sm" />
                             </div>
-                            <button type="submit" class="btn bg-green-500 hover:bg-green-600 text-white text-sm"
+                            <button type="submit" class="btn bg-green-500 hover:bg-green-600 text-white text-sm inline-flex items-center gap-1.5"
                                 onclick="return confirm('Publikasikan posting ini sekarang?')">
+                                <span class="material-symbols-outlined text-[16px]">check_circle</span>
                                 Konfirmasi Publikasi
                             </button>
                             <button type="button" @click="showPublishModal = false"
-                                class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] text-sm">Batal</button>
+                                class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                         </div>
                     </form>
                 </div>
@@ -168,7 +169,7 @@
                 <form action="{{ route('recruitment.postings.close', $jobPosting) }}" method="POST"
                     onsubmit="return confirm('Tutup lowongan ini? Pelamar baru tidak bisa melamar setelah ditutup.')">
                     @csrf
-                    <button type="submit" class="btn bg-red-500 hover:bg-red-600 text-white text-sm">
+                    <button type="submit" class="btn bg-[#dc2626] hover:opacity-90 text-white text-sm">
                         <span class="material-symbols-outlined text-base mr-1">close</span>
                         Tutup Lowongan
                     </button>

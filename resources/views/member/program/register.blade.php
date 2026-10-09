@@ -430,7 +430,7 @@
                     <span class="material-symbols-outlined text-[16px]">close</span>
                     Batal
                 </a>
-                <button type="submit" class="px-5 py-2.5 text-sm font-medium text-white bg-[#5586DB] border border-transparent rounded-lg shadow-[0_4px_12px_-2px_rgba(85,134,219,0.3)] hover:bg-[#4370BC] transition-colors inline-flex items-center gap-2">
+                <button type="submit" class="px-5 py-2.5 text-sm font-medium text-white bg-[var(--dash-primary)] border border-transparent rounded-lg shadow-[0_4px_12px_-2px_rgba(85,134,219,0.3)] hover:opacity-90 transition-colors inline-flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">how_to_reg</span>
                     Daftar Program
                 </button>

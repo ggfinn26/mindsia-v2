@@ -4,7 +4,7 @@
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-4xl mx-auto">
     <div class="mb-8 flex justify-between items-center">
         <h1 class="text-2xl md:text-3xl text-[color:var(--dash-text-heading)] font-bold">Detail Materi Pembelajaran</h1>
-        <a href="{{ route('classes.learning-material.index') }}" class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)]">Kembali</a>
+        <a href="{{ route('classes.learning-material.index') }}" class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">arrow_back</span>Kembali</a>
     </div>
 
     <div class="bg-[var(--dash-card-bg)] shadow-lg rounded-sm border border-[color:var(--dash-card-border)] p-6 space-y-6">
@@ -30,7 +30,7 @@
         </div>
 
         <div class="mt-6 pt-4 border-t border-[color:var(--dash-card-border)] flex justify-end">
-            <a href="#" class="btn bg-indigo-500 hover:bg-indigo-600 text-white flex items-center">
+            <a href="#" class="btn bg-[var(--dash-primary)] hover:opacity-90 text-white flex items-center">
                 <span class="material-symbols-outlined mr-2">download</span> Download / Buka File
             </a>
         </div>

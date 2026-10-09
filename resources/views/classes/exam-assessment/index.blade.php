@@ -7,7 +7,7 @@
             <h1 class="text-2xl md:text-3xl text-[color:var(--dash-text-heading)] font-bold">Ujian & Penilaian Kelas</h1>
         </div>
         <div class="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
-            <button class="btn bg-indigo-500 hover:bg-indigo-600 text-white">Buat Ujian Baru</button>
+            <button class="btn bg-[var(--dash-primary)] hover:opacity-90 text-white inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">add</span>Buat Ujian Baru</button>
         </div>
     </div>
 

@@ -186,7 +186,7 @@ window._empFormData = {
             </div>
 
             <div class="mt-8 flex justify-end">
-                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 border border-transparent rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 inline-flex items-center gap-1.5">
+                <button type="submit" class="bg-[var(--dash-primary)] hover:opacity-90 text-white font-medium py-2 px-4 border border-transparent rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[color:var(--dash-primary)] inline-flex items-center gap-1.5">
                     <span class="material-symbols-outlined text-[16px]">save</span>
                     Simpan Data Pegawai
                 </button>

@@ -129,7 +129,7 @@ foreach ($item->interactiveBlocks as $bi => $block) {
                         @endif
 
                         @if ($i < $item->interactiveBlocks->count() - 1)
-                            <button type="button" class="btn-next px-4 py-2 font-medium rounded-lg bg-[#5586DB] text-white text-sm transition-colors inline-flex items-center gap-1.5" data-next="{{ $i + 1 }}"><span class="material-symbols-outlined text-[16px]">arrow_forward</span>Selanjutnya</button>
+                            <button type="button" class="btn-next px-4 py-2 font-medium rounded-lg bg-[var(--dash-primary)] text-white text-sm transition-colors inline-flex items-center gap-1.5" data-next="{{ $i + 1 }}"><span class="material-symbols-outlined text-[16px]">arrow_forward</span>Selanjutnya</button>
                         @else
                             <button type="button"
                                 class="px-4 py-2 font-medium rounded-lg bg-green-600 hover:bg-green-700 text-white text-sm transition-colors inline-flex items-center gap-1.5"

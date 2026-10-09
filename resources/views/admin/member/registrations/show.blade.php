@@ -259,7 +259,7 @@
                             <input type="hidden" name="payment_method" :value="method">
 
                             <button type="button" @click="open = true"
-                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white rounded-lg hover:opacity-90 transition-opacity border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]"
                                     style="background-color: var(--dash-primary);">
                                 <span class="material-symbols-outlined text-[14px]">upload_file</span>
                                 Konfirmasi Bayar

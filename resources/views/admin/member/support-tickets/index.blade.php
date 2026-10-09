@@ -45,7 +45,7 @@
                 <option value="question" @selected(request('category') === 'question')>Pertanyaan</option>
             </select>
         </div>
-        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-[#5586DB] rounded-lg hover:bg-[#4370BC] transition-colors shadow-sm inline-flex items-center gap-1.5">
+        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90 transition-colors shadow-sm inline-flex items-center gap-1.5">
             <span class="material-symbols-outlined text-[16px]">filter_list</span>
             Filter
         </button>

@@ -43,7 +43,7 @@
         <div class="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             @can('toefl.media.create')
                 <button type="button" @click="showUploadModal = true"
-                    class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium transition-colors">
+                    class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-lg bg-[var(--dash-primary)] hover:opacity-90 text-white text-sm font-medium transition-colors">
                     <span class="material-symbols-outlined text-sm mr-1">upload</span>
                     Upload Media
                 </button>
@@ -114,7 +114,7 @@
                                 @can('toefl.media.delete')
                                     <button type="button"
                                         @click="showConfirmModal = true; confirmActionUrl = '{{ route('toefl.media.destroy', $item->id) }}'"
-                                        class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-md text-red-600 hover:bg-red-50 hover:text-red-900 transition-colors text-sm">Hapus</button>
+                                        class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-lg transition-colors text-sm text-white bg-[#dc2626] hover:opacity-90 font-semibold gap-1.5"><span class="material-symbols-outlined text-[16px]">delete</span>Hapus</button>
                                 @endcan
                             </td>
                         </tr>
@@ -165,7 +165,7 @@
                     <button type="button" @click="showUploadModal = false"
                         class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium transition-colors gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                     <button type="submit" :disabled="uploading"
-                        class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium disabled:opacity-60 transition-colors"
+                        class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-lg bg-[var(--dash-primary)] hover:opacity-90 text-white text-sm font-medium disabled:opacity-60 transition-colors"
                         x-text="uploading ? 'Mengupload...' : 'Upload'"></button>
                 </div>
             </form>
@@ -192,7 +192,7 @@
                 </div>
                 <div class="bg-[var(--dash-nav-hover-bg)] px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                     <button type="button" @click="$refs.deleteForm.submit()"
-                        class="w-full sm:w-auto inline-flex items-center justify-center rounded-md border border-transparent shadow-sm px-4 py-2 min-h-[44px] min-w-[44px] bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none sm:ml-3 sm:text-sm transition-colors gap-1.5">
+                        class="w-full sm:w-auto inline-flex items-center justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 min-h-[44px] min-w-[44px] bg-[#dc2626] text-base font-medium text-white hover:opacity-90 focus:outline-none sm:ml-3 sm:text-sm transition-colors gap-1.5">
                         <span class="material-symbols-outlined text-[16px]">delete</span>
                         Hapus
                     </button>

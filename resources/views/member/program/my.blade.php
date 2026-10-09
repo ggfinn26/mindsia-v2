@@ -10,7 +10,7 @@
             <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Program Saya</h1>
             <p class="text-sm text-[color:var(--dash-text-muted)] mt-1">Daftar program yang sedang aktif dan pernah Anda ikuti.</p>
         </div>
-        <a href="{{ route('member.program.browse') }}" class="px-5 py-2 bg-[#5586DB] text-white font-medium rounded-lg hover:bg-[#4370BC] transition-colors shadow-sm inline-flex items-center gap-2">
+        <a href="{{ route('member.program.browse') }}" class="px-5 py-2 bg-[var(--dash-primary)] text-white font-medium rounded-lg hover:opacity-90 transition-colors shadow-sm inline-flex items-center gap-2">
             <span class="material-symbols-outlined text-sm">add</span>
             Daftar Program Baru
         </a>
@@ -24,7 +24,7 @@
             </div>
             <h3 class="text-lg font-bold text-[color:var(--dash-text-heading)] font-jakarta mb-2">Belum Ada Program Aktif</h3>
             <p class="text-[color:var(--dash-text-muted)] max-w-md mx-auto mb-6">Anda belum mendaftar di program apapun. Temukan program yang sesuai dengan kebutuhan belajar Anda sekarang!</p>
-            <a href="{{ route('member.program.browse') }}" class="px-5 py-2.5 bg-[#5586DB] text-white font-medium rounded-lg hover:bg-[#4370BC] transition-colors shadow-sm inline-flex items-center gap-1.5">
+            <a href="{{ route('member.program.browse') }}" class="px-5 py-2.5 bg-[var(--dash-primary)] text-white font-medium rounded-lg hover:opacity-90 transition-colors shadow-sm inline-flex items-center gap-1.5">
                 <span class="material-symbols-outlined text-[16px]">visibility</span>
                 Lihat Katalog Program
             </a>

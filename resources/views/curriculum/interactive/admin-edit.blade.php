@@ -141,7 +141,7 @@
             <button type="button" id="add-block"
                 class="px-4 py-2 font-medium rounded-lg transition-colors bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">add</span>Tambah Blok</button>
             <button type="submit"
-                class="px-4 py-2 font-medium rounded-lg transition-colors bg-[#5586DB] hover:bg-[#4370BC] text-white text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">save</span>Simpan Semua</button>
+                class="px-4 py-2 font-medium rounded-lg transition-colors bg-[var(--dash-primary)] hover:opacity-90 text-white text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">save</span>Simpan Semua</button>
         </div>
     </form>
 </div>

@@ -9,7 +9,7 @@
         @can('landing.testimonial.manage')
         <div class="flex gap-2">
             <a href="{{ route('admin.landing.testimonials.create') }}"
-               class="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+               class="inline-flex items-center gap-2 bg-[var(--dash-primary)] text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-colors">
                 <span class="material-symbols-outlined text-[18px]">add</span>
                 Tambah Testimoni
             </a>
@@ -62,7 +62,7 @@
                         <div class="flex justify-end gap-1">
                             @can('landing.testimonial.manage')
                             <a href="{{ route('admin.landing.testimonials.edit', $testi) }}"
-                               class="px-3 py-1.5 text-blue-600 hover:bg-blue-50 rounded text-xs font-medium transition-colors inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px]">edit</span>Edit</a>
+                               class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors inline-flex items-center gap-1.5 border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]"><span class="material-symbols-outlined text-[14px]">edit</span>Edit</a>
                             @endcan
                             @can('landing.testimonial.manage')
                             <button type="button"
@@ -96,7 +96,7 @@
                     class="px-4 py-2 text-sm font-medium text-[color:var(--dash-text-body)] border border-[color:var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-nav-hover-bg)] inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                 <form :action="deleteUrl" method="POST">
                     @csrf @method('DELETE')
-                    <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">delete</span>Hapus</button>
+                    <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-[#dc2626] hover:opacity-90 rounded-lg inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">delete</span>Hapus</button>
                 </form>
             </div>
         </div>

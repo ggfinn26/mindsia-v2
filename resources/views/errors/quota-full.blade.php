@@ -26,7 +26,7 @@
             Jangan khawatir, tunggu pembukaan kuota (batch) selanjutnya ya, atau coba cek program lainnya!
         </p>
         
-        <a href="{{ route('member.program.browse') }}" class="px-6 py-3 bg-[#5586DB] text-white font-medium rounded-lg hover:bg-blue-600 transition-colors shadow-sm inline-flex items-center gap-1.5">
+        <a href="{{ route('member.program.browse') }}" class="px-6 py-3 bg-[var(--dash-primary)] text-white font-medium rounded-lg hover:opacity-90 transition-colors shadow-sm inline-flex items-center gap-1.5">
             <span class="material-symbols-outlined text-[16px]">arrow_back</span>
             Kembali ke Katalog
         </a>

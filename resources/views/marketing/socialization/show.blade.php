@@ -359,7 +359,7 @@
                                                 </button>
                                                 <div x-show="open" x-transition
                                                     class="absolute left-0 top-6 z-20 w-52 bg-[var(--dash-card-bg)] border border-[var(--dash-card-border)] rounded-xl shadow-lg py-1">
-                                                    <button @click="send(null)" class="w-full text-left px-3 py-2 text-xs text-[var(--dash-text-body)] hover:bg-[var(--dash-page-bg)]">Kirim langsung</button>
+                                                    <button @click="send(null)" class="w-full text-left px-3 py-2 text-xs text-[var(--dash-text-body)] border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] font-semibold inline-flex items-center justify-center gap-1.5"><span class="material-symbols-outlined text-[14px]">send</span>Kirim langsung</button>
                                                     <template x-if="templates.length > 0">
                                                         <div>
                                                             <p class="px-3 py-1 text-[10px] font-semibold text-[var(--dash-text-faint)] uppercase tracking-widest border-t border-[var(--dash-card-border)] mt-1">Template</p>
@@ -580,7 +580,7 @@
                 <form action="{{ route('socializations.cancel', $socialization) }}" method="POST" class="inline">
                     @csrf
                     <button type="submit"
-                        class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Ya, batalkan</button>
+                        class="px-4 py-2 text-sm font-medium text-white bg-[#dc2626] rounded-lg hover:opacity-90 inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Ya, batalkan</button>
                 </form>
             </div>
         </div>

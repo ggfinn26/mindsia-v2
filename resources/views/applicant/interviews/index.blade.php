@@ -58,7 +58,7 @@
 
                     @if($schedule->interview_type === 'online' && $schedule->meeting_link)
                         <a href="{{ $schedule->meeting_link }}" target="_blank" rel="noopener"
-                           class="inline-flex items-center gap-1.5 mt-3 px-4 py-1.5 text-xs font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-xl transition-colors">
+                           class="inline-flex items-center gap-1.5 mt-3 px-4 py-1.5 text-xs font-semibold text-white bg-[var(--dash-primary)] hover:opacity-90 rounded-lg transition-colors">
                             <span class="material-symbols-outlined text-[13px]">videocam</span>
                             Buka Link Meeting
                         </a>

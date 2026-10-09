@@ -116,7 +116,7 @@
                                         </a>
                                     @else
                                         <a href="{{ route('employee.surveys.show', $employeeSurvey) }}"
-                                           class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold text-white hover:opacity-90 transition-opacity gap-1.5"
+                                           class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold text-white hover:opacity-90 transition-opacity gap-1.5 border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]"
                                            style="background-color: var(--dash-primary);">
                                             <span class="material-symbols-outlined text-[16px]">edit_note</span>
                                             Mulai Isi

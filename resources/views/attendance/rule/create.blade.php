@@ -110,7 +110,7 @@
             </div>
 
             <div class="px-6 py-4 flex justify-end">
-                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">save</span>Simpan Aturan</button>
+                <button type="submit" class="bg-[var(--dash-primary)] hover:opacity-90 text-white font-medium py-2 px-4 rounded-lg inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">save</span>Simpan Aturan</button>
             </div>
         </div>
     </form>

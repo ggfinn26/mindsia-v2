@@ -184,7 +184,7 @@
                                     <span>{{ $branch->picEmployee->full_name ?? 'Belum ada PIC' }}</span>
                                     <button type="button"
                                             @click="showPicModal = true; branchId = '{{ $branch->id }}'; employeeId = '{{ $branch->ma_pic_employee_id }}'"
-                                            class="inline-flex items-center gap-1 px-2 py-1 text-[10px] font-semibold rounded-lg transition-colors"
+                                            class="inline-flex items-center gap-1 px-2 py-1 text-[10px] font-semibold rounded-lg transition-colors border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]"
                                             style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-muted);"
                                             onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                                             onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
@@ -210,7 +210,7 @@
                             <td class="px-4 sm:px-6 py-4 whitespace-nowrap text-right">
                                 <div class="inline-flex items-center gap-1.5">
                                     <a href="{{ route('branches.edit', $branch->id) }}"
-                                       class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors"
+                                       class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]"
                                        style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
                                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">

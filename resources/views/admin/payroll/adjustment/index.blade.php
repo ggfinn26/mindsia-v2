@@ -78,7 +78,7 @@
                             </td>
                             <td class="px-5 py-4 text-right">
                                 <a href="{{ route('payroll.periods.show', $period) }}"
-                                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+                                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]"
                                    style="background-color: #fffbeb; color: #d97706; border: 1px solid #fcd34d;"
                                    onmouseover="this.style.backgroundColor='#fef3c7'"
                                    onmouseout="this.style.backgroundColor='#fffbeb'">

@@ -10,7 +10,8 @@
                 <p class="text-[color:var(--dash-text-body)] mt-2">{{ $status->employee->full_name }}</p>
             </div>
             <a href="{{ route('employees.show', $status->employee) }}"
-               class="px-4 py-2 text-[color:var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)]">
+               class="px-4 py-2 text-[color:var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)] inline-flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">arrow_back</span>
                 Kembali
             </a>
         </div>
@@ -114,12 +115,13 @@
                     <!-- Submit -->
                     <div class="flex gap-3 pt-6 border-t">
                         <button type="submit"
-                                class="px-6 py-2 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 inline-flex items-center gap-1.5">
+                                class="px-6 py-2 bg-[var(--dash-primary)] text-white font-medium rounded-lg hover:opacity-90 inline-flex items-center gap-1.5">
                             <span class="material-symbols-outlined text-[16px]">save</span>
                             Simpan Perubahan
                         </button>
                         <a href="{{ route('employees.show', $status->employee) }}"
-                           class="px-6 py-2 text-[color:var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)]">
+                           class="px-6 py-2 text-[color:var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)] inline-flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[16px]">close</span>
                             Batal
                         </a>
                     </div>

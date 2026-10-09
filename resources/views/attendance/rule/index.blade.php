@@ -6,7 +6,7 @@
 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8" x-data="{ showConfirmModal: false, confirmTitle: '', confirmActionUrl: '' }">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-[color:var(--dash-text-heading)]">Kelola Sanksi Absen</h1>
-        <a href="{{ route('attendance-rules.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">add</span>Tambah Aturan</a>
+        <a href="{{ route('attendance-rules.create') }}" class="bg-[var(--dash-primary)] hover:opacity-90 text-white px-4 py-2 rounded-lg font-medium inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">add</span>Tambah Aturan</a>
     </div>
 
     @if (session('success'))
@@ -107,7 +107,7 @@
                     </div>
                 </div>
                 <div class="bg-[var(--dash-nav-hover-bg)] px-6 py-3 flex flex-row-reverse gap-2 rounded-b-lg">
-                    <button type="button" @click="$refs.confirmForm.submit()" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">delete</span>Hapus</button>
+                    <button type="button" @click="$refs.confirmForm.submit()" class="bg-[#dc2626] hover:opacity-90 text-white font-medium py-2 px-4 rounded-lg text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">delete</span>Hapus</button>
                     <button type="button" @click="showConfirmModal = false" class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] font-medium py-2 px-4 rounded-md text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                 </div>
                 <form x-ref="confirmForm" :action="confirmActionUrl" method="POST" class="hidden">

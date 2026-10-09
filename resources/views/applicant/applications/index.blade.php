@@ -61,7 +61,7 @@ $statusConfig = [
             <span class="material-symbols-outlined text-gray-300 text-[48px]">inbox</span>
             <p class="text-sm text-[color:var(--dash-text-faint)] mt-3">Belum ada lamaran yang dikirim.</p>
             <a href="{{ route('applicant.job-listings.index') }}"
-               class="inline-flex items-center gap-1.5 mt-4 px-4 py-2 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-lg transition-colors">
+               class="inline-flex items-center gap-1.5 mt-4 px-4 py-2 text-sm font-semibold text-white bg-[var(--dash-primary)] hover:opacity-90 rounded-lg transition-colors">
                 <span class="material-symbols-outlined text-[16px]">search</span>
                 Cari Lowongan
             </a>

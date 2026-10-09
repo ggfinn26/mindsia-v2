@@ -69,7 +69,7 @@
                                 Penuh
                             </button>
                         @else
-                            <a href="{{ route('member.program.register', $program->id) }}" class="px-4 py-2 bg-[#5586DB] text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors">
+                            <a href="{{ route('member.program.register', $program->id) }}" class="px-4 py-2 bg-[var(--dash-primary)] text-white text-sm font-medium rounded-lg hover:opacity-90 transition-colors">
                                 Daftar
                             </a>
                         @endif

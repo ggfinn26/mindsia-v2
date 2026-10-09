@@ -24,7 +24,7 @@
                 <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Tanggal</label>
                 <input type="date" name="date" value="{{ $date }}" class="border border-[color:var(--dash-input-border)] rounded-md shadow-sm py-2 px-3 sm:text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
             </div>
-            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">filter_list</span>Tampilkan</button>
+            <button type="submit" class="bg-[var(--dash-primary)] hover:opacity-90 text-white font-medium py-2 px-4 rounded-lg text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">filter_list</span>Tampilkan</button>
         </form>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-[color:var(--dash-card-border)]">
@@ -114,7 +114,7 @@
                         </div>
                     </div>
                     <div class="bg-[var(--dash-nav-hover-bg)] px-6 py-3 flex flex-row-reverse gap-2">
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">save</span>Simpan Koreksi</button>
+                        <button type="submit" class="bg-[var(--dash-primary)] hover:opacity-90 text-white font-medium py-2 px-4 rounded-lg text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">save</span>Simpan Koreksi</button>
                         <button type="button" @click="showAdjustModal = false" class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] font-medium py-2 px-4 rounded-md text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
                     </div>
                 </form>
