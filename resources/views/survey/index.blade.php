@@ -44,7 +44,7 @@
     </div>
 
     <!-- Table -->
-    <div class="overflow-hidden rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
+    <div class="overflow-hidden rounded-2xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-[color:var(--dash-card-border)] text-sm">
                 <thead class="bg-[var(--dash-nav-hover-bg)] text-left text-xs font-bold uppercase tracking-wider text-[color:var(--dash-text-muted)]">
@@ -121,7 +121,7 @@
             </div>
             
             <!-- Modal panel -->
-            <div class="relative inline-block align-bottom bg-[var(--dash-card-bg)] rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-[color:var(--dash-card-border)]">
+            <div class="relative inline-block align-bottom bg-[var(--dash-card-bg)] rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-[color:var(--dash-card-border)]">
                 <div class="bg-[var(--dash-card-bg)] px-6 pt-6 pb-6">
                     <div class="sm:flex sm:items-start">
                         <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-50 sm:mx-0 sm:h-10 sm:w-10">

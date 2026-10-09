@@ -23,7 +23,7 @@
             $totalSubmitted = $totalMembers + $totalEmployees;
             $totalUnsubmitted = $survey->memberSurveys->count() + $survey->employeeSurveys->count() - $totalSubmitted;
         @endphp
-        <div class="flex flex-col rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] p-6 shadow-sm">
+        <div class="flex flex-col rounded-2xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] p-6 shadow-sm">
             <p class="text-xs font-bold uppercase tracking-wider text-[color:var(--dash-text-muted)]">Total Responden</p>
             <p class="mt-2 font-jakarta text-3xl font-black text-[color:var(--dash-text-heading)]">{{ $totalSubmitted }}</p>
             <p class="mt-2 text-xs font-semibold text-[color:var(--dash-text-faint)]">Member: {{ $totalMembers }} &bull; Pegawai: {{ $totalEmployees }}</p>
@@ -33,7 +33,7 @@
             <p class="mt-2 font-jakarta text-3xl font-black text-amber-600">{{ $totalUnsubmitted }}</p>
             <p class="mt-2 text-xs font-semibold text-amber-500/70">Orang</p>
         </div>
-        <div class="flex flex-col rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] p-6 shadow-sm">
+        <div class="flex flex-col rounded-2xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] p-6 shadow-sm">
             <p class="text-xs font-bold uppercase tracking-wider text-[color:var(--dash-text-muted)]">Total Pertanyaan</p>
             <p class="mt-2 font-jakarta text-3xl font-black text-[color:var(--dash-text-heading)]">{{ $survey->questions->count() }}</p>
             <p class="mt-2 text-xs font-semibold text-[color:var(--dash-text-faint)]">Soal</p>
@@ -53,7 +53,7 @@
     <!-- Tab: Summary per question -->
     <div x-show="activeTab === 'summary'" x-transition class="space-y-6">
         @foreach($survey->questions as $qi => $question)
-            <div class="overflow-hidden rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
+            <div class="overflow-hidden rounded-2xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
                 <div class="border-b border-[color:var(--dash-card-border)] bg-slate-50/50 px-6 py-5">
                     <div class="flex items-start gap-4">
                         <span class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[var(--dash-primary,#215aac)]/10 text-sm font-black text-[color:var(--dash-primary-text,#215aac)]">{{ $qi + 1 }}</span>
@@ -170,13 +170,13 @@
         @endphp
 
         @if($respondents->isEmpty())
-            <div class="rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] py-16 text-center shadow-sm">
+            <div class="rounded-2xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] py-16 text-center shadow-sm">
                 <span class="material-symbols-outlined text-4xl text-slate-300">person_off</span>
                 <p class="mt-4 text-sm font-medium text-[color:var(--dash-text-muted)]">Belum ada responden yang mengisi survey ini.</p>
             </div>
         @else
             @foreach($respondents as $ri => $respondent)
-                <div class="overflow-hidden rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
+                <div class="overflow-hidden rounded-2xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
                     <div class="border-b border-[color:var(--dash-card-border)] bg-slate-50/50 px-6 py-4">
                         <div class="flex items-center gap-3">
                             <span class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-slate-200 text-sm font-black text-[color:var(--dash-text-body)]">{{ $ri + 1 }}</span>
