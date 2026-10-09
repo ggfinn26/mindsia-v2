@@ -160,6 +160,18 @@
     --dash-input-border: #e5e7eb;
     --dash-input-bg: #ffffff;
 
+    /* Status Colors */
+    --dash-status-success-bg: #f0fdf4;
+    --dash-status-success-text: #059669;
+    --dash-status-warning-bg: #fef3c7;
+    --dash-status-warning-text: #d97706;
+    --dash-status-danger-bg: #fee2e2;
+    --dash-status-danger-text: #dc2626;
+    --dash-status-info-bg: #e0f7fb;
+    --dash-status-info-text: #007a99;
+    --dash-status-default-bg: #f1f5f9;
+    --dash-status-default-text: #475569;
+
     /* Text */
     --dash-text-heading: #1e293b;
     --dash-text-body: #374151;
@@ -225,6 +237,18 @@
     --dash-input-border: #475569;
     --dash-input-bg: #1e293b;
 
+    /* Status Colors */
+    --dash-status-success-bg: rgba(5, 150, 105, 0.12);
+    --dash-status-success-text: #34d399;
+    --dash-status-warning-bg: rgba(217, 119, 6, 0.12);
+    --dash-status-warning-text: #f59e0b;
+    --dash-status-danger-bg: rgba(220, 38, 38, 0.15);
+    --dash-status-danger-text: #f87171;
+    --dash-status-info-bg: rgba(0, 170, 204, 0.12);
+    --dash-status-info-text: #00aacc;
+    --dash-status-default-bg: rgba(255, 255, 255, 0.05);
+    --dash-status-default-text: #94a3b8;
+
     --dash-text-heading: #f1f5f9;
     --dash-text-body: #cbd5e1;
     --dash-text-muted: #475569;
@@ -255,6 +279,37 @@
 .mode-dark.theme-gold {
     --dash-primary-bg: rgba(219, 185, 64, 0.1);
     --dash-primary-text: #dbb940;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DASHBOARD COMPONENT CLASSES
+   Hover/focus via CSS — tidak boleh pakai inline JS handler.
+   ═══════════════════════════════════════════════════════════ */
+
+/* Back button — chip kontekstual (standar header show/create/edit) */
+.dash-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem 0.375rem 0.625rem;
+    border-radius: 0.625rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--dash-text-muted);
+    background: var(--dash-card-bg);
+    border: 1px solid var(--dash-card-border);
+    text-decoration: none;
+    transition:
+        background-color 0.15s,
+        color 0.15s;
+    cursor: pointer;
+}
+.dash-back:hover {
+    background: var(--dash-nav-hover-bg);
+    color: var(--dash-text-heading);
+}
+.dash-back .material-symbols-outlined {
+    font-size: 16px;
 }
 
 @keyframes float {
