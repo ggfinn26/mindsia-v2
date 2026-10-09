@@ -9,7 +9,7 @@
         <h1 class="font-jakarta text-2xl font-bold tracking-tight text-[var(--dash-text-heading)]">Tambah Bot</h1>
     </div>
 
-    <div class="rounded-xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
+    <div class="rounded-2xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
         <form action="{{ route('system.bots.store') }}" method="POST" class="p-6 space-y-5">
             @csrf
 

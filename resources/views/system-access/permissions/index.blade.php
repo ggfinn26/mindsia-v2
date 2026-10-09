@@ -125,7 +125,7 @@
                                placeholder="Nama atau email...">
                     </div>
                     <button type="submit"
-                            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-white hover:opacity-90 transition-opacity"
+                            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold text-white hover:opacity-90 transition-opacity"
                             style="background-color: var(--dash-primary);">
                         <span class="material-symbols-outlined text-[16px]">search</span>
                         Cari
@@ -140,7 +140,7 @@
                     @endphp
                     <div class="mt-3">
                         @if($searchResults->isNotEmpty())
-                            <div class="rounded-xl overflow-hidden"
+                            <div class="rounded-2xl overflow-hidden"
                                  style="border: 1px solid var(--dash-card-border);">
                                 @foreach($searchResults as $u)
                                     <div class="flex items-center justify-between gap-3 px-4 py-3"

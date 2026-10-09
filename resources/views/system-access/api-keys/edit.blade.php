@@ -10,7 +10,7 @@
         <p class="mt-1 text-sm text-[var(--dash-text-muted)]">{{ $apiKey->label }}</p>
     </div>
 
-    <div class="rounded-xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
+    <div class="rounded-2xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
         <form action="{{ route('system.api-keys.update', $apiKey) }}" method="POST" class="p-6 space-y-5">
             @csrf
             @method('PUT')

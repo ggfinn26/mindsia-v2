@@ -24,7 +24,7 @@
     <div class="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700 [.mode-dark_&]:bg-red-500/10 [.mode-dark_&]:border-red-500/20 [.mode-dark_&]:text-red-400">{{ session('error') }}</div>
     @endif
 
-    <div class="overflow-hidden rounded-xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
+    <div class="overflow-hidden rounded-2xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-[var(--dash-card-border)] text-sm">
                 <thead class="bg-[var(--dash-page-bg)] text-left text-xs font-bold uppercase tracking-wider text-[var(--dash-text-muted)]">

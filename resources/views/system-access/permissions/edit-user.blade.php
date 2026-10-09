@@ -105,14 +105,14 @@
         <div class="sticky bottom-0 mt-6 flex flex-col sm:flex-row justify-end gap-3 py-4"
              style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);">
             <a href="{{ route('system.permissions.index') }}?tab=users"
-               class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors"
+               class="inline-flex items-center justify-center px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors"
                style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
                onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
                 Batal
             </a>
             <button type="submit"
-                    class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                    class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                     style="background-color: var(--dash-primary);">
                 <span class="material-symbols-outlined text-[18px]">save</span>
                 Simpan Permission

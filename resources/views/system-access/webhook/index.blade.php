@@ -19,7 +19,7 @@
         </div>
         @can('system.webhook.manage')
             <a href="{{ route('system.webhooks.create') }}"
-               class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity self-start sm:self-auto"
+               class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity self-start sm:self-auto"
                style="background-color: var(--dash-primary);">
                 <span class="material-symbols-outlined text-[18px]">add</span>
                 Tambah Webhook
