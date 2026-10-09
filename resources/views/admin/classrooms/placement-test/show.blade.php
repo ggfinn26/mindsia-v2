@@ -65,7 +65,7 @@
                     @enderror
                 </div>
                 <button type="submit"
-                        class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-colors">
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors">
                     Simpan Jadwal
                 </button>
             </form>
@@ -198,7 +198,7 @@
 
                 <div class="px-6 py-4 border-t border-[color:var(--dash-card-border)] flex justify-end">
                     <button type="submit"
-                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-colors">
+                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-colors">
                         Simpan Semua Hasil
                     </button>
                 </div>

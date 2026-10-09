@@ -50,7 +50,7 @@
 
             @if(request()->anyFilled(['search', 'status', 'type']) || request('sort', 'end_date_asc') !== 'end_date_asc')
                 <a href="{{ route('employment-statuses.index') }}"
-                   class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-colors"
+                   class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
                    style="border: 1px solid var(--dash-card-border); color: var(--dash-text-muted); background-color: var(--dash-card-bg);"
                    onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                    onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">

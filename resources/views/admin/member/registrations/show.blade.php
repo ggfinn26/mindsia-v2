@@ -316,14 +316,14 @@
                                     </div>
                                     <div class="flex gap-2 justify-end">
                                         <button type="button" @click="open = false; methodOpen = false; method = ''"
-                                                class="px-4 py-2 text-sm font-semibold rounded-xl transition-colors"
+                                                class="px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
                                                 style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
                                                 onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                                                 onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
                                             Batal
                                         </button>
                                         <button type="submit"
-                                                class="px-4 py-2 text-sm font-semibold text-white rounded-xl hover:opacity-90 transition-opacity"
+                                                class="px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
                                                 style="background-color: #059669;">
                                             Konfirmasi
                                         </button>

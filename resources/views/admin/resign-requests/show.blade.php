@@ -81,13 +81,13 @@
     @if($resignRequest->status === 'pending')
         <div class="flex flex-col sm:flex-row gap-3">
             <button type="button" @click="showApprove = true"
-                    class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                    class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                     style="background-color: #059669;">
                 <span class="material-symbols-outlined text-[18px]">check</span>
                 Setujui & Mulai Offboarding
             </button>
             <button type="button" @click="showReject = true"
-                    class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity"
+                    class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
                     style="border: 1px solid #fca5a5; color: #dc2626; background-color: var(--dash-card-bg);">
                 <span class="material-symbols-outlined text-[18px]">close</span>
                 Tolak
@@ -127,14 +127,14 @@
                     <div class="flex justify-end gap-3 px-6 py-4"
                          style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
                         <button type="button" @click="showApprove = false"
-                                class="px-4 py-2 rounded-xl text-sm font-medium"
+                                class="px-4 py-2 rounded-lg text-sm font-medium"
                                 style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);">
                             Batal
                         </button>
                         <form method="POST" action="{{ route('resign-requests.approve', $resignRequest) }}" class="m-0">
                             @csrf
                             <button type="submit"
-                                    class="px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                                    class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                                     style="background-color: #059669;">
                                 Ya, Setujui
                             </button>
@@ -177,14 +177,14 @@
                     <div class="flex justify-end gap-3 px-6 py-4"
                          style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
                         <button type="button" @click="showReject = false"
-                                class="px-4 py-2 rounded-xl text-sm font-medium"
+                                class="px-4 py-2 rounded-lg text-sm font-medium"
                                 style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);">
                             Batal
                         </button>
                         <form method="POST" action="{{ route('resign-requests.reject', $resignRequest) }}" class="m-0">
                             @csrf
                             <button type="submit"
-                                    class="px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                                    class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                                     style="background-color: #dc2626;">
                                 Ya, Tolak
                             </button>

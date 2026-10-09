@@ -81,13 +81,13 @@
                 <div class="px-5 py-4 flex flex-col sm:flex-row gap-3"
                      style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
                     <button type="submit" name="status" value="approved"
-                            class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                            class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                             style="background-color: #059669;">
                         <span class="material-symbols-outlined text-[18px]">check</span>
                         Setujui
                     </button>
                     <button type="submit" name="status" value="rejected"
-                            class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity"
+                            class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
                             style="border: 1px solid #fca5a5; color: #dc2626; background-color: var(--dash-card-bg);">
                         <span class="material-symbols-outlined text-[18px]">close</span>
                         Tolak

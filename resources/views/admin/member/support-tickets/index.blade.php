@@ -25,7 +25,7 @@
     </div>
 
     <!-- Filter -->
-    <form method="GET" class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl shadow-sm p-4 mb-6 flex flex-wrap gap-3 items-end">
+    <form method="GET" class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl shadow-sm p-4 mb-6 flex flex-wrap gap-3 items-end">
         <div class="flex flex-col gap-1 min-w-[140px]">
             <label class="text-xs font-medium text-[color:var(--dash-text-body)]">Status</label>
             <select name="status" class="rounded-lg border-[color:var(--dash-input-border)] text-sm px-3 py-2 shadow-sm">
@@ -53,7 +53,7 @@
         @endif
     </form>
 
-    <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl shadow-sm overflow-hidden">
+    <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead class="bg-[var(--dash-nav-hover-bg)] border-b border-[color:var(--dash-card-border)]">

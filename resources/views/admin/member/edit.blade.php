@@ -248,12 +248,12 @@
         {{-- Actions --}}
         <div class="px-6 py-4 flex gap-3 justify-end" style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
             <a href="{{ route('members.show', $member) }}"
-               class="px-5 py-2.5 text-sm font-semibold rounded-xl transition-colors"
+               class="px-5 py-2.5 text-sm font-semibold rounded-lg transition-colors"
                style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
                onmouseover="this.style.backgroundColor='var(--dash-card-bg)'"
                onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">Batal</a>
             <button type="submit"
-                    class="px-5 py-2.5 text-sm font-semibold text-white rounded-xl hover:opacity-90 transition-opacity"
+                    class="px-5 py-2.5 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
                     style="background-color: var(--dash-primary);">Simpan Perubahan</button>
         </div>
     </form>

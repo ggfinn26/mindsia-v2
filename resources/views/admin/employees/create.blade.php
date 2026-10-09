@@ -93,7 +93,7 @@ window._empFormData = {
                             <span class="truncate block pr-4" :class="regionId ? 'text-[#111827]' : 'text-[#9CA3AF]'" x-text="regionLabel || '— Tidak ada —'"></span>
                             <span class="material-symbols-outlined text-[16px] text-[color:var(--dash-text-faint)] transition-transform duration-200" :class="regionOpen ? 'rotate-180' : ''">expand_more</span>
                         </div>
-                        <div x-show="regionOpen" x-cloak class="absolute z-50 w-full mt-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl shadow-xl overflow-hidden">
+                        <div x-show="regionOpen" x-cloak class="absolute z-50 w-full mt-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl shadow-xl overflow-hidden">
                             <div class="p-2 bg-[var(--dash-nav-hover-bg)] border-b border-[color:var(--dash-card-border)]">
                                 <div class="relative">
                                     <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[color:var(--dash-text-faint)] text-[16px]">search</span>
@@ -120,7 +120,7 @@ window._empFormData = {
                             <span class="truncate block pr-4" :class="areaId ? 'text-[#111827]' : 'text-[#9CA3AF]'" x-text="areaLabel || '— Tidak ada —'"></span>
                             <span class="material-symbols-outlined text-[16px] text-[color:var(--dash-text-faint)] transition-transform duration-200" :class="areaOpen ? 'rotate-180' : ''">expand_more</span>
                         </div>
-                        <div x-show="areaOpen" x-cloak class="absolute z-50 w-full mt-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl shadow-xl overflow-hidden">
+                        <div x-show="areaOpen" x-cloak class="absolute z-50 w-full mt-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl shadow-xl overflow-hidden">
                             <div class="p-2 bg-[var(--dash-nav-hover-bg)] border-b border-[color:var(--dash-card-border)]">
                                 <div class="relative">
                                     <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[color:var(--dash-text-faint)] text-[16px]">search</span>
@@ -147,7 +147,7 @@ window._empFormData = {
                             <span class="truncate block pr-4" :class="branchId ? 'text-[#111827]' : 'text-[#9CA3AF]'" x-text="branchLabel || '— Tidak ditempatkan di Cabang —'"></span>
                             <span class="material-symbols-outlined text-[16px] text-[color:var(--dash-text-faint)] transition-transform duration-200" :class="branchOpen ? 'rotate-180' : ''">expand_more</span>
                         </div>
-                        <div x-show="branchOpen" x-cloak class="absolute z-50 w-full mt-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl shadow-xl overflow-hidden">
+                        <div x-show="branchOpen" x-cloak class="absolute z-50 w-full mt-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl shadow-xl overflow-hidden">
                             <div class="p-2 bg-[var(--dash-nav-hover-bg)] border-b border-[color:var(--dash-card-border)]">
                                 <div class="relative">
                                     <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[color:var(--dash-text-faint)] text-[16px]">search</span>

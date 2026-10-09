@@ -16,7 +16,7 @@
             </p>
         </div>
         <a href="{{ route('employees.create') }}"
-           class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity self-start sm:self-auto"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity self-start sm:self-auto"
            style="background-color: var(--dash-primary);">
             <span class="material-symbols-outlined text-[18px]">person_add</span>
             Tambah Pegawai
@@ -102,14 +102,14 @@
             {{-- Actions --}}
             <div class="flex gap-2 w-full sm:w-auto">
                 <button type="submit"
-                        class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                        class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                         style="background-color: var(--dash-primary);">
                     <span class="material-symbols-outlined text-[16px]">search</span>
                     Cari
                 </button>
                 @if(request('search') || request('is_active') !== null && request('is_active') !== '' || request('region_id') || request('branch_id') || request('sort'))
                     <a href="{{ route('employees.index') }}"
-                       class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-colors"
+                       class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
                        style="border: 1px solid var(--dash-card-border); color: var(--dash-text-muted); background-color: var(--dash-card-bg);"
                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">

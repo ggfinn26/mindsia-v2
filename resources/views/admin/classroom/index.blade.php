@@ -31,7 +31,7 @@
             </p>
         </div>
         <a href="{{ route('classrooms.create') }}"
-           class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity shrink-0"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity shrink-0"
            style="background-color: var(--dash-primary);">
             <span class="material-symbols-outlined text-[18px]">add</span>
             Buat Kelas Baru

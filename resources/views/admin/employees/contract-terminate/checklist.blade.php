@@ -111,7 +111,7 @@
                 </a>
                 @if($checklist->count() > 0)
                     <button type="submit"
-                            class="bg-[#5586DB] hover:bg-[#4A78C4] text-white px-6 py-2.5 rounded-xl text-[13px] font-bold shadow-sm transition-colors flex items-center gap-2">
+                            class="bg-[#5586DB] hover:bg-[#4A78C4] text-white px-6 py-2.5 rounded-lg text-[13px] font-bold shadow-sm transition-colors flex items-center gap-2">
                         <span class="material-symbols-outlined text-[18px]">save</span>
                         Simpan Progress
                     </button>

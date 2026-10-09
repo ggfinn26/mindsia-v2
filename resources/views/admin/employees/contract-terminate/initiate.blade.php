@@ -59,7 +59,7 @@
                     Alasan Terminasi <span class="text-red-500">*</span>
                 </label>
                 <textarea name="reason" id="reason" rows="3" placeholder="Deskripsikan alasan terminasi..."
-                          class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500/20 transition-all">{{ old('reason') }}</textarea>
+                          class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-[color:var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500/20 transition-all">{{ old('reason') }}</textarea>
                 @error('reason')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
             </div>
 
@@ -73,8 +73,8 @@
                 <div id="checklist-items" class="space-y-3">
                     <div class="flex items-center gap-2 group">
                         <input type="text" name="checklist_items[]" placeholder="Contoh: Pengembalian laptop / ID Card" 
-                               class="flex-1 px-3.5 py-2.5 bg-[#F8FAFC] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20" required>
-                        <button type="button" onclick="removeItem(this)" class="w-10 h-10 flex items-center justify-center text-[color:var(--dash-text-faint)] hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                               class="flex-1 px-3.5 py-2.5 bg-[#F8FAFC] border border-[color:var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20" required>
+                        <button type="button" onclick="removeItem(this)" class="w-10 h-10 flex items-center justify-center text-[color:var(--dash-text-faint)] hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
                             <span class="material-symbols-outlined text-[20px]">delete</span>
                         </button>
                     </div>
@@ -93,7 +93,7 @@
                     Batal
                 </a>
                 <button type="submit"
-                        class="bg-red-500 hover:bg-red-600 text-white px-6 py-2.5 rounded-xl text-[13px] font-bold shadow-sm transition-colors flex items-center gap-2">
+                        class="bg-red-500 hover:bg-red-600 text-white px-6 py-2.5 rounded-lg text-[13px] font-bold shadow-sm transition-colors flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">check_circle</span>
                     Mulai Terminasi
                 </button>
@@ -105,8 +105,8 @@
 <template id="itemTemplate">
     <div class="flex items-center gap-2 group">
         <input type="text" name="checklist_items[]" placeholder="Contoh: Pengembalian laptop / ID Card" 
-               class="flex-1 px-3.5 py-2.5 bg-[#F8FAFC] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20" required>
-        <button type="button" onclick="removeItem(this)" class="w-10 h-10 flex items-center justify-center text-[color:var(--dash-text-faint)] hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+               class="flex-1 px-3.5 py-2.5 bg-[#F8FAFC] border border-[color:var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20" required>
+        <button type="button" onclick="removeItem(this)" class="w-10 h-10 flex items-center justify-center text-[color:var(--dash-text-faint)] hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
             <span class="material-symbols-outlined text-[20px]">delete</span>
         </button>
     </div>

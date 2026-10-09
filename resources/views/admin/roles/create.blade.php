@@ -49,14 +49,14 @@
                     <input type="text" id="name" name="name" value="{{ old('name') }}"
                            placeholder="Contoh: IT, HR, Marketing, dll."
                            required
-                           class="block w-full rounded-xl text-sm px-3 py-2.5 focus:outline-none focus:ring-2"
+                           class="block w-full rounded-lg text-sm px-3 py-2.5 focus:outline-none focus:ring-2"
                            style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-body); --tw-ring-color: var(--dash-primary);">
                 </div>
             </div>
             <div class="px-6 py-4 flex justify-end"
                  style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
                 <button type="submit"
-                        class="px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                        class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                         style="background-color: var(--dash-primary);">
                     Simpan Divisi
                 </button>

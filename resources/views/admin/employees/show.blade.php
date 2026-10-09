@@ -209,12 +209,12 @@
                                                                         <div class="bg-gray-50/50 px-6 py-4 sm:flex sm:flex-row-reverse gap-3 border-t border-[color:var(--dash-card-border)]">
                                                                             <form method="POST" action="{{ route('contract-terminate.cancel', $status) }}" class="m-0">
                                                                                 @csrf
-                                                                                <button type="submit" class="inline-flex w-full justify-center items-center gap-1.5 rounded-xl bg-red-500 px-5 py-2 text-sm font-bold text-white shadow-sm hover:bg-red-600 sm:w-auto transition-colors">
+                                                                                <button type="submit" class="inline-flex w-full justify-center items-center gap-1.5 rounded-lg bg-red-500 px-5 py-2 text-sm font-bold text-white shadow-sm hover:bg-red-600 sm:w-auto transition-colors">
                                                                                     <span class="material-symbols-outlined text-[16px]">undo</span>
                                                                                     Ya, Batalkan Terminasi
                                                                                 </button>
                                                                             </form>
-                                                                            <button type="button" @click="showCancelModal = false" class="mt-3 inline-flex w-full justify-center rounded-xl bg-[var(--dash-card-bg)] px-5 py-2 text-sm font-bold text-[color:var(--dash-text-body)] shadow-sm border border-[color:var(--dash-card-border)] hover:bg-[var(--dash-nav-hover-bg)] sm:mt-0 sm:w-auto transition-colors">
+                                                                            <button type="button" @click="showCancelModal = false" class="mt-3 inline-flex w-full justify-center rounded-lg bg-[var(--dash-card-bg)] px-5 py-2 text-sm font-bold text-[color:var(--dash-text-body)] shadow-sm border border-[color:var(--dash-card-border)] hover:bg-[var(--dash-nav-hover-bg)] sm:mt-0 sm:w-auto transition-colors">
                                                                                 Kembali
                                                                             </button>
                                                                         </div>

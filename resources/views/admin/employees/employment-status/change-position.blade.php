@@ -49,7 +49,7 @@
                     Posisi Baru
                 </label>
                 <select id="position_id" name="position_id" required
-                        class="w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] focus:ring-[var(--dash-primary)]/30">
+                        class="w-full px-3.5 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] focus:ring-[var(--dash-primary)]/30">
                     <option value="">Pilih Posisi</option>
                     @foreach ($positions as $position)
                         @if ($position->id != $status->position_id)
@@ -66,7 +66,7 @@
                     Tanggal Mulai Kontrak Baru
                 </label>
                 <input type="date" id="contract_start_date" name="contract_start_date" value="{{ old('contract_start_date') }}"
-                       class="w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] focus:ring-[var(--dash-primary)]/30">
+                       class="w-full px-3.5 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] focus:ring-[var(--dash-primary)]/30">
                 <p class="mt-1 text-[11px] text-[var(--dash-text-faint)]">Kontrak lama akan ditutup pada hari sebelum tanggal ini.</p>
             </div>
 
@@ -75,7 +75,7 @@
                     Tanggal Berakhir Kontrak <span class="font-normal text-[var(--dash-text-faint)] normal-case tracking-normal">(Opsional)</span>
                 </label>
                 <input type="date" id="contract_end_date" name="contract_end_date" value="{{ old('contract_end_date') }}"
-                       class="w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] focus:ring-[var(--dash-primary)]/30">
+                       class="w-full px-3.5 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] focus:ring-[var(--dash-primary)]/30">
             </div>
 
             <div>
@@ -83,7 +83,7 @@
                     Catatan <span class="font-normal text-[var(--dash-text-faint)] normal-case tracking-normal">(Opsional)</span>
                 </label>
                 <textarea id="notes" name="notes" rows="3" placeholder="Alasan perubahan posisi atau keterangan lainnya..."
-                          class="w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] focus:ring-[var(--dash-primary)]/30">{{ old('notes') }}</textarea>
+                          class="w-full px-3.5 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] focus:ring-[var(--dash-primary)]/30">{{ old('notes') }}</textarea>
             </div>
 
             <div class="pt-4 mt-6 border-t border-[color:var(--dash-card-border)] flex justify-end gap-3">
@@ -92,7 +92,7 @@
                     Batal
                 </a>
                 <button type="submit"
-                        class="bg-[#5586DB] hover:bg-[#4A78C4] text-white px-6 py-2.5 rounded-xl text-[13px] font-bold shadow-sm transition-colors flex items-center gap-2">
+                        class="bg-[#5586DB] hover:bg-[#4A78C4] text-white px-6 py-2.5 rounded-lg text-[13px] font-bold shadow-sm transition-colors flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">save</span>
                     Simpan Perubahan
                 </button>

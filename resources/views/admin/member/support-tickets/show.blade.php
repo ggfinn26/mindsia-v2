@@ -58,7 +58,7 @@
         <!-- Left: Ticket Info + Actions -->
         <div class="space-y-5">
             <!-- Info Card -->
-            <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl shadow-sm overflow-hidden">
+            <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl shadow-sm overflow-hidden">
                 <div class="px-5 py-4 border-b border-[color:var(--dash-card-border)] flex items-center justify-between">
                     <h2 class="font-jakarta text-sm font-bold text-[color:var(--dash-text-heading)]">Informasi Tiket</h2>
                     <span class="inline-flex items-center rounded-md px-2.5 py-1 text-xs font-bold {{ $statusColor }}">{{ $statusLabel }}</span>
@@ -115,7 +115,7 @@
             </div>
 
             <!-- Assign Form -->
-            <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl shadow-sm overflow-hidden">
+            <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl shadow-sm overflow-hidden">
                 <div class="px-5 py-3 border-b border-[color:var(--dash-card-border)]">
                     <h3 class="text-xs font-bold text-[color:var(--dash-text-body)] uppercase tracking-wider">Tugaskan ke Employee</h3>
                 </div>
@@ -132,7 +132,7 @@
 
             <!-- Status Change -->
             @if(!in_array($ticket->status, ['closed']))
-            <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl shadow-sm overflow-hidden">
+            <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl shadow-sm overflow-hidden">
                 <div class="px-5 py-3 border-b border-[color:var(--dash-card-border)]">
                     <h3 class="text-xs font-bold text-[color:var(--dash-text-body)] uppercase tracking-wider">Ubah Status</h3>
                 </div>
@@ -161,7 +161,7 @@
         <!-- Right: Thread + Reply -->
         <div class="lg:col-span-2 space-y-5">
             <!-- Original Message -->
-            <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl shadow-sm overflow-hidden">
+            <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl shadow-sm overflow-hidden">
                 <div class="px-6 py-4 border-b border-[color:var(--dash-card-border)]">
                     <h2 class="font-jakarta font-bold text-[color:var(--dash-text-heading)]">{{ $ticket->subject }}</h2>
                 </div>
@@ -196,7 +196,7 @@
 
             <!-- Reply Form -->
             @if(!in_array($ticket->status, ['closed']))
-            <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl shadow-sm overflow-hidden">
+            <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl shadow-sm overflow-hidden">
                 <div class="px-6 py-4 border-b border-[color:var(--dash-card-border)]">
                     <h3 class="font-jakarta text-sm font-bold text-[color:var(--dash-text-heading)]">Tulis Balasan</h3>
                 </div>

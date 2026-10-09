@@ -67,7 +67,7 @@
                                     confirmButtonText = 'Generate'; 
                                     confirmButtonClass = 'bg-[var(--dash-primary)] hover:opacity-90';
                                 "
-                                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                                class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                                 style="background-color: var(--dash-primary);">
                             <span class="material-symbols-outlined text-[18px]">bolt</span>
                             Generate Payroll
@@ -85,7 +85,7 @@
                                 confirmButtonText = 'Maju ke Review'; 
                                 confirmButtonClass = 'bg-amber-600 hover:bg-amber-700';
                             "
-                            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors"
+                            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
                             style="background-color: #fef3c7; color: #d97706; border: 1px solid #fcd34d;"
                             onmouseover="this.style.backgroundColor='#fde68a'"
                             onmouseout="this.style.backgroundColor='#fef3c7'">
@@ -104,7 +104,7 @@
                                 confirmButtonText = 'Finalisasi'; 
                                 confirmButtonClass = 'bg-[#059669] hover:bg-[#047857]';
                             "
-                            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                             style="background-color: #059669;">
                         <span class="material-symbols-outlined text-[18px]">check_circle</span>
                         Finalisasi
@@ -122,7 +122,7 @@
                                 confirmButtonText = 'Revert'; 
                                 confirmButtonClass = 'bg-red-600 hover:bg-red-700';
                             "
-                            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors"
+                            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
                             style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
                             onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                             onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">

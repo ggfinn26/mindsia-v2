@@ -60,7 +60,7 @@
                             <span class="material-symbols-outlined text-[18px]" style="color: var(--dash-text-muted);">expand_more</span>
                         </div>
                         <div x-show="open" x-transition x-cloak
-                             class="absolute z-50 w-full mt-1 rounded-xl shadow-xl overflow-hidden"
+                             class="absolute z-50 w-full mt-1 rounded-2xl shadow-xl overflow-hidden"
                              style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
                             <div class="p-2" style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
                                 <div class="relative">
@@ -95,12 +95,12 @@
             <div class="flex items-center justify-end gap-3 px-6 py-4"
                  style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
                 <a href="{{ route('classrooms.show', $class) }}"
-                   class="px-5 py-2 rounded-xl text-sm font-medium transition-colors"
+                   class="px-5 py-2 rounded-lg text-sm font-medium transition-colors"
                    style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
                    onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                    onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">Batal</a>
                 <button type="submit"
-                        class="px-5 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                        class="px-5 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                         style="background-color: var(--dash-primary);">Simpan</button>
             </div>
         </form>

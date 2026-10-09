@@ -169,7 +169,7 @@
                                 <span class="material-symbols-outlined text-[16px]" style="color: var(--dash-text-muted);">expand_more</span>
                             </div>
                             <div x-show="open" x-transition x-cloak
-                                 class="absolute z-50 w-full mt-1 rounded-xl shadow-xl overflow-hidden"
+                                 class="absolute z-50 w-full mt-1 rounded-2xl shadow-xl overflow-hidden"
                                  style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
                                 <div class="p-2" style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
                                     <div class="relative">
@@ -212,7 +212,7 @@
                         <button type="submit"
                                 :disabled="!selectedId"
                                 :style="selectedId ? 'background-color: var(--dash-primary); cursor:pointer;' : 'background-color: var(--dash-nav-hover-bg); cursor:not-allowed; color: var(--dash-text-muted);'"
-                                class="w-full py-2 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90">
+                                class="w-full py-2 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90">
                             Daftarkan
                         </button>
                     </div>
@@ -730,12 +730,12 @@
         </div>
         <div class="flex gap-3 justify-end">
             <button onclick="closeConfirmModal()"
-                    class="px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                    class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                     style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
                     onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                     onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">Batal</button>
             <button onclick="submitConfirmAction()"
-                    class="px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                    class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                     style="background-color: #dc2626;">Ya, Lanjutkan</button>
         </div>
     </div>

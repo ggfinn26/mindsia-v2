@@ -13,7 +13,7 @@
     </div>
 
     <form method="POST" action="{{ route('admin.landing.testimonials.store') }}" enctype="multipart/form-data"
-          class="bg-[var(--dash-card-bg)] rounded-xl border border-[color:var(--dash-card-border)] p-6 space-y-5 shadow-sm"
+          class="bg-[var(--dash-card-bg)] rounded-2xl border border-[color:var(--dash-card-border)] p-6 space-y-5 shadow-sm"
           x-data="{ type: '{{ old('type', $prefill['type'] ?? 'text') }}' }">
         @csrf
 

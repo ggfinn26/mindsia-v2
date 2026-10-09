@@ -24,7 +24,7 @@
         Belum ada data. Klik "Tambah Pemimpin" untuk memulai.
     </div>
     @else
-    <div class="bg-[var(--dash-card-bg)] rounded-xl border border-[color:var(--dash-card-border)] shadow-sm overflow-hidden">
+    <div class="bg-[var(--dash-card-bg)] rounded-2xl border border-[color:var(--dash-card-border)] shadow-sm overflow-hidden">
         <table class="w-full text-sm">
             <thead class="bg-[var(--dash-nav-hover-bg)] border-b border-[color:var(--dash-card-border)]">
                 <tr>
@@ -81,7 +81,7 @@
     {{-- Delete Confirmation Modal --}}
     <div x-show="showModal" class="fixed inset-0 z-50 flex items-center justify-center" style="display:none" @click.self="showModal = false">
         <div class="absolute inset-0 bg-black/40"></div>
-        <div class="relative bg-[var(--dash-card-bg)] rounded-xl shadow-xl p-6 w-full max-w-sm mx-4">
+        <div class="relative bg-[var(--dash-card-bg)] rounded-2xl shadow-xl p-6 w-full max-w-sm mx-4">
             <div class="flex items-center gap-3 mb-4">
                 <div class="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
                     <span class="material-symbols-outlined text-red-600 text-[20px]">delete</span>

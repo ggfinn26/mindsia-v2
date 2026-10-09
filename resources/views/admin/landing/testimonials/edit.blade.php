@@ -13,7 +13,7 @@
     </div>
 
     <form method="POST" action="{{ route('admin.landing.testimonials.update', $testimonial) }}" enctype="multipart/form-data"
-          class="bg-[var(--dash-card-bg)] rounded-xl border border-[color:var(--dash-card-border)] p-6 space-y-5 shadow-sm">
+          class="bg-[var(--dash-card-bg)] rounded-2xl border border-[color:var(--dash-card-border)] p-6 space-y-5 shadow-sm">
         @csrf @method('PUT')
 
         <div class="p-3 bg-[var(--dash-nav-hover-bg)] border border-[color:var(--dash-card-border)] rounded-lg text-xs text-[color:var(--dash-text-muted)]">

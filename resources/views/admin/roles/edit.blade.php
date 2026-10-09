@@ -57,7 +57,7 @@
             <div class="px-6 py-4 flex justify-end"
                  style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
                 <button type="submit"
-                        class="px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                        class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                         style="background-color: var(--dash-primary);">
                     Simpan Perubahan
                 </button>

@@ -237,12 +237,12 @@
             </label>
             <div class="flex gap-3 pt-2">
                 <button type="button" onclick="closeModal('session-modal','session-errors')"
-                        class="flex-1 px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                        class="flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                         style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
                         onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                         onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">Batal</button>
                 <button type="submit"
-                        class="flex-1 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                        class="flex-1 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                         style="background-color: var(--dash-primary);">Simpan</button>
             </div>
         </form>
@@ -334,12 +334,12 @@
             </label>
             <div class="flex gap-3 pt-2">
                 <button type="button" onclick="closeModal('item-modal','item-errors')"
-                        class="flex-1 px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                        class="flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                         style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
                         onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                         onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">Batal</button>
                 <button type="submit"
-                        class="flex-1 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                        class="flex-1 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                         style="background-color: var(--dash-primary);">Simpan</button>
             </div>
         </form>

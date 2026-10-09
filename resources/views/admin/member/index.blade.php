@@ -14,7 +14,7 @@
             <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Data Member</h1>
         </div>
         <a href="{{ route('members.create') }}"
-           class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity shrink-0"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity shrink-0"
            style="background-color: var(--dash-primary);">
             <span class="material-symbols-outlined text-[18px]">person_add</span>Registrasi Member
         </a>
@@ -44,7 +44,7 @@
                     <span class="material-symbols-outlined text-[16px] shrink-0" style="color: var(--dash-text-muted);">expand_more</span>
                 </div>
                 <div x-show="open" x-cloak
-                     class="absolute left-0 w-[280px] mt-1 rounded-xl shadow-xl overflow-hidden z-50"
+                     class="absolute left-0 w-[280px] mt-1 rounded-2xl shadow-xl overflow-hidden z-50"
                      style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
                     <div class="p-2" style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
                         <div class="relative">
@@ -91,12 +91,12 @@
             </div>
 
             <button type="submit"
-                    class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                    class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                     style="background-color: var(--dash-primary);">
                 <span class="material-symbols-outlined text-[16px]">search</span>Filter
             </button>
             <a href="{{ route('members.index') }}"
-               class="inline-flex items-center px-3 py-2 rounded-xl text-sm transition-colors"
+               class="inline-flex items-center px-3 py-2 rounded-lg text-sm transition-colors"
                style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
                onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">Reset</a>
@@ -120,7 +120,7 @@
                 </label>
             </div>
             <button type="submit"
-                    class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors shrink-0"
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors shrink-0"
                     style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
                     onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                     onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">

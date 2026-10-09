@@ -38,7 +38,7 @@
                 <span class="material-symbols-outlined text-[16px] text-[color:var(--dash-text-faint)]">person</span> Data yang Akan Dihapus
             </h2>
             
-            <div class="bg-[#F8FAFC] border border-[color:var(--dash-card-border)] rounded-xl overflow-hidden">
+            <div class="bg-[#F8FAFC] border border-[color:var(--dash-card-border)] rounded-2xl overflow-hidden">
                 <div class="flex flex-col sm:flex-row justify-between px-4 py-3 border-b border-[color:var(--dash-card-border)]">
                     <span class="text-[12px] font-bold text-[color:var(--dash-text-muted)] uppercase tracking-wider">Nama Karyawan</span>
                     <span class="text-sm font-semibold text-[color:var(--dash-text-heading)] mt-1 sm:mt-0">{{ $status->employee->full_name }}</span>
@@ -73,11 +73,11 @@
 
             <div class="pt-6 mt-6 border-t border-[color:var(--dash-card-border)] flex justify-end gap-3">
                 <a href="{{ route('contract-terminate.checklist', $status) }}"
-                   class="px-5 py-2.5 text-[13px] font-bold text-[color:var(--dash-text-body)] bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl hover:bg-[var(--dash-nav-hover-bg)] transition-colors">
+                   class="px-5 py-2.5 text-[13px] font-bold text-[color:var(--dash-text-body)] bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg hover:bg-[var(--dash-nav-hover-bg)] transition-colors">
                     Batal
                 </a>
                 <button type="submit"
-                        class="bg-red-500 hover:bg-red-600 text-white px-6 py-2.5 rounded-xl text-[13px] font-bold shadow-sm transition-colors flex items-center gap-2">
+                        class="bg-red-500 hover:bg-red-600 text-white px-6 py-2.5 rounded-lg text-[13px] font-bold shadow-sm transition-colors flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">delete_forever</span>
                     Hard Delete Akun
                 </button>
