@@ -211,12 +211,12 @@
         {{-- Actions --}}
         <div class="flex items-center gap-3 justify-end">
             <a href="{{ route('programs.index') }}"
-               class="px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors"
+               class="px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors"
                style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
                onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">Batal</a>
             <button type="submit"
-                    class="px-5 py-2.5 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                    class="px-5 py-2.5 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                     style="background-color: var(--dash-primary);">Simpan Program</button>
         </div>
     </form>
