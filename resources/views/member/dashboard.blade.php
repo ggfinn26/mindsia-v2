@@ -41,7 +41,7 @@
                         @change="fetchBranches()"
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-400 focus:border-amber-400 bg-white"
                     >
-                        <option value="">-- Pilih Provinsi --</option>
+                        <option value="">Pilih Provinsi</option>
                         @foreach($provinces as $province)
                             <option value="{{ $province->id }}">{{ $province->name }}</option>
                         @endforeach
@@ -59,9 +59,9 @@
                             required
                         >
                             <option value="">
-                                <span x-show="!provinceId">-- Pilih provinsi dulu --</span>
+                                <span x-show="!provinceId">Pilih provinsi dulu</span>
                                 <span x-show="provinceId && loading">Memuat cabang...</span>
-                                <span x-show="provinceId && !loading">-- Pilih Cabang --</span>
+                                <span x-show="provinceId && !loading">Pilih Cabang</span>
                             </option>
                             <template x-for="branch in branches" :key="branch.id">
                                 <option :value="branch.id" x-text="branch.branch_name"></option>

@@ -24,7 +24,7 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin</label>
                 <select name="gender" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
-                    <option value="">-- Pilih --</option>
+                    <option value="">Pilih</option>
                     <option value="L" {{ old('gender') === 'L' ? 'selected' : '' }}>Laki-laki</option>
                     <option value="P" {{ old('gender') === 'P' ? 'selected' : '' }}>Perempuan</option>
                 </select>
@@ -37,7 +37,7 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Status Perkawinan</label>
                 <select name="marital_status" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
-                    <option value="">-- Pilih --</option>
+                    <option value="">Pilih</option>
                     @foreach(['Belum Menikah', 'Menikah', 'Cerai'] as $ms)
                     <option value="{{ $ms }}" {{ old('marital_status') === $ms ? 'selected' : '' }}>{{ $ms }}</option>
                     @endforeach
@@ -46,7 +46,7 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Agama</label>
                 <select name="religion" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
-                    <option value="">-- Pilih --</option>
+                    <option value="">Pilih</option>
                     @foreach(['Islam', 'Kristen', 'Katolik', 'Hindu', 'Buddha', 'Konghucu'] as $rel)
                     <option value="{{ $rel }}" {{ old('religion') === $rel ? 'selected' : '' }}>{{ $rel }}</option>
                     @endforeach

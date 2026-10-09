@@ -7,12 +7,12 @@
 <div class="max-w-7xl mx-auto space-y-6">
     <div class="flex items-start justify-between gap-4">
         <div>
-            <p class="text-sm font-medium text-[#725c00]">Surat</p>
-            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Template Surat</h2>
+            <p class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--dash-primary-text);">Surat</p>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Template Surat</h1>
             <p class="mt-1 text-sm text-slate-600">Upload file Word (.docx) sebagai template. Placeholder menggunakan alt text pada elemen.</p>
         </div>
         @can('letter.template.create')
-            <a href="{{ route('letter-templates.create') }}" class="inline-flex min-h-10 items-center gap-2 bg-[#215aac] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">
+            <a href="{{ route('letter-templates.create') }}" class="inline-flex min-h-10 items-center gap-2 bg-[var(--dash-primary,#215aac)] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">
                 <span class="material-symbols-outlined text-[18px]">add</span> Upload Template
             </a>
         @endcan

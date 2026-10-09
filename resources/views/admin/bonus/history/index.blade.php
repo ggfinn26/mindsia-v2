@@ -16,8 +16,8 @@
 <div class="max-w-7xl mx-auto space-y-6">
     <div class="flex items-start justify-between gap-4">
         <div>
-            <p class="text-sm font-medium text-[#725c00]">Bonus Rules</p>
-            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Riwayat Perubahan</h2>
+            <p class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--dash-primary-text);">Bonus Rules</p>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Riwayat Perubahan</h1>
             <p class="mt-1 max-w-2xl text-sm leading-6 text-slate-600">Audit log semua perubahan bonus rule. Dicatat otomatis oleh sistem.</p>
         </div>
     </div>
@@ -25,7 +25,7 @@
     <form method="GET" action="{{ route('bonus.history.index') }}" class="flex gap-3 border border-slate-200 bg-white p-4">
         <div>
             <label class="mb-1 block text-xs font-medium text-slate-700">Tipe bonus</label>
-            <select name="bonus_type" class="block border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+            <select name="bonus_type" class="block border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                 <option value="">Semua tipe</option>
                 @foreach ($typeLabels as $val => $label)
                     <option value="{{ $val }}" @selected(request('bonus_type') === $val)>{{ $label }}</option>
@@ -33,7 +33,7 @@
             </select>
         </div>
         <div class="flex items-end gap-2">
-            <button type="submit" class="inline-flex min-h-9 items-center bg-[#215aac] px-3 text-xs font-semibold text-white hover:bg-[#194a91]">Filter</button>
+            <button type="submit" class="inline-flex min-h-9 items-center bg-[var(--dash-primary,#215aac)] px-3 text-xs font-semibold text-white hover:bg-[#194a91]">Filter</button>
             @if (request()->filled('bonus_type') || request()->filled('rule_id'))
                 <a href="{{ route('bonus.history.index') }}" class="inline-flex min-h-9 items-center border border-slate-300 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50">Reset</a>
             @endif
@@ -68,7 +68,7 @@
                             <td class="px-5 py-3">
                                 @if ($h->new_values || $h->old_values)
                                     <details class="text-xs">
-                                        <summary class="cursor-pointer text-[#215aac] hover:underline">Lihat diff</summary>
+                                        <summary class="cursor-pointer text-[color:var(--dash-primary-text,#215aac)] hover:underline">Lihat diff</summary>
                                         <div class="mt-2 space-y-1">
                                             @if ($h->old_values)
                                                 <p class="text-slate-500 font-mono break-all">- {{ json_encode($h->old_values, JSON_UNESCAPED_UNICODE) }}</p>

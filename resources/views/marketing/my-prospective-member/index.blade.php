@@ -26,29 +26,32 @@
     $sortIcon = fn(string $col) => $currentSort === $col ? ($currentDir === 'asc' ? '↑' : '↓') : '';
 @endphp
 
-<div class="w-full py-4 sm:py-6">
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6">
 
-    <div class="flex items-center justify-between mb-5">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h1 class="text-xl font-bold text-[var(--dash-text-heading)]">Calon Member Saya</h1>
-            <p class="text-sm text-[var(--dash-text-faint)] mt-0.5">{{ $leads->total() }} total</p>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight text-[var(--dash-text-heading)]">Calon Member Saya</h1>
+            <p class="mt-1 text-sm text-[var(--dash-text-muted)]">{{ $leads->total() }} total prospek member</p>
         </div>
         @can('marketing.prospective_member.create')
             <a href="{{ route('prospective-members.create') }}"
-                class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90">
-                <span class="material-symbols-outlined text-[16px]">person_add</span>
-                Tambah
+                class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90 transition-opacity">
+                <span class="material-symbols-outlined text-[18px]">person_add</span>
+                Tambah Prospek
             </a>
         @endcan
     </div>
 
     @if (session('success'))
-        <div class="mb-4 bg-emerald-50 [.mode-dark_&]:bg-emerald-500/10 border border-emerald-200 [.mode-dark_&]:border-emerald-500/20 text-emerald-800 [.mode-dark_&]:text-emerald-400 px-4 py-3 rounded-xl text-sm">{{ session('success') }}</div>
+        <div class="flex gap-3 px-4 py-3 text-sm rounded-lg" style="border: 1px solid #a7f3d0; background-color: #ecfdf5; color: #065f46;">
+            <span class="material-symbols-outlined text-[20px]">check_circle</span>
+            <p>{{ session('success') }}</p>
+        </div>
     @endif
 
     {{-- Filter --}}
     <form method="GET" action="{{ route('my-prospective-members.index') }}"
-        class="bg-[var(--dash-card-bg)] rounded-xl border border-[var(--dash-card-border)] shadow-sm p-4 mb-5">
+        class="bg-[var(--dash-card-bg)] rounded-2xl border border-[var(--dash-card-border)] p-5">
         <div class="flex flex-wrap gap-3 items-end">
             <div class="flex-1 min-w-[180px]">
                 <label class="block text-[11px] font-semibold text-[var(--dash-text-faint)] uppercase tracking-wide mb-1">Cari</label>
@@ -78,7 +81,7 @@
     </form>
 
     {{-- Table --}}
-    <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[var(--dash-card-border)]">
+    <div class="bg-[var(--dash-card-bg)] border border-[var(--dash-card-border)] rounded-2xl">
         <table class="w-full text-sm">
             <thead>
                 <tr class="border-b border-[var(--dash-card-border)]">
@@ -158,22 +161,7 @@
                                 <span class="px-2 py-0.5 text-[10px] font-bold rounded-full {{ $statusColors[$lead->status] ?? 'bg-[var(--dash-input-bg)] text-[var(--dash-text-muted)]' }}">
                                     {{ $statusLabels[$lead->status] ?? $lead->status }}
                                 </span>
-                                @if ($lead->status !== 'FIXED')
-                                    @foreach ($toggleTargets as $targetStatus => [$icon, $cls])
-                                        @if ($targetStatus !== $lead->status)
-                                            <form method="POST" action="{{ route('my-prospective-members.update-status', $lead) }}" class="inline">
-                                                @csrf @method('PATCH')
-                                                <input type="hidden" name="status" value="{{ $targetStatus }}">
-                                                <button type="submit" title="{{ $statusLabels[$targetStatus] }}"
-                                                    class="w-5 h-5 rounded-full text-[9px] font-bold border transition-colors focus:outline-none {{ $cls }}">
-                                                    {{ $icon }}
-                                                </button>
-                                            </form>
-                                        @endif
-                                    @endforeach
-                                @else
-                                    <span class="text-[10px] text-emerald-700 [.mode-dark_&]:text-emerald-400 font-medium">Terdaftar ✓</span>
-                                @endif
+                                
                             </div>
                         </td>
                         <td class="px-4 py-3 hidden md:table-cell">
@@ -191,7 +179,12 @@
                         </td>
                         <td class="px-4 py-3 text-right">
                             <a href="{{ route('prospective-members.show', $lead) }}"
-                                class="text-xs font-medium text-[var(--dash-primary)] hover:text-[var(--dash-primary)] hover:opacity-80">Detail</a>
+                               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+                               style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
+                               onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'; this.style.color='var(--dash-primary)'"
+                               onmouseout="this.style.backgroundColor='var(--dash-card-bg)'; this.style.color='var(--dash-text-body)'">
+                                Detail <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                            </a>
                         </td>
                     </tr>
                 @empty

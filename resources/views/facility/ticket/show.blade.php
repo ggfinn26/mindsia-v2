@@ -19,7 +19,7 @@
             <a href="{{ route('facility.tickets.index') }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700">
                 <span class="material-symbols-outlined text-[16px]">arrow_back</span> Tiket Fasilitas
             </a>
-            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">{{ $facilityTicket->title }}</h2>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">{{ $facilityTicket->title }}</h1>
             <div class="mt-1 flex items-center gap-3">
                 <p class="font-mono text-sm text-slate-400">{{ $facilityTicket->ticket_number }}</p>
                 <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $statusBadge[$facilityTicket->status] ?? 'bg-slate-100' }}">
@@ -70,7 +70,7 @@
                 @csrf
                 <div class="flex-1">
                     <label class="mb-1 block text-xs font-semibold text-slate-700">Catatan</label>
-                    <input type="text" name="notes" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                    <input type="text" name="notes" class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                 </div>
                 <button type="submit" name="action" value="approve" class="inline-flex min-h-9 items-center bg-emerald-600 px-3 text-xs font-semibold text-white hover:bg-emerald-700">Setujui</button>
                 <button type="submit" name="action" value="reject" class="inline-flex min-h-9 items-center border border-red-200 px-3 text-xs font-semibold text-red-700 hover:bg-red-50">Tolak</button>
@@ -85,24 +85,24 @@
                 @csrf
                 <div class="flex-1">
                     <label class="mb-1 block text-xs font-semibold text-slate-700">Ditugaskan ke</label>
-                    <select name="assigned_to_employee_id" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                    <select name="assigned_to_employee_id" required class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                         <option value="">— Pilih pegawai —</option>
                         @foreach (\App\Models\Employee::where('is_active', true)->get() as $emp)
                             <option value="{{ $emp->id }}">{{ $emp->full_name }}</option>
                         @endforeach
                     </select>
                 </div>
-                <button type="submit" class="inline-flex min-h-9 items-center bg-[#215aac] px-3 text-xs font-semibold text-white hover:bg-[#194a91]">Assign</button>
+                <button type="submit" class="inline-flex min-h-9 items-center bg-[var(--dash-primary,#215aac)] px-3 text-xs font-semibold text-white hover:bg-[#194a91]">Assign</button>
             </form>
             <form method="POST" action="{{ route('facility.tickets.resolve', $facilityTicket) }}" class="flex items-end gap-3 border-t border-slate-100 pt-3">
                 @csrf
                 <div>
                     <label class="mb-1 block text-xs font-semibold text-slate-700">Biaya (Rp)</label>
-                    <input type="number" name="cost_amount" min="0" step="0.01" class="block border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                    <input type="number" name="cost_amount" min="0" step="0.01" class="block border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                 </div>
                 <div class="flex-1">
                     <label class="mb-1 block text-xs font-semibold text-slate-700">Catatan penyelesaian</label>
-                    <input type="text" name="notes" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                    <input type="text" name="notes" class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                 </div>
                 <button type="submit" class="inline-flex min-h-9 items-center bg-emerald-600 px-3 text-xs font-semibold text-white hover:bg-emerald-700">Selesaikan</button>
             </form>
@@ -120,7 +120,7 @@
                 <label class="mb-1 block text-xs font-semibold text-slate-700">File (foto/dokumen)</label>
                 <input type="file" name="file" required class="block w-full text-sm text-slate-700 file:mr-3 file:py-1.5 file:px-3 file:border file:border-slate-300 file:text-xs file:font-medium file:bg-white file:text-slate-700 hover:file:bg-slate-50">
             </div>
-            <button type="submit" class="inline-flex min-h-9 items-center bg-[#215aac] px-3 text-xs font-semibold text-white hover:bg-[#194a91]">Upload</button>
+            <button type="submit" class="inline-flex min-h-9 items-center bg-[var(--dash-primary,#215aac)] px-3 text-xs font-semibold text-white hover:bg-[#194a91]">Upload</button>
         </form>
     </div>
     @endcan

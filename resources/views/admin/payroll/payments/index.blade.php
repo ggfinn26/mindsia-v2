@@ -16,7 +16,7 @@
 }">
     <div>
         <p class="text-sm font-medium text-[var(--dash-primary)]">Payroll final</p>
-        <h2 class="font-jakarta text-2xl font-bold tracking-tight text-[var(--dash-text-heading)]">Antrean pembayaran gaji</h2>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Antrean pembayaran gaji</h1>
         <p class="mt-1 max-w-2xl text-sm leading-6 text-[var(--dash-text-body)]">Catat pembayaran untuk payroll yang telah difinalisasi. Pembayaran parsial akan tetap muncul sebagai sisa yang perlu diselesaikan.</p>
     </div>
 

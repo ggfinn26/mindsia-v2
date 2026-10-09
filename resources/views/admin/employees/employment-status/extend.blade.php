@@ -9,7 +9,7 @@
     {{-- Header --}}
     <div class="flex flex-wrap items-start justify-between gap-4">
         <div>
-            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-[var(--dash-text-heading)]">Perpanjang Kontrak</h2>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Perpanjang Kontrak</h1>
             <p class="mt-1 text-sm text-[var(--dash-text-muted)]">{{ $status->employee->full_name }} &mdash; {{ $status->position?->position_name }}</p>
         </div>
         <a href="{{ route('employees.show', $status->employee) }}"

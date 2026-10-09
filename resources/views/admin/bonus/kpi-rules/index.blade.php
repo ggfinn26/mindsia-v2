@@ -12,7 +12,7 @@
 <div class="max-w-7xl mx-auto space-y-6">
     <div>
         <p class="text-sm font-medium text-[var(--dash-primary)]">Bonus Rules</p>
-        <h2 class="font-jakarta text-2xl font-bold tracking-tight text-[var(--dash-text-heading)]">KPI Bonus</h2>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">KPI Bonus</h1>
         <p class="mt-1 max-w-2xl text-sm leading-6 text-[var(--dash-text-body)]">Rule bonus berdasarkan skor KPI. Tier reward dikonfigurasi di halaman detail.</p>
     </div>
 

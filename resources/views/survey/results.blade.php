@@ -7,7 +7,7 @@
 
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-            <a href="{{ route('surveys.index', ['tab' => 'results']) }}" class="mb-2 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-[#215aac] transition-colors">
+            <a href="{{ route('surveys.index', ['tab' => 'results']) }}" class="mb-2 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-[color:var(--dash-primary-text,#215aac)] transition-colors">
                 <span class="material-symbols-outlined text-[16px]">arrow_back</span> Daftar Hasil Survey
             </a>
             <h1 class="font-jakarta text-3xl font-bold tracking-tight text-slate-900">Laporan Survey</h1>
@@ -56,7 +56,7 @@
             <div class="overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm">
                 <div class="border-b border-slate-100 bg-slate-50/50 px-6 py-5">
                     <div class="flex items-start gap-4">
-                        <span class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#215aac]/10 text-sm font-black text-[#215aac]">{{ $qi + 1 }}</span>
+                        <span class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[var(--dash-primary,#215aac)]/10 text-sm font-black text-[color:var(--dash-primary-text,#215aac)]">{{ $qi + 1 }}</span>
                         <div class="pt-1">
                             <p class="font-jakarta text-base font-bold text-slate-900">{{ $question->question_text }}</p>
                             <span class="mt-2 inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">
@@ -97,7 +97,7 @@
                             <div class="mb-6 flex items-center gap-4">
                                 <div>
                                     <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Rata-rata</p>
-                                    <p class="font-jakarta text-3xl font-black text-[#215aac]">{{ $avg }}<span class="text-lg text-slate-400">/{{ $question->scale_max }}</span></p>
+                                    <p class="font-jakarta text-3xl font-black text-[color:var(--dash-primary-text,#215aac)]">{{ $avg }}<span class="text-lg text-slate-400">/{{ $question->scale_max }}</span></p>
                                 </div>
                                 <div class="h-10 w-px bg-slate-200"></div>
                                 <div>
@@ -113,7 +113,7 @@
                                     @endphp
                                     <div class="flex-1 flex flex-col items-center justify-end h-full relative group">
                                         <div class="absolute -top-8 bg-slate-800 text-white text-xs font-bold rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">{{ $count }}</div>
-                                        <div class="w-full max-w-[40px] rounded-t-md transition-all {{ $heightPct > 0 ? 'bg-[#215aac]' : 'bg-slate-100' }}" style="height: {{ max(4, $heightPct) }}%"></div>
+                                        <div class="w-full max-w-[40px] rounded-t-md transition-all {{ $heightPct > 0 ? 'bg-[var(--dash-primary,#215aac)]' : 'bg-slate-100' }}" style="height: {{ max(4, $heightPct) }}%"></div>
                                         <span class="mt-2 text-xs font-bold text-slate-500">{{ $v }}</span>
                                     </div>
                                 @endfor
@@ -133,7 +133,7 @@
                                         <span class="font-semibold text-slate-500">{{ $choiceCount }} <span class="font-normal text-slate-400">({{ $pct }}%)</span></span>
                                     </div>
                                     <div class="h-2.5 w-full overflow-hidden rounded-full bg-slate-100">
-                                            <div class="h-full rounded-full bg-[#215aac] transition-all" style="width: {{ $pct }}%"></div>
+                                            <div class="h-full rounded-full bg-[var(--dash-primary,#215aac)] transition-all" style="width: {{ $pct }}%"></div>
                                         </div>
                                     </div>
                                 @endforeach
@@ -182,7 +182,7 @@
                             <span class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-slate-200 text-sm font-black text-slate-600">{{ $ri + 1 }}</span>
                             <div>
                                 <p class="font-jakarta text-base font-bold text-slate-900">{{ $respondent->name }}</p>
-                                <span class="mt-0.5 inline-flex items-center rounded-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider {{ $respondent->type === 'Member' ? 'bg-[#215aac]/10 text-[#215aac]' : 'bg-emerald-100 text-emerald-800' }}">{{ $respondent->type }}</span>
+                                <span class="mt-0.5 inline-flex items-center rounded-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider {{ $respondent->type === 'Member' ? 'bg-[var(--dash-primary,#215aac)]/10 text-[color:var(--dash-primary-text,#215aac)]' : 'bg-emerald-100 text-emerald-800' }}">{{ $respondent->type }}</span>
                             </div>
                         </div>
                     </div>
@@ -198,7 +198,7 @@
                                     @if($question->question_type === 'text')
                                         <p class="text-sm font-medium text-slate-800 bg-slate-50 p-3 rounded-lg border border-slate-100">{{ $answer->answer_text }}</p>
                                     @elseif($question->question_type === 'scale')
-                                        <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-[#215aac] text-sm font-black text-white shadow-sm">{{ $answer->answer_value }}</span>
+                                        <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--dash-primary,#215aac)] text-sm font-black text-white shadow-sm">{{ $answer->answer_value }}</span>
                                     @else
                                         <div class="flex flex-wrap gap-2">
                                             @foreach($answer->selectedChoices as $choice)

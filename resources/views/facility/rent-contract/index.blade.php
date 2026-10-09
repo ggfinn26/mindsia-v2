@@ -15,11 +15,11 @@
 <div class="max-w-7xl mx-auto space-y-6">
     <div class="flex items-start justify-between gap-4">
         <div>
-            <p class="text-sm font-medium text-[#725c00]">Fasilitas</p>
-            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Kontrak Sewa Cabang</h2>
+            <p class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--dash-primary-text);">Fasilitas</p>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Kontrak Sewa Cabang</h1>
         </div>
         @can('facility.rent_contract.create')
-            <a href="{{ route('facility.rent-contracts.create') }}" class="inline-flex min-h-10 items-center gap-2 bg-[#215aac] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">
+            <a href="{{ route('facility.rent-contracts.create') }}" class="inline-flex min-h-10 items-center gap-2 bg-[var(--dash-primary,#215aac)] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">
                 <span class="material-symbols-outlined text-[18px]">add</span> Buat Kontrak
             </a>
         @endcan

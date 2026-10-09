@@ -30,27 +30,28 @@
         : '';
 @endphp
 
-<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6">
 
     {{-- Header --}}
-    <div class="flex items-center justify-between mb-5">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h1 class="text-xl font-bold text-[var(--dash-text-heading)]">
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight text-[var(--dash-text-heading)]">
                 {{ $canViewNational ? 'Calon Member Nasional' : 'Calon Member Area' }}
             </h1>
-            <p class="text-sm text-[var(--dash-text-faint)] mt-0.5">{{ $leads->total() }} total</p>
+            <p class="mt-1 text-sm text-[var(--dash-text-muted)]">{{ $leads->total() }} total prospek member</p>
         </div>
     </div>
 
     @if (session('success'))
-        <div class="mb-4 bg-emerald-50 [.mode-dark_&]:bg-emerald-500/10 border border-emerald-200 [.mode-dark_&]:border-emerald-500/20 text-emerald-800 [.mode-dark_&]:text-emerald-400 px-4 py-3 rounded-xl text-sm">
-            {{ session('success') }}
+        <div class="flex gap-3 px-4 py-3 text-sm rounded-lg" style="border: 1px solid #a7f3d0; background-color: #ecfdf5; color: #065f46;">
+            <span class="material-symbols-outlined text-[20px]">check_circle</span>
+            <p>{{ session('success') }}</p>
         </div>
     @endif
 
     {{-- Filter bar --}}
     <form method="GET" action="{{ route('prospective-members.index') }}"
-        class="bg-[var(--dash-card-bg)] rounded-xl border border-[var(--dash-card-border)] shadow-sm p-4 mb-5">
+        class="bg-[var(--dash-card-bg)] rounded-2xl border border-[var(--dash-card-border)] p-5">
         <div class="flex flex-wrap gap-3 items-end">
             <div class="flex-1 min-w-[180px]">
                 <label class="block text-[11px] font-semibold text-[var(--dash-text-faint)] uppercase tracking-wide mb-1">Cari</label>
@@ -108,7 +109,7 @@
     </form>
 
     {{-- Table --}}
-    <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[var(--dash-card-border)] overflow-hidden">
+    <div class="bg-[var(--dash-card-bg)] rounded-2xl border border-[var(--dash-card-border)] overflow-hidden">
         <div class="overflow-x-auto">
             <table class="min-w-full text-sm">
                 <thead>
@@ -199,28 +200,6 @@
                                     <span class="px-2 py-0.5 text-[10px] font-bold rounded-full {{ $statusColors[$lead->status] ?? 'bg-[var(--dash-input-bg)] text-[var(--dash-text-muted)]' }}">
                                         {{ $statusLabels[$lead->status] ?? $lead->status }}
                                     </span>
-                                    {{-- Quick toggle --}}
-                                    @can('marketing.prospective_member.update')
-                                        @if ($lead->status !== 'FIXED')
-                                            @foreach ($toggleTargets as $targetStatus => [$icon, $cls])
-                                                @if ($targetStatus !== $lead->status)
-                                                    <form method="POST"
-                                                        action="{{ route('prospective-members.update-status', $lead) }}"
-                                                        class="inline">
-                                                        @csrf @method('PATCH')
-                                                        <input type="hidden" name="status" value="{{ $targetStatus }}">
-                                                        <button type="submit"
-                                                            title="{{ $statusLabels[$targetStatus] }}"
-                                                            class="w-5 h-5 rounded-full text-[9px] font-bold border transition-colors focus:outline-none focus:ring-1 {{ $cls }}">
-                                                            {{ $icon }}
-                                                        </button>
-                                                    </form>
-                                                @endif
-                                            @endforeach
-                                        @else
-                                            <span class="text-[10px] text-emerald-700 [.mode-dark_&]:text-emerald-400 font-medium">Terdaftar ✓</span>
-                                        @endif
-                                    @endcan
                                 </div>
                             </td>
                             <td class="px-4 py-3 hidden md:table-cell">
@@ -246,8 +225,11 @@
                             </td>
                             <td class="px-4 py-3 text-right">
                                 <a href="{{ route('prospective-members.show', $lead) }}"
-                                    class="text-xs text-[var(--dash-primary)] hover:text-[var(--dash-primary)] hover:opacity-80 focus:outline-none focus:underline">
-                                    Detail
+                                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+                                   style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
+                                   onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                   onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                    <span class="material-symbols-outlined text-[14px]">open_in_new</span>Detail
                                 </a>
                             </td>
                         </tr>

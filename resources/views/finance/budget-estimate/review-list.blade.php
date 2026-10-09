@@ -19,7 +19,7 @@
             <a href="{{ route('budget-estimates.index') }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700">
                 <span class="material-symbols-outlined text-[16px]">arrow_back</span> Anggaran Cabang
             </a>
-            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Antrean Review</h2>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Antrean Review</h1>
             <p class="mt-1 text-sm text-slate-500">{{ $statusLabel[$status] ?? $status }}</p>
         </div>
     </div>

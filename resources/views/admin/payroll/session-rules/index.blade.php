@@ -10,8 +10,8 @@
 
 <div class="max-w-7xl mx-auto space-y-6">
     <div>
-        <p class="text-sm font-medium text-[#725c00]">Payroll</p>
-        <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Aturan Kompensasi Sesi</h2>
+        <p class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--dash-primary-text);">Payroll</p>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Aturan Kompensasi Sesi</h1>
         <p class="mt-1 max-w-2xl text-sm leading-6 text-slate-600">Atur tarif per sesi untuk tutor. Resolusi scope: employee > posisi > role > global.</p>
     </div>
 
@@ -31,23 +31,23 @@
     <form method="POST" action="{{ route('payroll.session-rules.store') }}" class="border border-slate-200 bg-white p-5">
         @csrf
         <div class="mb-4 flex items-start gap-3">
-            <span class="material-symbols-outlined mt-0.5 text-[#215aac]">add_circle</span>
+            <span class="material-symbols-outlined mt-0.5 text-[color:var(--dash-primary-text,#215aac)]">add_circle</span>
             <h3 class="font-jakarta text-base font-bold text-slate-900">Tambah aturan baru</h3>
         </div>
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-slate-700">Kode Aturan</label>
                 <input type="text" name="rule_code" value="{{ old('rule_code') }}" required maxlength="100"
-                       placeholder="TUTOR_REGULAR" class="block w-full border-slate-300 text-sm uppercase focus:border-[#215aac] focus:ring-[#215aac]">
+                       placeholder="TUTOR_REGULAR" class="block w-full border-slate-300 text-sm uppercase focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
             </div>
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-slate-700">Nama Aturan</label>
                 <input type="text" name="rule_name" value="{{ old('rule_name') }}" required
-                       placeholder="Tarif Tutor Regular" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                       placeholder="Tarif Tutor Regular" class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
             </div>
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-slate-700">Scope</label>
-                <select name="scope_type" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                <select name="scope_type" required class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                     @foreach ($scopeLabels as $val => $label)
                         <option value="{{ $val }}" @selected(old('scope_type') === $val)>{{ $label }}</option>
                     @endforeach
@@ -56,20 +56,20 @@
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-slate-700">Tarif per Sesi (Rp)</label>
                 <input type="number" name="amount_per_session" value="{{ old('amount_per_session') }}" required min="0" step="0.01"
-                       placeholder="0" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                       placeholder="0" class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
             </div>
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-slate-700">Catatan</label>
                 <input type="text" name="notes" value="{{ old('notes') }}"
-                       class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                       class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
             </div>
             <div class="flex items-end gap-3">
                 <label class="inline-flex items-center gap-2 text-sm font-medium text-slate-700 pb-2.5">
                     <input type="hidden" name="is_active" value="0">
-                    <input type="checkbox" name="is_active" value="1" @checked(old('is_active', true)) class="border-slate-300 text-[#215aac] focus:ring-[#215aac]">
+                    <input type="checkbox" name="is_active" value="1" @checked(old('is_active', true)) class="border-slate-300 text-[color:var(--dash-primary-text,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                     Aktif
                 </label>
-                <button type="submit" class="inline-flex min-h-10 flex-1 items-center justify-center gap-2 bg-[#215aac] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">
+                <button type="submit" class="inline-flex min-h-10 flex-1 items-center justify-center gap-2 bg-[var(--dash-primary,#215aac)] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">
                     <span class="material-symbols-outlined text-[18px]">save</span>
                     Simpan
                 </button>

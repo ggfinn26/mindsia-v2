@@ -9,7 +9,7 @@
         <a href="{{ route('in-letters.index') }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700">
             <span class="material-symbols-outlined text-[16px]">arrow_back</span> Surat Masuk
         </a>
-        <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Arsipkan Surat Masuk</h2>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Arsipkan Surat Masuk</h1>
     </div>
 
     @if ($errors->any())
@@ -23,7 +23,7 @@
         <div class="grid gap-4 sm:grid-cols-2">
             <div class="sm:col-span-2">
                 <label class="mb-1.5 block text-sm font-medium text-slate-700">Cabang <span class="text-red-500">*</span></label>
-                <select name="branch_id" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                <select name="branch_id" required class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                     <option value="">— Pilih cabang —</option>
                     @foreach (App\Models\Branch::where('is_active', true)->orderBy('branch_name')->get() as $branch)
                         <option value="{{ $branch->id }}" @selected(old('branch_id') == $branch->id)>{{ $branch->branch_name }}</option>
@@ -32,23 +32,23 @@
             </div>
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-slate-700">Nomor surat</label>
-                <input type="text" name="letter_number" value="{{ old('letter_number') }}" maxlength="100" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                <input type="text" name="letter_number" value="{{ old('letter_number') }}" maxlength="100" class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
             </div>
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-slate-700">Tanggal surat</label>
-                <input type="date" name="letter_date" value="{{ old('letter_date') }}" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                <input type="date" name="letter_date" value="{{ old('letter_date') }}" class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
             </div>
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-slate-700">Tanggal diterima</label>
-                <input type="date" name="receive_date" value="{{ old('receive_date', today()->toDateString()) }}" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                <input type="date" name="receive_date" value="{{ old('receive_date', today()->toDateString()) }}" required class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
             </div>
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-slate-700">Pengirim</label>
-                <input type="text" name="sender_name" value="{{ old('sender_name') }}" required maxlength="255" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                <input type="text" name="sender_name" value="{{ old('sender_name') }}" required maxlength="255" class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
             </div>
             <div class="sm:col-span-2">
                 <label class="mb-1.5 block text-sm font-medium text-slate-700">Perihal</label>
-                <input type="text" name="subject" value="{{ old('subject') }}" required maxlength="255" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                <input type="text" name="subject" value="{{ old('subject') }}" required maxlength="255" class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
             </div>
         </div>
         <div>
@@ -57,10 +57,10 @@
         </div>
         <div>
             <label class="mb-1.5 block text-sm font-medium text-slate-700">Catatan</label>
-            <textarea name="notes" rows="2" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">{{ old('notes') }}</textarea>
+            <textarea name="notes" rows="2" class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">{{ old('notes') }}</textarea>
         </div>
         <div class="flex gap-3 pt-2">
-            <button type="submit" class="inline-flex min-h-10 items-center gap-2 bg-[#215aac] px-5 text-sm font-semibold text-white hover:bg-[#194a91]">Simpan</button>
+            <button type="submit" class="inline-flex min-h-10 items-center gap-2 bg-[var(--dash-primary,#215aac)] px-5 text-sm font-semibold text-white hover:bg-[#194a91]">Simpan</button>
             <a href="{{ route('in-letters.index') }}" class="inline-flex min-h-10 items-center border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50">Batal</a>
         </div>
     </form>

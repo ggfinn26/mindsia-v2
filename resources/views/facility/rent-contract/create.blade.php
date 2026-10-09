@@ -9,7 +9,7 @@
         <a href="{{ route('facility.rent-contracts.index') }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700">
             <span class="material-symbols-outlined text-[16px]">arrow_back</span> Kontrak Sewa Cabang
         </a>
-        <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Buat Kontrak Sewa</h2>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Buat Kontrak Sewa</h1>
     </div>
 
     @if ($errors->any())
@@ -26,7 +26,7 @@
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="mb-1 block text-xs font-semibold text-slate-700">Nama Pemilik</label>
-                    <input type="text" name="owner_name" required maxlength="255" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                    <input type="text" name="owner_name" required maxlength="255" class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                 </div>
                 <div>
                     <label class="mb-1 block text-xs font-semibold text-slate-700">Telepon Pemilik</label>
@@ -34,14 +34,14 @@
                         <span class="inline-flex items-center rounded-l-md border border-r-0 border-slate-300 bg-slate-50 px-3 text-sm font-bold text-slate-500">+62</span>
                         <input type="text" name="owner_phone" placeholder="8xxxxxxxxxx"
                             oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')"
-                            class="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]" minlength="8" maxlength="15">
+                            class="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]" minlength="8" maxlength="15">
                     </div>
                 </div>
             </div>
 
             <div>
                 <label class="mb-1 block text-xs font-semibold text-slate-700">Cabang</label>
-                <select name="branch_id" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                <select name="branch_id" required class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                     <option value="">— Pilih cabang —</option>
                     @foreach (\App\Models\Branch::where('is_active', true)->get() as $branch)
                         <option value="{{ $branch->id }}">{{ $branch->branch_name }}</option>
@@ -52,11 +52,11 @@
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="mb-1 block text-xs font-semibold text-slate-700">Tanggal Mulai</label>
-                    <input type="date" name="start_date" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                    <input type="date" name="start_date" required class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                 </div>
                 <div>
                     <label class="mb-1 block text-xs font-semibold text-slate-700">Tanggal Selesai</label>
-                    <input type="date" name="end_date" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                    <input type="date" name="end_date" required class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                 </div>
             </div>
         </div>
@@ -75,7 +75,7 @@
                     <label class="mb-1 block text-xs font-semibold text-slate-700">Total Sewa</label>
                     <div class="flex rounded-md shadow-sm">
                         <span class="inline-flex items-center rounded-l-md border border-r-0 border-slate-300 bg-slate-50 px-3 text-sm font-bold text-slate-500">Rp</span>
-                        <input type="text" :value="format(rawValue)" @input="rawValue = $event.target.value.replace(/[^0-9]/g, ''); $event.target.value = format(rawValue)" required class="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                        <input type="text" :value="format(rawValue)" @input="rawValue = $event.target.value.replace(/[^0-9]/g, ''); $event.target.value = format(rawValue)" required class="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                         <input type="hidden" name="rent_amount" x-model="rawValue">
                     </div>
                 </div>
@@ -89,20 +89,20 @@
                     <label class="mb-1 block text-xs font-semibold text-slate-700">Down Payment</label>
                     <div class="flex rounded-md shadow-sm">
                         <span class="inline-flex items-center rounded-l-md border border-r-0 border-slate-300 bg-slate-50 px-3 text-sm font-bold text-slate-500">Rp</span>
-                        <input type="text" :value="format(rawValue)" @input="rawValue = $event.target.value.replace(/[^0-9]/g, ''); $event.target.value = format(rawValue)" required class="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                        <input type="text" :value="format(rawValue)" @input="rawValue = $event.target.value.replace(/[^0-9]/g, ''); $event.target.value = format(rawValue)" required class="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                         <input type="hidden" name="down_payment" x-model="rawValue">
                     </div>
                 </div>
                 <div>
                     <label class="mb-1 block text-xs font-semibold text-slate-700">Jumlah Termin</label>
-                    <input type="number" name="termin_count" required min="1" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]" value="12">
+                    <input type="number" name="termin_count" required min="1" class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]" value="12">
                 </div>
             </div>
 
             <div>
                 <label class="mb-1 block text-xs font-semibold text-slate-700">Periode Sewa</label>
-                <select name="rent_period" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
-                    <option value="">-- Pilih Periode --</option>
+                <select name="rent_period" required class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
+                    <option value="">Pilih Periode</option>
                     <option value="monthly" {{ old('rent_period') === 'monthly' ? 'selected' : '' }}>Bulanan (Monthly)</option>
                     <option value="yearly" {{ old('rent_period') === 'yearly' ? 'selected' : '' }}>Tahunan (Yearly)</option>
                     <option value="one_time" {{ old('rent_period') === 'one_time' ? 'selected' : '' }}>Sekali Bayar (One Time)</option>
@@ -134,12 +134,12 @@
 
         <div class="border border-slate-200 bg-white p-5 space-y-4">
             <h3 class="font-jakarta text-sm font-bold text-slate-900">Catatan</h3>
-            <textarea name="notes" rows="3" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]" placeholder="Catatan tambahan (opsional)"></textarea>
+            <textarea name="notes" rows="3" class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]" placeholder="Catatan tambahan (opsional)"></textarea>
         </div>
 
         <div class="flex justify-end gap-3">
             <a href="{{ route('facility.rent-contracts.index') }}" class="inline-flex min-h-10 items-center border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50">Batal</a>
-            <button type="submit" class="inline-flex min-h-10 items-center bg-[#215aac] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">Simpan</button>
+            <button type="submit" class="inline-flex min-h-10 items-center bg-[var(--dash-primary,#215aac)] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">Simpan</button>
         </div>
     </form>
 </div>

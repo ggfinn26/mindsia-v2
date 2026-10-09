@@ -19,7 +19,7 @@
                 <span class="material-symbols-outlined text-[16px]">arrow_back</span>
                 Marketing Bonus Rules
             </a>
-            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-[var(--dash-text-heading)]">{{ $rule->rule_name }}</h2>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">{{ $rule->rule_name }}</h1>
             <p class="mt-0.5 font-mono text-sm text-[var(--dash-text-faint)]">{{ $rule->rule_code }}</p>
         </div>
         <div class="flex gap-2">

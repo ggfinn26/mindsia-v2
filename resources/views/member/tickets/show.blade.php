@@ -5,7 +5,7 @@
 @section('content')
 <div class="max-w-3xl mx-auto space-y-6">
     <div>
-        <a href="{{ route('member.tickets.index') }}" class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-[#215aac] transition-colors">
+        <a href="{{ route('member.tickets.index') }}" class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-[color:var(--dash-primary-text,#215aac)] transition-colors">
             <span class="material-symbols-outlined text-[16px]">arrow_back</span> Daftar Tiket
         </a>
         <div class="mt-2 flex items-center justify-between flex-wrap gap-3">
@@ -84,7 +84,7 @@
         @foreach($ticket->replies as $reply)
             @php $isEmployee = !is_null($reply->employee_id); @endphp
             <div class="flex gap-3 {{ $isEmployee ? '' : 'flex-row-reverse' }}">
-                <div class="h-8 w-8 flex-shrink-0 rounded-full {{ $isEmployee ? 'bg-[#215aac]' : 'bg-emerald-600' }} flex items-center justify-center text-white text-xs font-bold">
+                <div class="h-8 w-8 flex-shrink-0 rounded-full {{ $isEmployee ? 'bg-[var(--dash-primary,#215aac)]' : 'bg-emerald-600' }} flex items-center justify-center text-white text-xs font-bold">
                     {{ $isEmployee ? substr($reply->employee->full_name ?? 'A', 0, 1) : 'S' }}
                 </div>
                 <div class="max-w-[75%] {{ $isEmployee ? '' : 'items-end' }} flex flex-col gap-1">
@@ -92,7 +92,7 @@
                         {{ $isEmployee ? ($reply->employee->full_name ?? 'Admin') : 'Saya' }}
                         · {{ $reply->created_at->format('d M Y, H:i') }}
                     </p>
-                    <div class="rounded-xl px-4 py-3 text-sm {{ $isEmployee ? 'bg-slate-100 text-slate-800 rounded-tl-none' : 'bg-[#215aac] text-white rounded-tr-none' }}">
+                    <div class="rounded-xl px-4 py-3 text-sm {{ $isEmployee ? 'bg-slate-100 text-slate-800 rounded-tl-none' : 'bg-[var(--dash-primary,#215aac)] text-white rounded-tr-none' }}">
                         {{ $reply->reply }}
                     </div>
                 </div>
@@ -111,9 +111,9 @@
             @csrf
             <textarea name="reply" rows="4" required minlength="5"
                 placeholder="Tulis balasan Anda..."
-                class="block w-full rounded-lg border-slate-200 bg-white px-3 py-2.5 text-sm focus:border-[#215aac] focus:ring-[#215aac] shadow-sm"></textarea>
+                class="block w-full rounded-lg border-slate-200 bg-white px-3 py-2.5 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)] shadow-sm"></textarea>
             <div class="flex justify-end">
-                <button type="submit" class="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-lg bg-[#215aac] px-5 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-colors">
+                <button type="submit" class="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-lg bg-[var(--dash-primary,#215aac)] px-5 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-colors">
                     <span class="material-symbols-outlined text-[18px]">send</span> Kirim Balasan
                 </button>
             </div>

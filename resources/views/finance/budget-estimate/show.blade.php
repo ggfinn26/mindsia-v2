@@ -10,7 +10,7 @@
             <a href="{{ route('budget-estimates.index') }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700 transition-colors">
                 <span class="material-symbols-outlined text-[16px]">arrow_back</span> Kembali
             </a>
-            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Detail Estimasi Anggaran</h2>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Detail Estimasi Anggaran</h1>
         </div>
         <div>
             @if ($budgetEstimate->status === 'draft')
@@ -120,11 +120,11 @@
                     @csrf
                     <div class="col-span-12 md:col-span-4">
                         <label class="mb-1.5 block text-xs font-semibold text-slate-700">Nama Item</label>
-                        <input type="text" name="item_name" required maxlength="255" placeholder="Cth: Tinta Printer" class="block w-full rounded-lg border-slate-200 bg-white px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-[#215aac] focus:ring-[#215aac]">
+                        <input type="text" name="item_name" required maxlength="255" placeholder="Cth: Tinta Printer" class="block w-full rounded-lg border-slate-200 bg-white px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                     </div>
                     <div class="col-span-6 md:col-span-2">
                         <label class="mb-1.5 block text-xs font-semibold text-slate-700">Qty</label>
-                        <input type="number" name="quantity" required min="1" value="1" class="block w-full rounded-lg border-slate-200 bg-white px-3 py-2.5 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                        <input type="number" name="quantity" required min="1" value="1" class="block w-full rounded-lg border-slate-200 bg-white px-3 py-2.5 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                     </div>
                     <div class="col-span-6 md:col-span-3">
                         <label class="mb-1.5 block text-xs font-semibold text-slate-700">Harga Est.</label>
@@ -136,16 +136,16 @@
                                 }
                             }">
                             <span class="inline-flex items-center rounded-l-lg border border-r-0 border-slate-200 bg-slate-100 px-3 text-sm font-bold text-slate-500">Rp</span>
-                            <input type="text" :value="format(rawValue)" @input="rawValue = $event.target.value.replace(/[^0-9]/g, ''); $event.target.value = format(rawValue)" required placeholder="0" class="block w-full min-w-0 flex-1 rounded-none rounded-r-lg border-slate-200 bg-white px-3 py-2.5 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                            <input type="text" :value="format(rawValue)" @input="rawValue = $event.target.value.replace(/[^0-9]/g, ''); $event.target.value = format(rawValue)" required placeholder="0" class="block w-full min-w-0 flex-1 rounded-none rounded-r-lg border-slate-200 bg-white px-3 py-2.5 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                             <input type="hidden" name="estimated_price" x-model="rawValue">
                         </div>
                     </div>
                     <div class="col-span-12 md:col-span-2">
                         <label class="mb-1.5 block text-xs font-semibold text-slate-700">Catatan</label>
-                        <input type="text" name="notes" maxlength="255" placeholder="Opsional" class="block w-full rounded-lg border-slate-200 bg-white px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-[#215aac] focus:ring-[#215aac]">
+                        <input type="text" name="notes" maxlength="255" placeholder="Opsional" class="block w-full rounded-lg border-slate-200 bg-white px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                     </div>
                     <div class="col-span-12 md:col-span-1">
-                        <button type="submit" class="inline-flex h-10 w-full items-center justify-center rounded-lg bg-[#215aac] text-sm font-semibold text-white shadow-sm hover:bg-[#194a91] transition-all">
+                        <button type="submit" class="inline-flex h-10 w-full items-center justify-center rounded-lg bg-[var(--dash-primary,#215aac)] text-sm font-semibold text-white shadow-sm hover:bg-[#194a91] transition-all">
                             <span class="material-symbols-outlined text-[20px]">add</span>
                         </button>
                     </div>
@@ -161,7 +161,7 @@
             @can('finance.budget_estimate.create')
                 <form method="POST" action="{{ route('budget-estimates.submit-ops', $budgetEstimate) }}">
                     @csrf
-                    <button type="submit" class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-[#215aac] px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#194a91] transition-all">
+                    <button type="submit" class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-[var(--dash-primary,#215aac)] px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#194a91] transition-all">
                         <span class="material-symbols-outlined text-[18px]">send</span> Ajukan ke OPS
                     </button>
                 </form>
@@ -170,7 +170,7 @@
             @can('finance.budget_estimate.ops_review')
                 <form method="POST" action="{{ route('budget-estimates.submit-finance', $budgetEstimate) }}">
                     @csrf
-                    <button type="submit" class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-[#215aac] px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#194a91] transition-all">
+                    <button type="submit" class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-[var(--dash-primary,#215aac)] px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#194a91] transition-all">
                         <span class="material-symbols-outlined text-[18px]">forward</span> Teruskan ke Finance
                     </button>
                 </form>

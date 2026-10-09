@@ -21,7 +21,7 @@
                 <div>
                     <label class="block mb-2 text-[12px] font-bold text-ky-text/80 uppercase tracking-wider">Cabang *</label>
                     <select name="branch_id" class="w-full px-4 py-3 bg-white border border-ky-border/50 rounded-xl text-[14px] focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors">
-                        <option value="">-- Pilih Cabang --</option>
+                        <option value="">Pilih Cabang</option>
                         @foreach($branches as $branch)
                             <option value="{{ $branch->id }}">{{ $branch->name }}</option>
                         @endforeach
@@ -30,7 +30,7 @@
                 <div>
                     <label class="block mb-2 text-[12px] font-bold text-ky-text/80 uppercase tracking-wider">Program *</label>
                     <select name="program_id" class="w-full px-4 py-3 bg-white border border-ky-border/50 rounded-xl text-[14px] focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors">
-                        <option value="">-- Pilih Program --</option>
+                        <option value="">Pilih Program</option>
                         @foreach($programs as $program)
                             <option value="{{ $program->id }}" {{ request('program') == $program->id ? 'selected' : '' }}>
                                 {{ $program->name }}

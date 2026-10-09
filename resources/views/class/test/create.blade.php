@@ -13,7 +13,7 @@
             <span class="material-symbols-outlined text-[20px]">arrow_back</span>
         </a>
         <div>
-            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-[var(--dash-text-heading)]">Tambah Test</h2>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Tambah Test</h1>
             <p class="mt-1 text-sm text-[var(--dash-text-muted)]">Kelas: <span class="font-medium text-[var(--dash-text-heading)]">{{ $classroom->class_name }}</span></p>
         </div>
     </div>

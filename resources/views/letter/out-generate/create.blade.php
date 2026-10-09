@@ -57,7 +57,7 @@ $formConfig = [
         <a href="{{ route('out-letters-generate.index') }}" class="inline-flex items-center gap-1.5 text-[13px] font-semibold text-slate-500 hover:text-slate-800 transition-colors mb-3">
             <span class="material-symbols-outlined text-[18px]">arrow_back</span> Kembali ke daftar surat
         </a>
-        <h2 class="font-jakarta text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Buat Surat Keluar</h2>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Buat Surat Keluar</h1>
         <p class="mt-2 text-[14px] text-slate-600">Pilih template lalu lengkapi isian. Dokumen dibuat sebagai <strong>Draft</strong>.</p>
     </div>
 
@@ -89,7 +89,7 @@ $formConfig = [
                     <label class="mb-1.5 block text-[13px] font-bold text-slate-700">Template <span class="text-red-500">*</span></label>
                     <div class="relative" @click.away="showTemplateDD = false">
                         <button type="button" @click="showTemplateDD = !showTemplateDD; showBranchDD = false; showEmployeeDD = false; showSignerDD = false"
-                                class="w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] text-left flex items-center justify-between gap-2 focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
+                                class="w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] text-left flex items-center justify-between gap-2 focus:outline-none focus:border-[color:var(--dash-primary,#215aac)] focus:ring-1 focus:ring-[color:var(--dash-primary,#215aac)] transition-colors">
                             <span x-text="selectedTemplateName" :class="selectedTemplateId ? 'text-slate-900' : 'text-slate-400'" class="truncate"></span>
                             <span class="material-symbols-outlined text-[18px] text-slate-400 flex-shrink-0">expand_more</span>
                         </button>
@@ -100,7 +100,7 @@ $formConfig = [
                                 <div class="relative">
                                     <span class="material-symbols-outlined absolute left-3 top-2 text-slate-400 text-[16px]">search</span>
                                     <input type="text" x-model="searchTemplate" placeholder="Cari template..."
-                                           style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-white border border-slate-200 rounded-md text-[13px] focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
+                                           style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-white border border-slate-200 rounded-md text-[13px] focus:outline-none focus:border-[color:var(--dash-primary,#215aac)] focus:ring-1 focus:ring-[color:var(--dash-primary,#215aac)]"
                                            @click.stop>
                                 </div>
                             </div>
@@ -108,7 +108,7 @@ $formConfig = [
                                 <li x-show="filteredTemplates.length === 0" class="px-4 py-2 text-[13px] text-slate-500 text-center">Tidak ditemukan</li>
                                 <template x-for="item in filteredTemplates" :key="item.id">
                                     <li @click="selectTemplate(item.id)"
-                                        class="px-4 py-2 text-[13px] text-slate-700 hover:bg-[#215aac] hover:text-white cursor-pointer"
+                                        class="px-4 py-2 text-[13px] text-slate-700 hover:bg-[var(--dash-primary,#215aac)] hover:text-white cursor-pointer"
                                         :class="selectedTemplateId == item.id ? 'bg-[#EEF4FF] font-semibold' : ''"
                                         x-text="item.name"></li>
                                 </template>
@@ -143,7 +143,7 @@ $formConfig = [
                             <label class="mb-1.5 block text-[13px] font-bold text-slate-700">Cabang <span class="text-red-500">*</span></label>
                             <div class="relative" @click.away="showBranchDD = false">
                                 <button type="button" @click="showBranchDD = !showBranchDD; showTemplateDD = false; showEmployeeDD = false; showSignerDD = false"
-                                        class="w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] text-left flex items-center justify-between gap-2 focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
+                                        class="w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] text-left flex items-center justify-between gap-2 focus:outline-none focus:border-[color:var(--dash-primary,#215aac)] focus:ring-1 focus:ring-[color:var(--dash-primary,#215aac)] transition-colors">
                                     <span x-text="selectedBranchName" :class="selectedBranchId ? 'text-slate-900' : 'text-slate-400'" class="truncate"></span>
                                     <span class="material-symbols-outlined text-[18px] text-slate-400 flex-shrink-0">expand_more</span>
                                 </button>
@@ -154,7 +154,7 @@ $formConfig = [
                                         <div class="relative">
                                             <span class="material-symbols-outlined absolute left-3 top-2 text-slate-400 text-[16px]">search</span>
                                             <input type="text" x-model="searchBranch" placeholder="Cari cabang..."
-                                                   style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-white border border-slate-200 rounded-md text-[13px] focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
+                                                   style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-white border border-slate-200 rounded-md text-[13px] focus:outline-none focus:border-[color:var(--dash-primary,#215aac)] focus:ring-1 focus:ring-[color:var(--dash-primary,#215aac)]"
                                                    @click.stop>
                                         </div>
                                     </div>
@@ -162,7 +162,7 @@ $formConfig = [
                                         <li x-show="filteredBranches.length === 0" class="px-4 py-2 text-[13px] text-slate-500 text-center">Tidak ditemukan</li>
                                         <template x-for="item in filteredBranches" :key="item.id">
                                             <li @click="selectBranch(item.id)"
-                                                class="px-4 py-2 text-[13px] text-slate-700 hover:bg-[#215aac] hover:text-white cursor-pointer"
+                                                class="px-4 py-2 text-[13px] text-slate-700 hover:bg-[var(--dash-primary,#215aac)] hover:text-white cursor-pointer"
                                                 :class="selectedBranchId == item.id ? 'bg-[#EEF4FF] font-semibold' : ''"
                                                 x-text="item.name"></li>
                                         </template>
@@ -173,7 +173,7 @@ $formConfig = [
                         <div x-show="templateVars.some(v => v.key === 'kota_cabang')">
                             <label class="mb-1.5 block text-[13px] font-bold text-slate-700">Teks di Dokumen <span class="text-slate-400 font-normal text-[12px]">(bisa diubah)</span></label>
                             <input type="text" name="manual_vars[kota_cabang]" x-model="values['kota_cabang']"
-                                   class="block w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] focus:bg-white focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
+                                   class="block w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] focus:bg-white focus:outline-none focus:border-[color:var(--dash-primary,#215aac)] focus:ring-1 focus:ring-[color:var(--dash-primary,#215aac)] transition-colors">
                         </div>
                     </div>
                 </div>
@@ -185,7 +185,7 @@ $formConfig = [
                         <label class="mb-1.5 block text-[13px] font-bold text-slate-700">Nama Pegawai</label>
                         <div class="relative" @click.away="showEmployeeDD = false">
                             <button type="button" @click="showEmployeeDD = !showEmployeeDD; showTemplateDD = false; showBranchDD = false; showSignerDD = false"
-                                    class="w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] text-left flex items-center justify-between gap-2 focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
+                                    class="w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] text-left flex items-center justify-between gap-2 focus:outline-none focus:border-[color:var(--dash-primary,#215aac)] focus:ring-1 focus:ring-[color:var(--dash-primary,#215aac)] transition-colors">
                                 <span x-text="selectedEmployeeName" :class="selectedEmployeeId ? 'text-slate-900' : 'text-slate-400'" class="truncate"></span>
                                 <span class="material-symbols-outlined text-[18px] text-slate-400 flex-shrink-0">expand_more</span>
                             </button>
@@ -196,7 +196,7 @@ $formConfig = [
                                     <div class="relative">
                                         <span class="material-symbols-outlined absolute left-3 top-2 text-slate-400 text-[16px]">search</span>
                                         <input type="text" x-model="searchEmployee" placeholder="Cari pegawai..."
-                                               style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-white border border-slate-200 rounded-md text-[13px] focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
+                                               style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-white border border-slate-200 rounded-md text-[13px] focus:outline-none focus:border-[color:var(--dash-primary,#215aac)] focus:ring-1 focus:ring-[color:var(--dash-primary,#215aac)]"
                                                @click.stop>
                                     </div>
                                 </div>
@@ -204,7 +204,7 @@ $formConfig = [
                                     <li x-show="filteredEmployees.length === 0" class="px-4 py-2 text-[13px] text-slate-500 text-center">Tidak ditemukan</li>
                                     <template x-for="item in filteredEmployees" :key="item.id">
                                         <li @click="selectEmployee(item.id)"
-                                            class="px-4 py-2 text-[13px] text-slate-700 hover:bg-[#215aac] hover:text-white cursor-pointer"
+                                            class="px-4 py-2 text-[13px] text-slate-700 hover:bg-[var(--dash-primary,#215aac)] hover:text-white cursor-pointer"
                                             :class="selectedEmployeeId == item.id ? 'bg-[#EEF4FF] font-semibold' : ''"
                                             x-text="item.name"></li>
                                     </template>
@@ -217,7 +217,7 @@ $formConfig = [
                             <div>
                                 <label class="mb-1 block text-[13px] font-medium text-slate-600" x-text="v.label"></label>
                                 <input type="text" :name="'manual_vars[' + v.key + ']'" x-model="values[v.key]"
-                                       class="block w-full min-h-[40px] px-3 py-2 rounded-lg border border-slate-200 bg-[#F8FAFC] text-[13px] focus:bg-white focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
+                                       class="block w-full min-h-[40px] px-3 py-2 rounded-lg border border-slate-200 bg-[#F8FAFC] text-[13px] focus:bg-white focus:outline-none focus:border-[color:var(--dash-primary,#215aac)] focus:ring-1 focus:ring-[color:var(--dash-primary,#215aac)] transition-colors">
                             </div>
                         </template>
                     </div>
@@ -230,7 +230,7 @@ $formConfig = [
                         <label class="mb-1.5 block text-[13px] font-bold text-slate-700">Pilih Penandatangan</label>
                         <div class="relative" @click.away="showSignerDD = false">
                             <button type="button" @click="showSignerDD = !showSignerDD; showTemplateDD = false; showBranchDD = false; showEmployeeDD = false"
-                                    class="w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] text-left flex items-center justify-between gap-2 focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
+                                    class="w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] text-left flex items-center justify-between gap-2 focus:outline-none focus:border-[color:var(--dash-primary,#215aac)] focus:ring-1 focus:ring-[color:var(--dash-primary,#215aac)] transition-colors">
                                 <span x-text="selectedSignerName" :class="selectedSignerId ? 'text-slate-900' : 'text-slate-400'" class="truncate"></span>
                                 <span class="material-symbols-outlined text-[18px] text-slate-400 flex-shrink-0">expand_more</span>
                             </button>
@@ -241,7 +241,7 @@ $formConfig = [
                                     <div class="relative">
                                         <span class="material-symbols-outlined absolute left-3 top-2 text-slate-400 text-[16px]">search</span>
                                         <input type="text" x-model="searchSigner" placeholder="Cari penandatangan..."
-                                               style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-white border border-slate-200 rounded-md text-[13px] focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
+                                               style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-white border border-slate-200 rounded-md text-[13px] focus:outline-none focus:border-[color:var(--dash-primary,#215aac)] focus:ring-1 focus:ring-[color:var(--dash-primary,#215aac)]"
                                                @click.stop>
                                     </div>
                                 </div>
@@ -249,7 +249,7 @@ $formConfig = [
                                     <li x-show="filteredSigners.length === 0" class="px-4 py-2 text-[13px] text-slate-500 text-center">Tidak ditemukan</li>
                                     <template x-for="item in filteredSigners" :key="item.id">
                                         <li @click="selectSigner(item.id)"
-                                            class="px-4 py-2 text-[13px] text-slate-700 hover:bg-[#215aac] hover:text-white cursor-pointer"
+                                            class="px-4 py-2 text-[13px] text-slate-700 hover:bg-[var(--dash-primary,#215aac)] hover:text-white cursor-pointer"
                                             :class="selectedSignerId == item.id ? 'bg-[#EEF4FF] font-semibold' : ''"
                                             x-text="item.name"></li>
                                     </template>
@@ -262,7 +262,7 @@ $formConfig = [
                             <div>
                                 <label class="mb-1 block text-[13px] font-medium text-slate-600" x-text="v.label"></label>
                                 <input type="text" :name="'manual_vars[' + v.key + ']'" x-model="values[v.key]"
-                                       class="block w-full min-h-[40px] px-3 py-2 rounded-lg border border-slate-200 bg-[#F8FAFC] text-[13px] focus:bg-white focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
+                                       class="block w-full min-h-[40px] px-3 py-2 rounded-lg border border-slate-200 bg-[#F8FAFC] text-[13px] focus:bg-white focus:outline-none focus:border-[color:var(--dash-primary,#215aac)] focus:ring-1 focus:ring-[color:var(--dash-primary,#215aac)] transition-colors">
                             </div>
                         </template>
                     </div>
@@ -276,14 +276,14 @@ $formConfig = [
                             <div>
                                 <label class="mb-1.5 block text-[13px] font-bold text-slate-700" x-text="v.label"></label>
                                 <input type="date" :name="'manual_vars[' + v.key + ']'" x-model="values[v.key]"
-                                       class="block w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] focus:bg-white focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
+                                       class="block w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] focus:bg-white focus:outline-none focus:border-[color:var(--dash-primary,#215aac)] focus:ring-1 focus:ring-[color:var(--dash-primary,#215aac)] transition-colors">
                             </div>
                         </template>
                         <template x-for="v in textVars" :key="v.key">
                             <div>
                                 <label class="mb-1.5 block text-[13px] font-bold text-slate-700" x-text="v.label"></label>
                                 <input type="text" :name="'manual_vars[' + v.key + ']'" x-model="values[v.key]"
-                                       class="block w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] focus:bg-white focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
+                                       class="block w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] focus:bg-white focus:outline-none focus:border-[color:var(--dash-primary,#215aac)] focus:ring-1 focus:ring-[color:var(--dash-primary,#215aac)] transition-colors">
                             </div>
                         </template>
                     </div>
@@ -297,7 +297,7 @@ $formConfig = [
                             <div class="flex items-center justify-between">
                                 <label class="text-[13px] font-bold text-slate-700" x-text="v.label"></label>
                                 <button type="button" @click="addRow(v.key)"
-                                        class="inline-flex items-center gap-1 text-[12px] font-semibold text-[#215aac] hover:text-[#194a91]">
+                                        class="inline-flex items-center gap-1 text-[12px] font-semibold text-[color:var(--dash-primary-text,#215aac)] hover:text-[#194a91]">
                                     <span class="material-symbols-outlined text-[16px]">add</span> Tambah baris
                                 </button>
                             </div>
@@ -307,7 +307,7 @@ $formConfig = [
                                            :name="'manual_vars[' + v.key + '][' + i + ']'"
                                            :value="row"
                                            @input="updateRow(v.key, i, $event.target.value)"
-                                           class="block flex-1 min-h-[40px] px-3 py-2 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[13px] focus:bg-white focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
+                                           class="block flex-1 min-h-[40px] px-3 py-2 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[13px] focus:bg-white focus:outline-none focus:border-[color:var(--dash-primary,#215aac)] focus:ring-1 focus:ring-[color:var(--dash-primary,#215aac)] transition-colors">
                                     <button type="button" @click="removeRow(v.key, i)"
                                             x-show="getRows(v.key).length > 1"
                                             class="p-2 text-slate-400 hover:text-red-500 transition-colors">
@@ -326,12 +326,12 @@ $formConfig = [
                         <div>
                             <label class="mb-1.5 block text-[13px] font-bold text-slate-700">Penerima <span class="text-slate-400 font-normal text-[12px]">(ditampilkan di daftar)</span></label>
                             <input type="text" name="recipient" value="{{ old('recipient') }}" maxlength="255"
-                                   class="block w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] focus:bg-white focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
+                                   class="block w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] focus:bg-white focus:outline-none focus:border-[color:var(--dash-primary,#215aac)] focus:ring-1 focus:ring-[color:var(--dash-primary,#215aac)] transition-colors">
                         </div>
                         <div>
                             <label class="mb-1.5 block text-[13px] font-bold text-slate-700">Catatan Internal <span class="text-slate-400 font-normal text-[12px]">(tidak tercetak)</span></label>
                             <input type="text" name="notes" value="{{ old('notes') }}"
-                                   class="block w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] focus:bg-white focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
+                                   class="block w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] focus:bg-white focus:outline-none focus:border-[color:var(--dash-primary,#215aac)] focus:ring-1 focus:ring-[color:var(--dash-primary,#215aac)] transition-colors">
                         </div>
                     </div>
                 </div>
@@ -346,7 +346,7 @@ $formConfig = [
                 Batal
             </a>
             <button type="submit" :disabled="isSubmitting || !selectedTemplateId"
-                    class="w-full sm:w-auto inline-flex justify-center min-h-[44px] items-center gap-2 bg-[#215aac] px-6 rounded-lg text-[14px] font-bold text-white hover:bg-[#194a91] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    class="w-full sm:w-auto inline-flex justify-center min-h-[44px] items-center gap-2 bg-[var(--dash-primary,#215aac)] px-6 rounded-lg text-[14px] font-bold text-white hover:bg-[#194a91] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                 <span x-show="!isSubmitting" class="material-symbols-outlined text-[18px]">draft</span>
                 <span x-show="!isSubmitting">Buat Surat (Draft)</span>
                 <span x-show="isSubmitting" class="material-symbols-outlined animate-spin text-[18px]" x-cloak>progress_activity</span>

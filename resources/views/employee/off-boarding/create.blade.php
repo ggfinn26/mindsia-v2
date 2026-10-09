@@ -9,7 +9,7 @@
         <a href="{{ route('resign-requests.index') }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700">
             <span class="material-symbols-outlined text-[16px]">arrow_back</span> Permintaan Resign
         </a>
-        <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Offboarding — {{ $employee->full_name }}</h2>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Offboarding — {{ $employee->full_name }}</h1>
         <p class="mt-1 text-sm text-slate-500">Lengkapi proses offboarding sebelum menonaktifkan akun pegawai.</p>
     </div>
 
@@ -49,11 +49,11 @@
         </div>
         <div>
             <label class="mb-1.5 block text-sm font-medium text-slate-700">Catatan offboarding</label>
-            <textarea name="reason_off_boarding" rows="3" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]" placeholder="Catatan tambahan (opsional)...">{{ old('reason_off_boarding') }}</textarea>
+            <textarea name="reason_off_boarding" rows="3" class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]" placeholder="Catatan tambahan (opsional)...">{{ old('reason_off_boarding') }}</textarea>
         </div>
         <div>
             <label class="mb-1.5 block text-sm font-medium text-slate-700">Tanggal offboarding</label>
-            <input type="date" name="off_boarding_date" value="{{ old('off_boarding_date', today()->toDateString()) }}" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+            <input type="date" name="off_boarding_date" value="{{ old('off_boarding_date', today()->toDateString()) }}" required class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
         </div>
         <div class="flex gap-3 pt-2">
             <button type="button" @click="showConfirm = true"

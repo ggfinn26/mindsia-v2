@@ -19,8 +19,8 @@
 <div class="max-w-7xl mx-auto space-y-6">
     <div class="flex items-start justify-between gap-4">
         <div>
-            <p class="text-sm font-medium text-[#725c00]">Finance</p>
-            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Anggaran Cabang</h2>
+            <p class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--dash-primary-text);">Finance</p>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Anggaran Cabang</h1>
         </div>
         <div class="flex gap-2">
             @canany(['finance.budget_estimate.ops_review', 'finance.budget_estimate.send'])
@@ -29,7 +29,7 @@
                 </a>
             @endcanany
             @can('finance.budget_estimate.create')
-                <a href="{{ route('budget-estimates.create') }}" class="inline-flex min-h-10 items-center gap-2 bg-[#215aac] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">
+                <a href="{{ route('budget-estimates.create') }}" class="inline-flex min-h-10 items-center gap-2 bg-[var(--dash-primary,#215aac)] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">
                     <span class="material-symbols-outlined text-[18px]">add</span> Buat Anggaran
                 </a>
             @endcan
@@ -46,7 +46,7 @@
     <form method="GET" class="flex flex-wrap gap-3 border border-slate-200 bg-white p-4">
         <div>
             <label class="mb-1 block text-xs font-medium text-slate-700">Bulan</label>
-            <select name="month" class="block border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+            <select name="month" class="block border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                 @foreach (array_slice($months, 1, null, true) as $num => $label)
                     <option value="{{ $num }}" @selected($month == $num)>{{ $label }}</option>
                 @endforeach
@@ -54,10 +54,10 @@
         </div>
         <div>
             <label class="mb-1 block text-xs font-medium text-slate-700">Tahun</label>
-            <input type="number" name="year" value="{{ $year }}" min="2020" class="block w-24 border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+            <input type="number" name="year" value="{{ $year }}" min="2020" class="block w-24 border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
         </div>
         <div class="flex items-end">
-            <button type="submit" class="inline-flex min-h-9 items-center bg-[#215aac] px-3 text-xs font-semibold text-white hover:bg-[#194a91]">Filter</button>
+            <button type="submit" class="inline-flex min-h-9 items-center bg-[var(--dash-primary,#215aac)] px-3 text-xs font-semibold text-white hover:bg-[#194a91]">Filter</button>
         </div>
     </form>
 

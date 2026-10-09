@@ -23,7 +23,7 @@
         'cancelled' => 'Dibatalkan',
     ];
     $feeStatusBadge = [
-        'none'    => 'bg-gray-100 text-gray-600 border-gray-200',
+        'none'    => 'bg-[var(--dash-input-bg)] text-[var(--dash-text-body)] border-[var(--dash-card-border)]',
         'pending' => 'bg-yellow-50 text-yellow-700 border-yellow-200',
         'paid'    => 'bg-green-50 text-green-700 border-green-200',
     ];
@@ -37,7 +37,7 @@
     $leadStatusLabels = ['ALMOST' => 'Hampir', 'YES' => 'Berminat', 'FIXED' => 'Pasti', 'NO' => 'Tidak'];
     $toggleTargets = [
         'ALMOST' => ['?', 'border-yellow-300 text-yellow-600 hover:bg-yellow-50'],
-        'YES'    => ['✓', 'border-green-300 text-green-600 hover:bg-green-50'],
+        'YES'    => ['✓', 'border-green-300 text-green-600 hover:bg-[var(--dash-nav-hover-bg)]'],
         'NO'     => ['✕', 'border-red-300 text-red-500 hover:bg-red-50'],
     ];
 
@@ -59,62 +59,75 @@
     $pmSortIcon = fn(string $col) => $pmSort === $col ? ($pmDir === 'asc' ? ' ↑' : ' ↓') : '';
 @endphp
 
-<div class="max-w-5xl mx-auto py-6 px-4 sm:px-6 lg:px-8"
-    x-data="{ showAssignModal: false, showFeeModal: false, showCancelModal: false, showCompleteModal: false }">
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6"
+    x-data="{ showAssignModal: false, showFeeModal: false, showCancelModal: false, showCompleteModal: false, showConfirmModal: false, confirmTitle: "", confirmMessage: "", confirmActionUrl: "", confirmMethod: "POST", confirmActionText: "Hapus", confirmActionClass: "bg-red-600" }">
 
+    {{-- Alert Messages --}}
     @if (session('success'))
-        <div class="mb-4 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-xl text-sm">{{ session('success') }}</div>
+        <div class="flex gap-3 px-4 py-3 text-sm rounded-lg" style="border: 1px solid #a7f3d0; background-color: #ecfdf5; color: #065f46;">
+            <span class="material-symbols-outlined text-[20px]">check_circle</span>
+            <p>{{ session('success') }}</p>
+        </div>
     @endif
     @if (session('error'))
-        <div class="mb-4 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-xl text-sm">{{ session('error') }}</div>
+        <div class="flex gap-3 px-4 py-3 text-sm rounded-lg" style="border: 1px solid #fecaca; background-color: #fef2f2; color: #991b1b;">
+            <span class="material-symbols-outlined text-[20px]">error</span>
+            <p>{{ session('error') }}</p>
+        </div>
     @endif
 
     {{-- Header --}}
-    <div class="bg-white border border-gray-100 border-l-4 {{ $statusBorderLeft[$socialization->status] ?? 'border-l-gray-300' }} rounded-xl shadow-sm mb-5 p-5 sm:p-6">
-        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+    <div class="flex items-start gap-4">
+        <a href="{{ route('socializations.index') }}"
+           class="flex-shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-xl transition-colors"
+           style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-muted);"
+           onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+           onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+            <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+        </a>
+        <div class="flex-1 min-w-0">
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight text-[var(--dash-text-heading)] truncate">{{ $displayName }}</h1>
+            <div class="flex flex-wrap items-center gap-2 mt-1.5">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border
+                    {{ $statusBadge[$socialization->status] ?? 'bg-[var(--dash-input-bg)] text-[var(--dash-text-body)] border-[var(--dash-card-border)]' }}">
+                    {{ $statusLabels[$socialization->status] ?? $socialization->status }}
+                </span>
+                @if ($socialization->area)
+                    <span class="text-sm text-[var(--dash-text-muted)] border-l pl-2 border-[var(--dash-card-border)]">{{ $socialization->area->name }}</span>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    {{-- Main Content Wrap --}}
+    <div class="bg-[var(--dash-card-bg)] rounded-2xl border border-[var(--dash-card-border)] border-l-4 {{ $statusBorderLeft[$socialization->status] ?? 'border-l-gray-300' }} overflow-hidden mb-5">
+        <div class="p-5 sm:p-6 border-b border-[var(--dash-card-border)] flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div class="flex items-start gap-3 min-w-0">
-                <a href="{{ route('socializations.index') }}"
-                    class="mt-0.5 text-gray-400 hover:text-gray-600 shrink-0 focus:outline-none"
-                    aria-label="Kembali">
-                    <span class="material-symbols-outlined text-xl">arrow_back</span>
-                </a>
                 <div class="min-w-0">
-                    <div class="flex flex-wrap items-center gap-2 mb-1">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border
-                            {{ $statusBadge[$socialization->status] ?? 'bg-gray-100 text-gray-600 border-gray-200' }}">
-                            {{ $statusLabels[$socialization->status] ?? $socialization->status }}
-                        </span>
-                        @if ($socialization->area)
-                            <span class="text-xs text-gray-400">{{ $socialization->area->name }}</span>
-                        @endif
-                    </div>
-                    <h1 class="text-xl font-bold text-gray-900 leading-snug">{{ $displayName }}</h1>
+                    
                     @if ($socialization->institution && $socialization->location_name)
-                        <p class="text-sm text-gray-500 mt-0.5">{{ $socialization->location_name }}</p>
+                        <p class="text-sm text-[var(--dash-text-muted)] mt-0.5">{{ $socialization->location_name }}</p>
                     @endif
-                    <p class="text-xs text-gray-400 mt-2">Dibuat oleh {{ $socialization->createdBy->full_name ?? '-' }}</p>
+                    <p class="text-xs text-[var(--dash-text-faint)] mt-2">Dibuat oleh {{ $socialization->createdBy->full_name ?? '-' }}</p>
                 </div>
             </div>
             <div class="flex items-center gap-2 shrink-0 flex-wrap">
                 @can('marketing.socialization.update')
                     @if ($socialization->status === 'draft')
                         <a href="{{ route('socializations.edit', $socialization) }}"
-                            class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                            class="inline-flex items-center px-3 py-2 text-sm font-medium text-[var(--dash-text-body)] bg-[var(--dash-card-bg)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)]">
                             Edit
                         </a>
-                        <form action="{{ route('socializations.schedule', $socialization) }}" method="POST" class="inline"
-                            onsubmit="return confirm('Jadwalkan sosialisasi ini?')">
-                            @csrf
-                            <button type="submit"
-                                class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-white bg-indigo-600 border border-indigo-600 rounded-lg hover:bg-indigo-700">
-                                <span class="material-symbols-outlined text-base">event_available</span>
-                                Jadwalkan
-                            </button>
-                        </form>
+                        <button type="button"
+                            @click="showConfirmModal = true; confirmTitle = 'Jadwalkan Sosialisasi'; confirmMessage = 'Yakin ingin merubah status sosialisasi ini menjadi terjadwal?'; confirmActionUrl = '{{ route('socializations.schedule', $socialization) }}'; confirmMethod = 'POST'; confirmActionText = 'Jadwalkan'; confirmActionClass = 'bg-[var(--dash-primary)] hover:opacity-90'"
+                            class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90">
+                            <span class="material-symbols-outlined text-base">event_available</span>
+                            Jadwalkan
+                        </button>
                     @endif
                     @if (in_array($socialization->status, ['draft', 'scheduled']))
                         <button @click="showCancelModal = true"
-                            class="inline-flex items-center px-3 py-2 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100">
+                            class="inline-flex items-center px-3 py-2 text-sm font-medium text-red-500 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100">
                             Batalkan
                         </button>
                     @endif
@@ -128,14 +141,11 @@
                 @endcan
                 @can('marketing.socialization.delete')
                     @if ($socialization->status === 'draft')
-                        <form action="{{ route('socializations.destroy', $socialization) }}" method="POST" class="inline"
-                            onsubmit="return confirm('Yakin hapus sosialisasi ini?')">
-                            @csrf @method('DELETE')
-                            <button type="submit"
-                                class="inline-flex items-center px-3 py-2 text-sm font-medium text-red-700 bg-white border border-red-200 rounded-lg hover:bg-red-50">
-                                Hapus
-                            </button>
-                        </form>
+                        <button type="button"
+                            @click="showConfirmModal = true; confirmTitle = 'Hapus Sosialisasi'; confirmMessage = 'Yakin hapus sosialisasi ini? Data yang sudah dihapus tidak dapat dikembalikan.'; confirmActionUrl = '{{ route('socializations.destroy', $socialization) }}'; confirmMethod = 'DELETE'; confirmActionText = 'Hapus'; confirmActionClass = 'bg-red-600 hover:bg-red-700'"
+                            class="inline-flex items-center px-3 py-2 text-sm font-medium text-red-700 bg-[var(--dash-card-bg)] border border-red-200 rounded-lg hover:bg-red-50">
+                            Hapus
+                        </button>
                     @endif
                 @endcan
             </div>
@@ -144,29 +154,29 @@
 
     {{-- Stats --}}
     <div class="grid grid-cols-3 sm:grid-cols-6 gap-3 mb-5">
-        <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 text-center">
-            <p class="text-2xl font-bold text-gray-900">{{ $totalLeads }}</p>
-            <p class="text-xs text-gray-400 mt-0.5">Total PM</p>
+        <div class="bg-[var(--dash-card-bg)] rounded-xl border border-[var(--dash-card-border)] shadow-sm p-4 text-center">
+            <p class="text-2xl font-bold text-[var(--dash-text-heading)]">{{ $totalLeads }}</p>
+            <p class="text-xs text-[var(--dash-text-faint)] mt-0.5">Total PM</p>
         </div>
-        <div class="bg-white rounded-xl border border-yellow-100 shadow-sm p-4 text-center">
+        <div class="bg-[var(--dash-card-bg)] rounded-xl border border-yellow-100 shadow-sm p-4 text-center">
             <p class="text-2xl font-bold text-yellow-600">{{ $countAlmost }}</p>
             <p class="text-xs text-yellow-500 mt-0.5">Hampir</p>
         </div>
-        <div class="bg-white rounded-xl border border-blue-100 shadow-sm p-4 text-center">
+        <div class="bg-[var(--dash-card-bg)] rounded-xl border border-blue-100 shadow-sm p-4 text-center">
             <p class="text-2xl font-bold text-blue-600">{{ $countYes }}</p>
             <p class="text-xs text-blue-500 mt-0.5">Berminat</p>
         </div>
-        <div class="bg-white rounded-xl border border-green-100 shadow-sm p-4 text-center">
+        <div class="bg-[var(--dash-card-bg)] rounded-xl border border-green-100 shadow-sm p-4 text-center">
             <p class="text-2xl font-bold text-green-600">{{ $countFixed }}</p>
             <p class="text-xs text-green-500 mt-0.5">Pasti</p>
         </div>
-        <div class="bg-white rounded-xl border border-red-100 shadow-sm p-4 text-center">
+        <div class="bg-[var(--dash-card-bg)] rounded-xl border border-red-100 shadow-sm p-4 text-center">
             <p class="text-2xl font-bold text-red-500">{{ $countNo }}</p>
             <p class="text-xs text-red-400 mt-0.5">Tidak</p>
         </div>
-        <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 text-center">
-            <p class="text-2xl font-bold text-gray-900">{{ $totalKelas }}</p>
-            <p class="text-xs text-gray-400 mt-0.5">Total Kelas</p>
+        <div class="bg-[var(--dash-card-bg)] rounded-xl border border-[var(--dash-card-border)] shadow-sm p-4 text-center">
+            <p class="text-2xl font-bold text-[var(--dash-text-heading)]">{{ $totalKelas }}</p>
+            <p class="text-xs text-[var(--dash-text-faint)] mt-0.5">Total Kelas</p>
         </div>
     </div>
 
@@ -177,12 +187,12 @@
 
             {{-- Per-employee progress + override (MA/PIC view) --}}
             @can('marketing.socialization.update')
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[var(--dash-card-border)] overflow-hidden">
                 <div class="flex items-center justify-between px-5 py-4 border-b border-gray-50">
-                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-widest">Progress Marketer</p>
+                    <p class="text-xs font-semibold text-[var(--dash-text-faint)] uppercase tracking-widest">Progress Marketer</p>
                     @if (!in_array($socialization->status, ['completed', 'cancelled']) && $eligibleEmployees->isNotEmpty())
                         <button @click="showAssignModal = true"
-                            class="text-xs font-medium text-indigo-600 hover:text-indigo-800 focus:outline-none">
+                            class="text-xs font-medium text-[var(--dash-primary)] hover:opacity-80 focus:outline-none">
                             + Tugaskan
                         </button>
                     @endif
@@ -191,10 +201,10 @@
                 @if ($socialization->employeeSocializations->isEmpty())
                     <div class="py-8 text-center">
                         <span class="material-symbols-outlined text-3xl text-gray-300 block mb-2">badge</span>
-                        <p class="text-sm text-gray-400">Belum ada marketer yang ditugaskan.</p>
+                        <p class="text-sm text-[var(--dash-text-faint)]">Belum ada marketer yang ditugaskan.</p>
                     </div>
                 @else
-                    <div class="divide-y divide-gray-50">
+                    <div class="divide-y divide-[var(--dash-card-border)]">
                         @foreach ($socialization->employeeSocializations as $es)
                             @php
                                 $leadCount = $socialization->prospectiveMembers
@@ -206,23 +216,23 @@
                             <div class="px-5 py-4" x-data="{ editKelas: false }">
                                 <div class="flex items-center justify-between gap-3">
                                     <div class="min-w-0">
-                                        <p class="text-sm font-semibold text-gray-800">{{ $es->employee->full_name ?? '-' }}</p>
-                                        <p class="text-xs text-gray-400 mt-0.5">
+                                        <p class="text-sm font-semibold text-[var(--dash-text-heading)]">{{ $es->employee->full_name ?? '-' }}</p>
+                                        <p class="text-xs text-[var(--dash-text-faint)] mt-0.5">
                                             {{ $leadCount }} PM · {{ $fixedCount }} Pasti
                                         </p>
                                     </div>
                                     <div class="flex items-center gap-3 shrink-0">
                                         <div class="text-right">
-                                            <p class="text-lg font-bold text-gray-900">{{ $es->classes_obtained ?? 0 }}</p>
-                                            <p class="text-[10px] text-gray-400">kelas</p>
+                                            <p class="text-lg font-bold text-[var(--dash-text-heading)]">{{ $es->classes_obtained ?? 0 }}</p>
+                                            <p class="text-[10px] text-[var(--dash-text-faint)]">kelas</p>
                                         </div>
                                         <span class="text-xs px-2 py-0.5 rounded-full shrink-0
-                                            {{ $es->status === 'confirmed' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500' }}">
+                                            {{ $es->status === 'confirmed' ? 'bg-green-100 text-green-700' : 'bg-[var(--dash-input-bg)] text-[var(--dash-text-muted)]' }}">
                                             {{ $es->status === 'confirmed' ? 'Dikonfirmasi' : 'Belum' }}
                                         </span>
                                         @if (!in_array($socialization->status, ['completed', 'cancelled']))
                                             <button @click="editKelas = !editKelas"
-                                                class="text-xs text-gray-400 hover:text-indigo-600 focus:outline-none">
+                                                class="text-xs text-[var(--dash-text-faint)] hover:text-[var(--dash-primary)] focus:outline-none">
                                                 <span class="material-symbols-outlined text-base">edit</span>
                                             </button>
                                         @endif
@@ -236,18 +246,18 @@
                                         class="flex gap-2 items-end">
                                         @csrf @method('PATCH')
                                         <div class="flex-1">
-                                            <label class="block text-xs text-gray-500 mb-1">Jumlah kelas (override)</label>
+                                            <label class="block text-xs text-[var(--dash-text-muted)] mb-1">Jumlah kelas (override)</label>
                                             <input type="number" name="classes_obtained"
                                                 value="{{ $es->classes_obtained ?? 0 }}"
                                                 min="0" required
-                                                class="block w-full border-gray-300 rounded-lg text-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                                class="block w-full border-[var(--dash-input-border)] rounded-lg text-sm focus:ring-[var(--dash-primary)]/30 focus:border-[var(--dash-primary)] focus:border-[var(--dash-primary)]">
                                         </div>
                                         <button type="submit"
-                                            class="px-3 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700">
+                                            class="px-3 py-2 text-sm font-medium text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90">
                                             Simpan
                                         </button>
                                         <button type="button" @click="editKelas = false"
-                                            class="px-3 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                            class="px-3 py-2 text-sm font-medium text-[var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)]">
                                             Batal
                                         </button>
                                     </form>
@@ -261,17 +271,17 @@
 
             {{-- Filter lead --}}
             <form method="GET" action="{{ route('socializations.show', $socialization) }}"
-                class="bg-white rounded-xl border border-gray-100 shadow-sm px-4 py-3 flex flex-wrap gap-3 items-end">
+                class="bg-[var(--dash-card-bg)] rounded-xl border border-[var(--dash-card-border)] shadow-sm px-4 py-3 flex flex-wrap gap-3 items-end">
                 <div class="flex-1 min-w-[140px]">
-                    <label class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1">Cari</label>
+                    <label class="block text-[11px] font-semibold text-[var(--dash-text-faint)] uppercase tracking-wide mb-1">Cari</label>
                     <input type="text" name="pm_search" value="{{ request('pm_search') }}"
                         placeholder="Nama atau WA..."
-                        class="w-full bg-gray-50 border border-gray-200 rounded-lg text-sm px-3 py-2 outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-200 transition-colors">
+                        class="w-full bg-[var(--dash-page-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-card-border)] rounded-lg text-sm px-3 py-2 outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-200 transition-colors">
                 </div>
                 <div>
-                    <label class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1">Status</label>
+                    <label class="block text-[11px] font-semibold text-[var(--dash-text-faint)] uppercase tracking-wide mb-1">Status</label>
                     <select name="pm_status" onchange="this.form.submit()"
-                        class="bg-gray-50 border border-gray-200 rounded-lg text-sm px-3 py-2 outline-none focus:border-indigo-400 transition-colors">
+                        class="bg-[var(--dash-page-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-card-border)] rounded-lg text-sm px-3 py-2 outline-none focus:border-indigo-400 transition-colors">
                         <option value="">Semua</option>
                         @foreach (['ALMOST' => 'Hampir', 'YES' => 'Berminat', 'FIXED' => 'Pasti', 'NO' => 'Tidak'] as $val => $label)
                             <option value="{{ $val }}" {{ request('pm_status') === $val ? 'selected' : '' }}>{{ $label }}</option>
@@ -285,7 +295,7 @@
                     </button>
                     @if (request()->hasAny(['pm_search', 'pm_status']))
                         <a href="{{ route('socializations.show', $socialization) }}"
-                            class="px-3 py-2 text-sm text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200">
+                            class="px-3 py-2 text-sm text-[var(--dash-text-body)] bg-[var(--dash-input-bg)] rounded-lg hover:opacity-90">
                             Reset
                         </a>
                     @endif
@@ -293,38 +303,38 @@
             </form>
 
             {{-- Lead list --}}
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+            <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[var(--dash-card-border)]">
                 <div class="flex items-center justify-between px-5 py-3 border-b border-gray-50">
-                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-widest">
+                    <p class="text-xs font-semibold text-[var(--dash-text-faint)] uppercase tracking-widest">
                         Semua Prospective Member ({{ $totalLeads }})
                     </p>
-                    <div class="flex items-center gap-3 text-xs text-gray-400">
-                        <a href="{{ $pmSortUrl('full_name') }}" class="hover:text-gray-600">Nama{{ $pmSortIcon('full_name') }}</a>
-                        <a href="{{ $pmSortUrl('status') }}" class="hover:text-gray-600">Status{{ $pmSortIcon('status') }}</a>
-                        <a href="{{ $pmSortUrl('created_at') }}" class="hover:text-gray-600">Terbaru{{ $pmSortIcon('created_at') }}</a>
+                    <div class="flex items-center gap-3 text-xs text-[var(--dash-text-faint)]">
+                        <a href="{{ $pmSortUrl('full_name') }}" class="hover:text-[var(--dash-text-body)]">Nama{{ $pmSortIcon('full_name') }}</a>
+                        <a href="{{ $pmSortUrl('status') }}" class="hover:text-[var(--dash-text-body)]">Status{{ $pmSortIcon('status') }}</a>
+                        <a href="{{ $pmSortUrl('created_at') }}" class="hover:text-[var(--dash-text-body)]">Terbaru{{ $pmSortIcon('created_at') }}</a>
                     </div>
                 </div>
 
                 @if ($leads->isEmpty())
                     <div class="py-8 text-center">
                         <span class="material-symbols-outlined text-3xl text-gray-300 block mb-2">group_add</span>
-                        <p class="text-sm text-gray-500">
+                        <p class="text-sm text-[var(--dash-text-muted)]">
                             {{ request()->hasAny(['pm_search', 'pm_status']) ? 'Tidak ada prospective member yang cocok.' : 'Belum ada prospective member.' }}
                         </p>
                     </div>
                 @else
-                    <div class="divide-y divide-gray-50">
+                    <div class="divide-y divide-[var(--dash-card-border)]">
                         @foreach ($leads as $lead)
                             @php
                                 $waNum = preg_replace('/[^0-9]/', '', $lead->whatsapp_number ?? '');
                                 if (str_starts_with($waNum, '0')) $waNum = '62' . substr($waNum, 1);
                                 elseif ($waNum && ! str_starts_with($waNum, '62')) $waNum = '62' . $waNum;
                             @endphp
-                            <div class="flex items-center gap-2 px-5 py-3 hover:bg-gray-50/50 transition-colors">
+                            <div class="flex items-center gap-2 px-5 py-3 hover:bg-[var(--dash-page-bg)]/50 transition-colors">
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center gap-2 flex-wrap">
                                         <a href="{{ route('prospective-members.show', $lead) }}"
-                                            class="text-sm font-semibold text-gray-800 hover:text-indigo-600 focus:outline-none focus:underline">
+                                            class="text-sm font-semibold text-[var(--dash-text-heading)] hover:text-[var(--dash-primary)] focus:outline-none focus:underline">
                                             {{ $lead->full_name }}
                                         </a>
                                         @if ($waNum)
@@ -336,18 +346,18 @@
                                                 status: '{{ $lead->status }}'
                                             })" @click.away="open = false">
                                                 <button @click="open = !open"
-                                                    class="inline-flex items-center justify-center w-7 h-7 rounded-full hover:bg-green-50 focus:outline-none transition-colors"
+                                                    class="inline-flex items-center justify-center w-7 h-7 rounded-full hover:bg-[var(--dash-nav-hover-bg)] focus:outline-none transition-colors"
                                                     title="{{ $lead->whatsapp_number }}">
                                                     <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 362" fill="none" aria-label="WhatsApp"><path fill="#25D366" fill-rule="evenodd" d="M307.546 52.566C273.709 18.684 228.706.017 180.756 0 81.951 0 1.538 80.404 1.504 179.235c-.017 31.594 8.242 62.432 23.928 89.609L0 361.736l95.024-24.925c26.179 14.285 55.659 21.805 85.655 21.814h.077c98.788 0 179.21-80.413 179.244-179.244.017-47.898-18.608-92.926-52.454-126.807v-.008Zm-126.79 275.788h-.06c-26.73-.008-52.952-7.194-75.831-20.765l-5.44-3.231-56.391 14.791 15.05-54.981-3.542-5.638c-14.912-23.721-22.793-51.139-22.776-79.286.035-82.14 66.867-148.973 149.051-148.973 39.793.017 77.198 15.53 105.328 43.695 28.131 28.157 43.61 65.596 43.593 105.398-.035 82.149-66.867 148.982-148.982 148.982v.008Zm81.719-111.577c-4.478-2.243-26.497-13.073-30.606-14.568-4.108-1.496-7.09-2.243-10.073 2.243-2.982 4.487-11.568 14.577-14.181 17.559-2.613 2.991-5.226 3.361-9.704 1.117-4.477-2.243-18.908-6.97-36.02-22.226-13.313-11.878-22.304-26.54-24.916-31.027-2.613-4.486-.275-6.91 1.959-9.136 2.011-2.011 4.478-5.234 6.721-7.847 2.244-2.613 2.983-4.486 4.478-7.469 1.496-2.991.748-5.603-.369-7.847-1.118-2.243-10.073-24.289-13.812-33.253-3.636-8.732-7.331-7.546-10.073-7.692-2.613-.13-5.595-.155-8.586-.155-2.991 0-7.839 1.118-11.947 5.604-4.108 4.486-15.677 15.324-15.677 37.361s16.047 43.344 18.29 46.335c2.243 2.991 31.585 48.225 76.51 67.632 10.684 4.615 19.029 7.374 25.535 9.437 10.727 3.412 20.49 2.931 28.208 1.779 8.604-1.289 26.498-10.838 30.228-21.298 3.73-10.46 3.73-19.433 2.613-21.298-1.117-1.865-4.108-2.991-8.586-5.234l.008-.017Z" clip-rule="evenodd"/></svg>
                                                 </button>
                                                 <div x-show="open" x-transition
-                                                    class="absolute left-0 top-6 z-20 w-52 bg-white border border-gray-200 rounded-xl shadow-lg py-1">
-                                                    <button @click="send(null)" class="w-full text-left px-3 py-2 text-xs text-gray-700 hover:bg-gray-50">Kirim langsung</button>
+                                                    class="absolute left-0 top-6 z-20 w-52 bg-[var(--dash-card-bg)] border border-[var(--dash-card-border)] rounded-xl shadow-lg py-1">
+                                                    <button @click="send(null)" class="w-full text-left px-3 py-2 text-xs text-[var(--dash-text-body)] hover:bg-[var(--dash-page-bg)]">Kirim langsung</button>
                                                     <template x-if="templates.length > 0">
                                                         <div>
-                                                            <p class="px-3 py-1 text-[10px] font-semibold text-gray-400 uppercase tracking-widest border-t border-gray-100 mt-1">Template</p>
+                                                            <p class="px-3 py-1 text-[10px] font-semibold text-[var(--dash-text-faint)] uppercase tracking-widest border-t border-[var(--dash-card-border)] mt-1">Template</p>
                                                             <template x-for="t in templates" :key="t.id">
-                                                                <button @click="send(t)" class="w-full text-left px-3 py-2 text-xs text-gray-700 hover:bg-indigo-50 hover:text-indigo-700" x-text="t.name"></button>
+                                                                <button @click="send(t)" class="w-full text-left px-3 py-2 text-xs text-[var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] hover:text-[var(--dash-text-heading)]" x-text="t.name"></button>
                                                             </template>
                                                         </div>
                                                     </template>
@@ -355,7 +365,7 @@
                                             </div>
                                         @endif
                                     </div>
-                                    <p class="text-xs text-gray-400 mt-0.5">
+                                    <p class="text-xs text-[var(--dash-text-faint)] mt-0.5">
                                         {{ $lead->capturedBy?->full_name ?? '—' }}
                                         @if ($lead->institution || $lead->institution_name)
                                             · {{ $lead->institution?->institution_name ?? $lead->institution_name }}
@@ -363,7 +373,7 @@
                                     </p>
                                 </div>
 
-                                <span class="px-2 py-0.5 text-[10px] font-bold rounded-full shrink-0 {{ $leadStatusColors[$lead->status] ?? 'bg-gray-100 text-gray-600' }}">
+                                <span class="px-2 py-0.5 text-[10px] font-bold rounded-full shrink-0 {{ $leadStatusColors[$lead->status] ?? 'bg-[var(--dash-input-bg)] text-[var(--dash-text-body)]' }}">
                                     {{ $leadStatusLabels[$lead->status] ?? $lead->status }}
                                 </span>
 
@@ -404,13 +414,13 @@
 
             {{-- Jadwal --}}
             @if ($socialization->schedules->isNotEmpty())
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Jadwal</p>
+                <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[var(--dash-card-border)] p-5">
+                    <p class="text-xs font-semibold text-[var(--dash-text-faint)] uppercase tracking-widest mb-3">Jadwal</p>
                     <ul class="space-y-2">
                         @foreach ($socialization->schedules as $schedule)
-                            <li class="text-sm text-gray-700">
+                            <li class="text-sm text-[var(--dash-text-body)]">
                                 <span class="font-medium">{{ $schedule->schedule_date->format('d M Y') }}</span>
-                                <span class="text-gray-400 ml-1">
+                                <span class="text-[var(--dash-text-faint)] ml-1">
                                     {{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }}
                                     &ndash;
                                     {{ \Carbon\Carbon::parse($schedule->end_time)->format('H:i') }}
@@ -423,28 +433,28 @@
 
             {{-- Fee Partner --}}
             @if ($socialization->partner_fee_amount)
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+                <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[var(--dash-card-border)] p-5">
                     <div class="flex items-center justify-between mb-3">
-                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-widest">Fee Partner</p>
+                        <p class="text-xs font-semibold text-[var(--dash-text-faint)] uppercase tracking-widest">Fee Partner</p>
                         @can('marketing.socialization.partner_fee.update')
                             <button @click="showFeeModal = true"
-                                class="text-xs font-medium text-gray-500 hover:text-gray-700 focus:outline-none focus:underline">
+                                class="text-xs font-medium text-[var(--dash-text-muted)] hover:text-[var(--dash-text-body)] focus:outline-none focus:underline">
                                 Update
                             </button>
                         @endcan
                     </div>
-                    <p class="text-xl font-bold text-gray-900">Rp {{ number_format($socialization->partner_fee_amount, 0, ',', '.') }}</p>
+                    <p class="text-xl font-bold text-[var(--dash-text-heading)]">Rp {{ number_format($socialization->partner_fee_amount, 0, ',', '.') }}</p>
                     <div class="mt-2 flex flex-wrap items-center gap-2">
                         <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border
-                            {{ $feeStatusBadge[$socialization->partner_fee_status] ?? 'bg-gray-100 text-gray-600 border-gray-200' }}">
+                            {{ $feeStatusBadge[$socialization->partner_fee_status] ?? 'bg-[var(--dash-input-bg)] text-[var(--dash-text-body)] border-[var(--dash-card-border)]' }}">
                             {{ $feeStatusLabels[$socialization->partner_fee_status] ?? '-' }}
                         </span>
                         @if ($socialization->partner_fee_due_date)
-                            <span class="text-xs text-gray-400">tenggat {{ $socialization->partner_fee_due_date->format('d M Y') }}</span>
+                            <span class="text-xs text-[var(--dash-text-faint)]">tenggat {{ $socialization->partner_fee_due_date->format('d M Y') }}</span>
                         @endif
                     </div>
                     @if ($socialization->partner_fee_paid_at)
-                        <p class="text-xs text-gray-400 mt-1.5">Dibayar {{ $socialization->partner_fee_paid_at->format('d M Y') }}</p>
+                        <p class="text-xs text-[var(--dash-text-faint)] mt-1.5">Dibayar {{ $socialization->partner_fee_paid_at->format('d M Y') }}</p>
                     @endif
                 </div>
             @endif
@@ -455,7 +465,7 @@
     <div x-show="showAssignModal" x-transition.opacity @keydown.escape.window="showAssignModal = false"
         class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display: none;">
         <div @click="showAssignModal = false" class="absolute inset-0 bg-gray-900/50" aria-hidden="true"></div>
-        <div class="relative bg-white rounded-2xl shadow-xl max-w-md w-full z-10"
+        <div class="relative bg-[var(--dash-card-bg)] rounded-2xl shadow-xl max-w-md w-full z-10"
             x-data="{
                 selected: [],
                 search: '',
@@ -476,31 +486,31 @@
             <form action="{{ route('socializations.assign-employee', $socialization) }}" method="POST" class="p-6">
                 @csrf
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-base font-semibold text-gray-900">Tugaskan Marketer</h3>
+                    <h3 class="text-base font-semibold text-[var(--dash-text-heading)]">Tugaskan Marketer</h3>
                     <button type="button" @click="toggleAll()"
-                        class="text-xs font-medium text-indigo-600 hover:text-indigo-800 focus:outline-none"
+                        class="text-xs font-medium text-[var(--dash-primary)] hover:opacity-80 focus:outline-none"
                         x-text="allSelected ? 'Batal Semua' : 'Pilih Semua'"></button>
                 </div>
                 @if ($eligibleEmployees->isEmpty())
-                    <p class="text-sm text-gray-500 mb-4">Belum ada employee di area ini.</p>
+                    <p class="text-sm text-[var(--dash-text-muted)] mb-4">Belum ada employee di area ini.</p>
                 @else
                     <div class="relative mb-2">
-                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[16px]">search</span>
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--dash-text-faint)] text-[16px]">search</span>
                         <input type="text" x-model="search" placeholder="Cari nama..."
                             style="padding-left: 2rem !important"
-                            class="w-full pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-200 transition-colors">
+                            class="w-full pr-3 py-2 bg-[var(--dash-page-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-200 transition-colors">
                     </div>
-                    <div class="border border-gray-200 rounded-xl max-h-52 overflow-y-auto divide-y divide-gray-50 mb-3">
+                    <div class="border border-[var(--dash-card-border)] rounded-xl max-h-52 overflow-y-auto divide-y divide-[var(--dash-card-border)] mb-3">
                         <template x-for="emp in filtered" :key="emp.id">
-                            <label class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 cursor-pointer">
+                            <label class="flex items-center gap-3 px-4 py-2.5 hover:bg-[var(--dash-page-bg)] cursor-pointer">
                                 <input type="checkbox" name="employee_ids[]" :value="emp.id" x-model="selected"
-                                    class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
-                                <span class="text-sm text-gray-700" x-text="emp.name"></span>
+                                    class="w-4 h-4 text-[var(--dash-primary)] border-[var(--dash-input-border)] rounded focus:ring-[var(--dash-primary)]/30 focus:border-[var(--dash-primary)]">
+                                <span class="text-sm text-[var(--dash-text-body)]" x-text="emp.name"></span>
                             </label>
                         </template>
-                        <p x-show="filtered.length === 0" class="px-4 py-3 text-sm text-gray-400 text-center">Tidak ditemukan.</p>
+                        <p x-show="filtered.length === 0" class="px-4 py-3 text-sm text-[var(--dash-text-faint)] text-center">Tidak ditemukan.</p>
                     </div>
-                    <p class="text-xs text-gray-400 mb-4" x-show="selected.length > 0">
+                    <p class="text-xs text-[var(--dash-text-faint)] mb-4" x-show="selected.length > 0">
                         <span x-text="selected.length"></span> marketer dipilih
                     </p>
                     <template x-for="id in selected" :key="id">
@@ -509,9 +519,9 @@
                 @endif
                 <div class="flex justify-end gap-3">
                     <button type="button" @click="showAssignModal = false"
-                        class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">Batal</button>
+                        class="px-4 py-2 text-sm font-medium text-[var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)]">Batal</button>
                     <button type="submit" :disabled="selected.length === 0"
-                        class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed">Tugaskan</button>
+                        class="px-4 py-2 text-sm font-medium text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed">Tugaskan</button>
                 </div>
             </form>
         </div>
@@ -521,30 +531,30 @@
     <div x-show="showFeeModal" x-transition.opacity @keydown.escape.window="showFeeModal = false"
         class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display: none;">
         <div @click="showFeeModal = false" class="absolute inset-0 bg-gray-900/50" aria-hidden="true"></div>
-        <div class="relative bg-white rounded-2xl shadow-xl max-w-md w-full z-10">
+        <div class="relative bg-[var(--dash-card-bg)] rounded-2xl shadow-xl max-w-md w-full z-10">
             <form action="{{ route('socializations.partner-fee', $socialization) }}" method="POST" class="p-6">
                 @csrf @method('PATCH')
-                <h3 class="text-base font-semibold text-gray-900 mb-4">Update Status Fee Partner</h3>
+                <h3 class="text-base font-semibold text-[var(--dash-text-heading)] mb-4">Update Status Fee Partner</h3>
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Status Pembayaran</label>
+                    <label class="block text-sm font-medium text-[var(--dash-text-body)] mb-1.5">Status Pembayaran</label>
                     <select name="partner_fee_status" required
-                        class="block w-full border-gray-300 rounded-lg shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        class="block w-full bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-input-border)] rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[var(--dash-primary)]/30 focus:border-[var(--dash-primary)] focus:outline-none">
                         <option value="none" {{ $socialization->partner_fee_status === 'none' ? 'selected' : '' }}>Tidak Ada</option>
                         <option value="pending" {{ $socialization->partner_fee_status === 'pending' ? 'selected' : '' }}>Belum Bayar</option>
                         <option value="paid" {{ $socialization->partner_fee_status === 'paid' ? 'selected' : '' }}>Sudah Bayar</option>
                     </select>
                 </div>
                 <div class="mb-5">
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Tanggal Bayar</label>
+                    <label class="block text-sm font-medium text-[var(--dash-text-body)] mb-1.5">Tanggal Bayar</label>
                     <input type="date" name="partner_fee_paid_at"
                         value="{{ $socialization->partner_fee_paid_at?->format('Y-m-d') }}"
-                        class="block w-full border-gray-300 rounded-lg shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        class="block w-full bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-input-border)] rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[var(--dash-primary)]/30 focus:border-[var(--dash-primary)] focus:outline-none">
                 </div>
                 <div class="flex justify-end gap-3">
                     <button type="button" @click="showFeeModal = false"
-                        class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">Batal</button>
+                        class="px-4 py-2 text-sm font-medium text-[var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)]">Batal</button>
                     <button type="submit"
-                        class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700">Simpan</button>
+                        class="px-4 py-2 text-sm font-medium text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90">Simpan</button>
                 </div>
             </form>
         </div>
@@ -554,12 +564,12 @@
     <div x-show="showCancelModal" x-transition.opacity @keydown.escape.window="showCancelModal = false"
         class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display: none;">
         <div @click="showCancelModal = false" class="absolute inset-0 bg-gray-900/50" aria-hidden="true"></div>
-        <div class="relative bg-white rounded-2xl shadow-xl max-w-md w-full z-10 p-6">
-            <h3 class="text-base font-semibold text-gray-900 mb-2">Batalkan sosialisasi ini?</h3>
-            <p class="text-sm text-gray-500 mb-5">Status tidak bisa dikembalikan setelah dibatalkan.</p>
+        <div class="relative bg-[var(--dash-card-bg)] rounded-2xl shadow-xl max-w-md w-full z-10 p-6">
+            <h3 class="text-base font-semibold text-[var(--dash-text-heading)] mb-2">Batalkan sosialisasi ini?</h3>
+            <p class="text-sm text-[var(--dash-text-muted)] mb-5">Status tidak bisa dikembalikan setelah dibatalkan.</p>
             <div class="flex justify-end gap-3">
                 <button type="button" @click="showCancelModal = false"
-                    class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">Kembali</button>
+                    class="px-4 py-2 text-sm font-medium text-[var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)]">Kembali</button>
                 <form action="{{ route('socializations.cancel', $socialization) }}" method="POST" class="inline">
                     @csrf
                     <button type="submit"
@@ -572,27 +582,27 @@
     <div x-show="showCompleteModal" x-transition.opacity @keydown.escape.window="showCompleteModal = false"
         class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display: none;">
         <div @click="showCompleteModal = false" class="absolute inset-0 bg-gray-900/50" aria-hidden="true"></div>
-        <div class="relative bg-white rounded-2xl shadow-xl max-w-lg w-full z-10 p-6">
-            <h3 class="text-base font-semibold text-gray-900 mb-1">Selesaikan Sosialisasi</h3>
-            <p class="text-sm text-gray-500 mb-4">Konfirmasi jumlah kelas per marketer. Tidak bisa diubah setelah selesai.</p>
+        <div class="relative bg-[var(--dash-card-bg)] rounded-2xl shadow-xl max-w-lg w-full z-10 p-6">
+            <h3 class="text-base font-semibold text-[var(--dash-text-heading)] mb-1">Selesaikan Sosialisasi</h3>
+            <p class="text-sm text-[var(--dash-text-muted)] mb-4">Konfirmasi jumlah kelas per marketer. Tidak bisa diubah setelah selesai.</p>
 
             <form action="{{ route('socializations.complete', $socialization) }}" method="POST">
                 @csrf
                 @if ($socialization->employeeSocializations->isEmpty())
                     <p class="text-sm text-amber-600 mb-4">Belum ada marketer ditugaskan — tetap bisa diselesaikan.</p>
                 @else
-                    <div class="divide-y divide-gray-100 mb-4">
+                    <div class="divide-y divide-[var(--dash-card-border)] mb-4">
                         @foreach ($socialization->employeeSocializations as $es)
                         <div class="flex items-center justify-between py-3 gap-4">
                             <div class="min-w-0">
-                                <p class="text-sm font-medium text-gray-800">{{ $es->employee->full_name ?? '-' }}</p>
+                                <p class="text-sm font-medium text-[var(--dash-text-heading)]">{{ $es->employee->full_name ?? '-' }}</p>
                             </div>
                             <div class="flex items-center gap-2 shrink-0">
-                                <label class="text-xs text-gray-400">Kelas</label>
+                                <label class="text-xs text-[var(--dash-text-faint)]">Kelas</label>
                                 <input type="hidden" name="results[{{ $loop->index }}][employee_socialization_id]" value="{{ $es->id }}">
                                 <input type="number" name="results[{{ $loop->index }}][classes_obtained]"
                                     value="{{ $es->classes_obtained ?? 0 }}" min="0"
-                                    class="w-20 text-center border border-gray-200 rounded-lg text-sm px-2 py-1.5 focus:outline-none focus:border-green-400">
+                                    class="w-20 text-center bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-card-border)] rounded-lg text-sm px-2 py-1.5 focus:outline-none focus:border-green-400">
                             </div>
                         </div>
                         @endforeach
@@ -600,11 +610,43 @@
                 @endif
                 <div class="flex justify-end gap-3">
                     <button type="button" @click="showCompleteModal = false"
-                        class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">Batal</button>
+                        class="px-4 py-2 text-sm font-medium text-[var(--dash-text-body)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)]">Batal</button>
                     <button type="submit"
                         class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700">Selesaikan</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    {{-- Confirm Modal --}}
+    <div x-show="showConfirmModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;" x-cloak>
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
+            <div @click="showConfirmModal = false" class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-900 opacity-75"></div>
+            </div>
+            <div class="relative z-10 inline-block align-bottom bg-[var(--dash-card-bg)] rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-[var(--dash-card-bg)] px-4 pt-5 pb-4 sm:p-6 sm:pb-4 rounded-t-lg">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                            <span class="material-symbols-outlined text-red-600">warning</span>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                            <h3 class="text-lg leading-6 font-medium text-[var(--dash-text-heading)]" x-text="confirmTitle"></h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-[var(--dash-text-muted)]" x-text="confirmMessage"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-[var(--dash-page-bg)] px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse rounded-b-lg">
+                    <button type="button" @click="$refs.confirmForm.submit()" :class="confirmActionClass" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none sm:ml-3 sm:w-auto sm:text-sm" x-text="confirmActionText"></button>
+                    <button type="button" @click="showConfirmModal = false" class="mt-3 w-full inline-flex justify-center rounded-lg border border-[var(--dash-card-border)] shadow-sm px-4 py-2 bg-[var(--dash-card-bg)] text-base font-medium text-[var(--dash-text-body)] hover:bg-[var(--dash-page-bg)] focus:outline-none sm:mt-0 sm:w-auto sm:text-sm">Batal</button>
+                </div>
+                <form x-ref="confirmForm" :action="confirmActionUrl" method="POST" class="hidden">
+                    @csrf
+                    <input type="hidden" name="_method" :value="confirmMethod">
+                </form>
+            </div>
         </div>
     </div>
 </div>

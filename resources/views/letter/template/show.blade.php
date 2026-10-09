@@ -8,12 +8,12 @@
     <!-- Header Section -->
     <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div>
-            <a href="{{ route('letter-templates.index') }}" class="inline-flex items-center gap-1.5 text-[13px] font-semibold text-slate-500 hover:text-slate-800 transition-colors mb-3 focus:outline-none focus:ring-2 focus:ring-[#215aac] rounded-sm focus:ring-offset-2">
+            <a href="{{ route('letter-templates.index') }}" class="inline-flex items-center gap-1.5 text-[13px] font-semibold text-slate-500 hover:text-slate-800 transition-colors mb-3 focus:outline-none focus:ring-2 focus:ring-[color:var(--dash-primary,#215aac)] rounded-sm focus:ring-offset-2">
                 <span class="material-symbols-outlined text-[18px]">arrow_back</span> Kembali ke daftar
             </a>
-            <h2 class="font-jakarta text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 leading-tight">
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight leading-tight" style="color: var(--dash-text-heading);">
                 {{ $letterTemplate->template_name }}
-            </h2>
+            </h1>
             <p class="mt-1.5 font-mono text-[14px] text-slate-600 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-md inline-block">
                 {{ $letterTemplate->template_code }}
             </p>
@@ -43,13 +43,13 @@
 
     <!-- Generate Action Banner -->
     @can('letter.generate.create')
-    <div class="border border-[#215aac] bg-[#F4F7FB] p-5 sm:p-6 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 shadow-sm">
+    <div class="border border-[color:var(--dash-primary,#215aac)] bg-[#F4F7FB] p-5 sm:p-6 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 shadow-sm">
         <div>
             <h3 class="text-[15px] font-bold text-[#1a4687]">Gunakan Template Ini</h3>
             <p class="text-[13px] text-slate-600 mt-1">Buat dokumen surat baru dengan format dan placeholder otomatis dari template ini.</p>
         </div>
         <a href="{{ route('out-letters-generate.create') }}" 
-           class="w-full sm:w-auto inline-flex justify-center min-h-[44px] items-center gap-2 bg-[#215aac] px-6 rounded-lg text-[14px] font-bold text-white hover:bg-[#194a91] focus:outline-none focus:ring-2 focus:ring-[#215aac] focus:ring-offset-2 transition-colors whitespace-nowrap">
+           class="w-full sm:w-auto inline-flex justify-center min-h-[44px] items-center gap-2 bg-[var(--dash-primary,#215aac)] px-6 rounded-lg text-[14px] font-bold text-white hover:bg-[#194a91] focus:outline-none focus:ring-2 focus:ring-[color:var(--dash-primary,#215aac)] focus:ring-offset-2 transition-colors whitespace-nowrap">
             <span class="material-symbols-outlined text-[18px]">draw</span> Buat Surat Baru
         </a>
     </div>
@@ -129,7 +129,7 @@
                     </div>
                     
                     <a href="{{ route('out-letters-generate.show', $letter) }}" 
-                       class="inline-flex min-h-[44px] sm:min-h-[36px] items-center justify-center border border-slate-200 bg-white px-4 rounded-lg text-[13px] font-bold text-[#215aac] hover:bg-slate-50 hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#215aac] transition-colors w-full sm:w-auto mt-2 sm:mt-0">
+                       class="inline-flex min-h-[44px] sm:min-h-[36px] items-center justify-center border border-slate-200 bg-white px-4 rounded-lg text-[13px] font-bold text-[color:var(--dash-primary-text,#215aac)] hover:bg-slate-50 hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-[color:var(--dash-primary,#215aac)] transition-colors w-full sm:w-auto mt-2 sm:mt-0">
                         Lihat Detail
                     </a>
                 </li>

@@ -9,7 +9,7 @@
     <div class="flex items-start justify-between gap-4">
         <div>
             <p class="text-sm font-medium text-slate-500">Finance</p>
-            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Biaya Bulanan Cabang</h2>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Biaya Bulanan Cabang</h1>
             <p class="mt-1 text-sm text-slate-500">Kelola dan pantau pengeluaran operasional tiap cabang.</p>
         </div>
         @if ($branchId)
@@ -70,7 +70,7 @@
         @if ($branches->count() > 1)
             <div class="w-full sm:w-auto flex-1 min-w-[200px]">
                 <label class="mb-1.5 block text-xs font-bold text-slate-700">Cabang</label>
-                <select name="branch_id" class="block w-full rounded-lg border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-[#215aac] focus:bg-white focus:ring-[#215aac]">
+                <select name="branch_id" class="block w-full rounded-lg border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:bg-white focus:ring-[color:var(--dash-primary,#215aac)]">
                     <option value="">— Pilih Cabang —</option>
                     @foreach ($branches as $branch)
                         <option value="{{ $branch->id }}" @selected($branchId == $branch->id)>{{ $branch->branch_name }}</option>
@@ -80,7 +80,7 @@
         @endif
         <div class="w-1/2 sm:w-auto">
             <label class="mb-1.5 block text-xs font-bold text-slate-700">Bulan</label>
-            <select name="month" class="block w-full rounded-lg border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-[#215aac] focus:bg-white focus:ring-[#215aac]">
+            <select name="month" class="block w-full rounded-lg border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:bg-white focus:ring-[color:var(--dash-primary,#215aac)]">
                 @foreach (array_slice($months, 1, null, true) as $num => $label)
                     <option value="{{ $num }}" @selected($month == $num)>{{ $label }}</option>
                 @endforeach
@@ -88,7 +88,7 @@
         </div>
         <div class="w-1/3 sm:w-auto">
             <label class="mb-1.5 block text-xs font-bold text-slate-700">Tahun</label>
-            <input type="number" name="year" value="{{ $year }}" min="2020" class="block w-full sm:w-28 rounded-lg border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-[#215aac] focus:bg-white focus:ring-[#215aac]">
+            <input type="number" name="year" value="{{ $year }}" min="2020" class="block w-full sm:w-28 rounded-lg border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:bg-white focus:ring-[color:var(--dash-primary,#215aac)]">
         </div>
         <div class="w-full sm:w-auto">
             <button type="submit" class="inline-flex min-h-[38px] w-full items-center justify-center gap-2 rounded-lg bg-slate-800 px-5 text-sm font-semibold text-white shadow-sm hover:bg-slate-700 transition-colors">
@@ -126,7 +126,7 @@
                 <div class="grid gap-4 md:grid-cols-12 items-end">
                     <div class="md:col-span-3">
                         <label class="mb-1.5 block text-xs font-bold text-slate-700">Kategori</label>
-                        <select name="category" required class="block w-full rounded-lg border-slate-200 bg-white px-3 py-2.5 text-sm focus:border-[#215aac] focus:ring-[#215aac] shadow-sm">
+                        <select name="category" required class="block w-full rounded-lg border-slate-200 bg-white px-3 py-2.5 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)] shadow-sm">
                             <option value="">— Pilih —</option>
                             @foreach (['sewa' => 'Sewa', 'listrik' => 'Listrik', 'air' => 'Air', 'internet' => 'Internet', 'gaji_non_employee' => 'Gaji Non-Karyawan', 'peralatan' => 'Peralatan', 'kebersihan' => 'Kebersihan', 'keamanan' => 'Keamanan', 'lainnya' => 'Lainnya'] as $val => $label)
                                 <option value="{{ $val }}" @selected(old('category') === $val)>{{ $label }}</option>
@@ -135,7 +135,7 @@
                     </div>
                     <div class="md:col-span-4">
                         <label class="mb-1.5 block text-xs font-bold text-slate-700">Deskripsi</label>
-                        <input type="text" name="description" value="{{ old('description') }}" required maxlength="255" placeholder="Detail pengeluaran..." class="block w-full rounded-lg border-slate-200 bg-white px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-[#215aac] focus:ring-[#215aac] shadow-sm">
+                        <input type="text" name="description" value="{{ old('description') }}" required maxlength="255" placeholder="Detail pengeluaran..." class="block w-full rounded-lg border-slate-200 bg-white px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)] shadow-sm">
                     </div>
                     <div class="md:col-span-3">
                         <label class="mb-1.5 block text-xs font-bold text-slate-700">Jumlah (Rp)</label>
@@ -147,12 +147,12 @@
                                 }
                             }">
                             <span class="inline-flex items-center rounded-l-lg border border-r-0 border-slate-200 bg-slate-100 px-3 text-sm font-bold text-slate-500">Rp</span>
-                            <input type="text" :value="format(rawValue)" @input="rawValue = $event.target.value.replace(/[^0-9]/g, ''); $event.target.value = format(rawValue)" required placeholder="0" class="block w-full min-w-0 flex-1 rounded-none rounded-r-lg border-slate-200 bg-white px-3 py-2.5 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                            <input type="text" :value="format(rawValue)" @input="rawValue = $event.target.value.replace(/[^0-9]/g, ''); $event.target.value = format(rawValue)" required placeholder="0" class="block w-full min-w-0 flex-1 rounded-none rounded-r-lg border-slate-200 bg-white px-3 py-2.5 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                             <input type="hidden" name="amount" x-model="rawValue">
                         </div>
                     </div>
                     <div class="md:col-span-2">
-                        <button type="submit" class="inline-flex min-h-[42px] w-full items-center justify-center gap-2 rounded-lg bg-[#215aac] px-4 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-all">
+                        <button type="submit" class="inline-flex min-h-[42px] w-full items-center justify-center gap-2 rounded-lg bg-[var(--dash-primary,#215aac)] px-4 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-all">
                             <span class="material-symbols-outlined text-[18px]">add</span> Catat
                         </button>
                     </div>

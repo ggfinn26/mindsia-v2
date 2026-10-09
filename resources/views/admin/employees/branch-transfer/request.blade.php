@@ -16,7 +16,7 @@
             <span class="material-symbols-outlined text-[16px]">arrow_back</span> {{ $employee->full_name }}
         </a>
         @endif
-        <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Ajukan Pindah Cabang</h2>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Ajukan Pindah Cabang</h1>
     </div>
 
     @if ($errors->any())
@@ -34,7 +34,7 @@
         @csrf
         <div>
             <label class="mb-1.5 block text-sm font-medium text-slate-700">Cabang tujuan</label>
-            <select name="to_branch_id" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+            <select name="to_branch_id" required class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                 <option value="">Pilih Cabang Tujuan</option>
                 @foreach ($otherBranches as $branch)
                     <option value="{{ $branch->id }}" @selected(old('to_branch_id') == $branch->id)>{{ $branch->branch_name }}</option>
@@ -45,7 +45,7 @@
             @endif
         </div>
         <div class="flex gap-3 pt-2">
-            <button type="submit" class="inline-flex min-h-10 items-center gap-2 bg-[#215aac] px-5 text-sm font-semibold text-white hover:bg-[#194a91]">Ajukan Permintaan</button>
+            <button type="submit" class="inline-flex min-h-10 items-center gap-2 bg-[var(--dash-primary,#215aac)] px-5 text-sm font-semibold text-white hover:bg-[#194a91]">Ajukan Permintaan</button>
             <a href="{{ $selfService ? route('employee.profile.show') : route('employees.show', $employee->id) }}" class="inline-flex min-h-10 items-center border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50">Batal</a>
         </div>
     </form>

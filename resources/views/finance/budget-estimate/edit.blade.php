@@ -11,7 +11,7 @@
         <a href="{{ route('budget-estimates.show', $budgetEstimate) }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700">
             <span class="material-symbols-outlined text-[16px]">arrow_back</span> {{ $budgetEstimate->title }}
         </a>
-        <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Edit Anggaran</h2>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Edit Anggaran</h1>
     </div>
 
     @if ($errors->any())
@@ -24,12 +24,12 @@
         @csrf @method('PUT')
         <div>
             <label class="mb-1.5 block text-sm font-medium text-slate-700">Judul anggaran</label>
-            <input type="text" name="title" value="{{ old('title', $budgetEstimate->title) }}" required maxlength="255" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+            <input type="text" name="title" value="{{ old('title', $budgetEstimate->title) }}" required maxlength="255" class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
         </div>
         <div class="grid gap-4 sm:grid-cols-2">
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-slate-700">Bulan</label>
-                <select name="period_month" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                <select name="period_month" required class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                     @foreach (array_slice($months, 1, null, true) as $num => $label)
                         <option value="{{ $num }}" @selected(old('period_month', $budgetEstimate->period_month) == $num)>{{ $label }}</option>
                     @endforeach
@@ -37,15 +37,15 @@
             </div>
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-slate-700">Tahun</label>
-                <input type="number" name="period_year" value="{{ old('period_year', $budgetEstimate->period_year) }}" required min="2020" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                <input type="number" name="period_year" value="{{ old('period_year', $budgetEstimate->period_year) }}" required min="2020" class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
             </div>
         </div>
         <div>
             <label class="mb-1.5 block text-sm font-medium text-slate-700">Deskripsi</label>
-            <textarea name="description" rows="3" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">{{ old('description', $budgetEstimate->description) }}</textarea>
+            <textarea name="description" rows="3" class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">{{ old('description', $budgetEstimate->description) }}</textarea>
         </div>
         <div class="flex gap-3 pt-2">
-            <button type="submit" class="inline-flex min-h-10 items-center gap-2 bg-[#215aac] px-5 text-sm font-semibold text-white hover:bg-[#194a91]">Simpan</button>
+            <button type="submit" class="inline-flex min-h-10 items-center gap-2 bg-[var(--dash-primary,#215aac)] px-5 text-sm font-semibold text-white hover:bg-[#194a91]">Simpan</button>
             <a href="{{ route('budget-estimates.show', $budgetEstimate) }}" class="inline-flex min-h-10 items-center border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50">Batal</a>
         </div>
     </form>

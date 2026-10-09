@@ -17,26 +17,40 @@
         'NO'     => 'Tidak jadi',
     ];
 @endphp
-<div class="max-w-4xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-    <div class="flex items-center gap-4 mb-6">
-        <a href="{{ route('prospective-members.index') }}" class="text-[var(--dash-text-muted)] hover:text-[var(--dash-text-body)]">
-            <span class="material-symbols-outlined text-xl">arrow_back</span>
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-6xl mx-auto space-y-6">
+
+    {{-- Header --}}
+    <div class="flex items-start gap-4">
+        <a href="{{ route('prospective-members.index') }}"
+           class="flex-shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-xl transition-colors"
+           style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-muted);"
+           onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+           onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+            <span class="material-symbols-outlined text-[20px]">arrow_back</span>
         </a>
-        <h1 class="text-2xl font-bold text-[var(--dash-text-heading)]">Detail Lead</h1>
+        <div class="flex-1 min-w-0">
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight text-[var(--dash-text-heading)] truncate">Detail Lead</h1>
+            <p class="mt-1 text-sm text-[var(--dash-text-muted)]">Profil prospective member dan log follow-up.</p>
+        </div>
     </div>
 
     @if (session('success'))
-        <div class="mb-4 bg-emerald-50 [.mode-dark_&]:bg-emerald-500/10 border border-emerald-200 [.mode-dark_&]:border-emerald-500/20 text-emerald-700 [.mode-dark_&]:text-emerald-400 px-4 py-3 rounded">
-            {{ session('success') }}
+        <div class="flex gap-3 px-4 py-3 text-sm rounded-lg" style="border: 1px solid #a7f3d0; background-color: #ecfdf5; color: #065f46;">
+            <span class="material-symbols-outlined text-[20px]">check_circle</span>
+            <p>{{ session('success') }}</p>
         </div>
     @endif
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         {{-- Profil Prospective Member --}}
-        <div class="bg-[var(--dash-card-bg)] shadow rounded-lg p-5 md:col-span-1 space-y-4">
-            <div class="flex items-center justify-between border-b pb-2">
+        <div class="bg-[var(--dash-card-bg)] border border-[var(--dash-card-border)] rounded-2xl p-5 md:col-span-1 space-y-4">
+            <div class="flex items-center justify-between border-b border-[var(--dash-card-border)] pb-3">
                 <h2 class="text-base font-semibold text-[var(--dash-text-heading)]">Profil Lead</h2>
-                <a href="{{ route('prospective-members.edit', $lead) }}" class="text-xs font-medium text-[var(--dash-primary)] hover:text-[var(--dash-primary)] hover:opacity-80 flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)] rounded-sm">
+                <a href="{{ route('prospective-members.edit', $lead) }}"
+                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+                   style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
+                   onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                   onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
                     <span class="material-symbols-outlined text-[14px]">edit</span> Edit
                 </a>
             </div>
@@ -73,7 +87,7 @@
                 <p class="text-xs text-[var(--dash-text-muted)]">WhatsApp</p>
                 <p class="text-sm text-[var(--dash-text-body)] font-medium mb-1">{{ $lead->whatsapp_number }}</p>
                 <button @click="open = !open"
-                    class="inline-flex items-center gap-1 text-xs px-2 py-1 bg-emerald-50 [.mode-dark_&]:bg-emerald-500/10 text-emerald-700 [.mode-dark_&]:text-emerald-400 border border-emerald-200 [.mode-dark_&]:border-emerald-500/20 rounded-md hover:bg-emerald-50 [.mode-dark_&]:bg-emerald-500/10">
+                    class="inline-flex items-center gap-1 text-xs px-2 py-1 bg-emerald-50 [.mode-dark_&]:bg-emerald-500/10 text-emerald-700 [.mode-dark_&]:text-emerald-400 border border-emerald-200 [.mode-dark_&]:border-emerald-500/20 rounded-lg hover:bg-emerald-50 [.mode-dark_&]:bg-emerald-500/10">
                     <span class="material-symbols-outlined text-[14px]">chat</span>
                     Hubungi via WA
                 </button>
@@ -84,7 +98,7 @@
                     <template x-if="templates.length > 0">
                         <div class="space-y-2">
                             <select @change="selected = templates.find(t => t.id == $event.target.value) || null"
-                                class="block w-full border-[var(--dash-input-border)] rounded-md text-xs focus:ring-indigo-400 focus:border-indigo-400">
+                                class="block w-full bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-input-border)] rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-[var(--dash-primary)]/30 focus:border-[var(--dash-primary)] focus:outline-none">
                                 <option value="">Pilih Template...</option>
                                 <template x-for="t in templates" :key="t.id">
                                     <option :value="t.id" x-text="t.name"></option>
@@ -94,7 +108,7 @@
                         </div>
                     </template>
                     <button @click="openWa()"
-                        class="w-full text-xs px-3 py-1.5 bg-emerald-600 text-white rounded-md hover:bg-emerald-700">
+                        class="w-full text-xs px-3 py-1.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">
                         Buka WhatsApp
                     </button>
                 </div>
@@ -141,29 +155,34 @@
                 </div>
             @endif
             @if ($lead->member)
-                <div class="pt-2 border-t">
+                <div class="pt-2 border-t border-[var(--dash-card-border)]">
                     <p class="text-xs text-emerald-700 [.mode-dark_&]:text-emerald-400 font-medium">Sudah terdaftar sebagai Member</p>
                 </div>
             @endif
 
             {{-- Update status --}}
             @canany(['marketing.prospective_member.update', 'marketing.prospective.view_area', 'marketing.prospective.view_national'])
-                <div class="pt-3 border-t" x-data="{ showStatusForm: false }">
-                    <button @click="showStatusForm = !showStatusForm" class="text-sm text-[var(--dash-primary)] hover:text-[var(--dash-primary)] hover:opacity-80 font-medium">
+                <div class="pt-3 border-t border-[var(--dash-card-border)]" x-data="{ showStatusForm: false }">
+                    <button @click="showStatusForm = !showStatusForm"
+                        class="inline-flex items-center justify-center gap-1.5 w-full px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+                        style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
+                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'; this.style.color='var(--dash-primary)'"
+                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'; this.style.color='var(--dash-text-body)'">
+                        <span class="material-symbols-outlined text-[18px]">sync</span>
                         Update Status
                     </button>
                     <form x-show="showStatusForm" action="{{ route('prospective-members.update-status', $lead) }}" method="POST"
                           class="mt-3 space-y-3" style="display: none;">
                         @csrf @method('PATCH')
                         <select name="status" required
-                            class="block w-full border-[var(--dash-input-border)] rounded-md shadow-sm text-sm focus:ring-[var(--dash-primary)] focus:border-[var(--dash-primary)]">
+                            class="block w-full bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-input-border)] rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[var(--dash-primary)]/30 focus:border-[var(--dash-primary)] focus:outline-none">
                             @foreach (array_keys($statusColors) as $val)
                                 <option value="{{ $val }}" {{ $lead->status === $val ? 'selected' : '' }}>{{ $val }}</option>
                             @endforeach
                         </select>
                         <input type="text" name="change_reason" placeholder="Alasan perubahan (opsional)"
-                            class="block w-full border-[var(--dash-input-border)] rounded-md shadow-sm text-sm focus:ring-[var(--dash-primary)] focus:border-[var(--dash-primary)]">
-                        <button type="submit" class="w-full px-3 py-2 text-sm text-white bg-[var(--dash-primary)] rounded-md hover:opacity-90">
+                            class="block w-full bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-input-border)] rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[var(--dash-primary)]/30 focus:border-[var(--dash-primary)] focus:outline-none">
+                        <button type="submit" class="w-full px-3 py-2 text-sm text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90">
                             Simpan
                         </button>
                     </form>
@@ -172,7 +191,7 @@
         </div>
 
         {{-- Log Follow-Up --}}
-        <div class="bg-[var(--dash-card-bg)] shadow rounded-lg p-5 md:col-span-2 flex flex-col max-h-[600px]">
+        <div class="bg-[var(--dash-card-bg)] border border-[var(--dash-card-border)] rounded-2xl p-6 md:col-span-2 flex flex-col max-h-[600px]">
             <h2 class="text-base font-semibold text-[var(--dash-text-heading)] border-b pb-2 mb-4">Log Follow-Up</h2>
 
             <div class="flex-1 overflow-y-auto space-y-3 mb-4 pr-1">
@@ -197,13 +216,13 @@
             </div>
 
             {{-- Form tambah catatan --}}
-            <div class="border-t pt-4">
+            <div class="border-t border-[var(--dash-card-border)] pt-4">
                 <form action="{{ route('prospective-members.follow-ups.store', $lead) }}" method="POST" class="space-y-3">
                     @csrf
                     <textarea name="note" rows="3" required placeholder="Catatan hasil follow-up..."
-                        class="block w-full border-[var(--dash-input-border)] rounded-md shadow-sm text-sm focus:ring-[var(--dash-primary)] focus:border-[var(--dash-primary)]"></textarea>
+                        class="block w-full bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-input-border)] rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[var(--dash-primary)]/30 focus:border-[var(--dash-primary)] focus:outline-none"></textarea>
                     <div class="flex justify-end">
-                        <button type="submit" class="px-4 py-2 text-sm text-white bg-[var(--dash-primary)] rounded-md hover:opacity-90">
+                        <button type="submit" class="px-4 py-2 text-sm text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90">
                             Simpan Catatan
                         </button>
                     </div>

@@ -46,7 +46,7 @@
                         <td class="px-6 py-3 font-medium text-slate-800">{{ $position->position_name }}</td>
                         <td class="px-6 py-3">
                             <select name="assignments[{{ $position->id }}]"
-                                    class="w-full rounded-lg border border-slate-200 px-3 py-1.5 text-sm text-slate-700 focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]">
+                                    class="w-full rounded-lg border border-slate-200 px-3 py-1.5 text-sm text-slate-700 focus:border-[color:var(--dash-primary,#215aac)] focus:ring-1 focus:ring-[color:var(--dash-primary,#215aac)]">
                                 <option value="" {{ $current === '' ? 'selected' : '' }}>— Auto-detect —</option>
                                 @foreach($typeLabels as $type => $label)
                                 <option value="{{ $type }}" {{ $current === $type ? 'selected' : '' }}>{{ $label }}</option>
@@ -70,7 +70,7 @@
         </div>
         <div class="border-t border-slate-100 bg-slate-50 px-6 py-4 flex justify-end">
             <button type="submit"
-                    class="inline-flex items-center gap-2 rounded-lg bg-[#215aac] px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-colors">
+                    class="inline-flex items-center gap-2 rounded-lg bg-[var(--dash-primary,#215aac)] px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-colors">
                 <span class="material-symbols-outlined text-[16px]">save</span> Simpan Assignment
             </button>
         </div>

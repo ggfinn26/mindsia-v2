@@ -24,11 +24,11 @@
     {{-- Header --}}
     <div class="flex flex-wrap items-start justify-between gap-4">
         <div class="flex items-center gap-4">
-            <div class="flex h-14 w-14 items-center justify-center bg-[#215aac]/10 text-xl font-bold text-[#215aac]">
+            <div class="flex h-14 w-14 items-center justify-center bg-[var(--dash-primary,#215aac)]/10 text-xl font-bold text-[color:var(--dash-primary-text,#215aac)]">
                 {{ mb_substr($employee->full_name, 0, 1) }}
             </div>
             <div>
-                <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">{{ $employee->full_name }}</h2>
+                <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">{{ $employee->full_name }}</h1>
                 <div class="mt-1 flex items-center gap-3">
                     <span class="font-mono text-sm text-slate-500">{{ $employee->employee_code }}</span>
                     <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $employee->is_active ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-700' }}">
@@ -45,7 +45,7 @@
             </a>
             @can('update', $employee)
             <a href="{{ route('employees.edit', $employee) }}"
-               class="inline-flex min-h-10 items-center gap-2 bg-[#215aac] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">
+               class="inline-flex min-h-10 items-center gap-2 bg-[var(--dash-primary,#215aac)] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">
                 <span class="material-symbols-outlined text-[18px]">edit</span>
                 Edit Data
             </a>
@@ -108,7 +108,7 @@
                     <h3 class="font-jakarta text-sm font-bold text-slate-900">Riwayat Kontrak</h3>
                     @can('employee.update')
                     <a href="{{ route('employment-statuses.create', $employee) }}"
-                       class="text-xs font-semibold text-[#215aac] hover:underline">
+                       class="text-xs font-semibold text-[color:var(--dash-primary-text,#215aac)] hover:underline">
                         + Buat Kontrak Baru
                     </a>
                     @endcan
@@ -266,7 +266,7 @@
                         <p class="mt-2 text-sm font-medium text-slate-600">Belum ada riwayat jabatan.</p>
                         @can('employee.update')
                         <a href="{{ route('employment-statuses.create', $employee) }}"
-                           class="mt-2 inline-flex text-xs font-semibold text-[#215aac] hover:underline">
+                           class="mt-2 inline-flex text-xs font-semibold text-[color:var(--dash-primary-text,#215aac)] hover:underline">
                             Buat kontrak →
                         </a>
                         @endcan
@@ -394,7 +394,7 @@
                     <h3 class="font-jakarta text-sm font-bold text-slate-900">Kompensasi Gaji</h3>
                     @canany(['payroll.employee_compensation.create', 'payroll.employee_compensation.update'])
                     <a href="{{ route('employees.payroll.compensations.index', $employee) }}"
-                       class="text-xs font-semibold text-[#215aac] hover:underline">
+                       class="text-xs font-semibold text-[color:var(--dash-primary-text,#215aac)] hover:underline">
                         Kelola
                     </a>
                     @endcanany
@@ -437,7 +437,7 @@
                         <p class="mt-2 text-sm font-medium text-slate-600">Belum ada kompensasi.</p>
                         @canany(['payroll.employee_compensation.create'])
                         <a href="{{ route('employees.payroll.compensations.index', $employee) }}"
-                           class="mt-2 inline-flex text-xs font-semibold text-[#215aac] hover:underline">
+                           class="mt-2 inline-flex text-xs font-semibold text-[color:var(--dash-primary-text,#215aac)] hover:underline">
                             Tetapkan sekarang →
                         </a>
                         @endcanany

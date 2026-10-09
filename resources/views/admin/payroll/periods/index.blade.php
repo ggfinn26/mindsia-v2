@@ -25,7 +25,7 @@
     <div class="flex items-start justify-between">
         <div>
             <p class="text-sm font-medium text-[var(--dash-primary)]">Payroll</p>
-            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-[var(--dash-text-heading)]">Periode Payroll</h2>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Periode Payroll</h1>
             <p class="mt-1 max-w-2xl text-sm leading-6 text-[var(--dash-text-body)]">Kelola periode penggajian. Generate payroll dilakukan per periode.</p>
         </div>
         @can('payroll.period.create')

@@ -7,7 +7,7 @@
 <div class="max-w-6xl mx-auto space-y-6">
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Survey Saya</h2>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Survey Saya</h1>
             <p class="text-sm text-slate-500 mt-1">Daftar survei yang ditugaskan kepada Anda untuk evaluasi program.</p>
         </div>
     </div>
@@ -78,7 +78,7 @@
                                             Lihat Jawaban
                                         </a>
                                     @else
-                                        <a href="{{ route('member.surveys.show', $memberSurvey) }}" class="inline-flex min-h-[38px] items-center justify-center rounded-lg bg-[#215aac] px-4 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-colors">
+                                        <a href="{{ route('member.surveys.show', $memberSurvey) }}" class="inline-flex min-h-[38px] items-center justify-center rounded-lg bg-[var(--dash-primary,#215aac)] px-4 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-colors">
                                             Mulai Isi
                                         </a>
                                     @endif

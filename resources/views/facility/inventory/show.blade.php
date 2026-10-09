@@ -23,7 +23,7 @@
             <a href="{{ route('facility.inventory.index') }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700">
                 <span class="material-symbols-outlined text-[16px]">arrow_back</span> Inventaris Cabang
             </a>
-            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">{{ $inventoryItem->item_name }}</h2>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">{{ $inventoryItem->item_name }}</h1>
             <div class="mt-1 flex items-center gap-3">
                 <p class="font-mono text-sm text-slate-400">{{ $inventoryItem->item_code }}</p>
                 <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $statusBadge[$inventoryItem->status] ?? 'bg-slate-100' }}">{{ ucfirst($inventoryItem->status) }}</span>
@@ -87,13 +87,13 @@
                     @csrf
                     <div>
                         <label class="mb-1 block text-xs font-semibold text-slate-700">Perubahan (±)</label>
-                        <input type="number" name="quantity" required class="block w-28 border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]" placeholder="-1, +5">
+                        <input type="number" name="quantity" required class="block w-28 border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]" placeholder="-1, +5">
                     </div>
                     <div class="flex-1">
                         <label class="mb-1 block text-xs font-semibold text-slate-700">Alasan</label>
-                        <input type="text" name="reason" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                        <input type="text" name="reason" required class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                     </div>
-                    <button type="submit" class="inline-flex min-h-9 items-center bg-[#215aac] px-3 text-xs font-semibold text-white hover:bg-[#194a91]">Simpan</button>
+                    <button type="submit" class="inline-flex min-h-9 items-center bg-[var(--dash-primary,#215aac)] px-3 text-xs font-semibold text-white hover:bg-[#194a91]">Simpan</button>
                 </form>
             </div>
         </details>

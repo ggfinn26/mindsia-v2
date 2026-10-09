@@ -10,7 +10,7 @@
             <a href="{{ route('out-letters-generate.index') }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700">
                 <span class="material-symbols-outlined text-[16px]">arrow_back</span> Surat Keluar
             </a>
-            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">{{ $outLetterViaGenerate->subject ?? $outLetterViaGenerate->letter_type }}</h2>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">{{ $outLetterViaGenerate->subject ?? $outLetterViaGenerate->letter_type }}</h1>
             <div class="mt-1 flex items-center gap-3">
                 <p class="font-mono text-sm text-slate-400">{{ $outLetterViaGenerate->letter_number ?? 'Draft' }}</p>
                 <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $outLetterViaGenerate->isDraft() ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800' }}">

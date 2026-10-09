@@ -18,7 +18,7 @@
             <a href="{{ route('facility.rent-contracts.index') }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700">
                 <span class="material-symbols-outlined text-[16px]">arrow_back</span> Kontrak Sewa Cabang
             </a>
-            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Kontrak — {{ $branchRentContract->owner_name }}</h2>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Kontrak — {{ $branchRentContract->owner_name }}</h1>
             <div class="mt-1 flex items-center gap-3">
                 <p class="text-sm text-slate-500">{{ $branchRentContract->branch?->branch_name ?? '—' }}</p>
                 <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $branchRentContract->status === 'active' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600' }}">{{ ucfirst($branchRentContract->status) }}</span>

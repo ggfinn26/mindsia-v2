@@ -9,7 +9,7 @@
         <a href="{{ route('employees.show', $employee->id) }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700">
             <span class="material-symbols-outlined text-[16px]">arrow_back</span> {{ $employee->full_name }}
         </a>
-        <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Pindah Cabang Langsung</h2>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Pindah Cabang Langsung</h1>
         <p class="mt-1 text-sm text-amber-700 bg-amber-50 border border-amber-200 px-3 py-2 rounded">
             Perubahan ini langsung berlaku tanpa proses review.
         </p>
@@ -30,7 +30,7 @@
         @csrf @method('PUT')
         <div>
             <label class="mb-1.5 block text-sm font-medium text-slate-700">Cabang tujuan</label>
-            <select name="to_branch_id" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+            <select name="to_branch_id" required class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                 <option value="">Pilih Cabang Tujuan</option>
                 @foreach ($otherBranches as $branch)
                     <option value="{{ $branch->id }}" @selected(old('to_branch_id') == $branch->id)>{{ $branch->branch_name }}</option>

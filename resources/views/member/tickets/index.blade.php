@@ -7,10 +7,10 @@
 <div class="max-w-5xl mx-auto space-y-6">
     <div class="flex justify-between items-center">
         <div>
-            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Tiket Bantuan</h2>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Tiket Bantuan</h1>
             <p class="text-sm text-slate-500 mt-1">Ajukan pertanyaan atau masalah kepada tim MINDSIA.</p>
         </div>
-        <a href="{{ route('member.tickets.create') }}" class="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-lg bg-[#215aac] px-5 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-colors">
+        <a href="{{ route('member.tickets.create') }}" class="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-lg bg-[var(--dash-primary,#215aac)] px-5 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-colors">
             <span class="material-symbols-outlined text-[18px]">add</span> Buat Tiket
         </a>
     </div>
@@ -30,7 +30,7 @@
             <h3 class="font-jakarta text-base font-bold text-slate-900">Belum Ada Tiket</h3>
             <p class="mt-1 text-sm text-slate-500 max-w-md mx-auto">Buat tiket jika ada pertanyaan atau kendala yang perlu dibantu tim MINDSIA.</p>
             <div class="mt-6">
-                <a href="{{ route('member.tickets.create') }}" class="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-lg bg-[#215aac] px-5 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-colors">
+                <a href="{{ route('member.tickets.create') }}" class="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-lg bg-[var(--dash-primary,#215aac)] px-5 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-colors">
                     <span class="material-symbols-outlined text-[18px]">add</span> Buat Tiket Pertama
                 </a>
             </div>

@@ -13,7 +13,7 @@
                 <span class="material-symbols-outlined text-[16px]">arrow_back</span>
                 {{ $employee->full_name }}
             </a>
-            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Edit Data Pegawai</h2>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Edit Data Pegawai</h1>
         </div>
     </div>
 
@@ -44,12 +44,12 @@
                     </label>
                     <input type="text" name="full_name" value="{{ old('full_name', $employee->full_name) }}"
                            required maxlength="255"
-                           class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                           class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                 </div>
                 <div>
                     <label class="mb-1.5 block text-sm font-medium text-slate-700">Jenis Kelamin <span class="text-rose-500">*</span></label>
                     <select name="gender" required
-                            class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                            class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                         <option value="">Pilih...</option>
                         <option value="L" @selected(old('gender', $employee->gender) === 'L')>Laki-laki</option>
                         <option value="P" @selected(old('gender', $employee->gender) === 'P')>Perempuan</option>
@@ -59,12 +59,12 @@
                     <label class="mb-1.5 block text-sm font-medium text-slate-700">Tanggal Lahir</label>
                     <input type="date" name="birthdate"
                            value="{{ old('birthdate', $employee->birthdate?->format('Y-m-d')) }}"
-                           class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                           class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                 </div>
                 <div>
                     <label class="mb-1.5 block text-sm font-medium text-slate-700">Email</label>
                     <input type="email" name="email" value="{{ old('email', $employee->email) }}"
-                           class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                           class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                 </div>
                 <div>
                     <label class="mb-1.5 block text-sm font-medium text-slate-700">No. WhatsApp</label>
@@ -74,7 +74,7 @@
                                value="{{ old('whatsapp_number', $employee->whatsapp_number) }}"
                                placeholder="8xxxxxxxxxx" minlength="8" maxlength="15"
                                oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')"
-                               class="block w-full min-w-0 flex-1 border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                               class="block w-full min-w-0 flex-1 border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                     </div>
                 </div>
             </div>
@@ -112,7 +112,7 @@
                 <div>
                     <label class="mb-1.5 block text-sm font-medium text-slate-700">Tingkat Penempatan</label>
                     <select x-model="placement"
-                            class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                            class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                         <option value="hq">Headquarters (Pusat)</option>
                         <option value="branch">Cabang</option>
                         <option value="area">Area</option>
@@ -139,7 +139,7 @@
                         <input type="hidden" name="region_id" :value="derivedRegionId">
                         <label class="mb-1.5 block text-sm font-medium text-slate-700">Cabang <span class="text-rose-500">*</span></label>
                         <select name="branch_id" x-model="selectedBranch"
-                                class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                                class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                             <option value="">Pilih cabang...</option>
                             @foreach ($branches as $branch)
                                 <option value="{{ $branch->id }}">{{ $branch->branch_name }}</option>
@@ -156,7 +156,7 @@
                         <input type="hidden" name="region_id" :value="derivedRegionId">
                         <label class="mb-1.5 block text-sm font-medium text-slate-700">Area <span class="text-rose-500">*</span></label>
                         <select name="area_id" x-model="selectedArea"
-                                class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                                class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                             <option value="">Pilih area...</option>
                             @foreach ($areas as $area)
                                 <option value="{{ $area->id }}">{{ $area->name }}</option>
@@ -173,7 +173,7 @@
                         <input type="hidden" name="area_id" value="">
                         <label class="mb-1.5 block text-sm font-medium text-slate-700">Region <span class="text-rose-500">*</span></label>
                         <select name="region_id"
-                                class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+                                class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                             <option value="">Pilih region...</option>
                             @foreach ($regions as $region)
                                 <option value="{{ $region->id }}"
@@ -197,7 +197,7 @@
                     <input type="hidden" name="is_active" value="0">
                     <input type="checkbox" name="is_active" value="1"
                            @checked(old('is_active', $employee->is_active))
-                           class="h-4 w-4 border-slate-300 text-[#215aac] focus:ring-[#215aac]">
+                           class="h-4 w-4 border-slate-300 text-[color:var(--dash-primary-text,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
                     <span class="text-sm font-medium text-slate-700">Pegawai aktif</span>
                 </label>
                 <p class="mt-1 text-xs text-slate-500">Nonaktifkan untuk menyembunyikan pegawai dari daftar dan proses payroll.</p>
@@ -211,7 +211,7 @@
                 Batal
             </a>
             <button type="submit"
-                    class="inline-flex min-h-10 items-center gap-2 bg-[#215aac] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">
+                    class="inline-flex min-h-10 items-center gap-2 bg-[var(--dash-primary,#215aac)] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">
                 <span class="material-symbols-outlined text-[18px]">save</span>
                 Simpan Perubahan
             </button>

@@ -35,7 +35,7 @@
         <div class="flex items-center gap-2">
             @if(!request()->has('tab'))
                 @can('survey.form.create')
-                <a href="{{ route('surveys.create') }}" class="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-lg bg-[#215aac] px-5 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-colors">
+                <a href="{{ route('surveys.create') }}" class="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-lg bg-[var(--dash-primary,#215aac)] px-5 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-colors">
                     <span class="material-symbols-outlined text-[18px]">add</span> Tambah Survey
                 </a>
                 @endcan
@@ -84,7 +84,7 @@
                                             <a href="{{ route('surveys.results', $survey->id) }}" class="text-sm font-semibold text-purple-600 hover:text-purple-800 transition-colors">Lihat Hasil</a>
                                         @endcan
                                     @else
-                                        <a href="{{ route('surveys.show', $survey->id) }}" class="text-sm font-semibold text-[#215aac] hover:text-[#194a91] transition-colors">Detail</a>
+                                        <a href="{{ route('surveys.show', $survey->id) }}" class="text-sm font-semibold text-[color:var(--dash-primary-text,#215aac)] hover:text-[#194a91] transition-colors">Detail</a>
                                         @can('survey.form.update')
                                             <a href="{{ route('surveys.edit', $survey->id) }}" class="text-sm font-semibold text-amber-600 hover:text-amber-800 transition-colors">Edit</a>
                                         @endcan

@@ -43,19 +43,19 @@
                     <label class="mb-1.5 block text-[11px] font-semibold text-slate-400 uppercase tracking-wide">Kode Rule</label>
                     <input type="text" name="rule_code" value="{{ old('rule_code') }}" required maxlength="100"
                         placeholder="MPI_2025"
-                        class="block w-full bg-slate-50 border border-slate-200 rounded-lg text-sm px-3 py-2 uppercase outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
+                        class="block w-full bg-slate-50 border border-slate-200 rounded-lg text-sm px-3 py-2 uppercase outline-none focus:border-[color:var(--dash-primary,#215aac)] focus:ring-1 focus:ring-[color:var(--dash-primary,#215aac)] transition-colors">
                     <p class="mt-1 text-xs text-slate-400">ID unik, huruf kapital.</p>
                 </div>
                 <div>
                     <label class="mb-1.5 block text-[11px] font-semibold text-slate-400 uppercase tracking-wide">Nama Rule</label>
                     <input type="text" name="rule_name" value="{{ old('rule_name') }}" required maxlength="255"
                         placeholder="MPI Default (50% Kelas + 50% Omzet)"
-                        class="block w-full bg-slate-50 border border-slate-200 rounded-lg text-sm px-3 py-2 outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
+                        class="block w-full bg-slate-50 border border-slate-200 rounded-lg text-sm px-3 py-2 outline-none focus:border-[color:var(--dash-primary,#215aac)] focus:ring-1 focus:ring-[color:var(--dash-primary,#215aac)] transition-colors">
                 </div>
                 <div>
                     <label class="mb-1.5 block text-[11px] font-semibold text-slate-400 uppercase tracking-wide">Basis Pendapatan</label>
                     <select name="revenue_basis" required
-                        class="block w-full bg-slate-50 border border-slate-200 rounded-lg text-sm px-3 py-2 outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
+                        class="block w-full bg-slate-50 border border-slate-200 rounded-lg text-sm px-3 py-2 outline-none focus:border-[color:var(--dash-primary,#215aac)] focus:ring-1 focus:ring-[color:var(--dash-primary,#215aac)] transition-colors">
                         <option value="registration_value" @selected(old('revenue_basis') === 'registration_value')>Nilai Pendaftaran</option>
                         <option value="cash_collected" @selected(old('revenue_basis') === 'cash_collected')>Cash Terkumpul</option>
                     </select>
@@ -63,7 +63,7 @@
                 </div>
             </div>
             <div>
-                <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-[#215aac] rounded-lg hover:bg-[#194a91] transition-colors">
+                <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-[var(--dash-primary,#215aac)] rounded-lg hover:bg-[#194a91] transition-colors">
                     Buat Rule
                 </button>
             </div>
@@ -108,7 +108,7 @@
                             @if(!$rule->is_active)
                             <form method="POST" action="{{ route('marketing-kpi.rules.activate', $rule) }}">
                                 @csrf
-                                <button type="submit" class="text-[#215aac] text-xs font-medium hover:underline">
+                                <button type="submit" class="text-[color:var(--dash-primary-text,#215aac)] text-xs font-medium hover:underline">
                                     Aktifkan
                                 </button>
                             </form>

@@ -7,7 +7,7 @@
 <div class="max-w-2xl mx-auto space-y-6">
 
     <div>
-        <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Pindah Cabang</h2>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Pindah Cabang</h1>
         <p class="mt-1 text-sm text-slate-500">Cabang saat ini: <strong>{{ $currentBranch?->branch_name ?? '—' }}</strong></p>
     </div>
 
@@ -38,7 +38,7 @@
                 </div>
                 <div>
                     <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">Ke Cabang</dt>
-                    <dd class="mt-1 font-medium text-[#215aac]">{{ $pendingRequest->toBranch?->branch_name ?? '—' }}</dd>
+                    <dd class="mt-1 font-medium text-[color:var(--dash-primary-text,#215aac)]">{{ $pendingRequest->toBranch?->branch_name ?? '—' }}</dd>
                 </div>
                 <div>
                     <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">Diajukan</dt>
@@ -69,7 +69,7 @@
                 @csrf
                 <div>
                     <label class="mb-1.5 block text-sm font-semibold text-slate-700">Cabang tujuan <span class="text-rose-500">*</span></label>
-                    <select name="to_branch_id" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac] @error('to_branch_id') border-rose-500 @enderror">
+                    <select name="to_branch_id" class="block w-full border-slate-300 text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)] @error('to_branch_id') border-rose-500 @enderror">
                         <option value="">Pilih Cabang Tujuan</option>
                         @foreach ($otherBranches as $branch)
                             <option value="{{ $branch->id }}" @selected(old('to_branch_id') == $branch->id)>{{ $branch->branch_name }}</option>
@@ -83,7 +83,7 @@
                     @endif
                 </div>
                 <div class="flex gap-3 border-t border-slate-100 pt-4">
-                    <button type="submit" class="inline-flex min-h-10 items-center gap-2 bg-[#215aac] px-5 text-sm font-semibold text-white hover:bg-[#194a91]">
+                    <button type="submit" class="inline-flex min-h-10 items-center gap-2 bg-[var(--dash-primary,#215aac)] px-5 text-sm font-semibold text-white hover:bg-[#194a91]">
                         <span class="material-symbols-outlined text-[18px]">send</span>
                         Ajukan Permintaan
                     </button>

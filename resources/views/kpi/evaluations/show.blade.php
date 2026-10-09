@@ -26,7 +26,7 @@
                 <span class="material-symbols-outlined text-[20px]">arrow_back</span>
             </a>
             <div>
-                <h2 class="font-jakarta text-2xl font-bold tracking-tight text-[var(--dash-text-heading)]">{{ $evaluation->employee_name_snapshot }}</h2>
+                <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">{{ $evaluation->employee_name_snapshot }}</h1>
                 <p class="mt-0.5 text-sm text-[var(--dash-text-muted)]">{{ $evaluation->position_name_snapshot }} · {{ $evaluation->template?->template_name }}</p>
             </div>
         </div>

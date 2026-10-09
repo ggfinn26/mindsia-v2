@@ -6,7 +6,7 @@
 @section('content')
 <div class="max-w-7xl mx-auto space-y-6">
     <div>
-        <p class="text-sm font-medium text-[#725c00]">Finance</p>
+        <p class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--dash-primary-text);">Finance</p>
         <h2 class="font-jakarta text-[var(--dash-text-muted)]xl font-bold tracking-tight text-[var(--dash-text-heading)]">Review Reimbursement</h2>
         <p class="mt-1 text-sm text-[var(--dash-text-muted)]">Reimbursement yang menunggu persetujuan finance.</p>
     </div>

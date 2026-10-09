@@ -10,7 +10,7 @@
             <a href="{{ route('in-letters.index') }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700">
                 <span class="material-symbols-outlined text-[16px]">arrow_back</span> Surat Masuk
             </a>
-            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">{{ $inLetter->subject }}</h2>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">{{ $inLetter->subject }}</h1>
             <p class="font-mono text-sm text-slate-400">{{ $inLetter->letter_number ?? '—' }}</p>
         </div>
         <div class="flex gap-2">
