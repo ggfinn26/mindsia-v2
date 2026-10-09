@@ -1,153 +1,267 @@
 @extends('layouts.dashboard')
 
 @section('title', 'Data Member')
+@section('header_title', 'Data Member')
 
 @section('content')
 @php use App\Enums\Member\ActivationStatus; @endphp
 
-<div class="max-w-7xl mx-auto space-y-6">
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6">
+
     <div class="flex items-start justify-between gap-4">
         <div>
-            <p class="text-sm font-medium text-[#725c00]">Member & Marketing</p>
-            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Data Member</h2>
+            <p class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--dash-primary-text);">Member & Marketing</p>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Data Member</h1>
         </div>
-        <div class="flex gap-2">
-            <a href="{{ route('members.create') }}" class="inline-flex min-h-10 items-center gap-2 bg-[#215aac] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">
-                <span class="material-symbols-outlined text-[18px]">person_add</span> Registrasi Member
-            </a>
-        </div>
+        <a href="{{ route('members.create') }}"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity shrink-0"
+           style="background-color: var(--dash-primary);">
+            <span class="material-symbols-outlined text-[18px]">person_add</span>Registrasi Member
+        </a>
     </div>
 
-    @if (session('success'))
-        <div class="flex gap-3 border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-            <span class="material-symbols-outlined text-[20px]">check_circle</span>
-            <p>{{ session('success') }}</p>
+    @if(session('success'))
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+             style="background-color: #f0fdf4; border-color: #bbf7d0; color: #059669;">
+            <span class="material-symbols-outlined text-[18px]">check_circle</span>
+            {{ session('success') }}
         </div>
     @endif
 
-    <!-- Filters -->
-    <form method="GET" action="{{ route('members.index') }}" class="flex flex-wrap items-end gap-3">
-        <div x-data="adminInstitutionFilter()" class="relative z-20">
-            <label class="block text-xs font-semibold text-slate-500 mb-1">Institusi</label>
-            
-            <div @click="open = !open" @click.away="open = false" 
-                 class="border border-slate-300 bg-white px-3 py-2 text-sm focus-within:border-[#215aac] focus-within:ring-1 focus-within:ring-[#215aac] min-w-[200px] max-w-[250px] flex justify-between items-center cursor-pointer h-[38px]">
-                <span x-text="selectedName" class="truncate block pr-4"></span>
-                <span class="material-symbols-outlined text-[16px] text-gray-400">expand_more</span>
-            </div>
-            
-            <div x-show="open" x-cloak 
-                 class="absolute left-0 w-[300px] mt-1 bg-white border border-gray-200 shadow-lg max-h-[300px] flex flex-col z-50">
-                <div class="p-2 bg-gray-50 border-b border-gray-100">
-                    <input type="text" x-model="search" placeholder="Cari institusi..." 
-                           class="w-full px-2 py-1.5 text-xs border border-gray-300 focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]">
+    {{-- Filters --}}
+    <div class="rounded-2xl px-5 py-4"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <form method="GET" action="{{ route('members.index') }}" class="flex flex-wrap items-end gap-3">
+            <input type="hidden" name="sort" value="{{ $sort }}">
+
+            {{-- Institution searchable dropdown --}}
+            <div x-data="adminInstitutionFilter()" class="relative z-20">
+                <label class="block text-xs font-semibold mb-1.5" style="color: var(--dash-text-muted);">Institusi</label>
+                <div @click="open = !open" @click.away="open = false"
+                     class="rounded-lg px-3 py-2 text-sm flex justify-between items-center cursor-pointer min-w-[180px]"
+                     style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-body);">
+                    <span x-text="selectedName" class="truncate block pr-2"></span>
+                    <span class="material-symbols-outlined text-[16px] shrink-0" style="color: var(--dash-text-muted);">expand_more</span>
                 </div>
-                <ul class="overflow-y-auto flex-1 py-1 max-h-[250px]">
-                    <li @click="select('', 'Semua')" class="px-3 py-2 text-xs text-gray-700 hover:bg-[#215aac] hover:text-white cursor-pointer">Semua</li>
-                    <template x-for="inst in filtered" :key="inst.id">
-                        <li @click="select(inst.id, inst.institution_name)" class="px-3 py-2 text-xs text-gray-700 hover:bg-[#215aac] hover:text-white cursor-pointer" x-text="inst.institution_name"></li>
-                    </template>
-                    <li x-show="filtered.length === 0" class="px-3 py-2 text-xs text-gray-500 text-center">Tidak ditemukan</li>
-                </ul>
+                <div x-show="open" x-cloak
+                     class="absolute left-0 w-[280px] mt-1 rounded-xl shadow-xl overflow-hidden z-50"
+                     style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+                    <div class="p-2" style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-2.5 top-2 text-[14px]" style="color: var(--dash-text-muted);">search</span>
+                            <input type="text" x-model="search" placeholder="Cari institusi..."
+                                   style="padding-left: 2rem !important; background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-body);"
+                                   class="w-full pr-2 py-1.5 rounded-lg text-xs focus:outline-none">
+                        </div>
+                    </div>
+                    <ul class="overflow-y-auto max-h-[220px] py-1">
+                        <li @click="select('', 'Semua')"
+                            class="px-3 py-2 text-xs cursor-pointer hover:bg-blue-500 hover:text-white transition-colors"
+                            style="color: var(--dash-text-body);">Semua</li>
+                        <template x-for="inst in filtered" :key="inst.id">
+                            <li @click="select(inst.id, inst.institution_name)"
+                                class="px-3 py-2 text-xs cursor-pointer hover:bg-blue-500 hover:text-white transition-colors"
+                                style="color: var(--dash-text-body);"
+                                x-text="inst.institution_name"></li>
+                        </template>
+                        <li x-show="filtered.length === 0" class="px-3 py-2 text-xs text-center"
+                            style="color: var(--dash-text-muted);">Tidak ditemukan</li>
+                    </ul>
+                </div>
+                <input type="hidden" name="institution_id" :value="selectedId">
             </div>
-            <input type="hidden" name="institution_id" :value="selectedId">
-        </div>
-        <div>
-            <label class="block text-xs font-semibold text-slate-500 mb-1">Program</label>
-            <select name="program_id" class="border border-slate-300 bg-white px-3 py-2 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]">
-                <option value="">Semua</option>
-                @foreach(\App\Models\Program::where('is_active', true)->orderBy('program_name')->get() as $prog)
-                    <option value="{{ $prog->id }}" {{ request('program_id') == $prog->id ? 'selected' : '' }}>{{ $prog->program_name }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div>
-            <label class="block text-xs font-semibold text-slate-500 mb-1">Cari</label>
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Nama / Email / WA" class="border border-slate-300 px-3 py-2 text-sm focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]" />
-        </div>
-        <button type="submit" class="inline-flex min-h-10 items-center gap-1 border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
-            <span class="material-symbols-outlined text-[16px]">search</span> Filter
-        </button>
-        <a href="{{ route('members.index') }}" class="inline-flex min-h-10 items-center px-3 py-2 text-sm text-slate-500 hover:text-slate-700">Reset</a>
-    </form>
 
-    <!-- CSV Import -->
-    <form method="POST" action="{{ route('members.import') }}" enctype="multipart/form-data" class="flex items-end gap-3 border border-dashed border-slate-300 bg-slate-50/50 px-5 py-4">
-        @csrf
-        <div class="flex-1">
-            <label class="block text-xs font-semibold text-slate-500 mb-1">Import CSV</label>
-            <input type="file" name="file" accept=".csv,.txt" class="block w-full text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#215aac] file:text-white hover:file:bg-[#194a91]" />
-        </div>
-        <button type="submit" class="inline-flex min-h-10 items-center gap-2 border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
-            <span class="material-symbols-outlined text-[16px]">upload_file</span> Import
-        </button>
-    </form>
+            <div>
+                <label class="block text-xs font-semibold mb-1.5" style="color: var(--dash-text-muted);">Program</label>
+                <select name="program_id"
+                        class="rounded-lg px-3 py-2 text-sm focus:outline-none"
+                        style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-body);">
+                    <option value="">Semua</option>
+                    @foreach(\App\Models\Program::where('is_active', true)->orderBy('program_name')->get() as $prog)
+                        <option value="{{ $prog->id }}" {{ request('program_id') == $prog->id ? 'selected' : '' }}>{{ $prog->program_name }}</option>
+                    @endforeach
+                </select>
+            </div>
 
-    <!-- Table -->
-    <div class="overflow-hidden border border-slate-200 bg-white">
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-200 text-sm">
-                <thead class="bg-slate-50 text-left text-xs font-semibold text-slate-500">
-                    <tr>
-                        <th class="px-5 py-3">Nama</th>
-                        <th class="px-5 py-3">Email</th>
-                        <th class="px-5 py-3">WhatsApp</th>
-                        <th class="px-5 py-3">Institusi</th>
-                        <th class="px-5 py-3">Program</th>
-                        <th class="px-5 py-3">Status</th>
-                        <th class="px-5 py-3">Akun</th>
-                        <th class="px-5 py-3 text-right">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-                    @forelse ($members as $member)
-                        <tr class="hover:bg-slate-50/70">
-                            <td class="px-5 py-4">
-                                <p class="font-semibold text-slate-900">{{ $member->full_name }}</p>
-                                <p class="mt-0.5 text-xs text-slate-400">{{ $member->gender ?? '—' }} · {{ $member->birthdate?->format('d M Y') ?? '—' }}</p>
-                            </td>
-                            <td class="px-5 py-4 text-slate-600">{{ $member->email ?? '—' }}</td>
-                            <td class="px-5 py-4 text-slate-600">{{ $member->whatsapp_number ?? '—' }}</td>
-                            <td class="px-5 py-4 text-slate-600">{{ $member->institution?->name ?? '—' }}</td>
-                            <td class="px-5 py-4 text-slate-600">{{ $member->program?->program_name ?? '—' }}</td>
-                            <td class="px-5 py-4">
-                                @php $status = $member->activation_status; @endphp
-                                <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $status instanceof ActivationStatus ? $status->badgeClass() : 'bg-slate-100 text-slate-600' }}">
-                                    {{ $status instanceof ActivationStatus ? $status->label() : '—' }}
+            <div>
+                <label class="block text-xs font-semibold mb-1.5" style="color: var(--dash-text-muted);">Cari</label>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Nama / Email / WA"
+                       class="rounded-lg px-3 py-2 text-sm focus:outline-none"
+                       style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-body);" />
+            </div>
+
+            <button type="submit"
+                    class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                    style="background-color: var(--dash-primary);">
+                <span class="material-symbols-outlined text-[16px]">search</span>Filter
+            </button>
+            <a href="{{ route('members.index') }}"
+               class="inline-flex items-center px-3 py-2 rounded-xl text-sm transition-colors"
+               style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+               onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+               onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">Reset</a>
+        </form>
+    </div>
+
+    {{-- CSV Import --}}
+    <div class="rounded-2xl px-5 py-4"
+         style="background-color: var(--dash-card-bg); border: 2px dashed var(--dash-card-border);">
+        <form method="POST" action="{{ route('members.import') }}" enctype="multipart/form-data"
+              class="flex items-end gap-3">
+            @csrf
+            <div class="flex-1">
+                <label class="block text-xs font-semibold mb-1.5" style="color: var(--dash-text-muted);">Import CSV</label>
+                <label class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm cursor-pointer"
+                       style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border);">
+                    <span class="material-symbols-outlined text-[18px]" style="color: var(--dash-text-muted);">attach_file</span>
+                    <span id="csv-file-name" class="text-sm" style="color: var(--dash-text-muted);">Pilih file .csv</span>
+                    <input type="file" name="file" accept=".csv,.txt" class="hidden"
+                           onchange="document.getElementById('csv-file-name').textContent = this.files[0]?.name || 'Pilih file .csv'">
+                </label>
+            </div>
+            <button type="submit"
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors shrink-0"
+                    style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
+                    onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                    onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                <span class="material-symbols-outlined text-[16px]">upload_file</span>Import
+            </button>
+        </form>
+    </div>
+
+    {{-- Table --}}
+    <div class="rounded-2xl overflow-hidden"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <table class="w-full table-fixed text-sm">
+            <colgroup>
+                <col class="w-[20%]">
+                <col class="w-[20%]">
+                <col class="w-[13%]">
+                <col class="w-[14%]">
+                <col class="w-[12%]">
+                <col class="w-[9%]">
+                <col class="w-[6%]">
+                <col class="w-[6%]">
+            </colgroup>
+            <thead>
+                <tr style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                    @php
+                        $nextNameSort  = $sort === 'name_asc'  ? 'name_desc'  : 'name_asc';
+                        $nextEmailSort = $sort === 'email_asc' ? 'email_desc' : 'email_asc';
+                    @endphp
+                    <th class="px-5 py-3 text-left">
+                        <a href="{{ request()->fullUrlWithQuery(['sort' => $nextNameSort, 'page' => 1]) }}"
+                           class="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider hover:opacity-70 transition-opacity"
+                           style="color: var(--dash-text-muted);">
+                            Nama
+                            <span class="material-symbols-outlined text-[14px]">
+                                @if($sort === 'name_asc') arrow_upward
+                                @elseif($sort === 'name_desc') arrow_downward
+                                @else unfold_more @endif
+                            </span>
+                        </a>
+                    </th>
+                    <th class="px-5 py-3 text-left">
+                        <a href="{{ request()->fullUrlWithQuery(['sort' => $nextEmailSort, 'page' => 1]) }}"
+                           class="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider hover:opacity-70 transition-opacity"
+                           style="color: var(--dash-text-muted);">
+                            Email
+                            <span class="material-symbols-outlined text-[14px]">
+                                @if($sort === 'email_asc') arrow_upward
+                                @elseif($sort === 'email_desc') arrow_downward
+                                @else unfold_more @endif
+                            </span>
+                        </a>
+                    </th>
+                    @foreach(['WhatsApp','Institusi','Program','Status','Akun',''] as $h)
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider"
+                            style="color: var(--dash-text-muted);">{{ $h }}</th>
+                    @endforeach
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($members as $member)
+                    <tr style="border-bottom: 1px solid var(--dash-card-border);"
+                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                        onmouseout="this.style.backgroundColor=''">
+                        <td class="px-5 py-4">
+                            <p class="font-semibold text-sm" style="color: var(--dash-text-heading);">{{ $member->full_name }}</p>
+                            <p class="text-xs mt-0.5" style="color: var(--dash-text-faint);">
+                                {{ $member->gender ?? '—' }} · {{ $member->birthdate?->format('d M Y') ?? '—' }}
+                            </p>
+                        </td>
+                        <td class="px-5 py-4 text-sm truncate" style="color: var(--dash-text-muted);">
+                            {{ $member->email ?? '—' }}
+                        </td>
+                        <td class="px-5 py-4 text-sm" style="color: var(--dash-text-muted);">
+                            {{ $member->whatsapp_number ?? '—' }}
+                        </td>
+                        <td class="px-5 py-4 text-sm truncate" style="color: var(--dash-text-muted);">
+                            {{ $member->institution?->institution_name ?? '—' }}
+                        </td>
+                        <td class="px-5 py-4 text-sm truncate" style="color: var(--dash-text-muted);">
+                            {{ $member->program?->program_name ?? '—' }}
+                        </td>
+                        <td class="px-5 py-4">
+                            @php $status = $member->activation_status; @endphp
+                            @if($status instanceof ActivationStatus)
+                                <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold {{ $status->badgeClass() }}">
+                                    {{ $status->label() }}
                                 </span>
-                            </td>
-                            <td class="px-5 py-4">
-                                @if($member->account)
-                                    <span class="inline-flex items-center gap-1 text-xs text-emerald-700">
-                                        <span class="material-symbols-outlined text-[14px]">check_circle</span> Ada
-                                    </span>
-                                @else
-                                    <span class="text-xs text-slate-400">—</span>
-                                @endif
-                            </td>
-                            <td class="px-5 py-4 text-right">
-                                <a href="{{ route('members.show', $member) }}" class="inline-flex min-h-9 items-center border border-slate-300 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50">Detail</a>
-                                <a href="{{ route('members.edit', $member) }}" class="inline-flex min-h-9 items-center border border-slate-300 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50 ml-1">Edit</a>
+                            @else
+                                <span style="color: var(--dash-text-faint);">—</span>
+                            @endif
+                        </td>
+                        <td class="px-5 py-4">
+                            @if($member->account)
+                                <span class="inline-flex items-center gap-1 text-xs" style="color: #059669;">
+                                    <span class="material-symbols-outlined text-[14px]">check_circle</span>Ada
+                                </span>
+                            @else
+                                <span style="color: var(--dash-text-faint);">—</span>
+                            @endif
+                        </td>
+                        <td class="px-3 py-4">
+                            <div class="flex items-center justify-end gap-1.5 flex-nowrap">
+                                <a href="{{ route('members.show', $member) }}"
+                                   class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+                                   style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
+                                   onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                   onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                    <span class="material-symbols-outlined text-[12px]">open_in_new</span>Detail
+                                </a>
+                                <a href="{{ route('members.edit', $member) }}"
+                                   class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+                                   style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
+                                   onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                   onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                    <span class="material-symbols-outlined text-[12px]">edit</span>Edit
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="8" class="px-5 py-16 text-center">
+                            <span class="material-symbols-outlined text-[48px] block mx-auto mb-3" style="color: var(--dash-text-faint);">group_off</span>
+                            <p class="text-sm font-semibold" style="color: var(--dash-text-muted);">Belum ada data member.</p>
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
 
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="8" class="px-5 py-12 text-center">
-                                <span class="material-symbols-outlined text-3xl text-slate-300">group_off</span>
-                                <p class="mt-2 font-semibold text-slate-700">Belum ada data member.</p>
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-        @if ($members->hasPages())
-            <div class="border-t border-slate-200 px-5 py-4">{{ $members->links() }}</div>
+        @if($members->hasPages())
+            <div class="px-5 py-4" style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                {{ $members->links() }}
+            </div>
         @endif
     </div>
-</div>
 
+</div>
+@endsection
+
+@push('scripts')
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('adminInstitutionFilter', () => ({
@@ -155,21 +269,19 @@
             search: '',
             selectedId: '{{ request('institution_id') }}',
             institutions: @json(\App\Models\Institution::select('id', 'institution_name')->orderBy('institution_name')->get()),
-            
+
             get selectedName() {
                 if (!this.selectedId) return 'Semua';
                 const found = this.institutions.find(i => i.id == this.selectedId);
                 return found ? found.institution_name : 'Semua';
             },
-            
+
             get filtered() {
-                if (this.search.trim() === '') {
-                    return this.institutions.slice(0, 100);
-                }
+                if (this.search.trim() === '') return this.institutions.slice(0, 100);
                 const q = this.search.toLowerCase();
                 return this.institutions.filter(i => i.institution_name.toLowerCase().includes(q)).slice(0, 100);
             },
-            
+
             select(id, name) {
                 this.selectedId = id;
                 this.open = false;
@@ -178,4 +290,4 @@
         }));
     });
 </script>
-@endsection
+@endpush

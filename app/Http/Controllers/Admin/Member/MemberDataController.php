@@ -25,10 +25,12 @@ class MemberDataController extends Controller
 
     public function index(Request $request): View
     {
-        $filters = $request->only(['institution_id', 'program_id', 'search']);
+        $filters = $request->only(['institution_id', 'program_id', 'search', 'sort']);
+        $sort = $filters['sort'] ?? 'name_asc';
 
         return view('admin.member.index', [
             'members' => $this->repo->paginate($filters),
+            'sort' => $sort,
         ]);
     }
 

@@ -67,7 +67,7 @@
             </div>
             <button type="button" onclick="openAddSessionModal()"
                     class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white hover:opacity-90 transition-opacity"
-                    style="background-color: #059669;">
+                    style="background-color: var(--dash-primary);">
                 <span class="material-symbols-outlined text-[14px]">add</span>Tambah Sesi
             </button>
         </div>

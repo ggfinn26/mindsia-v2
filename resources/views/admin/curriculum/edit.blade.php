@@ -37,7 +37,7 @@
             @csrf @method('PUT')
             <div>
                 <label class="block text-sm font-medium mb-1.5" style="color: var(--dash-text-body);">Program</label>
-                <select name="program_id" disabled
+                <select name="program_id" disabled data-no-enhance
                         class="block w-full rounded-lg px-3 py-2 text-sm focus:outline-none"
                         style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-muted);">
                     @foreach($programs as $program)

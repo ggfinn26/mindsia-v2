@@ -17,7 +17,13 @@ class MemberDataRepository
                     ->orWhere('email', 'like', "%{$v}%")
                     ->orWhere('whatsapp_number', 'like', "%{$v}%");
             }))
-            ->orderBy('full_name')
+            ->when(($filters['sort'] ?? 'name_asc') === 'name_desc', fn ($q) => $q->orderByDesc('full_name'),
+                fn ($q) => match ($filters['sort'] ?? 'name_asc') {
+                    'email_asc' => $q->orderBy('email'),
+                    'email_desc' => $q->orderByDesc('email'),
+                    default => $q->orderBy('full_name'),
+                }
+            )
             ->paginate(25);
     }
 

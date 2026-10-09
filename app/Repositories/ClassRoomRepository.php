@@ -10,11 +10,20 @@ class ClassRoomRepository
 {
     public function all(array $filters = []): LengthAwarePaginator
     {
+        $sort = $filters['sort'] ?? 'created_at';
+        $direction = $filters['direction'] ?? 'desc';
+
+        // allowed sort columns to prevent SQL injection
+        $allowedSorts = ['class_name', 'program_id', 'branch_id', 'tutor_id', 'start_date', 'status', 'created_at'];
+        if (! in_array($sort, $allowedSorts)) {
+            $sort = 'created_at';
+        }
+
         return ClassRoom::with('program', 'branch', 'tutor', 'memberClasses')
             ->when($filters['branch_id'] ?? null, fn ($q, $v) => $q->where('branch_id', $v))
             ->when($filters['program_id'] ?? null, fn ($q, $v) => $q->where('program_id', $v))
             ->when($filters['status'] ?? null, fn ($q, $v) => $q->where('status', $v))
-            ->latest()
+            ->orderBy($sort, $direction)
             ->paginate(15);
     }
 

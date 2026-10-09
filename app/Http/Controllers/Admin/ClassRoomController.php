@@ -34,7 +34,7 @@ class ClassRoomController extends Controller implements HasMiddleware
 
     public function index(): View
     {
-        $filters = request()->only(['branch_id', 'program_id', 'status']);
+        $filters = request()->only(['branch_id', 'program_id', 'status', 'sort', 'direction']);
 
         return view('admin.classroom.index', [
             'classes' => $this->repository->all($filters),

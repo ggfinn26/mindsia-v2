@@ -201,9 +201,11 @@
                     <div class="flex items-center gap-3 mt-1">
                         <p class="text-xs" style="color: var(--dash-text-faint);">Kosongkan jika tidak ingin mengubah template.</p>
                         <a href="{{ route('programs.receipt-template.download') }}"
-                           class="inline-flex items-center gap-1 text-xs font-semibold shrink-0 hover:underline"
-                           style="color: var(--dash-primary);">
-                            <span class="material-symbols-outlined text-[14px]">download</span>Contoh Template
+                           class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold shrink-0 transition-colors"
+                           style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
+                           onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                           onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                            <span class="material-symbols-outlined text-[13px]">download</span>Contoh Template
                         </a>
                     </div>
                     @error('receipt_template')<p class="text-xs mt-1" style="color:#dc2626;">{{ $message }}</p>@enderror

@@ -60,8 +60,8 @@
         <div class="overflow-x-auto">
             <table class="w-full table-fixed text-sm">
                 <colgroup>
-                    <col class="w-[26%]"><col class="w-[24%]"><col class="w-[13%]">
-                    <col class="w-[11%]"><col class="w-[10%]"><col class="w-[16%]">
+                    <col class="w-[26%]"><col class="w-[20%]"><col class="w-[10%]">
+                    <col class="w-[9%]"><col class="w-[9%]"><col class="w-[26%]">
                 </colgroup>
                 <thead>
                     <tr style="border-bottom: 1px solid var(--dash-card-border);">
@@ -92,7 +92,7 @@
                                 @endif
                             </td>
                             <td class="px-3 py-4 text-right">
-                                <div class="inline-flex items-center justify-end gap-1.5 flex-wrap">
+                                <div class="inline-flex items-center justify-end gap-1.5 flex-nowrap">
                                     <a href="{{ route('curriculums.show', $curriculum) }}"
                                        class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors"
                                        style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"

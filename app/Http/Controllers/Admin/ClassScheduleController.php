@@ -70,6 +70,7 @@ class ClassScheduleController extends Controller
         match ($sort) {
             'date_asc' => $query->orderBy('schedule_date'),
             'class_asc' => $query->join('classes', 'class_schedules.class_id', '=', 'classes.id')->orderBy('classes.class_name')->select('class_schedules.*'),
+            'class_desc' => $query->join('classes', 'class_schedules.class_id', '=', 'classes.id')->orderByDesc('classes.class_name')->select('class_schedules.*'),
             default => $query->orderByDesc('schedule_date'),
         };
 

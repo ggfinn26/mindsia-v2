@@ -156,16 +156,22 @@
                 <h2 class="font-jakarta text-sm font-bold" style="color: var(--dash-text-heading);">Kuota Cabang</h2>
             </div>
             <a href="{{ route('programs.quotas.index', $program) }}"
-               class="inline-flex items-center gap-1 text-xs font-semibold hover:underline"
-               style="color: var(--dash-primary);">
-                Kelola Kuota <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+               style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
+               onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+               onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                <span class="material-symbols-outlined text-[13px]">settings</span>Kelola Kuota
             </a>
         </div>
         @if($program->branchQuotas->isEmpty())
-            <p class="px-5 py-5 text-sm" style="color: var(--dash-text-muted);">
-                Belum ada kuota cabang.
-                <a href="{{ route('programs.quotas.index', $program) }}" class="underline" style="color: var(--dash-primary);">Tambah kuota</a>.
-            </p>
+            <div class="px-5 py-5 flex items-center justify-between">
+                <p class="text-sm" style="color: var(--dash-text-muted);">Belum ada kuota cabang.</p>
+                <a href="{{ route('programs.quotas.index', $program) }}"
+                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white hover:opacity-90 transition-opacity"
+                   style="background-color: var(--dash-primary);">
+                    <span class="material-symbols-outlined text-[13px]">add</span>Tambah Kuota
+                </a>
+            </div>
         @else
             <div class="overflow-x-auto">
                 <table class="w-full table-fixed text-sm">
