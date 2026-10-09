@@ -19,7 +19,7 @@
     @endif
 
     {{-- Available Tests --}}
-    <section class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl shadow-sm mb-6" aria-label="Test tersedia">
+    <section class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl shadow-sm mb-6" aria-label="Test tersedia">
         <div class="px-6 py-4 border-b border-[color:var(--dash-card-border)] flex items-center justify-between">
             <h3 class="font-semibold text-[color:var(--dash-text-heading)] text-sm">Test Tersedia</h3>
             <span class="text-xs text-[color:var(--dash-text-faint)]">{{ $availableTests->count() }} test</span>
@@ -99,7 +99,7 @@
     </section>
 
     {{-- Session History --}}
-    <section class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl shadow-sm" aria-label="Riwayat ujian">
+    <section class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl shadow-sm" aria-label="Riwayat ujian">
         <div class="px-6 py-4 border-b border-[color:var(--dash-card-border)]">
             <h3 class="font-semibold text-[color:var(--dash-text-heading)] text-sm">Riwayat Ujian</h3>
         </div>

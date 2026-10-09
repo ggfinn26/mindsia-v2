@@ -247,7 +247,7 @@
     <div x-show="showQuestionModal"
         class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 overflow-y-auto"
         style="display:none" @keydown.escape.window="showQuestionModal = false">
-        <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-2xl w-full max-w-2xl my-4" @click.stop>
+        <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-2xl w-full max-w-2xl my-4" @click.stop>
 
             {{-- Header --}}
             <div class="flex items-center justify-between px-6 py-4 border-b border-[color:var(--dash-card-border)]">
@@ -402,7 +402,7 @@
     <div x-show="showPassageModal"
         class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 overflow-y-auto"
         style="display:none" @keydown.escape.window="showPassageModal = false">
-        <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-2xl w-full max-w-xl my-4" @click.stop>
+        <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-2xl w-full max-w-xl my-4" @click.stop>
 
             {{-- Header --}}
             <div class="flex items-center justify-between px-6 py-4 border-b border-[color:var(--dash-card-border)]">
@@ -514,7 +514,7 @@
     class="fixed inset-0 z-50 flex items-center justify-center p-4"
     @keydown.escape.window="showPublishModal = false">
     <div class="absolute inset-0 bg-black/40" @click="showPublishModal = false"></div>
-    <div class="relative bg-[var(--dash-card-bg)] rounded-xl shadow-xl w-full max-w-md p-6 space-y-4">
+    <div class="relative bg-[var(--dash-card-bg)] rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
         <div class="flex items-start gap-4">
             <div class="flex-shrink-0 w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
                 <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

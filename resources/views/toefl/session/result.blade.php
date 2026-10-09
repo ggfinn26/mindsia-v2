@@ -49,7 +49,7 @@
 <div class="max-w-2xl mx-auto py-8 px-4 sm:px-6">
 
     {{-- Result card (also the capture target) --}}
-    <div id="result-card" class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl shadow-sm overflow-hidden">
+    <div id="result-card" class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl shadow-sm overflow-hidden">
 
         {{-- Header strip --}}
         <div class="bg-[#5586DB] px-6 py-4 flex items-center justify-between">
