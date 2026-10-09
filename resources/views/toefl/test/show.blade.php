@@ -465,8 +465,8 @@
                                 class="px-3 py-1.5 rounded-md text-xs font-medium transition-colors inline-flex items-center gap-1.5"
                                 :class="!preview ? 'bg-[var(--dash-card-bg)] text-[color:var(--dash-text-heading)] shadow-sm' : 'text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-body)]'"><span class="material-symbols-outlined text-[14px]">edit</span>Edit</button>
                             <button type="button" @click="preview = true" data-passage-preview
-                                class="px-3 py-1.5 rounded-md text-xs font-medium transition-colors"
-                                :class="preview ? 'bg-[var(--dash-card-bg)] text-[color:var(--dash-text-heading)] shadow-sm' : 'text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-body)]'">Preview</button>
+                                class="px-3 py-1.5 rounded-md text-xs font-medium transition-colors inline-flex items-center gap-1.5"
+                                :class="preview ? 'bg-[var(--dash-card-bg)] text-[color:var(--dash-text-heading)] shadow-sm' : 'text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-body)]'"><span class="material-symbols-outlined text-[14px]">visibility</span>Preview</button>
                         </div>
                     </div>
 

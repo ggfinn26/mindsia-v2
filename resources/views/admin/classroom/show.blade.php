@@ -735,8 +735,8 @@
                     onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                     onmouseout="this.style.backgroundColor='var(--dash-card-bg)'"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
             <button onclick="submitConfirmAction()"
-                    class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
-                    style="background-color: #dc2626;">Ya, Lanjutkan</button>
+                    class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity inline-flex items-center gap-1.5"
+                    style="background-color: #dc2626;"><span class="material-symbols-outlined text-[16px]">check_circle</span>Ya, Lanjutkan</button>
         </div>
     </div>
 </div>

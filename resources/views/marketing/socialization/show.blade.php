@@ -580,7 +580,7 @@
                 <form action="{{ route('socializations.cancel', $socialization) }}" method="POST" class="inline">
                     @csrf
                     <button type="submit"
-                        class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700">Ya, batalkan</button>
+                        class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Ya, batalkan</button>
                 </form>
             </div>
         </div>

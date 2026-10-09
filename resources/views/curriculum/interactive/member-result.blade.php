@@ -18,7 +18,7 @@
         <p class="text-sm text-[color:var(--dash-text-faint)] mt-2">Selesai {{ $attempt->completed_at->diffForHumans() }}</p>
         <div class="mt-4 flex gap-2 justify-center">
             <a href="{{ route('member.curriculum.interactive.show', [$classroom, $item]) }}"
-                class="px-4 py-2 font-medium rounded-lg transition-colors bg-[#5586DB] hover:bg-[#4370BC] text-white text-sm">Ulangi Latihan</a>
+                class="px-4 py-2 font-medium rounded-lg transition-colors bg-[#5586DB] hover:bg-[#4370BC] text-white text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">replay</span>Ulangi Latihan</a>
             <a href="{{ route('member.curriculum.interactive.history', [$classroom, $item]) }}"
                 class="px-4 py-2 font-medium rounded-lg transition-colors bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] text-sm">Riwayat</a>
         </div>

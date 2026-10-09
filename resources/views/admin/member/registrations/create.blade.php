@@ -154,7 +154,8 @@
                     Batal
                 </a>
                 <button type="submit"
-                        class="px-6 py-2 text-sm font-medium text-white bg-[var(--dash-primary)] hover:opacity-90 rounded-lg transition-colors">
+                        class="px-6 py-2 text-sm font-medium text-white bg-[var(--dash-primary)] hover:opacity-90 rounded-lg transition-colors inline-flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px]">person_add</span>
                     Daftarkan Member
                 </button>
             </div>

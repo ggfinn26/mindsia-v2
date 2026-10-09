@@ -10,7 +10,7 @@
             <h1 class="text-xl font-bold text-[color:var(--dash-text-heading)] font-jakarta mt-1">Riwayat Latihan — {{ $item->item_name }}</h1>
         </div>
         <a href="{{ route('member.curriculum.interactive.show', [$classroom, $item]) }}"
-            class="px-4 py-2 font-medium rounded-lg transition-colors bg-[#5586DB] hover:bg-[#4370BC] text-white text-sm">Latihan Lagi</a>
+            class="px-4 py-2 font-medium rounded-lg transition-colors bg-[#5586DB] hover:bg-[#4370BC] text-white text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">replay</span>Latihan Lagi</a>
     </div>
 
     @if($attempts->isEmpty())

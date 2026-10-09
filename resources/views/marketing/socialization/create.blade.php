@@ -220,7 +220,8 @@
                 Simpan sebagai Draft
             </button>
             <button type="submit" name="schedule_now" value="1"
-                class="px-4 py-2 text-sm font-medium text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90">
+                class="px-4 py-2 text-sm font-medium text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90 inline-flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">event</span>
                 Jadwalkan
             </button>
         </div>

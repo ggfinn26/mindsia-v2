@@ -89,6 +89,7 @@
                             style="background-color: #fef3c7; color: #d97706; border: 1px solid #fcd34d;"
                             onmouseover="this.style.backgroundColor='#fde68a'"
                             onmouseout="this.style.backgroundColor='#fef3c7'">
+                        <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
                         Maju ke Review
                     </button>
                 @endcan

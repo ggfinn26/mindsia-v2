@@ -143,8 +143,9 @@
                             <canvas id="signature-pad" width="800" height="200"
                                     class="w-full touch-none cursor-crosshair"></canvas>
                             <button type="button" id="clear-signature"
-                                    class="absolute top-2 right-2 text-xs px-2 py-1 rounded-lg border shadow-sm"
+                                    class="absolute top-2 right-2 text-xs px-2 py-1 rounded-lg border shadow-sm inline-flex items-center gap-1.5"
                                     style="background-color: var(--dash-card-bg); border-color: var(--dash-card-border); color: var(--dash-text-muted);">
+                                <span class="material-symbols-outlined text-[14px]">restart_alt</span>
                                 Bersihkan
                             </button>
                         </div>

@@ -152,7 +152,8 @@
                             <option value="closed">Tutup</option>
                         @endif
                     </select>
-                    <button type="submit" class="px-3 py-2 text-sm font-medium text-white bg-gray-700 rounded-lg hover:bg-gray-800 transition-colors shadow-sm whitespace-nowrap">
+                    <button type="submit" class="px-3 py-2 text-sm font-medium text-white bg-gray-700 rounded-lg hover:bg-gray-800 transition-colors shadow-sm whitespace-nowrap inline-flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">edit</span>
                         Ubah
                     </button>
                 </form>

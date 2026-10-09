@@ -123,7 +123,7 @@ foreach ($item->interactiveBlocks as $bi => $block) {
                     {{-- Navigation --}}
                     <div class="flex justify-between mt-6">
                         @if ($i > 0)
-                            <button type="button" class="btn-prev px-4 py-2 font-medium rounded-lg bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] text-sm transition-colors" data-prev="{{ $i - 1 }}">← Sebelumnya</button>
+                            <button type="button" class="btn-prev px-4 py-2 font-medium rounded-lg bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] text-sm transition-colors inline-flex items-center gap-1.5" data-prev="{{ $i - 1 }}"><span class="material-symbols-outlined text-[16px]">arrow_back</span>Sebelumnya</button>
                         @else
                             <div></div>
                         @endif
@@ -159,7 +159,8 @@ foreach ($item->interactiveBlocks as $bi => $block) {
                             Batal
                         </button>
                         <button type="submit" 
-                            class="px-4 py-2 font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 transition-colors w-full">
+                            class="px-4 py-2 font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 transition-colors w-full inline-flex items-center justify-center gap-1.5">
+                            <span class="material-symbols-outlined text-[16px]">send</span>
                             Ya, Kirim
                         </button>
                     </div>

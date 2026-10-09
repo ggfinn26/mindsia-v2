@@ -135,8 +135,9 @@
                         <form method="POST" action="{{ route('resign-requests.approve', $resignRequest) }}" class="m-0">
                             @csrf
                             <button type="submit"
-                                    class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                                    class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity inline-flex items-center gap-1.5"
                                     style="background-color: #059669;">
+                                <span class="material-symbols-outlined text-[16px]">check_circle</span>
                                 Ya, Setujui
                             </button>
                         </form>

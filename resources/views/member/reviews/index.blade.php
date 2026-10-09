@@ -81,7 +81,8 @@
                 <textarea name="review" rows="3"
                     class="w-full text-sm border border-[color:var(--dash-card-border)] rounded-lg px-3 py-2.5 text-[color:var(--dash-text-heading)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5586DB]/30 focus:border-[#5586DB] resize-none"
                     placeholder="Tulis ulasan Anda... (opsional, min. 10 karakter)">{{ old('review', $review->review) }}</textarea>
-                <button type="submit" class="px-4 py-2 text-sm font-semibold bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] rounded-lg hover:bg-gray-200 transition-colors">
+                <button type="submit" class="px-4 py-2 text-sm font-semibold bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] rounded-lg hover:bg-gray-200 transition-colors inline-flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px]">edit</span>
                     Perbarui Review
                 </button>
             </form>
