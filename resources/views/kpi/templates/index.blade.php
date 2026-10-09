@@ -19,7 +19,7 @@
         </div>
         @can('kpi.template.create')
             <a href="{{ route('kpi.templates.create') }}"
-               class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity shrink-0"
+               class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity shrink-0"
                style="background-color: var(--dash-primary);">
                 <span class="material-symbols-outlined text-[18px]">add</span>
                 Buat Template
@@ -65,7 +65,7 @@
             </div>
             <div class="flex items-center gap-2">
                 <button type="submit"
-                        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                         style="background-color: var(--dash-primary);">
                     <span class="material-symbols-outlined text-[16px]">filter_list</span>Filter
                 </button>
@@ -154,7 +154,7 @@
                                 </p>
                                 @can('kpi.template.create')
                                     <a href="{{ route('kpi.templates.create') }}"
-                                       class="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                                       class="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                                        style="background-color: var(--dash-primary);">
                                         <span class="material-symbols-outlined text-[16px]">add</span>Buat Template
                                     </a>

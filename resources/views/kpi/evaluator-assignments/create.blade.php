@@ -98,12 +98,12 @@
             </div>
             <div class="flex items-center gap-3 pt-2" style="border-top: 1px solid var(--dash-card-border);">
                 <button type="submit"
-                        class="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                        class="inline-flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                         style="background-color: var(--dash-primary);">
                     <span class="material-symbols-outlined text-[16px]">save</span>Simpan
                 </button>
                 <a href="{{ route('kpi.evaluator-assignments.index') }}"
-                   class="px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                   class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                    style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
                    onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                    onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
