@@ -48,7 +48,7 @@
                         </button>
 
                         <div x-show="open" x-transition.opacity class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @keydown.escape.window="open = false" style="display:none">
-                            <div @click.stop class="w-full max-w-sm rounded-xl bg-[var(--dash-card-bg)] p-6 shadow-xl space-y-4">
+                            <div @click.stop class="w-full max-w-sm rounded-2xl bg-[var(--dash-card-bg)] p-6 shadow-xl space-y-4">
                                 <div class="flex items-center gap-3">
                                     <div class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100">
                                         <span class="material-symbols-outlined text-emerald-600 text-[20px]">payments</span>
@@ -90,7 +90,7 @@
     @endif
 
     {{-- Info --}}
-    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 rounded-xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] p-6 shadow-sm">
+    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 rounded-2xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] p-6 shadow-sm">
         <div>
             <p class="text-xs font-semibold uppercase tracking-wider text-[var(--dash-text-muted)]">Pegawai</p>
             <p class="mt-1 font-medium text-[var(--dash-text-heading)]">{{ $reimbursement->employee?->full_name }}</p>
@@ -114,7 +114,7 @@
     </div>
 
     {{-- Items --}}
-    <div class="overflow-hidden rounded-xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
+    <div class="overflow-hidden rounded-2xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
         <div class="border-b border-[var(--dash-card-border)] px-6 py-4">
             <h3 class="font-jakarta text-base font-bold text-[var(--dash-text-heading)]">Rincian Pengeluaran</h3>
         </div>
@@ -214,7 +214,7 @@
     {{-- Review Form --}}
     @if ($reimbursement->status === 'PENDING_REVIEW')
         @can('finance.reimbursement.review')
-            <div class="rounded-xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] p-6 shadow-sm space-y-4">
+            <div class="rounded-2xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] p-6 shadow-sm space-y-4">
                 <h3 class="font-jakarta text-base font-bold text-[var(--dash-text-heading)] border-b border-[var(--dash-card-border)] pb-3">Review Reimbursement</h3>
                 <form method="POST" action="{{ route('reimbursements.review', $reimbursement) }}" class="space-y-4 pt-1">
                     @csrf

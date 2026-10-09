@@ -27,7 +27,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('reimbursements.store') }}" class="rounded-xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] p-6 shadow-sm space-y-5">
+    <form method="POST" action="{{ route('reimbursements.store') }}" class="rounded-2xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] p-6 shadow-sm space-y-5">
         @csrf
         <div>
             <label class="mb-1.5 block text-sm font-bold text-[var(--dash-text-heading)]">Tujuan Bisnis <span class="text-red-500">*</span></label>

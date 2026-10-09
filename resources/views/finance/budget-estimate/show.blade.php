@@ -41,26 +41,26 @@
 
     {{-- Meta Info --}}
     <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <div class="rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] p-4 shadow-sm">
+        <div class="rounded-2xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] p-4 shadow-sm">
             <p class="text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider">Judul</p>
             <p class="mt-1.5 text-sm font-semibold text-[color:var(--dash-text-heading)]">{{ $budgetEstimate->title }}</p>
         </div>
-        <div class="rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] p-4 shadow-sm">
+        <div class="rounded-2xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] p-4 shadow-sm">
             <p class="text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider">Bulan</p>
             <p class="mt-1.5 text-sm font-semibold text-[color:var(--dash-text-heading)]">{{ Carbon\Carbon::create(null, $budgetEstimate->period_month)->translatedFormat('F') }} {{ $budgetEstimate->period_year }}</p>
         </div>
-        <div class="rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] p-4 shadow-sm">
+        <div class="rounded-2xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] p-4 shadow-sm">
             <p class="text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider">Total Estimasi</p>
             <p class="mt-1.5 text-sm font-semibold text-emerald-600">Rp {{ number_format($budgetEstimate->total_amount, 0, ',', '.') }}</p>
         </div>
-        <div class="rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] p-4 shadow-sm">
+        <div class="rounded-2xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] p-4 shadow-sm">
             <p class="text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider">Cabang</p>
             <p class="mt-1.5 text-sm font-semibold text-[color:var(--dash-text-heading)]">{{ $budgetEstimate->branch?->branch_name ?? '—' }}</p>
         </div>
     </div>
 
     {{-- Items --}}
-    <div class="overflow-hidden rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
+    <div class="overflow-hidden rounded-2xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
         <div class="border-b border-[color:var(--dash-card-border)] px-6 py-4 flex items-center justify-between">
             <h3 class="font-jakarta text-base font-bold text-[color:var(--dash-text-heading)]">Rincian Item Anggaran</h3>
             <span class="text-xs font-medium text-[color:var(--dash-text-muted)] bg-[var(--dash-nav-hover-bg)] px-2.5 py-1 rounded-full">{{ $budgetEstimate->items->count() }} Item</span>
@@ -177,7 +177,7 @@
             @endcan
         @elseif ($budgetEstimate->status === 'finance_review')
             @can('finance.budget_estimate.finance_review')
-                <form method="POST" action="{{ route('budget-estimates.review-finance', $budgetEstimate) }}" class="flex items-center gap-3 bg-[var(--dash-card-bg)] p-2 rounded-xl border border-[color:var(--dash-card-border)] shadow-sm w-full sm:w-auto">
+                <form method="POST" action="{{ route('budget-estimates.review-finance', $budgetEstimate) }}" class="flex items-center gap-3 bg-[var(--dash-card-bg)] p-2 rounded-2xl border border-[color:var(--dash-card-border)] shadow-sm w-full sm:w-auto">
                     @csrf
                     <input type="hidden" name="action" value="reject">
                     <input type="text" name="rejection_notes" placeholder="Catatan penolakan..." required class="block w-full min-w-[200px] rounded-lg border-[color:var(--dash-card-border)] bg-[var(--dash-nav-hover-bg)] px-3 py-2 text-sm focus:border-red-500 focus:bg-[var(--dash-card-bg)] focus:ring-red-500">

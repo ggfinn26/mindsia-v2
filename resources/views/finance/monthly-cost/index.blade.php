@@ -66,7 +66,7 @@
     @endif
 
     {{-- Filter Form --}}
-    <form method="GET" class="flex flex-wrap items-end gap-4 rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] p-5 shadow-sm">
+    <form method="GET" class="flex flex-wrap items-end gap-4 rounded-2xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] p-5 shadow-sm">
         @if ($branches->count() > 1)
             <div class="w-full sm:w-auto flex-1 min-w-[200px]">
                 <label class="mb-1.5 block text-xs font-bold text-[color:var(--dash-text-body)]">Cabang</label>
@@ -100,7 +100,7 @@
     @if ($branchId)
         @if (!$isLocked)
             @can('finance.monthly_cost.create')
-            <form method="POST" action="{{ route('branch-monthly-costs.store') }}" class="rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] p-6 shadow-sm space-y-4">
+            <form method="POST" action="{{ route('branch-monthly-costs.store') }}" class="rounded-2xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] p-6 shadow-sm space-y-4">
                 @csrf
                 <input type="hidden" name="branch_id" value="{{ $branchId }}">
                 <input type="hidden" name="period_year" value="{{ $year }}">
@@ -161,7 +161,7 @@
             @endcan
         @endif
 
-        <div class="overflow-hidden rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
+        <div class="overflow-hidden rounded-2xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-[color:var(--dash-card-border)] text-sm">
                     <thead class="bg-[var(--dash-nav-hover-bg)] text-left text-xs font-bold uppercase tracking-wider text-[color:var(--dash-text-muted)]">
@@ -222,7 +222,7 @@
             </div>
         </div>
     @else
-        <div class="flex flex-col items-center justify-center rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] py-16 px-6 shadow-sm">
+        <div class="flex flex-col items-center justify-center rounded-2xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] py-16 px-6 shadow-sm">
             <div class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-[var(--dash-nav-hover-bg)] mb-4">
                 <span class="material-symbols-outlined text-[color:var(--dash-text-faint)] text-3xl">store</span>
             </div>
