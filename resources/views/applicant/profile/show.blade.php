@@ -101,12 +101,12 @@
                 <div>
                     <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Nama Institusi *</label>
                     <input type="text" name="institution_name" value="{{ old('institution_name') }}" required
-                           class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
+                           class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Jenjang *</label>
                     <select name="education_level" required
-                            class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
+                            class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
                         <option value="">Pilih...</option>
                         @foreach(['sd'=>'SD','smp'=>'SMP','sma'=>'SMA/SMK','d1'=>'D1','d2'=>'D2','d3'=>'D3','d4'=>'D4','s1'=>'S1','s2'=>'S2','s3'=>'S3'] as $val=>$label)
                             <option value="{{ $val }}" {{ old('education_level')==$val?'selected':'' }}>{{ $label }}</option>
@@ -116,25 +116,25 @@
                 <div>
                     <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Jurusan *</label>
                     <input type="text" name="major" value="{{ old('major') }}" required
-                           class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
+                           class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">IPK *</label>
                     <input type="number" name="gpa" value="{{ old('gpa') }}" step="0.01" min="0" max="4" required
-                           class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
+                           class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Mulai *</label>
                     <input type="date" name="start_date" value="{{ old('start_date') }}" required
-                           class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
+                           class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Lulus <span class="font-normal text-[color:var(--dash-text-muted)]">(kosong jika masih berjalan)</span></label>
                     <input type="date" name="graduation_date" value="{{ old('graduation_date') }}"
-                           class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
+                           class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
                 </div>
                 <div class="sm:col-span-2 flex justify-end">
-                    <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-xl transition-colors">
+                    <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-lg transition-colors">
                         Simpan Pendidikan
                     </button>
                 </div>
@@ -181,7 +181,7 @@
                         <div>
                             <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Jenjang *</label>
                             <select name="education_level" required
-                                    class="w-full px-3.5 py-2 bg-[#F8FAFC] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
+                                    class="w-full px-3.5 py-2 bg-[#F8FAFC] border border-[color:var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
                                 @foreach(['sd'=>'SD','smp'=>'SMP','sma'=>'SMA/SMK','d1'=>'D1','d2'=>'D2','d3'=>'D3','d4'=>'D4','s1'=>'S1','s2'=>'S2','s3'=>'S3'] as $val=>$label)
                                     <option value="{{ $val }}" {{ $edu->education_level===$val?'selected':'' }}>{{ $label }}</option>
                                 @endforeach
@@ -208,8 +208,8 @@
                                    class="w-full px-3.5 py-2 bg-[#F8FAFC] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
                         </div>
                         <div class="sm:col-span-2 flex items-center gap-2 justify-end">
-                            <button type="button" @click="editing = false" class="px-4 py-2 text-sm font-semibold text-[color:var(--dash-text-body)] bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 rounded-xl transition-colors">Batal</button>
-                            <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-xl transition-colors">Simpan</button>
+                            <button type="button" @click="editing = false" class="px-4 py-2 text-sm font-semibold text-[color:var(--dash-text-body)] bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 rounded-lg transition-colors">Batal</button>
+                            <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-lg transition-colors">Simpan</button>
                         </div>
                     </form>
                 </div>
@@ -240,30 +240,30 @@
                 <div>
                     <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Nama Perusahaan *</label>
                     <input type="text" name="company_name" value="{{ old('company_name') }}" required
-                           class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
+                           class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Jabatan *</label>
                     <input type="text" name="position" value="{{ old('position') }}" required
-                           class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
+                           class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Mulai *</label>
                     <input type="date" name="start_date" value="{{ old('start_date') }}" required
-                           class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
+                           class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Selesai <span class="font-normal text-[color:var(--dash-text-muted)]">(kosong jika masih bekerja)</span></label>
                     <input type="date" name="end_date" value="{{ old('end_date') }}"
-                           class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
+                           class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
                 </div>
                 <div class="sm:col-span-2">
                     <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Alasan Keluar</label>
                     <textarea name="reason_for_leaving" rows="2"
-                              class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">{{ old('reason_for_leaving') }}</textarea>
+                              class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">{{ old('reason_for_leaving') }}</textarea>
                 </div>
                 <div class="sm:col-span-2 flex justify-end">
-                    <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-xl transition-colors">
+                    <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-lg transition-colors">
                         Simpan Pengalaman
                     </button>
                 </div>
@@ -325,11 +325,11 @@
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Alasan Keluar</label>
                             <textarea name="reason_for_leaving" rows="2"
-                                      class="w-full px-3.5 py-2 bg-[#F8FAFC] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">{{ $exp->reason_for_leaving }}</textarea>
+                                      class="w-full px-3.5 py-2 bg-[#F8FAFC] border border-[color:var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">{{ $exp->reason_for_leaving }}</textarea>
                         </div>
                         <div class="sm:col-span-2 flex items-center gap-2 justify-end">
-                            <button type="button" @click="editing = false" class="px-4 py-2 text-sm font-semibold text-[color:var(--dash-text-body)] bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 rounded-xl transition-colors">Batal</button>
-                            <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-xl transition-colors">Simpan</button>
+                            <button type="button" @click="editing = false" class="px-4 py-2 text-sm font-semibold text-[color:var(--dash-text-body)] bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 rounded-lg transition-colors">Batal</button>
+                            <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-lg transition-colors">Simpan</button>
                         </div>
                     </form>
                 </div>
@@ -360,25 +360,25 @@
                 <div>
                     <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Nama Sertifikasi *</label>
                     <input type="text" name="course_name" value="{{ old('course_name') }}" required
-                           class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
+                           class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Penerbit *</label>
                     <input type="text" name="issuer_name" value="{{ old('issuer_name') }}" required
-                           class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
+                           class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Tanggal Terbit</label>
                     <input type="date" name="issue_date" value="{{ old('issue_date') }}"
-                           class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
+                           class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Kadaluarsa <span class="font-normal text-[color:var(--dash-text-muted)]">(kosong jika tidak)</span></label>
                     <input type="date" name="expiry_date" value="{{ old('expiry_date') }}"
-                           class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
+                           class="w-full px-3.5 py-2 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
                 </div>
                 <div class="sm:col-span-2 flex justify-end">
-                    <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-xl transition-colors">
+                    <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-lg transition-colors">
                         Simpan Sertifikasi
                     </button>
                 </div>
@@ -437,8 +437,8 @@
                                    class="w-full px-3.5 py-2 bg-[#F8FAFC] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
                         </div>
                         <div class="sm:col-span-2 flex items-center gap-2 justify-end">
-                            <button type="button" @click="editing = false" class="px-4 py-2 text-sm font-semibold text-[color:var(--dash-text-body)] bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 rounded-xl transition-colors">Batal</button>
-                            <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-xl transition-colors">Simpan</button>
+                            <button type="button" @click="editing = false" class="px-4 py-2 text-sm font-semibold text-[color:var(--dash-text-body)] bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 rounded-lg transition-colors">Batal</button>
+                            <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-lg transition-colors">Simpan</button>
                         </div>
                     </form>
                 </div>

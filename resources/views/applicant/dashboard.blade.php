@@ -31,7 +31,7 @@ $statusColor = [
     {{-- Info Cards --}}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         {{-- Profil --}}
-        <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] p-6 flex items-center gap-4">
+        <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] p-6 flex items-center gap-4">
             <div class="h-12 w-12 rounded-full bg-[#EEF4FF] flex items-center justify-center shrink-0">
                 <span class="material-symbols-outlined text-[#5586DB] text-2xl">person</span>
             </div>
@@ -43,7 +43,7 @@ $statusColor = [
         </div>
 
         {{-- Verifikasi Email --}}
-        <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] p-6 flex items-center gap-4">
+        <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] p-6 flex items-center gap-4">
             <div class="h-12 w-12 rounded-full {{ $applicant->email_verified_at ? 'bg-green-50' : 'bg-yellow-50' }} flex items-center justify-center shrink-0">
                 <span class="material-symbols-outlined {{ $applicant->email_verified_at ? 'text-green-500' : 'text-yellow-500' }} text-2xl">
                     {{ $applicant->email_verified_at ? 'verified_user' : 'mark_email_unread' }}
@@ -61,7 +61,7 @@ $statusColor = [
     </div>
 
     {{-- Progress Lamaran --}}
-    <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)]">
+    <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)]">
         <div class="px-6 py-4 border-b border-[color:var(--dash-card-border)] flex items-center justify-between">
             <h2 class="text-base font-bold text-[color:var(--dash-text-heading)] font-jakarta">Progress Lamaran Saya</h2>
             <span class="text-xs font-semibold text-[color:var(--dash-text-faint)]">{{ $applications->count() }} lamaran</span>

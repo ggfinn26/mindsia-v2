@@ -48,7 +48,7 @@
                 <div>
                     <label class="block text-[11px] font-bold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1">Jenis Kelamin</label>
                     <select name="gender"
-                            class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
+                            class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-[color:var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">
                         <option value="">Pilih...</option>
                         <option value="male" {{ old('gender', $applicant->gender) === 'male' ? 'selected' : '' }}>Laki-laki</option>
                         <option value="female" {{ old('gender', $applicant->gender) === 'female' ? 'selected' : '' }}>Perempuan</option>
@@ -72,17 +72,17 @@
                 <div class="sm:col-span-2">
                     <label class="block text-[11px] font-bold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1">Alamat Lengkap</label>
                     <textarea name="address" rows="3"
-                              class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-[color:var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">{{ old('address', $applicant->address) }}</textarea>
+                              class="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-[color:var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[#5586DB] focus:ring-[#5586DB]/20">{{ old('address', $applicant->address) }}</textarea>
                 </div>
             </div>
 
             <div class="flex items-center justify-end gap-3 pt-2 border-t border-[color:var(--dash-card-border)]">
                 <a href="{{ route('applicant.profile.show') }}"
-                   class="px-5 py-2.5 text-sm font-semibold text-[color:var(--dash-text-body)] bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 rounded-xl transition-colors">
+                   class="px-5 py-2.5 text-sm font-semibold text-[color:var(--dash-text-body)] bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 rounded-lg transition-colors">
                     Batal
                 </a>
                 <button type="submit"
-                        class="px-6 py-2.5 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-xl transition-colors shadow-sm">
+                        class="px-6 py-2.5 text-sm font-semibold text-white bg-[#5586DB] hover:bg-[#4470c4] rounded-lg transition-colors shadow-sm">
                     Simpan Perubahan
                 </button>
             </div>
