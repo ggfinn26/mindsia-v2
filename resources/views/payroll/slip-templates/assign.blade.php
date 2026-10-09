@@ -21,7 +21,7 @@
     @endif
 
     <form action="{{ route('payroll.slip-templates.assign.update') }}" method="POST"
-          class="rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
+          class="rounded-2xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
         @csrf
         <div>
             <table class="min-w-full divide-y divide-[color:var(--dash-card-border)] text-sm">

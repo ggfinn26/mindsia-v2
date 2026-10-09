@@ -150,7 +150,7 @@
             <p class="text-sm font-semibold" style="color: var(--dash-text-muted);">Belum ada template.</p>
             <p class="text-xs mt-1 mb-4" style="color: var(--dash-text-faint);">Upload template pertama untuk mulai generate slip gaji.</p>
             <button @click="tab = 'upload'"
-                    class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                     style="background-color: var(--dash-primary);">
                 <span class="material-symbols-outlined text-[16px]">upload_file</span>Upload Template
             </button>
@@ -223,14 +223,14 @@
 
                 <div class="flex items-center justify-end gap-3 pt-2" style="border-top: 1px solid var(--dash-card-border);">
                     <button type="button" @click="tab = 'templates'"
-                            class="px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                            class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                             style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
                             onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                             onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
                         Batal
                     </button>
                     <button type="submit"
-                            class="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                            class="inline-flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                             style="background-color: var(--dash-primary);">
                         <span class="material-symbols-outlined text-[16px]">add</span>Upload Template
                     </button>
@@ -310,7 +310,7 @@
                         </select>
                     </div>
                     <button type="submit"
-                            class="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                            class="inline-flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                             style="background-color: var(--dash-primary);">
                         <span class="material-symbols-outlined text-[16px]">science</span>Proses & Tes
                     </button>
@@ -398,7 +398,7 @@
                         <p class="text-xs mt-0.5" style="color: var(--dash-text-muted);">Lanjut upload template ke server.</p>
                     </div>
                     <button type="button" @click="tab = 'upload'"
-                            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity shrink-0"
+                            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity shrink-0"
                             style="background-color: var(--dash-primary);">
                         <span class="material-symbols-outlined text-[16px]">upload_file</span>Upload Template
                     </button>
@@ -577,7 +577,7 @@
                 <div class="flex justify-end px-5 py-4"
                      style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
                     <button type="submit"
-                            class="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                            class="inline-flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                             style="background-color: var(--dash-primary);">
                         <span class="material-symbols-outlined text-[16px]">save</span>Simpan Assignment
                     </button>
