@@ -69,7 +69,7 @@
                 </label>
                 <select name="institution_id" id="institution_id"
                     class="block w-full border-gray-300 rounded-lg shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500 @error('institution_id') border-red-300 @enderror">
-                    <option value="">-- Pilih Institusi --</option>
+                    <option value="">Pilih Institusi</option>
                     @foreach ($institutions as $inst)
                         <option value="{{ $inst->id }}" {{ old('institution_id') == $inst->id ? 'selected' : '' }}>
                             {{ $inst->institution_name }}
