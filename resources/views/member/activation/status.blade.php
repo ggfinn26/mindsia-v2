@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="max-w-3xl mx-auto mt-8">
-    <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] overflow-hidden">
+    <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] overflow-hidden">
         <div class="p-6 sm:p-8 text-center">
             @if($status === 'ditangguhkan')
                 <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-6">

@@ -107,7 +107,7 @@
     <!-- Highlight Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
         <!-- Profil Card -->
-        <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] p-6 flex flex-col items-center justify-center text-center">
+        <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] p-6 flex flex-col items-center justify-center text-center">
             <div class="h-16 w-16 rounded-full bg-[#EEF4FF] flex items-center justify-center mb-4 border border-blue-100">
                 @if($memberData->telegram_photo_id)
                     <img src="{{ $memberData->telegram_photo_id }}" alt="Avatar" class="h-full w-full rounded-full object-cover">
@@ -127,7 +127,7 @@
             $isDitangguhkan = $activationStatus === ActivationStatus::Ditangguhkan;
             $isAktif = $activationStatus === ActivationStatus::Aktif;
         @endphp
-        <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] p-6 flex flex-col items-center justify-center text-center">
+        <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] p-6 flex flex-col items-center justify-center text-center">
             <div class="h-16 w-16 rounded-full border flex items-center justify-center mb-4
                 {{ $isDitangguhkan ? 'bg-red-50 border-red-100' : ($isAktif ? 'bg-green-50 border-green-100' : 'bg-yellow-50 border-yellow-100') }}">
                 <span class="material-symbols-outlined text-4xl
@@ -147,7 +147,7 @@
         </div>
 
         <!-- Kelas Aktif Counter -->
-        <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] p-6 flex flex-col items-center justify-center text-center relative overflow-hidden">
+        <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] p-6 flex flex-col items-center justify-center text-center relative overflow-hidden">
             <div class="absolute -right-4 -top-4 w-24 h-24 bg-[#5586DB]/5 rounded-full pointer-events-none"></div>
             <div class="absolute -left-4 -bottom-4 w-16 h-16 bg-[#5586DB]/5 rounded-full pointer-events-none"></div>
             
@@ -163,7 +163,7 @@
         <!-- Kolom Kiri (Lebar: 2/3) -->
         <div class="lg:col-span-2 space-y-6">
             <!-- Section Progress Kelas & Kehadiran -->
-            <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] overflow-hidden">
+            <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] overflow-hidden">
                 <div class="p-5 sm:p-6 border-b border-[color:var(--dash-card-border)] flex justify-between items-center">
                     <h2 class="text-lg font-bold font-jakarta text-[color:var(--dash-text-heading)]">Perkembangan Kelas</h2>
                     <a href="{{ route('member.class.index') }}" class="text-sm font-semibold text-[#5586DB] hover:text-[#00AACC] transition-colors">Lihat Semua</a>
@@ -250,7 +250,7 @@
         <!-- Kolom Kanan (Lebar: 1/3) -->
         <div class="space-y-6">
             <!-- Program Tersedia -->
-            <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] overflow-hidden">
+            <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] overflow-hidden">
                 <div class="p-5 border-b border-[color:var(--dash-card-border)]">
                     <h2 class="text-lg font-bold font-jakarta text-[color:var(--dash-text-heading)]">Rekomendasi Program</h2>
                 </div>
@@ -281,7 +281,7 @@
             </div>
             
             <!-- Quick Actions -->
-            <div class="bg-gradient-to-br from-[#5586DB] to-[#00AACC] rounded-xl shadow-sm overflow-hidden text-white relative">
+            <div class="bg-gradient-to-br from-[#5586DB] to-[#00AACC] rounded-2xl shadow-sm overflow-hidden text-white relative">
                 <div class="absolute -right-6 -top-6 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
                 <div class="p-6 relative z-10">
                     <h2 class="text-lg font-bold font-jakarta mb-2 text-white">Bantuan Administrasi?</h2>

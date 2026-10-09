@@ -13,7 +13,7 @@
     </div>
 
     <!-- Placeholder State -->
-    <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] p-10 flex flex-col items-center justify-center text-center">
+    <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] p-10 flex flex-col items-center justify-center text-center">
         <div class="h-20 w-20 rounded-full bg-blue-50 flex items-center justify-center mb-4">
             <span class="material-symbols-outlined text-[#5586DB] text-4xl">cloud_upload</span>
         </div>

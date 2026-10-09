@@ -53,7 +53,7 @@
         </div>
     @endif
 
-    <div class="overflow-hidden rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
+    <div class="overflow-hidden rounded-2xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
         <form action="{{ route('member.surveys.submit', $memberSurvey) }}" method="POST">
             @csrf
             <div class="p-6 sm:p-8 space-y-8">

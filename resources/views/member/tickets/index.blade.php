@@ -23,7 +23,7 @@
     @endif
 
     @if($tickets->isEmpty())
-        <div class="flex flex-col items-center justify-center rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] py-16 px-6 shadow-sm text-center">
+        <div class="flex flex-col items-center justify-center rounded-2xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] py-16 px-6 shadow-sm text-center">
             <div class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-[var(--dash-nav-hover-bg)] mb-4">
                 <span class="material-symbols-outlined text-[color:var(--dash-text-faint)] text-3xl">confirmation_number</span>
             </div>
@@ -36,7 +36,7 @@
             </div>
         </div>
     @else
-        <div class="overflow-hidden rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
+        <div class="overflow-hidden rounded-2xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-[color:var(--dash-card-border)] text-sm">
                     <thead class="bg-[var(--dash-nav-hover-bg)] text-left text-xs font-bold uppercase tracking-wider text-[color:var(--dash-text-muted)]">

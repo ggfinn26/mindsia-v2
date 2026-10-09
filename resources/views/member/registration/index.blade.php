@@ -13,7 +13,7 @@
     </div>
 
     @if($registrations->isEmpty())
-        <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] p-10 flex flex-col items-center justify-center text-center">
+        <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] p-10 flex flex-col items-center justify-center text-center">
             <div class="h-20 w-20 rounded-full bg-blue-50 flex items-center justify-center mb-4">
                 <span class="material-symbols-outlined text-[#5586DB] text-4xl">history_edu</span>
             </div>
@@ -24,7 +24,7 @@
             </a>
         </div>
     @else
-        <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] overflow-hidden">
+        <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] overflow-hidden">
             <table class="min-w-full divide-y divide-[color:var(--dash-card-border)] text-sm">
                 <thead class="bg-[var(--dash-nav-hover-bg)] text-left text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider">
                     <tr>

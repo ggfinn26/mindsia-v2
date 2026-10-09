@@ -40,7 +40,7 @@
                     </div>
                 @else
                     <select name="branch_id" required
-                        class="w-full text-sm border border-[color:var(--dash-card-border)] rounded-xl px-3 py-2.5 text-[color:var(--dash-text-heading)] focus:outline-none focus:ring-2 focus:ring-[#5586DB]/30 focus:border-[#5586DB] bg-[var(--dash-card-bg)]">
+                        class="w-full text-sm border border-[color:var(--dash-card-border)] rounded-lg px-3 py-2.5 text-[color:var(--dash-text-heading)] focus:outline-none focus:ring-2 focus:ring-[#5586DB]/30 focus:border-[#5586DB] bg-[var(--dash-card-bg)]">
                         <option value="">Pilih cabang...</option>
                         @foreach($branches as $branch)
                         <option value="{{ $branch->id }}">{{ $branch->branch_name }}</option>
@@ -62,7 +62,7 @@
                 </div>
                 @else
                 <select name="program_id"
-                    class="w-full text-sm border border-[color:var(--dash-card-border)] rounded-xl px-3 py-2.5 text-[color:var(--dash-text-heading)] focus:outline-none focus:ring-2 focus:ring-[#5586DB]/30 focus:border-[#5586DB] bg-[var(--dash-card-bg)]">
+                    class="w-full text-sm border border-[color:var(--dash-card-border)] rounded-lg px-3 py-2.5 text-[color:var(--dash-text-heading)] focus:outline-none focus:ring-2 focus:ring-[#5586DB]/30 focus:border-[#5586DB] bg-[var(--dash-card-bg)]">
                     <option value="">Pilih program...</option>
                     @foreach($programs as $prog)
                     <option value="{{ $prog->id }}" {{ old('program_id') == $prog->id ? 'selected' : '' }}>
@@ -110,7 +110,7 @@
             <div>
                 <label class="block text-xs font-bold text-[color:var(--dash-text-body)] uppercase tracking-wide mb-1.5">Komentar <span class="font-normal text-[color:var(--dash-text-faint)]">(opsional)</span></label>
                 <textarea name="comment" rows="3"
-                    class="w-full text-sm border border-[color:var(--dash-card-border)] rounded-xl px-3 py-2.5 text-[color:var(--dash-text-heading)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5586DB]/30 focus:border-[#5586DB] resize-none"
+                    class="w-full text-sm border border-[color:var(--dash-card-border)] rounded-lg px-3 py-2.5 text-[color:var(--dash-text-heading)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5586DB]/30 focus:border-[#5586DB] resize-none"
                     placeholder="Ceritakan pengalaman Anda...">{{ old('comment') }}</textarea>
                 @error('comment')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
             </div>
@@ -119,13 +119,13 @@
             <div>
                 <label class="block text-xs font-bold text-[color:var(--dash-text-body)] uppercase tracking-wide mb-1.5">Review Program <span class="font-normal text-[color:var(--dash-text-faint)]">(opsional)</span></label>
                 <textarea name="review" rows="3"
-                    class="w-full text-sm border border-[color:var(--dash-card-border)] rounded-xl px-3 py-2.5 text-[color:var(--dash-text-heading)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5586DB]/30 focus:border-[#5586DB] resize-none"
+                    class="w-full text-sm border border-[color:var(--dash-card-border)] rounded-lg px-3 py-2.5 text-[color:var(--dash-text-heading)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5586DB]/30 focus:border-[#5586DB] resize-none"
                     placeholder="Apa yang Anda suka dari program ini?">{{ old('review') }}</textarea>
                 @error('review')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
             </div>
 
             <button type="submit"
-                class="w-full py-2.5 bg-[#5586DB] text-white text-sm font-semibold rounded-xl hover:bg-[#4370BC] transition-colors">
+                class="w-full py-2.5 bg-[#5586DB] text-white text-sm font-semibold rounded-lg hover:bg-[#4370BC] transition-colors">
                 Kirim Penilaian
             </button>
         </form>

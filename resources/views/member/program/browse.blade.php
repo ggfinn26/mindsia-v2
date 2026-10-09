@@ -14,7 +14,7 @@
 
     @if($programs->isEmpty())
     <!-- Placeholder State -->
-    <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] p-10 flex flex-col items-center justify-center text-center">
+    <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] p-10 flex flex-col items-center justify-center text-center">
         <div class="h-20 w-20 rounded-full bg-blue-50 flex items-center justify-center mb-4">
             <span class="material-symbols-outlined text-[#5586DB] text-4xl">travel_explore</span>
         </div>
@@ -27,7 +27,7 @@
     @else
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @foreach($programs as $program)
-            <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] overflow-hidden flex flex-col hover:shadow-md transition-shadow">
+            <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] overflow-hidden flex flex-col hover:shadow-md transition-shadow">
                 <div class="h-48 w-full bg-[var(--dash-nav-hover-bg)] relative">
                     <img src="{{ $program->image_url }}" alt="{{ $program->program_name }}" class="w-full h-full object-cover">
                 </div>

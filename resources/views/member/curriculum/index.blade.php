@@ -10,7 +10,7 @@
     </div>
 
     @if ($memberClasses->isEmpty())
-        <div class="bg-[var(--dash-card-bg)] rounded-xl border border-[color:var(--dash-card-border)] shadow-sm p-12 flex flex-col items-center justify-center text-center">
+        <div class="bg-[var(--dash-card-bg)] rounded-2xl border border-[color:var(--dash-card-border)] shadow-sm p-12 flex flex-col items-center justify-center text-center">
             <div class="h-16 w-16 rounded-full bg-blue-50 flex items-center justify-center mb-4">
                 <span class="material-symbols-outlined text-[#5586DB] text-3xl">menu_book</span>
             </div>
@@ -24,7 +24,7 @@
                     $classroom  = $mc->classRoom;
                     $curriculum = $classroom->program->curriculum;
                 @endphp
-                <div class="bg-[var(--dash-card-bg)] rounded-xl border border-[color:var(--dash-card-border)] shadow-sm overflow-hidden">
+                <div class="bg-[var(--dash-card-bg)] rounded-2xl border border-[color:var(--dash-card-border)] shadow-sm overflow-hidden">
                     {{-- Class header --}}
                     <div class="px-6 py-4 border-b border-[color:var(--dash-card-border)] bg-[var(--dash-nav-hover-bg)] flex items-center justify-between">
                         <div>

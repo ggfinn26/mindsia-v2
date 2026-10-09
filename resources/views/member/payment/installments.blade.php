@@ -11,7 +11,7 @@
     </div>
 
     @if($registrations->isEmpty())
-        <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] p-10 flex flex-col items-center justify-center text-center">
+        <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] p-10 flex flex-col items-center justify-center text-center">
             <div class="h-20 w-20 rounded-full bg-blue-50 flex items-center justify-center mb-4">
                 <span class="material-symbols-outlined text-[#5586DB] text-4xl">receipt_long</span>
             </div>
@@ -23,7 +23,7 @@
         </div>
     @else
         @foreach($registrations as $registration)
-            <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] overflow-hidden">
+            <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] overflow-hidden">
                 <div class="px-6 py-4 border-b border-[color:var(--dash-card-border)] bg-gray-50/50 flex items-center justify-between">
                     <div>
                         <h3 class="font-semibold text-[color:var(--dash-text-heading)]">

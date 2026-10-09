@@ -24,7 +24,7 @@
         </div>
     @endif
 
-    <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] overflow-hidden">
+    <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] overflow-hidden">
         <form action="{{ route('member.password.change.post') }}" method="POST">
             @csrf
 

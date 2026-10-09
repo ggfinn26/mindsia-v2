@@ -49,7 +49,7 @@
     @endif
 
     <!-- Ticket Info -->
-    <div class="overflow-hidden rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
+    <div class="overflow-hidden rounded-2xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
         <div class="px-6 py-4 border-b border-[color:var(--dash-card-border)] flex flex-wrap gap-4 text-xs text-[color:var(--dash-text-muted)]">
             @php
                 $categoryLabel = match($ticket->category) {
@@ -103,7 +103,7 @@
 
     <!-- Reply Form -->
     @if(!in_array($ticket->status, ['closed']))
-    <div class="overflow-hidden rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
+    <div class="overflow-hidden rounded-2xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
         <div class="px-6 py-4 border-b border-[color:var(--dash-card-border)]">
             <h3 class="font-jakarta text-sm font-bold text-[color:var(--dash-text-heading)]">Tulis Balasan</h3>
         </div>
@@ -123,7 +123,7 @@
 
     <!-- Rating Form (after resolved/closed) -->
     @if(in_array($ticket->status, ['resolved', 'closed']) && !$ticket->rating)
-    <div class="overflow-hidden rounded-xl border border-emerald-100 bg-emerald-50 shadow-sm">
+    <div class="overflow-hidden rounded-2xl border border-emerald-100 bg-emerald-50 shadow-sm">
         <div class="px-6 py-4 border-b border-emerald-100">
             <h3 class="font-jakarta text-sm font-bold text-emerald-800">Beri Penilaian Layanan</h3>
         </div>
@@ -155,7 +155,7 @@
     @endif
 
     @if($ticket->rating)
-    <div class="flex items-center gap-2 rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] p-4 shadow-sm">
+    <div class="flex items-center gap-2 rounded-2xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] p-4 shadow-sm">
         <span class="text-sm text-[color:var(--dash-text-muted)]">Penilaian Anda:</span>
         @for($i = 1; $i <= 5; $i++)
             <span class="material-symbols-outlined text-[20px] {{ $i <= $ticket->rating ? 'text-amber-400' : 'text-slate-200' }}">star</span>

@@ -22,7 +22,7 @@
         </div>
     @endif
 
-    <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] overflow-hidden">
+    <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] overflow-hidden">
         <div class="p-6 sm:p-8 border-b border-[color:var(--dash-card-border)] bg-[#5586DB]/5">
             <h2 class="text-2xl font-bold font-jakarta text-[color:var(--dash-text-heading)]">{{ $program->program_name }}</h2>
             <p class="text-sm text-[color:var(--dash-text-muted)] mt-1">Biaya Program: <span class="font-bold text-[#5586DB]">Rp {{ number_format($program->program_price, 0, ',', '.') }}</span></p>

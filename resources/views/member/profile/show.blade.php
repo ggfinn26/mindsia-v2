@@ -23,7 +23,7 @@
     @endif
 
     <!-- Avatar Upload -->
-    <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] overflow-hidden mb-6">
+    <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] overflow-hidden mb-6">
         <form action="{{ route('member.profile.avatar') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6">
@@ -51,7 +51,7 @@
     </div>
 
     <!-- Edit Profile Form -->
-    <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] overflow-hidden">
+    <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] overflow-hidden">
         <form action="{{ route('member.profile.update') }}" method="POST">
             @csrf
             @method('PUT')

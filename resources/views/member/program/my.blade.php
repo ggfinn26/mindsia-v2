@@ -18,7 +18,7 @@
 
     @if($registrations->isEmpty())
         <!-- Placeholder State -->
-        <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] p-10 flex flex-col items-center justify-center text-center">
+        <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] p-10 flex flex-col items-center justify-center text-center">
             <div class="h-20 w-20 rounded-full bg-blue-50 flex items-center justify-center mb-4">
                 <span class="material-symbols-outlined text-[#5586DB] text-4xl">local_library</span>
             </div>
@@ -34,7 +34,7 @@
                 @php
                     $program = $registration->program;
                 @endphp
-                <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] overflow-hidden flex flex-col hover:shadow-md transition-shadow">
+                <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] overflow-hidden flex flex-col hover:shadow-md transition-shadow">
                     <div class="h-48 w-full bg-[var(--dash-nav-hover-bg)] relative">
                         <img src="{{ $program->image_url ?? 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=800&auto=format&fit=crop' }}" alt="{{ $program->program_name ?? $registration->receipt_program_name }}" class="w-full h-full object-cover">
                         <div class="absolute top-4 right-4">
