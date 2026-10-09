@@ -32,7 +32,7 @@
     };
 @endphp
 
-<div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] p-5 hover:shadow-md transition-shadow flex flex-col h-full">
+<div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] p-5 hover:shadow-md transition-shadow flex flex-col h-full">
     {{-- Header --}}
     <div class="flex items-start justify-between mb-4">
         <div class="flex items-center gap-3">

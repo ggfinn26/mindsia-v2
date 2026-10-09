@@ -1,5 +1,5 @@
 @props(['data'])
-<div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] p-5 hover:shadow-md transition-shadow">
+<div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] p-5 hover:shadow-md transition-shadow">
     <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-3">
             <div class="h-10 w-10 rounded-lg bg-indigo-50 flex items-center justify-center">

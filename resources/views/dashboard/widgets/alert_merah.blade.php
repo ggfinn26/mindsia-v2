@@ -1,7 +1,7 @@
 @if(isset($data['error']))
     <div class="p-4 bg-red-50 text-red-600 rounded-xl">Error: {{ $data['error'] }}</div>
 @else
-<div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-red-100 p-5 h-full flex flex-col">
+<div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-red-100 p-5 h-full flex flex-col">
     <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-2">
             <div class="w-8 h-8 rounded-lg bg-red-50 text-red-600 flex items-center justify-center">

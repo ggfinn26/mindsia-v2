@@ -117,7 +117,7 @@
                                         @if(view()->exists('dashboard.widgets.' . $widget['key']) && isset($widgetData[$widget['key']]))
                                             @include('dashboard.widgets.' . $widget['key'], ['data' => $widgetData[$widget['key']]])
                                         @else
-                                            <div class="bg-[var(--dash-card-bg)] rounded-xl shadow-sm border border-[color:var(--dash-card-border)] p-5">
+                                            <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] p-5">
                                                 <div class="flex items-center gap-3 mb-2">
                                                     <div class="h-10 w-10 rounded-lg bg-[var(--dash-nav-hover-bg)] flex items-center justify-center">
                                                         <span class="material-symbols-outlined text-[color:var(--dash-text-faint)] text-xl">{{ $widget['icon'] }}</span>
