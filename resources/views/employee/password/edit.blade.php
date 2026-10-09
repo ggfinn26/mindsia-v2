@@ -97,7 +97,7 @@
             <div class="px-6 sm:px-8 py-4 border-t flex items-center justify-end"
                  style="border-color: var(--dash-card-border); background-color: var(--dash-primary-bg);">
                 <button type="submit"
-                        class="px-4 py-2 text-sm font-semibold rounded-xl text-white transition-colors"
+                        class="px-4 py-2 text-sm font-semibold rounded-lg text-white transition-colors"
                         style="background-color: var(--dash-primary);">
                     Simpan Password
                 </button>

@@ -45,7 +45,7 @@
             </div>
 
             <a href="{{ route('employee.profile.edit') }}"
-               class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors shrink-0"
+               class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors shrink-0"
                style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-body);"
                onmouseover="this.style.backgroundColor='var(--dash-primary-bg)'; this.style.borderColor='var(--dash-primary)'; this.style.color='var(--dash-primary-text)';"
                onmouseout="this.style.backgroundColor='var(--dash-card-bg)'; this.style.borderColor='var(--dash-card-border)'; this.style.color='var(--dash-text-body)';">
@@ -198,7 +198,7 @@
                         <input type="number" name="graduation_year" min="1950" max="{{ date('Y') }}"
                                placeholder="{{ date('Y') }}">
                         <button type="submit"
-                                class="inline-flex items-center px-3 py-2 rounded-xl text-xs font-semibold text-white whitespace-nowrap shrink-0"
+                                class="inline-flex items-center px-3 py-2 rounded-lg text-xs font-semibold text-white whitespace-nowrap shrink-0"
                                 style="background-color: var(--dash-primary);">
                             Simpan
                         </button>
@@ -264,7 +264,7 @@
                                             <input type="number" name="graduation_year" value="{{ $edu->graduation_year }}"
                                                    min="1950" max="{{ date('Y') }}">
                                             <button type="submit"
-                                                    class="inline-flex items-center px-3 py-2 rounded-xl text-xs font-semibold text-white shrink-0"
+                                                    class="inline-flex items-center px-3 py-2 rounded-lg text-xs font-semibold text-white shrink-0"
                                                     style="background-color: var(--dash-primary);">
                                                 Simpan
                                             </button>
@@ -330,7 +330,7 @@
                     <div class="flex gap-2">
                         <input type="text" name="reason_leaving" maxlength="500">
                         <button type="submit"
-                                class="inline-flex items-center px-3 py-2 rounded-xl text-xs font-semibold text-white whitespace-nowrap shrink-0"
+                                class="inline-flex items-center px-3 py-2 rounded-lg text-xs font-semibold text-white whitespace-nowrap shrink-0"
                                 style="background-color: var(--dash-primary);">
                             Simpan
                         </button>
@@ -401,7 +401,7 @@
                                         </div>
                                         <div>
                                             <button type="submit"
-                                                    class="w-full inline-flex items-center justify-center px-3 py-2 rounded-xl text-xs font-semibold text-white"
+                                                    class="w-full inline-flex items-center justify-center px-3 py-2 rounded-lg text-xs font-semibold text-white"
                                                     style="background-color: var(--dash-primary);">
                                                 Simpan
                                             </button>
@@ -440,12 +440,12 @@
                 </div>
                 <div class="px-6 pb-5 flex justify-end gap-3">
                     <button type="button" @click="showConfirmModal = false"
-                            class="px-4 py-2 text-sm font-semibold rounded-xl"
+                            class="px-4 py-2 text-sm font-semibold rounded-lg"
                             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-body);">
                         Batal
                     </button>
                     <button type="button" @click="$refs.confirmForm.submit()"
-                            class="px-4 py-2 text-sm font-semibold rounded-xl text-white"
+                            class="px-4 py-2 text-sm font-semibold rounded-lg text-white"
                             style="background-color: #dc2626;"
                             x-text="confirmActionText">
                     </button>

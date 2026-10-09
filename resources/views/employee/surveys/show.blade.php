@@ -99,7 +99,7 @@
                                 @else
                                     <textarea name="answers[{{ $index }}][answer_text]" rows="3" required
                                               placeholder="Tuliskan jawaban Anda..."
-                                              class="block w-full rounded-xl text-sm px-3 py-2.5 focus:outline-none focus:ring-2"
+                                              class="block w-full rounded-lg text-sm px-3 py-2.5 focus:outline-none focus:ring-2"
                                               style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-body); --tw-ring-color: var(--dash-primary);"></textarea>
                                 @endif
 
@@ -190,7 +190,7 @@
                 <div class="px-6 py-4 sm:px-8 flex justify-end"
                      style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
                     <button type="submit"
-                            class="inline-flex items-center gap-2 px-8 py-2.5 rounded-xl text-sm font-bold text-white hover:opacity-90 transition-opacity"
+                            class="inline-flex items-center gap-2 px-8 py-2.5 rounded-lg text-sm font-bold text-white hover:opacity-90 transition-opacity"
                             style="background-color: var(--dash-primary);">
                         <span class="material-symbols-outlined text-[18px]">send</span>
                         Submit Jawaban

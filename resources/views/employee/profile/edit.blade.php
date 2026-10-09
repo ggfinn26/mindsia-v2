@@ -137,7 +137,7 @@
                             </p>
                         @endif
 
-                        <div class="border rounded-xl overflow-hidden w-full relative shadow-sm"
+                        <div class="border rounded-2xl overflow-hidden w-full relative shadow-sm"
                              style="border-color: var(--dash-card-border);">
                             <canvas id="signature-pad" width="800" height="200"
                                     class="w-full touch-none cursor-crosshair"></canvas>
@@ -160,12 +160,12 @@
             <div class="px-6 sm:px-8 py-4 border-t flex items-center justify-end gap-3"
                  style="border-color: var(--dash-card-border); background-color: var(--dash-primary-bg);">
                 <a href="{{ route('employee.profile.show') }}"
-                   class="px-4 py-2 text-sm font-semibold rounded-xl transition-colors"
+                   class="px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
                    style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-body);">
                     Batal
                 </a>
                 <button type="submit"
-                        class="px-4 py-2 text-sm font-semibold rounded-xl text-white transition-colors"
+                        class="px-4 py-2 text-sm font-semibold rounded-lg text-white transition-colors"
                         style="background-color: var(--dash-primary);">
                     Simpan Perubahan
                 </button>
