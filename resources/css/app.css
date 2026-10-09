@@ -251,17 +251,17 @@
 
     --dash-text-heading: #f1f5f9;
     --dash-text-body: #cbd5e1;
-    --dash-text-muted: #475569;
-    --dash-text-faint: #334155;
+    --dash-text-muted: #94a3b8;
+    --dash-text-faint: #7b8aa0;
 
-    --dash-nav-inactive: #475569;
+    --dash-nav-inactive: #94a3b8;
     --dash-nav-icon-inactive: #334155;
-    --dash-nav-section: #334155;
+    --dash-nav-section: #7b8aa0;
     --dash-nav-hover-bg: rgba(255, 255, 255, 0.03);
 
     --dash-logout-bg: #0a1120;
     --dash-logout-border: #1e293b;
-    --dash-logout-text: #475569;
+    --dash-logout-text: #94a3b8;
 
     --dash-scrollbar-thumb: #1e293b;
     --dash-scrollbar-hover: #334155;
