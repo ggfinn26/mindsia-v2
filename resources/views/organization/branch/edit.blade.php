@@ -48,7 +48,7 @@
                 <div class="sm:col-span-2">
                     <label class="block text-[11px] font-bold text-[var(--dash-text-muted)] uppercase tracking-wider mb-1">Area</label>
                     <select name="areas_id" required 
-                            class="w-full px-3.5 py-2.5 bg-[var(--dash-input-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] focus:ring-[var(--dash-primary)]/30">
+                            class="w-full px-3.5 py-2.5 bg-[var(--dash-input-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] focus:ring-[var(--dash-primary)]/30">
                         <option value="">Pilih Area...</option>
                         @foreach($areas as $area)
                             <option value="{{ $area->id }}" {{ old('areas_id', $branch->areas_id) == $area->id ? 'selected' : '' }}>{{ $area->name }}</option>
@@ -59,7 +59,7 @@
                 <div class="sm:col-span-2">
                     <label class="block text-[11px] font-bold text-[var(--dash-text-muted)] uppercase tracking-wider mb-1">Alamat</label>
                     <textarea name="address" rows="3" 
-                              class="w-full px-3.5 py-2.5 bg-[var(--dash-input-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] focus:ring-[var(--dash-primary)]/30">{{ old('address', $branch->address) }}</textarea>
+                              class="w-full px-3.5 py-2.5 bg-[var(--dash-input-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] focus:ring-[var(--dash-primary)]/30">{{ old('address', $branch->address) }}</textarea>
                 </div>
 
                 <div class="sm:col-span-2">
@@ -113,7 +113,7 @@
             </div>
 
             <div class="pt-4 mt-6 border-t border-[var(--dash-card-border)] flex justify-end">
-                <button type="submit" class="bg-[var(--dash-primary)] hover:bg-[#4A78C4] text-white px-6 py-2.5 rounded-xl text-[13px] font-bold shadow-sm transition-colors flex items-center gap-2">
+                <button type="submit" class="bg-[var(--dash-primary)] hover:bg-[#4A78C4] text-white px-6 py-2.5 rounded-lg text-[13px] font-bold shadow-sm transition-colors flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">save</span>
                     Simpan Perubahan
                 </button>

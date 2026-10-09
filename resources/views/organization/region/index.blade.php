@@ -7,7 +7,7 @@
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-[var(--dash-text-heading)]">Kelola Region</h1>
         <button @click="showModal = true; isEdit = false; formData = { id: '', province_id: '', name: '' }"
-                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                 style="background-color: var(--dash-primary);">
             <span class="material-symbols-outlined text-[18px]">add</span>
             Tambah Region

@@ -35,19 +35,19 @@
                 <div>
                     <label class="block text-[11px] font-bold text-[var(--dash-text-muted)] uppercase tracking-wider mb-1">Kode Cabang</label>
                     <input type="text" name="code_branches" value="{{ old('code_branches') }}" required 
-                           class="w-full px-3.5 py-2.5 bg-[var(--dash-input-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] focus:ring-[var(--dash-primary)]/30">
+                           class="w-full px-3.5 py-2.5 bg-[var(--dash-input-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] focus:ring-[var(--dash-primary)]/30">
                 </div>
                 
                 <div>
                     <label class="block text-[11px] font-bold text-[var(--dash-text-muted)] uppercase tracking-wider mb-1">Nama Cabang</label>
                     <input type="text" name="branch_name" value="{{ old('branch_name') }}" required 
-                           class="w-full px-3.5 py-2.5 bg-[var(--dash-input-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] focus:ring-[var(--dash-primary)]/30">
+                           class="w-full px-3.5 py-2.5 bg-[var(--dash-input-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] focus:ring-[var(--dash-primary)]/30">
                 </div>
 
                 <div class="sm:col-span-2">
                     <label class="block text-[11px] font-bold text-[var(--dash-text-muted)] uppercase tracking-wider mb-1">Area</label>
                     <select name="areas_id" required 
-                            class="w-full px-3.5 py-2.5 bg-[var(--dash-input-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] focus:ring-[var(--dash-primary)]/30">
+                            class="w-full px-3.5 py-2.5 bg-[var(--dash-input-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] focus:ring-[var(--dash-primary)]/30">
                         <option value="">Pilih Area...</option>
                         @foreach($areas as $area)
                             <option value="{{ $area->id }}" {{ old('areas_id') == $area->id ? 'selected' : '' }}>{{ $area->name }}</option>
@@ -58,13 +58,13 @@
                 <div class="sm:col-span-2">
                     <label class="block text-[11px] font-bold text-[var(--dash-text-muted)] uppercase tracking-wider mb-1">Alamat</label>
                     <textarea name="address" rows="3" 
-                              class="w-full px-3.5 py-2.5 bg-[var(--dash-input-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] focus:ring-[var(--dash-primary)]/30">{{ old('address') }}</textarea>
+                              class="w-full px-3.5 py-2.5 bg-[var(--dash-input-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] focus:ring-[var(--dash-primary)]/30">{{ old('address') }}</textarea>
                 </div>
 
                 <div class="sm:col-span-2">
                     <label class="block text-[11px] font-bold text-[var(--dash-text-muted)] uppercase tracking-wider mb-1">URL Google Maps</label>
                     <input type="url" name="gmaps_url" value="{{ old('gmaps_url') }}" 
-                           class="w-full px-3.5 py-2.5 bg-[var(--dash-input-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] focus:ring-[var(--dash-primary)]/30">
+                           class="w-full px-3.5 py-2.5 bg-[var(--dash-input-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] focus:ring-[var(--dash-primary)]/30">
                 </div>
 
                 <div>
@@ -80,25 +80,25 @@
                 <div>
                     <label class="block text-[11px] font-bold text-[var(--dash-text-muted)] uppercase tracking-wider mb-1">Instagram</label>
                     <input type="text" name="instagram" value="{{ old('instagram') }}" 
-                           class="w-full px-3.5 py-2.5 bg-[var(--dash-input-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] focus:ring-[var(--dash-primary)]/30">
+                           class="w-full px-3.5 py-2.5 bg-[var(--dash-input-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] focus:ring-[var(--dash-primary)]/30">
                 </div>
 
                 <div>
                     <label class="block text-[11px] font-bold text-[var(--dash-text-muted)] uppercase tracking-wider mb-1">Latitude</label>
                     <input type="number" step="any" name="latitude" value="{{ old('latitude') }}" 
-                           class="w-full px-3.5 py-2.5 bg-[var(--dash-input-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] focus:ring-[var(--dash-primary)]/30">
+                           class="w-full px-3.5 py-2.5 bg-[var(--dash-input-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] focus:ring-[var(--dash-primary)]/30">
                 </div>
 
                 <div>
                     <label class="block text-[11px] font-bold text-[var(--dash-text-muted)] uppercase tracking-wider mb-1">Longitude</label>
                     <input type="number" step="any" name="longitude" value="{{ old('longitude') }}" 
-                           class="w-full px-3.5 py-2.5 bg-[var(--dash-input-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] focus:ring-[var(--dash-primary)]/30">
+                           class="w-full px-3.5 py-2.5 bg-[var(--dash-input-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] focus:ring-[var(--dash-primary)]/30">
                 </div>
 
                 <div>
                     <label class="block text-[11px] font-bold text-[var(--dash-text-muted)] uppercase tracking-wider mb-1">Radius (Meter)</label>
                     <input type="number" name="radius_meters" value="{{ old('radius_meters', 100) }}" 
-                           class="w-full px-3.5 py-2.5 bg-[var(--dash-input-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-card-border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] focus:ring-[var(--dash-primary)]/30">
+                           class="w-full px-3.5 py-2.5 bg-[var(--dash-input-bg)] text-[var(--dash-text-heading)] border border-[var(--dash-card-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-[var(--dash-primary)] bg-[var(--dash-card-bg)] text-[var(--dash-text-heading)] focus:ring-[var(--dash-primary)]/30">
                 </div>
 
                 <div class="flex items-center pt-2">
@@ -112,7 +112,7 @@
             </div>
 
             <div class="pt-4 mt-6 border-t border-[var(--dash-card-border)] flex justify-end">
-                <button type="submit" class="bg-[var(--dash-primary)] hover:bg-[#4A78C4] text-white px-6 py-2.5 rounded-xl text-[13px] font-bold shadow-sm transition-colors flex items-center gap-2">
+                <button type="submit" class="bg-[var(--dash-primary)] hover:bg-[#4A78C4] text-white px-6 py-2.5 rounded-lg text-[13px] font-bold shadow-sm transition-colors flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">save</span>
                     Simpan Cabang
                 </button>

@@ -17,7 +17,7 @@
             </p>
         </div>
         <a href="{{ route('branches.create') }}"
-           class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity self-start sm:self-auto"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity self-start sm:self-auto"
            style="background-color: var(--dash-primary);">
             <span class="material-symbols-outlined text-[18px]">add</span>
             Tambah Cabang
@@ -81,7 +81,7 @@
 
             @if(request('area_id') || request('pic_id'))
                 <a href="{{ route('branches.index') }}"
-                   class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-colors w-full sm:w-auto justify-center sm:justify-start"
+                   class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-colors w-full sm:w-auto justify-center sm:justify-start"
                    style="border: 1px solid var(--dash-card-border); color: var(--dash-text-muted); background-color: var(--dash-card-bg);"
                    onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                    onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
@@ -271,7 +271,7 @@
             </div>
             <div class="flex items-center justify-end gap-3 mt-6">
                 <button type="button" @click="showConfirmModal = false"
-                        class="px-4 py-2 rounded-xl text-sm font-medium"
+                        class="px-4 py-2 rounded-lg text-sm font-medium"
                         style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);">
                     Batal
                 </button>
@@ -279,7 +279,7 @@
                     @csrf
                     <input type="hidden" name="_method" :value="confirmMethod">
                     <button type="submit"
-                            class="px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                            class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                             :style="confirmMethod === 'DELETE' ? 'background-color: #dc2626;' : 'background-color: #d97706;'"
                             x-text="confirmActionText"></button>
                 </form>
@@ -321,12 +321,12 @@
                 <div class="px-6 py-4 flex items-center justify-end gap-3"
                      style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
                     <button type="button" @click="showPicModal = false"
-                            class="px-4 py-2 rounded-xl text-sm font-medium"
+                            class="px-4 py-2 rounded-lg text-sm font-medium"
                             style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);">
                         Batal
                     </button>
                     <button type="submit"
-                            class="px-4 py-2 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                            class="px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                             style="background-color: var(--dash-primary);">
                         Simpan
                     </button>
