@@ -33,6 +33,8 @@ Thumbs.db
 /docs-rework
 *.md
 !README.md
+!AGENTS.md
+!CLAUDE.md
 
 # Tests
 /tests
