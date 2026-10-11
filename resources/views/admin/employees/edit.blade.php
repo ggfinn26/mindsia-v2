@@ -9,11 +9,11 @@
     <div class="flex items-center justify-between">
         <div>
             <a href="{{ route('employees.show', $employee->id) }}"
-               class="mb-1 flex items-center gap-1 text-xs font-medium text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-body)]">
+               class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700">
                 <span class="material-symbols-outlined text-[16px]">arrow_back</span>
                 {{ $employee->full_name }}
             </a>
-            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Edit Data Pegawai</h1>
+            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Edit Data Pegawai</h2>
         </div>
     </div>
 
@@ -33,48 +33,48 @@
         @method('PUT')
 
         {{-- Informasi Dasar --}}
-        <div class="overflow-hidden border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)]">
-            <div class="border-b border-[color:var(--dash-card-border)] bg-[var(--dash-nav-hover-bg)] px-5 py-4">
-                <h3 class="font-jakarta text-sm font-bold text-[color:var(--dash-text-heading)]">Informasi Dasar</h3>
+        <div class="overflow-hidden border border-slate-200 bg-white">
+            <div class="border-b border-slate-200 bg-slate-50 px-5 py-4">
+                <h3 class="font-jakarta text-sm font-bold text-slate-900">Informasi Dasar</h3>
             </div>
             <div class="grid gap-5 px-5 py-5 sm:grid-cols-2">
                 <div class="sm:col-span-2">
-                    <label class="mb-1.5 block text-sm font-medium text-[color:var(--dash-text-body)]">
+                    <label class="mb-1.5 block text-sm font-medium text-slate-700">
                         Nama Lengkap <span class="text-rose-500">*</span>
                     </label>
                     <input type="text" name="full_name" value="{{ old('full_name', $employee->full_name) }}"
                            required maxlength="255"
-                           class="block w-full border-[color:var(--dash-input-border)] text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
+                           class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
                 </div>
                 <div>
-                    <label class="mb-1.5 block text-sm font-medium text-[color:var(--dash-text-body)]">Jenis Kelamin <span class="text-rose-500">*</span></label>
+                    <label class="mb-1.5 block text-sm font-medium text-slate-700">Jenis Kelamin <span class="text-rose-500">*</span></label>
                     <select name="gender" required
-                            class="block w-full border-[color:var(--dash-input-border)] text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
+                            class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
                         <option value="">Pilih...</option>
                         <option value="L" @selected(old('gender', $employee->gender) === 'L')>Laki-laki</option>
                         <option value="P" @selected(old('gender', $employee->gender) === 'P')>Perempuan</option>
                     </select>
                 </div>
                 <div>
-                    <label class="mb-1.5 block text-sm font-medium text-[color:var(--dash-text-body)]">Tanggal Lahir</label>
+                    <label class="mb-1.5 block text-sm font-medium text-slate-700">Tanggal Lahir</label>
                     <input type="date" name="birthdate"
                            value="{{ old('birthdate', $employee->birthdate?->format('Y-m-d')) }}"
-                           class="block w-full border-[color:var(--dash-input-border)] text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
+                           class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
                 </div>
                 <div>
-                    <label class="mb-1.5 block text-sm font-medium text-[color:var(--dash-text-body)]">Email</label>
+                    <label class="mb-1.5 block text-sm font-medium text-slate-700">Email</label>
                     <input type="email" name="email" value="{{ old('email', $employee->email) }}"
-                           class="block w-full border-[color:var(--dash-input-border)] text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
+                           class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
                 </div>
                 <div>
-                    <label class="mb-1.5 block text-sm font-medium text-[color:var(--dash-text-body)]">No. WhatsApp</label>
+                    <label class="mb-1.5 block text-sm font-medium text-slate-700">No. WhatsApp</label>
                     <div class="flex">
-                        <span class="inline-flex items-center border border-r-0 border-[color:var(--dash-input-border)] bg-[var(--dash-nav-hover-bg)] px-3 text-sm font-bold text-[color:var(--dash-text-muted)]">+62</span>
+                        <span class="inline-flex items-center border border-r-0 border-slate-300 bg-slate-50 px-3 text-sm font-bold text-slate-500">+62</span>
                         <input type="text" name="whatsapp_number"
                                value="{{ old('whatsapp_number', $employee->whatsapp_number) }}"
                                placeholder="8xxxxxxxxxx" minlength="8" maxlength="15"
                                oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')"
-                               class="block w-full min-w-0 flex-1 border-[color:var(--dash-input-border)] text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
+                               class="block w-full min-w-0 flex-1 border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
                     </div>
                 </div>
             </div>
@@ -88,7 +88,7 @@
         @endphp
 
         {{-- Penempatan --}}
-        <div class="border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)]"
+        <div class="border border-slate-200 bg-white"
              x-data="{
                  placement: '{{ old('is_hq', $employee->is_hq) ? 'hq' : (old('branch_id', $employee->branch_id) ? 'branch' : (old('area_id', $employee->area_id) ? 'area' : (old('region_id', $employee->region_id) ? 'region' : 'branch'))) }}',
                  branchMap: @js($branchMap),
@@ -105,14 +105,14 @@
                      return '';
                  }
              }">
-            <div class="border-b border-[color:var(--dash-card-border)] bg-[var(--dash-nav-hover-bg)] px-5 py-4">
-                <h3 class="font-jakarta text-sm font-bold text-[color:var(--dash-text-heading)]">Penempatan</h3>
+            <div class="border-b border-slate-200 bg-slate-50 px-5 py-4">
+                <h3 class="font-jakarta text-sm font-bold text-slate-900">Penempatan</h3>
             </div>
             <div class="px-5 py-5 space-y-5">
                 <div>
-                    <label class="mb-1.5 block text-sm font-medium text-[color:var(--dash-text-body)]">Tingkat Penempatan</label>
+                    <label class="mb-1.5 block text-sm font-medium text-slate-700">Tingkat Penempatan</label>
                     <select x-model="placement"
-                            class="block w-full border-[color:var(--dash-input-border)] text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
+                            class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
                         <option value="hq">Headquarters (Pusat)</option>
                         <option value="branch">Cabang</option>
                         <option value="area">Area</option>
@@ -127,7 +127,7 @@
                         <input type="hidden" name="branch_id" value="">
                         <input type="hidden" name="area_id" value="">
                         <input type="hidden" name="region_id" value="">
-                        <p class="text-sm text-[color:var(--dash-text-muted)]">Pegawai ditempatkan di kantor pusat.</p>
+                        <p class="text-sm text-slate-500">Pegawai ditempatkan di kantor pusat.</p>
                     </div>
                 </template>
 
@@ -137,9 +137,9 @@
                         <input type="hidden" name="is_hq" value="0">
                         <input type="hidden" name="area_id" :value="derivedAreaId">
                         <input type="hidden" name="region_id" :value="derivedRegionId">
-                        <label class="mb-1.5 block text-sm font-medium text-[color:var(--dash-text-body)]">Cabang <span class="text-rose-500">*</span></label>
+                        <label class="mb-1.5 block text-sm font-medium text-slate-700">Cabang <span class="text-rose-500">*</span></label>
                         <select name="branch_id" x-model="selectedBranch"
-                                class="block w-full border-[color:var(--dash-input-border)] text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
+                                class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
                             <option value="">Pilih cabang...</option>
                             @foreach ($branches as $branch)
                                 <option value="{{ $branch->id }}">{{ $branch->branch_name }}</option>
@@ -154,9 +154,9 @@
                         <input type="hidden" name="is_hq" value="0">
                         <input type="hidden" name="branch_id" value="">
                         <input type="hidden" name="region_id" :value="derivedRegionId">
-                        <label class="mb-1.5 block text-sm font-medium text-[color:var(--dash-text-body)]">Area <span class="text-rose-500">*</span></label>
+                        <label class="mb-1.5 block text-sm font-medium text-slate-700">Area <span class="text-rose-500">*</span></label>
                         <select name="area_id" x-model="selectedArea"
-                                class="block w-full border-[color:var(--dash-input-border)] text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
+                                class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
                             <option value="">Pilih area...</option>
                             @foreach ($areas as $area)
                                 <option value="{{ $area->id }}">{{ $area->name }}</option>
@@ -171,9 +171,9 @@
                         <input type="hidden" name="is_hq" value="0">
                         <input type="hidden" name="branch_id" value="">
                         <input type="hidden" name="area_id" value="">
-                        <label class="mb-1.5 block text-sm font-medium text-[color:var(--dash-text-body)]">Region <span class="text-rose-500">*</span></label>
+                        <label class="mb-1.5 block text-sm font-medium text-slate-700">Region <span class="text-rose-500">*</span></label>
                         <select name="region_id"
-                                class="block w-full border-[color:var(--dash-input-border)] text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
+                                class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
                             <option value="">Pilih region...</option>
                             @foreach ($regions as $region)
                                 <option value="{{ $region->id }}"
@@ -188,30 +188,30 @@
         </div>
 
         {{-- Status --}}
-        <div class="overflow-hidden border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)]">
-            <div class="border-b border-[color:var(--dash-card-border)] bg-[var(--dash-nav-hover-bg)] px-5 py-4">
-                <h3 class="font-jakarta text-sm font-bold text-[color:var(--dash-text-heading)]">Status Pegawai</h3>
+        <div class="overflow-hidden border border-slate-200 bg-white">
+            <div class="border-b border-slate-200 bg-slate-50 px-5 py-4">
+                <h3 class="font-jakarta text-sm font-bold text-slate-900">Status Pegawai</h3>
             </div>
             <div class="px-5 py-5">
                 <label class="inline-flex cursor-pointer items-center gap-3">
                     <input type="hidden" name="is_active" value="0">
                     <input type="checkbox" name="is_active" value="1"
                            @checked(old('is_active', $employee->is_active))
-                           class="h-4 w-4 border-[color:var(--dash-input-border)] text-[color:var(--dash-primary-text,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
-                    <span class="text-sm font-medium text-[color:var(--dash-text-body)]">Pegawai aktif</span>
+                           class="h-4 w-4 border-slate-300 text-[#215aac] focus:ring-[#215aac]">
+                    <span class="text-sm font-medium text-slate-700">Pegawai aktif</span>
                 </label>
-                <p class="mt-1 text-xs text-[color:var(--dash-text-muted)]">Nonaktifkan untuk menyembunyikan pegawai dari daftar dan proses payroll.</p>
+                <p class="mt-1 text-xs text-slate-500">Nonaktifkan untuk menyembunyikan pegawai dari daftar dan proses payroll.</p>
             </div>
         </div>
 
         {{-- Actions --}}
         <div class="flex justify-end gap-3">
             <a href="{{ route('employees.show', $employee->id) }}"
-               class="inline-flex min-h-10 items-center border border-[color:var(--dash-input-border)] px-4 text-sm font-semibold text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]">
+               class="inline-flex min-h-10 items-center border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50">
                 Batal
             </a>
             <button type="submit"
-                    class="inline-flex min-h-10 items-center gap-2 bg-[var(--dash-primary,#215aac)] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">
+                    class="inline-flex min-h-10 items-center gap-2 bg-[#215aac] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">
                 <span class="material-symbols-outlined text-[18px]">save</span>
                 Simpan Perubahan
             </button>

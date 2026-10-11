@@ -167,20 +167,21 @@ class TelegramStorageService
 
         if ($isImage && $mimeType !== 'image/webp' && $mimeType !== 'image/gif') {
             $image = $this->imageManager()->decodePath($file->getRealPath());
+            $image->scaleDown(width: 1200); // ponytail: cap resolusi sebelum encode — cegah OOM di foto HP beresolusi tinggi
             $webp = $image->encode(new WebpEncoder(quality: 85));
 
             $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME).'.webp';
-            $path = $directory.'/'.$filename;
+            $path = "{$directory}/{$filename}";
 
-            Storage::put($path, (string) $webp);
+            Storage::disk('public')->put($path, (string) $webp);
 
             return $path;
         }
 
         $filename = $file->getClientOriginalName();
-        $path = $directory.'/'.$filename;
+        $path = "{$directory}/{$filename}";
 
-        Storage::put($path, file_get_contents($file->getRealPath()));
+        Storage::disk('public')->put($path, file_get_contents($file->getRealPath()));
 
         return $path;
     }

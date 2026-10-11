@@ -4,121 +4,80 @@
 @section('header_title', 'Survey Saya')
 
 @section('content')
-<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-6xl mx-auto space-y-6">
-
-    {{-- Page header --}}
-    <div>
-        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
-            style="color: var(--dash-text-heading);">Survey Saya</h1>
-        <p class="mt-1 text-sm" style="color: var(--dash-text-muted);">
-            Daftar survei yang ditugaskan kepada Anda.
-        </p>
+<div class="max-w-6xl mx-auto space-y-6">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Survey Saya</h2>
+            <p class="text-sm text-slate-500 mt-1">Daftar survei yang ditugaskan kepada Anda.</p>
+        </div>
     </div>
 
     @if(session('success'))
-        <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
-             style="background-color: #f0fdf4; border-color: #bbf7d0; color: #059669;">
-            <span class="material-symbols-outlined text-[18px]">check_circle</span>
-            {{ session('success') }}
+        <div class="flex items-center gap-3 rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-800 shadow-sm">
+            <span class="material-symbols-outlined text-[20px] text-emerald-600">check_circle</span>
+            <p class="font-medium">{{ session('success') }}</p>
         </div>
     @endif
 
     @if($surveys->isEmpty())
-        <div class="flex flex-col items-center justify-center rounded-2xl py-16 px-6 text-center"
-             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
-            <div class="inline-flex h-16 w-16 items-center justify-center rounded-full mb-4"
-                 style="background-color: var(--dash-nav-hover-bg);">
-                <span class="material-symbols-outlined text-[32px]" style="color: var(--dash-text-faint);">assignment</span>
+        <div class="flex flex-col items-center justify-center rounded-xl border border-slate-100 bg-white py-16 px-6 shadow-sm text-center">
+            <div class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-slate-50 mb-4">
+                <span class="material-symbols-outlined text-slate-400 text-3xl">assignment</span>
             </div>
-            <h3 class="font-jakarta text-base font-bold mb-1" style="color: var(--dash-text-heading);">
-                Belum Ada Survei
-            </h3>
-            <p class="text-sm max-w-md mx-auto mb-6" style="color: var(--dash-text-muted);">
-                Belum ada survei yang ditugaskan kepada Anda saat ini.
-            </p>
-            <a href="{{ route('dashboard') }}"
-               class="inline-flex items-center px-5 py-2 rounded-lg text-sm font-semibold transition-colors gap-1.5"
-               style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
-               onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
-               onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
-                <span class="material-symbols-outlined text-[16px]">arrow_back</span>
-                Kembali ke Dashboard
-            </a>
+            <h3 class="font-jakarta text-base font-bold text-slate-900">Belum Ada Survei</h3>
+            <p class="mt-1 text-sm text-slate-500 max-w-md mx-auto">Belum ada survei yang ditugaskan kepada Anda saat ini.</p>
+            <div class="mt-6">
+                <a href="{{ route('employee.dashboard') }}" class="inline-flex min-h-[42px] items-center justify-center rounded-lg border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-colors">
+                    Kembali ke Dashboard
+                </a>
+            </div>
         </div>
     @else
-        <div class="rounded-2xl overflow-hidden"
-             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <div class="overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm">
             <div class="overflow-x-auto">
-                <table class="min-w-full">
-                    <thead>
-                        <tr style="border-bottom: 1px solid var(--dash-card-border);">
-                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider"
-                                style="color: var(--dash-text-muted);">Nama Survey</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider"
-                                style="color: var(--dash-text-muted);">Status Pengisian</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider"
-                                style="color: var(--dash-text-muted);">Waktu Penyelesaian</th>
-                            <th class="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider"
-                                style="color: var(--dash-text-muted);">Aksi</th>
+                <table class="min-w-full divide-y divide-slate-100 text-sm">
+                    <thead class="bg-slate-50 text-left text-xs font-bold uppercase tracking-wider text-slate-500">
+                        <tr>
+                            <th class="px-6 py-4">Nama Survey</th>
+                            <th class="px-6 py-4">Status Pengisian</th>
+                            <th class="px-6 py-4">Waktu Penyelesaian</th>
+                            <th class="px-6 py-4 text-right">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="divide-y divide-slate-50 text-slate-700">
                         @foreach($surveys as $employeeSurvey)
-                            <tr style="border-bottom: 1px solid var(--dash-card-border);"
-                                onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
-                                onmouseout="this.style.backgroundColor=''">
+                            <tr class="hover:bg-slate-50/50 transition-colors">
                                 <td class="px-6 py-4">
-                                    <p class="font-jakarta text-sm font-bold"
-                                       style="color: var(--dash-text-heading);">
-                                        {{ $employeeSurvey->survey->survey_name }}
-                                    </p>
+                                    <p class="font-jakarta font-bold text-slate-900">{{ $employeeSurvey->survey->survey_name }}</p>
                                     @if($employeeSurvey->survey->survey_description)
-                                        <p class="mt-0.5 text-xs line-clamp-1"
-                                           style="color: var(--dash-text-muted);">
-                                            {{ $employeeSurvey->survey->survey_description }}
-                                        </p>
+                                        <p class="mt-0.5 text-xs text-slate-500 line-clamp-1">{{ $employeeSurvey->survey->survey_description }}</p>
                                     @endif
                                 </td>
                                 <td class="px-6 py-4">
                                     @if($employeeSurvey->answers_exists)
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide"
-                                              style="background-color: #f0fdf4; color: #059669;">
+                                        <span class="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-emerald-100 text-emerald-800">
                                             Sudah Diisi
                                         </span>
                                     @else
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide"
-                                              style="background-color: #fef3c7; color: #d97706;">
+                                        <span class="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-amber-100 text-amber-800">
                                             Belum Diisi
                                         </span>
                                     @endif
                                 </td>
-                                <td class="px-6 py-4 text-sm">
+                                <td class="px-6 py-4 font-medium text-slate-600">
                                     @if($employeeSurvey->answers_exists)
-                                        <span class="inline-flex items-center gap-1.5"
-                                              style="color: var(--dash-text-body);">
-                                            <span class="material-symbols-outlined text-[16px]"
-                                                  style="color: var(--dash-text-muted);">check_circle</span>
-                                            {{ $employeeSurvey->updated_at->format('d M Y, H:i') }}
-                                        </span>
+                                        <span class="inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-slate-400">check_circle</span> {{ $employeeSurvey->updated_at->format('d M Y, H:i') }}</span>
                                     @else
-                                        <span style="color: var(--dash-text-faint);">—</span>
+                                        <span class="text-slate-400 italic">—</span>
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 text-right">
                                     @if($employeeSurvey->answers_exists)
-                                        <a href="{{ route('employee.surveys.show', $employeeSurvey) }}"
-                                           class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold transition-colors gap-1.5"
-                                           style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
-                                           onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
-                                           onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
-                                            <span class="material-symbols-outlined text-[16px]">visibility</span>
+                                        <a href="{{ route('employee.surveys.show', $employeeSurvey) }}" class="inline-flex min-h-[38px] items-center justify-center rounded-lg border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-colors">
                                             Lihat Jawaban
                                         </a>
                                     @else
-                                        <a href="{{ route('employee.surveys.show', $employeeSurvey) }}"
-                                           class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold text-white hover:opacity-90 transition-opacity gap-1.5 border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]"
-                                           style="background-color: var(--dash-primary);">
-                                            <span class="material-symbols-outlined text-[16px]">edit_note</span>
+                                        <a href="{{ route('employee.surveys.show', $employeeSurvey) }}" class="inline-flex min-h-[38px] items-center justify-center rounded-lg bg-[#215aac] px-4 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-colors">
                                             Mulai Isi
                                         </a>
                                     @endif

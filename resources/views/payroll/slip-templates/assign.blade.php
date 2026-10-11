@@ -6,12 +6,12 @@
 <div class="max-w-4xl mx-auto space-y-6">
     <div class="flex items-start justify-between gap-4">
         <div>
-            <p class="text-sm font-semibold uppercase tracking-wider text-[color:var(--dash-text-muted)]">Payroll → Template Slip</p>
-            <h1 class="font-jakarta text-2xl font-bold tracking-tight text-[color:var(--dash-text-heading)]">Assign Template per Posisi</h1>
-            <p class="mt-1 text-sm text-[color:var(--dash-text-muted)]">Tentukan template slip untuk tiap posisi. Kosong = auto-detect berdasarkan nama posisi.</p>
+            <p class="text-sm font-semibold uppercase tracking-wider text-slate-500">Payroll → Template Slip</p>
+            <h1 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Assign Template per Posisi</h1>
+            <p class="mt-1 text-sm text-slate-500">Tentukan template slip untuk tiap posisi. Kosong = auto-detect berdasarkan nama posisi.</p>
         </div>
         <a href="{{ route('payroll.slip-templates.index') }}"
-           class="inline-flex items-center gap-2 border border-[color:var(--dash-input-border)] px-4 py-2 text-sm font-semibold text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] shrink-0">
+           class="inline-flex items-center gap-2 border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 shrink-0">
             <span class="material-symbols-outlined text-[18px]">arrow_back</span> Kembali
         </a>
     </div>
@@ -21,15 +21,15 @@
     @endif
 
     <form action="{{ route('payroll.slip-templates.assign.update') }}" method="POST"
-          class="rounded-2xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
+          class="rounded-xl border border-slate-100 bg-white shadow-sm">
         @csrf
         <div>
-            <table class="min-w-full divide-y divide-[color:var(--dash-card-border)] text-sm">
-                <thead class="bg-[var(--dash-nav-hover-bg)] text-left text-xs font-bold uppercase tracking-wider text-[color:var(--dash-text-muted)]">
+            <table class="min-w-full divide-y divide-slate-100 text-sm">
+                <thead class="bg-slate-50 text-left text-xs font-bold uppercase tracking-wider text-slate-500">
                     <tr>
                         <th class="px-6 py-4">Posisi</th>
                         <th class="px-6 py-4">Template Slip</th>
-                        <th class="px-6 py-4 text-[color:var(--dash-text-faint)]">Auto-detect</th>
+                        <th class="px-6 py-4 text-slate-400">Auto-detect</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">
@@ -43,19 +43,19 @@
                         $current = $position->slip_template_type ?? '';
                     @endphp
                     <tr class="hover:bg-slate-50/50 transition-colors">
-                        <td class="px-6 py-3 font-medium text-[color:var(--dash-text-heading)]">{{ $position->position_name }}</td>
+                        <td class="px-6 py-3 font-medium text-slate-800">{{ $position->position_name }}</td>
                         <td class="px-6 py-3">
                             <select name="assignments[{{ $position->id }}]"
-                                    class="w-full rounded-lg border border-[color:var(--dash-card-border)] px-3 py-1.5 text-sm text-[color:var(--dash-text-body)] focus:border-[color:var(--dash-primary,#215aac)] focus:ring-1 focus:ring-[color:var(--dash-primary,#215aac)]">
+                                    class="w-full rounded-lg border border-slate-200 px-3 py-1.5 text-sm text-slate-700 focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]">
                                 <option value="" {{ $current === '' ? 'selected' : '' }}>— Auto-detect —</option>
                                 @foreach($typeLabels as $type => $label)
                                 <option value="{{ $type }}" {{ $current === $type ? 'selected' : '' }}>{{ $label }}</option>
                                 @endforeach
                             </select>
                         </td>
-                        <td class="px-6 py-3 text-xs text-[color:var(--dash-text-faint)]">
+                        <td class="px-6 py-3 text-xs text-slate-400">
                             @if(!$current)
-                            <span class="inline-flex items-center gap-1 rounded-full bg-[var(--dash-nav-hover-bg)] px-2 py-0.5 font-medium text-[color:var(--dash-text-muted)]">
+                            <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 font-medium text-slate-500">
                                 <span class="material-symbols-outlined text-[12px]">auto_fix</span>
                                 {{ $typeLabels[$autoType] }}
                             </span>
@@ -68,16 +68,16 @@
                 </tbody>
             </table>
         </div>
-        <div class="border-t border-[color:var(--dash-card-border)] bg-[var(--dash-nav-hover-bg)] px-6 py-4 flex justify-end">
+        <div class="border-t border-slate-100 bg-slate-50 px-6 py-4 flex justify-end">
             <button type="submit"
-                    class="inline-flex items-center gap-2 rounded-lg bg-[var(--dash-primary,#215aac)] px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-colors">
+                    class="inline-flex items-center gap-2 rounded-lg bg-[#215aac] px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-colors">
                 <span class="material-symbols-outlined text-[16px]">save</span> Simpan Assignment
             </button>
         </div>
     </form>
 
-    <div class="rounded-xl border border-[color:var(--dash-card-border)] bg-[var(--dash-nav-hover-bg)] p-5 text-xs text-[color:var(--dash-text-muted)] space-y-1">
-        <p class="font-semibold text-[color:var(--dash-text-body)]">Cara kerja:</p>
+    <div class="rounded-xl border border-slate-100 bg-slate-50 p-5 text-xs text-slate-500 space-y-1">
+        <p class="font-semibold text-slate-700">Cara kerja:</p>
         <p>• <strong>Auto-detect</strong> — sistem cek nama posisi mengandung "official tutor" atau "regular tutor", sisanya pakai Marketing</p>
         <p>• <strong>Override</strong> — pilih template spesifik untuk menimpa auto-detect</p>
         <p>• Perubahan berlaku saat slip berikutnya di-generate</p>

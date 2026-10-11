@@ -1,27 +1,17 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Buat Job Permintaan')
-@section('header_title', 'Buat Job Permintaan')
-
 @section('content')
-<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-3xl mx-auto space-y-6">
-
-    <div class="flex items-start gap-3">
-        <a href="{{ route('recruitment.permintaan.index') }}"
-           class="mt-1 hover:opacity-70 transition-opacity shrink-0"
-           style="color: var(--dash-primary-text);">
-            <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-3xl mx-auto">
+    <div class="mb-6 flex items-center gap-3">
+        <a href="{{ route('recruitment.permintaan.index') }}" class="text-gray-400 hover:text-gray-600">
+            <span class="material-symbols-outlined text-xl">arrow_back</span>
         </a>
-        <div>
-            <p class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--dash-primary-text);">Rekrutmen</p>
-            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Buat Job Permintaan</h1>
-        </div>
+        <h1 class="text-2xl md:text-3xl text-gray-800 font-bold">Buat Job Permintaan</h1>
     </div>
 
     @if ($errors->any())
-        <div class="px-4 py-3 rounded-xl text-sm"
-             style="background-color: #fef2f2; border: 1px solid #fecaca; color: #dc2626;">
-            <ul class="list-disc list-inside space-y-1">
+        <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
+            <ul class="list-disc list-inside text-sm text-red-700 space-y-1">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -29,19 +19,15 @@
         </div>
     @endif
 
-    <div class="rounded-2xl overflow-hidden" style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+    <div class="bg-white shadow-lg rounded-sm border border-gray-200">
         <form action="{{ route('recruitment.permintaan.store') }}" method="POST" class="p-6 space-y-5">
             @csrf
 
             <div>
-                <label class="block text-sm font-medium mb-1" style="color: var(--dash-text-body);">
+                <label class="block text-sm font-medium text-gray-700 mb-1">
                     Posisi yang Diminta <span class="text-red-500">*</span>
                 </label>
-                <select name="detail[position_id]" required
-                        class="w-full rounded-lg text-sm px-3 py-2.5 focus:outline-none transition-colors"
-                        style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
-                        onfocus="this.style.borderColor='var(--dash-primary)'"
-                        onblur="this.style.borderColor='var(--dash-input-border)'">
+                <select name="detail[position_id]" class="form-select w-full" required>
                     <option value="">Pilih Posisi</option>
                     @foreach($positions as $position)
                         <option value="{{ $position->id }}" {{ old('detail.position_id') == $position->id ? 'selected' : '' }}>
@@ -54,34 +40,30 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                    <label class="block text-sm font-medium mb-1" style="color: var(--dash-text-body);">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
                         Jenis Permintaan <span class="text-red-500">*</span>
                     </label>
-                    <select name="detail[request_type]" required
-                            class="w-full rounded-lg text-sm px-3 py-2.5 focus:outline-none transition-colors"
-                            style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
-                            onfocus="this.style.borderColor='var(--dash-primary)'"
-                            onblur="this.style.borderColor='var(--dash-input-border)'">
+                    <select name="detail[request_type]" class="form-select w-full" required>
                         <option value="">Pilih Jenis</option>
-                        <option value="replacement" {{ old('detail.request_type') === 'replacement' ? 'selected' : '' }}>Penggantian (Replacement)</option>
-                        <option value="new_position" {{ old('detail.request_type') === 'new_position' ? 'selected' : '' }}>Posisi Baru (New Position)</option>
+                        <option value="replacement" {{ old('detail.request_type') === 'replacement' ? 'selected' : '' }}>
+                            Penggantian (Replacement)
+                        </option>
+                        <option value="new_position" {{ old('detail.request_type') === 'new_position' ? 'selected' : '' }}>
+                            Posisi Baru (New Position)
+                        </option>
                     </select>
                     @error('detail.request_type') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium mb-1" style="color: var(--dash-text-body);">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
                         Tipe Pekerjaan <span class="text-red-500">*</span>
                     </label>
-                    <select name="detail[employment_type]" required
-                            class="w-full rounded-lg text-sm px-3 py-2.5 focus:outline-none transition-colors"
-                            style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
-                            onfocus="this.style.borderColor='var(--dash-primary)'"
-                            onblur="this.style.borderColor='var(--dash-input-border)'">
+                    <select name="detail[employment_type]" class="form-select w-full" required>
                         <option value="">Pilih Tipe</option>
-                        <option value="kontrak"     {{ old('detail.employment_type') === 'kontrak'     ? 'selected' : '' }}>Kontrak</option>
-                        <option value="tetap"       {{ old('detail.employment_type') === 'tetap'       ? 'selected' : '' }}>Tetap</option>
-                        <option value="magang"      {{ old('detail.employment_type') === 'magang'      ? 'selected' : '' }}>Magang</option>
+                        <option value="kontrak" {{ old('detail.employment_type') === 'kontrak' ? 'selected' : '' }}>Kontrak</option>
+                        <option value="tetap" {{ old('detail.employment_type') === 'tetap' ? 'selected' : '' }}>Tetap</option>
+                        <option value="magang" {{ old('detail.employment_type') === 'magang' ? 'selected' : '' }}>Magang</option>
                         <option value="paruh_waktu" {{ old('detail.employment_type') === 'paruh_waktu' ? 'selected' : '' }}>Paruh Waktu</option>
                     </select>
                     @error('detail.employment_type') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
@@ -90,66 +72,46 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                    <label class="block text-sm font-medium mb-1" style="color: var(--dash-text-body);">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
                         Jumlah yang Dibutuhkan <span class="text-red-500">*</span>
                     </label>
-                    <input type="number" name="detail[headcount]" min="1" value="{{ old('detail.headcount', 1) }}" required
-                           class="w-full rounded-lg text-sm px-3 py-2.5 focus:outline-none transition-colors"
-                           style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
-                           onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
-                           onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'" />
+                    <input type="number" name="detail[headcount]" min="1" value="{{ old('detail.headcount', 1) }}"
+                        class="form-input w-full" required />
                     @error('detail.headcount') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium mb-1" style="color: var(--dash-text-body);">
-                        Jumlah Saat Ini <span style="color: var(--dash-text-faint);">(opsional)</span>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Jumlah Saat Ini (opsional)
                     </label>
                     <input type="number" name="detail[current_headcount]" min="0" value="{{ old('detail.current_headcount') }}"
-                           placeholder="Isi jika ada"
-                           class="w-full rounded-lg text-sm px-3 py-2.5 focus:outline-none transition-colors"
-                           style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
-                           onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
-                           onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'" />
+                        class="form-input w-full" placeholder="Isi jika ada" />
                     @error('detail.current_headcount') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
             </div>
 
             <div>
-                <label class="block text-sm font-medium mb-1" style="color: var(--dash-text-body);">
-                    Target Tanggal Mulai <span style="color: var(--dash-text-faint);">(opsional)</span>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Target Tanggal Mulai (opsional)
                 </label>
                 <input type="date" name="detail[target_start_date]" value="{{ old('detail.target_start_date') }}"
-                       class="w-full rounded-lg text-sm px-3 py-2.5 focus:outline-none transition-colors"
-                       style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
-                       onfocus="this.style.borderColor='var(--dash-primary)'"
-                       onblur="this.style.borderColor='var(--dash-input-border)'" />
+                    class="form-input w-full" />
                 @error('detail.target_start_date') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
 
             <div>
-                <label class="block text-sm font-medium mb-1" style="color: var(--dash-text-body);">
-                    Deskripsi Pekerjaan <span style="color: var(--dash-text-faint);">(opsional)</span>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Deskripsi Pekerjaan (opsional)
                 </label>
-                <textarea name="detail[job_description]" rows="4"
-                          placeholder="Uraikan tugas dan tanggung jawab..."
-                          class="w-full rounded-lg text-sm px-3 py-2.5 focus:outline-none transition-colors"
-                          style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
-                          onfocus="this.style.borderColor='var(--dash-primary)'"
-                          onblur="this.style.borderColor='var(--dash-input-border)'">{{ old('detail.job_description') }}</textarea>
+                <textarea name="detail[job_description]" rows="4" class="form-textarea w-full"
+                    placeholder="Uraikan tugas dan tanggung jawab...">{{ old('detail.job_description') }}</textarea>
                 @error('detail.job_description') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
 
-            <div class="pt-2 flex justify-end gap-3" style="border-top: 1px solid var(--dash-card-border); padding-top: 1.25rem;">
+            <div class="pt-2 flex justify-end gap-3">
                 <a href="{{ route('recruitment.permintaan.index') }}"
-                   class="px-5 py-2.5 text-sm font-semibold rounded-lg transition-colors inline-flex items-center gap-1.5"
-                   style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
-                   onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
-                   onmouseout="this.style.backgroundColor='var(--dash-card-bg)'"><span class="material-symbols-outlined text-[16px]">close</span>Batal</a>
-                <button type="submit"
-                        class="px-5 py-2.5 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity inline-flex items-center gap-1.5"
-                        style="background-color: var(--dash-primary);">
-                    <span class="material-symbols-outlined text-[16px]">save</span>
+                    class="btn bg-white border-gray-200 hover:border-gray-300 text-gray-600">Batal</a>
+                <button type="submit" class="btn bg-indigo-500 hover:bg-indigo-600 text-white">
                     Simpan sebagai Draft
                 </button>
             </div>

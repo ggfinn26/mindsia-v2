@@ -34,7 +34,7 @@ class EmployeeProfileController extends Controller
                     Log::error('Failed to get telegram photo: '.$e->getMessage());
                 }
             } else {
-                $photoUrl = Storage::url($employee->image_path);
+                $photoUrl = Storage::disk('public')->url($employee->image_path);
             }
         }
 
@@ -97,8 +97,8 @@ class EmployeeProfileController extends Controller
                         $webp = $image->encode(new WebpEncoder(quality: 85));
 
                         $filename = 'signatures/'.Str::random(40).'.webp';
-                        Storage::put('public/'.$filename, (string) $webp);
-                        $employeeData['signature_image'] = 'public/'.$filename;
+                        Storage::disk('public')->put($filename, (string) $webp);
+                        $employeeData['signature_image'] = $filename;
                     }
                 } catch (\Exception $e) {
                     Log::error('Failed to save signature: '.$e->getMessage());

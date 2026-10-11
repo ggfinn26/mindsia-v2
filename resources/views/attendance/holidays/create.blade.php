@@ -5,10 +5,10 @@
 @section('content')
 <div class="max-w-lg mx-auto py-6 px-4 sm:px-6 lg:px-8">
     <div class="mb-6 flex items-center gap-3">
-        <a href="{{ route('holidays.index') }}" class="text-[var(--dash-text-faint)] hover:text-[var(--dash-text-body)]">
+        <a href="{{ route('holidays.index') }}" class="text-gray-400 hover:text-gray-600">
             <span class="material-symbols-outlined">arrow_back</span>
         </a>
-        <h1 class="text-2xl font-bold text-[var(--dash-text-heading)]">Tambah Hari Libur</h1>
+        <h1 class="text-2xl font-bold text-gray-900">Tambah Hari Libur</h1>
     </div>
 
     @if ($errors->any())
@@ -17,29 +17,29 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('holidays.store') }}" class="bg-[var(--dash-card-bg)] shadow rounded-lg divide-y divide-[var(--dash-card-border)]">
+    <form method="POST" action="{{ route('holidays.store') }}" class="bg-white shadow rounded-lg divide-y divide-gray-100">
         @csrf
 
         <div class="px-6 py-5 space-y-4">
             <div>
-                <label class="block text-xs font-bold text-[var(--dash-text-muted)] uppercase tracking-wide mb-1">Nama Hari Libur <span class="text-red-500">*</span></label>
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Nama Hari Libur <span class="text-red-500">*</span></label>
                 <input type="text" name="holiday_name" value="{{ old('holiday_name') }}"
-                       class="w-full px-3.5 py-2.5 border border-[var(--dash-input-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]/30"
+                       class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                        placeholder="Contoh: Hari Raya Idul Fitri">
                 @error('holiday_name') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-xs font-bold text-[var(--dash-text-muted)] uppercase tracking-wide mb-1">Tanggal Mulai <span class="text-red-500">*</span></label>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Tanggal Mulai <span class="text-red-500">*</span></label>
                     <input type="date" name="holiday_start_date" value="{{ old('holiday_start_date') }}"
-                           class="w-full px-3.5 py-2.5 border border-[var(--dash-input-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]/30">
+                           class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                     @error('holiday_start_date') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-[var(--dash-text-muted)] uppercase tracking-wide mb-1">Tanggal Selesai <span class="text-red-500">*</span></label>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Tanggal Selesai <span class="text-red-500">*</span></label>
                     <input type="date" name="holiday_end_date" value="{{ old('holiday_end_date') }}"
-                           class="w-full px-3.5 py-2.5 border border-[var(--dash-input-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]/30">
+                           class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                     @error('holiday_end_date') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
             </div>
@@ -47,13 +47,11 @@
 
         <div class="px-6 py-4 flex justify-end gap-3">
             <a href="{{ route('holidays.index') }}"
-               class="px-4 py-2 text-sm font-medium text-[var(--dash-text-body)] bg-[var(--dash-card-bg)] border border-[var(--dash-input-border)] rounded-lg hover:bg-[var(--dash-page-bg)] transition-colors inline-flex items-center gap-1.5">
-                <span class="material-symbols-outlined text-[16px]">close</span>
+               class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                 Batal
             </a>
             <button type="submit"
-                    class="px-4 py-2 text-sm font-medium text-white bg-[var(--dash-primary)] rounded-lg hover:opacity-90 transition-colors inline-flex items-center gap-1.5">
-                <span class="material-symbols-outlined text-[16px]">save</span>
+                    class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
                 Simpan
             </button>
         </div>

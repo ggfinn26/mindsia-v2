@@ -198,6 +198,9 @@
     --dash-primary-bg: #eef4ff;
     --dash-primary-text: #5586db;
     --dash-logo: #5586db;
+
+    /* Danger — semantic, tidak ikut tema */
+    --dash-danger: #dc2626;
 }
 
 /* ── Theme: Blue ── */
@@ -310,6 +313,34 @@
 }
 .dash-back .material-symbols-outlined {
     font-size: 16px;
+}
+
+/* File input — button + separator ikut tema */
+.dash-file-input {
+    background-color: var(--dash-input-bg);
+    border: 1px solid var(--dash-input-border);
+    color: var(--dash-text-muted);
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+}
+.dash-file-input::file-selector-button {
+    background-color: var(--dash-primary-bg);
+    color: var(--dash-primary);
+    border: none;
+    border-right: 1px solid var(--dash-input-border);
+    border-radius: 0.375rem 0 0 0.375rem;
+    padding: 0.25rem 0.75rem;
+    margin-right: 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+.dash-file-input::file-selector-button:hover {
+    opacity: 0.8;
 }
 
 @keyframes float {

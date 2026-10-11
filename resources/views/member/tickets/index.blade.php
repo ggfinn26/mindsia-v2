@@ -7,10 +7,10 @@
 <div class="max-w-5xl mx-auto space-y-6">
     <div class="flex justify-between items-center">
         <div>
-            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Tiket Bantuan</h1>
-            <p class="text-sm text-[color:var(--dash-text-muted)] mt-1">Ajukan pertanyaan atau masalah kepada tim MINDSIA.</p>
+            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Tiket Bantuan</h2>
+            <p class="text-sm text-slate-500 mt-1">Ajukan pertanyaan atau masalah kepada tim MINDSIA.</p>
         </div>
-        <a href="{{ route('member.tickets.create') }}" class="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-lg bg-[var(--dash-primary,#215aac)] px-5 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-colors">
+        <a href="{{ route('member.tickets.create') }}" class="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-lg bg-[#215aac] px-5 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-colors">
             <span class="material-symbols-outlined text-[18px]">add</span> Buat Tiket
         </a>
     </div>
@@ -23,23 +23,23 @@
     @endif
 
     @if($tickets->isEmpty())
-        <div class="flex flex-col items-center justify-center rounded-2xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] py-16 px-6 shadow-sm text-center">
-            <div class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-[var(--dash-nav-hover-bg)] mb-4">
-                <span class="material-symbols-outlined text-[color:var(--dash-text-faint)] text-3xl">confirmation_number</span>
+        <div class="flex flex-col items-center justify-center rounded-xl border border-slate-100 bg-white py-16 px-6 shadow-sm text-center">
+            <div class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-slate-50 mb-4">
+                <span class="material-symbols-outlined text-slate-400 text-3xl">confirmation_number</span>
             </div>
-            <h3 class="font-jakarta text-base font-bold text-[color:var(--dash-text-heading)]">Belum Ada Tiket</h3>
-            <p class="mt-1 text-sm text-[color:var(--dash-text-muted)] max-w-md mx-auto">Buat tiket jika ada pertanyaan atau kendala yang perlu dibantu tim MINDSIA.</p>
+            <h3 class="font-jakarta text-base font-bold text-slate-900">Belum Ada Tiket</h3>
+            <p class="mt-1 text-sm text-slate-500 max-w-md mx-auto">Buat tiket jika ada pertanyaan atau kendala yang perlu dibantu tim MINDSIA.</p>
             <div class="mt-6">
-                <a href="{{ route('member.tickets.create') }}" class="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-lg bg-[var(--dash-primary,#215aac)] px-5 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-colors">
+                <a href="{{ route('member.tickets.create') }}" class="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-lg bg-[#215aac] px-5 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-colors">
                     <span class="material-symbols-outlined text-[18px]">add</span> Buat Tiket Pertama
                 </a>
             </div>
         </div>
     @else
-        <div class="overflow-hidden rounded-2xl border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
+        <div class="overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm">
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-[color:var(--dash-card-border)] text-sm">
-                    <thead class="bg-[var(--dash-nav-hover-bg)] text-left text-xs font-bold uppercase tracking-wider text-[color:var(--dash-text-muted)]">
+                <table class="min-w-full divide-y divide-slate-100 text-sm">
+                    <thead class="bg-slate-50 text-left text-xs font-bold uppercase tracking-wider text-slate-500">
                         <tr>
                             <th class="px-6 py-4">Nomor Tiket</th>
                             <th class="px-6 py-4">Subjek</th>
@@ -49,20 +49,20 @@
                             <th class="px-6 py-4 text-right">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-50 text-[color:var(--dash-text-body)]">
+                    <tbody class="divide-y divide-slate-50 text-slate-700">
                         @foreach($tickets as $ticket)
                             <tr class="hover:bg-slate-50/50 transition-colors">
-                                <td class="px-6 py-4 font-mono text-xs text-[color:var(--dash-text-muted)]">{{ $ticket->ticket_number }}</td>
-                                <td class="px-6 py-4 font-jakarta font-bold text-[color:var(--dash-text-heading)] max-w-[200px] truncate">{{ $ticket->subject }}</td>
-                                <td class="px-6 py-4 capitalize text-[color:var(--dash-text-body)]">{{ $ticket->category }}</td>
+                                <td class="px-6 py-4 font-mono text-xs text-slate-500">{{ $ticket->ticket_number }}</td>
+                                <td class="px-6 py-4 font-jakarta font-bold text-slate-900 max-w-[200px] truncate">{{ $ticket->subject }}</td>
+                                <td class="px-6 py-4 capitalize text-slate-600">{{ $ticket->category }}</td>
                                 <td class="px-6 py-4">
                                     @php
                                         $statusColor = match($ticket->status) {
                                             'open'     => 'bg-amber-100 text-amber-800',
                                             'in_progress' => 'bg-blue-100 text-blue-800',
                                             'resolved' => 'bg-emerald-100 text-emerald-800',
-                                            'closed'   => 'bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)]',
-                                            default    => 'bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)]',
+                                            'closed'   => 'bg-slate-100 text-slate-700',
+                                            default    => 'bg-slate-100 text-slate-700',
                                         };
                                         $statusLabel = match($ticket->status) {
                                             'open'        => 'Terbuka',
@@ -76,9 +76,9 @@
                                         {{ $statusLabel }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 text-[color:var(--dash-text-muted)]">{{ $ticket->created_at->format('d M Y') }}</td>
+                                <td class="px-6 py-4 text-slate-500">{{ $ticket->created_at->format('d M Y') }}</td>
                                 <td class="px-6 py-4 text-right">
-                                    <a href="{{ route('member.tickets.show', $ticket) }}" class="inline-flex min-h-[34px] items-center justify-center rounded-lg border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] px-3 text-xs font-bold text-[color:var(--dash-text-body)] shadow-sm hover:bg-[var(--dash-nav-hover-bg)] transition-colors">
+                                    <a href="{{ route('member.tickets.show', $ticket) }}" class="inline-flex min-h-[34px] items-center justify-center rounded-lg border border-slate-200 bg-white px-3 text-xs font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-colors">
                                         Lihat
                                     </a>
                                 </td>

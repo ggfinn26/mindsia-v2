@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" class="theme-blue mode-light">
+<html lang="id">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,23 +11,20 @@
     <style>
         .font-jakarta { font-family: 'Plus Jakarta Sans', sans-serif; }
         .font-inter { font-family: 'Inter', sans-serif; }
+        /* Custom thin scrollbar for sidebar */
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--dash-scrollbar-thumb); border-radius: 4px; }
         .custom-scrollbar:hover::-webkit-scrollbar-thumb { background: var(--dash-scrollbar-hover); }
     </style>
 </head>
-<body class="font-inter antialiased flex h-[100dvh] overflow-hidden transition-colors duration-200"
-      style="background-color: var(--dash-page-bg); color: var(--dash-text-body);"
-      x-data="{ sidebarOpen: false }">
+<body class="font-inter antialiased flex h-[100dvh] overflow-hidden" style="background-color: var(--dash-page-bg); color: var(--dash-text-body);" x-data="{ sidebarOpen: false }">
 
     <!-- Mobile sidebar backdrop -->
     <div x-show="sidebarOpen" class="fixed inset-0 z-20 bg-gray-900 bg-opacity-50 transition-opacity md:hidden" @click="sidebarOpen = false"></div>
 
     <!-- Sidebar -->
-    <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-           class="fixed inset-y-0 left-0 z-30 w-64 overflow-hidden flex flex-col transition-transform duration-300 md:translate-x-0 md:sticky md:top-0 md:h-screen md:z-auto md:shrink-0"
-           style="background-color: var(--dash-sidebar-bg); border-right: 1px solid var(--dash-sidebar-border);">
+    <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed inset-y-0 left-0 z-30 w-64 overflow-hidden flex flex-col transition-transform duration-300 md:translate-x-0 md:sticky md:top-0 md:h-screen md:z-auto md:shrink-0" style="background-color: var(--dash-sidebar-bg); border-right: 1px solid var(--dash-sidebar-border);">
         <!-- Logo -->
         <div class="h-16 flex items-center justify-center shrink-0" style="border-bottom: 1px solid var(--dash-sidebar-border-subtle);">
             <a href="/">
@@ -59,8 +56,7 @@
     <!-- Main Content -->
     <div class="flex-1 flex flex-col relative min-w-0">
         <!-- Top Header -->
-        <header class="h-16 flex items-center justify-between px-4 sm:px-6 z-10 shrink-0"
-                style="background-color: var(--dash-topbar-bg); border-bottom: 1px solid var(--dash-topbar-border);">
+        <header class="h-16 flex items-center justify-between px-4 sm:px-6 z-10 shrink-0" style="background-color: var(--dash-topbar-bg); border-bottom: 1px solid var(--dash-topbar-border);">
             <div class="flex items-center">
                 <!-- Mobile menu button -->
                 <button @click="sidebarOpen = true" class="md:hidden w-11 h-11 -ml-2 mr-2 flex items-center justify-center rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 active:bg-gray-200 focus:outline-none">

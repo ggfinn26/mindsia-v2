@@ -6,10 +6,10 @@
 @section('content')
 <div class="max-w-3xl mx-auto space-y-6">
     <div>
-        <a href="{{ route('facility.tickets.show', $facilityTicket) }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-body)]">
+        <a href="{{ route('facility.tickets.show', $facilityTicket) }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700">
             <span class="material-symbols-outlined text-[16px]">arrow_back</span> {{ $facilityTicket->title }}
         </a>
-        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Edit Tiket Fasilitas</h1>
+        <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Edit Tiket Fasilitas</h2>
     </div>
 
     @if ($errors->any())
@@ -20,38 +20,38 @@
 
     <form method="POST" action="{{ route('facility.tickets.update', $facilityTicket) }}" class="space-y-5">
         @csrf @method('PUT')
-        <div class="border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] p-5 space-y-4">
-            <h3 class="font-jakarta text-sm font-bold text-[color:var(--dash-text-heading)]">Informasi Tiket</h3>
+        <div class="border border-slate-200 bg-white p-5 space-y-4">
+            <h3 class="font-jakarta text-sm font-bold text-slate-900">Informasi Tiket</h3>
 
             <div>
-                <label class="mb-1 block text-xs font-semibold text-[color:var(--dash-text-body)]">Judul</label>
-                <input type="text" name="title" required maxlength="255" value="{{ old('title', $facilityTicket->title) }}" class="block w-full border-[color:var(--dash-input-border)] text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
+                <label class="mb-1 block text-xs font-semibold text-slate-700">Judul</label>
+                <input type="text" name="title" required maxlength="255" value="{{ old('title', $facilityTicket->title) }}" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
             </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="mb-1 block text-xs font-semibold text-[color:var(--dash-text-body)]">Prioritas</label>
-                    <select name="priority" class="block w-full border-[color:var(--dash-input-border)] text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
+                    <label class="mb-1 block text-xs font-semibold text-slate-700">Prioritas</label>
+                    <select name="priority" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
                         <option value="low" {{ old('priority', $facilityTicket->priority) === 'low' ? 'selected' : '' }}>Rendah</option>
                         <option value="medium" {{ old('priority', $facilityTicket->priority) === 'medium' ? 'selected' : '' }}>Sedang</option>
                         <option value="high" {{ old('priority', $facilityTicket->priority) === 'high' ? 'selected' : '' }}>Tinggi</option>
                     </select>
                 </div>
                 <div>
-                    <label class="mb-1 block text-xs font-semibold text-[color:var(--dash-text-body)]">Biaya Penanganan (Rp)</label>
-                    <input type="number" name="cost_amount" min="0" step="0.01" value="{{ old('cost_amount', $facilityTicket->cost_amount) }}" class="block w-full border-[color:var(--dash-input-border)] text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
+                    <label class="mb-1 block text-xs font-semibold text-slate-700">Biaya Penanganan (Rp)</label>
+                    <input type="number" name="cost_amount" min="0" step="0.01" value="{{ old('cost_amount', $facilityTicket->cost_amount) }}" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
                 </div>
             </div>
 
             <div>
-                <label class="mb-1 block text-xs font-semibold text-[color:var(--dash-text-body)]">Deskripsi</label>
-                <textarea name="description" rows="4" class="block w-full border-[color:var(--dash-input-border)] text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">{{ old('description', $facilityTicket->description) }}</textarea>
+                <label class="mb-1 block text-xs font-semibold text-slate-700">Deskripsi</label>
+                <textarea name="description" rows="4" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">{{ old('description', $facilityTicket->description) }}</textarea>
             </div>
         </div>
 
         <div class="flex justify-end gap-3">
-            <a href="{{ route('facility.tickets.show', $facilityTicket) }}" class="inline-flex min-h-10 items-center border border-[color:var(--dash-input-border)] px-4 text-sm font-semibold text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]">Batal</a>
-            <button type="submit" class="inline-flex min-h-10 items-center bg-[var(--dash-primary,#215aac)] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">Simpan</button>
+            <a href="{{ route('facility.tickets.show', $facilityTicket) }}" class="inline-flex min-h-10 items-center border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50">Batal</a>
+            <button type="submit" class="inline-flex min-h-10 items-center bg-[#215aac] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">Simpan</button>
         </div>
     </form>
 </div>

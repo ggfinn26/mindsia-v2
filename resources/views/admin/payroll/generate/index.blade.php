@@ -1,123 +1,87 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Generate Payroll - MINDSIA')
+@section('title', 'Generate Payroll')
 @section('header_title', 'Generate Payroll')
 
 @section('content')
 @php
-    $months = ['','Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    $months = ['', 'Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    $statusBadge = [
+        'review'    => 'bg-amber-100 text-amber-800',
+        'finalized' => 'bg-emerald-100 text-emerald-800',
+    ];
 @endphp
 
-<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6">
-
-    {{-- Page header --}}
+<div class="max-w-7xl mx-auto space-y-6">
     <div>
-        <p class="text-xs font-semibold uppercase tracking-wider mb-1"
-           style="color: var(--dash-primary-text);">Payroll</p>
-        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
-            style="color: var(--dash-text-heading);">Generate Payroll</h1>
-        <p class="mt-1 text-sm" style="color: var(--dash-text-muted);">
-            Pilih periode untuk memproses perhitungan gaji karyawan.
-        </p>
+        <p class="text-sm font-medium text-[#725c00]">Payroll</p>
+        <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Generate Payroll</h2>
+        <p class="mt-1 max-w-2xl text-sm leading-6 text-slate-600">Pilih periode untuk memproses perhitungan gaji karyawan.</p>
     </div>
 
-    @if(session('success'))
-        <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
-             style="background-color: #f0fdf4; border-color: #bbf7d0; color: #059669;">
-            <span class="material-symbols-outlined text-[18px]">check_circle</span>
-            {{ session('success') }}
+    @if (session('success'))
+        <div class="flex gap-3 border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+            <span class="material-symbols-outlined text-[20px]">check_circle</span>
+            <p>{{ session('success') }}</p>
         </div>
     @endif
-    @if(session('error'))
-        <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
-             style="background-color: #fee2e2; border-color: #fca5a5; color: #dc2626;">
-            <span class="material-symbols-outlined text-[18px]">error</span>
-            {{ session('error') }}
+    @if (session('error'))
+        <div class="flex gap-3 border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+            <span class="material-symbols-outlined text-[20px]">error</span>
+            <p>{{ session('error') }}</p>
         </div>
     @endif
 
-    <div class="rounded-2xl overflow-hidden"
-         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
-        <div class="px-5 py-4" style="border-bottom: 1px solid var(--dash-card-border);">
-            <h3 class="font-jakarta text-base font-bold" style="color: var(--dash-text-heading);">
-                Periode siap di-generate
-            </h3>
+    <div class="overflow-hidden border border-slate-200 bg-white">
+        <div class="border-b border-slate-200 px-5 py-4">
+            <h3 class="font-jakarta text-base font-bold text-slate-900">Periode siap di-generate</h3>
         </div>
         <div class="overflow-x-auto">
-            <table class="w-full table-fixed text-sm">
-                <colgroup>
-                    <col class="w-[22%]">
-                    <col class="w-[18%]">
-                    <col class="w-[14%]">
-                    <col class="w-[10%]">
-                    <col class="w-[36%]">
-                </colgroup>
-                <thead>
-                    <tr style="border-bottom: 1px solid var(--dash-card-border);">
-                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider"
-                            style="color: var(--dash-text-muted);">Periode</th>
-                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider"
-                            style="color: var(--dash-text-muted);">Tanggal Gajian</th>
-                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider"
-                            style="color: var(--dash-text-muted);">Status</th>
-                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider"
-                            style="color: var(--dash-text-muted);">Pegawai</th>
-                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider"
-                            style="color: var(--dash-text-muted);">Aksi</th>
+            <table class="min-w-full divide-y divide-slate-200 text-sm">
+                <thead class="bg-slate-50 text-left text-xs font-semibold text-slate-500">
+                    <tr>
+                        <th class="px-5 py-3">Periode</th>
+                        <th class="px-5 py-3">Tanggal Gajian</th>
+                        <th class="px-5 py-3">Status</th>
+                        <th class="px-5 py-3">Pegawai</th>
+                        <th class="px-5 py-3 text-right">Aksi</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @forelse($periods as $period)
-                        <tr style="border-bottom: 1px solid var(--dash-card-border);"
-                            onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
-                            onmouseout="this.style.backgroundColor=''">
-                            <td class="px-5 py-4 font-semibold" style="color: var(--dash-text-heading);">
+                <tbody class="divide-y divide-slate-100">
+                    @forelse ($periods as $period)
+                        <tr class="hover:bg-slate-50/70">
+                            <td class="px-5 py-4 font-semibold text-slate-900">
                                 {{ $months[$period->period_month] }} {{ $period->period_year }}
                             </td>
-                            <td class="px-5 py-4 text-sm" style="color: var(--dash-text-body);">
+                            <td class="px-5 py-4 text-slate-600">
                                 {{ $period->pay_date?->format('d M Y') ?? '—' }}
                             </td>
                             <td class="px-5 py-4">
-                                @php
-                                    $badgeStyle = match($period->status) {
-                                        'finalized' => 'background-color:#f0fdf4;color:#059669;',
-                                        'review'    => 'background-color:#fef3c7;color:#d97706;',
-                                        default     => 'background-color:var(--dash-nav-hover-bg);color:var(--dash-text-muted);',
-                                    };
-                                @endphp
-                                <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold"
-                                      style="{{ $badgeStyle }}">
+                                <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $statusBadge[$period->status] ?? 'bg-slate-100 text-slate-600' }}">
                                     {{ ucfirst($period->status) }}
                                 </span>
                             </td>
-                            <td class="px-5 py-4 text-sm" style="color: var(--dash-text-body);">
+                            <td class="px-5 py-4 text-slate-600">
                                 {{ $period->employee_payrolls_count ?? 0 }}
                             </td>
                             <td class="px-5 py-4 text-right">
-                                <div class="inline-flex items-center justify-end gap-2">
+                                <div class="flex items-center justify-end gap-2">
                                     <a href="{{ route('payroll.periods.show', $period) }}"
-                                       class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors"
-                                       style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
-                                       onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
-                                       onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
-                                        <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+                                       class="inline-flex min-h-9 items-center gap-1 border border-slate-300 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50">
                                         Lihat Detail
                                     </a>
-                                    @if(($period->employee_payrolls_count ?? 0) === 0)
-                                        <form method="POST" action="{{ route('payroll.periods.generate', $period) }}" class="inline">
+                                    @if (($period->employee_payrolls_count ?? 0) === 0)
+                                        <form method="POST" action="{{ route('payroll.periods.generate', $period) }}">
                                             @csrf
                                             <button type="submit"
                                                     onclick="return confirm('Generate payroll untuk semua pegawai aktif periode {{ $months[$period->period_month] }} {{ $period->period_year }}?')"
-                                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white hover:opacity-90 transition-opacity"
-                                                    style="background-color: var(--dash-primary);">
-                                                <span class="material-symbols-outlined text-[14px]">bolt</span>
+                                                    class="inline-flex min-h-9 items-center gap-1 bg-[#215aac] px-3 text-xs font-semibold text-white hover:bg-[#194a91]">
+                                                <span class="material-symbols-outlined text-[16px]">bolt</span>
                                                 Generate
                                             </button>
                                         </form>
                                     @else
-                                        <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold"
-                                              style="background-color: #f0fdf4; color: #059669;">
-                                            <span class="material-symbols-outlined text-[12px]">check_circle</span>
+                                        <span class="inline-flex rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-800">
                                             Sudah digenerate
                                         </span>
                                     @endif
@@ -126,17 +90,10 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-5 py-16 text-center">
-                                <span class="material-symbols-outlined text-[48px] block mx-auto mb-3"
-                                      style="color: var(--dash-text-faint);">pending</span>
-                                <p class="text-sm font-semibold" style="color: var(--dash-text-muted);">
-                                    Tidak ada periode yang siap di-generate.
-                                </p>
-                                <p class="text-sm mt-1" style="color: var(--dash-text-faint);">
-                                    Finalize periode terlebih dahulu di halaman
-                                    <a href="{{ route('payroll.periods.index') }}"
-                                       class="underline" style="color: var(--dash-primary);">Kelola Periode</a>.
-                                </p>
+                            <td colspan="5" class="px-5 py-12 text-center">
+                                <span class="material-symbols-outlined text-3xl text-slate-300">pending</span>
+                                <p class="mt-2 font-semibold text-slate-700">Tidak ada periode yang siap di-generate.</p>
+                                <p class="mt-1 text-sm text-slate-500">Finalize periode terlebih dahulu di halaman <a href="{{ route('payroll.periods.index') }}" class="text-[#215aac] underline">Kelola Periode</a>.</p>
                             </td>
                         </tr>
                     @endforelse
@@ -144,6 +101,5 @@
             </table>
         </div>
     </div>
-
 </div>
 @endsection

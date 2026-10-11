@@ -4,7 +4,6 @@
 @section('header_title', 'Checklist Terminasi')
 
 @section('content')
-<h1 class="sr-only">Checklist Terminasi</h1>
 <div class="max-w-2xl mx-auto">
 
     @if($errors->any())
@@ -18,25 +17,25 @@
         </div>
     @endif
 
-    <div class="bg-[var(--dash-card-bg)] rounded-2xl border border-[color:var(--dash-card-border)] shadow-sm overflow-hidden mb-8">
-        <div class="px-6 py-4 border-b border-[color:var(--dash-card-border)] flex items-center justify-between">
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-8">
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <div class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-[#5586DB] text-[22px]">checklist</span>
-                <h2 class="font-bold text-[color:var(--dash-text-heading)] font-jakarta">Checklist Penyelesaian Kewajiban</h2>
+                <h2 class="font-bold text-gray-800 font-jakarta">Checklist Penyelesaian Kewajiban</h2>
             </div>
-            <a href="{{ route('employees.show', $status->employee) }}" class="text-[13px] font-medium text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-heading)] flex items-center gap-1 transition-colors">
+            <a href="{{ route('employees.show', $status->employee) }}" class="text-[13px] font-medium text-gray-500 hover:text-gray-800 flex items-center gap-1 transition-colors">
                 <span class="material-symbols-outlined text-[16px]">arrow_back</span> Kembali
             </a>
         </div>
 
-        <div class="px-6 py-4 bg-gray-50/50 border-b border-[color:var(--dash-card-border)]">
+        <div class="px-6 py-4 bg-gray-50/50 border-b border-gray-100">
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <p class="text-[11px] font-bold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1">Nama Karyawan</p>
-                    <p class="text-sm font-semibold text-[color:var(--dash-text-heading)]">{{ $status->employee->full_name }}</p>
+                    <p class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Nama Karyawan</p>
+                    <p class="text-sm font-semibold text-gray-800">{{ $status->employee->full_name }}</p>
                 </div>
                 <div>
-                    <p class="text-[11px] font-bold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1">Status Karyawan</p>
+                    <p class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Status Karyawan</p>
                     <div class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-50 text-red-700 rounded-lg text-xs font-semibold border border-red-100">
                         <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
                         Terminated
@@ -52,7 +51,7 @@
             @if($checklist->count() === 0)
                 <div class="text-center py-8">
                     <span class="material-symbols-outlined text-gray-300 text-5xl mb-2">assignment</span>
-                    <p class="text-[color:var(--dash-text-muted)] text-sm">Belum ada item checklist kewajiban untuk karyawan ini.</p>
+                    <p class="text-gray-500 text-sm">Belum ada item checklist kewajiban untuk karyawan ini.</p>
                 </div>
             @else
                 <div class="space-y-3">
@@ -60,21 +59,21 @@
                         <div class="relative">
                             <input type="hidden" name="items[{{ $loop->index }}][id]" value="{{ $item->id }}">
                             
-                            <label class="flex items-start sm:items-center gap-4 p-4 border border-[color:var(--dash-card-border)] rounded-xl cursor-pointer hover:bg-gray-50/50 transition-colors {{ $item->is_completed ? 'bg-[var(--dash-nav-hover-bg)] border-[color:var(--dash-card-border)] opacity-75' : 'bg-[var(--dash-card-bg)]' }}">
+                            <label class="flex items-start sm:items-center gap-4 p-4 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50/50 transition-colors {{ $item->is_completed ? 'bg-gray-50 border-gray-200 opacity-75' : 'bg-white' }}">
                                 <div class="relative flex items-center justify-center mt-0.5 sm:mt-0">
                                     <input type="hidden" name="items[{{ $loop->index }}][is_completed]" value="0">
                                     <input type="checkbox" name="items[{{ $loop->index }}][is_completed]" value="1"
                                         {{ $item->is_completed ? 'checked' : '' }}
-                                        class="peer w-5 h-5 appearance-none border-2 border-[color:var(--dash-input-border)] rounded cursor-pointer checked:bg-[#5586DB] checked:border-[#5586DB] transition-all">
+                                        class="peer w-5 h-5 appearance-none border-2 border-gray-300 rounded cursor-pointer checked:bg-[#5586DB] checked:border-[#5586DB] transition-all">
                                     <span class="material-symbols-outlined text-white text-[16px] absolute pointer-events-none opacity-0 peer-checked:opacity-100">check</span>
                                 </div>
 
                                 <div class="flex-1">
-                                    <span class="text-sm font-medium text-[color:var(--dash-text-heading)] {{ $item->is_completed ? 'line-through text-[color:var(--dash-text-muted)]' : '' }}">{{ $item->item_name }}</span>
+                                    <span class="text-sm font-medium text-gray-800 {{ $item->is_completed ? 'line-through text-gray-500' : '' }}">{{ $item->item_name }}</span>
                                 </div>
 
                                 @if($item->is_completed)
-                                    <div class="flex items-center gap-1 text-[11px] font-semibold text-[color:var(--dash-text-muted)] bg-[var(--dash-nav-hover-bg)] px-2.5 py-1 rounded-md shrink-0">
+                                    <div class="flex items-center gap-1 text-[11px] font-semibold text-gray-500 bg-gray-100 px-2.5 py-1 rounded-md shrink-0">
                                         <span class="material-symbols-outlined text-[14px]">done_all</span>
                                         {{ $item->completed_at->format('d M Y, H:i') }}
                                     </div>
@@ -89,9 +88,9 @@
                     $isAllDone = $completedCount === $checklist->count();
                 @endphp
 
-                <div class="mt-8 p-5 bg-[#F8FAFC] rounded-xl border border-[color:var(--dash-card-border)]">
+                <div class="mt-8 p-5 bg-[#F8FAFC] rounded-xl border border-gray-200">
                     <div class="flex items-center justify-between mb-2">
-                        <p class="text-sm font-bold text-[color:var(--dash-text-heading)]">Progress Penyelesaian</p>
+                        <p class="text-sm font-bold text-gray-800">Progress Penyelesaian</p>
                         <p class="text-sm font-bold {{ $isAllDone ? 'text-green-600' : 'text-[#5586DB]' }}">{{ $completedCount }} / {{ $checklist->count() }} ({{ $percentage }}%)</p>
                     </div>
                     <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
@@ -105,15 +104,14 @@
                 </div>
             @endif
 
-            <div class="pt-4 mt-6 border-t border-[color:var(--dash-card-border)] flex justify-end gap-3">
+            <div class="pt-4 mt-6 border-t border-gray-100 flex justify-end gap-3">
                 <a href="{{ route('employees.show', $status->employee) }}"
-                   class="px-5 py-2.5 text-[13px] font-bold text-[color:var(--dash-text-body)] bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-lg hover:bg-[var(--dash-nav-hover-bg)] transition-colors inline-flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                   class="px-5 py-2.5 text-[13px] font-bold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
                     Kembali
                 </a>
                 @if($checklist->count() > 0)
                     <button type="submit"
-                            class="bg-[var(--dash-primary)] hover:opacity-90 text-white px-6 py-2.5 rounded-lg text-[13px] font-bold shadow-sm transition-colors flex items-center gap-2">
+                            class="bg-[#5586DB] hover:bg-[#4A78C4] text-white px-6 py-2.5 rounded-xl text-[13px] font-bold shadow-sm transition-colors flex items-center gap-2">
                         <span class="material-symbols-outlined text-[18px]">save</span>
                         Simpan Progress
                     </button>

@@ -1,83 +1,61 @@
 @extends('layouts.dashboard')
 
 @section('title', 'Test & Sertifikat')
-@section('header_title', 'Test & Sertifikat')
 
 @section('content')
-<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6">
-
-    {{-- Header --}}
-    <div class="flex items-start justify-between gap-4">
-        <div>
-            <p class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--dash-primary-text);">Akademik</p>
-            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Test & Sertifikat</h1>
-            <p class="mt-1 text-sm" style="color: var(--dash-text-muted);">
-                Daftar semua test yang telah dilakukan pada berbagai kelas.
-            </p>
-        </div>
+<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">Test & Sertifikat</h1>
     </div>
 
     @if (session('success'))
-        <div class="flex gap-3 px-4 py-3 text-sm rounded-lg" style="border: 1px solid #a7f3d0; background-color: #ecfdf5; color: #065f46;">
-            <span class="material-symbols-outlined text-[20px]">check_circle</span>
-            <p>{{ session('success') }}</p>
+        <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
+            {{ session('success') }}
         </div>
     @endif
 
-    {{-- Table --}}
-    <div class="rounded-2xl overflow-hidden" style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+    <div class="bg-white shadow sm:rounded-lg">
         <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-                <thead>
-                    <tr style="border-bottom: 1px solid var(--dash-card-border);">
-                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Tanggal</th>
-                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Kelas</th>
-                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Program</th>
-                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Cabang</th>
-                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Nama Test</th>
-                        <th class="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Tipe</th>
-                        <th class="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Hasil</th>
-                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Aksi</th>
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kelas</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Program</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cabang</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Test</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Tipe</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Hasil</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Detail</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($tests as $test)
-                        <tr style="border-bottom: 1px solid var(--dash-card-border);"
-                            onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
-                            onmouseout="this.style.backgroundColor=''">
-                            <td class="px-5 py-4" style="color: var(--dash-text-body);">{{ $test->date?->format('d M Y') }}</td>
-                            <td class="px-5 py-4">
-                                <a href="{{ route('classrooms.show', $test->classRoom) }}" class="font-semibold transition-opacity hover:opacity-75" style="color: var(--dash-primary);">
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $test->date?->format('d M Y') }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                <a href="{{ route('classrooms.show', $test->classRoom) }}" class="text-indigo-600 hover:text-indigo-900">
                                     {{ $test->classRoom?->class_name ?? '-' }}
                                 </a>
                             </td>
-                            <td class="px-5 py-4" style="color: var(--dash-text-body);">{{ $test->classRoom?->program?->program_name ?? '-' }}</td>
-                            <td class="px-5 py-4" style="color: var(--dash-text-body);">{{ $test->classRoom?->branch?->branch_name ?? '-' }}</td>
-                            <td class="px-5 py-4" style="color: var(--dash-text-heading);">{{ $test->test_name }}</td>
-                            <td class="px-5 py-4 text-center">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $test->classRoom?->program?->program_name ?? '-' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $test->classRoom?->branch?->branch_name ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900">{{ $test->test_name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-center">
                                 @if($test->test_type === 'pre_test')
-                                    <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold" style="background-color: #eff6ff; color: #1d4ed8;">Pre-Test</span>
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Pre-Test</span>
                                 @else
-                                    <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold" style="background-color: #faf5ff; color: #7e22ce;">Post-Test</span>
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">Post-Test</span>
                                 @endif
                             </td>
-                            <td class="px-5 py-4 text-center tabular-nums" style="color: var(--dash-text-body);">{{ $test->member_test_results_count }}</td>
-                            <td class="px-5 py-4 text-right">
-                                <a href="{{ route('classrooms.show', $test->classRoom) }}"
-                                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors"
-                                   style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body); background-color: var(--dash-card-bg);"
-                                   onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
-                                   onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
-                                    <span class="material-symbols-outlined text-[14px]">open_in_new</span>Buka
-                                </a>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-500">{{ $test->member_test_results_count }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <a href="{{ route('classrooms.show', $test->classRoom) }}" class="text-indigo-600 hover:text-indigo-900">Buka</a>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="px-5 py-16 text-center">
-                                <span class="material-symbols-outlined text-[48px] block mx-auto mb-3" style="color: var(--dash-text-faint);">quiz</span>
-                                <p class="text-sm font-semibold" style="color: var(--dash-text-muted);">Belum ada test tersedia.</p>
-                            </td>
+                            <td colspan="8" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">Belum ada test tersedia.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -85,7 +63,7 @@
         </div>
 
         @if($tests->hasPages())
-        <div class="px-5 py-4" style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+        <div class="px-6 py-4 border-t border-gray-200">
             {{ $tests->links() }}
         </div>
         @endif

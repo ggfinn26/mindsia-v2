@@ -5,8 +5,8 @@
 @section('content')
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-3xl mx-auto">
     <div class="mb-6 flex items-center justify-between">
-        <h1 class="text-2xl font-bold text-[color:var(--dash-text-heading)]">Buat Test TOEFL Baru</h1>
-        <a href="{{ route('toefl-tests.index') }}" class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium transition-colors gap-1.5"><span class="material-symbols-outlined text-[16px]">arrow_back</span>Kembali</a>
+        <h1 class="text-2xl font-bold text-gray-800">Buat Test TOEFL Baru</h1>
+        <a href="{{ route('toefl-tests.index') }}" class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-sm font-medium transition-colors">Kembali</a>
     </div>
 
     @if ($errors->any())
@@ -17,19 +17,19 @@
         </div>
     @endif
 
-    <div class="bg-[var(--dash-card-bg)] shadow-lg rounded-sm border border-[color:var(--dash-card-border)]">
+    <div class="bg-white shadow-lg rounded-sm border border-gray-200">
         <form action="{{ route('toefl-tests.store') }}" method="POST" class="p-6 space-y-5">
             @csrf
 
             <div>
-                <label for="test_name" class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">Nama Test <span class="text-red-500">*</span></label>
+                <label for="test_name" class="block text-sm font-medium text-gray-700 mb-1">Nama Test <span class="text-red-500">*</span></label>
                 <input id="test_name" name="test_name" type="text" value="{{ old('test_name') }}"
                     class="form-input w-full min-h-[44px] @error('test_name') border-red-400 @enderror" required />
             </div>
 
             <div>
-                <label for="password" class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">
-                    Password Test <span class="text-[color:var(--dash-text-faint)] font-normal">(kosongkan jika tanpa password)</span>
+                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
+                    Password Test <span class="text-gray-400 font-normal">(kosongkan jika tanpa password)</span>
                 </label>
                 <input id="password" name="password" type="text" value="{{ old('password') }}"
                     class="form-input w-full min-h-[44px] @error('password') border-red-400 @enderror"
@@ -38,8 +38,8 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label for="level" class="block text-sm font-medium text-[color:var(--dash-text-body)] mb-1">
-                        Level <span class="text-[color:var(--dash-text-faint)] font-normal">(opsional)</span>
+                    <label for="level" class="block text-sm font-medium text-gray-700 mb-1">
+                        Level <span class="text-gray-400 font-normal">(opsional)</span>
                     </label>
                     <select id="level" name="level" class="form-select w-full min-h-[44px] @error('level') border-red-400 @enderror">
                         <option value="">— Pilih Level —</option>
@@ -50,37 +50,37 @@
                 </div>
                 <div class="flex items-center gap-3 min-h-[44px] pt-6">
                     <input id="is_trial" name="is_trial" type="checkbox" value="1"
-                        class="rounded border-[color:var(--dash-input-border)] text-indigo-600 w-5 h-5 cursor-pointer" {{ old('is_trial') ? 'checked' : '' }} />
-                    <label for="is_trial" class="text-sm font-medium text-[color:var(--dash-text-body)] cursor-pointer select-none">
-                        Test Trial <span class="text-[color:var(--dash-text-faint)] font-normal">(akses publik tanpa login member)</span>
+                        class="rounded border-gray-300 text-indigo-600 w-5 h-5 cursor-pointer" {{ old('is_trial') ? 'checked' : '' }} />
+                    <label for="is_trial" class="text-sm font-medium text-gray-700 cursor-pointer select-none">
+                        Test Trial <span class="text-gray-400 font-normal">(akses publik tanpa login member)</span>
                     </label>
                 </div>
             </div>
 
-            <div class="border-t border-[color:var(--dash-card-border)] pt-5">
-                <p class="text-sm font-medium text-[color:var(--dash-text-body)] mb-3">Durasi per Section (menit)</p>
+            <div class="border-t border-gray-100 pt-5">
+                <p class="text-sm font-medium text-gray-700 mb-3">Durasi per Section (menit)</p>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-xs text-[color:var(--dash-text-muted)] mb-1">Listening</label>
+                        <label class="block text-xs text-gray-500 mb-1">Listening</label>
                         <input name="listening_time_limit" type="number" min="1"
                             value="{{ old('listening_time_limit', 35) }}" class="form-input w-full min-h-[44px]" />
                     </div>
                     <div>
-                        <label class="block text-xs text-[color:var(--dash-text-muted)] mb-1">Structure</label>
+                        <label class="block text-xs text-gray-500 mb-1">Structure</label>
                         <input name="structure_time_limit" type="number" min="1"
                             value="{{ old('structure_time_limit', 25) }}" class="form-input w-full min-h-[44px]" />
                     </div>
                     <div>
-                        <label class="block text-xs text-[color:var(--dash-text-muted)] mb-1">Reading</label>
+                        <label class="block text-xs text-gray-500 mb-1">Reading</label>
                         <input name="reading_time_limit" type="number" min="1"
                             value="{{ old('reading_time_limit', 55) }}" class="form-input w-full min-h-[44px]" />
                     </div>
                 </div>
             </div>
 
-            <div class="flex flex-col sm:flex-row sm:justify-end gap-3 pt-4 mt-2 border-t border-[color:var(--dash-card-border)]">
-                <a href="{{ route('toefl-tests.index') }}" class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-[var(--dash-card-bg)] border border-[color:var(--dash-input-border)] hover:bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)] text-sm font-medium transition-colors gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</a>
-                <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-lg bg-[var(--dash-primary)] hover:opacity-90 text-white text-sm font-medium transition-colors gap-1.5"><span class="material-symbols-outlined text-[16px]">add</span>Buat Test</button>
+            <div class="flex flex-col sm:flex-row sm:justify-end gap-3 pt-4 mt-2 border-t border-gray-100">
+                <a href="{{ route('toefl-tests.index') }}" class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-sm font-medium transition-colors">Batal</a>
+                <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium transition-colors">Buat Test</button>
             </div>
         </form>
     </div>

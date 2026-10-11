@@ -6,34 +6,34 @@
 <div class="max-w-3xl mx-auto px-4 py-8">
     <div class="mb-6 flex justify-between items-center">
         <div>
-            <a href="{{ route('member.curriculum.index') }}" class="text-sm text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-body)]">← Kurikulum</a>
-            <h1 class="text-xl font-bold text-[color:var(--dash-text-heading)] font-jakarta mt-1">Riwayat Latihan — {{ $item->item_name }}</h1>
+            <a href="{{ route('member.curriculum.index') }}" class="text-sm text-gray-500 hover:text-gray-700">← Kurikulum</a>
+            <h1 class="text-xl font-bold text-gray-900 font-jakarta mt-1">Riwayat Latihan — {{ $item->item_name }}</h1>
         </div>
         <a href="{{ route('member.curriculum.interactive.show', [$classroom, $item]) }}"
-            class="px-4 py-2 font-medium rounded-lg transition-colors bg-[var(--dash-primary)] hover:opacity-90 text-white text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">replay</span>Latihan Lagi</a>
+            class="px-4 py-2 font-medium rounded-lg transition-colors bg-[#5586DB] hover:bg-[#4370BC] text-white text-sm">Latihan Lagi</a>
     </div>
 
     @if($attempts->isEmpty())
-        <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl p-8 text-center text-[color:var(--dash-text-faint)]">
+        <div class="bg-white border border-gray-100 rounded-xl p-8 text-center text-gray-400">
             Belum ada riwayat latihan.
         </div>
     @else
-        <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl overflow-hidden shadow-sm">
+        <div class="bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm">
             <table class="w-full text-sm">
-                <thead class="bg-[var(--dash-nav-hover-bg)] border-b border-[color:var(--dash-card-border)]">
+                <thead class="bg-gray-50 border-b border-gray-100">
                     <tr>
-                        <th class="text-left px-4 py-3 text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase">#</th>
-                        <th class="text-left px-4 py-3 text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase">Tanggal</th>
-                        <th class="text-left px-4 py-3 text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase">Durasi</th>
-                        <th class="text-center px-4 py-3 text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase">Skor</th>
+                        <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">#</th>
+                        <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Tanggal</th>
+                        <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Durasi</th>
+                        <th class="text-center px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Skor</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-[color:var(--dash-card-border)]">
+                <tbody class="divide-y divide-slate-100">
                     @foreach($attempts as $i => $attempt)
-                        <tr class="hover:bg-[var(--dash-nav-hover-bg)]">
-                            <td class="px-4 py-3 text-[color:var(--dash-text-muted)]">{{ $i + 1 }}</td>
-                            <td class="px-4 py-3 text-[color:var(--dash-text-body)]">{{ $attempt->completed_at->format('d M Y, H:i') }}</td>
-                            <td class="px-4 py-3 text-[color:var(--dash-text-muted)]">
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-4 py-3 text-gray-500">{{ $i + 1 }}</td>
+                            <td class="px-4 py-3 text-gray-700">{{ $attempt->completed_at->format('d M Y, H:i') }}</td>
+                            <td class="px-4 py-3 text-gray-500">
                                 {{ $attempt->started_at->diffInMinutes($attempt->completed_at) }} menit
                             </td>
                             <td class="px-4 py-3 text-center">

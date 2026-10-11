@@ -33,15 +33,15 @@ foreach ($item->interactiveBlocks as $bi => $block) {
 <div class="max-w-3xl mx-auto px-4 py-8" id="quiz-root">
     <div class="mb-6 flex justify-between items-center">
         <div>
-            <a href="{{ route('member.curriculum.index') }}" class="text-sm text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-body)]">← Kurikulum</a>
-            <h1 class="text-xl font-bold text-[color:var(--dash-text-heading)] font-jakarta mt-1">{{ $item->item_name }}</h1>
+            <a href="{{ route('member.curriculum.index') }}" class="text-sm text-gray-500 hover:text-gray-700">← Kurikulum</a>
+            <h1 class="text-xl font-bold text-gray-900 font-jakarta mt-1">{{ $item->item_name }}</h1>
         </div>
         <a href="{{ route('member.curriculum.interactive.history', [$classroom, $item]) }}"
             class="text-sm text-[#5586DB] hover:underline">Riwayat Latihan</a>
     </div>
 
     @if ($item->interactiveBlocks->isEmpty())
-        <div class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl p-8 text-center text-[color:var(--dash-text-faint)]">
+        <div class="bg-white border border-gray-100 rounded-xl p-8 text-center text-gray-400">
             Modul ini belum memiliki konten.
         </div>
     @else
@@ -50,7 +50,7 @@ foreach ($item->interactiveBlocks as $bi => $block) {
             @foreach ($item->interactiveBlocks as $i => $block)
                 <button type="button"
                     class="block-nav-btn px-3 py-1.5 rounded-full text-sm border font-medium flex-shrink-0 transition-colors
-                        {{ $i === 0 ? 'bg-[#5586DB] text-white border-[#5586DB]' : 'bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] border-[color:var(--dash-card-border)] hover:border-[#5586DB]' }}"
+                        {{ $i === 0 ? 'bg-[#5586DB] text-white border-[#5586DB]' : 'bg-white text-gray-600 border-gray-200 hover:border-[#5586DB]' }}"
                     data-block="{{ $i }}">Blok {{ $i + 1 }}</button>
             @endforeach
         </div>
@@ -63,7 +63,7 @@ foreach ($item->interactiveBlocks as $bi => $block) {
 
                     {{-- Image --}}
                     @if ($block->image)
-                        <div class="mb-4 rounded-2xl overflow-hidden border border-[color:var(--dash-card-border)]">
+                        <div class="mb-4 rounded-xl overflow-hidden border border-gray-100">
                             <img src="{{ Storage::url($block->image->file_path) }}"
                                 alt="{{ $block->image->original_name }}"
                                 class="w-full object-contain max-h-80"
@@ -80,7 +80,7 @@ foreach ($item->interactiveBlocks as $bi => $block) {
 
                     {{-- Audio --}}
                     @if ($block->audio)
-                        <div class="mb-4 p-3 bg-[var(--dash-nav-hover-bg)] border border-[color:var(--dash-card-border)] rounded-xl flex items-center gap-3">
+                        <div class="mb-4 p-3 bg-gray-50 border border-gray-100 rounded-xl flex items-center gap-3">
                             <span class="material-symbols-outlined text-[#5586DB]">volume_up</span>
                             <audio controls class="flex-1" controlsList="nodownload">
                                 <source src="{{ Storage::url($block->audio->file_path) }}">
@@ -90,8 +90,8 @@ foreach ($item->interactiveBlocks as $bi => $block) {
 
                     {{-- Questions: teks diganti canvas --}}
                     @forelse ($block->questions as $qi => $question)
-                        <div class="mb-6 bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl p-5">
-                            <p class="text-sm text-[color:var(--dash-text-muted)] mb-2">Soal {{ $qi + 1 }}</p>
+                        <div class="mb-6 bg-white border border-gray-100 rounded-xl p-5">
+                            <p class="text-sm text-gray-500 mb-2">Soal {{ $qi + 1 }}</p>
                             {{-- Question text: canvas --}}
                             <canvas class="q-canvas w-full block mb-4"
                                 data-block="{{ $i }}"
@@ -101,7 +101,7 @@ foreach ($item->interactiveBlocks as $bi => $block) {
                                 @foreach (['A', 'B', 'C', 'D'] as $opt)
                                     @php $val = $question->{'option_' . strtolower($opt)}; @endphp
                                     @if ($val)
-                                        <label class="flex items-center gap-3 p-3 rounded-xl border border-[color:var(--dash-card-border)] hover:border-blue-300 cursor-pointer transition-colors has-[:checked]:border-[#5586DB] has-[:checked]:bg-blue-50">
+                                        <label class="flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:border-blue-300 cursor-pointer transition-colors has-[:checked]:border-[#5586DB] has-[:checked]:bg-blue-50">
                                             <input type="radio"
                                                 name="answers[{{ $question->id }}]"
                                                 value="{{ $opt }}"
@@ -117,24 +117,23 @@ foreach ($item->interactiveBlocks as $bi => $block) {
                             </div>
                         </div>
                     @empty
-                        <p class="text-sm text-[color:var(--dash-text-faint)] italic">Blok ini tidak memiliki soal.</p>
+                        <p class="text-sm text-gray-400 italic">Blok ini tidak memiliki soal.</p>
                     @endforelse
 
                     {{-- Navigation --}}
                     <div class="flex justify-between mt-6">
                         @if ($i > 0)
-                            <button type="button" class="btn-prev px-4 py-2 font-medium rounded-lg bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] text-sm transition-colors inline-flex items-center gap-1.5" data-prev="{{ $i - 1 }}"><span class="material-symbols-outlined text-[16px]">arrow_back</span>Sebelumnya</button>
+                            <button type="button" class="btn-prev px-4 py-2 font-medium rounded-lg bg-white border border-gray-200 text-gray-700 text-sm transition-colors" data-prev="{{ $i - 1 }}">← Sebelumnya</button>
                         @else
                             <div></div>
                         @endif
 
                         @if ($i < $item->interactiveBlocks->count() - 1)
-                            <button type="button" class="btn-next px-4 py-2 font-medium rounded-lg bg-[var(--dash-primary)] text-white text-sm transition-colors inline-flex items-center gap-1.5" data-next="{{ $i + 1 }}"><span class="material-symbols-outlined text-[16px]">arrow_forward</span>Selanjutnya</button>
+                            <button type="button" class="btn-next px-4 py-2 font-medium rounded-lg bg-[#5586DB] text-white text-sm transition-colors" data-next="{{ $i + 1 }}">Selanjutnya →</button>
                         @else
                             <button type="button"
-                                class="px-4 py-2 font-medium rounded-lg bg-green-600 hover:bg-green-700 text-white text-sm transition-colors inline-flex items-center gap-1.5"
+                                class="px-4 py-2 font-medium rounded-lg bg-green-600 hover:bg-green-700 text-white text-sm transition-colors"
                                 onclick="document.getElementById('confirm-modal').classList.remove('hidden')">
-                                <span class="material-symbols-outlined text-[16px]">send</span>
                                 Selesai & Kirim Jawaban
                             </button>
                         @endif
@@ -145,22 +144,20 @@ foreach ($item->interactiveBlocks as $bi => $block) {
             {{-- Modal Konfirmasi --}}
             <div id="confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
                 <div class="absolute inset-0 bg-gray-900/50 backdrop-blur-sm" onclick="document.getElementById('confirm-modal').classList.add('hidden')"></div>
-                <div class="relative bg-[var(--dash-card-bg)] rounded-2xl shadow-xl border border-[color:var(--dash-card-border)] max-w-sm w-full mx-4 p-6 text-center transform transition-all">
+                <div class="relative bg-white rounded-xl shadow-xl border border-gray-100 max-w-sm w-full mx-4 p-6 text-center transform transition-all">
                     <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
                         <span class="material-symbols-outlined text-green-600 text-2xl">check_circle</span>
                     </div>
-                    <h3 class="text-lg font-semibold text-[color:var(--dash-text-heading)] font-jakarta mb-2">Selesaikan Latihan?</h3>
-                    <p class="text-sm text-[color:var(--dash-text-muted)] mb-6">Apakah Anda yakin ingin mengirim semua jawaban sekarang? Anda tidak dapat mengulangi jawaban setelah dikirim.</p>
+                    <h3 class="text-lg font-semibold text-gray-900 font-jakarta mb-2">Selesaikan Latihan?</h3>
+                    <p class="text-sm text-gray-500 mb-6">Apakah Anda yakin ingin mengirim semua jawaban sekarang? Anda tidak dapat mengulangi jawaban setelah dikirim.</p>
                     <div class="flex gap-3 justify-center">
                         <button type="button" 
-                            class="px-4 py-2 font-medium rounded-lg text-[color:var(--dash-text-body)] bg-[var(--dash-nav-hover-bg)] hover:bg-gray-200 transition-colors w-full inline-flex items-center justify-center gap-1.5"
+                            class="px-4 py-2 font-medium rounded-lg text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors w-full"
                             onclick="document.getElementById('confirm-modal').classList.add('hidden')">
-                            <span class="material-symbols-outlined text-[16px]">close</span>
                             Batal
                         </button>
                         <button type="submit" 
-                            class="px-4 py-2 font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 transition-colors w-full inline-flex items-center justify-center gap-1.5">
-                            <span class="material-symbols-outlined text-[16px]">send</span>
+                            class="px-4 py-2 font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 transition-colors w-full">
                             Ya, Kirim
                         </button>
                     </div>
@@ -276,9 +273,9 @@ foreach ($item->interactiveBlocks as $bi => $block) {
             b.classList.toggle('bg-[#5586DB]',    i === idx);
             b.classList.toggle('text-white',       i === idx);
             b.classList.toggle('border-[#5586DB]', i === idx);
-            b.classList.toggle('bg-[var(--dash-card-bg)]',         i !== idx);
-            b.classList.toggle('text-[color:var(--dash-text-body)]',    i !== idx);
-            b.classList.toggle('border-[color:var(--dash-card-border)]',  i !== idx);
+            b.classList.toggle('bg-white',         i !== idx);
+            b.classList.toggle('text-gray-600',    i !== idx);
+            b.classList.toggle('border-gray-200',  i !== idx);
         });
         /* Render teks saat blok baru ditampilkan (butuh width tersedia) */
         requestAnimationFrame(() => renderBlock(idx));

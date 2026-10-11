@@ -51,14 +51,13 @@
 @endpush
 
 @section('content')
-<h1 class="sr-only">Overview</h1>
     <div x-data="{}" >
         <div class="mb-6 flex items-center justify-between">
-            <p class="text-[color:var(--dash-text-muted)] font-medium text-sm sm:text-base">Selamat datang kembali, <span class="font-semibold text-[color:var(--dash-text-heading)]">{{ Auth::user()->name ?? 'Pengguna' }}</span> 👋</p>
+            <p class="text-gray-500 font-medium text-sm sm:text-base">Selamat datang kembali, <span class="font-semibold text-gray-800">{{ Auth::user()->name ?? 'Pengguna' }}</span> 👋</p>
 
             {{-- Customize toggle --}}
             <button @click="$store.dashboard.customizing = !$store.dashboard.customizing"
-                    :class="$store.dashboard.customizing ? 'bg-indigo-600 text-white' : 'bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] border border-[color:var(--dash-card-border)]'"
+                    :class="$store.dashboard.customizing ? 'bg-indigo-600 text-white' : 'bg-white text-gray-600 border border-gray-200'"
                     class="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg transition-colors">
                 <span class="material-symbols-outlined text-base">dashboard_customize</span>
                 <span x-text="$store.dashboard.customizing ? 'Selesai' : 'Atur Widget'"></span>
@@ -86,8 +85,8 @@
 
                         <div class="mb-8">
                             <div class="flex items-center gap-2 mb-4">
-                                <span class="material-symbols-outlined text-[color:var(--dash-text-faint)] text-lg">{{ $catInfo['icon'] }}</span>
-                                <h2 class="text-sm font-semibold text-[color:var(--dash-text-body)] uppercase tracking-wider">{{ $catInfo['label'] }}</h2>
+                                <span class="material-symbols-outlined text-gray-400 text-lg">{{ $catInfo['icon'] }}</span>
+                                <h2 class="text-sm font-semibold text-gray-600 uppercase tracking-wider">{{ $catInfo['label'] }}</h2>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 items-start auto-rows-max"
@@ -103,14 +102,14 @@
                                         <div x-show="$store.dashboard.customizing"
                                              class="absolute inset-0 z-50 rounded-xl ring-4 {{ $widget['is_enabled'] ? 'ring-indigo-500' : 'ring-gray-300' }} bg-slate-900/40 backdrop-blur-sm flex flex-col items-center justify-center gap-2"
                                              style="display: none;">
-                                            <div class="drag-handle cursor-grab active:cursor-grabbing p-2 rounded-lg bg-[var(--dash-card-bg)] shadow border border-[color:var(--dash-card-border)]" title="Geser untuk mengubah urutan">
-                                                <span class="material-symbols-outlined text-[color:var(--dash-text-muted)] text-xl">drag_indicator</span>
+                                            <div class="drag-handle cursor-grab active:cursor-grabbing p-2 rounded-lg bg-white shadow border border-gray-100" title="Geser untuk mengubah urutan">
+                                                <span class="material-symbols-outlined text-gray-500 text-xl">drag_indicator</span>
                                             </div>
-                                            <label class="flex items-center gap-1.5 bg-[var(--dash-card-bg)] shadow border border-[color:var(--dash-card-border)] rounded-lg px-2 py-1 cursor-pointer">
+                                            <label class="flex items-center gap-1.5 bg-white shadow border border-gray-100 rounded-lg px-2 py-1 cursor-pointer">
                                                 <input type="checkbox" {{ $widget['is_enabled'] ? 'checked' : '' }}
                                                        class="accent-indigo-600"
                                                        onchange="toggleWidget('{{ $widget['key'] }}', this)">
-                                                <span class="text-xs text-[color:var(--dash-text-body)] font-medium">Tampilkan</span>
+                                                <span class="text-xs text-gray-600 font-medium">Tampilkan</span>
                                             </label>
                                         </div>
 
@@ -118,14 +117,14 @@
                                         @if(view()->exists('dashboard.widgets.' . $widget['key']) && isset($widgetData[$widget['key']]))
                                             @include('dashboard.widgets.' . $widget['key'], ['data' => $widgetData[$widget['key']]])
                                         @else
-                                            <div class="bg-[var(--dash-card-bg)] rounded-2xl shadow-sm border border-[color:var(--dash-card-border)] p-5">
+                                            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
                                                 <div class="flex items-center gap-3 mb-2">
-                                                    <div class="h-10 w-10 rounded-lg bg-[var(--dash-nav-hover-bg)] flex items-center justify-center">
-                                                        <span class="material-symbols-outlined text-[color:var(--dash-text-faint)] text-xl">{{ $widget['icon'] }}</span>
+                                                    <div class="h-10 w-10 rounded-lg bg-gray-50 flex items-center justify-center">
+                                                        <span class="material-symbols-outlined text-gray-400 text-xl">{{ $widget['icon'] }}</span>
                                                     </div>
-                                                    <h3 class="text-sm font-semibold text-[color:var(--dash-text-heading)]">{{ $widget['label'] }}</h3>
+                                                    <h3 class="text-sm font-semibold text-gray-800">{{ $widget['label'] }}</h3>
                                                 </div>
-                                                <p class="text-xs text-[color:var(--dash-text-faint)]">Widget view belum tersedia.</p>
+                                                <p class="text-xs text-gray-400">Widget view belum tersedia.</p>
                                             </div>
                                         @endif
                                     </div>
@@ -143,16 +142,16 @@
             <div class="h-20 w-20 rounded-full bg-amber-50 flex items-center justify-center mb-5">
                 <span class="material-symbols-outlined text-amber-400 text-4xl">visibility_off</span>
             </div>
-            <h2 class="text-xl font-bold font-jakarta text-[color:var(--dash-text-heading)] mb-3">Semua Widget Disembunyikan</h2>
-            <p class="text-sm text-[color:var(--dash-text-muted)] leading-relaxed max-w-sm">Klik <strong>Atur Widget</strong> di atas untuk menampilkan kembali widget yang Anda butuhkan.</p>
+            <h2 class="text-xl font-bold font-jakarta text-gray-800 mb-3">Semua Widget Disembunyikan</h2>
+            <p class="text-sm text-gray-500 leading-relaxed max-w-sm">Klik <strong>Atur Widget</strong> di atas untuk menampilkan kembali widget yang Anda butuhkan.</p>
         </div>
     @elseif($widgets->isEmpty())
         <div class="flex flex-col items-center justify-center min-h-[60vh] h-full text-center">
             <div class="h-20 w-20 rounded-full bg-[#EEF4FF] flex items-center justify-center mb-5">
                 <span class="material-symbols-outlined text-[#5586DB] text-4xl">dashboard_customize</span>
             </div>
-            <h2 class="text-xl font-bold font-jakarta text-[color:var(--dash-text-heading)] mb-3">Ruang Kerja Anda</h2>
-            <p class="text-sm text-[color:var(--dash-text-muted)] leading-relaxed max-w-sm">Widget dan analitik akan ditampilkan di sini berdasarkan peran dan divisi Anda.</p>
+            <h2 class="text-xl font-bold font-jakarta text-gray-800 mb-3">Ruang Kerja Anda</h2>
+            <p class="text-sm text-gray-500 leading-relaxed max-w-sm">Widget dan analitik akan ditampilkan di sini berdasarkan peran dan divisi Anda.</p>
         </div>
     @endif
 @endsection

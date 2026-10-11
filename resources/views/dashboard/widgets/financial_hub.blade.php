@@ -19,7 +19,7 @@
     $benchColor = 'border-[#dbb940]'; // Gold for Benchmark line
 @endphp
 
-<div class="bg-[var(--dash-card-bg)] rounded-lg border border-[#cfc6af] shadow-sm overflow-hidden font-sans"
+<div class="bg-white rounded-lg border border-[#cfc6af] shadow-sm overflow-hidden font-sans"
      x-data="{
          activeTab: 'comparison',
          downloadModalOpen: false, dlType: 'tahunan', dlYear: '{{ request('year', now()->year) }}', dlSemester: '1', dlMonth: '{{ request('month', now()->month) }}',
@@ -51,38 +51,38 @@
                     $mVal = request('financial_hub_month', request('month', now()->month));
                     $yVal = request('financial_hub_year', request('year', now()->year));
                 @endphp
-                <select name="month" class="text-xs border-[#cfc6af] rounded py-1 px-2 bg-[var(--dash-card-bg)] text-[#1E293B] font-semibold focus:ring-1 focus:ring-[#dbb940]">
+                <select name="month" class="text-xs border-[#cfc6af] rounded py-1 px-2 bg-white text-[#1E293B] font-semibold focus:ring-1 focus:ring-[#dbb940]">
                     @foreach(range(1,12) as $m)
                         <option value="{{ $m }}" {{ $mVal == $m ? 'selected' : '' }}>{{ ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'][$m-1] }}</option>
                     @endforeach
                 </select>
-                <select name="year" class="text-xs border-[#cfc6af] rounded py-1 px-2 bg-[var(--dash-card-bg)] text-[#1E293B] font-semibold focus:ring-1 focus:ring-[#dbb940]">
+                <select name="year" class="text-xs border-[#cfc6af] rounded py-1 px-2 bg-white text-[#1E293B] font-semibold focus:ring-1 focus:ring-[#dbb940]">
                     @foreach(range(now()->year - 3, now()->year + 1) as $y)
                         <option value="{{ $y }}" {{ $yVal == $y ? 'selected' : '' }}>{{ $y }}</option>
                     @endforeach
                 </select>
-                <button type="submit" class="bg-[#1E293B] hover:bg-[#314865] text-white px-2 py-1 rounded text-xs font-semibold transition-colors inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px]">filter_list</span>Filter</button>
+                <button type="submit" class="bg-[#1E293B] hover:bg-[#314865] text-white px-2 py-1 rounded text-xs font-semibold transition-colors">Filter</button>
             </form>
 
-            <button @click="downloadModalOpen = true" class="p-1.5 rounded bg-[var(--dash-card-bg)] shadow-sm border border-[#cfc6af] hover:bg-[var(--dash-nav-hover-bg)] transition-colors flex items-center gap-1">
-                <span class="material-symbols-outlined text-[color:var(--dash-text-body)] text-sm">download</span>
+            <button @click="downloadModalOpen = true" class="p-1.5 rounded bg-white shadow-sm border border-[#cfc6af] hover:bg-gray-50 transition-colors flex items-center gap-1">
+                <span class="material-symbols-outlined text-gray-600 text-sm">download</span>
                 <span class="text-xs font-bold text-[#4c4635] pr-1">Unduh Laporan</span>
             </button>
 
             {{-- Modal --}}
             <div x-show="downloadModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" style="display: none;" @keydown.escape.window="downloadModalOpen = false">
-                <div @click.away="downloadModalOpen = false" class="bg-[var(--dash-card-bg)] rounded-lg shadow-xl border border-[#cfc6af] w-full max-w-md">
+                <div @click.away="downloadModalOpen = false" class="bg-white rounded-lg shadow-xl border border-[#cfc6af] w-full max-w-md">
                     <div class="px-5 py-4 border-b border-[#cfc6af] flex justify-between items-center bg-[#f9f9f8] rounded-t-lg">
                         <h3 class="text-sm font-bold text-[#1E293B]">Unduh Laporan PDF</h3>
-                        <button @click="downloadModalOpen = false" class="text-[color:var(--dash-text-faint)] hover:text-[color:var(--dash-text-body)]">
+                        <button @click="downloadModalOpen = false" class="text-gray-400 hover:text-gray-600">
                             <span class="material-symbols-outlined text-sm">close</span>
                         </button>
                     </div>
                     <div class="p-5">
                         <div class="flex border-b border-[#cfc6af] mb-4">
-                            <button @click="dlType = 'tahunan'" :class="dlType === 'tahunan' ? 'border-b-2 border-[#dbb940] text-[#1E293B]' : 'text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-body)]'" class="px-3 py-2 text-xs font-bold transition-colors">Tahunan</button>
-                            <button @click="dlType = 'semester'" :class="dlType === 'semester' ? 'border-b-2 border-[#dbb940] text-[#1E293B]' : 'text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-body)]'" class="px-3 py-2 text-xs font-bold transition-colors">Semester</button>
-                            <button @click="dlType = 'bulanan'" :class="dlType === 'bulanan' ? 'border-b-2 border-[#dbb940] text-[#1E293B]' : 'text-[color:var(--dash-text-muted)] hover:text-[color:var(--dash-text-body)]'" class="px-3 py-2 text-xs font-bold transition-colors">Bulanan</button>
+                            <button @click="dlType = 'tahunan'" :class="dlType === 'tahunan' ? 'border-b-2 border-[#dbb940] text-[#1E293B]' : 'text-gray-500 hover:text-gray-700'" class="px-3 py-2 text-xs font-bold transition-colors">Tahunan</button>
+                            <button @click="dlType = 'semester'" :class="dlType === 'semester' ? 'border-b-2 border-[#dbb940] text-[#1E293B]' : 'text-gray-500 hover:text-gray-700'" class="px-3 py-2 text-xs font-bold transition-colors">Semester</button>
+                            <button @click="dlType = 'bulanan'" :class="dlType === 'bulanan' ? 'border-b-2 border-[#dbb940] text-[#1E293B]' : 'text-gray-500 hover:text-gray-700'" class="px-3 py-2 text-xs font-bold transition-colors">Bulanan</button>
                         </div>
 
                         <form action="{{ route('dashboard.widget-export', ['widgetKey' => 'financial_hub', 'format' => 'pdf']) }}" method="GET">
@@ -146,8 +146,8 @@
                             </template>
 
                             <div class="mt-6 flex justify-end gap-2">
-                                <button type="button" @click="downloadModalOpen = false" class="px-4 py-2 text-xs font-bold border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)] inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px]">close</span>Batal</button>
-                                <button type="submit" class="px-4 py-2 bg-[#1E293B] text-white text-xs font-bold rounded-lg hover:bg-[#0f172a] shadow inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px]">download</span>Unduh PDF</button>
+                                <button type="button" @click="downloadModalOpen = false" class="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-700">Batal</button>
+                                <button type="submit" class="px-4 py-2 bg-[#1E293B] text-white text-xs font-bold rounded hover:bg-[#0f172a] shadow">Unduh PDF</button>
                             </div>
                         </form>
                     </div>
@@ -157,20 +157,20 @@
             {{-- View Tabs --}}
             <nav class="flex items-center p-1 bg-[#eeeeed] rounded border border-[#cfc6af] text-xs font-semibold">
                 <button @click="activeTab = 'overview'"
-                        :class="activeTab === 'overview' ? 'bg-[var(--dash-card-bg)] text-[#1E293B] shadow-sm' : 'text-[#7e7663] hover:text-[#1E293B]'"
+                        :class="activeTab === 'overview' ? 'bg-white text-[#1E293B] shadow-sm' : 'text-[#7e7663] hover:text-[#1E293B]'"
                         class="px-4 py-1.5 rounded transition">Nasional</button>
                 <button @click="activeTab = 'comparison'"
-                        :class="activeTab === 'comparison' ? 'bg-[var(--dash-card-bg)] text-[#1E293B] shadow-sm' : 'text-[#7e7663] hover:text-[#1E293B]'"
+                        :class="activeTab === 'comparison' ? 'bg-white text-[#1E293B] shadow-sm' : 'text-[#7e7663] hover:text-[#1E293B]'"
                         class="px-4 py-1.5 rounded transition">Komparasi</button>
                 <button @click="activeTab = 'table'"
-                        :class="activeTab === 'table' ? 'bg-[var(--dash-card-bg)] text-[#1E293B] shadow-sm' : 'text-[#7e7663] hover:text-[#1E293B]' inline-flex items-center gap-1.5"
-                        class="px-4 py-1.5 rounded transition"><span class="material-symbols-outlined text-[16px]">visibility</span>Detail Data</button>
+                        :class="activeTab === 'table' ? 'bg-white text-[#1E293B] shadow-sm' : 'text-[#7e7663] hover:text-[#1E293B]'"
+                        class="px-4 py-1.5 rounded transition">Detail Data</button>
             </nav>
         </div>
     </div>
 
     {{-- National KPI Row (always visible) --}}
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-0 divide-x divide-y lg:divide-y-0 divide-[#e2e2e2] bg-[var(--dash-card-bg)] border-b border-[#e2e2e2]">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-0 divide-x divide-y lg:divide-y-0 divide-[#e2e2e2] bg-white border-b border-[#e2e2e2]">
         {{-- Revenue Nasional --}}
         <div class="p-5 flex flex-col justify-between">
             <div>
@@ -241,7 +241,7 @@
                 <h3 class="text-sm font-bold text-[#1E293B] tracking-wide uppercase">Top Performa Cabang</h3>
                 <div class="flex items-center gap-2">
                     <span class="text-xs text-[#7e7663] font-medium">Susun:</span>
-                    <select x-model="sortBy" class="text-xs border-[#cfc6af] rounded py-1 px-2 bg-[var(--dash-card-bg)] text-[#1E293B] font-semibold focus:ring-1 focus:ring-[#dbb940]">
+                    <select x-model="sortBy" class="text-xs border-[#cfc6af] rounded py-1 px-2 bg-white text-[#1E293B] font-semibold focus:ring-1 focus:ring-[#dbb940]">
                         <option value="revenue">Revenue</option>
                         <option value="margin">Margin</option>
                         <option value="trend">Tren MoM</option>
@@ -256,7 +256,7 @@
                         $vsNat = $branch['vs_national'];
                         $sc = $statusColors[$branch['status']] ?? $statusColors['Baseline'];
                     @endphp
-                    <article class="bg-[var(--dash-card-bg)] rounded-lg p-5 border border-[#cfc6af] border-t-4 border-t-[#1E293B] shadow-sm flex flex-col justify-between">
+                    <article class="bg-white rounded-lg p-5 border border-[#cfc6af] border-t-4 border-t-[#1E293B] shadow-sm flex flex-col justify-between">
                         <div>
                             <div class="flex items-start justify-between mb-4">
                                 <div>
@@ -296,7 +296,7 @@
         {{-- Charts Row --}}
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
             {{-- Bar Chart --}}
-            <div class="lg:col-span-7 bg-[var(--dash-card-bg)] rounded-lg border border-[#cfc6af] p-5">
+            <div class="lg:col-span-7 bg-white rounded-lg border border-[#cfc6af] p-5">
                 <div class="flex items-center justify-between mb-5 border-b border-[#cfc6af] pb-2">
                     <h3 class="text-sm font-bold text-[#1E293B] uppercase tracking-wide">Komparasi vs Benchmark Nasional</h3>
                     <div class="flex items-center gap-4 text-[10px] font-bold text-[#4c4635]">
@@ -358,7 +358,7 @@
             </div>
 
             {{-- Donut Chart --}}
-            <div class="lg:col-span-5 bg-[var(--dash-card-bg)] rounded-lg border border-[#cfc6af] p-5 flex flex-col">
+            <div class="lg:col-span-5 bg-white rounded-lg border border-[#cfc6af] p-5 flex flex-col">
                 <div class="flex items-center justify-between border-b border-[#cfc6af] pb-2 mb-4">
                     <h3 class="text-sm font-bold text-[#1E293B] uppercase tracking-wide">Pangsa Area</h3>
                     <span class="text-[10px] font-bold bg-[#eeeeed] text-[#4c4635] px-2 py-1 rounded">100% Total</span>
@@ -392,8 +392,8 @@
 
     {{-- Tab: Table --}}
     <div x-show="activeTab === 'table'" class="p-6 bg-[#f9f9f8]">
-        <div class="bg-[var(--dash-card-bg)] rounded-lg border border-[#cfc6af] overflow-hidden">
-            <div class="p-5 border-b border-[#cfc6af] flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[var(--dash-card-bg)]">
+        <div class="bg-white rounded-lg border border-[#cfc6af] overflow-hidden">
+            <div class="p-5 border-b border-[#cfc6af] flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white">
                 <div>
                     <h3 class="text-sm font-bold text-[#1E293B] uppercase tracking-wide">Audit Terperinci Cabang</h3>
                 </div>
@@ -404,7 +404,7 @@
                                class="text-xs pl-8 pr-3 py-2 border border-[#cfc6af] rounded w-48 focus:ring-1 focus:ring-[#dbb940] focus:border-[#dbb940] text-[#1a1c1c]">
                         <span class="material-symbols-outlined text-[#7e7663] text-[16px] absolute left-2.5 top-2">search</span>
                     </div>
-                    <select x-model="sortBy" class="text-xs border border-[#cfc6af] rounded py-2 px-3 bg-[var(--dash-card-bg)] text-[#1a1c1c] font-semibold focus:ring-1 focus:ring-[#dbb940] focus:border-[#dbb940]">
+                    <select x-model="sortBy" class="text-xs border border-[#cfc6af] rounded py-2 px-3 bg-white text-[#1a1c1c] font-semibold focus:ring-1 focus:ring-[#dbb940] focus:border-[#dbb940]">
                         <option value="revenue">Urut: Revenue</option>
                         <option value="margin">Urut: Margin</option>
                         <option value="trend">Urut: Tren</option>
@@ -491,7 +491,7 @@
                 @php
                     $sc = $statusColors[$branch['status']] ?? $statusColors['Baseline'];
                 @endphp
-                <div class="flex items-center justify-between p-4 bg-[var(--dash-card-bg)] rounded-lg border border-[#cfc6af] shadow-sm">
+                <div class="flex items-center justify-between p-4 bg-white rounded-lg border border-[#cfc6af] shadow-sm">
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-8 rounded bg-[#f3f4f3] border border-[#e2e2e2] flex items-center justify-center font-bold text-[10px] text-[#4c4635]">
                             {{ $branch['abbr'] }}

@@ -8,16 +8,16 @@
     {{-- Header --}}
     <div class="mb-6 flex items-center justify-between">
         <div class="flex items-center gap-3">
-            <a href="{{ route('recruitment.postings.index') }}" class="text-[color:var(--dash-text-faint)] hover:text-[color:var(--dash-text-body)]">
+            <a href="{{ route('recruitment.postings.index') }}" class="text-gray-400 hover:text-gray-600">
                 <span class="material-symbols-outlined text-xl">arrow_back</span>
             </a>
-            <h1 class="text-2xl md:text-3xl text-[color:var(--dash-text-heading)] font-bold">Detail Job Posting</h1>
+            <h1 class="text-2xl md:text-3xl text-gray-800 font-bold">Detail Job Posting</h1>
         </div>
         <div class="flex gap-2">
             @if($jobPosting->status === 'draft')
                 @can('recruitment.job_posting.update')
                     <a href="{{ route('recruitment.postings.edit', $jobPosting) }}"
-                        class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">edit</span>Edit</a>
+                        class="btn bg-white border-gray-200 hover:border-gray-300 text-gray-600 text-sm">Edit</a>
                 @endcan
             @endif
         </div>
@@ -31,66 +31,66 @@
 
     {{-- Status badge --}}
     @php
-        $statusColors = ['draft'=>'bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-heading)]','published'=>'bg-green-100 text-green-800','closed'=>'bg-red-100 text-red-800'];
+        $statusColors = ['draft'=>'bg-gray-100 text-gray-800','published'=>'bg-green-100 text-green-800','closed'=>'bg-red-100 text-red-800'];
         $statusLabels = ['draft'=>'Draft','published'=>'Dipublikasikan','closed'=>'Ditutup'];
     @endphp
 
     {{-- Main info --}}
-    <div class="bg-[var(--dash-card-bg)] shadow-lg rounded-sm border border-[color:var(--dash-card-border)] p-6 mb-5">
+    <div class="bg-white shadow-lg rounded-sm border border-gray-200 p-6 mb-5">
         <div class="flex items-center justify-between mb-5">
-            <h2 class="text-base font-semibold text-[color:var(--dash-text-body)]">{{ $jobPosting->title }}</h2>
-            <span class="px-3 py-1 text-xs font-semibold rounded-full {{ $statusColors[$jobPosting->status] ?? 'bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-heading)]' }}">
+            <h2 class="text-base font-semibold text-gray-700">{{ $jobPosting->title }}</h2>
+            <span class="px-3 py-1 text-xs font-semibold rounded-full {{ $statusColors[$jobPosting->status] ?? 'bg-gray-100 text-gray-800' }}">
                 {{ $statusLabels[$jobPosting->status] ?? $jobPosting->status }}
             </span>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
             <div>
-                <p class="text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1">Cabang</p>
-                <p class="text-sm text-[color:var(--dash-text-heading)]">{{ $jobPosting->branch?->branch_name ?? '-' }}</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Cabang</p>
+                <p class="text-sm text-gray-900">{{ $jobPosting->branch?->branch_name ?? '-' }}</p>
             </div>
             <div>
-                <p class="text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1">Posisi</p>
-                <p class="text-sm text-[color:var(--dash-text-heading)]">{{ $jobPosting->position?->position_name ?? '-' }}</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Posisi</p>
+                <p class="text-sm text-gray-900">{{ $jobPosting->position?->position_name ?? '-' }}</p>
             </div>
             <div>
-                <p class="text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1">Tanggal Publish</p>
-                <p class="text-sm text-[color:var(--dash-text-heading)]">{{ $jobPosting->publish_date?->format('d M Y') ?? '-' }}</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Tanggal Publish</p>
+                <p class="text-sm text-gray-900">{{ $jobPosting->publish_date?->format('d M Y') ?? '-' }}</p>
             </div>
             <div>
-                <p class="text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1">Tanggal Tutup</p>
-                <p class="text-sm text-[color:var(--dash-text-heading)]">{{ $jobPosting->closing_date?->format('d M Y') ?? 'Tanpa batas' }}</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Tanggal Tutup</p>
+                <p class="text-sm text-gray-900">{{ $jobPosting->closing_date?->format('d M Y') ?? 'Tanpa batas' }}</p>
             </div>
             <div>
-                <p class="text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1">Dibuat oleh</p>
-                <p class="text-sm text-[color:var(--dash-text-heading)]">{{ $jobPosting->createdBy?->full_name ?? '-' }}</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Dibuat oleh</p>
+                <p class="text-sm text-gray-900">{{ $jobPosting->createdBy?->full_name ?? '-' }}</p>
             </div>
             <div>
-                <p class="text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-1">Jumlah Pelamar</p>
-                <p class="text-sm text-[color:var(--dash-text-heading)]">{{ $jobPosting->applications->count() }} lamaran</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Jumlah Pelamar</p>
+                <p class="text-sm text-gray-900">{{ $jobPosting->applications->count() }} lamaran</p>
             </div>
         </div>
 
         <div class="space-y-4">
             <div>
-                <p class="text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-2">Deskripsi Pekerjaan</p>
-                <div class="text-sm text-[color:var(--dash-text-heading)] bg-[var(--dash-nav-hover-bg)] rounded-md p-4 border border-[color:var(--dash-card-border)] whitespace-pre-wrap">{{ $jobPosting->job_description }}</div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Deskripsi Pekerjaan</p>
+                <div class="text-sm text-gray-800 bg-gray-50 rounded-md p-4 border border-gray-100 whitespace-pre-wrap">{{ $jobPosting->job_description }}</div>
             </div>
             <div>
-                <p class="text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-2">Tanggung Jawab</p>
-                <div class="text-sm text-[color:var(--dash-text-heading)] bg-[var(--dash-nav-hover-bg)] rounded-md p-4 border border-[color:var(--dash-card-border)] whitespace-pre-wrap">{{ $jobPosting->job_responsibilities }}</div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Tanggung Jawab</p>
+                <div class="text-sm text-gray-800 bg-gray-50 rounded-md p-4 border border-gray-100 whitespace-pre-wrap">{{ $jobPosting->job_responsibilities }}</div>
             </div>
             <div>
-                <p class="text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-2">Kualifikasi (publik)</p>
-                <div class="text-sm text-[color:var(--dash-text-heading)] bg-[var(--dash-nav-hover-bg)] rounded-md p-4 border border-[color:var(--dash-card-border)] whitespace-pre-wrap">{{ $jobPosting->job_requirements_text }}</div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Kualifikasi (publik)</p>
+                <div class="text-sm text-gray-800 bg-gray-50 rounded-md p-4 border border-gray-100 whitespace-pre-wrap">{{ $jobPosting->job_requirements_text }}</div>
             </div>
         </div>
     </div>
 
     {{-- Requirements dari permintaan --}}
     @if($jobPosting->permintaan?->requirementsAuto || $jobPosting->permintaan?->requirementsManual->count())
-        <div class="bg-[var(--dash-card-bg)] shadow-lg rounded-sm border border-[color:var(--dash-card-border)] p-5 mb-5">
-            <h2 class="text-sm font-semibold text-[color:var(--dash-text-body)] mb-4">Kriteria Seleksi</h2>
+        <div class="bg-white shadow-lg rounded-sm border border-gray-200 p-5 mb-5">
+            <h2 class="text-sm font-semibold text-gray-700 mb-4">Kriteria Seleksi</h2>
 
             @if($jobPosting->permintaan?->requirementsAuto)
                 @php $auto = $jobPosting->permintaan->requirementsAuto; @endphp
@@ -112,12 +112,12 @@
 
             @if($jobPosting->permintaan?->requirementsManual->count())
                 <div>
-                    <p class="text-xs font-semibold text-[color:var(--dash-text-muted)] uppercase tracking-wider mb-2">Kriteria Manual</p>
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Kriteria Manual</p>
                     <ul class="space-y-2">
                         @foreach($jobPosting->permintaan->requirementsManual as $manual)
                             <li class="text-sm">
-                                <span class="font-medium text-[color:var(--dash-text-heading)]">{{ $manual->criteria_name }}</span>
-                                <span class="text-[color:var(--dash-text-muted)] ml-2">— {{ $manual->criteria_desc }}</span>
+                                <span class="font-medium text-gray-800">{{ $manual->criteria_name }}</span>
+                                <span class="text-gray-500 ml-2">— {{ $manual->criteria_desc }}</span>
                             </li>
                         @endforeach
                     </ul>
@@ -127,8 +127,8 @@
     @endif
 
     {{-- Tindakan --}}
-    <div class="bg-[var(--dash-card-bg)] shadow-lg rounded-sm border border-[color:var(--dash-card-border)] p-5">
-        <h2 class="text-sm font-semibold text-[color:var(--dash-text-body)] mb-4">Tindakan</h2>
+    <div class="bg-white shadow-lg rounded-sm border border-gray-200 p-5">
+        <h2 class="text-sm font-semibold text-gray-700 mb-4">Tindakan</h2>
 
         @if($jobPosting->status === 'draft')
             @can('recruitment.job_posting.publish')
@@ -140,28 +140,27 @@
                     </button>
                 </div>
                 <div x-show="showPublishModal" class="space-y-3">
-                    <p class="text-sm text-[color:var(--dash-text-body)]">Set tanggal penutupan (opsional) sebelum publish:</p>
+                    <p class="text-sm text-gray-700">Set tanggal penutupan (opsional) sebelum publish:</p>
                     <form action="{{ route('recruitment.postings.publish', $jobPosting) }}" method="POST">
                         @csrf
                         <div class="flex gap-3 items-end">
                             <div>
-                                <label class="block text-xs font-medium text-[color:var(--dash-text-body)] mb-1">Tanggal Penutupan</label>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Tanggal Penutupan</label>
                                 <input type="date" name="closing_date"
                                     value="{{ $jobPosting->closing_date?->format('Y-m-d') }}"
                                     class="form-input text-sm" />
                             </div>
-                            <button type="submit" class="btn bg-green-500 hover:bg-green-600 text-white text-sm inline-flex items-center gap-1.5"
+                            <button type="submit" class="btn bg-green-500 hover:bg-green-600 text-white text-sm"
                                 onclick="return confirm('Publikasikan posting ini sekarang?')">
-                                <span class="material-symbols-outlined text-[16px]">check_circle</span>
                                 Konfirmasi Publikasi
                             </button>
                             <button type="button" @click="showPublishModal = false"
-                                class="btn bg-[var(--dash-card-bg)] border-[color:var(--dash-card-border)] text-[color:var(--dash-text-body)] text-sm inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">close</span>Batal</button>
+                                class="btn bg-white border-gray-200 text-gray-600 text-sm">Batal</button>
                         </div>
                     </form>
                 </div>
             @else
-                <p class="text-sm text-[color:var(--dash-text-muted)]">Draft — belum dipublikasikan.</p>
+                <p class="text-sm text-gray-500">Draft — belum dipublikasikan.</p>
             @endcan
 
         @elseif($jobPosting->status === 'published')
@@ -169,17 +168,17 @@
                 <form action="{{ route('recruitment.postings.close', $jobPosting) }}" method="POST"
                     onsubmit="return confirm('Tutup lowongan ini? Pelamar baru tidak bisa melamar setelah ditutup.')">
                     @csrf
-                    <button type="submit" class="btn bg-[#dc2626] hover:opacity-90 text-white text-sm">
+                    <button type="submit" class="btn bg-red-500 hover:bg-red-600 text-white text-sm">
                         <span class="material-symbols-outlined text-base mr-1">close</span>
                         Tutup Lowongan
                     </button>
                 </form>
             @else
-                <p class="text-sm text-[color:var(--dash-text-muted)]">Aktif — lowongan terbuka untuk pelamar.</p>
+                <p class="text-sm text-gray-500">Aktif — lowongan terbuka untuk pelamar.</p>
             @endcan
 
         @elseif($jobPosting->status === 'closed')
-            <p class="text-sm text-[color:var(--dash-text-muted)]">Lowongan sudah ditutup. Tidak ada tindakan tersedia.</p>
+            <p class="text-sm text-gray-500">Lowongan sudah ditutup. Tidak ada tindakan tersedia.</p>
         @endif
     </div>
 </div>

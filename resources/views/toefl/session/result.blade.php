@@ -3,7 +3,6 @@
 @section('title', 'Hasil TOEFL')
 
 @section('content')
-<h1 class="sr-only">Hasil Ujian TOEFL</h1>
 @php
     $score = $session->score_total;
 
@@ -50,7 +49,7 @@
 <div class="max-w-2xl mx-auto py-8 px-4 sm:px-6">
 
     {{-- Result card (also the capture target) --}}
-    <div id="result-card" class="bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] rounded-2xl shadow-sm overflow-hidden">
+    <div id="result-card" class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
 
         {{-- Header strip --}}
         <div class="bg-[#5586DB] px-6 py-4 flex items-center justify-between">
@@ -59,29 +58,29 @@
         </div>
 
         {{-- Score header --}}
-        <div class="px-6 pt-6 pb-4 flex items-start justify-between border-b border-dashed border-[color:var(--dash-card-border)]">
+        <div class="px-6 pt-6 pb-4 flex items-start justify-between border-b border-dashed border-gray-200">
             <div>
-                <p class="text-[10px] font-bold text-[color:var(--dash-text-faint)] tracking-widest uppercase mb-1">Test</p>
-                <p class="text-sm font-semibold text-[color:var(--dash-text-heading)]">{{ optional($session->test)->test_name }}</p>
-                <p class="text-xs text-[color:var(--dash-text-faint)] mt-0.5">Ujian Selesai</p>
+                <p class="text-[10px] font-bold text-gray-400 tracking-widest uppercase mb-1">Test</p>
+                <p class="text-sm font-semibold text-gray-900">{{ optional($session->test)->test_name }}</p>
+                <p class="text-xs text-gray-400 mt-0.5">Ujian Selesai</p>
             </div>
             <div class="text-right">
-                <p class="text-[10px] font-bold text-[color:var(--dash-text-faint)] tracking-widest uppercase mb-1">Total ITP</p>
+                <p class="text-[10px] font-bold text-gray-400 tracking-widest uppercase mb-1">Total ITP</p>
                 <p class="font-bold text-[52px] leading-none text-[#f59e0b] tabular-nums">{{ $score ?? 'n/a' }}</p>
-                <p class="text-[10px] text-[color:var(--dash-text-faint)] mt-1">Skala 310 hingga 677</p>
+                <p class="text-[10px] text-gray-400 mt-1">Skala 310 hingga 677</p>
             </div>
         </div>
 
         {{-- Section breakdown --}}
-        <div class="grid grid-cols-3 divide-x divide-[color:var(--dash-card-border)] border-b border-[color:var(--dash-card-border)]">
+        <div class="grid grid-cols-3 divide-x divide-gray-100 border-b border-gray-100">
             @foreach ([
                 ['label' => 'Listening', 'score' => $session->score_listening],
                 ['label' => 'Structure', 'score' => $session->score_structure],
                 ['label' => 'Reading',   'score' => $session->score_reading],
             ] as $s)
                 <div class="text-center py-5 px-3">
-                    <p class="text-[10px] font-bold text-[color:var(--dash-text-faint)] tracking-widest uppercase mb-1.5">{{ $s['label'] }}</p>
-                    <p class="text-2xl font-semibold text-[color:var(--dash-text-heading)] tabular-nums">{{ $s['score'] ?? 'n/a' }}</p>
+                    <p class="text-[10px] font-bold text-gray-400 tracking-widest uppercase mb-1.5">{{ $s['label'] }}</p>
+                    <p class="text-2xl font-semibold text-gray-800 tabular-nums">{{ $s['score'] ?? 'n/a' }}</p>
                 </div>
             @endforeach
         </div>
@@ -90,13 +89,13 @@
         <div class="px-6 py-6 space-y-4">
 
             <div>
-                <p class="text-[10px] font-bold text-[color:var(--dash-text-faint)] tracking-widest uppercase mb-2">Teacher's Note</p>
-                <p class="text-sm font-semibold text-[color:var(--dash-text-heading)] leading-snug">{{ $jokes['id'] }}</p>
+                <p class="text-[10px] font-bold text-gray-400 tracking-widest uppercase mb-2">Teacher's Note</p>
+                <p class="text-sm font-semibold text-gray-900 leading-snug">{{ $jokes['id'] }}</p>
             </div>
 
-            <div class="bg-[var(--dash-nav-hover-bg)] border border-[color:var(--dash-card-border)] rounded-lg px-4 py-3.5">
-                <p class="text-[10px] font-bold text-[color:var(--dash-text-faint)] tracking-widest uppercase mb-1.5">In English</p>
-                <p class="text-sm text-[color:var(--dash-text-body)] italic leading-relaxed">{{ $jokes['en'] }}</p>
+            <div class="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3.5">
+                <p class="text-[10px] font-bold text-gray-400 tracking-widest uppercase mb-1.5">In English</p>
+                <p class="text-sm text-gray-600 italic leading-relaxed">{{ $jokes['en'] }}</p>
             </div>
 
             @if ($session->completed_at)
@@ -106,7 +105,7 @@
                     $m = intdiv($secs % 3600, 60);
                     $durationFormatted = $h > 0 ? "{$h} jam {$m} menit" : "{$m} menit";
                 @endphp
-                <p class="text-xs text-[color:var(--dash-text-faint)] text-center">
+                <p class="text-xs text-gray-400 text-center">
                     Selesai {{ $session->completed_at->format('d M Y, H:i') }}
                     @if ($session->started_at)
                         &middot; Durasi {{ $durationFormatted }}
@@ -115,14 +114,13 @@
             @endif
 
             {{-- Actions --}}
-            <div class="pt-2 flex flex-wrap gap-3 justify-end border-t border-[color:var(--dash-card-border)]">
+            <div class="pt-2 flex flex-wrap gap-3 justify-end border-t border-gray-100">
                 <a href="{{ route('toefl.session.index') }}"
-                    class="btn bg-[var(--dash-card-bg)] border border-[color:var(--dash-card-border)] hover:border-[color:var(--dash-input-border)] text-[color:var(--dash-text-body)] inline-flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                    class="btn bg-white border border-gray-200 hover:border-gray-300 text-gray-700">
                     Kembali ke Daftar
                 </a>
                 <a href="{{ route('member.dashboard') }}"
-                    class="btn bg-[#fbbf24] hover:bg-[#f59e0b] text-[color:var(--dash-text-heading)] font-semibold">
+                    class="btn bg-[#fbbf24] hover:bg-[#f59e0b] text-gray-900 font-semibold">
                     Dashboard
                 </a>
             </div>

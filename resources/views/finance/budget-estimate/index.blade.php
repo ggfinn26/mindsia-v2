@@ -7,7 +7,7 @@
 @php
     $months = ['','Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
     $statusBadge = [
-        'draft'          => 'bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)]',
+        'draft'          => 'bg-slate-100 text-slate-700',
         'ops_review'     => 'bg-blue-100 text-blue-800',
         'finance_review' => 'bg-amber-100 text-amber-800',
         'accepted'       => 'bg-emerald-100 text-emerald-800',
@@ -19,17 +19,17 @@
 <div class="max-w-7xl mx-auto space-y-6">
     <div class="flex items-start justify-between gap-4">
         <div>
-            <p class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--dash-primary-text);">Finance</p>
-            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Anggaran Cabang</h1>
+            <p class="text-sm font-medium text-[#725c00]">Finance</p>
+            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Anggaran Cabang</h2>
         </div>
         <div class="flex gap-2">
             @canany(['finance.budget_estimate.ops_review', 'finance.budget_estimate.send'])
-                <a href="{{ route('budget-estimates.review-list') }}" class="inline-flex min-h-10 items-center gap-2 border border-[color:var(--dash-input-border)] px-4 text-sm font-semibold text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]">
+                <a href="{{ route('budget-estimates.review-list') }}" class="inline-flex min-h-10 items-center gap-2 border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50">
                     Antrean Review
                 </a>
             @endcanany
             @can('finance.budget_estimate.create')
-                <a href="{{ route('budget-estimates.create') }}" class="inline-flex min-h-10 items-center gap-2 bg-[var(--dash-primary,#215aac)] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">
+                <a href="{{ route('budget-estimates.create') }}" class="inline-flex min-h-10 items-center gap-2 bg-[#215aac] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">
                     <span class="material-symbols-outlined text-[18px]">add</span> Buat Anggaran
                 </a>
             @endcan
@@ -43,28 +43,28 @@
         </div>
     @endif
 
-    <form method="GET" class="flex flex-wrap gap-3 border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)] p-4">
+    <form method="GET" class="flex flex-wrap gap-3 border border-slate-200 bg-white p-4">
         <div>
-            <label class="mb-1 block text-xs font-medium text-[color:var(--dash-text-body)]">Bulan</label>
-            <select name="month" class="block border-[color:var(--dash-input-border)] text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
+            <label class="mb-1 block text-xs font-medium text-slate-700">Bulan</label>
+            <select name="month" class="block border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
                 @foreach (array_slice($months, 1, null, true) as $num => $label)
                     <option value="{{ $num }}" @selected($month == $num)>{{ $label }}</option>
                 @endforeach
             </select>
         </div>
         <div>
-            <label class="mb-1 block text-xs font-medium text-[color:var(--dash-text-body)]">Tahun</label>
-            <input type="number" name="year" value="{{ $year }}" min="2020" class="block w-24 border-[color:var(--dash-input-border)] text-sm focus:border-[color:var(--dash-primary,#215aac)] focus:ring-[color:var(--dash-primary,#215aac)]">
+            <label class="mb-1 block text-xs font-medium text-slate-700">Tahun</label>
+            <input type="number" name="year" value="{{ $year }}" min="2020" class="block w-24 border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
         </div>
         <div class="flex items-end">
-            <button type="submit" class="inline-flex min-h-9 items-center bg-[var(--dash-primary,#215aac)] px-3 text-xs font-semibold text-white hover:bg-[#194a91]">Filter</button>
+            <button type="submit" class="inline-flex min-h-9 items-center bg-[#215aac] px-3 text-xs font-semibold text-white hover:bg-[#194a91]">Filter</button>
         </div>
     </form>
 
-    <div class="overflow-hidden border border-[color:var(--dash-card-border)] bg-[var(--dash-card-bg)]">
+    <div class="overflow-hidden border border-slate-200 bg-white">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-[color:var(--dash-card-border)] text-sm">
-                <thead class="bg-[var(--dash-nav-hover-bg)] text-left text-xs font-semibold text-[color:var(--dash-text-muted)]">
+            <table class="min-w-full divide-y divide-slate-200 text-sm">
+                <thead class="bg-slate-50 text-left text-xs font-semibold text-slate-500">
                     <tr>
                         <th class="px-5 py-3">Judul</th>
                         <th class="px-5 py-3">Periode</th>
@@ -74,27 +74,27 @@
                         <th class="px-5 py-3 text-right">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-[color:var(--dash-card-border)]">
+                <tbody class="divide-y divide-slate-100">
                     @forelse ($estimates as $est)
                         <tr class="hover:bg-slate-50/70">
-                            <td class="px-5 py-4 font-semibold text-[color:var(--dash-text-heading)]">{{ $est->title }}</td>
-                            <td class="px-5 py-4 text-[color:var(--dash-text-body)]">{{ $months[$est->period_month] ?? '-' }} {{ $est->period_year }}</td>
-                            <td class="px-5 py-4 text-[color:var(--dash-text-body)]">{{ $est->submittedBy?->full_name ?? '—' }}</td>
-                            <td class="px-5 py-4 text-right tabular-nums text-[color:var(--dash-text-heading)]">Rp {{ number_format($est->total_amount, 0, ',', '.') }}</td>
+                            <td class="px-5 py-4 font-semibold text-slate-900">{{ $est->title }}</td>
+                            <td class="px-5 py-4 text-slate-600">{{ $months[$est->period_month] ?? '-' }} {{ $est->period_year }}</td>
+                            <td class="px-5 py-4 text-slate-600">{{ $est->submittedBy?->full_name ?? '—' }}</td>
+                            <td class="px-5 py-4 text-right tabular-nums text-slate-900">Rp {{ number_format($est->total_amount, 0, ',', '.') }}</td>
                             <td class="px-5 py-4">
-                                <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $statusBadge[$est->status] ?? 'bg-[var(--dash-nav-hover-bg)] text-[color:var(--dash-text-body)]' }}">
+                                <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $statusBadge[$est->status] ?? 'bg-slate-100 text-slate-600' }}">
                                     {{ str_replace('_', ' ', ucfirst($est->status)) }}
                                 </span>
                             </td>
                             <td class="px-5 py-4 text-right">
-                                <a href="{{ route('budget-estimates.show', $est) }}" class="inline-flex min-h-9 items-center border border-[color:var(--dash-input-border)] px-3 text-xs font-semibold text-[color:var(--dash-text-body)] hover:bg-[var(--dash-nav-hover-bg)]">Detail</a>
+                                <a href="{{ route('budget-estimates.show', $est) }}" class="inline-flex min-h-9 items-center border border-slate-300 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50">Detail</a>
                             </td>
                         </tr>
                     @empty
                         <tr>
                             <td colspan="6" class="px-5 py-12 text-center">
                                 <span class="material-symbols-outlined text-3xl text-slate-300">receipt_long</span>
-                                <p class="mt-2 font-semibold text-[color:var(--dash-text-body)]">Belum ada anggaran bulan ini.</p>
+                                <p class="mt-2 font-semibold text-slate-700">Belum ada anggaran bulan ini.</p>
                             </td>
                         </tr>
                     @endforelse
