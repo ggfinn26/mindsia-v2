@@ -1,155 +1,343 @@
 @extends('layouts.dashboard')
 
+@section('title', 'API Keys - MINDSIA')
 @section('header_title', 'API Keys')
 
 @section('content')
-<div class="max-w-6xl mx-auto space-y-6">
+<div x-data="{
+    deleteTarget: null,
+    showDeleteModal: false,
+    confirmDelete(id, label) {
+        this.deleteTarget = { id, label };
+        this.showDeleteModal = true;
+    }
+}" class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6">
+
+    {{-- Page Header --}}
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <p class="text-sm font-semibold uppercase tracking-wider text-slate-500">Sistem & Akses</p>
-            <h1 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">API Keys</h1>
-            <p class="mt-1 text-sm text-slate-500">Rotasi key eksternal (ConvertAPI, dll). Key aktif dipilih otomatis LRU.</p>
+            <p class="text-xs font-semibold uppercase tracking-wider mb-1"
+               style="color: var(--dash-primary-text);">Sistem & Akses</p>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+                style="color: var(--dash-text-heading);">API Keys</h1>
+            <p class="text-sm mt-1" style="color: var(--dash-text-muted);">
+                Rotasi key eksternal (ConvertAPI, dll). Key aktif dipilih otomatis menggunakan least-recently-used (LRU).
+            </p>
         </div>
         @can('system.api_key.create')
-        <a href="{{ route('system.api-keys.create') }}" class="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-lg bg-[#215aac] px-5 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-colors">
-            <span class="material-symbols-outlined text-[18px]">add</span> Tambah Key
+        <a href="{{ route('system.api-keys.create') }}"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity shrink-0"
+           style="background-color: var(--dash-primary);">
+            <span class="material-symbols-outlined text-[18px]">add</span>Tambah Key
         </a>
         @endcan
     </div>
 
+    {{-- Flash Messages --}}
     @if(session('success'))
-    <div class="rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">{{ session('success') }}</div>
-    @endif
-    @if(session('error'))
-    <div class="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">{{ session('error') }}</div>
+    <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+         style="background-color: #f0fdf4; border-color: #bbf7d0; color: #059669;">
+        <span class="material-symbols-outlined text-[18px]">check_circle</span>
+        <p>{{ session('success') }}</p>
+    </div>
     @endif
 
-    <div class="overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm">
+    @if(session('error'))
+    <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+         style="background-color: #fef2f2; border-color: #fecaca; color: #dc2626;">
+        <span class="material-symbols-outlined text-[18px]">error</span>
+        <p>{{ session('error') }}</p>
+    </div>
+    @endif
+
+    {{-- Compact Metric Strip --}}
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="px-4 py-3 rounded-xl flex items-center justify-between"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]" style="color: var(--dash-primary-text);">vpn_key</span>
+                <span class="text-xs font-semibold" style="color: var(--dash-text-muted);">Total Key</span>
+            </div>
+            <span class="font-jakarta text-base font-bold" style="color: var(--dash-text-heading);">{{ $keys->count() }}</span>
+        </div>
+
+        <div class="px-4 py-3 rounded-xl flex items-center justify-between"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px] text-emerald-600">check_circle</span>
+                <span class="text-xs font-semibold text-emerald-700">Key Aktif</span>
+            </div>
+            <span class="font-jakarta text-base font-bold text-emerald-600">{{ $keys->where('is_active', true)->count() }}</span>
+        </div>
+
+        <div class="px-4 py-3 rounded-xl flex items-center justify-between"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px] text-rose-600">pause_circle</span>
+                <span class="text-xs font-semibold text-rose-700">Nonaktif</span>
+            </div>
+            <span class="font-jakarta text-base font-bold text-rose-600">{{ $keys->where('is_active', false)->count() }}</span>
+        </div>
+
+        <div x-data="totalQuotaChecker('{{ route('system.api-keys.total-quota') }}')"
+             x-init="check()"
+             class="px-4 py-3 rounded-xl flex items-center justify-between"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px] text-violet-600">tune</span>
+                <span class="text-xs font-semibold text-violet-700">Sisa Kuota ConvertAPI</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="font-jakarta text-sm sm:text-base font-bold text-violet-700"
+                      x-text="loading ? '...' : (result ? formatQuota(result.total_remaining_quota ?? result.total_seconds_left) : (error ? 'Gagal' : '-'))">
+                    -
+                </span>
+                <button type="button" @click="check()" :disabled="loading" title="Cek ulang total kuota"
+                        class="text-violet-600 hover:text-violet-800 disabled:opacity-50 inline-flex items-center">
+                    <span class="material-symbols-outlined text-[16px]" :class="loading ? 'animate-spin' : ''">sync</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {{-- Main Table Container --}}
+    <div class="rounded-2xl overflow-hidden"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-100 text-sm">
-                <thead class="bg-slate-50 text-left text-xs font-bold uppercase tracking-wider text-slate-500">
+            <table class="w-full text-left border-collapse text-sm">
+                <thead style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
                     <tr>
-                        <th class="px-6 py-4">Label</th>
-                        <th class="px-6 py-4">Tipe Service</th>
-                        <th class="px-6 py-4">Key Value</th>
-                        <th class="px-6 py-4">Terakhir Dipakai</th>
-                        <th class="px-6 py-4">Status</th>
-                        <th class="px-6 py-4 text-right">Aksi</th>
+                        <th class="px-5 py-3 text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-faint);">Label</th>
+                        <th class="px-5 py-3 text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-faint);">Tipe Service</th>
+                        <th class="px-5 py-3 text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-faint);">Key Value</th>
+                        <th class="px-5 py-3 text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-faint);">Terakhir Dipakai</th>
+                        <th class="px-5 py-3 text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-faint);">Status</th>
+                        <th class="px-5 py-3 text-xs font-semibold uppercase tracking-wider text-right" style="color: var(--dash-text-faint);">Aksi</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y" style="border-color: var(--dash-card-border);">
                     @forelse($keys as $key)
-                    <tbody x-data="quotaChecker('{{ route('system.api-keys.quota', $key) }}')" class="divide-y divide-slate-50">
-                        <tr class="hover:bg-slate-50/50 transition-colors">
-                            <td class="px-6 py-4 font-medium text-slate-800">{{ $key->label }}</td>
-                            <td class="px-6 py-4">
-                                @php
-                                    $typeColors = [
-                                        'convertapi' => 'bg-violet-100 text-violet-800',
-                                        'telegram'   => 'bg-sky-100 text-sky-800',
-                                        'wa'         => 'bg-green-100 text-green-800',
-                                        'email'      => 'bg-orange-100 text-orange-800',
-                                    ];
-                                @endphp
-                                <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {{ $typeColors[$key->type] ?? 'bg-slate-100 text-slate-700' }}">{{ $key->type }}</span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <code class="rounded bg-slate-100 px-2 py-0.5 text-xs font-mono text-slate-500">••••••••</code>
-                            </td>
-                            <td class="px-6 py-4 text-slate-500 text-xs">
-                                {{ $key->last_used_at ? $key->last_used_at->diffForHumans() : 'Belum pernah' }}
-                            </td>
-                            <td class="px-6 py-4">
-                                @if($key->is_active)
-                                <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Aktif</span>
-                                @else
-                                <span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-700">Nonaktif</span>
+                    <tr onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                        onmouseout="this.style.backgroundColor='transparent'">
+                        <td class="px-5 py-3.5 font-medium" style="color: var(--dash-text-heading);">
+                            {{ $key->label }}
+                            @if($key->notes)
+                            <p class="text-xs font-normal mt-0.5 line-clamp-1" style="color: var(--dash-text-muted);">{{ $key->notes }}</p>
+                            @endif
+                        </td>
+                        <td class="px-5 py-3.5">
+                            @if($key->type === 'convertapi')
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-violet-100 text-violet-800">
+                                <span class="material-symbols-outlined text-[13px]">description</span>ConvertAPI
+                            </span>
+                            @elseif($key->type === 'telegram')
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-100 text-sky-800">
+                                <span class="material-symbols-outlined text-[13px]">send</span>Telegram
+                            </span>
+                            @elseif($key->type === 'wa')
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+                                <span class="material-symbols-outlined text-[13px]">chat</span>WhatsApp
+                            </span>
+                            @elseif($key->type === 'email')
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">
+                                <span class="material-symbols-outlined text-[13px]">mail</span>Email
+                            </span>
+                            @else
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                                  style="background-color: var(--dash-nav-hover-bg); color: var(--dash-text-muted);">
+                                {{ ucfirst($key->type) }}
+                            </span>
+                            @endif
+                        </td>
+                        <td class="px-5 py-3.5">
+                            <code class="rounded px-2 py-0.5 text-xs font-mono"
+                                  style="background-color: var(--dash-nav-hover-bg); color: var(--dash-text-muted); border: 1px solid var(--dash-card-border);">••••••••</code>
+                        </td>
+                        <td class="px-5 py-3.5 text-xs" style="color: var(--dash-text-muted);">
+                            {{ $key->last_used_at ? $key->last_used_at->diffForHumans() : 'Belum pernah' }}
+                        </td>
+                        <td class="px-5 py-3.5">
+                            @if($key->is_active)
+                            <span class="inline-flex items-center gap-1 text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full text-xs font-semibold">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Aktif
+                            </span>
+                            @else
+                            <span class="inline-flex items-center gap-1 text-rose-700 bg-rose-50 border border-rose-200 px-2.5 py-0.5 rounded-full text-xs font-semibold">
+                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>Nonaktif
+                            </span>
+                            @endif
+                        </td>
+                        <td class="px-5 py-3.5 text-right">
+                            <div class="flex items-center justify-end gap-2 flex-wrap">
+                                @if($key->type === 'convertapi')
+                                <button type="button"
+                                        x-data="quotaChecker('{{ route('system.api-keys.quota', $key) }}')"
+                                        x-init="check()"
+                                        @click="check()"
+                                        :disabled="loading"
+                                        :title="result ? ('Sisa kuota: ' + formatQuota(result.remaining_quota ?? result.seconds_left) + '. Klik untuk cek ulang.') : (error ? (error + '. Klik untuk coba lagi.') : 'Cek kuota ConvertAPI')"
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors border"
+                                        :class="result ? 'text-violet-700 bg-violet-50 border-violet-200 hover:bg-violet-100' : (error ? 'text-rose-700 bg-rose-50 border-rose-200 hover:bg-rose-100' : 'text-violet-700 bg-violet-50 border-violet-200 hover:bg-violet-100 disabled:opacity-50')">
+                                    <span class="material-symbols-outlined text-[14px]"
+                                          :class="loading ? 'animate-spin' : ''"
+                                          x-text="loading ? 'sync' : (result ? 'tune' : (error ? 'error' : 'analytics'))">analytics</span>
+                                    <span x-text="loading ? 'Memeriksa...' : (result ? ('Sisa: ' + formatQuota(result.remaining_quota ?? result.seconds_left)) : (error ? 'Gagal cek' : 'Cek Kuota'))">Cek Kuota</span>
+                                </button>
                                 @endif
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <div class="flex items-center justify-end gap-2">
-                                    @if($key->type === 'convertapi')
-                                    <button @click="check()" :disabled="loading"
-                                        class="inline-flex items-center gap-1 rounded-lg border border-violet-200 px-3 py-1.5 text-xs font-medium text-violet-600 hover:bg-violet-50 transition-colors disabled:opacity-50 disabled:cursor-wait">
-                                        <span class="material-symbols-outlined text-[13px]" x-text="loading ? 'hourglass_empty' : 'analytics'">analytics</span>
-                                        <span x-text="loading ? 'Memuat...' : 'Cek Quota'">Cek Quota</span>
-                                    </button>
-                                    @endif
-                                    @can('system.api_key.update')
-                                    <a href="{{ route('system.api-keys.edit', $key) }}" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50 transition-colors">Edit</a>
-                                    <form method="POST" action="{{ route('system.api-keys.toggle', $key) }}">
-                                        @csrf
-                                        <button type="submit" class="rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors {{ $key->is_active ? 'border-orange-200 text-orange-600 hover:bg-orange-50' : 'border-green-200 text-green-600 hover:bg-green-50' }}">
-                                            {{ $key->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
-                                        </button>
-                                    </form>
-                                    @endcan
-                                    @can('system.api_key.delete')
-                                    <form method="POST" action="{{ route('system.api-keys.destroy', $key) }}" onsubmit="return confirm('Hapus key ini?')">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors">Hapus</button>
-                                    </form>
-                                    @endcan
-                                </div>
-                            </td>
-                        </tr>
 
-                        {{-- Expandable quota row --}}
-                        <tr x-show="result || error" x-cloak class="bg-violet-50/60">
-                            <td colspan="6" class="px-6 py-3">
-                                <template x-if="error">
-                                    <p class="text-xs text-red-500 flex items-center gap-1">
-                                        <span class="material-symbols-outlined text-[14px]">error</span>
-                                        <span x-text="error"></span>
-                                    </p>
-                                </template>
-                                <template x-if="result">
-                                    <div class="flex flex-wrap items-center gap-6">
-                                        <div class="flex items-center gap-2">
-                                            <span class="material-symbols-outlined text-violet-500 text-[16px]">timer</span>
-                                            <span class="text-xs text-slate-500">Sisa detik</span>
-                                            <span class="text-sm font-bold text-violet-700" x-text="result.seconds_left ?? '-'"></span>
-                                        </div>
-                                        <div class="flex items-center gap-2">
-                                            <span class="material-symbols-outlined text-slate-400 text-[16px]">swap_horiz</span>
-                                            <span class="text-xs text-slate-500">Konversi terpakai</span>
-                                            <span class="text-sm font-bold text-slate-700" x-text="result.conversions_consumed ?? '-'"></span>
-                                        </div>
-                                        <template x-if="result.reset_date">
-                                            <div class="flex items-center gap-2">
-                                                <span class="material-symbols-outlined text-slate-400 text-[16px]">calendar_today</span>
-                                                <span class="text-xs text-slate-500">Reset</span>
-                                                <span class="text-sm font-semibold text-slate-700" x-text="result.reset_date"></span>
-                                            </div>
-                                        </template>
-                                        <template x-if="result.plan">
-                                            <div class="flex items-center gap-2">
-                                                <span class="material-symbols-outlined text-slate-400 text-[16px]">workspace_premium</span>
-                                                <span class="text-xs text-slate-500">Plan</span>
-                                                <span class="text-sm font-semibold text-slate-700 capitalize" x-text="result.plan"></span>
-                                            </div>
-                                        </template>
-                                        <span class="text-xs text-slate-400 ml-auto">Data live dari ConvertAPI</span>
-                                    </div>
-                                </template>
-                            </td>
-                        </tr>
-                    </tbody>
+                                @can('system.api_key.update')
+                                <a href="{{ route('system.api-keys.edit', $key) }}"
+                                   class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors"
+                                   style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                                   onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                   onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                    <span class="material-symbols-outlined text-[14px]">edit</span>Edit
+                                </a>
+
+                                <form method="POST" action="{{ route('system.api-keys.toggle', $key) }}" class="m-0">
+                                    @csrf
+                                    <button type="submit"
+                                            class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors {{ $key->is_active ? 'text-amber-700 bg-amber-50 border border-amber-200 hover:bg-amber-100' : 'text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100' }}">
+                                        <span class="material-symbols-outlined text-[14px]">{{ $key->is_active ? 'toggle_off' : 'toggle_on' }}</span>
+                                        {{ $key->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
+                                    </button>
+                                </form>
+                                @endcan
+
+                                @can('system.api_key.delete')
+                                <button type="button"
+                                        @click="confirmDelete({{ $key->id }}, '{{ addslashes($key->label) }}')"
+                                        class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                                        style="background-color: var(--dash-danger, #dc2626);">
+                                    <span class="material-symbols-outlined text-[14px]">delete</span>Hapus
+                                </button>
+                                @endcan
+                            </div>
+                        </td>
+                    </tr>
                     @empty
-                    <tbody>
-                        <tr>
-                            <td colspan="6" class="px-6 py-10 text-center text-slate-400">Belum ada API key. Tambah key ConvertAPI untuk fitur docx → PDF.</td>
-                        </tr>
-                    </tbody>
+                    <tr>
+                        <td colspan="6" class="px-5 py-12 text-center">
+                            <span class="material-symbols-outlined text-[48px] block mx-auto mb-3"
+                                  style="color: var(--dash-text-faint);">vpn_key</span>
+                            <p class="text-sm font-semibold" style="color: var(--dash-text-muted);">Belum ada API key yang terdaftar.</p>
+                            <p class="text-xs mt-1" style="color: var(--dash-text-faint);">Tambah key ConvertAPI untuk fitur konversi docx ke PDF.</p>
+                        </td>
+                    </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
     </div>
+
+    {{-- Custom Alpine Modal Konfirmasi Hapus (Zero native confirm()) --}}
+    <template x-teleport="body">
+        <div x-show="showDeleteModal" style="display: none;" class="relative z-50" role="dialog" aria-modal="true">
+            <div x-show="showDeleteModal"
+                 x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                 x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
+                 @click="showDeleteModal = false"></div>
+
+            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <div x-show="showDeleteModal" @click.away="showDeleteModal = false"
+                         x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                         x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                         class="relative transform rounded-2xl text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md"
+                         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+
+                        {{-- Header modal (rounded-t-2xl) --}}
+                        <div class="rounded-t-2xl px-6 py-5"
+                             style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
+                            <div class="flex items-start gap-3.5">
+                                <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-red-600 text-[22px]">delete</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-jakarta text-base font-bold" style="color: var(--dash-text-heading);">Hapus API Key?</h3>
+                                    <p class="mt-1 text-sm leading-relaxed" style="color: var(--dash-text-muted);">
+                                        Key <strong x-text="deleteTarget?.label"></strong> akan dihapus permanen. Sistem tidak akan lagi menyertakan key ini dalam rotasi layanan.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Footer modal (rounded-b-2xl) --}}
+                        <div class="rounded-b-2xl px-6 py-4 flex justify-end gap-3"
+                             style="background-color: var(--dash-card-bg); border-top: 1px solid var(--dash-card-border);">
+                            <button type="button" @click="showDeleteModal = false"
+                                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                                    style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                                    onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                    onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                Batal
+                            </button>
+                            <form :action="'{{ url('/system/api-keys') }}/' + deleteTarget?.id" method="POST" class="m-0">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                        class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                                        style="background-color: var(--dash-danger, #dc2626);">
+                                    <span class="material-symbols-outlined text-[16px]">delete</span>Ya, Hapus Key
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
 </div>
 
 <style>[x-cloak]{display:none!important}</style>
 <script>
+function formatQuota(val) {
+    if (val === null || val === undefined) return '-';
+    val = Number(val);
+    if (isNaN(val)) return '-';
+    if (val <= 0) return '0 kuota (Habis)';
+    return val.toLocaleString('id-ID') + ' kuota';
+}
+
+function totalQuotaChecker(url) {
+    return {
+        loading: false,
+        result: null,
+        error: null,
+        async check() {
+            this.loading = true;
+            this.error = null;
+            try {
+                const res = await fetch(url, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+                });
+                const text = await res.text();
+                let data = null;
+                try {
+                    data = JSON.parse(text);
+                } catch {
+                    data = null;
+                }
+
+                if (!res.ok) {
+                    this.error = (data && (data.error || data.message)) ? (data.error || data.message) : ('Gagal memeriksa kuota (HTTP ' + res.status + ')');
+                    this.result = null;
+                } else {
+                    this.result = data;
+                    this.error = null;
+                }
+            } catch (e) {
+                console.error('totalQuotaChecker error:', e);
+                this.error = 'Gagal menghubungi server.';
+                this.result = null;
+            } finally {
+                this.loading = false;
+            }
+        }
+    };
+}
+
 function quotaChecker(url) {
     return {
         loading: false,
@@ -157,20 +345,30 @@ function quotaChecker(url) {
         error: null,
         async check() {
             this.loading = true;
-            this.result = null;
             this.error = null;
             try {
                 const res = await fetch(url, {
                     headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
                 });
-                const data = await res.json();
+                const text = await res.text();
+                let data = null;
+                try {
+                    data = JSON.parse(text);
+                } catch {
+                    data = null;
+                }
+
                 if (!res.ok) {
-                    this.error = data.error ?? 'Gagal mengambil quota.';
+                    this.error = (data && (data.error || data.message)) ? (data.error || data.message) : ('Gagal memeriksa kuota (HTTP ' + res.status + ')');
+                    this.result = null;
                 } else {
                     this.result = data;
+                    this.error = null;
                 }
-            } catch {
-                this.error = 'Tidak dapat terhubung.';
+            } catch (e) {
+                console.error('quotaChecker error:', e);
+                this.error = 'Gagal menghubungi server.';
+                this.result = null;
             } finally {
                 this.loading = false;
             }

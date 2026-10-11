@@ -4,134 +4,162 @@
 @section('header_title', 'Template KPI')
 
 @section('content')
-<div class="max-w-5xl mx-auto space-y-6">
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-4xl mx-auto space-y-6"
+     x-data="{ showDeleteIndicator: false, deleteIndicatorId: null, deleteIndicatorName: '', deleteDocId: null, deleteDocName: '', showDeleteDoc: false }">
 
     <div class="flex items-start justify-between gap-4">
         <div>
-            <a href="{{ route('kpi.templates.index') }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700">
-                <span class="material-symbols-outlined text-[16px]">arrow_back</span> Template KPI
+            <a href="{{ route('kpi.templates.index') }}" class="dash-back mb-3">
+                <span class="material-symbols-outlined">arrow_back</span>Kembali ke Daftar Template
             </a>
-            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">{{ $template->template_name }}</h2>
-            <div class="mt-1 flex items-center gap-3">
-                <p class="font-mono text-sm text-slate-400">{{ $template->template_code }}</p>
-                <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $template->is_active ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600' }}">
+            <p class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--dash-primary-text);">KPI</p>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">{{ $template->template_name }}</h1>
+            <div class="mt-2 flex items-center gap-3">
+                <p class="font-mono text-sm" style="color: var(--dash-text-faint);">{{ $template->template_code }}</p>
+                <span class="inline-flex px-2.5 py-1 rounded-lg text-xs font-semibold {{ $template->is_active ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600' }}">
                     {{ $template->is_active ? 'Aktif' : 'Nonaktif' }}
                 </span>
             </div>
         </div>
         @can('kpi.template.update')
-            <a href="{{ route('kpi.templates.edit', $template) }}" class="inline-flex min-h-9 items-center gap-1 border border-slate-300 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50">
-                <span class="material-symbols-outlined text-[16px]">edit</span> Edit
+            <a href="{{ route('kpi.templates.edit', $template) }}"
+               class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors shrink-0"
+               style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+               onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+               onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                <span class="material-symbols-outlined text-[14px]">edit</span>Edit
             </a>
         @endcan
     </div>
 
     @if (session('success'))
-        <div class="flex gap-3 border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-            <span class="material-symbols-outlined text-[20px]">check_circle</span>
-            <p>{{ session('success') }}</p>
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+             style="background-color: #f0fdf4; border-color: #bbf7d0; color: #059669;">
+            <span class="material-symbols-outlined text-[18px]">check_circle</span>
+            {{ session('success') }}
         </div>
     @endif
     @if ($errors->any())
-        <div class="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
-            <ul class="list-disc pl-5">@foreach ($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
+        <div class="flex items-start gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+             style="background-color: #fef2f2; border-color: #fecaca; color: #dc2626;">
+            <span class="material-symbols-outlined text-[18px] shrink-0 mt-0.5">error</span>
+            <ul class="list-disc pl-4">@foreach ($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
         </div>
     @endif
 
     {{-- Info --}}
-    <div class="border border-slate-200 bg-white">
-        <div class="grid grid-cols-2 gap-4 p-5 text-sm sm:grid-cols-3">
+    <div class="rounded-2xl overflow-hidden" style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <div class="px-6 py-4" style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+            <h2 class="font-semibold text-sm" style="color: var(--dash-text-heading);">Informasi Template</h2>
+        </div>
+        <div class="grid grid-cols-2 gap-4 px-6 py-5 text-sm sm:grid-cols-3">
             <div>
-                <p class="text-xs text-slate-500">Posisi</p>
-                <p class="font-medium text-slate-900">{{ $template->position?->position_name ?? 'Semua posisi' }}</p>
+                <p class="text-xs mb-1" style="color: var(--dash-text-muted);">Posisi</p>
+                <p class="font-medium" style="color: var(--dash-text-heading);">{{ $template->position?->position_name ?? 'Semua posisi' }}</p>
             </div>
             <div>
-                <p class="text-xs text-slate-500">Dibuat oleh</p>
-                <p class="font-medium text-slate-900">{{ $template->createdBy?->full_name ?? '—' }}</p>
+                <p class="text-xs mb-1" style="color: var(--dash-text-muted);">Dibuat oleh</p>
+                <p class="font-medium" style="color: var(--dash-text-heading);">{{ $template->createdBy?->full_name ?? '-' }}</p>
             </div>
             @if ($template->description)
                 <div class="col-span-2 sm:col-span-3">
-                    <p class="text-xs text-slate-500">Deskripsi</p>
-                    <p class="text-slate-700">{{ $template->description }}</p>
+                    <p class="text-xs mb-1" style="color: var(--dash-text-muted);">Deskripsi</p>
+                    <p style="color: var(--dash-text-body);">{{ $template->description }}</p>
                 </div>
             @endif
         </div>
     </div>
 
     {{-- Indicators --}}
-    <div class="overflow-hidden border border-slate-200 bg-white">
-        <div class="flex items-center justify-between border-b border-slate-200 px-5 py-3">
+    <div class="rounded-2xl overflow-hidden" style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <div class="flex items-center justify-between px-5 py-4" style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
             <div>
-                <h3 class="font-jakarta text-sm font-bold text-slate-900">Indikator KPI</h3>
-                <p class="mt-0.5 text-xs text-slate-500">Total bobot harus 100%. Indikator dengan data source diisi otomatis saat evaluasi dibuat.</p>
+                <h2 class="font-semibold text-sm" style="color: var(--dash-text-heading);">Indikator KPI</h2>
+                <p class="mt-0.5 text-xs" style="color: var(--dash-text-muted);">Total bobot aktif harus 100%. Indikator dengan sumber data diisi otomatis saat evaluasi dibuat.</p>
             </div>
             @can('kpi.template.update')
-                <a href="{{ route('kpi.templates.indicators.create', $template) }}" class="inline-flex min-h-8 items-center gap-1 bg-[#215aac] px-3 text-xs font-semibold text-white hover:bg-[#194a91]">
-                    <span class="material-symbols-outlined text-[14px]">add</span> Tambah
+                <a href="{{ route('kpi.templates.indicators.create', $template) }}"
+                   class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white rounded-lg hover:opacity-90 transition-opacity shrink-0"
+                   style="background-color: var(--dash-primary);">
+                    <span class="material-symbols-outlined text-[14px]">add</span>Tambah
                 </a>
             @endcan
         </div>
-        <table class="min-w-full divide-y divide-slate-200 text-sm">
-            <thead class="bg-slate-50 text-left text-xs font-semibold text-slate-500">
-                <tr>
-                    <th class="px-5 py-3">#</th>
-                    <th class="px-5 py-3">Indikator</th>
-                    <th class="px-5 py-3">Satuan</th>
-                    <th class="px-5 py-3 text-right">Target</th>
-                    <th class="px-5 py-3 text-right">Bobot</th>
-                    <th class="px-5 py-3">Sumber Data</th>
-                    <th class="px-5 py-3">Status</th>
-                    <th class="px-5 py-3 text-right">Aksi</th>
+        <table class="w-full text-sm">
+            <thead>
+                <tr style="border-bottom: 1px solid var(--dash-card-border);">
+                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide" style="color: var(--dash-text-muted);">#</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide" style="color: var(--dash-text-muted);">Indikator</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide" style="color: var(--dash-text-muted);">Satuan</th>
+                    <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide" style="color: var(--dash-text-muted);">Target</th>
+                    <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide" style="color: var(--dash-text-muted);">Bobot</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide" style="color: var(--dash-text-muted);">Sumber Data</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide" style="color: var(--dash-text-muted);">Status</th>
+                    <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide" style="color: var(--dash-text-muted);">Aksi</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-slate-100">
+            <tbody>
                 @php $totalWeight = 0; @endphp
                 @forelse ($template->indicators as $indicator)
                     @php if ($indicator->is_active) $totalWeight += $indicator->weight; @endphp
-                    <tr class="{{ $indicator->is_active ? '' : 'opacity-50' }} hover:bg-slate-50/70">
-                        <td class="px-5 py-3 text-slate-400">{{ $indicator->sequence_number }}</td>
+                    <tr class="{{ $indicator->is_active ? '' : 'opacity-50' }}"
+                        style="border-bottom: 1px solid var(--dash-card-border);"
+                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                        onmouseout="this.style.backgroundColor='transparent'">
+                        <td class="px-5 py-3" style="color: var(--dash-text-faint);">{{ $indicator->sequence_number }}</td>
                         <td class="px-5 py-3">
-                            <p class="font-medium text-slate-900">{{ $indicator->indicator_name }}</p>
-                            <p class="font-mono text-xs text-slate-400">{{ $indicator->indicator_code }}</p>
+                            <p class="font-medium" style="color: var(--dash-text-heading);">{{ $indicator->indicator_name }}</p>
+                            <p class="font-mono text-xs" style="color: var(--dash-text-faint);">{{ $indicator->indicator_code }}</p>
                         </td>
-                        <td class="px-5 py-3 text-slate-600">{{ $indicator->unit ?? '—' }}</td>
-                        <td class="px-5 py-3 text-right text-slate-700">{{ $indicator->target_value }}</td>
-                        <td class="px-5 py-3 text-right font-semibold text-slate-900">{{ $indicator->weight }}%</td>
+                        <td class="px-5 py-3" style="color: var(--dash-text-body);">{{ $indicator->unit ?? '-' }}</td>
+                        <td class="px-5 py-3 text-right" style="color: var(--dash-text-body);">{{ $indicator->target_value }}</td>
+                        <td class="px-5 py-3 text-right font-semibold" style="color: var(--dash-text-heading);">{{ $indicator->weight }}%</td>
                         <td class="px-5 py-3">
                             @if ($indicator->data_source_type)
-                                <span class="inline-flex rounded-full bg-blue-100 px-2 py-0.5 font-mono text-xs text-blue-800">{{ $indicator->data_source_type }}</span>
+                                <span class="inline-flex px-2 py-0.5 rounded-lg font-mono text-xs bg-blue-100 text-blue-800">{{ $indicator->data_source_type }}</span>
                             @else
-                                <span class="text-xs text-slate-400">Manual</span>
+                                <span class="text-xs" style="color: var(--dash-text-faint);">Manual</span>
                             @endif
                         </td>
                         <td class="px-5 py-3">
-                            <span class="inline-flex rounded-full px-2 py-0.5 text-xs font-semibold {{ $indicator->is_active ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600' }}">
+                            <span class="inline-flex px-2 py-0.5 rounded-lg text-xs font-semibold {{ $indicator->is_active ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600' }}">
                                 {{ $indicator->is_active ? 'Aktif' : 'Nonaktif' }}
                             </span>
                         </td>
                         <td class="px-5 py-3 text-right">
                             @can('kpi.template.update')
                                 <div class="inline-flex gap-1">
-                                    <a href="{{ route('kpi.templates.indicators.edit', [$template, $indicator]) }}" class="inline-flex min-h-8 items-center border border-slate-300 px-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">Edit</a>
-                                    <form method="POST" action="{{ route('kpi.templates.indicators.destroy', [$template, $indicator]) }}" onsubmit="return confirm('Hapus indikator ini?')">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="inline-flex min-h-8 items-center border border-red-200 px-2 text-xs font-semibold text-red-600 hover:bg-red-50">Hapus</button>
-                                    </form>
+                                    <a href="{{ route('kpi.templates.indicators.edit', [$template, $indicator]) }}"
+                                       class="inline-flex items-center gap-1 px-2 py-1.5 text-xs font-semibold rounded-lg transition-colors"
+                                       style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                                       onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                       onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                        <span class="material-symbols-outlined text-[13px]">edit</span>Edit
+                                    </a>
+                                    <button type="button"
+                                            @click="showDeleteIndicator = true; deleteIndicatorId = {{ $indicator->id }}; deleteIndicatorName = '{{ addslashes($indicator->indicator_name) }}'"
+                                            class="inline-flex items-center gap-1 px-2 py-1.5 text-xs font-semibold rounded-lg text-white hover:opacity-90 transition-opacity"
+                                            style="background-color: #dc2626;">
+                                        <span class="material-symbols-outlined text-[13px]">delete</span>Hapus
+                                    </button>
                                 </div>
                             @endcan
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="8" class="px-5 py-8 text-center text-sm text-slate-400">Belum ada indikator. Tambah indikator di atas.</td>
+                        <td colspan="8" class="px-5 py-12 text-center">
+                            <span class="material-symbols-outlined text-[48px] block mx-auto mb-3" style="color: var(--dash-text-faint);">assessment</span>
+                            <p class="text-sm font-semibold" style="color: var(--dash-text-muted);">Belum ada indikator. Tambah indikator di atas.</p>
+                        </td>
                     </tr>
                 @endforelse
             </tbody>
             @if ($template->indicators->count())
-                <tfoot class="bg-slate-50 text-xs font-semibold text-slate-500">
-                    <tr>
-                        <td colspan="4" class="px-5 py-3 text-right">Total bobot:</td>
-                        <td class="px-5 py-3 text-right {{ abs($totalWeight - 100) < 0.01 ? 'text-emerald-700' : 'text-red-700' }}">{{ $totalWeight }}%</td>
+                <tfoot>
+                    <tr style="background-color: var(--dash-nav-hover-bg); border-top: 1px solid var(--dash-card-border);">
+                        <td colspan="4" class="px-5 py-3 text-right text-xs font-semibold" style="color: var(--dash-text-muted);">Total bobot:</td>
+                        <td class="px-5 py-3 text-right text-xs font-semibold {{ abs($totalWeight - 100) < 0.01 ? 'text-emerald-700' : 'text-red-700' }}">{{ $totalWeight }}%</td>
                         <td colspan="3"></td>
                     </tr>
                 </tfoot>
@@ -140,34 +168,111 @@
     </div>
 
     {{-- Documents --}}
-    <div class="overflow-hidden border border-slate-200 bg-white">
-        <div class="flex items-center justify-between border-b border-slate-200 px-5 py-3">
-            <h3 class="font-jakarta text-sm font-bold text-slate-900">Dokumen Template</h3>
+    <div class="rounded-2xl overflow-hidden" style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <div class="flex items-center justify-between px-5 py-4" style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+            <h2 class="font-semibold text-sm" style="color: var(--dash-text-heading);">Dokumen Template</h2>
             @can('kpi.document.create')
                 <form method="POST" action="{{ route('kpi.documents.store') }}" enctype="multipart/form-data" class="flex items-center gap-2">
                     @csrf
                     <input type="hidden" name="kpi_template_id" value="{{ $template->id }}">
                     <input type="hidden" name="document_type" value="template">
-                    <input type="text" name="title" placeholder="Judul dokumen" required class="border-slate-300 text-xs focus:border-[#215aac] focus:ring-[#215aac]">
-                    <input type="file" name="file" required class="text-xs text-slate-600">
-                    <button type="submit" class="inline-flex min-h-8 items-center gap-1 bg-[#215aac] px-3 text-xs font-semibold text-white hover:bg-[#194a91]">Upload</button>
+                    <input type="text" name="title" placeholder="Judul dokumen" required
+                           class="px-3 py-1.5 text-xs rounded-lg focus:outline-none"
+                           style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                           onfocus="this.style.borderColor='var(--dash-primary)'"
+                           onblur="this.style.borderColor='var(--dash-input-border)'">
+                    <input type="file" name="file" required class="text-xs" style="color: var(--dash-text-muted);">
+                    <button type="submit"
+                            class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                            style="background-color: var(--dash-primary);">
+                        <span class="material-symbols-outlined text-[14px]">upload</span>Upload
+                    </button>
                 </form>
             @endcan
         </div>
         @forelse ($template->documents as $doc)
-            <div class="flex items-center justify-between border-b border-slate-100 px-5 py-3 last:border-0">
+            <div class="flex items-center justify-between px-5 py-3" style="border-bottom: 1px solid var(--dash-card-border);">
                 <div>
-                    <p class="text-sm font-medium text-slate-900">{{ $doc->title }}</p>
-                    <p class="text-xs text-slate-400">{{ $doc->original_name }} · {{ $doc->uploadedAt?->format('d M Y') }}</p>
+                    <p class="text-sm font-medium" style="color: var(--dash-text-heading);">{{ $doc->title }}</p>
+                    <p class="text-xs" style="color: var(--dash-text-faint);">{{ $doc->original_name }} - {{ $doc->uploadedAt?->format('d M Y') }}</p>
                 </div>
-                <form method="POST" action="{{ route('kpi.documents.destroy', $doc) }}" onsubmit="return confirm('Hapus dokumen?')">
-                    @csrf @method('DELETE')
-                    <button type="submit" class="text-xs text-red-600 hover:underline">Hapus</button>
-                </form>
+                <button type="button"
+                        @click="showDeleteDoc = true; deleteDocId = {{ $doc->id }}; deleteDocName = '{{ addslashes($doc->title) }}'"
+                        class="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-lg text-white hover:opacity-90 transition-opacity"
+                        style="background-color: #dc2626;">
+                    <span class="material-symbols-outlined text-[13px]">delete</span>Hapus
+                </button>
             </div>
         @empty
-            <p class="px-5 py-4 text-sm text-slate-400">Belum ada dokumen.</p>
+            <div class="px-5 py-8 text-center">
+                <span class="material-symbols-outlined text-[36px] block mx-auto mb-2" style="color: var(--dash-text-faint);">folder_open</span>
+                <p class="text-sm" style="color: var(--dash-text-muted);">Belum ada dokumen.</p>
+            </div>
         @endforelse
+    </div>
+
+    {{-- Modal hapus indikator --}}
+    <div x-show="showDeleteIndicator" x-cloak
+         class="fixed inset-0 z-50 flex items-center justify-center p-4"
+         style="background-color: rgba(0,0,0,0.5);">
+        <div class="w-full max-w-md rounded-2xl shadow-xl"
+             style="background-color: var(--dash-card-bg);">
+            <div class="px-6 py-4 rounded-t-2xl" style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                <h3 class="font-semibold text-sm" style="color: var(--dash-text-heading);">Hapus Indikator</h3>
+            </div>
+            <div class="px-6 py-5">
+                <p class="text-sm" style="color: var(--dash-text-body);">Yakin ingin menghapus indikator <strong x-text="deleteIndicatorName"></strong>? Tindakan ini tidak bisa dibatalkan.</p>
+            </div>
+            <div class="flex justify-end gap-3 px-6 py-4 rounded-b-2xl" style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                <button type="button" @click="showDeleteIndicator = false"
+                        class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                        style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                    Batal
+                </button>
+                <form method="POST" :action="`/kpi/templates/{{ $template->id }}/indicators/${deleteIndicatorId}`">
+                    @csrf @method('DELETE')
+                    <button type="submit"
+                            class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                            style="background-color: #dc2626;">
+                        <span class="material-symbols-outlined text-[16px]">delete</span>Hapus
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Modal hapus dokumen --}}
+    <div x-show="showDeleteDoc" x-cloak
+         class="fixed inset-0 z-50 flex items-center justify-center p-4"
+         style="background-color: rgba(0,0,0,0.5);">
+        <div class="w-full max-w-md rounded-2xl shadow-xl"
+             style="background-color: var(--dash-card-bg);">
+            <div class="px-6 py-4 rounded-t-2xl" style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                <h3 class="font-semibold text-sm" style="color: var(--dash-text-heading);">Hapus Dokumen</h3>
+            </div>
+            <div class="px-6 py-5">
+                <p class="text-sm" style="color: var(--dash-text-body);">Yakin ingin menghapus dokumen <strong x-text="deleteDocName"></strong>?</p>
+            </div>
+            <div class="flex justify-end gap-3 px-6 py-4 rounded-b-2xl" style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                <button type="button" @click="showDeleteDoc = false"
+                        class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                        style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                    Batal
+                </button>
+                <form method="POST" :action="`/kpi/documents/${deleteDocId}`">
+                    @csrf @method('DELETE')
+                    <button type="submit"
+                            class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                            style="background-color: #dc2626;">
+                        <span class="material-symbols-outlined text-[16px]">delete</span>Hapus
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
 
 </div>

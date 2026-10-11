@@ -1,86 +1,139 @@
 @extends('layouts.dashboard')
 
 @section('title', 'Buat Test TOEFL')
+@section('header_title', 'Buat Test TOEFL')
 
 @section('content')
-<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-3xl mx-auto">
-    <div class="mb-6 flex items-center justify-between">
-        <h1 class="text-2xl font-bold text-gray-800">Buat Test TOEFL Baru</h1>
-        <a href="{{ route('toefl-tests.index') }}" class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-sm font-medium transition-colors">Kembali</a>
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-3xl mx-auto space-y-6">
+    <div>
+        <a href="{{ route('toefl-tests.index') }}" class="dash-back mb-3">
+            <span class="material-symbols-outlined">arrow_back</span>Kembali ke Bank Test
+        </a>
+        <p class="text-xs font-semibold uppercase tracking-wider mb-1"
+           style="color: var(--dash-primary-text);">TOEFL</p>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+            style="color: var(--dash-text-heading);">Buat Test TOEFL Baru</h1>
     </div>
 
     @if ($errors->any())
-        <div class="mb-4 bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded">
-            <ul class="list-disc list-inside text-sm space-y-1">
-                @foreach ($errors->all() as $error) <li>{{ $error }}</li> @endforeach
+        <div class="px-4 py-3 rounded-xl text-sm"
+             style="background-color: #fef2f2; border: 1px solid #fecaca; color: #dc2626;">
+            <ul class="list-disc list-inside space-y-1">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
             </ul>
         </div>
     @endif
 
-    <div class="bg-white shadow-lg rounded-sm border border-gray-200">
-        <form action="{{ route('toefl-tests.store') }}" method="POST" class="p-6 space-y-5">
+    <div class="rounded-2xl overflow-hidden"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <div class="px-6 py-4"
+             style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+            <h2 class="font-semibold text-sm" style="color: var(--dash-text-heading);">Data Test</h2>
+        </div>
+        <form action="{{ route('toefl-tests.store') }}" method="POST" class="px-6 py-5 space-y-5">
             @csrf
 
             <div>
-                <label for="test_name" class="block text-sm font-medium text-gray-700 mb-1">Nama Test <span class="text-red-500">*</span></label>
-                <input id="test_name" name="test_name" type="text" value="{{ old('test_name') }}"
-                    class="form-input w-full min-h-[44px] @error('test_name') border-red-400 @enderror" required />
+                <label for="test_name" class="block text-sm font-medium mb-1" style="color: var(--dash-text-body);">
+                    Nama Test <span class="text-red-500">*</span>
+                </label>
+                <input id="test_name" name="test_name" type="text" value="{{ old('test_name') }}" required
+                       class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
+                       style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                       onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                       onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'" />
+                @error('test_name')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
             </div>
 
             <div>
-                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
-                    Password Test <span class="text-gray-400 font-normal">(kosongkan jika tanpa password)</span>
+                <label for="password" class="block text-sm font-medium mb-1" style="color: var(--dash-text-body);">
+                    Password Test
+                    <span class="text-xs font-normal ml-1" style="color: var(--dash-text-faint);">(kosongkan jika tanpa password)</span>
                 </label>
                 <input id="password" name="password" type="text" value="{{ old('password') }}"
-                    class="form-input w-full min-h-[44px] @error('password') border-red-400 @enderror"
-                    placeholder="Min. 4 karakter" />
+                       placeholder="Min. 4 karakter"
+                       class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
+                       style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                       onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                       onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'" />
+                @error('password')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label for="level" class="block text-sm font-medium text-gray-700 mb-1">
-                        Level <span class="text-gray-400 font-normal">(opsional)</span>
+                    <label for="level" class="block text-sm font-medium mb-1" style="color: var(--dash-text-body);">
+                        Level <span class="text-xs font-normal ml-1" style="color: var(--dash-text-faint);">(opsional)</span>
                     </label>
-                    <select id="level" name="level" class="form-select w-full min-h-[44px] @error('level') border-red-400 @enderror">
-                        <option value="">— Pilih Level —</option>
+                    <select id="level" name="level"
+                            class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
+                            style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                            onfocus="this.style.borderColor='var(--dash-primary)'"
+                            onblur="this.style.borderColor='var(--dash-input-border)'">
+                        <option value="">Pilih Level ...</option>
                         <option value="beginner" {{ old('level') === 'beginner' ? 'selected' : '' }}>Beginner (skor &lt; 450)</option>
-                        <option value="intermediate" {{ old('level') === 'intermediate' ? 'selected' : '' }}>Intermediate (skor 450–500)</option>
+                        <option value="intermediate" {{ old('level') === 'intermediate' ? 'selected' : '' }}>Intermediate (skor 450-500)</option>
                         <option value="advanced" {{ old('level') === 'advanced' ? 'selected' : '' }}>Advanced (skor &gt; 500)</option>
                     </select>
+                    @error('level')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                 </div>
-                <div class="flex items-center gap-3 min-h-[44px] pt-6">
+                <div class="flex items-center gap-3 pt-6">
                     <input id="is_trial" name="is_trial" type="checkbox" value="1"
-                        class="rounded border-gray-300 text-indigo-600 w-5 h-5 cursor-pointer" {{ old('is_trial') ? 'checked' : '' }} />
-                    <label for="is_trial" class="text-sm font-medium text-gray-700 cursor-pointer select-none">
-                        Test Trial <span class="text-gray-400 font-normal">(akses publik tanpa login member)</span>
+                           class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-5 h-5 cursor-pointer"
+                           {{ old('is_trial') ? 'checked' : '' }} />
+                    <label for="is_trial" class="text-sm font-medium cursor-pointer select-none"
+                           style="color: var(--dash-text-body);">
+                        Test Trial
+                        <span class="text-xs font-normal ml-1" style="color: var(--dash-text-faint);">(akses publik tanpa login member)</span>
                     </label>
                 </div>
             </div>
 
-            <div class="border-t border-gray-100 pt-5">
-                <p class="text-sm font-medium text-gray-700 mb-3">Durasi per Section (menit)</p>
+            <div class="pt-4" style="border-top: 1px solid var(--dash-card-border);">
+                <p class="text-sm font-medium mb-3" style="color: var(--dash-text-body);">Durasi per Section (menit)</p>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-xs text-gray-500 mb-1">Listening</label>
+                        <label class="block text-xs font-medium mb-1" style="color: var(--dash-text-muted);">Listening</label>
                         <input name="listening_time_limit" type="number" min="1"
-                            value="{{ old('listening_time_limit', 35) }}" class="form-input w-full min-h-[44px]" />
+                               value="{{ old('listening_time_limit', 35) }}"
+                               class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
+                               style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                               onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                               onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'" />
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-500 mb-1">Structure</label>
+                        <label class="block text-xs font-medium mb-1" style="color: var(--dash-text-muted);">Structure</label>
                         <input name="structure_time_limit" type="number" min="1"
-                            value="{{ old('structure_time_limit', 25) }}" class="form-input w-full min-h-[44px]" />
+                               value="{{ old('structure_time_limit', 25) }}"
+                               class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
+                               style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                               onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                               onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'" />
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-500 mb-1">Reading</label>
+                        <label class="block text-xs font-medium mb-1" style="color: var(--dash-text-muted);">Reading</label>
                         <input name="reading_time_limit" type="number" min="1"
-                            value="{{ old('reading_time_limit', 55) }}" class="form-input w-full min-h-[44px]" />
+                               value="{{ old('reading_time_limit', 55) }}"
+                               class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
+                               style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                               onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                               onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'" />
                     </div>
                 </div>
             </div>
 
-            <div class="flex flex-col sm:flex-row sm:justify-end gap-3 pt-4 mt-2 border-t border-gray-100">
-                <a href="{{ route('toefl-tests.index') }}" class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-sm font-medium transition-colors">Batal</a>
-                <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium transition-colors">Buat Test</button>
+            <div class="flex gap-3 pt-4" style="border-top: 1px solid var(--dash-card-border);">
+                <button type="submit"
+                        class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                        style="background-color: var(--dash-primary);">
+                    <span class="material-symbols-outlined text-[16px]">add</span>Buat Test
+                </button>
+                <a href="{{ route('toefl-tests.index') }}"
+                   class="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold rounded-lg transition-colors"
+                   style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                   onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                   onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">Batal</a>
             </div>
         </form>
     </div>

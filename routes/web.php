@@ -844,11 +844,13 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
         Route::get('/', [PayrollSlipTemplateController::class, 'index'])->name('index');
         Route::post('/', [PayrollSlipTemplateController::class, 'store'])->name('store');
         Route::post('assign', [PayrollSlipTemplateController::class, 'assignUpdate'])->name('assign.update');
+        Route::get('test', fn () => redirect()->route('payroll.slip-templates.index', ['tab' => 'test', 'type' => 'marketing']))->name('test.default');
         Route::post('{type}/upload', [PayrollSlipTemplateController::class, 'upload'])->name('upload');
         Route::delete('{type}', [PayrollSlipTemplateController::class, 'destroy'])->name('destroy');
         Route::get('{type}/download', [PayrollSlipTemplateController::class, 'download'])->name('download');
         Route::get('{type}/test', [PayrollSlipTemplateController::class, 'test'])->name('test');
         Route::post('{type}/test', [PayrollSlipTemplateController::class, 'testProcess'])->name('test.process');
+        Route::post('{type}/apply-tested', [PayrollSlipTemplateController::class, 'applyTested'])->name('apply-tested');
         Route::get('{type}/test/download', [PayrollSlipTemplateController::class, 'testDownload'])->name('test.download');
     });
 
@@ -1047,6 +1049,7 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
         // GAP-46: rute force-reset lama ini duplikat — fungsinya sudah ada di users/{user}/reset-password
         // Route::get('force-reset', [ForceResetPasswordController::class, 'index'])->name('force-reset.index');
         // Route::post('force-reset', [ForceResetPasswordController::class, 'reset'])->name('force-reset.reset');
+        Route::get('api-keys/total-quota', [ApiKeyController::class, 'totalQuota'])->name('api-keys.total-quota');
         Route::resource('api-keys', ApiKeyController::class)->except(['show']);
         Route::post('api-keys/{apiKey}/toggle', [ApiKeyController::class, 'toggleActive'])->name('api-keys.toggle');
         Route::get('api-keys/{apiKey}/quota', [ApiKeyController::class, 'checkQuota'])->name('api-keys.quota');

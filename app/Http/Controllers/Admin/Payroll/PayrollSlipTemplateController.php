@@ -17,7 +17,7 @@ use PhpOffice\PhpWord\TemplateProcessor;
 
 class PayrollSlipTemplateController extends Controller
 {
-    /** Base types with friendly labels. Custom types have no label — show the slug. */
+    /** Base types with friendly labels. Custom types have no label - show the slug. */
     private const BASE_LABELS = [
         PayrollSlipService::TYPE_MARKETING => 'Marketing / MA / PIC',
         PayrollSlipService::TYPE_OFFICIAL_TUTOR => 'Official Tutor',
@@ -96,12 +96,17 @@ class PayrollSlipTemplateController extends Controller
         $typeLabels = self::allTypeLabels();
         $positions = Position::orderBy('hierarchy_order')->orderBy('position_name')->get();
 
-        $testType = $request->query('type');
-        $testResult = $testType ? session('slip_test_result_'.$testType) : null;
-        $testLabel = $testType ? (self::BASE_LABELS[$testType] ?? ucwords(str_replace('_', ' ', $testType))) : null;
-        $sample = $testType ? $this->findSamplePayroll($testType) : null;
+        $activeTab = $request->query('tab', 'templates');
+        $testType = $request->query('type') ?: 'marketing';
+        if (! isset($typeLabels[$testType])) {
+            $testType = array_key_first($typeLabels) ?: 'marketing';
+        }
+
+        $testResult = session('slip_test_result_'.$testType);
+        $testLabel = self::BASE_LABELS[$testType] ?? ucwords(str_replace('_', ' ', $testType));
+        $sample = $this->findSamplePayroll($testType);
         $testSampleInfo = $sample
-            ? $sample->employee?->full_name.' — Periode '.$sample->period?->period_month.'/'.$sample->period?->period_year
+            ? $sample->employee?->full_name.' - Periode '.$sample->period?->period_month.'/'.$sample->period?->period_year
             : null;
 
         $allKnownVars = [];
@@ -111,7 +116,7 @@ class PayrollSlipTemplateController extends Controller
 
         return view('payroll.slip-templates.index', compact(
             'templates', 'typeLabels', 'positions',
-            'testType', 'testResult', 'testLabel', 'testSampleInfo', 'allKnownVars'
+            'activeTab', 'testType', 'testResult', 'testLabel', 'testSampleInfo', 'allKnownVars'
         ));
     }
 
@@ -203,23 +208,12 @@ class PayrollSlipTemplateController extends Controller
             ->with('success', 'Assignment template berhasil disimpan.');
     }
 
-    public function test(string $type): View
+    public function test(string $type): RedirectResponse
     {
         abort_unless(preg_match('/^[a-z0-9_]+$/', $type), 404);
         abort_unless(file_exists(self::templatePath($type)), 404);
 
-        $label = self::BASE_LABELS[$type] ?? ucwords(str_replace('_', ' ', $type));
-        $sample = $this->findSamplePayroll($type);
-
-        return view('payroll.slip-templates.test', [
-            'type' => $type,
-            'label' => $label,
-            'knownVars' => self::knownVars($type),
-            'result' => session('slip_test_result_'.$type),
-            'sampleInfo' => $sample
-                ? $sample->employee?->full_name.' — Periode '.$sample->period?->period_month.'/'.$sample->period?->period_year
-                : null,
-        ]);
+        return redirect()->route('payroll.slip-templates.index', ['tab' => 'test', 'type' => $type]);
     }
 
     public function testProcess(Request $request, string $type): RedirectResponse
@@ -228,12 +222,14 @@ class PayrollSlipTemplateController extends Controller
 
         $request->validate(['template' => 'required|file|mimes:docx|max:10240']);
 
-        $sourcePath = $request->file('template')->getRealPath();
+        $uploadedFile = $request->file('template');
+        $sourcePath = $uploadedFile->getRealPath();
         $foundVars = [];
         $missingVars = [];
         $extraVars = [];
         $error = null;
         $resultToken = null;
+        $rawToken = null;
         $dataSource = null;
 
         try {
@@ -243,25 +239,64 @@ class PayrollSlipTemplateController extends Controller
 
             if ($sample) {
                 $dataSource = $sample->employee?->full_name
-                    .' — Periode '.$sample->period?->period_month.'/'.$sample->period?->period_year;
-                $this->fillRealPayroll($processor, $sample, $type);
+                    .' - Periode '.$sample->period?->period_month.'/'.$sample->period?->period_year;
+                $this->fillRealPayroll($processor, $sample, $type, $foundVars);
             } else {
-                $this->fillFakeSlip($processor, $type);
+                $this->fillFakeSlip($processor, $type, $foundVars);
             }
 
             $missingVars = array_values(array_diff(self::knownVars($type), $foundVars));
             $extraVars = array_values(array_diff($foundVars, self::knownVars($type)));
 
-            Storage::disk('local')->makeDirectory('slip-test-tmp');
-            $resultToken = auth()->id().'_'.bin2hex(random_bytes(16)).'.docx';
-            $processor->saveAs(storage_path('app/slip-test-tmp/'.$resultToken));
+            $tmpDir = storage_path('app/slip-test-tmp');
+            if (! is_dir($tmpDir)) {
+                mkdir($tmpDir, 0755, true);
+            }
+
+            $randomHex = bin2hex(random_bytes(16));
+
+            // Simpan preview terisi data untuk diunduh user
+            $resultToken = auth()->id().'_'.$randomHex.'.docx';
+            $processor->saveAs($tmpDir.'/'.$resultToken);
+
+            // Simpan template mentah asli agar dapat langsung diterapkan jika user puas dengan hasil uji
+            $rawToken = auth()->id().'_raw_'.$randomHex.'.docx';
+            copy($sourcePath, $tmpDir.'/'.$rawToken);
         } catch (\Throwable $e) {
             $error = $e->getMessage();
         }
 
         return redirect()
-            ->route('payroll.slip-templates.index', ['tab' => 'tes', 'type' => $type])
-            ->with('slip_test_result_'.$type, compact('foundVars', 'missingVars', 'extraVars', 'error', 'resultToken', 'dataSource'));
+            ->route('payroll.slip-templates.index', ['tab' => 'test', 'type' => $type])
+            ->with('slip_test_result_'.$type, compact('foundVars', 'missingVars', 'extraVars', 'error', 'resultToken', 'rawToken', 'dataSource'));
+    }
+
+    public function applyTested(Request $request, string $type): RedirectResponse
+    {
+        abort_unless(preg_match('/^[a-z0-9_]+$/', $type), 404);
+
+        $token = $request->input('raw_token');
+        abort_unless(
+            $token && preg_match('/^\d+_raw_[0-9a-f]{32}\.docx$/', $token)
+                && str_starts_with($token, auth()->id().'_raw_'),
+            403
+        );
+
+        $rawPath = storage_path('app/slip-test-tmp/'.$token);
+        abort_unless(file_exists($rawPath), 404);
+
+        $dest = storage_path('app/templates');
+        if (! is_dir($dest)) {
+            mkdir($dest, 0755, true);
+        }
+
+        copy($rawPath, self::templatePath($type));
+        @unlink($rawPath);
+
+        $label = self::BASE_LABELS[$type] ?? ucwords(str_replace('_', ' ', $type));
+
+        return redirect()->route('payroll.slip-templates.index', ['tab' => 'templates'])
+            ->with('success', "Template \"{$label}\" berhasil diperbarui dengan template yang telah diuji.");
     }
 
     public function testDownload(Request $request, string $type): Response
@@ -291,7 +326,7 @@ class PayrollSlipTemplateController extends Controller
             ->first(fn ($p) => $p->employee && PayrollSlipService::resolveTemplateType($p->employee) === $type);
     }
 
-    private function fillRealPayroll(TemplateProcessor $tpl, EmployeePayroll $payroll, string $type): void
+    private function fillRealPayroll(TemplateProcessor $tpl, EmployeePayroll $payroll, string $type, array $foundVars = []): void
     {
         $period = $payroll->period;
         $payDate = Carbon::create($period->period_year, $period->period_month)->locale('id');
@@ -310,16 +345,19 @@ class PayrollSlipTemplateController extends Controller
         $earnings = $payroll->items->where('component_type_snapshot', 'earning')->values();
         $deductions = $payroll->items->where('component_type_snapshot', 'deduction')->values();
         $rowCount = max($earnings->count(), $deductions->count(), 1);
-        $tpl->cloneRow('nama_komponen_pendapatan', $rowCount);
 
-        for ($i = 0; $i < $rowCount; $i++) {
-            $n = $i + 1;
-            $earning = $earnings->get($i);
-            $deduction = $deductions->get($i);
-            $tpl->setValue("nama_komponen_pendapatan#{$n}", $earning ? htmlspecialchars($earning->component_name_snapshot) : '-');
-            $tpl->setValue("nominal_komponen_pendapatan#{$n}", $earning ? $this->rp($earning->total_amount) : 'Rp 0');
-            $tpl->setValue("nama_komponen_pengurangan#{$n}", $deduction ? htmlspecialchars($deduction->component_name_snapshot) : '-');
-            $tpl->setValue("nominal_komponen_pengurangan#{$n}", $deduction ? $this->rp($deduction->total_amount) : 'Rp 0');
+        if (in_array('nama_komponen_pendapatan', $foundVars)) {
+            $tpl->cloneRow('nama_komponen_pendapatan', $rowCount);
+
+            for ($i = 0; $i < $rowCount; $i++) {
+                $n = $i + 1;
+                $earning = $earnings->get($i);
+                $deduction = $deductions->get($i);
+                $tpl->setValue("nama_komponen_pendapatan#{$n}", $earning ? htmlspecialchars($earning->component_name_snapshot) : '-');
+                $tpl->setValue("nominal_komponen_pendapatan#{$n}", $earning ? $this->rp($earning->total_amount) : 'Rp 0');
+                $tpl->setValue("nama_komponen_pengurangan#{$n}", $deduction ? htmlspecialchars($deduction->component_name_snapshot) : '-');
+                $tpl->setValue("nominal_komponen_pengurangan#{$n}", $deduction ? $this->rp($deduction->total_amount) : 'Rp 0');
+            }
         }
 
         $bonusItem = $payroll->items->where('component_type_snapshot', 'earning')->where('source_type', 'bonus')->first();
@@ -343,7 +381,7 @@ class PayrollSlipTemplateController extends Controller
         }
     }
 
-    private function fillFakeSlip(TemplateProcessor $tpl, string $type): void
+    private function fillFakeSlip(TemplateProcessor $tpl, string $type, array $foundVars = []): void
     {
         $label = self::BASE_LABELS[$type] ?? ucwords(str_replace('_', ' ', $type));
         $tpl->setValue('nama_pegawai', 'Ahmad Fauzi (DATA CONTOH)');
@@ -361,15 +399,17 @@ class PayrollSlipTemplateController extends Controller
         $tpl->setValue('percentage', '10%');
         $tpl->setValue('net_bonus', 'Rp 1.650.000');
 
-        $tpl->cloneRow('nama_komponen_pendapatan', 2);
-        $tpl->setValue('nama_komponen_pendapatan#1', 'Gaji Pokok');
-        $tpl->setValue('nominal_komponen_pendapatan#1', 'Rp 3.500.000');
-        $tpl->setValue('nama_komponen_pengurangan#1', 'BPJS Kesehatan');
-        $tpl->setValue('nominal_komponen_pengurangan#1', 'Rp 150.000');
-        $tpl->setValue('nama_komponen_pendapatan#2', 'Bonus Omzet');
-        $tpl->setValue('nominal_komponen_pendapatan#2', 'Rp 1.650.000');
-        $tpl->setValue('nama_komponen_pengurangan#2', 'BPJS Ketenagakerjaan');
-        $tpl->setValue('nominal_komponen_pengurangan#2', 'Rp 150.000');
+        if (in_array('nama_komponen_pendapatan', $foundVars)) {
+            $tpl->cloneRow('nama_komponen_pendapatan', 2);
+            $tpl->setValue('nama_komponen_pendapatan#1', 'Gaji Pokok');
+            $tpl->setValue('nominal_komponen_pendapatan#1', 'Rp 3.500.000');
+            $tpl->setValue('nama_komponen_pengurangan#1', 'BPJS Kesehatan');
+            $tpl->setValue('nominal_komponen_pengurangan#1', 'Rp 150.000');
+            $tpl->setValue('nama_komponen_pendapatan#2', 'Bonus Omzet');
+            $tpl->setValue('nominal_komponen_pendapatan#2', 'Rp 1.650.000');
+            $tpl->setValue('nama_komponen_pengurangan#2', 'BPJS Ketenagakerjaan');
+            $tpl->setValue('nominal_komponen_pengurangan#2', 'Rp 150.000');
+        }
 
         if (in_array($type, [PayrollSlipService::TYPE_REGULAR_TUTOR, PayrollSlipService::TYPE_OFFICIAL_TUTOR])) {
             $tpl->setValue('total_meeting_active_program_attended_this_month', '12');

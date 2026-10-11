@@ -52,6 +52,7 @@ class DocumentSignatureSettingController extends Controller implements HasMiddle
         }
 
         return redirect()->route('attendance.document-signature.index')
-            ->with('success', 'Pengaturan tanda tangan berhasil disimpan.');
+            ->with('success', 'Pengaturan tanda tangan berhasil disimpan.')
+            ->with('active_type', $request->input('_active_type'));
     }
 }

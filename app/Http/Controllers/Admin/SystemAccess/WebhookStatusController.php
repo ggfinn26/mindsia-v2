@@ -8,6 +8,7 @@ use App\Http\Requests\SystemAccess\UpdateWebhookRequest;
 use App\Models\Bot;
 use App\Models\Webhook;
 use App\Repositories\SystemAccess\WebhookRepository;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
@@ -74,7 +75,7 @@ class WebhookStatusController extends Controller
         return redirect()->route('system.webhooks.index')->with('success', 'Webhook berhasil dihapus.');
     }
 
-    public function ping(Webhook $webhook): RedirectResponse
+    public function ping(Webhook $webhook): RedirectResponse|JsonResponse
     {
         try {
             $safeIp = self::resolveSafeIp($webhook->endpoint_url);
@@ -99,6 +100,23 @@ class WebhookStatusController extends Controller
         $this->repository->recordPing($webhook, $success);
 
         $msg = $success ? 'Webhook aktif.' : 'Webhook tidak merespons.';
+
+        if (request()->wantsJson()) {
+            $freshWebhook = $webhook->fresh();
+
+            return response()->json([
+                'success' => $success,
+                'message' => $msg,
+                'status' => $freshWebhook->last_status,
+                'status_label' => match ($freshWebhook->last_status) {
+                    'ok' => 'OK',
+                    'failed' => 'Gagal',
+                    default => 'Belum dicek',
+                },
+                'last_ping_at' => $freshWebhook->last_ping_at ? $freshWebhook->last_ping_at->diffForHumans() : 'Baru saja',
+                'last_ping_at_formatted' => $freshWebhook->last_ping_at ? $freshWebhook->last_ping_at->format('d M Y H:i:s') : '-',
+            ]);
+        }
 
         return redirect()->route('system.webhooks.index')->with($success ? 'success' : 'error', $msg);
     }

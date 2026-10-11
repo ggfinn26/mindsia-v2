@@ -125,7 +125,7 @@
 <div class="pt-4 pb-2">
     <p class="px-3 text-[11px] font-bold uppercase tracking-wider font-jakarta" style="color: var(--dash-nav-section);">Presensi</p>
 </div>
-<x-dashboard.nav-group title="Absensi" icon="how_to_reg" :active="request()->is('attendance*') && !request()->is('attendance/check-in-out*') && !request()->is('attendance/leave-request*') && !request()->is('attendance/my-recap*')">
+<x-dashboard.nav-group title="Absensi" icon="how_to_reg" :active="request()->routeIs('attendance-recaps.*') || request()->routeIs('leave-requests.manage') || request()->routeIs('work-attendance.manage') || request()->routeIs('work-schedule-rules.*') || request()->routeIs('holidays.*') || request()->routeIs('attendance-rules.*') || request()->routeIs('leave-pay-settings.*') || (request()->is('attendance*') && !request()->is('attendance/check-in-out*') && !request()->is('attendance/leave-request*') && !request()->is('attendance/my-recap*'))">
     @can('attendance.recap.view')
     <x-dashboard.nav-item href="{{ route('attendance-recaps.index') }}" :active="request()->routeIs('attendance-recaps.*')" :isChild="true">Rekap Absensi Pegawai</x-dashboard.nav-item>
     @endcan
@@ -159,7 +159,7 @@
 
 <!-- 1.5 Gaji & Bonus -->
 @if(auth()->user()->can('payroll.component.create') || auth()->user()->can('payroll.component.update') || auth()->user()->can('payroll.period.view') || auth()->user()->can('payroll.period.generate') || auth()->user()->can('payroll.period.pay') || auth()->user()->can('payroll.item.adjust') || auth()->user()->canAny(['bonus.marketing-rule.view','bonus.kpi-rule.view','bonus.special-rule.view']))
-<x-dashboard.nav-group title="Gaji & Bonus" icon="payments" :active="request()->is('payroll*') || request()->is('bonus*')">
+<x-dashboard.nav-group title="Gaji & Bonus" icon="payments" :active="request()->is('payroll*') || request()->is('bonus*') || request()->routeIs('payroll.*') || request()->routeIs('bonus.*') || request()->is('session-compensation-rules*')">
     @canany(['payroll.component.create', 'payroll.component.update'])
     <x-dashboard.nav-item href="{{ route('payroll.components.index') }}" :active="request()->routeIs('payroll.components.*')" :isChild="true">Kelola Komponen Gaji</x-dashboard.nav-item>
     @endcanany
@@ -224,12 +224,12 @@
 @endcanany
 
 @canany(['class.manage', 'class.attendance.record', 'class.test.create', 'class.graduate'])
-<x-dashboard.nav-group title="Kelas" icon="school" :active="request()->routeIs('classrooms.*') || request()->routeIs('class-schedules.*') || request()->routeIs('class-tests.*') || request()->routeIs('member-class.*')">
-    <x-dashboard.nav-item href="{{ route('classrooms.index') }}" :isChild="true" :active="request()->routeIs('classrooms.index') || request()->routeIs('classrooms.show') || request()->routeIs('member-class.*')">Semua Kelas</x-dashboard.nav-item>
+<x-dashboard.nav-group title="Kelas" icon="school" :active="request()->routeIs('classrooms.*') || request()->routeIs('class-schedules.*') || request()->routeIs('my-classes.*') || request()->routeIs('class-tests.*') || request()->routeIs('member-class.*')">
+    <x-dashboard.nav-item href="{{ route('classrooms.index') }}" :isChild="true" :active="request()->routeIs('classrooms.index') || request()->routeIs('classrooms.show') || request()->routeIs('classrooms.edit') || request()->routeIs('classrooms.placement-test.*') || request()->routeIs('member-class.*')">Semua Kelas</x-dashboard.nav-item>
     @can('class.manage')
     <x-dashboard.nav-item href="{{ route('classrooms.create') }}" :isChild="true" :active="request()->routeIs('classrooms.create')">Buat Kelas Baru</x-dashboard.nav-item>
     @endcan
-    <x-dashboard.nav-item href="{{ route('class-schedules.index') }}" :isChild="true" :active="request()->routeIs('class-schedules.*')">Sesi & Absensi</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('class-schedules.index') }}" :isChild="true" :active="request()->routeIs('class-schedules.*') || request()->routeIs('my-classes.*')">Sesi & Absensi</x-dashboard.nav-item>
     @canany(['class.test.create', 'class.certificate.update', 'class.graduate'])
     <x-dashboard.nav-item href="{{ route('class-tests.index') }}" :isChild="true" :active="request()->routeIs('class-tests.*')">Test & Sertifikat</x-dashboard.nav-item>
     @endcanany

@@ -14,9 +14,19 @@ class UpsertDocumentSignatureRequest extends FormRequest
     public function rules(): array
     {
         return [
+            '_active_type' => ['nullable', 'string'],
             'signers' => ['required', 'array'],
             'signers.*.signer_name' => ['required', 'string', 'max:255'],
             'signers.*.signer_title' => ['required', 'string', 'max:255'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'signers.required' => 'Data penandatangan wajib diisi.',
+            'signers.*.signer_name.required' => 'Nama penandatangan wajib diisi.',
+            'signers.*.signer_title.required' => 'Jabatan penandatangan wajib diisi.',
         ];
     }
 

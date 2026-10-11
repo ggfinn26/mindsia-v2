@@ -1,75 +1,114 @@
 @extends('layouts.dashboard')
 
+@section('title', 'Pengaturan Izin/Cuti - MINDSIA')
+@section('header_title', 'Pengaturan Izin/Cuti')
+
 @section('content')
-<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-    <div class="mb-6">
-        <h1 class="text-2xl md:text-3xl text-gray-800 font-bold">Pengaturan Potongan Izin / Sakit / Cuti</h1>
-        <p class="mt-1 text-sm text-gray-500">Default: semua tipe izin <strong>dibayar penuh</strong> jika tidak ada pengaturan untuk posisi tersebut. BOARD selalu dibayar penuh.</p>
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6">
+
+    {{-- Page Header Pola A --}}
+    <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+        <div>
+            <p class="text-xs font-bold uppercase tracking-wider mb-1"
+               style="color: var(--dash-primary-text);">Absensi & Penggajian</p>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+                style="color: var(--dash-text-heading);">Pengaturan Izin/Cuti</h1>
+            <p class="text-sm mt-1" style="color: var(--dash-text-muted);">
+                Tentukan status pembayaran untuk izin, sakit, dan cuti per posisi jabatan. Default: semua tipe izin dibayar penuh jika belum diatur khusus.
+            </p>
+        </div>
     </div>
 
+    {{-- Info Alert --}}
+    <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm"
+         style="background-color: var(--dash-nav-hover-bg); border-color: var(--dash-card-border); color: var(--dash-text-muted);">
+        <span class="material-symbols-outlined text-[20px] shrink-0" style="color: var(--dash-primary-text);">info</span>
+        <p>Klik tombol status pada setiap kolom untuk mengubah pengaturan antara <strong>Dibayar</strong> dan <strong>Tidak Dibayar</strong>. Posisi Board selalu dibayar penuh.</p>
+    </div>
+
+    {{-- Flash Message --}}
     @if(session('success'))
-        <div class="mb-4 px-4 py-3 rounded bg-green-50 border border-green-200 text-green-700 text-sm">
-            {{ session('success') }}
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+             style="background-color: #f0fdf4; border-color: #bbf7d0; color: #059669;">
+            <span class="material-symbols-outlined text-[18px]">check_circle</span>
+            <p>{{ session('success') }}</p>
         </div>
     @endif
 
-    <div class="bg-white shadow-lg rounded-sm border border-gray-200 overflow-x-auto">
-        <table class="table-auto w-full text-sm">
-            <thead class="bg-gray-50 border-b border-gray-200">
-                <tr>
-                    <th class="px-4 py-3 text-left font-semibold text-gray-600 w-1/3">Posisi</th>
-                    <th class="px-4 py-3 text-center font-semibold text-gray-600">Izin</th>
-                    <th class="px-4 py-3 text-center font-semibold text-gray-600">Sakit</th>
-                    <th class="px-4 py-3 text-center font-semibold text-gray-600">Cuti</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100">
-                @foreach($positions as $position)
-                    @php
-                        $types = [
-                            'permission' => 'Izin',
-                            'sick'       => 'Sakit',
-                            'leave'      => 'Cuti',
-                        ];
-                    @endphp
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-4 py-3 font-medium text-gray-700">
-                            {{ $position->position_name }}
-                        </td>
-                        @foreach($types as $typeKey => $typeLabel)
+    {{-- Data Table Card --}}
+    <div class="rounded-2xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
+        @if($positions->isEmpty())
+            <div class="text-center py-12 px-4">
+                <span class="material-symbols-outlined text-[48px] block mx-auto mb-3"
+                      style="color: var(--dash-text-faint);">badge</span>
+                <p class="text-sm font-semibold" style="color: var(--dash-text-muted);">Belum ada data posisi terdaftar.</p>
+            </div>
+        @else
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left">
+                    <thead>
+                        <tr style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
+                            <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold w-1/3"
+                                style="color: var(--dash-text-muted);">Posisi</th>
+                            <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold text-center"
+                                style="color: var(--dash-text-muted);">Izin</th>
+                            <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold text-center"
+                                style="color: var(--dash-text-muted);">Sakit</th>
+                            <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold text-center"
+                                style="color: var(--dash-text-muted);">Cuti</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y" style="border-color: var(--dash-card-border);">
+                        @foreach($positions as $position)
                             @php
-                                $key = $position->id . '_' . $typeKey;
-                                $isPaid = isset($settings[$key]) ? $settings[$key]->is_paid : true;
+                                $types = [
+                                    'permission' => 'Izin',
+                                    'sick'       => 'Sakit',
+                                    'leave'      => 'Cuti',
+                                ];
                             @endphp
-                            <td class="px-4 py-3 text-center">
-                                <form method="POST" action="{{ route('leave-pay-settings.upsert') }}">
-                                    @csrf
-                                    <input type="hidden" name="position_id" value="{{ $position->id }}">
-                                    <input type="hidden" name="leave_type" value="{{ $typeKey }}">
-                                    <input type="hidden" name="is_paid" value="{{ $isPaid ? '0' : '1' }}">
-                                    <button type="submit"
-                                        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-colors
-                                            {{ $isPaid
-                                                ? 'bg-green-50 border-green-200 text-green-700 hover:bg-green-100'
-                                                : 'bg-red-50 border-red-200 text-red-700 hover:bg-red-100' }}"
-                                        title="Klik untuk ubah ke {{ $isPaid ? 'tidak dibayar' : 'dibayar' }}">
-                                        @if($isPaid)
-                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                            Dibayar
-                                        @else
-                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
-                                            Tidak Dibayar
-                                    @endif
-                                    </button>
-                                </form>
-                            </td>
+                            <tr style="border-bottom: 1px solid var(--dash-card-border);"
+                                onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                onmouseout="this.style.backgroundColor='transparent'">
+                                <td class="px-5 py-3.5 whitespace-nowrap font-medium"
+                                    style="color: var(--dash-text-heading);">
+                                    {{ $position->position_name ?? $position->title }}
+                                </td>
+                                @foreach($types as $typeKey => $typeLabel)
+                                    @php
+                                        $key = $position->id . '_' . $typeKey;
+                                        $isPaid = isset($settings[$key]) ? (bool)$settings[$key]->is_paid : true;
+                                    @endphp
+                                    <td class="px-5 py-3.5 whitespace-nowrap text-center">
+                                        <form method="POST" action="{{ route('leave-pay-settings.upsert') }}" class="inline-block">
+                                            @csrf
+                                            <input type="hidden" name="position_id" value="{{ $position->id }}">
+                                            <input type="hidden" name="leave_type" value="{{ $typeKey }}">
+                                            <input type="hidden" name="is_paid" value="{{ $isPaid ? '0' : '1' }}">
+                                            <button type="submit"
+                                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90 shadow-sm cursor-pointer"
+                                                    style="{{ $isPaid
+                                                        ? 'background-color: #ecfdf5; border: 1px solid #a7f3d0; color: #059669;'
+                                                        : 'background-color: #fef2f2; border: 1px solid #fecaca; color: var(--dash-danger);' }}"
+                                                    title="Klik untuk ubah ke {{ $isPaid ? 'Tidak Dibayar' : 'Dibayar' }}">
+                                                <span class="material-symbols-outlined text-[15px]">
+                                                    {{ $isPaid ? 'check_circle' : 'cancel' }}
+                                                </span>
+                                                {{ $isPaid ? 'Dibayar' : 'Tidak Dibayar' }}
+                                            </button>
+                                        </form>
+                                    </td>
+                                @endforeach
+                            </tr>
                         @endforeach
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+                    </tbody>
+                </table>
+            </div>
+        @endif
     </div>
 
-    <p class="mt-3 text-xs text-gray-400">Klik badge untuk toggle. Perubahan berlaku mulai periode payroll berikutnya.</p>
+    <p class="text-xs" style="color: var(--dash-text-muted);">
+        Klik badge status untuk toggle. Perubahan berlaku mulai periode payroll berikutnya.
+    </p>
 </div>
 @endsection

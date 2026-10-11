@@ -47,6 +47,7 @@ use App\Services\Alerts\FacilityAlertProvider;
 use App\Services\Alerts\RentAlertProvider;
 use App\Services\Alerts\StrategicAlertService;
 use Closure;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
@@ -75,6 +76,8 @@ class AppServiceProvider extends ServiceProvider
         if (request()->server('HTTP_X_FORWARDED_PROTO') === 'https') {
             URL::forceScheme('https');
         }
+
+        Paginator::useTailwind();
 
         $this->registerGates();
         $this->registerObservers();

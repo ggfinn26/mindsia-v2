@@ -1,126 +1,184 @@
 @extends('layouts.dashboard')
 
+@section('title', 'Bank Test TOEFL')
+@section('header_title', 'Bank Test TOEFL')
+
 @section('content')
-<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto" x-data="{
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6" x-data="{
     showConfirmModal: false,
     confirmTitle: '',
     confirmMessage: '',
     confirmActionUrl: '',
-    confirmMethod: 'POST',
-    confirmActionText: 'Konfirmasi'
+    confirmMethod: 'DELETE'
 }">
-    <!-- Page header -->
-    <div class="sm:flex sm:justify-between sm:items-center mb-8">
-        <!-- Left: Title -->
-        <div class="mb-4 sm:mb-0">
-            <h1 class="text-2xl md:text-3xl text-gray-800 font-bold">Bank Test TOEFL</h1>
+    <div class="flex items-start justify-between gap-4">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-wider mb-1"
+               style="color: var(--dash-primary-text);">TOEFL</p>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+                style="color: var(--dash-text-heading);">Bank Test TOEFL</h1>
         </div>
-
-        <!-- Right: Actions -->
-        <div class="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
-            @can('toefl.test.create')
-            <a href="{{ route('toefl-tests.create') }}" class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium transition-colors">
-                Tambah Test
+        @can('toefl.test.create')
+            <a href="{{ route('toefl-tests.create') }}"
+               class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity shrink-0"
+               style="background-color: var(--dash-primary);">
+                <span class="material-symbols-outlined text-[18px]">add</span>Tambah Test
             </a>
-            @endcan
-        </div>
+        @endcan
     </div>
 
-    <!-- Table -->
-    <div class="bg-white shadow-lg rounded-sm border border-gray-200">
-        <div class="overflow-x-auto">
-            <table class="table-auto w-full">
-                <!-- Table header -->
-                <thead class="text-xs font-semibold uppercase text-gray-500 bg-gray-50 border-t border-b border-gray-200">
-                    <tr>
-                        <th class="px-6 py-3 text-left">No</th>
-                        <th class="px-6 py-3 text-left">Nama Test</th>
-                        <th class="px-6 py-3 text-left">Tipe</th>
-                        <th class="px-6 py-3 text-left">Status</th>
-                        <th class="px-6 py-3 text-left">Pembuat</th>
-                        <th class="px-6 py-3 text-right">Aksi</th>
-                    </tr>
-                </thead>
-                <!-- Table body -->
-                <tbody class="text-sm divide-y divide-gray-200">
-                    @forelse($tests as $test)
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $loop->iteration }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
-                                {{ $test->test_name }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                @if($test->is_trial)
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Trial</span>
-                                @else
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Regular</span>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                @if($test->status === 'published')
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Published</span>
-                                @else
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Draft</span>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-gray-500">
-                                {{ optional($test->createdBy)->full_name ?? '-' }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <div class="flex items-center justify-end gap-1">
-                                    <a href="{{ route('toefl-tests.show', $test->id) }}" class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-md text-indigo-600 hover:bg-indigo-50 hover:text-indigo-900 transition-colors">Detail & Soal</a>
-                                    @can('toefl.test.update')
-                                        <a href="{{ route('toefl-tests.edit', $test->id) }}" class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-md text-blue-600 hover:bg-blue-50 hover:text-blue-900 transition-colors">Edit</a>
-                                    @endcan
-                                    @can('toefl.test.delete')
-                                        <button type="button" @click="showConfirmModal = true; confirmTitle = 'Hapus Test'; confirmMessage = 'Yakin ingin menghapus test ini?'; confirmActionUrl = '{{ route('toefl-tests.destroy', $test->id) }}'; confirmMethod = 'DELETE'; confirmActionText = 'Hapus'" class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-md text-red-600 hover:bg-red-50 hover:text-red-900 transition-colors">Hapus</button>
-                                    @endcan
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">Belum ada data bank test.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+    @if (session('success'))
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+             style="background-color: #f0fdf4; border-color: #bbf7d0; color: #059669;">
+            <span class="material-symbols-outlined text-[18px]">check_circle</span>
+            {{ session('success') }}
         </div>
-        <div class="px-6 py-4 border-t border-gray-200">
-            {{ $tests->links() }}
-        </div>
-    </div>
+    @endif
 
-    <!-- Modal Konfirmasi -->
-    <div x-show="showConfirmModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
-        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
-            <div x-show="showConfirmModal" @click="showConfirmModal = false" class="fixed inset-0 transition-opacity" aria-hidden="true">
-                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-            </div>
-            <div x-show="showConfirmModal" class="relative z-10 inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                    <div class="sm:flex sm:items-start">
-                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                            <span class="material-symbols-outlined text-red-600">warning</span>
-                        </div>
-                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                            <h3 class="text-lg leading-6 font-medium text-gray-900" x-text="confirmTitle"></h3>
-                            <div class="mt-2">
-                                <p class="text-sm text-gray-500" x-text="confirmMessage"></p>
+    <div class="rounded-2xl overflow-hidden"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <table class="w-full text-sm">
+            <thead>
+                <tr style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide"
+                        style="color: var(--dash-text-muted);">No</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide"
+                        style="color: var(--dash-text-muted);">Nama Test</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide"
+                        style="color: var(--dash-text-muted);">Tipe</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide"
+                        style="color: var(--dash-text-muted);">Status</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide"
+                        style="color: var(--dash-text-muted);">Pembuat</th>
+                    <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide"
+                        style="color: var(--dash-text-muted);">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($tests as $test)
+                    <tr style="border-bottom: 1px solid var(--dash-card-border);"
+                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                        onmouseout="this.style.backgroundColor='transparent'">
+                        <td class="px-5 py-3.5" style="color: var(--dash-text-muted);">{{ $loop->iteration }}</td>
+                        <td class="px-5 py-3.5 font-medium" style="color: var(--dash-text-heading);">
+                            {{ $test->test_name }}
+                        </td>
+                        <td class="px-5 py-3.5">
+                            @if ($test->is_trial)
+                                <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-blue-100 text-blue-700">Trial</span>
+                            @else
+                                <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-slate-100 text-slate-600">Regular</span>
+                            @endif
+                        </td>
+                        <td class="px-5 py-3.5">
+                            @if ($test->status === 'published')
+                                <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-700">Published</span>
+                            @else
+                                <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-amber-100 text-amber-700">Draft</span>
+                            @endif
+                        </td>
+                        <td class="px-5 py-3.5" style="color: var(--dash-text-muted);">
+                            {{ optional($test->createdBy)->full_name ?? '-' }}
+                        </td>
+                        <td class="px-5 py-3.5 text-right">
+                            <div class="flex items-center justify-end gap-1.5">
+                                <a href="{{ route('toefl-tests.show', $test->id) }}"
+                                   class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors"
+                                   style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                                   onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                   onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                    <span class="material-symbols-outlined text-[14px]">visibility</span>Lihat
+                                </a>
+                                @can('toefl.test.update')
+                                    <a href="{{ route('toefl-tests.edit', $test->id) }}"
+                                       class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors"
+                                       style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                                       onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                       onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                        <span class="material-symbols-outlined text-[14px]">edit</span>Edit
+                                    </a>
+                                @endcan
+                                @can('toefl.test.delete')
+                                    <button type="button"
+                                            @click="showConfirmModal = true; confirmTitle = 'Hapus Test'; confirmMessage = 'Yakin ingin menghapus test ini?'; confirmActionUrl = '{{ route('toefl-tests.destroy', $test->id) }}'"
+                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                                            style="background-color: #dc2626;">
+                                        <span class="material-symbols-outlined text-[14px]">delete</span>Hapus
+                                    </button>
+                                @endcan
                             </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="px-5 py-12 text-center">
+                            <span class="material-symbols-outlined text-[48px] block mx-auto mb-3"
+                                  style="color: var(--dash-text-faint);">quiz</span>
+                            <p class="text-sm font-semibold" style="color: var(--dash-text-muted);">Belum ada bank test TOEFL.</p>
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+        @if ($tests->hasPages())
+            <div class="px-5 py-4" style="border-top: 1px solid var(--dash-card-border);">
+                {{ $tests->links() }}
+            </div>
+        @endif
+    </div>
+
+    {{-- Modal Konfirmasi Hapus --}}
+    <template x-teleport="body">
+        <div x-show="showConfirmModal" style="display: none;" class="relative z-50" role="dialog" aria-modal="true">
+            <div x-show="showConfirmModal"
+                 x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                 x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
+                 @click="showConfirmModal = false"></div>
+            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <div x-show="showConfirmModal" @click.away="showConfirmModal = false"
+                         x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                         x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                         class="relative transform rounded-2xl text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md"
+                         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+                        <div class="rounded-t-2xl px-6 py-5"
+                             style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
+                            <div class="flex items-start gap-3.5">
+                                <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-red-600 text-[22px]">warning</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-jakarta text-base font-bold" x-text="confirmTitle"
+                                        style="color: var(--dash-text-heading);"></h3>
+                                    <p class="mt-1 text-sm leading-relaxed" x-text="confirmMessage"
+                                       style="color: var(--dash-text-muted);"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rounded-b-2xl px-6 py-4 flex justify-end gap-3"
+                             style="background-color: var(--dash-card-bg); border-top: 1px solid var(--dash-card-border);">
+                            <button type="button" @click="showConfirmModal = false"
+                                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                                    style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                                    onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                    onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                Batal
+                            </button>
+                            <form x-ref="confirmForm" :action="confirmActionUrl" method="POST" class="m-0">
+                                @csrf
+                                <input type="hidden" name="_method" :value="confirmMethod">
+                                <button type="submit"
+                                        class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                                        style="background-color: #dc2626;">
+                                    <span class="material-symbols-outlined text-[16px]">delete</span>Ya, Hapus
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
-                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="button" @click="$refs.confirmForm.submit()" class="w-full sm:w-auto inline-flex justify-center items-center rounded-md border border-transparent shadow-sm px-4 py-2 min-h-[44px] min-w-[44px] bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none sm:ml-3 sm:text-sm transition-colors" x-text="confirmActionText"></button>
-                    <button type="button" @click="showConfirmModal = false" class="mt-3 sm:mt-0 sm:ml-3 w-full sm:w-auto inline-flex justify-center items-center rounded-md border border-gray-300 shadow-sm px-4 py-2 min-h-[44px] min-w-[44px] bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:text-sm transition-colors">Batal</button>
-                </div>
-                <form x-ref="confirmForm" :action="confirmActionUrl" method="POST" class="hidden">
-                    @csrf
-                    <input type="hidden" name="_method" :value="confirmMethod">
-                </form>
             </div>
         </div>
-    </div>
+    </template>
 </div>
 @endsection

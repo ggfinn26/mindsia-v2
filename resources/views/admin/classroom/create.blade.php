@@ -1,19 +1,30 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Buat Kelas Baru')
+@section('title', 'Buat Kelas Baru - MINDSIA')
+@section('header_title', 'Buat Kelas Baru')
 
 @section('content')
-<div class="max-w-3xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">Buat Kelas Baru</h1>
-        <a href="{{ route('classrooms.index') }}" class="text-gray-600 border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-50">
-            Kembali
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-3xl mx-auto space-y-6">
+
+    {{-- Page Header Pola B3 --}}
+    <div>
+        <a href="{{ route('classrooms.index') }}" class="dash-back mb-3">
+            <span class="material-symbols-outlined">arrow_back</span> Kembali ke Semua Kelas
         </a>
+        <p class="text-xs font-bold uppercase tracking-wider mb-1"
+           style="color: var(--dash-primary-text);">Akademik</p>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+            style="color: var(--dash-text-heading);">Buat Kelas Baru</h1>
+        <p class="text-sm mt-1" style="color: var(--dash-text-muted);">
+            Tambahkan kelas baru dengan konfigurasi program, cabang, tutor, dan jadwal belajar.
+        </p>
     </div>
 
+    {{-- Validation Errors --}}
     @if ($errors->any())
-        <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-            <ul class="list-disc list-inside text-sm">
+        <div class="px-4 py-3 rounded-xl text-sm"
+             style="background-color: #fef2f2; border: 1px solid #fecaca; color: #dc2626;">
+            <ul class="list-disc list-inside space-y-1">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -21,188 +32,285 @@
         </div>
     @endif
 
-    <form action="{{ route('classrooms.store') }}" method="POST" class="bg-white shadow sm:rounded-lg"
-          x-data="classroomForm({{ Illuminate\Support\Js::from($tutors) }}, {{ Illuminate\Support\Js::from($branches) }}, {{ Illuminate\Support\Js::from(old('branch_id')) }}, {{ Illuminate\Support\Js::from(old('tutor_id')) }})">
-        @csrf
-        <div class="p-6 space-y-6">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Program <span class="text-red-500">*</span></label>
-                <select name="program_id" required
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                    <option value="">Pilih Program</option>
-                    @foreach($programs as $program)
-                        <option value="{{ $program->id }}" {{ old('program_id') == $program->id ? 'selected' : '' }}>{{ $program->program_name }}</option>
-                    @endforeach
-                </select>
-                @error('program_id')
-                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
+    {{-- Form Card --}}
+    <div class="rounded-2xl overflow-hidden shadow-sm"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <div class="px-6 py-4 flex items-center gap-2"
+             style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+            <span class="material-symbols-outlined text-[20px]" style="color: var(--dash-primary-text);">school</span>
+            <h2 class="font-jakarta text-sm font-bold" style="color: var(--dash-text-heading);">Informasi Kelas Baru</h2>
+        </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Cabang <span class="text-red-500">*</span></label>
-                <select name="branch_id" required x-model="selectedBranchId" @change="onBranchChange()"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                    <option value="">Pilih Cabang</option>
-                    @foreach($branches as $branch)
-                        <option value="{{ $branch->id }}">{{ $branch->branch_name }}</option>
-                    @endforeach
-                </select>
-                @error('branch_id')
-                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
+        <form action="{{ route('classrooms.store') }}" method="POST"
+              x-data="classroomForm({{ Illuminate\Support\Js::from($tutors) }}, {{ Illuminate\Support\Js::from($branches) }}, {{ Illuminate\Support\Js::from(old('branch_id')) }}, {{ Illuminate\Support\Js::from(old('tutor_id')) }})">
+            @csrf
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Nama Kelas <span class="text-red-500">*</span></label>
-                <input type="text" name="class_name" required
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                       value="{{ old('class_name') }}" placeholder="Contoh: TOEFL Intensive Batch 5" />
-                @error('class_name')
-                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-
-            {{-- Tutor dropdown --}}
-            <div @click.away="tutorOpen = false" @keydown.escape.window="tutorOpen = false">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Tutor <span class="text-red-500">*</span></label>
-                <div class="relative">
-                    <div @click="tutorOpen = !tutorOpen"
-                         class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white cursor-pointer flex justify-between items-center">
-                        <span :class="selectedTutorId ? 'text-gray-900' : 'text-gray-400'" x-text="tutorLabel || 'Pilih Tutor'"></span>
-                        <span class="material-symbols-outlined text-[18px] text-gray-400">expand_more</span>
-                    </div>
-                    <div x-show="tutorOpen" x-transition x-cloak
-                         class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
-                        <div class="p-2 bg-gray-50 border-b border-gray-100">
-                            <div class="relative">
-                                <span class="material-symbols-outlined absolute left-3 top-2 text-gray-400 text-[16px]">search</span>
-                                <input type="text" x-model="tutorSearch" placeholder="Cari tutor..."
-                                       style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-white border border-gray-200 rounded-md text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                       @click.stop>
-                            </div>
-                        </div>
-                        <template x-if="!selectedBranchId">
-                            <p class="px-4 py-3 text-sm text-gray-400 text-center">Pilih cabang terlebih dahulu</p>
-                        </template>
-                        <template x-if="selectedBranchId">
-                            <ul class="max-h-56 overflow-y-auto py-1">
-                                <template x-if="filteredTutors.length === 0">
-                                    <li class="px-4 py-2 text-sm text-gray-500 text-center">Tidak ada tutor tersedia untuk cabang ini</li>
-                                </template>
-                                <template x-for="t in filteredTutors" :key="t.id">
-                                    <li @click="selectTutor(t)"
-                                        class="px-4 py-2.5 text-sm cursor-pointer hover:bg-blue-500 hover:text-white"
-                                        :class="selectedTutorId == t.id ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-700'">
-                                        <div class="flex justify-between items-center">
-                                            <span class="font-medium" x-text="t.name"></span>
-                                            <span class="text-xs opacity-60 ml-2" x-text="t.class_count + ' kelas aktif'"></span>
-                                        </div>
-                                        <div class="text-xs opacity-60 mt-0.5" x-text="t.area_name + ' · ' + t.branch_name"></div>
-                                    </li>
-                                </template>
-                            </ul>
-                        </template>
-                    </div>
-                </div>
-                <input type="hidden" name="tutor_id" :value="selectedTutorId">
-                @error('tutor_id')
-                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
+            <div class="p-6 space-y-5">
+                {{-- Program --}}
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Hari Utama <span class="text-red-500">*</span></label>
-                    <select name="day_of_week" id="day_of_week" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                            onchange="updateSecondaryDay(this.value)">
-                        <option value="">Pilih Hari</option>
-                        @foreach(\App\Models\ClassRoom::PRIMARY_DAYS as $day)
-                            <option value="{{ $day }}" {{ old('day_of_week') === $day ? 'selected' : '' }}>{{ $day }}</option>
+                    <label class="block text-sm font-semibold mb-1.5" style="color: var(--dash-text-body);">
+                        Program <span class="text-red-500">*</span>
+                    </label>
+                    <select name="program_id" required
+                            class="w-full text-sm px-3.5 py-2.5 rounded-lg focus:outline-none transition-all cursor-pointer"
+                            style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                            onfocus="this.style.borderColor='var(--dash-primary)'"
+                            onblur="this.style.borderColor='var(--dash-input-border)'">
+                        <option value="">Pilih Program</option>
+                        @foreach($programs as $program)
+                            <option value="{{ $program->id }}" {{ old('program_id') == $program->id ? 'selected' : '' }}>{{ $program->program_name }}</option>
                         @endforeach
                     </select>
-                    <p id="secondary_day_info" class="text-sm text-blue-600 mt-1 hidden"></p>
-                    @error('day_of_week')
-                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                    @error('program_id')
+                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
+
+                {{-- Cabang --}}
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Jumlah Minggu <span class="text-red-500">*</span></label>
-                    <input type="number" name="week_count" required min="1" max="52"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                           value="{{ old('week_count', 12) }}" />
-                    @error('week_count')
-                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                    <label class="block text-sm font-semibold mb-1.5" style="color: var(--dash-text-body);">
+                        Cabang <span class="text-red-500">*</span>
+                    </label>
+                    <select name="branch_id" required x-model="selectedBranchId" @change="onBranchChange()"
+                            class="w-full text-sm px-3.5 py-2.5 rounded-lg focus:outline-none transition-all cursor-pointer"
+                            style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                            onfocus="this.style.borderColor='var(--dash-primary)'"
+                            onblur="this.style.borderColor='var(--dash-input-border)'">
+                        <option value="">Pilih Cabang</option>
+                        @foreach($branches as $branch)
+                            <option value="{{ $branch->id }}">{{ $branch->branch_name }}</option>
+                        @endforeach
+                    </select>
+                    @error('branch_id')
+                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
-            </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Mulai <span class="text-red-500">*</span></label>
-                <input type="date" name="start_date" required
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                       value="{{ old('start_date') }}" min="{{ now()->format('Y-m-d') }}" />
-                @error('start_date')
-                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
+                {{-- Nama Kelas --}}
+                <div>
+                    <label class="block text-sm font-semibold mb-1.5" style="color: var(--dash-text-body);">
+                        Nama Kelas <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" name="class_name" required
+                           value="{{ old('class_name') }}" placeholder="Contoh: TOEFL Intensive Batch 5"
+                           class="w-full text-sm px-3.5 py-2.5 rounded-lg focus:outline-none transition-all"
+                           style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                           onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                           onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                    @error('class_name')
+                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
 
-            <div class="border-t border-gray-200 pt-6">
-                <h3 class="text-md font-semibold text-gray-900 mb-4">Jam Pelajaran — Hari Utama</h3>
-                <div class="grid grid-cols-2 gap-4">
+                {{-- Tutor Custom Dropdown --}}
+                <div @click.away="tutorOpen = false" @keydown.escape.window="tutorOpen = false" class="relative">
+                    <label class="block text-sm font-semibold mb-1.5" style="color: var(--dash-text-body);">
+                        Tutor <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <div @click="tutorOpen = !tutorOpen"
+                             class="w-full text-sm px-3.5 py-2.5 rounded-lg cursor-pointer flex justify-between items-center transition-all"
+                             style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border);">
+                            <span :style="selectedTutorId ? 'color: var(--dash-text-heading);' : 'color: var(--dash-text-muted);'" x-text="tutorLabel || 'Pilih Tutor'"></span>
+                            <span class="material-symbols-outlined text-[18px]" style="color: var(--dash-text-muted);">expand_more</span>
+                        </div>
+                        <div x-show="tutorOpen" x-transition x-cloak
+                             class="absolute z-50 w-full mt-1 rounded-xl shadow-xl overflow-hidden"
+                             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+                            <div class="p-2.5" style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
+                                <div class="relative">
+                                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-[16px]"
+                                          style="color: var(--dash-text-muted);">search</span>
+                                    <input type="text" x-model="tutorSearch" placeholder="Cari tutor..."
+                                           style="padding-left: 2.5rem !important; background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                           class="w-full pr-3 py-1.5 rounded-lg text-sm focus:outline-none transition-all"
+                                           onfocus="this.style.borderColor='var(--dash-primary)'"
+                                           onblur="this.style.borderColor='var(--dash-input-border)'"
+                                           @click.stop>
+                                </div>
+                            </div>
+                            <template x-if="!selectedBranchId">
+                                <p class="px-4 py-3 text-sm text-center" style="color: var(--dash-text-muted);">Pilih cabang terlebih dahulu</p>
+                            </template>
+                            <template x-if="selectedBranchId">
+                                <ul class="max-h-56 overflow-y-auto py-1 divide-y" style="border-color: var(--dash-card-border);">
+                                    <template x-if="filteredTutors.length === 0">
+                                        <li class="px-4 py-3 text-sm text-center" style="color: var(--dash-text-muted);">Tidak ada tutor tersedia untuk cabang ini</li>
+                                    </template>
+                                    <template x-for="t in filteredTutors" :key="t.id">
+                                        <li @click="selectTutor(t)"
+                                            class="px-4 py-2.5 text-sm cursor-pointer transition-colors"
+                                            :style="selectedTutorId == t.id ? 'background-color: var(--dash-nav-hover-bg); color: var(--dash-primary-text); font-weight: 600;' : 'color: var(--dash-text-body);'"
+                                            onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                            onmouseout="this.style.backgroundColor=(selectedTutorId == t.id ? 'var(--dash-nav-hover-bg)' : 'transparent')">
+                                            <div class="flex justify-between items-center">
+                                                <span class="font-medium" x-text="t.name"></span>
+                                                <span class="text-xs ml-2 px-2 py-0.5 rounded-full" style="background-color: var(--dash-nav-hover-bg); color: var(--dash-text-muted);" x-text="t.class_count + ' kelas aktif'"></span>
+                                            </div>
+                                            <div class="text-xs mt-0.5" style="color: var(--dash-text-muted);" x-text="t.area_name + ' · ' + t.branch_name"></div>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </template>
+                        </div>
+                    </div>
+                    <input type="hidden" name="tutor_id" :value="selectedTutorId">
+                    @error('tutor_id')
+                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Hari Utama & Jumlah Minggu --}}
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Jam Mulai <span class="text-red-500">*</span></label>
-                        <input type="time" name="start_time_primary" required
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                               value="{{ old('start_time_primary') }}" />
-                        @error('start_time_primary')
-                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                        <label class="block text-sm font-semibold mb-1.5" style="color: var(--dash-text-body);">
+                            Hari Utama <span class="text-red-500">*</span>
+                        </label>
+                        <select name="day_of_week" id="day_of_week" required
+                                class="w-full text-sm px-3.5 py-2.5 rounded-lg focus:outline-none transition-all cursor-pointer"
+                                style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                onfocus="this.style.borderColor='var(--dash-primary)'"
+                                onblur="this.style.borderColor='var(--dash-input-border)'"
+                                onchange="updateSecondaryDay(this.value)">
+                            <option value="">Pilih Hari</option>
+                            @foreach(\App\Models\ClassRoom::PRIMARY_DAYS as $day)
+                                <option value="{{ $day }}" {{ old('day_of_week') === $day ? 'selected' : '' }}>{{ $day }}</option>
+                            @endforeach
+                        </select>
+                        <p id="secondary_day_info" class="text-xs mt-1.5 font-medium hidden" style="color: var(--dash-primary-text);"></p>
+                        @error('day_of_week')
+                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Jam Selesai <span class="text-red-500">*</span></label>
-                        <input type="time" name="end_time_primary" required
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                               value="{{ old('end_time_primary') }}" />
-                        @error('end_time_primary')
-                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                        <label class="block text-sm font-semibold mb-1.5" style="color: var(--dash-text-body);">
+                            Jumlah Minggu <span class="text-red-500">*</span>
+                        </label>
+                        <input type="number" name="week_count" required min="1" max="52"
+                               value="{{ old('week_count', 12) }}"
+                               class="w-full text-sm px-3.5 py-2.5 rounded-lg focus:outline-none transition-all"
+                               style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                               onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                               onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                        @error('week_count')
+                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                         @enderror
+                    </div>
+                </div>
+
+                {{-- Tanggal Mulai --}}
+                <div>
+                    <label class="block text-sm font-semibold mb-1.5" style="color: var(--dash-text-body);">
+                        Tanggal Mulai <span class="text-red-500">*</span>
+                    </label>
+                    <input type="date" name="start_date" required
+                           value="{{ old('start_date') }}" min="{{ now()->format('Y-m-d') }}"
+                           class="w-full text-sm px-3.5 py-2.5 rounded-lg focus:outline-none transition-all"
+                           style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                           onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                           onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                    @error('start_date')
+                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Jam Pelajaran - Hari Utama --}}
+                <div class="pt-5" style="border-top: 1px solid var(--dash-card-border);">
+                    <h3 class="font-jakarta text-sm font-bold mb-4" style="color: var(--dash-text-heading);">
+                        Jam Pelajaran - Hari Utama
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold mb-1.5" style="color: var(--dash-text-body);">
+                                Jam Mulai <span class="text-red-500">*</span>
+                            </label>
+                            <input type="time" name="start_time_primary" required
+                                   value="{{ old('start_time_primary') }}"
+                                   class="w-full text-sm px-3.5 py-2.5 rounded-lg focus:outline-none transition-all"
+                                   style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                   onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                   onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                            @error('start_time_primary')
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-1.5" style="color: var(--dash-text-body);">
+                                Jam Selesai <span class="text-red-500">*</span>
+                            </label>
+                            <input type="time" name="end_time_primary" required
+                                   value="{{ old('end_time_primary') }}"
+                                   class="w-full text-sm px-3.5 py-2.5 rounded-lg focus:outline-none transition-all"
+                                   style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                   onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                   onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                            @error('end_time_primary')
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Jam Pelajaran - Hari Kedua (Opsional) --}}
+                <div class="pt-5" style="border-top: 1px solid var(--dash-card-border);">
+                    <h3 class="font-jakarta text-sm font-bold mb-1" style="color: var(--dash-text-heading);">
+                        Jam Pelajaran - Hari Kedua (Opsional)
+                    </h3>
+                    <p class="text-xs mb-4" style="color: var(--dash-text-muted);">
+                        Hari kedua otomatis dari pasangan hari utama. Jika jam tidak diisi, menggunakan jam hari utama.
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold mb-1.5" style="color: var(--dash-text-body);">
+                                Jam Mulai
+                            </label>
+                            <input type="time" name="start_time_secondary"
+                                   value="{{ old('start_time_secondary') }}"
+                                   class="w-full text-sm px-3.5 py-2.5 rounded-lg focus:outline-none transition-all"
+                                   style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                   onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                   onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                            @error('start_time_secondary')
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-1.5" style="color: var(--dash-text-body);">
+                                Jam Selesai
+                            </label>
+                            <input type="time" name="end_time_secondary"
+                                   value="{{ old('end_time_secondary') }}"
+                                   class="w-full text-sm px-3.5 py-2.5 rounded-lg focus:outline-none transition-all"
+                                   style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                   onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                   onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                            @error('end_time_secondary')
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="border-t border-gray-200 pt-6">
-                <h3 class="text-md font-semibold text-gray-900 mb-4">Jam Pelajaran — Hari Kedua (Opsional)</h3>
-                <p class="text-sm text-gray-500 mb-4">Hari kedua otomatis dari pasangan hari utama. Jika jam tidak diisi, menggunakan jam hari utama.</p>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Jam Mulai</label>
-                        <input type="time" name="start_time_secondary"
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                               value="{{ old('start_time_secondary') }}" />
-                        @error('start_time_secondary')
-                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Jam Selesai</label>
-                        <input type="time" name="end_time_secondary"
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                               value="{{ old('end_time_secondary') }}" />
-                        @error('end_time_secondary')
-                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-                </div>
+            {{-- Form Actions --}}
+            <div class="px-6 py-4 flex items-center justify-end gap-3"
+                 style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                <a href="{{ route('classrooms.index') }}"
+                   class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors"
+                   style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                   onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                   onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                    Batal
+                </a>
+                <button type="submit"
+                        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90"
+                        style="background-color: var(--dash-primary);">
+                    <span class="material-symbols-outlined text-[18px]">save</span>
+                    Buat Kelas
+                </button>
             </div>
-        </div>
-
-        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex gap-3 justify-end">
-            <a href="{{ route('classrooms.index') }}" class="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">Batal</a>
-            <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Buat Kelas</button>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 
 <script>
@@ -226,7 +334,6 @@ if (initialDay) updateSecondaryDay(initialDay);
 function classroomForm(tutors, branches, initialBranchId, initialTutorId) {
     return {
         tutors,
-        // branch_id → areas_id map
         branchAreaMap: Object.fromEntries(branches.map(b => [String(b.id), b.areas_id])),
         selectedBranchId: initialBranchId ? String(initialBranchId) : '',
         selectedTutorId: initialTutorId ? String(initialTutorId) : '',
@@ -252,7 +359,6 @@ function classroomForm(tutors, branches, initialBranchId, initialTutorId) {
             return t ? t.name + ' (' + t.class_count + ' kelas aktif)' : '';
         },
         onBranchChange() {
-            // reset tutor jika tidak lagi tersedia di cabang/area baru
             const stillAvailable = this.filteredTutors.some(t => String(t.id) === this.selectedTutorId);
             if (!stillAvailable) this.selectedTutorId = '';
         },
@@ -264,5 +370,4 @@ function classroomForm(tutors, branches, initialBranchId, initialTutorId) {
     };
 }
 </script>
-
 @endsection

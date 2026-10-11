@@ -110,3 +110,54 @@ test('it can ping a webhook', function () {
         'last_status' => 'ok',
     ]);
 });
+
+test('it can ping a webhook via json for real-time monitoring', function () {
+    $webhook = Webhook::create(['name' => 'Realtime Webhook', 'endpoint_url' => 'https://example.com/webhook-rt', 'last_status' => 'unknown']);
+
+    Http::fake([
+        'https://example.com/*' => Http::response('ok', 200),
+    ]);
+
+    $response = $this->actingAs($this->admin)
+        ->postJson(route('system.webhooks.ping', $webhook));
+
+    $response->assertStatus(200)
+        ->assertJson([
+            'success' => true,
+            'message' => 'Webhook aktif.',
+            'status' => 'ok',
+            'status_label' => 'OK',
+        ])
+        ->assertJsonStructure(['success', 'message', 'status', 'status_label', 'last_ping_at', 'last_ping_at_formatted']);
+
+    $this->assertDatabaseHas('webhooks', [
+        'id' => $webhook->id,
+        'last_status' => 'ok',
+    ]);
+});
+
+test('it renders empty state when no webhooks exist', function () {
+    $this->actingAs($this->admin)
+        ->get(route('system.webhooks.index'))
+        ->assertStatus(200)
+        ->assertSee('Belum ada webhook yang dikonfigurasi.');
+});
+
+test('unauthorized user cannot store or update webhook', function () {
+    $regularUser = User::factory()->create();
+
+    $this->actingAs($regularUser)
+        ->post(route('system.webhooks.store'), [
+            'name' => 'Hacker Webhook',
+            'endpoint_url' => 'https://example.com/hacker',
+        ])
+        ->assertForbidden();
+
+    $webhook = Webhook::create(['name' => 'Existing Webhook', 'endpoint_url' => 'https://example.com/exist']);
+
+    $this->actingAs($regularUser)
+        ->put(route('system.webhooks.update', $webhook), [
+            'name' => 'Hacker Update',
+        ])
+        ->assertForbidden();
+});

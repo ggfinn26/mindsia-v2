@@ -1,79 +1,73 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Aturan Jadwal Kerja')
+@section('title', 'Aturan Jadwal Kerja - MINDSIA')
+@section('header_title', 'Aturan Jadwal Kerja')
 
 @section('content')
-<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-8">
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6">
 
-    <!-- Page header -->
-    <div class="sm:flex sm:justify-between sm:items-end">
+    {{-- Page Header Pola A --}}
+    <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div>
-            <h1 class="text-2xl md:text-3xl text-gray-900 font-bold tracking-tight">Aturan Jadwal Kerja</h1>
-            <p class="mt-1 text-sm text-gray-500">Aturan jam kerja yang bisa di-assign per role, posisi, atau pegawai.</p>
+            <p class="text-xs font-bold uppercase tracking-wider mb-1"
+               style="color: var(--dash-primary-text);">Presensi</p>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+                style="color: var(--dash-text-heading);">Aturan Jadwal Kerja</h1>
+            <p class="text-sm mt-1" style="color: var(--dash-text-muted);">
+                Konfigurasi jam kerja, toleransi keterlambatan, dan penugasan jadwal kerja karyawan.
+            </p>
         </div>
         @can('attendance.schedule_rule.manage')
-            <div class="mt-4 sm:mt-0">
-                <a href="{{ route('work-schedule-rules.create') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
-                    <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
-                    </svg>
+            <div>
+                <a href="{{ route('work-schedule-rules.create') }}"
+                   class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90 shrink-0"
+                   style="background-color: var(--dash-primary);">
+                    <span class="material-symbols-outlined text-[18px]">add</span>
                     Tambah Aturan
                 </a>
             </div>
         @endcan
     </div>
 
+    {{-- Flash messages --}}
     @if (session('success'))
-        <div class="rounded-md bg-emerald-50 border border-emerald-200 p-4">
-            <div class="flex">
-                <div class="flex-shrink-0">
-                    <svg class="h-5 w-5 text-emerald-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
-                    </svg>
-                </div>
-                <div class="ml-3">
-                    <p class="text-sm font-medium text-emerald-800">{{ session('success') }}</p>
-                </div>
-            </div>
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+             style="background-color: #f0fdf4; border-color: #bbf7d0; color: #059669;">
+            <span class="material-symbols-outlined text-[18px]">check_circle</span>
+            <p>{{ session('success') }}</p>
         </div>
     @endif
+
     @if ($errors->any())
-        <div class="rounded-md bg-rose-50 border border-rose-200 p-4">
-            <div class="flex">
-                <div class="flex-shrink-0">
-                    <svg class="h-5 w-5 text-rose-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
-                    </svg>
-                </div>
-                <div class="ml-3">
-                    <h3 class="text-sm font-medium text-rose-800">Terdapat kesalahan:</h3>
-                    <div class="mt-2 text-sm text-rose-700">
-                        <ul role="list" class="list-disc pl-5 space-y-1">
-                            @foreach ($errors->all() as $e)
-                                <li>{{ $e }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                </div>
+        <div class="flex items-start gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+             style="background-color: #fef2f2; border-color: #fecaca; color: #dc2626;">
+            <span class="material-symbols-outlined text-[18px] mt-0.5">error</span>
+            <div class="flex-1">
+                <p class="font-bold mb-1">Terdapat kesalahan:</p>
+                <ul class="list-disc list-inside space-y-1">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
             </div>
         </div>
     @endif
 
-    {{-- ── Aturan Jadwal Kerja ── --}}
-    <div class="bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden">
+    {{-- Card Container --}}
+    <div class="rounded-2xl border shadow-sm overflow-hidden"
+         style="background-color: var(--dash-card-bg); border-color: var(--dash-card-border);">
         @if ($rules->isEmpty())
             <div class="px-6 py-12 text-center">
-                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <h3 class="mt-2 text-sm font-medium text-gray-900">Belum ada aturan jadwal kerja</h3>
-                <p class="mt-1 text-sm text-gray-500">Anda belum membuat aturan jam kerja apapun.</p>
+                <span class="material-symbols-outlined text-[48px] block mx-auto mb-3"
+                      style="color: var(--dash-text-faint);">schedule</span>
+                <h3 class="font-jakarta text-base font-semibold" style="color: var(--dash-text-heading);">Belum ada aturan jadwal kerja</h3>
+                <p class="text-sm mt-1" style="color: var(--dash-text-muted);">Anda belum membuat aturan jam kerja apapun.</p>
                 @can('attendance.schedule_rule.manage')
-                    <div class="mt-6">
-                        <a href="{{ route('work-schedule-rules.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
-                            <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
-                            </svg>
+                    <div class="mt-5">
+                        <a href="{{ route('work-schedule-rules.create') }}"
+                           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90"
+                           style="background-color: var(--dash-primary);">
+                            <span class="material-symbols-outlined text-[18px]">add</span>
                             Buat Aturan Baru
                         </a>
                     </div>
@@ -81,43 +75,90 @@
             </div>
         @else
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Aturan</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jam Kerja</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Toleransi Telat</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Wajib</th>
-                            <th scope="col" class="relative px-6 py-3 text-right">
-                                <span class="sr-only">Aksi</span>
-                            </th>
+                <table class="w-full text-sm text-left">
+                    <thead>
+                        <tr style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
+                            <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold"
+                                style="color: var(--dash-text-muted);">Nama Aturan</th>
+                            <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold"
+                                style="color: var(--dash-text-muted);">Jam Kerja</th>
+                            <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold"
+                                style="color: var(--dash-text-muted);">Istirahat</th>
+                            <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold"
+                                style="color: var(--dash-text-muted);">Toleransi Telat</th>
+                            <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold"
+                                style="color: var(--dash-text-muted);">Toleransi Pulang Cepat</th>
+                            <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold"
+                                style="color: var(--dash-text-muted);">Kewajiban</th>
+                            <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold text-right"
+                                style="color: var(--dash-text-muted);">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody class="divide-y" style="border-color: var(--dash-card-border);">
                         @foreach ($rules as $rule)
-                            <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            <tr style="border-bottom: 1px solid var(--dash-card-border);"
+                                onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                onmouseout="this.style.backgroundColor='transparent'">
+                                <td class="px-5 py-3.5 whitespace-nowrap font-medium"
+                                    style="color: var(--dash-text-heading);">
                                     {{ $rule->setting_name }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 tabular-nums">
-                                    {{ \Carbon\Carbon::parse($rule->start_time)->format('H:i') }} – {{ \Carbon\Carbon::parse($rule->end_time)->format('H:i') }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $rule->late_tolerance_minutes }} menit
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    @if ($rule->is_required)
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200">Wajib</span>
+                                <td class="px-5 py-3.5 whitespace-nowrap text-sm tabular-nums"
+                                    style="color: var(--dash-text-body);">
+                                    @if($rule->start_time && $rule->end_time)
+                                        {{ \Carbon\Carbon::parse($rule->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($rule->end_time)->format('H:i') }}
                                     @else
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-50 text-gray-600 border border-gray-200">Opsional</span>
+                                        -
                                     @endif
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <div class="flex items-center justify-end gap-3">
-                                        <a href="{{ route('work-schedule-rules.show', $rule) }}" class="text-indigo-600 hover:text-indigo-900 transition-colors">Detail</a>
+                                <td class="px-5 py-3.5 whitespace-nowrap text-sm tabular-nums"
+                                    style="color: var(--dash-text-muted);">
+                                    @if($rule->break_start_time && $rule->break_end_time)
+                                        {{ \Carbon\Carbon::parse($rule->break_start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($rule->break_end_time)->format('H:i') }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td class="px-5 py-3.5 whitespace-nowrap text-sm"
+                                    style="color: var(--dash-text-body);">
+                                    {{ $rule->late_tolerance_minutes }} menit
+                                </td>
+                                <td class="px-5 py-3.5 whitespace-nowrap text-sm"
+                                    style="color: var(--dash-text-body);">
+                                    {{ $rule->early_leave_tolerance_minutes }} menit
+                                </td>
+                                <td class="px-5 py-3.5 whitespace-nowrap">
+                                    @if ($rule->is_required)
+                                        <span class="px-2.5 py-0.5 inline-flex text-xs font-semibold rounded-md border"
+                                              style="background-color: var(--dash-nav-hover-bg); border-color: var(--dash-card-border); color: var(--dash-primary-text);">
+                                            Wajib
+                                        </span>
+                                    @else
+                                        <span class="px-2.5 py-0.5 inline-flex text-xs font-semibold rounded-md border"
+                                              style="background-color: var(--dash-nav-hover-bg); border-color: var(--dash-card-border); color: var(--dash-text-muted);">
+                                            Opsional
+                                        </span>
+                                    @endif
+                                </td>
+                                <td class="px-5 py-3.5 whitespace-nowrap text-right">
+                                    <div class="inline-flex items-center gap-2 justify-end">
+                                        <a href="{{ route('work-schedule-rules.show', $rule) }}"
+                                           class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors"
+                                           style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                                           onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                           onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                            <span class="material-symbols-outlined text-[14px]">visibility</span>
+                                            Detail
+                                        </a>
                                         @can('attendance.schedule_rule.manage')
-                                            <span class="text-gray-300">|</span>
-                                            <a href="{{ route('work-schedule-rules.edit', $rule) }}" class="text-gray-600 hover:text-indigo-600 transition-colors">Edit</a>
+                                            <a href="{{ route('work-schedule-rules.edit', $rule) }}"
+                                               class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors"
+                                               style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                                               onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                               onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                                <span class="material-symbols-outlined text-[14px]">edit</span>
+                                                Edit
+                                            </a>
                                         @endcan
                                     </div>
                                 </td>
@@ -127,7 +168,7 @@
                 </table>
             </div>
             @if ($rules->hasPages())
-                <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
+                <div class="px-5 py-4" style="border-top: 1px solid var(--dash-card-border);">
                     {{ $rules->links() }}
                 </div>
             @endif

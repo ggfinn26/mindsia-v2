@@ -1,20 +1,19 @@
 @extends('layouts.dashboard')
 
 @section('title', 'Media TOEFL')
+@section('header_title', 'Media TOEFL')
 
 @section('content')
-<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto"
-    x-data="{
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6"
+     x-data="{
         showUploadModal: false,
         showConfirmModal: false,
         confirmActionUrl: '',
         uploading: false,
         uploadError: '',
-        uploadSuccess: '',
         submitUpload(form) {
             this.uploading = true;
             this.uploadError = '';
-            this.uploadSuccess = '';
             const data = new FormData(form);
             fetch('{{ route('toefl.media.store') }}', {
                 method: 'POST',
@@ -34,178 +33,266 @@
         }
     }">
 
-    <!-- Page header -->
-    <div class="sm:flex sm:justify-between sm:items-center mb-8">
-        <div class="mb-4 sm:mb-0">
-            <h1 class="text-2xl md:text-3xl text-gray-800 font-bold">Media TOEFL</h1>
-            <p class="text-sm text-gray-500 mt-0.5">Audio dan gambar untuk soal listening.</p>
+    <div class="flex items-start justify-between gap-4">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-wider mb-1"
+               style="color: var(--dash-primary-text);">TOEFL</p>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+                style="color: var(--dash-text-heading);">Media TOEFL</h1>
+            <p class="text-sm mt-1" style="color: var(--dash-text-muted);">Audio dan gambar untuk soal listening.</p>
         </div>
-        <div class="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
-            @can('toefl.media.create')
-                <button type="button" @click="showUploadModal = true"
-                    class="inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium transition-colors">
-                    <span class="material-symbols-outlined text-sm mr-1">upload</span>
-                    Upload Media
-                </button>
-            @endcan
-        </div>
+        @can('toefl.media.create')
+            <button type="button" @click="showUploadModal = true"
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity shrink-0"
+                    style="background-color: var(--dash-primary);">
+                <span class="material-symbols-outlined text-[18px]">upload</span>Upload Media
+            </button>
+        @endcan
     </div>
 
     @if (session('success'))
-        <div class="mb-4 bg-green-50 border border-green-300 text-green-700 px-4 py-3 rounded text-sm">{{ session('success') }}</div>
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+             style="background-color: #f0fdf4; border-color: #bbf7d0; color: #059669;">
+            <span class="material-symbols-outlined text-[18px]">check_circle</span>
+            {{ session('success') }}
+        </div>
     @endif
 
-    <!-- Filter -->
-    <div class="mb-5">
-        <form method="GET" action="{{ route('toefl.media.index') }}" class="flex gap-2 items-center">
-            <select name="type" onchange="this.form.submit()"
-                class="form-select text-sm border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 min-h-[44px] min-w-[44px]">
+    <form method="GET" action="{{ route('toefl.media.index') }}"
+          class="flex flex-wrap gap-4 items-end p-4 sm:p-5 rounded-2xl"
+          style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <div>
+            <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide"
+                   style="color: var(--dash-text-faint);">Tipe</label>
+            <select name="type"
+                    class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none"
+                    style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                    onfocus="this.style.borderColor='var(--dash-primary)'"
+                    onblur="this.style.borderColor='var(--dash-input-border)'"
+                    onchange="this.form.submit()">
                 <option value="">Semua Tipe</option>
                 <option value="audio" {{ request('type') === 'audio' ? 'selected' : '' }}>Audio</option>
                 <option value="image" {{ request('type') === 'image' ? 'selected' : '' }}>Gambar</option>
             </select>
-            @if (request('type'))
-                <a href="{{ route('toefl.media.index') }}" class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-md text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition-colors text-sm">Reset</a>
-            @endif
-        </form>
-    </div>
+        </div>
+        @if (request('type'))
+            <a href="{{ route('toefl.media.index') }}"
+               class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-semibold rounded-lg transition-colors"
+               style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+               onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+               onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                <span class="material-symbols-outlined text-[16px]">restart_alt</span>Reset
+            </a>
+        @endif
+    </form>
 
-    <!-- Table -->
-    <div class="bg-white shadow-lg rounded-sm border border-gray-200">
-        <div class="overflow-x-auto">
-            <table class="table-auto w-full">
-                <thead class="text-xs font-semibold uppercase text-gray-500 bg-gray-50 border-t border-b border-gray-200">
-                    <tr>
-                        <th class="px-6 py-3 text-left">Nama File</th>
-                        <th class="px-6 py-3 text-left w-24">Tipe</th>
-                        <th class="px-6 py-3 text-left w-64">Preview</th>
-                        <th class="px-6 py-3 text-left w-36">Diupload Oleh</th>
-                        <th class="px-6 py-3 text-right w-20">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="text-sm divide-y divide-gray-200">
-                    @forelse ($media as $item)
-                        <tr>
-                            <td class="px-6 py-4">
-                                <p class="font-medium text-gray-900 truncate max-w-xs">{{ $item->original_name }}</p>
-                                <p class="text-xs text-gray-400 mt-0.5">ID: {{ $item->id }}</p>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                @if ($item->media_type === 'audio')
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">Audio</span>
-                                @else
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Gambar</span>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4">
-                                @if ($item->media_type === 'audio')
-                                    <audio controls class="w-full max-w-xs h-8" preload="none">
-                                        <source src="{{ Storage::url($item->file_path) }}" type="audio/mpeg">
-                                    </audio>
-                                @else
-                                    <img src="{{ Storage::url($item->file_path) }}"
-                                        class="h-16 w-auto rounded object-contain" alt="{{ $item->original_name }}">
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-gray-500">
-                                {{ optional($item->uploadedBy)->full_name ?? '-' }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right">
-                                @can('toefl.media.delete')
-                                    <button type="button"
+    <div class="rounded-2xl overflow-hidden"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <table class="w-full text-sm">
+            <thead>
+                <tr style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide"
+                        style="color: var(--dash-text-muted);">Nama File</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide w-24"
+                        style="color: var(--dash-text-muted);">Tipe</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide w-64"
+                        style="color: var(--dash-text-muted);">Preview</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide w-36"
+                        style="color: var(--dash-text-muted);">Diupload Oleh</th>
+                    <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide w-20"
+                        style="color: var(--dash-text-muted);">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($media as $item)
+                    <tr style="border-bottom: 1px solid var(--dash-card-border);"
+                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                        onmouseout="this.style.backgroundColor='transparent'">
+                        <td class="px-5 py-3.5">
+                            <p class="font-medium truncate max-w-xs" style="color: var(--dash-text-heading);">{{ $item->original_name }}</p>
+                            <p class="text-xs mt-0.5" style="color: var(--dash-text-faint);">ID: {{ $item->id }}</p>
+                        </td>
+                        <td class="px-5 py-3.5">
+                            @if ($item->media_type === 'audio')
+                                <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-orange-100 text-orange-700">Audio</span>
+                            @else
+                                <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-blue-100 text-blue-700">Gambar</span>
+                            @endif
+                        </td>
+                        <td class="px-5 py-3.5">
+                            @if ($item->media_type === 'audio')
+                                <audio controls class="w-full max-w-xs h-8" preload="none">
+                                    <source src="{{ Storage::url($item->file_path) }}" type="audio/mpeg">
+                                </audio>
+                            @else
+                                <img src="{{ Storage::url($item->file_path) }}"
+                                     class="h-16 w-auto rounded object-contain" alt="{{ $item->original_name }}">
+                            @endif
+                        </td>
+                        <td class="px-5 py-3.5" style="color: var(--dash-text-muted);">
+                            {{ optional($item->uploadedBy)->full_name ?? '-' }}
+                        </td>
+                        <td class="px-5 py-3.5 text-right">
+                            @can('toefl.media.delete')
+                                <button type="button"
                                         @click="showConfirmModal = true; confirmActionUrl = '{{ route('toefl.media.destroy', $item->id) }}'"
-                                        class="inline-flex items-center justify-center px-3 py-2 min-h-[44px] min-w-[44px] rounded-md text-red-600 hover:bg-red-50 hover:text-red-900 transition-colors text-sm">Hapus</button>
-                                @endcan
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="px-6 py-10 text-center text-sm text-gray-400">
-                                Belum ada media. Upload audio atau gambar untuk soal listening.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-        <div class="px-6 py-4 border-t border-gray-200">
-            {{ $media->withQueryString()->links() }}
-        </div>
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                                        style="background-color: #dc2626;">
+                                    <span class="material-symbols-outlined text-[14px]">delete</span>Hapus
+                                </button>
+                            @endcan
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="px-5 py-12 text-center">
+                            <span class="material-symbols-outlined text-[48px] block mx-auto mb-3"
+                                  style="color: var(--dash-text-faint);">audio_file</span>
+                            <p class="text-sm font-semibold" style="color: var(--dash-text-muted);">Belum ada media.</p>
+                            <p class="text-xs mt-1" style="color: var(--dash-text-faint);">Upload audio atau gambar untuk soal listening.</p>
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+        @if ($media->hasPages())
+            <div class="px-5 py-4" style="border-top: 1px solid var(--dash-card-border);">
+                {{ $media->withQueryString()->links() }}
+            </div>
+        @endif
     </div>
 
-    <!-- Upload Modal -->
-    <div x-show="showUploadModal" class="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex items-center justify-center px-4"
-        style="display:none" @keydown.escape.window="showUploadModal = false">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
-            <div class="flex items-center justify-between p-5 border-b">
-                <h3 class="font-bold text-gray-900">Upload Media</h3>
-                <button type="button" @click="showUploadModal = false" class="inline-flex items-center justify-center w-11 h-11 min-h-[44px] min-w-[44px] rounded-md text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors text-xl leading-none" aria-label="Tutup">&times;</button>
-            </div>
-            <form @submit.prevent="submitUpload($el)" class="p-5 space-y-4">
-                @csrf
-
-                <div x-show="uploadError" class="bg-red-50 border border-red-300 text-red-700 px-3 py-2 rounded text-sm" x-text="uploadError"></div>
-
-                <div>
-                    <label class="block text-xs font-medium text-gray-600 mb-1">Tipe Media <span class="text-red-500">*</span></label>
-                    <select name="media_type" required class="form-select w-full text-sm min-h-[44px]">
-                        <option value="audio">Audio (MP3)</option>
-                        <option value="image">Gambar</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-medium text-gray-600 mb-1">File <span class="text-red-500">*</span></label>
-                    <input name="file" type="file" required accept="audio/*,image/*"
-                        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:min-h-[44px] file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer focus:outline-none" />
-                    <p class="text-xs text-gray-400 mt-1">Audio: MP3, OGG. Gambar: JPG, PNG, WEBP.</p>
-                </div>
-
-                <div class="flex flex-col sm:flex-row sm:justify-end gap-3 pt-4 mt-2 border-t border-gray-100">
-                    <button type="button" @click="showUploadModal = false"
-                        class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-sm font-medium transition-colors">Batal</button>
-                    <button type="submit" :disabled="uploading"
-                        class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 min-h-[44px] min-w-[44px] rounded-md bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium disabled:opacity-60 transition-colors"
-                        x-text="uploading ? 'Mengupload...' : 'Upload'"></button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Delete Confirm Modal -->
-    <div x-show="showConfirmModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
-        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
-            <div @click="showConfirmModal = false" class="fixed inset-0 transition-opacity" aria-hidden="true">
-                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-            </div>
-            <div class="relative z-10 inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                    <div class="sm:flex sm:items-start">
-                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                            <span class="material-symbols-outlined text-red-600">warning</span>
+    {{-- Upload Modal --}}
+    <template x-teleport="body">
+        <div x-show="showUploadModal" style="display:none;" class="relative z-50"
+             @keydown.escape.window="showUploadModal = false">
+            <div x-show="showUploadModal"
+                 x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                 x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm"
+                 @click="showUploadModal = false"></div>
+            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                <div class="flex min-h-full items-end justify-center p-4 sm:items-center sm:p-0">
+                    <div x-show="showUploadModal" @click.away="showUploadModal = false"
+                         x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                         x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0 translate-y-4 sm:scale-95"
+                         class="relative transform rounded-2xl text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md"
+                         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+                        <div class="rounded-t-2xl px-6 py-5 flex items-center justify-between"
+                             style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                            <h3 class="font-jakarta font-bold text-base" style="color: var(--dash-text-heading);">Upload Media</h3>
+                            <button type="button" @click="showUploadModal = false"
+                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg transition-colors"
+                                    style="color: var(--dash-text-muted);"
+                                    onmouseover="this.style.backgroundColor='var(--dash-card-border)'"
+                                    onmouseout="this.style.backgroundColor='transparent'"
+                                    aria-label="Tutup">
+                                <span class="material-symbols-outlined text-[18px]">close</span>
+                            </button>
                         </div>
-                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                            <h3 class="text-lg leading-6 font-medium text-gray-900">Hapus Media</h3>
-                            <p class="text-sm text-gray-500 mt-2">Yakin ingin menghapus media ini? Media yang masih digunakan di soal tidak bisa dihapus.</p>
+                        <form @submit.prevent="submitUpload($el)" class="px-6 py-5 space-y-4">
+                            @csrf
+
+                            <div x-show="uploadError"
+                                 class="px-4 py-3 rounded-xl text-sm"
+                                 style="background-color: #fef2f2; border: 1px solid #fecaca; color: #dc2626;"
+                                 x-text="uploadError"></div>
+
+                            <div>
+                                <label class="block text-sm font-medium mb-1" style="color: var(--dash-text-body);">
+                                    Tipe Media <span class="text-red-500">*</span>
+                                </label>
+                                <select name="media_type" required
+                                        class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
+                                        style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                        onfocus="this.style.borderColor='var(--dash-primary)'"
+                                        onblur="this.style.borderColor='var(--dash-input-border)'">
+                                    <option value="audio">Audio (MP3)</option>
+                                    <option value="image">Gambar</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium mb-1" style="color: var(--dash-text-body);">
+                                    File <span class="text-red-500">*</span>
+                                </label>
+                                <input name="file" type="file" required accept="audio/*,image/*"
+                                       class="block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold cursor-pointer focus:outline-none"
+                                       style="color: var(--dash-text-muted);" />
+                                <p class="text-xs mt-1" style="color: var(--dash-text-faint);">Audio: MP3, OGG. Gambar: JPG, PNG, WEBP.</p>
+                            </div>
+
+                            <div class="rounded-b-2xl flex justify-end gap-3 pt-4"
+                                 style="border-top: 1px solid var(--dash-card-border);">
+                                <button type="button" @click="showUploadModal = false"
+                                        class="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                                        style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">Batal</button>
+                                <button type="submit" :disabled="uploading"
+                                        class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-60"
+                                        style="background-color: var(--dash-primary);">
+                                    <span class="material-symbols-outlined text-[16px]" x-show="!uploading">upload</span>
+                                    <span x-text="uploading ? 'Mengupload...' : 'Upload'"></span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    {{-- Delete Confirm Modal --}}
+    <template x-teleport="body">
+        <div x-show="showConfirmModal" style="display: none;" class="relative z-50" role="dialog" aria-modal="true">
+            <div x-show="showConfirmModal"
+                 x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                 x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm"
+                 @click="showConfirmModal = false"></div>
+            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                <div class="flex min-h-full items-end justify-center p-4 sm:items-center sm:p-0">
+                    <div x-show="showConfirmModal" @click.away="showConfirmModal = false"
+                         x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                         x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0 translate-y-4 sm:scale-95"
+                         class="relative transform rounded-2xl text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md"
+                         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+                        <div class="rounded-t-2xl px-6 py-5"
+                             style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
+                            <div class="flex items-start gap-3.5">
+                                <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-red-600 text-[22px]">warning</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-jakarta text-base font-bold" style="color: var(--dash-text-heading);">Hapus Media?</h3>
+                                    <p class="mt-1 text-sm leading-relaxed" style="color: var(--dash-text-muted);">
+                                        Media yang masih digunakan di soal tidak bisa dihapus. Tindakan ini tidak dapat dibatalkan.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rounded-b-2xl px-6 py-4 flex justify-end gap-3"
+                             style="background-color: var(--dash-card-bg); border-top: 1px solid var(--dash-card-border);">
+                            <button type="button" @click="showConfirmModal = false"
+                                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                                    style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                                    onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                    onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">Batal</button>
+                            <form x-ref="deleteForm" :action="confirmActionUrl" method="POST" class="m-0">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" @click="$refs.deleteForm.submit()"
+                                        class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                                        style="background-color: #dc2626;">
+                                    <span class="material-symbols-outlined text-[16px]">delete</span>Ya, Hapus
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
-                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="button" @click="$refs.deleteForm.submit()"
-                        class="w-full sm:w-auto inline-flex items-center justify-center rounded-md border border-transparent shadow-sm px-4 py-2 min-h-[44px] min-w-[44px] bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none sm:ml-3 sm:text-sm transition-colors">
-                        Hapus
-                    </button>
-                    <button type="button" @click="showConfirmModal = false"
-                        class="mt-3 sm:mt-0 sm:ml-3 w-full sm:w-auto inline-flex items-center justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 min-h-[44px] min-w-[44px] bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:text-sm transition-colors">
-                        Batal
-                    </button>
-                </div>
-                <form x-ref="deleteForm" :action="confirmActionUrl" method="POST" class="hidden">
-                    @csrf
-                    @method('DELETE')
-                </form>
             </div>
         </div>
-    </div>
+    </template>
 </div>
 @endsection

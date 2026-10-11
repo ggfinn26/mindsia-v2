@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Kelola Komponen Gaji')
+@section('title', 'Kelola Komponen Gaji - MINDSIA')
 @section('header_title', 'Kelola Komponen Gaji')
 
 @section('content')
@@ -19,242 +19,376 @@
     $activeTab = request('tab', 'components');
 @endphp
 
-<div class="max-w-7xl mx-auto space-y-6" x-data="{ tab: '{{ $activeTab }}' }">
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6"
+     x-data="{
+        tab: '{{ $activeTab }}',
+        searchComponent: '',
+        searchCompensation: '',
+        showConfirmModal: false,
+        confirmTitle: '',
+        confirmMessage: '',
+        confirmActionUrl: '',
+        confirmMethod: 'DELETE',
+        confirmActionText: 'Hapus',
+        showEditModal: false,
+        editComponent: {
+            id: null,
+            component_code: '',
+            component_name: '',
+            component_type: 'earning',
+            calculation_method: 'fixed',
+            is_taxable: false,
+            is_active: true
+        },
+        openEdit(comp) {
+            this.editComponent = {
+                id: comp.id,
+                component_code: comp.component_code,
+                component_name: comp.component_name,
+                component_type: comp.component_type,
+                calculation_method: comp.calculation_method,
+                is_taxable: !!comp.is_taxable,
+                is_active: !!comp.is_active
+            };
+            this.showEditModal = true;
+        }
+     }">
 
-    <div>
-        <p class="text-sm font-medium text-[#725c00]">Payroll</p>
-        <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Kelola Komponen Gaji</h2>
-        <p class="mt-1 max-w-2xl text-sm leading-6 text-slate-600">Definisikan komponen gaji dan tetapkan nilai per pegawai.</p>
+    {{-- Page Header Pola A --}}
+    <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+        <div>
+            <p class="text-xs font-bold uppercase tracking-wider mb-1"
+               style="color: var(--dash-primary-text);">Gaji & Bonus</p>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+                style="color: var(--dash-text-heading);">Kelola Komponen Gaji</h1>
+            <p class="text-sm mt-1" style="color: var(--dash-text-muted);">
+                Definisikan master komponen gaji dan tetapkan nilai kompensasi per pegawai.
+            </p>
+        </div>
+        <div class="flex items-center gap-2">
+            <a href="{{ route('payroll.session-rules.index') }}"
+               class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-lg transition-colors"
+               style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+               onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+               onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                <span class="material-symbols-outlined text-[16px]">tune</span>
+                Aturan Kompensasi Sesi
+            </a>
+            <a href="{{ route('payroll.periods.index') }}"
+               class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-lg transition-colors"
+               style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+               onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+               onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                <span class="material-symbols-outlined text-[16px]">calendar_month</span>
+                Periode Payroll
+            </a>
+        </div>
     </div>
 
+    {{-- Flash Messages --}}
     @if (session('success'))
-        <div class="flex gap-3 border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-            <span class="material-symbols-outlined text-[20px]">check_circle</span>
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"
+             style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-heading);">
+            <span class="material-symbols-outlined text-[18px]" style="color: var(--dash-primary);">check_circle</span>
             <p>{{ session('success') }}</p>
         </div>
     @endif
     @if (session('error'))
-        <div class="flex gap-3 border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
-            <span class="material-symbols-outlined text-[20px]">error</span>
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"
+             style="background-color: color-mix(in srgb, var(--dash-danger) 10%, transparent); border: 1px solid color-mix(in srgb, var(--dash-danger) 25%, transparent); color: var(--dash-danger);">
+            <span class="material-symbols-outlined text-[18px]">error</span>
             <p>{{ session('error') }}</p>
         </div>
     @endif
     @if ($errors->any())
-        <div class="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
-            <ul class="list-disc pl-5">@foreach ($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
+        <div class="p-4 rounded-xl text-sm font-medium"
+             style="background-color: color-mix(in srgb, var(--dash-danger) 10%, transparent); border: 1px solid color-mix(in srgb, var(--dash-danger) 25%, transparent); color: var(--dash-danger);">
+            <div class="flex items-center gap-2 mb-2 font-semibold">
+                <span class="material-symbols-outlined text-[18px]">error</span>
+                <span>Terdapat kesalahan pada input formulir:</span>
+            </div>
+            <ul class="list-disc list-inside space-y-1 text-xs">
+                @foreach ($errors->all() as $e)
+                    <li>{{ $e }}</li>
+                @endforeach
+            </ul>
         </div>
     @endif
 
-    {{-- Tab Nav --}}
-    <div class="border-b border-slate-200">
+    {{-- Tab Navigation --}}
+    <div style="border-bottom: 1px solid var(--dash-card-border);">
         <nav class="-mb-px flex gap-6">
             <button @click="tab = 'components'"
-                    :class="tab === 'components' ? 'border-[#215aac] text-[#215aac]' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'"
-                    class="border-b-2 pb-3 text-sm font-semibold transition-colors">
+                    :style="tab === 'components' ? 'color: var(--dash-primary); border-bottom: 2px solid var(--dash-primary);' : 'color: var(--dash-text-muted); border-bottom: 2px solid transparent;'"
+                    class="pb-3 text-sm font-semibold transition-colors flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">category</span>
                 Master Komponen
+                <span class="px-2 py-0.5 text-xs rounded-full"
+                      style="background-color: var(--dash-nav-hover-bg); color: var(--dash-text-heading);">
+                    {{ $components->count() }}
+                </span>
             </button>
             <button @click="tab = 'compensation'"
-                    :class="tab === 'compensation' ? 'border-[#215aac] text-[#215aac]' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'"
-                    class="border-b-2 pb-3 text-sm font-semibold transition-colors">
+                    :style="tab === 'compensation' ? 'color: var(--dash-primary); border-bottom: 2px solid var(--dash-primary);' : 'color: var(--dash-text-muted); border-bottom: 2px solid transparent;'"
+                    class="pb-3 text-sm font-semibold transition-colors flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">badge</span>
                 Kompensasi Pegawai
+                <span class="px-2 py-0.5 text-xs rounded-full"
+                      style="background-color: var(--dash-nav-hover-bg); color: var(--dash-text-heading);">
+                    {{ $allCompensations->count() }}
+                </span>
             </button>
         </nav>
     </div>
 
     {{-- ============================= --}}
-    {{-- TAB 1 — Master Komponen --}}
+    {{-- TAB 1 - Master Komponen --}}
     {{-- ============================= --}}
-    <div x-show="tab === 'components'">
+    <div x-show="tab === 'components'" class="space-y-6">
 
         @can('payroll.component.create')
-        <form method="POST" action="{{ route('payroll.components.store') }}" class="border border-slate-200 bg-white p-5">
-            @csrf
-            <div class="mb-4 flex items-start gap-3">
-                <span class="material-symbols-outlined mt-0.5 text-[#215aac]">add_circle</span>
+        {{-- Card Form Tambah Komponen --}}
+        <div class="rounded-2xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
+            <div class="px-6 py-4 flex items-center gap-2"
+                 style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                <span class="material-symbols-outlined text-[20px]" style="color: var(--dash-primary-text);">add_circle</span>
                 <div>
-                    <h3 class="font-jakarta text-base font-bold text-slate-900">Tambah komponen baru</h3>
-                    <p class="mt-0.5 text-sm text-slate-500">Kode komponen: huruf kapital dan garis bawah, contoh <code class="font-mono text-xs">GAJI_POKOK</code>.</p>
+                    <h2 class="font-jakarta text-sm font-bold" style="color: var(--dash-text-heading);">Tambah Komponen Baru</h2>
+                    <p class="text-xs" style="color: var(--dash-text-muted);">
+                        Kode komponen huruf kapital dan garis bawah, contoh: <code class="font-mono text-xs font-semibold">GAJI_POKOK</code>.
+                    </p>
                 </div>
             </div>
-            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <div>
-                    <label class="mb-1.5 block text-sm font-medium text-slate-700">Kode komponen <span class="text-rose-500">*</span></label>
-                    <input name="component_code" value="{{ old('component_code') }}" type="text" maxlength="100" required
-                           placeholder="BASE_SALARY"
-                           class="block w-full border-slate-300 text-sm uppercase focus:border-[#215aac] focus:ring-[#215aac]">
+
+            <form method="POST" action="{{ route('payroll.components.store') }}" class="p-6">
+                @csrf
+                <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <div>
+                        <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide"
+                               style="color: var(--dash-text-body);">
+                            Kode Komponen <span style="color: var(--dash-danger);">*</span>
+                        </label>
+                        <input name="component_code" value="{{ old('component_code') }}" type="text" maxlength="100" required
+                               placeholder="Contoh: GAJI_POKOK"
+                               class="w-full px-3 py-2 text-sm rounded-lg uppercase focus:outline-none transition-all font-mono"
+                               style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                               onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                               onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                    </div>
+                    <div>
+                        <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide"
+                               style="color: var(--dash-text-body);">
+                            Nama Komponen <span style="color: var(--dash-danger);">*</span>
+                        </label>
+                        <input name="component_name" value="{{ old('component_name') }}" type="text" maxlength="255" required
+                               placeholder="Contoh: Gaji Pokok"
+                               class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                               style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                               onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                               onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                    </div>
+                    <div>
+                        <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide"
+                               style="color: var(--dash-text-body);">
+                            Tipe <span style="color: var(--dash-danger);">*</span>
+                        </label>
+                        <select name="component_type" required
+                                class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                onfocus="this.style.borderColor='var(--dash-primary)'"
+                                onblur="this.style.borderColor='var(--dash-input-border)'">
+                            @foreach ($typeLabels as $value => $label)
+                                <option value="{{ $value }}" @selected(old('component_type') === $value)>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide"
+                               style="color: var(--dash-text-body);">
+                            Metode Kalkulasi <span style="color: var(--dash-danger);">*</span>
+                        </label>
+                        <select name="calculation_method" required
+                                class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                onfocus="this.style.borderColor='var(--dash-primary)'"
+                                onblur="this.style.borderColor='var(--dash-input-border)'">
+                            @foreach ($methodLabels as $value => $label)
+                                <option value="{{ $value }}" @selected(old('calculation_method') === $value)>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
-                <div>
-                    <label class="mb-1.5 block text-sm font-medium text-slate-700">Nama komponen <span class="text-rose-500">*</span></label>
-                    <input name="component_name" value="{{ old('component_name') }}" type="text" maxlength="255" required
-                           placeholder="Gaji pokok"
-                           class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
+
+                <div class="mt-5 pt-4 flex flex-wrap items-center justify-between gap-4"
+                     style="border-top: 1px solid var(--dash-card-border);">
+                    <div class="flex items-center gap-6">
+                        <label class="inline-flex items-center gap-2 cursor-pointer">
+                            <input name="is_taxable" value="0" type="hidden">
+                            <input name="is_taxable" value="1" type="checkbox" @checked(old('is_taxable'))
+                                   class="h-4 w-4 rounded"
+                                   style="accent-color: var(--dash-primary);">
+                            <span class="text-xs font-semibold" style="color: var(--dash-text-body);">Kena Pajak</span>
+                        </label>
+                        <label class="inline-flex items-center gap-2 cursor-pointer">
+                            <input name="is_active" value="0" type="hidden">
+                            <input name="is_active" value="1" type="checkbox" @checked(old('is_active', true))
+                                   class="h-4 w-4 rounded"
+                                   style="accent-color: var(--dash-primary);">
+                            <span class="text-xs font-semibold" style="color: var(--dash-text-body);">Status Aktif</span>
+                        </label>
+                    </div>
+                    <button type="submit"
+                            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90"
+                            style="background-color: var(--dash-primary);">
+                        <span class="material-symbols-outlined text-[18px]">save</span>
+                        Simpan Komponen
+                    </button>
                 </div>
-                <div>
-                    <label class="mb-1.5 block text-sm font-medium text-slate-700">Tipe <span class="text-rose-500">*</span></label>
-                    <select name="component_type" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
-                        @foreach ($typeLabels as $value => $label)
-                            <option value="{{ $value }}" @selected(old('component_type') === $value)>{{ $label }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <label class="mb-1.5 block text-sm font-medium text-slate-700">Metode kalkulasi <span class="text-rose-500">*</span></label>
-                    <select name="calculation_method" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
-                        @foreach ($methodLabels as $value => $label)
-                            <option value="{{ $value }}" @selected(old('calculation_method') === $value)>{{ $label }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-            <div class="mt-4 flex flex-wrap items-center gap-6">
-                <label class="inline-flex items-center gap-2 cursor-pointer">
-                    <input name="is_taxable" value="0" type="hidden">
-                    <input name="is_taxable" value="1" type="checkbox" @checked(old('is_taxable'))
-                           class="h-4 w-4 border-slate-300 text-[#215aac] focus:ring-[#215aac]">
-                    <span class="text-sm font-medium text-slate-700">Kena pajak</span>
-                </label>
-                <label class="inline-flex items-center gap-2 cursor-pointer">
-                    <input name="is_active" value="0" type="hidden">
-                    <input name="is_active" value="1" type="checkbox" @checked(old('is_active', true))
-                           class="h-4 w-4 border-slate-300 text-[#215aac] focus:ring-[#215aac]">
-                    <span class="text-sm font-medium text-slate-700">Aktif</span>
-                </label>
-                <button type="submit"
-                        class="ml-auto inline-flex min-h-10 items-center gap-2 bg-[#215aac] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">
-                    <span class="material-symbols-outlined text-[18px]">save</span>
-                    Simpan Komponen
-                </button>
-            </div>
-        </form>
+            </form>
+        </div>
         @endcan
 
-        <div class="overflow-hidden border border-slate-200 bg-white">
-            <div class="border-b border-slate-200 px-5 py-4">
-                <h3 class="font-jakarta text-base font-bold text-slate-900">Daftar komponen</h3>
+        {{-- Table Container Komponen --}}
+        <div class="rounded-2xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
+            <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                 style="border-bottom: 1px solid var(--dash-card-border);">
+                <div>
+                    <h3 class="font-jakarta text-base font-bold" style="color: var(--dash-text-heading);">Daftar Komponen Gaji</h3>
+                    <p class="text-xs mt-0.5" style="color: var(--dash-text-muted);">
+                        Total {{ $components->count() }} komponen terdaftar dalam master payroll.
+                    </p>
+                </div>
+
+                {{-- Search Bar --}}
+                <div class="relative w-full sm:w-64">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-[16px]"
+                          style="color: var(--dash-text-muted);">search</span>
+                    <input type="text" x-model="searchComponent" placeholder="Cari nama atau kode..."
+                           class="w-full pr-3 py-1.5 text-xs rounded-lg focus:outline-none transition-all"
+                           style="padding-left: 2.5rem !important; background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                           onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                           onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                </div>
             </div>
+
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-slate-200 text-sm">
-                    <thead class="bg-slate-50 text-left text-xs font-semibold text-slate-500">
-                        <tr>
-                            <th class="px-5 py-3">Komponen</th>
-                            <th class="px-5 py-3">Tipe</th>
-                            <th class="px-5 py-3">Metode</th>
-                            <th class="px-5 py-3">Pajak</th>
-                            <th class="px-5 py-3">Status</th>
-                            <th class="px-5 py-3 text-right">Aksi</th>
+                <table class="w-full text-sm text-left">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                            <th scope="col" class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-[11px]"
+                                style="color: var(--dash-text-muted);">Komponen</th>
+                            <th scope="col" class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-[11px]"
+                                style="color: var(--dash-text-muted);">Tipe</th>
+                            <th scope="col" class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-[11px]"
+                                style="color: var(--dash-text-muted);">Metode</th>
+                            <th scope="col" class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-[11px]"
+                                style="color: var(--dash-text-muted);">Pajak</th>
+                            <th scope="col" class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-[11px]"
+                                style="color: var(--dash-text-muted);">Status</th>
+                            <th scope="col" class="px-5 py-3.5 text-right text-xs font-bold uppercase tracking-wider text-[11px]"
+                                style="color: var(--dash-text-muted);">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100">
+                    <tbody>
                         @forelse ($components as $component)
-                            @php
-                                $typeClass = $component->component_type === 'earning'
-                                    ? 'bg-emerald-100 text-emerald-800'
-                                    : 'bg-red-100 text-red-800';
-                            @endphp
-                            <tr class="hover:bg-slate-50/70">
-                                <td class="px-5 py-4">
-                                    <p class="font-semibold text-slate-900">{{ $component->component_name }}</p>
-                                    <p class="mt-0.5 font-mono text-xs text-slate-400">{{ $component->component_code }}</p>
+                            <tr style="border-bottom: 1px solid var(--dash-card-border);"
+                                x-show="!searchComponent || '{{ strtolower($component->component_name . ' ' . $component->component_code) }}'.includes(searchComponent.toLowerCase())"
+                                onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                onmouseout="this.style.backgroundColor='transparent'">
+                                <td class="px-5 py-4 whitespace-nowrap">
+                                    <p class="font-semibold" style="color: var(--dash-text-heading);">{{ $component->component_name }}</p>
+                                    <p class="mt-0.5 font-mono text-xs" style="color: var(--dash-text-muted);">{{ $component->component_code }}</p>
                                 </td>
-                                <td class="px-5 py-4">
-                                    <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $typeClass }}">
-                                        {{ $typeLabels[$component->component_type] ?? $component->component_type }}
-                                    </span>
+                                <td class="px-5 py-4 whitespace-nowrap">
+                                    @if ($component->component_type === 'earning')
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                                              style="background-color: var(--dash-nav-hover-bg); color: var(--dash-primary); border: 1px solid var(--dash-card-border);">
+                                            <span class="material-symbols-outlined text-[13px]">arrow_upward</span>
+                                            {{ $typeLabels[$component->component_type] ?? $component->component_type }}
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                                              style="background-color: color-mix(in srgb, var(--dash-danger) 10%, transparent); color: var(--dash-danger); border: 1px solid color-mix(in srgb, var(--dash-danger) 25%, transparent);">
+                                            <span class="material-symbols-outlined text-[13px]">arrow_downward</span>
+                                            {{ $typeLabels[$component->component_type] ?? $component->component_type }}
+                                        </span>
+                                    @endif
                                 </td>
-                                <td class="px-5 py-4 text-slate-600">
+                                <td class="px-5 py-4 whitespace-nowrap" style="color: var(--dash-text-body);">
                                     {{ $methodLabels[$component->calculation_method] ?? $component->calculation_method }}
                                 </td>
-                                <td class="px-5 py-4 text-slate-600">{{ $component->is_taxable ? 'Ya' : 'Tidak' }}</td>
-                                <td class="px-5 py-4">
-                                    <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $component->is_active ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-slate-600' }}">
-                                        {{ $component->is_active ? 'Aktif' : 'Nonaktif' }}
-                                    </span>
+                                <td class="px-5 py-4 whitespace-nowrap" style="color: var(--dash-text-body);">
+                                    @if ($component->is_taxable)
+                                        <span class="inline-flex items-center gap-1 text-xs font-semibold" style="color: var(--dash-primary);">
+                                            <span class="material-symbols-outlined text-[14px]">check</span> Ya
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center gap-1 text-xs" style="color: var(--dash-text-muted);">
+                                            <span class="material-symbols-outlined text-[14px]">close</span> Tidak
+                                        </span>
+                                    @endif
                                 </td>
-                                <td class="px-5 py-4 text-right">
-                                    @can('payroll.component.update')
-                                        <div x-data="{ open: false }" class="relative inline-block text-left">
-                                            <button @click="open = !open" @click.outside="open = false" type="button"
-                                                    class="inline-flex min-h-9 items-center gap-1 border border-slate-300 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50">
+                                <td class="px-5 py-4 whitespace-nowrap">
+                                    @if ($component->is_active)
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                                              style="background-color: var(--dash-nav-hover-bg); color: var(--dash-primary-text); border: 1px solid var(--dash-card-border);">
+                                            Aktif
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                                              style="background-color: var(--dash-page-bg); color: var(--dash-text-faint); border: 1px solid var(--dash-card-border);">
+                                            Nonaktif
+                                        </span>
+                                    @endif
+                                </td>
+                                <td class="px-5 py-4 whitespace-nowrap text-right">
+                                    <div class="flex items-center justify-end gap-2">
+                                        @can('payroll.component.update')
+                                            <button type="button"
+                                                    @click="openEdit({
+                                                        id: {{ $component->id }},
+                                                        component_code: '{{ addslashes($component->component_code) }}',
+                                                        component_name: '{{ addslashes($component->component_name) }}',
+                                                        component_type: '{{ $component->component_type }}',
+                                                        calculation_method: '{{ $component->calculation_method }}',
+                                                        is_taxable: {{ $component->is_taxable ? 'true' : 'false' }},
+                                                        is_active: {{ $component->is_active ? 'true' : 'false' }}
+                                                    })"
+                                                    class="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-colors"
+                                                    style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                                                    onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                                    onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                                <span class="material-symbols-outlined text-[14px]">edit</span>
                                                 Edit
-                                                <span class="material-symbols-outlined text-[16px]">expand_more</span>
                                             </button>
-                                            <div x-show="open" x-cloak x-transition
-                                                 class="absolute right-0 z-20 mt-2 w-80 border border-slate-200 bg-white p-4 shadow-lg">
-                                                <form method="POST" action="{{ route('payroll.components.update', $component) }}" class="space-y-3">
-                                                    @csrf @method('PUT')
-                                                    <div class="grid grid-cols-2 gap-3">
-                                                        <div>
-                                                            <label class="mb-1 block text-xs font-semibold text-slate-700">Kode</label>
-                                                            <input name="component_code" value="{{ old('component_code', $component->component_code) }}"
-                                                                   type="text" maxlength="100" required
-                                                                   class="block w-full border-slate-300 text-sm uppercase focus:border-[#215aac] focus:ring-[#215aac]">
-                                                        </div>
-                                                        <div>
-                                                            <label class="mb-1 block text-xs font-semibold text-slate-700">Nama</label>
-                                                            <input name="component_name" value="{{ old('component_name', $component->component_name) }}"
-                                                                   type="text" maxlength="255" required
-                                                                   class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
-                                                        </div>
-                                                        <div>
-                                                            <label class="mb-1 block text-xs font-semibold text-slate-700">Tipe</label>
-                                                            <select name="component_type" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
-                                                                @foreach ($typeLabels as $v => $l)
-                                                                    <option value="{{ $v }}" @selected(old('component_type', $component->component_type) === $v)>{{ $l }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-                                                        <div>
-                                                            <label class="mb-1 block text-xs font-semibold text-slate-700">Metode</label>
-                                                            <select name="calculation_method" required class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
-                                                                @foreach ($methodLabels as $v => $l)
-                                                                    <option value="{{ $v }}" @selected(old('calculation_method', $component->calculation_method) === $v)>{{ $l }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="flex gap-4 bg-slate-50 p-2 border border-slate-100">
-                                                        <label class="inline-flex items-center gap-2 cursor-pointer">
-                                                            <input name="is_taxable" value="0" type="hidden">
-                                                            <input name="is_taxable" value="1" type="checkbox"
-                                                                   @checked(old('is_taxable', $component->is_taxable))
-                                                                   class="h-4 w-4 border-slate-300 text-[#215aac] focus:ring-[#215aac]">
-                                                            <span class="text-xs font-medium text-slate-700">Kena pajak</span>
-                                                        </label>
-                                                        <label class="inline-flex items-center gap-2 cursor-pointer">
-                                                            <input name="is_active" value="0" type="hidden">
-                                                            <input name="is_active" value="1" type="checkbox"
-                                                                   @checked(old('is_active', $component->is_active))
-                                                                   class="h-4 w-4 border-slate-300 text-[#215aac] focus:ring-[#215aac]">
-                                                            <span class="text-xs font-medium text-slate-700">Aktif</span>
-                                                        </label>
-                                                    </div>
-                                                    <button type="submit"
-                                                            class="inline-flex min-h-9 w-full items-center justify-center gap-2 bg-[#215aac] px-3 text-xs font-semibold text-white hover:bg-[#194a91]">
-                                                        Simpan Perubahan
-                                                    </button>
-                                                </form>
-                                                @can('payroll.component.delete')
-                                                <form method="POST" action="{{ route('payroll.components.destroy', $component) }}"
-                                                      class="mt-3 pt-3 border-t border-slate-100">
-                                                    @csrf @method('DELETE')
-                                                    <button type="submit"
-                                                            onclick="return confirm('Hapus atau nonaktifkan komponen ini?')"
-                                                            class="inline-flex min-h-9 w-full items-center justify-center border border-red-200 px-3 text-xs font-semibold text-red-700 hover:bg-red-50">
-                                                        Hapus / Nonaktifkan
-                                                    </button>
-                                                </form>
-                                                @endcan
-                                            </div>
-                                        </div>
-                                    @endcan
+                                        @endcan
+
+                                        @can('payroll.component.delete')
+                                            <button type="button"
+                                                    @click="showConfirmModal = true;
+                                                            confirmTitle = 'Hapus / Nonaktifkan Komponen';
+                                                            confirmMessage = 'Apakah Anda yakin ingin menghapus atau menonaktifkan komponen {{ addslashes($component->component_name) }}?';
+                                                            confirmActionUrl = '{{ route('payroll.components.destroy', $component) }}';
+                                                            confirmMethod = 'DELETE';
+                                                            confirmActionText = 'Hapus / Nonaktifkan';"
+                                                    class="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                                                    style="background-color: var(--dash-danger);">
+                                                <span class="material-symbols-outlined text-[14px]">delete</span>
+                                                Hapus
+                                            </button>
+                                        @endcan
+                                    </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
                                 <td colspan="6" class="px-5 py-12 text-center">
-                                    <span class="material-symbols-outlined text-3xl text-slate-300">payments</span>
-                                    <p class="mt-2 font-semibold text-slate-700">Belum ada komponen gaji.</p>
-                                    <p class="mt-1 text-sm text-slate-500">Tambahkan komponen di atas sebelum mengatur nilai kompensasi pegawai.</p>
+                                    <span class="material-symbols-outlined text-4xl block mx-auto mb-2"
+                                          style="color: var(--dash-text-faint);">payments</span>
+                                    <p class="font-semibold text-sm" style="color: var(--dash-text-heading);">Belum ada komponen gaji.</p>
+                                    <p class="text-xs mt-1" style="color: var(--dash-text-muted);">
+                                        Tambahkan komponen pada formulir di atas untuk mengatur struktur penggajian.
+                                    </p>
                                 </td>
                             </tr>
                         @endforelse
@@ -266,126 +400,220 @@
     </div>{{-- /tab components --}}
 
     {{-- ============================= --}}
-    {{-- TAB 2 — Kompensasi Pegawai --}}
+    {{-- TAB 2 - Kompensasi Pegawai --}}
     {{-- ============================= --}}
-    <div x-show="tab === 'compensation'">
+    <div x-show="tab === 'compensation'" class="space-y-6">
 
         @canany(['payroll.employee_compensation.create', 'payroll.employee_compensation.update'])
-        <form method="POST" action="" id="compensation-form" class="border border-slate-200 bg-white p-5">
-            @csrf
-            <div class="mb-4 flex items-start gap-3">
-                <span class="material-symbols-outlined mt-0.5 text-[#215aac]">person_add</span>
+        {{-- Card Form Tetapkan Kompensasi --}}
+        <div class="rounded-2xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
+            <div class="px-6 py-4 flex items-center gap-2"
+                 style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                <span class="material-symbols-outlined text-[20px]" style="color: var(--dash-primary-text);">person_add</span>
                 <div>
-                    <h3 class="font-jakarta text-base font-bold text-slate-900">Tetapkan nilai kompensasi</h3>
-                    <p class="mt-0.5 text-sm text-slate-500">Jika komponen sudah ada untuk pegawai ini, nilai akan diperbarui.</p>
+                    <h2 class="font-jakarta text-sm font-bold" style="color: var(--dash-text-heading);">Tetapkan Nilai Kompensasi Pegawai</h2>
+                    <p class="text-xs" style="color: var(--dash-text-muted);">
+                        Jika komponen gaji sudah pernah ditetapkan untuk pegawai tersebut, nilai lama akan diperbarui.
+                    </p>
                 </div>
             </div>
-            <div x-data="{
-                employeeId: '',
-                updateAction() {
-                    const form = document.getElementById('compensation-form');
-                    if (this.employeeId) {
-                        form.action = '/employees/' + this.employeeId + '/compensations';
+
+            <form method="POST" action="" id="compensation-form"
+                  x-data="{
+                    employeeId: '',
+                    updateAction() {
+                        const form = document.getElementById('compensation-form');
+                        if (this.employeeId) {
+                            form.action = '/employees/' + this.employeeId + '/compensations';
+                        }
                     }
-                }
-            }" class="grid gap-4 sm:grid-cols-3">
-                <div>
-                    <label class="mb-1.5 block text-sm font-medium text-slate-700">Pegawai <span class="text-rose-500">*</span></label>
-                    <select name="_employee_id" required
-                            x-model="employeeId" @change="updateAction()"
-                            class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
-                        <option value="">Pilih pegawai...</option>
-                        @foreach ($employees as $emp)
-                            <option value="{{ $emp->id }}">{{ $emp->full_name }} ({{ $emp->employee_code }})</option>
-                        @endforeach
-                    </select>
+                  }"
+                  class="p-6">
+                @csrf
+                <div class="grid gap-4 sm:grid-cols-3">
+                    <div>
+                        <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide"
+                               style="color: var(--dash-text-body);">
+                            Pegawai <span style="color: var(--dash-danger);">*</span>
+                        </label>
+                        <select name="_employee_id" required
+                                x-model="employeeId" @change="updateAction()"
+                                class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                onfocus="this.style.borderColor='var(--dash-primary)'"
+                                onblur="this.style.borderColor='var(--dash-input-border)'">
+                            <option value="">Pilih pegawai...</option>
+                            @foreach ($employees as $emp)
+                                <option value="{{ $emp->id }}">{{ $emp->full_name }} ({{ $emp->employee_code }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide"
+                               style="color: var(--dash-text-body);">
+                            Komponen Gaji <span style="color: var(--dash-danger);">*</span>
+                        </label>
+                        <select name="payroll_component_id" required
+                                class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                onfocus="this.style.borderColor='var(--dash-primary)'"
+                                onblur="this.style.borderColor='var(--dash-input-border)'">
+                            <option value="">Pilih komponen...</option>
+                            @foreach ($components->where('is_active', true) as $comp)
+                                <option value="{{ $comp->id }}">{{ $comp->component_name }} ({{ $comp->component_code }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide"
+                               style="color: var(--dash-text-body);">
+                            Nilai (Rp) <span style="color: var(--dash-danger);">*</span>
+                        </label>
+                        <input type="number" name="value" required min="0" step="0.01" placeholder="0"
+                               class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all font-mono"
+                               style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                               onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                               onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide"
+                               style="color: var(--dash-text-body);">
+                            Catatan Tambahan
+                        </label>
+                        <input type="text" name="notes" placeholder="Catatan opsional penetapan kompensasi"
+                               class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                               style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                               onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                               onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                    </div>
+
+                    <div class="flex items-end">
+                        <button type="submit"
+                                class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90"
+                                style="background-color: var(--dash-primary);">
+                            <span class="material-symbols-outlined text-[18px]">save</span>
+                            Simpan Kompensasi
+                        </button>
+                    </div>
                 </div>
-                <div>
-                    <label class="mb-1.5 block text-sm font-medium text-slate-700">Komponen <span class="text-rose-500">*</span></label>
-                    <select name="payroll_component_id" required
-                            class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
-                        <option value="">Pilih komponen...</option>
-                        @foreach ($components->where('is_active', true) as $comp)
-                            <option value="{{ $comp->id }}">{{ $comp->component_name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <label class="mb-1.5 block text-sm font-medium text-slate-700">Nilai (Rp) <span class="text-rose-500">*</span></label>
-                    <input type="number" name="value" required min="0" step="0.01" placeholder="0"
-                           class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
-                </div>
-                <div class="sm:col-span-2">
-                    <label class="mb-1.5 block text-sm font-medium text-slate-700">Catatan</label>
-                    <input type="text" name="notes"
-                           class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
-                </div>
-                <div class="flex items-end">
-                    <button type="submit"
-                            class="inline-flex min-h-10 w-full items-center justify-center gap-2 bg-[#215aac] px-4 text-sm font-semibold text-white hover:bg-[#194a91]">
-                        <span class="material-symbols-outlined text-[18px]">save</span>
-                        Simpan
-                    </button>
-                </div>
-            </div>
-        </form>
+            </form>
+        </div>
         @endcanany
 
-        <div class="overflow-hidden border border-slate-200 bg-white">
-            <div class="flex items-center justify-between border-b border-slate-200 px-5 py-4">
-                <h3 class="font-jakarta text-base font-bold text-slate-900">Semua kompensasi pegawai</h3>
-                <span class="text-sm text-slate-500">{{ $allCompensations->count() }} entri</span>
+        {{-- Table Container Semua Kompensasi Pegawai --}}
+        <div class="rounded-2xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
+            <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                 style="border-bottom: 1px solid var(--dash-card-border);">
+                <div>
+                    <h3 class="font-jakarta text-base font-bold" style="color: var(--dash-text-heading);">Semua Kompensasi Pegawai</h3>
+                    <p class="text-xs mt-0.5" style="color: var(--dash-text-muted);">
+                        Total {{ $allCompensations->count() }} penetapan kompensasi aktif.
+                    </p>
+                </div>
+
+                {{-- Search Bar --}}
+                <div class="relative w-full sm:w-64">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-[16px]"
+                          style="color: var(--dash-text-muted);">search</span>
+                    <input type="text" x-model="searchCompensation" placeholder="Cari pegawai atau komponen..."
+                           class="w-full pr-3 py-1.5 text-xs rounded-lg focus:outline-none transition-all"
+                           style="padding-left: 2.5rem !important; background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                           onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                           onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                </div>
             </div>
+
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-slate-200 text-sm">
-                    <thead class="bg-slate-50 text-left text-xs font-semibold text-slate-500">
-                        <tr>
-                            <th class="px-5 py-3">Pegawai</th>
-                            <th class="px-5 py-3">Komponen</th>
-                            <th class="px-5 py-3">Tipe</th>
-                            <th class="px-5 py-3 text-right">Nilai</th>
-                            <th class="px-5 py-3">Catatan</th>
-                            <th class="px-5 py-3 text-right">Aksi</th>
+                <table class="w-full text-sm text-left">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                            <th scope="col" class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-[11px]"
+                                style="color: var(--dash-text-muted);">Pegawai</th>
+                            <th scope="col" class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-[11px]"
+                                style="color: var(--dash-text-muted);">Komponen</th>
+                            <th scope="col" class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-[11px]"
+                                style="color: var(--dash-text-muted);">Tipe</th>
+                            <th scope="col" class="px-5 py-3.5 text-right text-xs font-bold uppercase tracking-wider text-[11px]"
+                                style="color: var(--dash-text-muted);">Nilai</th>
+                            <th scope="col" class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-[11px]"
+                                style="color: var(--dash-text-muted);">Catatan</th>
+                            <th scope="col" class="px-5 py-3.5 text-right text-xs font-bold uppercase tracking-wider text-[11px]"
+                                style="color: var(--dash-text-muted);">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100">
+                    <tbody>
                         @forelse ($allCompensations as $comp)
-                            <tr class="hover:bg-slate-50/70">
-                                <td class="px-5 py-4">
-                                    <p class="font-semibold text-slate-900">{{ $comp->employee->full_name }}</p>
-                                    <p class="mt-0.5 font-mono text-xs text-slate-400">{{ $comp->employee->employee_code }}</p>
+                            <tr style="border-bottom: 1px solid var(--dash-card-border);"
+                                x-show="!searchCompensation || '{{ strtolower($comp->employee->full_name . ' ' . $comp->employee->employee_code . ' ' . $comp->payrollComponent->component_name) }}'.includes(searchCompensation.toLowerCase())"
+                                onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                onmouseout="this.style.backgroundColor='transparent'">
+                                <td class="px-5 py-4 whitespace-nowrap">
+                                    <p class="font-semibold" style="color: var(--dash-text-heading);">{{ $comp->employee->full_name }}</p>
+                                    <p class="mt-0.5 font-mono text-xs" style="color: var(--dash-text-muted);">{{ $comp->employee->employee_code }}</p>
                                 </td>
-                                <td class="px-5 py-4">
-                                    <p class="font-medium text-slate-800">{{ $comp->payrollComponent->component_name }}</p>
-                                    <p class="mt-0.5 font-mono text-xs text-slate-400">{{ $comp->payrollComponent->component_code }}</p>
+                                <td class="px-5 py-4 whitespace-nowrap">
+                                    <p class="font-medium" style="color: var(--dash-text-heading);">{{ $comp->payrollComponent->component_name }}</p>
+                                    <p class="mt-0.5 font-mono text-xs" style="color: var(--dash-text-muted);">{{ $comp->payrollComponent->component_code }}</p>
                                 </td>
-                                <td class="px-5 py-4">
-                                    <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $comp->payrollComponent->component_type === 'earning' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800' }}">
-                                        {{ $comp->payrollComponent->component_type === 'earning' ? 'Pendapatan' : 'Potongan' }}
-                                    </span>
+                                <td class="px-5 py-4 whitespace-nowrap">
+                                    @if ($comp->payrollComponent->component_type === 'earning')
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                                              style="background-color: var(--dash-nav-hover-bg); color: var(--dash-primary); border: 1px solid var(--dash-card-border);">
+                                            Pendapatan
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                                              style="background-color: color-mix(in srgb, var(--dash-danger) 10%, transparent); color: var(--dash-danger); border: 1px solid color-mix(in srgb, var(--dash-danger) 25%, transparent);">
+                                            Potongan
+                                        </span>
+                                    @endif
                                 </td>
-                                <td class="px-5 py-4 text-right font-semibold text-slate-900">
+                                <td class="px-5 py-4 whitespace-nowrap text-right font-semibold font-mono" style="color: var(--dash-text-heading);">
                                     Rp {{ number_format($comp->value, 0, ',', '.') }}
                                 </td>
-                                <td class="px-5 py-4 text-slate-500">{{ $comp->notes ?? '—' }}</td>
-                                <td class="px-5 py-4 text-right">
-                                    @canany(['payroll.employee_compensation.delete'])
-                                    <form method="POST" action="{{ route('employees.payroll.compensations.destroy', [$comp->employee, $comp]) }}">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" onclick="return confirm('Hapus kompensasi ini?')"
-                                                class="inline-flex min-h-9 items-center border border-red-200 px-3 text-xs font-semibold text-red-700 hover:bg-red-50">
-                                            Hapus
-                                        </button>
-                                    </form>
-                                    @endcanany
+                                <td class="px-5 py-4 text-xs" style="color: var(--dash-text-muted);">
+                                    {{ $comp->notes ?: '-' }}
+                                </td>
+                                <td class="px-5 py-4 whitespace-nowrap text-right">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <a href="{{ route('employees.payroll.compensations.index', $comp->employee) }}"
+                                           class="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-colors"
+                                           style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                                           onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                           onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                            <span class="material-symbols-outlined text-[14px]">tune</span>
+                                            Kelola
+                                        </a>
+
+                                        @can('payroll.employee_compensation.delete')
+                                            <button type="button"
+                                                    @click="showConfirmModal = true;
+                                                            confirmTitle = 'Hapus Kompensasi Pegawai';
+                                                            confirmMessage = 'Hapus penetapan komponen {{ addslashes($comp->payrollComponent->component_name) }} untuk {{ addslashes($comp->employee->full_name) }}?';
+                                                            confirmActionUrl = '{{ route('employees.payroll.compensations.destroy', [$comp->employee, $comp]) }}';
+                                                            confirmMethod = 'DELETE';
+                                                            confirmActionText = 'Hapus';"
+                                                    class="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                                                    style="background-color: var(--dash-danger);">
+                                                <span class="material-symbols-outlined text-[14px]">delete</span>
+                                                Hapus
+                                            </button>
+                                        @endcan
+                                    </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
                                 <td colspan="6" class="px-5 py-12 text-center">
-                                    <span class="material-symbols-outlined text-3xl text-slate-300">money_off</span>
-                                    <p class="mt-2 font-semibold text-slate-700">Belum ada data kompensasi.</p>
-                                    <p class="mt-1 text-sm text-slate-500">Gunakan form di atas untuk menetapkan nilai kompensasi per pegawai.</p>
+                                    <span class="material-symbols-outlined text-4xl block mx-auto mb-2"
+                                          style="color: var(--dash-text-faint);">money_off</span>
+                                    <p class="font-semibold text-sm" style="color: var(--dash-text-heading);">Belum ada data kompensasi pegawai.</p>
+                                    <p class="text-xs mt-1" style="color: var(--dash-text-muted);">
+                                        Gunakan formulir di atas untuk menetapkan komponen gaji khusus per pegawai.
+                                    </p>
                                 </td>
                             </tr>
                         @endforelse
@@ -395,6 +623,185 @@
         </div>
 
     </div>{{-- /tab compensation --}}
+
+    {{-- ============================= --}}
+    {{-- Modal Edit Komponen Gaji --}}
+    {{-- ============================= --}}
+    <div x-show="showEditModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
+            <div x-show="showEditModal" @click="showEditModal = false" class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-black/60"></div>
+            </div>
+
+            <div x-show="showEditModal"
+                 class="relative z-10 inline-block align-bottom rounded-2xl text-left shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full"
+                 style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+                
+                {{-- Header Modal --}}
+                <div class="px-6 py-4 rounded-t-2xl flex items-center justify-between"
+                     style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[20px]" style="color: var(--dash-primary-text);">edit</span>
+                        <h3 class="font-jakarta text-base font-bold" style="color: var(--dash-text-heading);">Edit Komponen Gaji</h3>
+                    </div>
+                    <button type="button" @click="showEditModal = false"
+                            class="p-1 rounded-lg text-xs transition-colors"
+                            style="color: var(--dash-text-muted);"
+                            onmouseover="this.style.backgroundColor='var(--dash-card-bg)'"
+                            onmouseout="this.style.backgroundColor='transparent'">
+                        <span class="material-symbols-outlined text-[20px]">close</span>
+                    </button>
+                </div>
+
+                {{-- Body Form Modal --}}
+                <form :action="'/payroll/component/' + editComponent.id" method="POST" id="edit-component-form">
+                    @csrf
+                    @method('PUT')
+                    <div class="p-6 space-y-4">
+                        <div class="grid gap-4 sm:grid-cols-2">
+                            <div>
+                                <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide"
+                                       style="color: var(--dash-text-body);">
+                                    Kode Komponen <span style="color: var(--dash-danger);">*</span>
+                                </label>
+                                <input type="text" name="component_code" x-model="editComponent.component_code" required maxlength="100"
+                                       class="w-full px-3 py-2 text-sm rounded-lg uppercase focus:outline-none transition-all font-mono"
+                                       style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                       onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                       onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                            </div>
+                            <div>
+                                <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide"
+                                       style="color: var(--dash-text-body);">
+                                    Nama Komponen <span style="color: var(--dash-danger);">*</span>
+                                </label>
+                                <input type="text" name="component_name" x-model="editComponent.component_name" required maxlength="255"
+                                       class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                       style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                       onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                       onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                            </div>
+                            <div>
+                                <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide"
+                                       style="color: var(--dash-text-body);">
+                                    Tipe <span style="color: var(--dash-danger);">*</span>
+                                </label>
+                                <select name="component_type" x-model="editComponent.component_type" required
+                                        class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                        style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                        onfocus="this.style.borderColor='var(--dash-primary)'"
+                                        onblur="this.style.borderColor='var(--dash-input-border)'">
+                                    @foreach ($typeLabels as $value => $label)
+                                        <option value="{{ $value }}">{{ $label }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
+                                <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide"
+                                       style="color: var(--dash-text-body);">
+                                    Metode Kalkulasi <span style="color: var(--dash-danger);">*</span>
+                                </label>
+                                <select name="calculation_method" x-model="editComponent.calculation_method" required
+                                        class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                        style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                        onfocus="this.style.borderColor='var(--dash-primary)'"
+                                        onblur="this.style.borderColor='var(--dash-input-border)'">
+                                    @foreach ($methodLabels as $value => $label)
+                                        <option value="{{ $value }}">{{ $label }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-6 pt-2">
+                            <label class="inline-flex items-center gap-2 cursor-pointer">
+                                <input name="is_taxable" value="0" type="hidden">
+                                <input name="is_taxable" value="1" type="checkbox" x-model="editComponent.is_taxable"
+                                       class="h-4 w-4 rounded"
+                                       style="accent-color: var(--dash-primary);">
+                                <span class="text-xs font-semibold" style="color: var(--dash-text-body);">Kena Pajak</span>
+                            </label>
+                            <label class="inline-flex items-center gap-2 cursor-pointer">
+                                <input name="is_active" value="0" type="hidden">
+                                <input name="is_active" value="1" type="checkbox" x-model="editComponent.is_active"
+                                       class="h-4 w-4 rounded"
+                                       style="accent-color: var(--dash-primary);">
+                                <span class="text-xs font-semibold" style="color: var(--dash-text-body);">Status Aktif</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    {{-- Footer Modal --}}
+                    <div class="px-6 py-4 rounded-b-2xl flex flex-col-reverse sm:flex-row sm:justify-end gap-2"
+                         style="background-color: var(--dash-nav-hover-bg); border-top: 1px solid var(--dash-card-border);">
+                        <button type="button" @click="showEditModal = false"
+                                class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                                style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                                onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                            Batal
+                        </button>
+                        <button type="submit"
+                                class="inline-flex items-center justify-center gap-1.5 px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                                style="background-color: var(--dash-primary);">
+                            <span class="material-symbols-outlined text-[16px]">save</span>
+                            Simpan Perubahan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- ============================= --}}
+    {{-- Modal Konfirmasi Aksi (Hapus/Nonaktifkan) --}}
+    {{-- ============================= --}}
+    <div x-show="showConfirmModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
+            <div x-show="showConfirmModal" @click="showConfirmModal = false" class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-black/60"></div>
+            </div>
+
+            <div x-show="showConfirmModal"
+                 class="relative z-10 inline-block align-bottom rounded-2xl text-left shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+                 style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+                <div class="p-6 rounded-t-2xl">
+                    <div class="sm:flex sm:items-start gap-4">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-11 w-11 rounded-full sm:mx-0"
+                             style="background-color: color-mix(in srgb, var(--dash-danger) 15%, transparent); color: var(--dash-danger);">
+                            <span class="material-symbols-outlined text-[24px]">warning</span>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:text-left flex-1">
+                            <h3 class="font-jakarta text-lg font-bold" style="color: var(--dash-text-heading);" x-text="confirmTitle"></h3>
+                            <div class="mt-2">
+                                <p class="text-sm" style="color: var(--dash-text-muted);" x-text="confirmMessage"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-6 py-4 rounded-b-2xl flex flex-col-reverse sm:flex-row sm:justify-end gap-2"
+                     style="background-color: var(--dash-nav-hover-bg); border-top: 1px solid var(--dash-card-border);">
+                    <button type="button" @click="showConfirmModal = false"
+                            class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                            style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                            onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                            onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                        Batal
+                    </button>
+                    <button type="button" @click="$refs.confirmForm.submit()"
+                            class="inline-flex items-center justify-center gap-1.5 px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                            style="background-color: var(--dash-danger);">
+                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                        <span x-text="confirmActionText"></span>
+                    </button>
+                </div>
+                <form x-ref="confirmForm" :action="confirmActionUrl" method="POST" class="hidden">
+                    @csrf
+                    <input type="hidden" name="_method" :value="confirmMethod">
+                </form>
+            </div>
+        </div>
+    </div>
 
 </div>
 @endsection

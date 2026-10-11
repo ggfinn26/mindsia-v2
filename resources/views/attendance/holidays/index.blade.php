@@ -1,63 +1,121 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Hari Libur')
+@section('title', 'Hari Libur - MINDSIA')
+@section('header_title', 'Hari Libur')
 
 @section('content')
-<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8"
-     x-data="{ showConfirmModal: false, confirmActionUrl: '' }">
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6"
+     x-data="{ showConfirmModal: false, confirmTitle: '', confirmMessage: '', confirmActionUrl: '', confirmMethod: 'DELETE', confirmActionText: 'Hapus' }">
 
-    @if (session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg text-sm mb-4">{{ session('success') }}</div>
-    @endif
-
-    <div class="flex items-center justify-between mb-4">
+    {{-- Page Header Pola A --}}
+    <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div>
-            <h2 class="text-xl font-bold text-gray-900">Hari Libur</h2>
-            <p class="text-sm text-gray-500 mt-0.5">Hari libur nasional dan khusus yang mempengaruhi perhitungan hari kerja.</p>
+            <p class="text-xs font-bold uppercase tracking-wider mb-1"
+               style="color: var(--dash-primary-text);">Absensi & Jadwal</p>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+                style="color: var(--dash-text-heading);">Hari Libur</h1>
+            <p class="text-sm mt-1" style="color: var(--dash-text-muted);">
+                Hari libur nasional dan khusus yang mempengaruhi perhitungan hari kerja.
+            </p>
         </div>
         @can('attendance.holiday.manage')
-            <a href="{{ route('holidays.create') }}"
-               class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                <span class="material-symbols-outlined text-[16px]">add</span>
-                Tambah Hari Libur
-            </a>
+            <div>
+                <a href="{{ route('holidays.create') }}"
+                   class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90 shrink-0"
+                   style="background-color: var(--dash-primary);">
+                    <span class="material-symbols-outlined text-[18px]">add</span>
+                    Tambah Hari Libur
+                </a>
+            </div>
         @endcan
     </div>
 
-    <div class="bg-white shadow rounded-lg overflow-hidden">
+    {{-- Flash messages --}}
+    @if (session('success'))
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+             style="background-color: #f0fdf4; border-color: #bbf7d0; color: #059669;">
+            <span class="material-symbols-outlined text-[18px]">check_circle</span>
+            <p>{{ session('success') }}</p>
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+             style="background-color: #fef2f2; border-color: #fecaca; color: var(--dash-danger);">
+            <span class="material-symbols-outlined text-[18px]">error</span>
+            <p>{{ session('error') }}</p>
+        </div>
+    @endif
+
+    {{-- Data Table --}}
+    <div class="rounded-2xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] shadow-sm">
         @if ($holidays->isEmpty())
-            <div class="text-center py-12 text-gray-400">
-                <span class="material-symbols-outlined text-[48px] mb-2 block">event_busy</span>
-                <p class="font-medium">Belum ada hari libur terdaftar.</p>
+            <div class="text-center py-12 px-4">
+                <span class="material-symbols-outlined text-[48px] block mx-auto mb-3"
+                      style="color: var(--dash-text-faint);">event_busy</span>
+                <p class="text-sm font-semibold" style="color: var(--dash-text-muted);">Belum ada hari libur terdaftar.</p>
             </div>
         @else
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 text-sm">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Nama Hari Libur</th>
-                            <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Tanggal Mulai</th>
-                            <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Tanggal Selesai</th>
-                            <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Durasi</th>
-                            <th class="px-5 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Aksi</th>
+                <table class="w-full text-sm text-left">
+                    <thead>
+                        <tr style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
+                            <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold"
+                                style="color: var(--dash-text-muted);">Nama Hari Libur</th>
+                            <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold"
+                                style="color: var(--dash-text-muted);">Tanggal Mulai</th>
+                            <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold"
+                                style="color: var(--dash-text-muted);">Tanggal Selesai</th>
+                            <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold"
+                                style="color: var(--dash-text-muted);">Durasi</th>
+                            <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold text-right"
+                                style="color: var(--dash-text-muted);">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-100">
+                    <tbody class="divide-y" style="border-color: var(--dash-card-border);">
                         @foreach ($holidays as $holiday)
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-5 py-3.5 font-medium text-gray-900">{{ $holiday->holiday_name }}</td>
-                                <td class="px-5 py-3.5 text-gray-600">{{ $holiday->holiday_start_date->format('d M Y') }}</td>
-                                <td class="px-5 py-3.5 text-gray-600">{{ $holiday->holiday_end_date->format('d M Y') }}</td>
-                                <td class="px-5 py-3.5 text-gray-600">
-                                    @php $days = $holiday->holiday_start_date->diffInDays($holiday->holiday_end_date) + 1 @endphp
-                                    {{ $days }} hari
+                            <tr style="border-bottom: 1px solid var(--dash-card-border);"
+                                onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                onmouseout="this.style.backgroundColor='transparent'">
+                                <td class="px-5 py-3.5 whitespace-nowrap font-medium"
+                                    style="color: var(--dash-text-heading);">
+                                    {{ $holiday->holiday_name }}
                                 </td>
-                                <td class="px-5 py-3.5 text-right space-x-2">
+                                <td class="px-5 py-3.5 whitespace-nowrap text-sm"
+                                    style="color: var(--dash-text-body);">
+                                    {{ $holiday->holiday_start_date->format('d M Y') }}
+                                </td>
+                                <td class="px-5 py-3.5 whitespace-nowrap text-sm"
+                                    style="color: var(--dash-text-body);">
+                                    {{ $holiday->holiday_end_date->format('d M Y') }}
+                                </td>
+                                <td class="px-5 py-3.5 whitespace-nowrap text-sm"
+                                    style="color: var(--dash-text-body);">
+                                    @php $days = $holiday->holiday_start_date->diffInDays($holiday->holiday_end_date) + 1 @endphp
+                                    <span class="px-2.5 py-1 inline-flex text-xs font-semibold rounded-md"
+                                          style="background-color: var(--dash-nav-hover-bg); color: var(--dash-text-heading); border: 1px solid var(--dash-card-border);">
+                                        {{ $days }} hari
+                                    </span>
+                                </td>
+                                <td class="px-5 py-3.5 whitespace-nowrap text-right">
                                     @can('attendance.holiday.manage')
-                                        <a href="{{ route('holidays.edit', $holiday) }}" class="text-yellow-600 hover:underline text-xs font-medium">Edit</a>
-                                        <button type="button"
-                                                @click="showConfirmModal = true; confirmActionUrl = '{{ route('holidays.destroy', $holiday) }}'"
-                                                class="text-red-600 hover:underline text-xs font-medium">Hapus</button>
+                                        <div class="inline-flex items-center gap-2 justify-end">
+                                            <a href="{{ route('holidays.edit', $holiday) }}"
+                                               class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors"
+                                               style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                                               onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                               onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                                <span class="material-symbols-outlined text-[14px]">edit</span>
+                                                Edit
+                                            </a>
+                                            <button type="button"
+                                                    @click="showConfirmModal = true; confirmTitle = 'Hapus Hari Libur'; confirmMessage = 'Yakin ingin menghapus hari libur {{ addslashes($holiday->holiday_name) }}? Tindakan tidak bisa dibatalkan.'; confirmActionUrl = '{{ route('holidays.destroy', $holiday) }}'; confirmMethod = 'DELETE'; confirmActionText = 'Hapus'"
+                                                    class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                                                    style="background-color: var(--dash-danger);">
+                                                <span class="material-symbols-outlined text-[14px]">delete</span>
+                                                Hapus
+                                            </button>
+                                        </div>
                                     @endcan
                                 </td>
                             </tr>
@@ -66,41 +124,54 @@
                 </table>
             </div>
             @if ($holidays->hasPages())
-                <div class="px-5 py-4 border-t border-gray-100">{{ $holidays->links() }}</div>
+                <div class="px-5 py-4" style="border-top: 1px solid var(--dash-card-border);">
+                    {{ $holidays->links() }}
+                </div>
             @endif
         @endif
     </div>
 
-
-    {{-- Confirm Modal --}}
+    {{-- Modal Konfirmasi Hapus --}}
     <div x-show="showConfirmModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
         <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
-            <div @click="showConfirmModal = false" class="fixed inset-0 transition-opacity" aria-hidden="true">
-                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            <div x-show="showConfirmModal" @click="showConfirmModal = false" class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-black/60"></div>
             </div>
-            <div class="relative z-10 inline-block align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                    <div class="sm:flex sm:items-start">
-                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                            <span class="material-symbols-outlined text-red-600">warning</span>
+            <div x-show="showConfirmModal"
+                 class="relative z-10 inline-block align-bottom rounded-2xl text-left shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+                 style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+                <div class="p-6 rounded-t-2xl">
+                    <div class="sm:flex sm:items-start gap-4">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-11 w-11 rounded-full sm:mx-0"
+                             style="background-color: #fee2e2; color: var(--dash-danger);">
+                            <span class="material-symbols-outlined text-[24px]">warning</span>
                         </div>
-                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                            <h3 class="text-lg leading-6 font-medium text-gray-900">Hapus Hari Libur</h3>
+                        <div class="mt-3 text-center sm:mt-0 sm:text-left flex-1">
+                            <h3 class="font-jakarta text-lg font-bold" style="color: var(--dash-text-heading);" x-text="confirmTitle"></h3>
                             <div class="mt-2">
-                                <p class="text-sm text-gray-500">Hapus hari libur ini? Tindakan tidak bisa diundur.</p>
+                                <p class="text-sm" style="color: var(--dash-text-muted);" x-text="confirmMessage"></p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="button" @click="$refs.confirmForm.submit()"
-                            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 hover:bg-red-700 text-base font-medium text-white focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">Hapus</button>
+                <div class="px-6 py-4 rounded-b-2xl flex flex-col-reverse sm:flex-row sm:justify-end gap-2"
+                     style="background-color: var(--dash-nav-hover-bg); border-top: 1px solid var(--dash-card-border);">
                     <button type="button" @click="showConfirmModal = false"
-                            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm">Batal</button>
+                            class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                            style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                            onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                            onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                        Batal
+                    </button>
+                    <button type="button" @click="$refs.confirmForm.submit()"
+                            class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                            style="background-color: var(--dash-danger);"
+                            x-text="confirmActionText">
+                    </button>
                 </div>
                 <form x-ref="confirmForm" :action="confirmActionUrl" method="POST" class="hidden">
                     @csrf
-                    <input type="hidden" name="_method" value="DELETE">
+                    <input type="hidden" name="_method" :value="confirmMethod">
                 </form>
             </div>
         </div>

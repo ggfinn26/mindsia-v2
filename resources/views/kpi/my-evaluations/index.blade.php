@@ -34,7 +34,7 @@
                 <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-2 flex-wrap">
                         <p class="font-semibold" style="color: var(--dash-text-heading);">
-                            {{ $eval->template?->template_name ?? '—' }}
+                            {{ $eval->template?->template_name ?? '-' }}
                         </p>
                         <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold
                             {{ $eval->isDraft() ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800' }}">
@@ -49,7 +49,7 @@
                     <p class="mt-1 text-xs" style="color: var(--dash-text-muted);">
                         {{ $eval->period_start_date?->format('d M Y') }} – {{ $eval->period_end_date?->format('d M Y') }}
                         <span class="mx-1" style="color: var(--dash-text-faint);">·</span>
-                        Evaluator: {{ $eval->evaluator?->full_name ?? '—' }}
+                        Evaluator: {{ $eval->evaluator?->full_name ?? '-' }}
                     </p>
                 </div>
 

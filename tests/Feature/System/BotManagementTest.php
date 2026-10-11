@@ -73,8 +73,15 @@ test('it can update a bot', function () {
     ]);
 });
 
-test('it can toggle bot active status', function () {
-    $bot = Bot::create(['name' => 'Test Bot', 'type' => 'telegram', 'token' => 'dummy', 'is_active' => true]);
+test('it renders empty state when no bots exist', function () {
+    $this->actingAs($this->admin)
+        ->get(route('system.bots.index'))
+        ->assertStatus(200)
+        ->assertSee('Belum ada konfigurasi bot.');
+});
+
+test('it can toggle bot active status from active to inactive', function () {
+    $bot = Bot::create(['name' => 'Active Bot', 'type' => 'telegram', 'token' => 'dummy', 'is_active' => true]);
 
     $this->actingAs($this->admin)
         ->post(route('system.bots.toggle', $bot))
@@ -85,4 +92,53 @@ test('it can toggle bot active status', function () {
         'id' => $bot->id,
         'is_active' => 0,
     ]);
+});
+
+test('it toggles inactive bot to active', function () {
+    $bot = Bot::create(['name' => 'Inactive Bot', 'type' => 'whatsapp', 'token' => 'dummy', 'is_active' => false]);
+
+    $this->actingAs($this->admin)
+        ->post(route('system.bots.toggle', $bot))
+        ->assertRedirect(route('system.bots.index'))
+        ->assertSessionHas('success');
+
+    $this->assertDatabaseHas('bots', [
+        'id' => $bot->id,
+        'is_active' => 1,
+    ]);
+});
+
+test('it fails validation when storing bot with invalid data', function () {
+    $this->actingAs($this->admin)
+        ->post(route('system.bots.store'), [
+            'name' => '',
+            'type' => 'invalid_platform',
+            'token' => '',
+        ])
+        ->assertSessionHasErrors(['name', 'type', 'token']);
+});
+
+test('unauthorized user without system.bot.manage sees read-only view without action buttons and cannot store or update', function () {
+    $regularUser = User::factory()->create();
+    $bot = Bot::create(['name' => 'Existing Bot', 'type' => 'telegram', 'token' => 'dummy', 'is_active' => true]);
+
+    $this->actingAs($regularUser)
+        ->get(route('system.bots.index'))
+        ->assertStatus(200)
+        ->assertDontSee('Tambah Bot')
+        ->assertDontSee('Nonaktifkan');
+
+    $this->actingAs($regularUser)
+        ->post(route('system.bots.store'), [
+            'name' => 'Hacker Bot',
+            'type' => 'telegram',
+            'token' => 'secret',
+        ])
+        ->assertForbidden();
+
+    $this->actingAs($regularUser)
+        ->put(route('system.bots.update', $bot), [
+            'name' => 'Hacker Bot',
+        ])
+        ->assertForbidden();
 });
