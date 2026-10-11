@@ -103,7 +103,7 @@ class WorkAttendanceController extends Controller
         ]);
 
         $html = view('dashboard.widgets.export-pdf', [
-            'title' => 'Rekap Absensi — '.($employee->full_name ?? '-').' — '.$rangeLabel,
+            'title' => 'Rekap Absensi: '.($employee->full_name ?? '-').' ('.$rangeLabel.')',
             'exportedAt' => now()->translatedFormat('d F Y H:i'),
             'headers' => array_keys($rows->first() ?? []),
             'rows' => $rows->toArray(),
@@ -120,9 +120,15 @@ class WorkAttendanceController extends Controller
         $employee = auth()->user()->employee;
         $schedule = $this->scheduleRepository->resolveForEmployee($employee->id, now()->toDateString());
 
+        $recentLogs = EmployeeWorkAttendanceLog::where('employee_id', $employee->id)
+            ->where('attendance_date', '>=', now()->subDays(6)->toDateString())
+            ->orderByDesc('attendance_date')
+            ->get();
+
         return view('attendance.work.index', [
             'today' => $this->repository->findForDate($employee->id, now()->toDateString()),
             'scheduleRequired' => $schedule ? $schedule->is_required : null,
+            'recentLogs' => $recentLogs,
         ]);
     }
 

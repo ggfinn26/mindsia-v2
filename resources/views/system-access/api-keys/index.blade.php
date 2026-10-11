@@ -108,12 +108,12 @@
                                         <div class="flex items-center gap-2">
                                             <span class="material-symbols-outlined text-violet-500 text-[16px]">timer</span>
                                             <span class="text-xs text-slate-500">Sisa detik</span>
-                                            <span class="text-sm font-bold text-violet-700" x-text="result.seconds_left ?? '—'"></span>
+                                            <span class="text-sm font-bold text-violet-700" x-text="result.seconds_left ?? '-'"></span>
                                         </div>
                                         <div class="flex items-center gap-2">
                                             <span class="material-symbols-outlined text-slate-400 text-[16px]">swap_horiz</span>
                                             <span class="text-xs text-slate-500">Konversi terpakai</span>
-                                            <span class="text-sm font-bold text-slate-700" x-text="result.conversions_consumed ?? '—'"></span>
+                                            <span class="text-sm font-bold text-slate-700" x-text="result.conversions_consumed ?? '-'"></span>
                                         </div>
                                         <template x-if="result.reset_date">
                                             <div class="flex items-center gap-2">

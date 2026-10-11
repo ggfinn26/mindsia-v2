@@ -1,101 +1,171 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Kelola Divisi dan Posisi')
+@section('title', 'Kelola Posisi - MINDSIA')
+@section('header_title', 'Kelola Posisi')
 
 @section('content')
-<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8" x-data="{ showConfirmModal: false, confirmTitle: '', confirmMessage: '', confirmActionUrl: '', confirmMethod: 'DELETE', confirmActionText: 'Hapus' }">
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">Kelola Divisi dan Posisi</h1>
-        <a href="{{ route('positions.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
-            Tambah Posisi
-        </a>
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6"
+     x-data="{ showConfirmModal: false, confirmTitle: '', confirmMessage: '', confirmActionUrl: '', confirmMethod: 'DELETE', confirmActionText: 'Hapus' }">
+
+    {{-- Page Header Pola A --}}
+    <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+        <div>
+            <p class="text-xs font-bold uppercase tracking-wider mb-1"
+               style="color: var(--dash-primary-text);">Organisasi</p>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+                style="color: var(--dash-text-heading);">Kelola Posisi</h1>
+            <p class="text-sm mt-1" style="color: var(--dash-text-muted);">
+                Kelola struktur jabatan, role sistem, dan hierarki posisi karyawan.
+            </p>
+        </div>
+        <div>
+            <a href="{{ route('positions.create') }}"
+               class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90 shrink-0"
+               style="background-color: var(--dash-primary);">
+                <span class="material-symbols-outlined text-[18px]">add</span>
+                Tambah Posisi
+            </a>
+        </div>
     </div>
 
+    {{-- Flash messages --}}
     @if (session('success'))
-        <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
-            {{ session('success') }}
-        </div>
-    @endif
-    
-    @if (session('error'))
-        <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-            {{ session('error') }}
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+             style="background-color: #f0fdf4; border-color: #bbf7d0; color: #059669;">
+            <span class="material-symbols-outlined text-[18px]">check_circle</span>
+            <p>{{ session('success') }}</p>
         </div>
     @endif
 
-    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+    @if (session('error'))
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+             style="background-color: #fef2f2; border-color: #fecaca; color: #dc2626;">
+            <span class="material-symbols-outlined text-[18px]">error</span>
+            <p>{{ session('error') }}</p>
+        </div>
+    @endif
+
+    {{-- Data Table --}}
+    <div class="rounded-2xl overflow-hidden shadow-sm"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Posisi</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role Terkait</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Urutan (Hierarchy)</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+            <table class="w-full text-sm text-left">
+                <thead>
+                    <tr style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
+                        <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold"
+                            style="color: var(--dash-text-muted);">Nama Posisi</th>
+                        <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold"
+                            style="color: var(--dash-text-muted);">Role Terkait</th>
+                        <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold"
+                            style="color: var(--dash-text-muted);">Urutan (Hierarchy)</th>
+                        <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold text-right"
+                            style="color: var(--dash-text-muted);">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
+                <tbody class="divide-y" style="border-color: var(--dash-card-border);">
                     @forelse($positions as $position)
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $position->position_name ?? $position->title }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <tr style="border-bottom: 1px solid var(--dash-card-border);"
+                            onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                            onmouseout="this.style.backgroundColor='transparent'">
+                            <td class="px-5 py-3.5 whitespace-nowrap font-medium"
+                                style="color: var(--dash-text-heading);">
+                                {{ $position->position_name ?? $position->title }}
+                            </td>
+                            <td class="px-5 py-3.5 whitespace-nowrap text-sm">
                                 @if($position->role)
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                    <span class="px-2.5 py-1 inline-flex text-xs font-semibold rounded-md"
+                                          style="background-color: var(--dash-primary-bg); color: var(--dash-primary-text);">
                                         {{ $position->role->name }}
                                     </span>
                                 @else
-                                    <span class="text-gray-400 italic">Tidak ada role</span>
+                                    <span class="text-xs italic" style="color: var(--dash-text-muted);">Tidak ada role</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $position->hierarchy_order }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="{{ route('positions.edit', $position->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
-                                <button type="button" @click="showConfirmModal = true; confirmTitle = 'Hapus Posisi'; confirmMessage = 'Yakin ingin menghapus posisi ini?'; confirmActionUrl = '{{ route('positions.destroy', $position->id) }}'; confirmMethod = 'DELETE'; confirmActionText = 'Hapus'" class="text-red-600 hover:text-red-900">Hapus</button>
+                            <td class="px-5 py-3.5 whitespace-nowrap text-sm"
+                                style="color: var(--dash-text-body);">
+                                {{ $position->hierarchy_order }}
+                            </td>
+                            <td class="px-5 py-3.5 whitespace-nowrap text-right">
+                                <div class="inline-flex items-center gap-2 justify-end">
+                                    <a href="{{ route('positions.edit', $position->id) }}"
+                                       class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors"
+                                       style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                                       onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                       onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                        <span class="material-symbols-outlined text-[14px]">edit</span>
+                                        Edit
+                                    </a>
+                                    <button type="button"
+                                            @click="showConfirmModal = true; confirmTitle = 'Hapus Posisi'; confirmMessage = 'Yakin ingin menghapus posisi {{ addslashes($position->position_name ?? $position->title) }}?'; confirmActionUrl = '{{ route('positions.destroy', $position->id) }}'; confirmMethod = 'DELETE'; confirmActionText = 'Hapus'"
+                                            class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                                            style="background-color: #dc2626;">
+                                        <span class="material-symbols-outlined text-[14px]">delete</span>
+                                        Hapus
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">Belum ada data posisi.</td>
+                            <td colspan="4" class="px-5 py-12 text-center">
+                                <span class="material-symbols-outlined text-[48px] block mx-auto mb-3"
+                                      style="color: var(--dash-text-faint);">badge</span>
+                                <p class="text-sm font-semibold" style="color: var(--dash-text-muted);">Belum ada data posisi.</p>
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
         @if($positions->hasPages())
-            <div class="px-6 py-4 border-t border-gray-200">
+            <div class="px-5 py-4" style="border-top: 1px solid var(--dash-card-border);">
                 {{ $positions->links() }}
             </div>
         @endif
     </div>
 
-    <!-- Modal Konfirmasi Hapus -->
-    <div x-show="showConfirmModal" class="relative z-10" style="display: none;">
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" @click="showConfirmModal = false"></div>
-        <div class="fixed inset-0 z-10 overflow-y-auto">
-            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                <div x-show="showConfirmModal" class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <div class="sm:flex sm:items-start">
-                            <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                                <span class="material-symbols-outlined text-red-600">warning</span>
-                            </div>
-                            <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                                <h3 class="text-base font-semibold leading-6 text-gray-900" x-text="confirmTitle"></h3>
-                                <div class="mt-2">
-                                    <p class="text-sm text-gray-500" x-text="confirmMessage"></p>
-                                </div>
+    {{-- Modal Konfirmasi Hapus --}}
+    <div x-show="showConfirmModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
+            <div x-show="showConfirmModal" @click="showConfirmModal = false" class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-black/60"></div>
+            </div>
+            <div x-show="showConfirmModal"
+                 class="relative z-10 inline-block align-bottom rounded-2xl text-left shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+                 style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+                <div class="p-6 rounded-t-2xl">
+                    <div class="sm:flex sm:items-start gap-4">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-11 w-11 rounded-full sm:mx-0"
+                             style="background-color: #fee2e2; color: #dc2626;">
+                            <span class="material-symbols-outlined text-[24px]">warning</span>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:text-left flex-1">
+                            <h3 class="font-jakarta text-lg font-bold" style="color: var(--dash-text-heading);" x-text="confirmTitle"></h3>
+                            <div class="mt-2">
+                                <p class="text-sm" style="color: var(--dash-text-muted);" x-text="confirmMessage"></p>
                             </div>
                         </div>
                     </div>
-                    <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                        <button type="button" @click="$refs.confirmForm.submit()" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto" x-text="confirmActionText"></button>
-                        <button type="button" @click="showConfirmModal = false" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Batal</button>
-                    </div>
-                    <form x-ref="confirmForm" :action="confirmActionUrl" method="POST" class="hidden">
-                        @csrf
-                        <input type="hidden" name="_method" :value="confirmMethod">
-                    </form>
                 </div>
+                <div class="px-6 py-4 rounded-b-2xl flex flex-col-reverse sm:flex-row sm:justify-end gap-2"
+                     style="background-color: var(--dash-nav-hover-bg); border-top: 1px solid var(--dash-card-border);">
+                    <button type="button" @click="showConfirmModal = false"
+                            class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                            style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                            onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                            onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                        Batal
+                    </button>
+                    <button type="button" @click="$refs.confirmForm.submit()"
+                            class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                            style="background-color: #dc2626;"
+                            x-text="confirmActionText">
+                    </button>
+                </div>
+                <form x-ref="confirmForm" :action="confirmActionUrl" method="POST" class="hidden">
+                    @csrf
+                    <input type="hidden" name="_method" :value="confirmMethod">
+                </form>
             </div>
         </div>
     </div>

@@ -1,94 +1,127 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
-@section('title', 'Edit Kontrak — ' . $status->employee->full_name)
+@section('title', 'Edit Kontrak - ' . $status->employee->full_name)
+@section('header_title', 'Edit Kontrak Kerja')
 
 @section('content')
-    <div class="container py-6">
-        <div class="flex items-center justify-between mb-6">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900">Edit Kontrak</h1>
-                <p class="text-gray-600 mt-2">{{ $status->employee->full_name }}</p>
-            </div>
-            <a href="{{ route('employees.show', $status->employee) }}"
-               class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
-                Kembali
-            </a>
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-3xl mx-auto space-y-6">
+
+    {{-- Page Header (Pola B3) --}}
+    <div>
+        <a href="{{ route('employment-statuses.index') }}" class="dash-back mb-3">
+            <span class="material-symbols-outlined">arrow_back</span>Kembali ke Kelola Kontrak
+        </a>
+        <p class="text-xs font-semibold uppercase tracking-wider mb-1"
+           style="color: var(--dash-primary-text);">Kepegawaian</p>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+            style="color: var(--dash-text-heading);">Edit Kontrak Kerja</h1>
+        <p class="text-sm mt-1" style="color: var(--dash-text-muted);">
+            Pegawai: <span class="font-medium" style="color: var(--dash-text-heading);">{{ $status->employee->full_name }}</span> ({{ $status->employee->employee_code }})
+        </p>
+    </div>
+
+    {{-- Flash & Error Messages --}}
+    @if ($status->setup_incomplete)
+    <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+         style="background-color: #fefce8; border-color: #fef08a; color: #a16207;">
+        <span class="material-symbols-outlined text-[18px]">warning</span>
+        <div>
+            <strong class="font-semibold">Setup Belum Lengkap:</strong> Kontrak ini dibuat dalam mode cepat. Lengkapi detail tanggal dan posisi untuk menyelesaikan setup.
+        </div>
+    </div>
+    @endif
+
+    @if ($errors->any())
+    <div class="px-4 py-3 rounded-xl text-sm"
+         style="background-color: #fef2f2; border: 1px solid #fecaca; color: #dc2626;">
+        <ul class="list-disc list-inside space-y-1">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+
+    {{-- Form Card --}}
+    <div class="rounded-2xl"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <div class="px-6 py-4 rounded-t-2xl"
+             style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+            <h2 class="text-sm font-semibold" style="color: var(--dash-text-heading);">Formulir Perubahan Kontrak</h2>
         </div>
 
-        @if ($status->setup_incomplete)
-            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-                <p class="text-sm text-yellow-800">
-                    <strong>⚠️ Setup Belum Lengkap:</strong> Kontrak ini masih dalam mode cepat. Lengkapi detail kontrak untuk menyelesaikan setup.
-                </p>
-            </div>
-        @endif
+        <div class="p-6 sm:p-8">
+            <form action="{{ route('employment-statuses.update', $status) }}"
+                  method="POST"
+                  class="space-y-6">
+                @csrf
+                @method('PATCH')
+                <input type="hidden" name="tab" value="lengkap">
 
-        <div class="bg-white rounded-lg shadow">
-            <div class="p-8">
-                <form action="{{ route('employment-statuses.update', $status) }}"
-                      method="POST"
-                      class="space-y-6">
-                    @csrf
-                    @method('PATCH')
-                    <input type="hidden" name="tab" value="lengkap">
-
-                    <div class="grid grid-cols-2 gap-6">
-                        <!-- Type Employment -->
-                        <div>
-                            <label for="type_employment" class="block text-sm font-medium text-gray-700 mb-2">
-                                Jenis Ketenagakerjaan
-                            </label>
-                            <input type="text"
-                                   id="type_employment"
-                                   name="type_employment"
-                                   value="{{ old('type_employment', $status->type_employment) }}"
-                                   placeholder="Tetap, Kontrak, Magang"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('type_employment') border-red-500 @enderror">
-                            @error('type_employment')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- Contract Start Date -->
-                        <div>
-                            <label for="contract_start_date" class="block text-sm font-medium text-gray-700 mb-2">
-                                Tanggal Mulai Kontrak
-                            </label>
-                            <input type="date"
-                                   id="contract_start_date"
-                                   name="contract_start_date"
-                                   value="{{ old('contract_start_date', $status->contract_start_date?->format('Y-m-d')) }}"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('contract_start_date') border-red-500 @enderror">
-                            @error('contract_start_date')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- Contract End Date -->
-                        <div>
-                            <label for="contract_end_date" class="block text-sm font-medium text-gray-700 mb-2">
-                                Tanggal Akhir Kontrak (opsional)
-                            </label>
-                            <input type="date"
-                                   id="contract_end_date"
-                                   name="contract_end_date"
-                                   value="{{ old('contract_end_date', $status->contract_end_date?->format('Y-m-d')) }}"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('contract_end_date') border-red-500 @enderror">
-                            @error('contract_end_date')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {{-- Jenis Ketenagakerjaan --}}
+                    <div>
+                        <label for="type_employment" class="block text-sm font-medium mb-1.5" style="color: var(--dash-text-body);">
+                            Jenis Ketenagakerjaan <span class="text-red-500">*</span>
+                        </label>
+                        <select id="type_employment" name="type_employment"
+                                class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
+                                style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                onfocus="this.style.borderColor='var(--dash-primary)'"
+                                onblur="this.style.borderColor='var(--dash-input-border)'">
+                            <option value="">Pilih Jenis</option>
+                            @foreach (['Tetap', 'Kontrak', 'Magang'] as $tipe)
+                                <option value="{{ $tipe }}" @selected(old('type_employment', $status->type_employment) === $tipe)>{{ $tipe }}</option>
+                            @endforeach
+                        </select>
+                        @error('type_employment')
+                            <p class="text-red-500 text-xs mt-1.5">{{ $message }}</p>
+                        @enderror
                     </div>
 
-                    <!-- Position -->
+                    {{-- Tanggal Mulai Kontrak --}}
                     <div>
-                        <label for="position_id" class="block text-sm font-medium text-gray-700 mb-2">
-                            Posisi
+                        <label for="contract_start_date" class="block text-sm font-medium mb-1.5" style="color: var(--dash-text-body);">
+                            Tanggal Mulai Kontrak <span class="text-red-500">*</span>
                         </label>
-                        <select id="position_id"
-                                name="position_id"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('position_id') border-red-500 @enderror">
-                            <option value="">-- Pilih Posisi --</option>
+                        <input type="date" id="contract_start_date" name="contract_start_date"
+                               value="{{ old('contract_start_date', $status->contract_start_date?->format('Y-m-d')) }}"
+                               class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
+                               style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                               onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                               onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                        @error('contract_start_date')
+                            <p class="text-red-500 text-xs mt-1.5">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Tanggal Akhir Kontrak --}}
+                    <div>
+                        <label for="contract_end_date" class="block text-sm font-medium mb-1.5" style="color: var(--dash-text-body);">
+                            Tanggal Akhir Kontrak <span class="text-xs font-normal" style="color: var(--dash-text-muted);">(opsional)</span>
+                        </label>
+                        <input type="date" id="contract_end_date" name="contract_end_date"
+                               value="{{ old('contract_end_date', $status->contract_end_date?->format('Y-m-d')) }}"
+                               class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
+                               style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                               onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                               onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                        @error('contract_end_date')
+                            <p class="text-red-500 text-xs mt-1.5">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Posisi / Jabatan --}}
+                    <div>
+                        <label for="position_id" class="block text-sm font-medium mb-1.5" style="color: var(--dash-text-body);">
+                            Posisi / Jabatan <span class="text-red-500">*</span>
+                        </label>
+                        <select id="position_id" name="position_id"
+                                class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
+                                style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                onfocus="this.style.borderColor='var(--dash-primary)'"
+                                onblur="this.style.borderColor='var(--dash-input-border)'">
+                            <option value="">Pilih Posisi</option>
                             @foreach ($positions as $position)
                                 <option value="{{ $position->id }}" @selected(old('position_id', $status->position_id) == $position->id)>
                                     {{ $position->position_name }}
@@ -96,34 +129,53 @@
                             @endforeach
                         </select>
                         @error('position_id')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            <p class="text-red-500 text-xs mt-1.5">{{ $message }}</p>
                         @enderror
                     </div>
+                </div>
 
-                    @if ($status->contract_file_path)
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <p class="text-sm font-medium text-gray-700 mb-2">File Kontrak Saat Ini</p>
-                            <a href="{{ Storage::url($status->contract_file_path) }}"
-                               target="_blank"
-                               class="text-blue-500 hover:text-blue-700 text-sm">
-                                📄 Lihat File
-                            </a>
+                {{-- File Kontrak Terlampir (jika ada) --}}
+                @if ($status->contract_file_path)
+                <div class="p-4 rounded-xl flex items-center justify-between"
+                     style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border);">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-[24px]" style="color: var(--dash-primary-text);">description</span>
+                        <div>
+                            <p class="text-sm font-medium" style="color: var(--dash-text-heading);">File Dokumen Kontrak</p>
+                            <p class="text-xs" style="color: var(--dash-text-muted);">Dokumen kontrak terupload di server</p>
                         </div>
-                    @endif
-
-                    <!-- Submit -->
-                    <div class="flex gap-3 pt-6 border-t">
-                        <button type="submit"
-                                class="px-6 py-2 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600">
-                            Simpan Perubahan
-                        </button>
-                        <a href="{{ route('employees.show', $status->employee) }}"
-                           class="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
-                            Batal
-                        </a>
                     </div>
-                </form>
-            </div>
+                    <a href="{{ Storage::url($status->contract_file_path) }}"
+                       target="_blank"
+                       class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors"
+                       style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-primary-text);"
+                       onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                       onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                        <span class="material-symbols-outlined text-[14px]">visibility</span>
+                        Lihat File
+                    </a>
+                </div>
+                @endif
+
+                {{-- Action Buttons --}}
+                <div class="flex items-center gap-3 pt-6 mt-8" style="border-top: 1px solid var(--dash-card-border);">
+                    <button type="submit"
+                            class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                            style="background-color: var(--dash-primary);">
+                        <span class="material-symbols-outlined text-[16px]">save</span>
+                        Simpan Perubahan
+                    </button>
+                    <a href="{{ route('employment-statuses.index') }}"
+                       class="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold rounded-lg transition-colors"
+                       style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                       onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                       onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                        Batal
+                    </a>
+                </div>
+            </form>
         </div>
     </div>
+
+</div>
 @endsection

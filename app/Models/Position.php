@@ -42,6 +42,16 @@ class Position extends Model
         return $this->hasOne(PositionAttendanceSetting::class);
     }
 
+    public function dashboardWidgetConfigs(): HasMany
+    {
+        return $this->hasMany(DashboardWidgetConfig::class);
+    }
+
+    public function notificationRoutings(): HasMany
+    {
+        return $this->hasMany(NotificationRouting::class);
+    }
+
     public function canDelete(): bool
     {
         return $this->employmentStatuses()

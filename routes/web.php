@@ -1032,7 +1032,12 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
         Route::get('permissions/user/{user}', [PermissionManagementController::class, 'editUser'])->name('permissions.user.edit')->middleware('can:system.permission.manage');
         Route::put('permissions/user/{user}', [PermissionManagementController::class, 'updateUser'])->name('permissions.user.update')->middleware('can:system.permission.manage');
 
+        Route::get('notification-routings/position/{position}', [NotificationRoutingController::class, 'editPosition'])->name('notification-routings.position.edit');
+        Route::put('notification-routings/position/{position}', [NotificationRoutingController::class, 'updatePosition'])->name('notification-routings.position.update');
         Route::resource('notification-routings', NotificationRoutingController::class)->except(['show']);
+
+        Route::get('dashboard-widgets/position/{position}', [DashboardWidgetConfigController::class, 'editPosition'])->name('dashboard-widgets.position.edit');
+        Route::put('dashboard-widgets/position/{position}', [DashboardWidgetConfigController::class, 'updatePosition'])->name('dashboard-widgets.position.update');
         Route::resource('dashboard-widgets', DashboardWidgetConfigController::class)->except(['show', 'edit', 'create']);
         Route::put('dashboard-widgets/{widgetKey}/positions', [DashboardWidgetConfigController::class, 'assignPositions'])->name('dashboard-widgets.assign-positions');
         Route::resource('bots', BotManagementController::class)->except(['show', 'destroy']);

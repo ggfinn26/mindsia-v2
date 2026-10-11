@@ -4,13 +4,18 @@
 @section('header_title', 'Pengaturan Absensi Per Posisi')
 
 @section('content')
-<h1 class="sr-only">Pengaturan Absensi Per Posisi</h1>
+
 <div class="max-w-2xl mx-auto pt-8 sm:pt-16 space-y-4">
+    <div class="mb-5 sm:flex sm:items-center sm:justify-between">
+        <div>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight text-[color:var(--dash-text-heading)]">Pengaturan Absensi Per Posisi</h1>
+        </div>
+    </div>
 
     @if($errors->any())
         <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
              style="background-color: #fee2e2; border-color: #fca5a5; color: #dc2626;">
-            <span class="material-symbols-outlined text-[18px]">error</span>
+            <span class="material-symbols-outlined text-[18px] leading-none">error</span>
             {{ $errors->first() }}
         </div>
     @endif
@@ -115,17 +120,11 @@
 
             <div class="flex items-center gap-3 pt-2">
                 <button type="submit"
-                        class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
-                        style="background-color: var(--dash-primary);">
-                    <span class="material-symbols-outlined text-base">save</span>
-                    Simpan
-                </button>
+                        class="inline-flex items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium transition-colors focus:outline-none bg-[var(--dash-primary)] text-white hover:opacity-90 border border-transparent shadow-sm"
+                        style="background-color: var(--dash-primary);"><span class="material-symbols-outlined text-[16px]">save</span> <span>Simpan</span></button>
                 <a href="{{ route('attendance.position-settings.index') }}"
-                   class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold transition-colors"
-                   style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body);">
-                    <span class="material-symbols-outlined text-[16px]">close</span>
-                    Batal
-                </a>
+                   class="inline-flex items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium transition-colors focus:outline-none bg-[var(--dash-card-bg)] text-[color:var(--dash-text-body)] border border-[color:var(--dash-input-border)] shadow-sm hover:bg-[var(--dash-nav-hover-bg)] hover:border-[color:var(--dash-text-muted)]"
+                   style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body);"><span class="material-symbols-outlined text-[18px]">close</span></a>
             </div>
         </form>
     </div>

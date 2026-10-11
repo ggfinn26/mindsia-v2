@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SystemAccess\StoreDashboardWidgetConfigRequest;
 use App\Http\Requests\SystemAccess\UpdateDashboardWidgetConfigRequest;
 use App\Models\DashboardWidgetConfig;
+use App\Models\Position;
 use App\Repositories\PositionRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -28,11 +29,57 @@ class DashboardWidgetConfigController extends Controller
         $widgetKeys = collect(WidgetKey::cases())
             ->groupBy(fn (WidgetKey $wk) => $wk->category());
 
+        $positions = Position::with(['role', 'dashboardWidgetConfigs'])
+            ->orderBy('position_name')
+            ->get();
+
         return view('system-access.dashboard-widget.index', [
             'byWidget' => $byWidget,
             'widgetKeys' => $widgetKeys,
-            'positions' => $this->positionRepository->all(),
+            'positions' => $positions,
         ]);
+    }
+
+    public function editPosition(Position $position): View
+    {
+        $position->load(['role', 'dashboardWidgetConfigs']);
+
+        $widgetKeys = collect(WidgetKey::cases())
+            ->groupBy(fn (WidgetKey $wk) => $wk->category());
+
+        $assignedConfigs = $position->dashboardWidgetConfigs->keyBy('widget_key');
+
+        return view('system-access.dashboard-widget.edit-position', [
+            'position' => $position,
+            'widgetKeys' => $widgetKeys,
+            'assignedConfigs' => $assignedConfigs,
+        ]);
+    }
+
+    public function updatePosition(Request $request, Position $position): RedirectResponse
+    {
+        $validated = $request->validate([
+            'widgets' => ['nullable', 'array'],
+            'widgets.*.enabled' => ['nullable', 'boolean'],
+            'widgets.*.order' => ['nullable', 'integer', 'min:1'],
+        ]);
+
+        DashboardWidgetConfig::where('position_id', $position->id)->delete();
+
+        foreach ($validated['widgets'] ?? [] as $widgetKey => $data) {
+            if (! empty($data['enabled'])) {
+                DashboardWidgetConfig::create([
+                    'position_id' => $position->id,
+                    'widget_key' => $widgetKey,
+                    'order' => isset($data['order']) && $data['order'] !== '' ? (int) $data['order'] : 1,
+                    'is_enabled' => true,
+                ]);
+            }
+        }
+
+        return redirect()
+            ->route('system.dashboard-widgets.index')
+            ->with('success', 'Konfigurasi widget dashboard untuk posisi "'.$position->position_name.'" berhasil diperbarui.');
     }
 
     public function store(StoreDashboardWidgetConfigRequest $request): RedirectResponse

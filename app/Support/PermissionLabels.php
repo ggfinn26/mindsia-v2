@@ -143,6 +143,7 @@ class PermissionLabels
             'dashboard.widget.my_kpi_achievement.view' => ['label' => 'Widget: Pencapaian KPI Saya', 'description' => null],
             'dashboard.widget.my_performance_history.view' => ['label' => 'Widget: Riwayat Performa Saya', 'description' => null],
             'dashboard.widget.my_performance_summary.view' => ['label' => 'Widget: Ringkasan Performa Saya', 'description' => null],
+            'dashboard.widget.my_mpi_progress.view' => ['label' => 'Widget: Progress MPI', 'description' => null],
             'dashboard.widget.my_ranking.view' => ['label' => 'Widget: Ranking Saya', 'description' => null],
             'dashboard.widget.my_sales_performance.view' => ['label' => 'Widget: Performa Penjualan Saya', 'description' => null],
             'dashboard.widget.my_session_attendance.view' => ['label' => 'Widget: Kehadiran Sesi Saya', 'description' => null],

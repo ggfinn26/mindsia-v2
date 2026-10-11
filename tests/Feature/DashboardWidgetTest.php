@@ -174,3 +174,52 @@ it('toggleWidget upserts correctly on second call', function () {
     expect(UserDashboardWidgetCustomization::where('user_id', $user->id)->where('widget_key', 'revenue')->count())->toBe(1)
         ->and(UserDashboardWidgetCustomization::where('user_id', $user->id)->where('widget_key', 'revenue')->value('is_enabled'))->toBeFalse();
 });
+
+// DW-14: Admin can view position widget edit form
+it('admin can view position widget edit form', function () {
+    $user = User::factory()->create(['email_verified_at' => now()]);
+    $position = makePosition();
+
+    $this->actingAs($user)
+        ->get(route('system.dashboard-widgets.position.edit', $position))
+        ->assertOk()
+        ->assertSee($position->position_name);
+});
+
+// DW-15: Admin can update position widgets
+it('admin can update position widgets', function () {
+    $user = User::factory()->create(['email_verified_at' => now()]);
+    $position = makePosition();
+
+    $payload = [
+        'widgets' => [
+            'revenue' => [
+                'enabled' => 1,
+                'order' => 1,
+            ],
+            'attendance_rate' => [
+                'enabled' => 1,
+                'order' => 2,
+            ],
+        ],
+    ];
+
+    $this->actingAs($user)
+        ->put(route('system.dashboard-widgets.position.update', $position), $payload)
+        ->assertRedirect(route('system.dashboard-widgets.index'))
+        ->assertSessionHas('success');
+
+    $this->assertDatabaseHas('dashboard_widget_configs', [
+        'position_id' => $position->id,
+        'widget_key' => 'revenue',
+        'order' => 1,
+        'is_enabled' => 1,
+    ]);
+
+    $this->assertDatabaseHas('dashboard_widget_configs', [
+        'position_id' => $position->id,
+        'widget_key' => 'attendance_rate',
+        'order' => 2,
+        'is_enabled' => 1,
+    ]);
+});

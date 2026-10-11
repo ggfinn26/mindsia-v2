@@ -89,3 +89,50 @@ test('it can delete a notification routing', function () {
         'id' => $routing->id,
     ]);
 });
+
+test('it can view position notification routing form', function () {
+    $position = Position::create(['position_name' => 'Finance Staff']);
+
+    $this->actingAs($this->admin)
+        ->get(route('system.notification-routings.position.edit', $position))
+        ->assertStatus(200)
+        ->assertSee('Finance Staff');
+});
+
+test('it can update position notification routing', function () {
+    $position = Position::create(['position_name' => 'Finance Staff']);
+
+    $payload = [
+        'events' => [
+            'reimbursement_submitted' => [
+                'enabled' => 1,
+                'channels' => ['in-app', 'email'],
+                'scope' => 'branch',
+            ],
+            'payroll_period_finalized' => [
+                'enabled' => 1,
+                'channels' => ['in-app'],
+                'scope' => 'global',
+            ],
+        ],
+    ];
+
+    $this->actingAs($this->admin)
+        ->put(route('system.notification-routings.position.update', $position), $payload)
+        ->assertRedirect(route('system.notification-routings.index'))
+        ->assertSessionHas('success');
+
+    $this->assertDatabaseHas('notification_routings', [
+        'position_id' => $position->id,
+        'event_key' => 'reimbursement_submitted',
+        'channel' => 'in-app',
+        'scope' => 'branch',
+    ]);
+
+    $this->assertDatabaseHas('notification_routings', [
+        'position_id' => $position->id,
+        'event_key' => 'reimbursement_submitted',
+        'channel' => 'email',
+        'scope' => 'branch',
+    ]);
+});

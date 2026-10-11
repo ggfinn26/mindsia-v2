@@ -1,121 +1,296 @@
 @extends('layouts.dashboard')
 
 @section('title', 'Kelola Area')
+@section('header_title', 'Area')
 
 @section('content')
-<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8" x-data="{ showModal: false, isEdit: false, formData: { id: '', region_id: '', name: '' }, showConfirmModal: false, confirmTitle: '', confirmMessage: '', confirmActionUrl: '', confirmMethod: 'DELETE', confirmActionText: 'Hapus' }">
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">Kelola Area</h1>
-        <button @click="showModal = true; isEdit = false; formData = { id: '', region_id: '', name: '' }" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6"
+     x-data="{
+        showModal: false,
+        isEdit: false,
+        formData: { id: '', region_id: '', name: '' },
+        showConfirmModal: false,
+        confirmTitle: '',
+        confirmMessage: '',
+        confirmActionUrl: '',
+        confirmMethod: 'DELETE',
+        confirmActionText: 'Hapus'
+     }">
+
+    {{-- Page Header (Pola A) --}}
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-wider mb-1"
+               style="color: var(--dash-primary-text);">Organisasi</p>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+                style="color: var(--dash-text-heading);">Kelola Area</h1>
+            <p class="text-sm mt-1" style="color: var(--dash-text-muted);">
+                Kelola daftar area dalam struktur organisasi.
+            </p>
+        </div>
+        <button type="button"
+                @click="showModal = true; isEdit = false; formData = { id: '', region_id: '', name: '' }"
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity shrink-0"
+                style="background-color: var(--dash-primary);"
+                onmouseover="this.style.opacity='0.9'"
+                onmouseout="this.style.opacity='1'">
+            <span class="material-symbols-outlined text-[18px]">add</span>
             Tambah Area
         </button>
     </div>
 
+    {{-- Flash Messages --}}
     @if (session('success'))
-        <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
-            {{ session('success') }}
-        </div>
-    @endif
-    
-    @if (session('error'))
-        <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-            {{ session('error') }}
-        </div>
+    <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+         style="background-color: #f0fdf4; border-color: #bbf7d0; color: #059669;">
+        <span class="material-symbols-outlined text-[18px]">check_circle</span>
+        {{ session('success') }}
+    </div>
     @endif
 
-    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Area</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Region</th>
-                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                @forelse($areas as $area)
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $area->name }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $area->region->name ?? '-' }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button @click="showModal = true; isEdit = true; formData = { id: '{{ $area->id }}', region_id: '{{ $area->region_id }}', name: '{{ $area->name }}' }" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</button>
-                            <button type="button" @click="showConfirmModal = true; confirmTitle = 'Hapus Area'; confirmMessage = 'Yakin ingin menghapus area ini?'; confirmActionUrl = '{{ route('areas.destroy', $area->id) }}'; confirmMethod = 'DELETE'; confirmActionText = 'Hapus'" class="text-red-600 hover:text-red-900">Hapus</button>
+    @if (session('error'))
+    <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+         style="background-color: #fef2f2; border-color: #fecaca; color: #dc2626;">
+        <span class="material-symbols-outlined text-[18px]">error</span>
+        {{ session('error') }}
+    </div>
+    @endif
+
+    @if ($errors->any())
+    <div class="px-4 py-3 rounded-xl text-sm"
+         style="background-color: #fef2f2; border: 1px solid #fecaca; color: #dc2626;">
+        <ul class="list-disc list-inside space-y-1">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+
+    {{-- Table Card --}}
+    <div class="rounded-2xl overflow-hidden shadow-sm"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider"
+                            style="color: var(--dash-text-faint);">Nama Area</th>
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider"
+                            style="color: var(--dash-text-faint);">Region</th>
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider"
+                            style="color: var(--dash-text-faint);">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($areas as $area)
+                    <tr style="border-bottom: 1px solid var(--dash-card-border);"
+                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                        onmouseout="this.style.backgroundColor='transparent'">
+                        <td class="px-5 py-3.5 font-medium" style="color: var(--dash-text-heading);">
+                            {{ $area->name }}
+                        </td>
+                        <td class="px-5 py-3.5" style="color: var(--dash-text-body);">
+                            {{ $area->region->name ?? '-' }}
+                        </td>
+                        <td class="px-5 py-3.5 text-right">
+                            <div class="inline-flex items-center gap-2 justify-end">
+                                <button type="button"
+                                        @click="showModal = true; isEdit = true; formData = { id: '{{ $area->id }}', region_id: '{{ $area->region_id }}', name: '{{ addslashes($area->name) }}' }"
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors"
+                                        style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                    <span class="material-symbols-outlined text-[14px]">edit</span>
+                                    Edit
+                                </button>
+                                <button type="button"
+                                        @click="showConfirmModal = true; confirmTitle = 'Hapus Area'; confirmMessage = 'Yakin ingin menghapus area ini? Tindakan ini tidak dapat dibatalkan.'; confirmActionUrl = '{{ route('areas.destroy', $area->id) }}'; confirmMethod = 'DELETE'; confirmActionText = 'Hapus'"
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                                        style="background-color: #dc2626;">
+                                    <span class="material-symbols-outlined text-[14px]">delete</span>
+                                    Hapus
+                                </button>
+                            </div>
                         </td>
                     </tr>
-                @empty
+                    @empty
                     <tr>
-                        <td colspan="3" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">Belum ada data area.</td>
+                        <td colspan="3" class="px-5 py-12 text-center">
+                            <span class="material-symbols-outlined text-[48px] block mx-auto mb-3"
+                                  style="color: var(--dash-text-faint);">near_me</span>
+                            <p class="text-sm font-semibold" style="color: var(--dash-text-muted);">Belum ada data area.</p>
+                            <p class="text-xs mt-1" style="color: var(--dash-text-faint);">Klik tombol &quot;Tambah Area&quot; untuk menambahkan data baru.</p>
+                        </td>
                     </tr>
-                @endforelse
-            </tbody>
-        </table>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        @if(method_exists($areas, 'hasPages') && $areas->hasPages())
+        <div class="px-5 py-4" style="border-top: 1px solid var(--dash-card-border);">
+            {{ $areas->links() }}
+        </div>
+        @endif
     </div>
 
-    <!-- Modal Konfirmasi Hapus -->
-    <div x-show="showConfirmModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
-        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
-            <div x-show="showConfirmModal" @click="showConfirmModal = false" class="fixed inset-0 transition-opacity" aria-hidden="true">
-                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-            </div>
-            <div x-show="showConfirmModal" class="relative z-10 inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                    <div class="sm:flex sm:items-start">
-                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                            <span class="material-symbols-outlined text-red-600">warning</span>
+    {{-- Modal Konfirmasi Hapus --}}
+    <div x-show="showConfirmModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-confirm-title" role="dialog" aria-modal="true" style="display: none;">
+        <div class="flex items-center justify-center min-h-screen p-4 text-center">
+            <div x-show="showConfirmModal"
+                 x-transition:enter="ease-out duration-300"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 x-transition:leave="ease-in duration-200"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 bg-black/60 transition-opacity"
+                 @click="showConfirmModal = false"
+                 aria-hidden="true"></div>
+
+            <div x-show="showConfirmModal"
+                 x-transition:enter="ease-out duration-300"
+                 x-transition:enter-start="opacity-0 scale-95"
+                 x-transition:enter-end="opacity-100 scale-100"
+                 x-transition:leave="ease-in duration-200"
+                 x-transition:leave-start="opacity-100 scale-100"
+                 x-transition:leave-end="opacity-0 scale-95"
+                 class="relative inline-block rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:max-w-md w-full z-10"
+                 style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+                <div class="p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full"
+                             style="background-color: #fee2e2;">
+                            <span class="material-symbols-outlined text-[22px]" style="color: #dc2626;">warning</span>
                         </div>
-                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                            <h3 class="text-lg leading-6 font-medium text-gray-900" x-text="confirmTitle"></h3>
-                            <div class="mt-2">
-                                <p class="text-sm text-gray-500" x-text="confirmMessage"></p>
-                            </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="font-jakarta text-base font-bold"
+                                style="color: var(--dash-text-heading);"
+                                id="modal-confirm-title"
+                                x-text="confirmTitle"></h3>
+                            <p class="text-sm mt-1.5"
+                               style="color: var(--dash-text-muted);"
+                               x-text="confirmMessage"></p>
                         </div>
                     </div>
                 </div>
-                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="button" @click="$refs.confirmForm.submit()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm" x-text="confirmActionText"></button>
-                    <button type="button" @click="showConfirmModal = false" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Batal</button>
+                <div class="px-6 py-4 flex items-center justify-end gap-3"
+                     style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                    <button type="button"
+                            class="px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                            style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                            onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                            onmouseout="this.style.backgroundColor='var(--dash-card-bg)'"
+                            @click="showConfirmModal = false">
+                        Batal
+                    </button>
+                    <form x-ref="confirmForm" :action="confirmActionUrl" method="POST" class="inline">
+                        @csrf
+                        <input type="hidden" name="_method" :value="confirmMethod">
+                        <button type="button"
+                                @click="$refs.confirmForm.submit()"
+                                class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                                style="background-color: #dc2626;"
+                                x-text="confirmActionText">
+                        </button>
+                    </form>
                 </div>
-                <form x-ref="confirmForm" :action="confirmActionUrl" method="POST" class="hidden">
-                    @csrf
-                    <input type="hidden" name="_method" :value="confirmMethod">
-                </form>
             </div>
         </div>
     </div>
 
-    <!-- Modal -->
-    <div x-show="showModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
-        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
-            <div x-show="showModal" @click="showModal = false" class="fixed inset-0 transition-opacity" aria-hidden="true">
-                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-            </div>
-            <div x-show="showModal" class="relative z-10 inline-block align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+    {{-- Modal Form Tambah / Edit --}}
+    <div x-show="showModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-form-title" role="dialog" aria-modal="true" style="display: none;">
+        <div class="flex items-center justify-center min-h-screen p-4 text-center">
+            <div x-show="showModal"
+                 x-transition:enter="ease-out duration-300"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 x-transition:leave="ease-in duration-200"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 bg-black/60 transition-opacity"
+                 @click="showModal = false"
+                 aria-hidden="true"></div>
+
+            <div x-show="showModal"
+                 x-transition:enter="ease-out duration-300"
+                 x-transition:enter-start="opacity-0 scale-95"
+                 x-transition:enter-end="opacity-100 scale-100"
+                 x-transition:leave="ease-in duration-200"
+                 x-transition:leave-start="opacity-100 scale-100"
+                 x-transition:leave-end="opacity-0 scale-95"
+                 class="relative inline-block rounded-2xl text-left shadow-2xl transform transition-all sm:max-w-lg w-full z-10"
+                 style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
                 <form :action="isEdit ? '/areas/' + formData.id : '{{ route('areas.store') }}'" method="POST">
                     @csrf
                     <template x-if="isEdit">
-                        @method('PUT')
+                        <input type="hidden" name="_method" value="PUT">
                     </template>
-                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4" x-text="isEdit ? 'Edit Area' : 'Tambah Area'"></h3>
-                        
-                        <div class="mb-4">
-                            <label for="region_id" class="block text-sm font-medium text-gray-700">Region</label>
-                            <select name="region_id" id="region_id" x-model="formData.region_id" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                                <option value="">-- Pilih Region --</option>
+
+                    <div class="px-6 py-4 rounded-t-2xl"
+                         style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                        <h3 class="font-jakarta text-base font-bold"
+                            style="color: var(--dash-text-heading);"
+                            id="modal-form-title"
+                            x-text="isEdit ? 'Edit Area' : 'Tambah Area'"></h3>
+                    </div>
+
+                    <div class="px-6 py-5 space-y-4">
+                        <div>
+                            <label for="region_id" class="block text-sm font-medium mb-1" style="color: var(--dash-text-body);">
+                                Region <span class="text-red-500">*</span>
+                            </label>
+                            <select name="region_id"
+                                    id="region_id"
+                                    x-model="formData.region_id"
+                                    required
+                                    class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
+                                    style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                    onfocus="this.style.borderColor='var(--dash-primary)'"
+                                    onblur="this.style.borderColor='var(--dash-input-border)'">
+                                <option value="">Pilih Region</option>
                                 @foreach(\App\Models\Region::all() as $reg)
                                     <option value="{{ $reg->id }}">{{ $reg->name }}</option>
                                 @endforeach
                             </select>
                         </div>
 
-                        <div class="mb-4">
-                            <label for="name" class="block text-sm font-medium text-gray-700">Nama Area</label>
-                            <input type="text" name="name" id="name" x-model="formData.name" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        <div>
+                            <label for="area_name" class="block text-sm font-medium mb-1" style="color: var(--dash-text-body);">
+                                Nama Area <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text"
+                                   name="name"
+                                   id="area_name"
+                                   x-model="formData.name"
+                                   required
+                                   placeholder="Masukkan nama area"
+                                   class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
+                                   style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                   onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                   onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
                         </div>
                     </div>
-                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                        <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">Simpan</button>
-                        <button type="button" @click="showModal = false" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Batal</button>
+
+                    <div class="px-6 py-4 rounded-b-2xl flex items-center justify-end gap-3"
+                         style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                        <button type="button"
+                                @click="showModal = false"
+                                class="px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                                style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                                onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                            Batal
+                        </button>
+                        <button type="submit"
+                                class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                                style="background-color: var(--dash-primary);"
+                                onmouseover="this.style.opacity='0.9'"
+                                onmouseout="this.style.opacity='1'">
+                            <span class="material-symbols-outlined text-[16px]">save</span>
+                            Simpan
+                        </button>
                     </div>
                 </form>
             </div>

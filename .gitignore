@@ -39,3 +39,6 @@ Thumbs.db
 /test
 *.test.php
 *.spec.php
+.playwright-mcp/
+test-results/
+e2e/.auth.json

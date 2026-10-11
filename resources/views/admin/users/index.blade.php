@@ -1,114 +1,211 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Manajemen Akun Pegawai')
+@section('title', 'Manajemen Akun Pegawai - MINDSIA')
+@section('header_title', 'Manajemen Akun Pegawai')
 
 @section('content')
-<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto">
-    <!-- Page header -->
-    <div class="sm:flex sm:justify-between sm:items-end mb-8">
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6">
+    {{-- Page Header Pola A --}}
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <h1 class="text-2xl md:text-3xl text-gray-900 font-bold tracking-tight">Manajemen Akun</h1>
-            <p class="mt-1 text-sm text-gray-500">Kelola akun, divisi (role), dan kata sandi pegawai sistem.</p>
+            <p class="text-xs font-bold uppercase tracking-wider mb-1"
+               style="color: var(--dash-primary-text);">SDM & Akses</p>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+                style="color: var(--dash-text-heading);">Manajemen Akun Pegawai</h1>
+            <p class="text-sm mt-1" style="color: var(--dash-text-muted);">
+                Kelola akun, divisi (role), dan kata sandi pegawai sistem.
+            </p>
         </div>
     </div>
 
+    {{-- Flash Messages --}}
     @if (session('success'))
-        <div class="mb-6 rounded-md bg-emerald-50 border border-emerald-200 p-4">
-            <div class="flex">
-                <div class="flex-shrink-0">
-                    <svg class="h-5 w-5 text-emerald-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
-                    </svg>
-                </div>
-                <div class="ml-3">
-                    <p class="text-sm font-medium text-emerald-800">{{ session('success') }}</p>
-                </div>
-            </div>
-        </div>
+    <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+         style="background-color: #f0fdf4; border-color: #bbf7d0; color: #059669;">
+        <span class="material-symbols-outlined text-[18px]">check_circle</span>
+        {{ session('success') }}
+    </div>
     @endif
 
     @if (session('error'))
-        <div class="mb-6 rounded-md bg-rose-50 border border-rose-200 p-4">
-            <div class="flex">
-                <div class="flex-shrink-0">
-                    <svg class="h-5 w-5 text-rose-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
-                    </svg>
-                </div>
-                <div class="ml-3">
-                    <p class="text-sm font-medium text-rose-800">{{ session('error') }}</p>
-                </div>
-            </div>
-        </div>
+    <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+         style="background-color: #fef2f2; border-color: #fecaca; color: #dc2626;">
+        <span class="material-symbols-outlined text-[18px]">error</span>
+        {{ session('error') }}
+    </div>
     @endif
 
-    <!-- Table -->
-    <div class="bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden">
+    {{-- Filter Card --}}
+    <form method="GET" action="{{ route('users.index') }}"
+          class="flex flex-wrap gap-4 items-end p-4 sm:p-5 rounded-2xl"
+          style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <div class="flex-1 min-w-[240px]">
+            <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide"
+                   style="color: var(--dash-text-faint);">Cari Akun</label>
+            <div class="relative">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[16px] pointer-events-none"
+                      style="color: var(--dash-text-muted);">search</span>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama / email..."
+                       class="w-full pr-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                       style="padding-left: 2.5rem !important; background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                       onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                       onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'" />
+            </div>
+        </div>
+
+        <div class="w-full sm:w-48">
+            <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide"
+                   style="color: var(--dash-text-faint);">Divisi (Role)</label>
+            <select name="role" class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                    style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                    onfocus="this.style.borderColor='var(--dash-primary)'"
+                    onblur="this.style.borderColor='var(--dash-input-border)'">
+                <option value="">Semua Role</option>
+                @foreach($roles as $roleName)
+                    <option value="{{ $roleName }}" @selected(request('role') === $roleName)>{{ $roleName }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="w-full sm:w-40">
+            <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide"
+                   style="color: var(--dash-text-faint);">Status Akun</label>
+            <select name="status" class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                    style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                    onfocus="this.style.borderColor='var(--dash-primary)'"
+                    onblur="this.style.borderColor='var(--dash-input-border)'">
+                <option value="">Semua Status</option>
+                <option value="active" @selected(request('status') === 'active')>Aktif</option>
+                <option value="inactive" @selected(request('status') === 'inactive')>Nonaktif</option>
+            </select>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <button type="submit"
+                    class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                    style="background-color: var(--dash-primary);">
+                <span class="material-symbols-outlined text-[16px]">filter_list</span>
+                Filter
+            </button>
+            @if(request()->hasAny(['search', 'role', 'status']))
+            <a href="{{ route('users.index') }}"
+               class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-semibold rounded-lg transition-colors"
+               style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+               onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+               onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                <span class="material-symbols-outlined text-[16px]">restart_alt</span>
+                Reset
+            </a>
+            @endif
+        </div>
+    </form>
+
+    {{-- Tabel Container --}}
+    <div class="rounded-2xl overflow-hidden"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama & Email</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Divisi (Role)</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status Akun</th>
-                        <th scope="col" class="relative px-6 py-3 text-right">
-                            <span class="sr-only">Aksi</span>
-                        </th>
+            <table class="w-full text-sm">
+                <thead>
+                    <tr style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                        <th class="px-5 py-3 text-left text-[11px] font-bold uppercase tracking-wider"
+                            style="color: var(--dash-text-muted);">Nama & Email</th>
+                        <th class="px-5 py-3 text-left text-[11px] font-bold uppercase tracking-wider"
+                            style="color: var(--dash-text-muted);">Divisi (Role)</th>
+                        <th class="px-5 py-3 text-left text-[11px] font-bold uppercase tracking-wider"
+                            style="color: var(--dash-text-muted);">Status Akun</th>
+                        <th class="px-5 py-3 text-right text-[11px] font-bold uppercase tracking-wider"
+                            style="color: var(--dash-text-muted);">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
+                <tbody>
                     @forelse($users as $user)
-                        <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900">{{ $user->name }}</div>
-                                <div class="text-sm text-gray-500 mt-0.5">{{ $user->email }}</div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="flex flex-wrap gap-1.5">
-                                    @forelse($user->roles as $role)
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200">
-                                            {{ $role->name }}
-                                        </span>
-                                    @empty
-                                        <span class="text-xs text-gray-400 italic">Belum ada role</span>
-                                    @endforelse
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                @if($user->email_verified_at)
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">Aktif</span>
-                                @else
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">Belum Verifikasi</span>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <div class="flex items-center justify-end gap-3">
-                                    <a href="{{ route('users.show', $user->id) }}" class="text-indigo-600 hover:text-indigo-900 transition-colors">Lihat</a>
-                                    <span class="text-gray-300">|</span>
-                                    <a href="{{ route('users.edit', $user->id) }}" class="text-gray-600 hover:text-indigo-600 transition-colors">Edit</a>
-                                    <span class="text-gray-300">|</span>
-                                    <a href="{{ route('users.reset-password.show', $user->id) }}" class="text-gray-600 hover:text-rose-600 transition-colors">Reset Sandi</a>
-                                </div>
-                            </td>
-                        </tr>
+                    <tr style="border-bottom: 1px solid var(--dash-card-border);"
+                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                        onmouseout="this.style.backgroundColor='transparent'">
+                        <td class="px-5 py-3.5 whitespace-nowrap">
+                            <div class="font-semibold text-sm" style="color: var(--dash-text-heading);">{{ $user->name }}</div>
+                            <div class="text-xs mt-0.5" style="color: var(--dash-text-muted);">{{ $user->email }}</div>
+                            @if($user->employee?->employee_code)
+                                <div class="text-[11px] mt-0.5" style="color: var(--dash-text-faint);">{{ $user->employee->employee_code }}</div>
+                            @endif
+                        </td>
+                        <td class="px-5 py-3.5">
+                            <div class="flex flex-wrap gap-1.5">
+                                @forelse($user->roles as $role)
+                                    <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full"
+                                          style="background-color: var(--dash-primary-bg); color: var(--dash-primary);">
+                                        {{ $role->name }}
+                                    </span>
+                                @empty
+                                    <span class="text-xs" style="color: var(--dash-text-faint);">Tidak ada role</span>
+                                @endforelse
+                            </div>
+                        </td>
+                        <td class="px-5 py-3.5 whitespace-nowrap">
+                            @if($user->is_active)
+                                <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-700">Aktif</span>
+                            @else
+                                <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-rose-100 text-rose-700">Nonaktif</span>
+                            @endif
+                        </td>
+                        <td class="px-5 py-3.5 whitespace-nowrap text-right">
+                            <div class="inline-flex items-center justify-end gap-1.5">
+                                <a href="{{ route('users.show', $user->id) }}"
+                                   class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors"
+                                   style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                                   onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                   onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                    <span class="material-symbols-outlined text-[14px]">visibility</span>
+                                    Lihat
+                                </a>
+                                <a href="{{ route('users.edit', $user->id) }}"
+                                   class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors"
+                                   style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                                   onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                   onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                    <span class="material-symbols-outlined text-[14px]">edit</span>
+                                    Edit
+                                </a>
+                                @can('auth.user.force_reset_password')
+                                <a href="{{ route('users.reset-password.show', $user->id) }}"
+                                   class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors"
+                                   style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                                   onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                   onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                    <span class="material-symbols-outlined text-[14px]">lock_reset</span>
+                                    Reset Sandi
+                                </a>
+                                @endcan
+                                @can('system.permission.manage')
+                                <a href="{{ route('users.roles', $user->id) }}"
+                                   class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors"
+                                   style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                                   onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                   onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                    <span class="material-symbols-outlined text-[14px]">shield</span>
+                                    Role
+                                </a>
+                                @endcan
+                            </div>
+                        </td>
+                    </tr>
                     @empty
-                        <tr>
-                            <td colspan="4" class="px-6 py-12 text-center">
-                                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                                </svg>
-                                <h3 class="mt-2 text-sm font-medium text-gray-900">Belum ada data</h3>
-                                <p class="mt-1 text-sm text-gray-500">Tidak ada akun pegawai yang ditemukan dalam sistem.</p>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td colspan="4" class="px-5 py-12 text-center">
+                            <span class="material-symbols-outlined text-[48px] block mx-auto mb-3"
+                                  style="color: var(--dash-text-faint);">group_off</span>
+                            <p class="text-sm font-semibold" style="color: var(--dash-text-muted);">Belum ada data akun pegawai.</p>
+                            <p class="text-xs mt-1" style="color: var(--dash-text-faint);">Tidak ada akun pegawai yang sesuai dengan kriteria filter.</p>
+                        </td>
+                    </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
-        @if($users->hasPages())
-            <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
-                {{ $users->links() }}
-            </div>
+        @if ($users->hasPages())
+        <div class="px-5 py-4" style="border-top: 1px solid var(--dash-card-border);">
+            {{ $users->links() }}
+        </div>
         @endif
     </div>
 </div>

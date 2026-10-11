@@ -18,6 +18,21 @@ document.addEventListener("alpine:init", () => {
                 const s = this.search.toLowerCase();
                 return this.options.filter((o) => o.label.toLowerCase().includes(s));
             },
+            init() {
+                if (native) {
+                    const sync = () => {
+                        const val = native.value;
+                        if (this.value !== val) {
+                            this.value = val;
+                            const opt = this.options.find((o) => o.value == val);
+                            this.label = opt ? opt.label : (val ? val : "");
+                        }
+                    };
+                    native.addEventListener("change", sync);
+                    native.addEventListener("input", sync);
+                    setInterval(sync, 150);
+                }
+            },
             pick(opt) {
                 if (opt.disabled) return;
                 this.value = opt.value;
@@ -119,17 +134,17 @@ function enhanceSelect(sel) {
                   :class="open ? 'rotate-180' : ''">expand_more</span>
         </div>
         <div x-show="open" x-transition x-cloak
-             class="absolute z-50 w-full mt-2 rounded-xl shadow-xl overflow-hidden"
+             class="absolute z-50 w-full mt-2 rounded-xl shadow-xl"
              style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
-            <div class="p-2 border-b" style="background-color: var(--dash-primary-bg); border-color: var(--dash-card-border);">
+            <div class="p-2 border-b rounded-t-xl" style="background-color: var(--dash-primary-bg); border-color: var(--dash-card-border);">
                 <div class="relative">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[16px]" style="color: var(--dash-text-muted);">search</span>
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[16px] pointer-events-none" style="color: var(--dash-text-muted);">search</span>
                     <input type="text" x-model="search" placeholder="Cari..." @click.stop
                            style="padding-left: 2.5rem !important; background-color: var(--dash-input-bg); border-color: var(--dash-input-border); color: var(--dash-text-heading);"
                            class="w-full pr-3 py-2 rounded-lg text-[13px] focus:outline-none transition-all border">
                 </div>
             </div>
-            <ul class="max-h-48 overflow-y-auto py-1">
+            <ul class="max-h-48 overflow-y-auto py-1 rounded-b-xl">
                 <li x-show="filtered.length === 0"
                     class="px-4 py-3 text-[12px] text-center"
                     style="color: var(--dash-text-muted);">Tidak ditemukan</li>

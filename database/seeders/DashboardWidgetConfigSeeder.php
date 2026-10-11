@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\WidgetKey;
 use App\Models\DashboardWidgetConfig;
 use App\Models\Position;
 use Illuminate\Database\Seeder;
@@ -197,6 +198,24 @@ class DashboardWidgetConfigSeeder extends Seeder
                     ],
                     [
                         'order' => $widget['order'],
+                        'is_enabled' => true,
+                    ],
+                );
+            }
+        }
+
+        // Developer position gets ALL available widgets
+        $devPosition = Position::where('position_name', 'Developer')->first();
+        if ($devPosition) {
+            $order = 1;
+            foreach (WidgetKey::cases() as $case) {
+                DashboardWidgetConfig::updateOrCreate(
+                    [
+                        'position_id' => $devPosition->id,
+                        'widget_key' => $case->value,
+                    ],
+                    [
+                        'order' => $order++,
                         'is_enabled' => true,
                     ],
                 );

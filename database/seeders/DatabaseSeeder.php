@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             LeavePaySettingSeeder::class,
             PayrollComponentSeeder::class,
             ProgramSeeder::class,
+            DeveloperWidgetPermissionSeeder::class,
         ]);
 
         $defaultPassword = Hash::make(env('SEEDER_DEFAULT_PASSWORD', 'password'));

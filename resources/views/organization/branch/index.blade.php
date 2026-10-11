@@ -1,115 +1,223 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Kelola Cabang')
+@section('title', 'Kelola Cabang - MINDSIA')
+@section('header_title', 'Kelola Cabang')
 
 @section('content')
-<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8" x-data="{ showPicModal: false, branchId: '', employeeId: '', showConfirmModal: false, confirmTitle: '', confirmMessage: '', confirmActionUrl: '', confirmMethod: 'DELETE', confirmActionText: 'Hapus' }">
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">Kelola Cabang</h1>
-        <a href="{{ route('branches.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
-            Tambah Cabang
-        </a>
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6"
+     x-data="{ showPicModal: false, branchId: '', employeeId: '', showConfirmModal: false, confirmTitle: '', confirmMessage: '', confirmActionUrl: '', confirmMethod: 'DELETE', confirmActionText: 'Hapus' }">
+
+    {{-- Page Header Pola A --}}
+    <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-wider mb-1"
+               style="color: var(--dash-primary-text);">Organisasi</p>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+                style="color: var(--dash-text-heading);">Kelola Cabang</h1>
+            <p class="text-sm mt-1" style="color: var(--dash-text-muted);">
+                Kelola data kantor cabang, area, dan penanggung jawab (PIC).
+            </p>
+        </div>
+        <div>
+            <a href="{{ route('branches.create') }}"
+               class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90 shrink-0"
+               style="background-color: var(--dash-primary);">
+                <span class="material-symbols-outlined text-[18px]">add</span>
+                Tambah Cabang
+            </a>
+        </div>
     </div>
 
+    {{-- Flash messages --}}
     @if (session('success'))
-        <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
-            {{ session('success') }}
-        </div>
-    @endif
-    
-    @if (session('error'))
-        <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-            {{ session('error') }}
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+             style="background-color: #f0fdf4; border-color: #bbf7d0; color: #059669;">
+            <span class="material-symbols-outlined text-[18px]">check_circle</span>
+            <p>{{ session('success') }}</p>
         </div>
     @endif
 
-    <div class="bg-white shadow sm:rounded-lg mb-6 p-4">
-        <form method="GET" action="{{ route('branches.index') }}" class="flex flex-col sm:flex-row gap-4 items-end">
-            <!-- Retain current sort on filter -->
-            @if(request('sort')) <input type="hidden" name="sort" value="{{ request('sort') }}"> @endif
-            @if(request('direction')) <input type="hidden" name="direction" value="{{ request('direction') }}"> @endif
-            
+    @if (session('error'))
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+             style="background-color: #fef2f2; border-color: #fecaca; color: #dc2626;">
+            <span class="material-symbols-outlined text-[18px]">error</span>
+            <p>{{ session('error') }}</p>
+        </div>
+    @endif
+
+    {{-- Filter Form --}}
+    <form method="GET" action="{{ route('branches.index') }}"
+          class="flex flex-wrap gap-4 items-end p-4 sm:p-5 rounded-2xl shadow-sm"
+          style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        {{-- Retain current sort on filter --}}
+        @if(request('sort')) <input type="hidden" name="sort" value="{{ request('sort') }}"> @endif
+        @if(request('direction')) <input type="hidden" name="direction" value="{{ request('direction') }}"> @endif
+
+        <div>
+            <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide"
+                   style="color: var(--dash-text-faint);">Filter Area</label>
+            <select name="area_id"
+                    class="block w-full min-w-[180px] text-sm px-3.5 py-2.5 rounded-lg outline-none transition-all cursor-pointer"
+                    style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                    onfocus="this.style.borderColor='var(--dash-primary)'"
+                    onblur="this.style.borderColor='var(--dash-input-border)'"
+                    onchange="this.form.submit()">
+                <option value="">Semua Area</option>
+                @foreach($allAreas as $area)
+                    <option value="{{ $area->id }}" {{ request('area_id') == $area->id ? 'selected' : '' }}>{{ $area->name }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div>
+            <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide"
+                   style="color: var(--dash-text-faint);">Filter PIC (MA)</label>
+            <select name="pic_id"
+                    class="block w-full min-w-[180px] text-sm px-3.5 py-2.5 rounded-lg outline-none transition-all cursor-pointer"
+                    style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                    onfocus="this.style.borderColor='var(--dash-primary)'"
+                    onblur="this.style.borderColor='var(--dash-input-border)'"
+                    onchange="this.form.submit()">
+                <option value="">Semua PIC</option>
+                <option value="unassigned" {{ request('pic_id') === 'unassigned' ? 'selected' : '' }}>Belum ada PIC</option>
+                @foreach($allPics as $pic)
+                    <option value="{{ $pic->id }}" {{ request('pic_id') == $pic->id ? 'selected' : '' }}>{{ $pic->full_name }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        @if(request('area_id') || request('pic_id'))
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Filter Area</label>
-                <select name="area_id" class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500" onchange="this.form.submit()">
-                    <option value="">Semua Area</option>
-                    @foreach($allAreas as $area)
-                        <option value="{{ $area->id }}" {{ request('area_id') == $area->id ? 'selected' : '' }}>{{ $area->name }}</option>
-                    @endforeach
-                </select>
+                <a href="{{ route('branches.index') }}"
+                   class="inline-flex items-center gap-1.5 px-3.5 py-2.5 text-sm font-semibold rounded-lg transition-colors"
+                   style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                   onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                   onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                    <span class="material-symbols-outlined text-[16px]">restart_alt</span>
+                    Reset
+                </a>
             </div>
-            
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Filter PIC (MA)</label>
-                <select name="pic_id" class="block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500" onchange="this.form.submit()">
-                    <option value="">Semua PIC</option>
-                    <option value="unassigned" {{ request('pic_id') === 'unassigned' ? 'selected' : '' }}>-- Belum ada PIC --</option>
-                    @foreach($allPics as $pic)
-                        <option value="{{ $pic->id }}" {{ request('pic_id') == $pic->id ? 'selected' : '' }}>{{ $pic->full_name }}</option>
-                    @endforeach
-                </select>
-            </div>
-            
-            @if(request('area_id') || request('pic_id'))
-                <a href="{{ route('branches.index') }}" class="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200">Reset</a>
-            @endif
-        </form>
-    </div>
+        @endif
+    </form>
 
     @php
-        function sortUrl($column) {
-            $currentSort = request('sort');
-            $currentDir = request('direction', 'asc');
-            $dir = ($currentSort === $column && $currentDir === 'asc') ? 'desc' : 'asc';
-            return request()->fullUrlWithQuery(['sort' => $column, 'direction' => $dir]);
+        if (!function_exists('sortUrl')) {
+            function sortUrl($column) {
+                $currentSort = request('sort');
+                $currentDir = request('direction', 'asc');
+                $dir = ($currentSort === $column && $currentDir === 'asc') ? 'desc' : 'asc';
+                return request()->fullUrlWithQuery(['sort' => $column, 'direction' => $dir]);
+            }
         }
     @endphp
 
-    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+    {{-- Data Table --}}
+    <div class="rounded-2xl overflow-hidden shadow-sm"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            <a href="{{ sortUrl('code_branches') }}" class="hover:text-gray-700">Kode {!! request('sort') === 'code_branches' ? (request('direction') === 'asc' ? '↑' : '↓') : '' !!}</a>
+            <table class="w-full text-sm text-left">
+                <thead>
+                    <tr style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
+                        <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-faint);">
+                            <a href="{{ sortUrl('code_branches') }}" class="inline-flex items-center gap-1 hover:opacity-80" style="color: var(--dash-text-faint);">
+                                Kode {!! request('sort') === 'code_branches' ? (request('direction') === 'asc' ? '↑' : '↓') : '' !!}
+                            </a>
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            <a href="{{ sortUrl('branch_name') }}" class="hover:text-gray-700">Nama Cabang {!! request('sort', 'branch_name') === 'branch_name' ? (request('direction', 'asc') === 'asc' ? '↑' : '↓') : '' !!}</a>
+                        <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-faint);">
+                            <a href="{{ sortUrl('branch_name') }}" class="inline-flex items-center gap-1 hover:opacity-80" style="color: var(--dash-text-faint);">
+                                Nama Cabang {!! request('sort', 'branch_name') === 'branch_name' ? (request('direction', 'asc') === 'asc' ? '↑' : '↓') : '' !!}
+                            </a>
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            <a href="{{ sortUrl('area') }}" class="hover:text-gray-700">Area {!! request('sort') === 'area' ? (request('direction') === 'asc' ? '↑' : '↓') : '' !!}</a>
+                        <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-faint);">
+                            <a href="{{ sortUrl('area') }}" class="inline-flex items-center gap-1 hover:opacity-80" style="color: var(--dash-text-faint);">
+                                Area {!! request('sort') === 'area' ? (request('direction') === 'asc' ? '↑' : '↓') : '' !!}
+                            </a>
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            <a href="{{ sortUrl('pic') }}" class="hover:text-gray-700">PIC (MA) {!! request('sort') === 'pic' ? (request('direction') === 'asc' ? '↑' : '↓') : '' !!}</a>
+                        <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-faint);">
+                            <a href="{{ sortUrl('pic') }}" class="inline-flex items-center gap-1 hover:opacity-80" style="color: var(--dash-text-faint);">
+                                PIC (MA) {!! request('sort') === 'pic' ? (request('direction') === 'asc' ? '↑' : '↓') : '' !!}
+                            </a>
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                        <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-faint);">Status</th>
+                        <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-right" style="color: var(--dash-text-faint);">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
+                <tbody class="divide-y" style="border-color: var(--dash-card-border);">
                     @forelse($branches as $branch)
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $branch->code_branches }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $branch->branch_name }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $branch->area->name ?? '-' }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $branch->picEmployee->full_name ?? 'Belum ada PIC' }}
-                                <button type="button" @click="showPicModal = true; branchId = '{{ $branch->id }}'; employeeId = '{{ $branch->ma_pic_employee_id }}'" class="ml-2 text-xs text-blue-600 hover:underline">Ubah</button>
+                        <tr style="border-bottom: 1px solid var(--dash-card-border);"
+                            onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                            onmouseout="this.style.backgroundColor='transparent'">
+                            <td class="px-5 py-3.5 whitespace-nowrap font-medium" style="color: var(--dash-text-heading);">
+                                {{ $branch->code_branches }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $branch->is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
-                                    {{ $branch->is_active ? 'Aktif' : 'Nonaktif' }}
-                                </span>
+                            <td class="px-5 py-3.5 whitespace-nowrap font-medium" style="color: var(--dash-text-heading);">
+                                {{ $branch->branch_name }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="{{ route('branches.edit', $branch->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
-                                <button type="button" @click="showConfirmModal = true; confirmTitle = 'Ubah Status Cabang'; confirmMessage = 'Ubah status cabang ini?'; confirmActionUrl = '{{ route('branches.toggle-active', $branch->id) }}'; confirmMethod = 'PATCH'; confirmActionText = 'Ubah Status'" class="text-yellow-600 hover:text-yellow-900 mr-3">Toggle Status</button>
-                                <button type="button" @click="showConfirmModal = true; confirmTitle = 'Hapus Cabang'; confirmMessage = 'Yakin ingin menghapus cabang ini?'; confirmActionUrl = '{{ route('branches.destroy', $branch->id) }}'; confirmMethod = 'DELETE'; confirmActionText = 'Hapus'" class="text-red-600 hover:text-red-900">Hapus</button>
+                            <td class="px-5 py-3.5 whitespace-nowrap" style="color: var(--dash-text-body);">
+                                {{ $branch->area->name ?? '-' }}
+                            </td>
+                            <td class="px-5 py-3.5 whitespace-nowrap" style="color: var(--dash-text-body);">
+                                <div class="inline-flex items-center gap-2">
+                                    <span class="font-medium">{{ $branch->picEmployee->full_name ?? 'Belum ada PIC' }}</span>
+                                    <button type="button"
+                                            @click="showPicModal = true; branchId = '{{ $branch->id }}'; employeeId = '{{ $branch->ma_pic_employee_id }}'"
+                                            class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors shrink-0"
+                                            style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-primary-text);"
+                                            onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                            onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                        <span class="material-symbols-outlined text-[14px]">edit</span>
+                                        Ubah
+                                    </button>
+                                </div>
+                            </td>
+                            <td class="px-5 py-3.5 whitespace-nowrap">
+                                @if($branch->is_active)
+                                    <span class="inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-md"
+                                          style="background-color: #f0fdf4; border: 1px solid #bbf7d0; color: #059669;">Aktif</span>
+                                @else
+                                    <span class="inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-md"
+                                          style="background-color: #fef2f2; border: 1px solid #fecaca; color: #dc2626;">Nonaktif</span>
+                                @endif
+                            </td>
+                            <td class="px-5 py-3.5 whitespace-nowrap text-right">
+                                <div class="inline-flex items-center gap-2 justify-end">
+                                    {{-- Edit --}}
+                                    <a href="{{ route('branches.edit', $branch->id) }}"
+                                       class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors"
+                                       style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                                       onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                       onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                        <span class="material-symbols-outlined text-[14px]">edit</span>
+                                        Edit
+                                    </a>
+                                    {{-- Toggle Status --}}
+                                    <button type="button"
+                                            @click="showConfirmModal = true; confirmTitle = 'Ubah Status Cabang'; confirmMessage = 'Ubah status cabang {{ addslashes($branch->branch_name) }}?'; confirmActionUrl = '{{ route('branches.toggle-active', $branch->id) }}'; confirmMethod = 'PATCH'; confirmActionText = 'Ubah Status'"
+                                            class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors"
+                                            style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                                            onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                            onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                        <span class="material-symbols-outlined text-[14px]">{{ $branch->is_active ? 'toggle_off' : 'toggle_on' }}</span>
+                                        Status
+                                    </button>
+                                    {{-- Delete --}}
+                                    <button type="button"
+                                            @click="showConfirmModal = true; confirmTitle = 'Hapus Cabang'; confirmMessage = 'Yakin ingin menghapus cabang {{ addslashes($branch->branch_name) }}?'; confirmActionUrl = '{{ route('branches.destroy', $branch->id) }}'; confirmMethod = 'DELETE'; confirmActionText = 'Hapus'"
+                                            class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                                            style="background-color: #dc2626;">
+                                        <span class="material-symbols-outlined text-[14px]">delete</span>
+                                        Hapus
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">Belum ada data cabang.</td>
+                            <td colspan="6" class="px-5 py-12 text-center">
+                                <span class="material-symbols-outlined text-[48px] block mx-auto mb-3"
+                                      style="color: var(--dash-text-faint);">store</span>
+                                <p class="text-sm font-semibold" style="color: var(--dash-text-muted);">Belum ada data cabang.</p>
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -117,29 +225,43 @@
         </div>
     </div>
 
-    <!-- Modal Konfirmasi Hapus/Tindakan -->
+    {{-- Modal Konfirmasi Hapus / Tindakan --}}
     <div x-show="showConfirmModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
         <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
             <div x-show="showConfirmModal" @click="showConfirmModal = false" class="fixed inset-0 transition-opacity" aria-hidden="true">
-                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+                <div class="absolute inset-0 bg-black/60"></div>
             </div>
-            <div x-show="showConfirmModal" class="relative z-10 inline-block align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                    <div class="sm:flex sm:items-start">
-                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full sm:mx-0 sm:h-10 sm:w-10" :class="confirmMethod === 'DELETE' ? 'bg-red-100' : 'bg-yellow-100'">
-                            <span class="material-symbols-outlined" :class="confirmMethod === 'DELETE' ? 'text-red-600' : 'text-yellow-600'">warning</span>
+            <div x-show="showConfirmModal"
+                 class="relative z-10 inline-block align-bottom rounded-2xl text-left shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full overflow-hidden"
+                 style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+                <div class="p-6">
+                    <div class="sm:flex sm:items-start gap-4">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-11 w-11 rounded-full sm:mx-0"
+                             :style="confirmMethod === 'DELETE' ? 'background-color: #fee2e2; color: #dc2626;' : 'background-color: #fef3c7; color: #d97706;'">
+                            <span class="material-symbols-outlined text-[24px]">warning</span>
                         </div>
-                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                            <h3 class="text-lg leading-6 font-medium text-gray-900" x-text="confirmTitle"></h3>
+                        <div class="mt-3 text-center sm:mt-0 sm:text-left flex-1">
+                            <h3 class="font-jakarta text-lg font-bold" style="color: var(--dash-text-heading);" x-text="confirmTitle"></h3>
                             <div class="mt-2">
-                                <p class="text-sm text-gray-500" x-text="confirmMessage"></p>
+                                <p class="text-sm" style="color: var(--dash-text-muted);" x-text="confirmMessage"></p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="button" @click="$refs.confirmForm.submit()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none sm:ml-3 sm:w-auto sm:text-sm" :class="confirmMethod === 'DELETE' ? 'bg-red-600 hover:bg-red-700' : 'bg-yellow-600 hover:bg-yellow-700'" x-text="confirmActionText"></button>
-                    <button type="button" @click="showConfirmModal = false" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Batal</button>
+                <div class="px-6 py-4 flex flex-col-reverse sm:flex-row sm:justify-end gap-2"
+                     style="background-color: var(--dash-nav-hover-bg); border-top: 1px solid var(--dash-card-border);">
+                    <button type="button" @click="showConfirmModal = false"
+                            class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                            style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                            onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                            onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                        Batal
+                    </button>
+                    <button type="button" @click="$refs.confirmForm.submit()"
+                            class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                            :style="confirmMethod === 'DELETE' ? 'background-color: #dc2626;' : 'background-color: var(--dash-primary);'"
+                            x-text="confirmActionText">
+                    </button>
                 </div>
                 <form x-ref="confirmForm" :action="confirmActionUrl" method="POST" class="hidden">
                     @csrf
@@ -149,32 +271,58 @@
         </div>
     </div>
 
-    <!-- Modal PIC -->
+    {{-- Modal PIC --}}
     <div x-show="showPicModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
         <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
             <div x-show="showPicModal" @click="showPicModal = false" class="fixed inset-0 transition-opacity" aria-hidden="true">
-                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+                <div class="absolute inset-0 bg-black/60"></div>
             </div>
-            <div x-show="showPicModal" class="relative z-10 inline-block align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                <form :action="'/branches/' + branchId + '/assign-pic'" method="POST">
+            <div x-show="showPicModal"
+                 class="relative z-10 inline-block align-bottom rounded-2xl text-left shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full"
+                 style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+                <form :action="'{{ url('/branches') }}/' + branchId + '/assign-pic'" method="POST">
                     @csrf
                     @method('PATCH')
-                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Assign PIC Cabang</h3>
-                        
-                        <div class="mb-4">
-                            <label for="ma_pic_employee_id" class="block text-sm font-medium text-gray-700">Pilih MA / PIC</label>
-                            <select name="ma_pic_employee_id" id="ma_pic_employee_id" x-model="employeeId" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                                <option value="">-- Pilih Pegawai --</option>
+                    <div class="p-6 rounded-t-2xl">
+                        <div class="flex items-center justify-between pb-4 mb-4"
+                             style="border-bottom: 1px solid var(--dash-card-border);">
+                            <h3 class="font-jakarta text-lg font-bold" style="color: var(--dash-text-heading);">Assign PIC Cabang</h3>
+                            <button type="button" @click="showPicModal = false" class="p-1 rounded-lg hover:opacity-80 transition-opacity" style="color: var(--dash-text-faint);">
+                                <span class="material-symbols-outlined text-[20px]">close</span>
+                            </button>
+                        </div>
+
+                        <div>
+                            <label for="ma_pic_employee_id" class="block text-sm font-medium mb-1.5" style="color: var(--dash-text-body);">
+                                Pilih MA / PIC <span class="text-red-500">*</span>
+                            </label>
+                            <select name="ma_pic_employee_id" id="ma_pic_employee_id" x-model="employeeId" required
+                                    class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all cursor-pointer"
+                                    style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                    onfocus="this.style.borderColor='var(--dash-primary)'"
+                                    onblur="this.style.borderColor='var(--dash-input-border)'">
+                                <option value="">Pilih Pegawai</option>
                                 @foreach($allPics as $emp)
                                     <option value="{{ $emp->id }}">{{ $emp->full_name }}</option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
-                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                        <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">Simpan</button>
-                        <button type="button" @click="showPicModal = false" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Batal</button>
+                    <div class="px-6 py-4 rounded-b-2xl flex flex-col-reverse sm:flex-row sm:justify-end gap-2"
+                         style="background-color: var(--dash-nav-hover-bg); border-top: 1px solid var(--dash-card-border);">
+                        <button type="button" @click="showPicModal = false"
+                                class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                                style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                                onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                            Batal
+                        </button>
+                        <button type="submit"
+                                class="inline-flex items-center justify-center gap-1.5 px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                                style="background-color: var(--dash-primary);">
+                            <span class="material-symbols-outlined text-[16px]">save</span>
+                            Simpan
+                        </button>
                     </div>
                 </form>
             </div>
@@ -182,3 +330,4 @@
     </div>
 </div>
 @endsection
+

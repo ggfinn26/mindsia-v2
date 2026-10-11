@@ -1,56 +1,65 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Perpanjang Kontrak — ' . $status->employee->full_name)
+@section('title', 'Perpanjang Kontrak - ' . $status->employee->full_name)
 @section('header_title', 'Perpanjang Kontrak')
 
 @section('content')
-<div class="max-w-3xl mx-auto space-y-6">
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-3xl mx-auto space-y-6">
 
-    {{-- Header --}}
-    <div class="flex flex-wrap items-start justify-between gap-4">
-        <div>
-            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Perpanjang Kontrak</h2>
-            <p class="mt-1 text-sm text-slate-500">{{ $status->employee->full_name }} &mdash; {{ $status->position?->position_name }}</p>
-        </div>
-        <a href="{{ route('employees.show', $status->employee) }}"
-           class="inline-flex min-h-10 items-center gap-2 border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50">
-            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
-            Kembali
+    {{-- Page Header (Pola B3) --}}
+    <div>
+        <a href="{{ route('employment-statuses.index') }}" class="dash-back mb-3">
+            <span class="material-symbols-outlined">arrow_back</span>Kembali ke Kelola Kontrak
         </a>
+        <p class="text-xs font-bold uppercase tracking-wider mb-1"
+           style="color: var(--dash-primary-text);">SDM & Karyawan</p>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+            style="color: var(--dash-text-heading);">Perpanjang Kontrak Kerja</h1>
+        <p class="text-sm mt-1" style="color: var(--dash-text-muted);">
+            Pegawai: <span class="font-semibold" style="color: var(--dash-text-heading);">{{ $status->employee->full_name }}</span> ({{ $status->position?->position_name ?? 'Belum diatur' }})
+        </p>
     </div>
 
+    {{-- Validation errors --}}
     @if ($errors->any())
-        <div class="flex gap-3 border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
-            <span class="material-symbols-outlined text-[20px]">error</span>
-            <ul class="list-disc pl-4">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+    <div class="px-4 py-3 rounded-xl text-sm"
+         style="background-color: #fef2f2; border: 1px solid #fecaca; color: #dc2626;">
+        <div class="flex items-center gap-2 font-semibold mb-1">
+            <span class="material-symbols-outlined text-[18px]">error</span>
+            Ada kesalahan:
         </div>
+        <ul class="list-disc list-inside space-y-1">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
     @endif
 
     {{-- Info kontrak saat ini --}}
-    <div class="overflow-hidden border border-slate-200 bg-white">
-        <div class="border-b border-slate-200 bg-slate-50 px-5 py-4">
-            <h3 class="font-jakarta text-sm font-bold text-slate-900">Kontrak Saat Ini</h3>
+    <div class="rounded-2xl overflow-hidden"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <div class="px-6 py-4"
+             style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+            <h2 class="font-jakarta text-sm font-bold" style="color: var(--dash-text-heading);">Kontrak Saat Ini</h2>
         </div>
-        <dl class="grid grid-cols-2 gap-x-6 gap-y-5 px-5 py-5 sm:grid-cols-4">
+        <dl class="grid grid-cols-2 gap-x-6 gap-y-5 px-6 py-5 sm:grid-cols-4">
             <div>
-                <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">Nama</dt>
-                <dd class="mt-1 text-sm font-medium text-slate-900">{{ $status->employee->full_name }}</dd>
+                <dt class="text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Nama Pegawai</dt>
+                <dd class="mt-1 text-sm font-semibold" style="color: var(--dash-text-heading);">{{ $status->employee->full_name }}</dd>
             </div>
             <div>
-                <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">Posisi</dt>
-                <dd class="mt-1 text-sm text-slate-900">{{ $status->position?->position_name ?? '—' }}</dd>
+                <dt class="text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Posisi</dt>
+                <dd class="mt-1 text-sm" style="color: var(--dash-text-body);">{{ $status->position?->position_name ?? 'Belum diatur' }}</dd>
             </div>
             <div>
-                <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">Mulai Kontrak</dt>
-                <dd class="mt-1 text-sm text-slate-900">{{ $status->contract_start_date?->format('d M Y') ?? '—' }}</dd>
+                <dt class="text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Mulai Kontrak</dt>
+                <dd class="mt-1 text-sm" style="color: var(--dash-text-body);">{{ $status->contract_start_date?->format('d M Y') ?? 'Belum diatur' }}</dd>
             </div>
             <div>
-                <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">Akhir Kontrak</dt>
-                <dd class="mt-1 text-sm font-semibold {{ $status->contract_end_date?->lte(now()->addDays(30)) ? 'text-amber-700' : 'text-slate-900' }}">
+                <dt class="text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Akhir Kontrak</dt>
+                <dd class="mt-1 text-sm font-semibold {{ $status->contract_end_date?->lte(now()->addDays(30)) ? 'text-amber-700' : '' }}"
+                    style="{{ $status->contract_end_date?->lte(now()->addDays(30)) ? '' : 'color: var(--dash-text-heading);' }}">
                     {{ $status->contract_end_date?->format('d M Y') ?? 'Tidak ada batas' }}
                 </dd>
             </div>
@@ -58,36 +67,46 @@
     </div>
 
     {{-- Form perpanjangan --}}
-    <div class="overflow-hidden border border-slate-200 bg-white">
-        <div class="border-b border-slate-200 bg-slate-50 px-5 py-4">
-            <h3 class="font-jakarta text-sm font-bold text-slate-900">Perpanjang Kontrak</h3>
+    <div class="rounded-2xl overflow-hidden"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <div class="px-6 py-4"
+             style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+            <h2 class="font-jakarta text-sm font-bold" style="color: var(--dash-text-heading);">Formulir Perpanjangan</h2>
         </div>
-        <form action="{{ route('employment-statuses.extend.store', $status) }}" method="POST" class="px-5 py-5 space-y-5" novalidate>
+        <form action="{{ route('employment-statuses.extend.store', $status) }}" method="POST" class="px-6 py-6 space-y-6" novalidate>
             @csrf
             <div>
-                <label for="new_end_date" class="block text-sm font-semibold text-slate-700 mb-1.5">
-                    Tanggal Akhir Kontrak Baru <span class="text-rose-500">*</span>
+                <label for="new_end_date" class="block text-sm font-medium mb-1.5" style="color: var(--dash-text-body);">
+                    Tanggal Akhir Kontrak Baru <span class="text-red-500">*</span>
                 </label>
                 <input type="date"
                        id="new_end_date"
                        name="new_end_date"
                        value="{{ old('new_end_date') }}"
-                       class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac] @error('new_end_date') border-rose-500 @enderror">
+                       required
+                       class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
+                       style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                       onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                       onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
                 @error('new_end_date')
-                    <p class="text-rose-500 text-xs mt-1">{{ $message }}</p>
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
             </div>
 
-            <div class="flex gap-3 border-t border-slate-100 pt-5">
-                <button type="submit"
-                        class="inline-flex min-h-10 items-center gap-2 bg-[#215aac] px-5 text-sm font-semibold text-white hover:bg-[#194a91]">
-                    <span class="material-symbols-outlined text-[18px]">update</span>
-                    Perpanjang Kontrak
-                </button>
-                <a href="{{ route('employees.show', $status->employee) }}"
-                   class="inline-flex min-h-10 items-center gap-2 border border-slate-300 px-5 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+            <div class="flex justify-end items-center gap-3 pt-3" style="border-top: 1px solid var(--dash-card-border);">
+                <a href="{{ route('employment-statuses.index') }}"
+                   class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                   style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                   onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                   onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
                     Batal
                 </a>
+                <button type="submit"
+                        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                        style="background-color: var(--dash-primary);">
+                    <span class="material-symbols-outlined text-[16px]">schedule</span>
+                    Perpanjang Kontrak
+                </button>
             </div>
         </form>
     </div>

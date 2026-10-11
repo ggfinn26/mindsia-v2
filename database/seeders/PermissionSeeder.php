@@ -348,6 +348,7 @@ class PermissionSeeder extends Seeder
             'dashboard.widget.my_student_progress.view',
             'dashboard.widget.my_attendance_record.view',
             'dashboard.widget.my_performance_summary.view',
+            'dashboard.widget.my_mpi_progress.view',
             'dashboard.widget.support_ticket.view',
             'dashboard.widget.member_growth.view',
             'dashboard.widget.ranking_program.view',

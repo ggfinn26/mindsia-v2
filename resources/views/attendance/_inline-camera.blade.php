@@ -63,25 +63,21 @@
 <div class="flex gap-2 mt-4">
     <template x-if="step === 'camera'">
         <button type="button" @click="capture()" :disabled="!!error"
-                class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white hover:opacity-90 active:opacity-80 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
-                style="background-color: var(--dash-primary);">
-            <span class="material-symbols-outlined text-lg">photo_camera</span>
-            Ambil Foto
-        </button>
+                class="inline-flex items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium transition-colors focus:outline-none bg-[var(--dash-primary)] text-white hover:opacity-90 border border-transparent shadow-sm flex-1 active:opacity-80 disabled:opacity-40 disabled:cursor-not-allowed"
+                style="background-color: var(--dash-primary);"><span class="material-symbols-outlined text-[16px]">photo_camera</span> <span>Ambil Foto</span></button>
     </template>
     <template x-if="step === 'captured'">
         <button type="button" @click="retake()"
-                class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors"
-                style="border: 1px solid var(--dash-card-border); color: var(--dash-text-body);">
-            <span class="material-symbols-outlined text-lg">replay</span>
-            Ulangi
+                class="inline-flex items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold transition-colors focus:outline-none flex-1"
+                style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+            <span class="material-symbols-outlined text-[16px]">replay</span>
+            <span>Ulangi</span>
         </button>
     </template>
     <template x-if="step === 'captured'">
         <button type="button" @click="submit()" :disabled="!locationReady"
-                class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
-            <span class="material-symbols-outlined text-lg">check</span>
-            Kirim
-        </button>
+                class="inline-flex items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium transition-colors focus:outline-none bg-[var(--dash-primary)] text-white hover:opacity-90 border border-transparent shadow-sm flex-1 hover: disabled:opacity-40 disabled:cursor-not-allowed"><span class="material-symbols-outlined text-[16px]">check</span> <span>Kirim</span></button>
     </template>
 </div>
