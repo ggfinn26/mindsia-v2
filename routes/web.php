@@ -315,27 +315,27 @@ Route::prefix('toefl-trial')->name('toefl.guest.')->group(function () {
 
 // Auth Routes — Employee (web guard)
 Route::get('/employee/login', [LoginController::class, 'showLogin'])->name('login');
-Route::post('/employee/login', [LoginController::class, 'login'])->name('login.post');
+Route::post('/employee/login', [LoginController::class, 'login'])->middleware('throttle:5,1')->name('login.post');
 Route::post('/employee/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Auth Routes — Register Employee (2 steps)
 Route::get('/daftar/step1', [RegisterController::class, 'showStep1'])->name('register.step1');
 Route::post('/daftar/verify', [RegisterController::class, 'verifyCode'])->name('register.verify');
 Route::get('/daftar/step2', [RegisterController::class, 'showStep2'])->name('register.step2');
-Route::post('/daftar', [RegisterController::class, 'register'])->name('register');
+Route::post('/daftar', [RegisterController::class, 'register'])->middleware('throttle:3,10')->name('register');
 
 // Auth Routes — Member (member guard)
 Route::get('/member/login', [MemberLoginController::class, 'showLogin'])->name('member.login');
-Route::post('/member/login', [MemberLoginController::class, 'login'])->name('member.login.post');
+Route::post('/member/login', [MemberLoginController::class, 'login'])->middleware('throttle:5,1')->name('member.login.post');
 Route::post('/member/logout', [MemberLoginController::class, 'logout'])->name('member.logout');
 
 // Auth Routes — Member Register (public)
 Route::get('/member/register', [MemberRegisterController::class, 'showRegister'])->name('member.register');
-Route::post('/member/register', [MemberRegisterController::class, 'register'])->name('member.register.post');
+Route::post('/member/register', [MemberRegisterController::class, 'register'])->middleware('throttle:3,10')->name('member.register.post');
 
 // Auth Routes — Applicant Register (public)
 Route::get('/applicant/register', [ApplicantRegisterController::class, 'showRegister'])->name('applicant.register');
-Route::post('/applicant/register', [ApplicantRegisterController::class, 'register'])->name('applicant.register.post');
+Route::post('/applicant/register', [ApplicantRegisterController::class, 'register'])->middleware('throttle:3,10')->name('applicant.register.post');
 
 // Member authenticated routes
 Route::middleware(['auth:member', EnsureEmailIsVerified::class, 'no.back'])->group(function () {
@@ -478,7 +478,7 @@ Route::middleware(['auth:member', EnsureEmailIsVerified::class, 'no.back'])->gro
 
 // Auth Routes — Applicant (applicant guard)
 Route::get('/applicant/login', [ApplicantLoginController::class, 'showLogin'])->name('applicant.login');
-Route::post('/applicant/login', [ApplicantLoginController::class, 'login'])->name('applicant.login.post');
+Route::post('/applicant/login', [ApplicantLoginController::class, 'login'])->middleware('throttle:5,1')->name('applicant.login.post');
 Route::post('/applicant/logout', [ApplicantLoginController::class, 'logout'])->name('applicant.logout');
 
 // Applicant authenticated routes
@@ -513,19 +513,19 @@ Route::middleware(['auth:applicant', EnsureEmailIsVerified::class, 'no.back'])->
 
 // Auth Routes — Password Management (forgot + reset) — Employee (web guard)
 Route::get('/employee/forgot-password', [ForgotPasswordController::class, 'showForm'])->name('password.request');
-Route::post('/employee/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])->name('password.email');
+Route::post('/employee/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])->middleware('throttle:3,10')->name('password.email');
 Route::get('/employee/reset-password/{token}', [ResetPasswordController::class, 'showForm'])->name('password.reset');
 Route::post('/employee/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 
 // Auth Routes — Password Management (forgot + reset) — Member
 Route::get('/member/forgot-password', [MemberForgotPasswordController::class, 'showForm'])->name('member.password.request');
-Route::post('/member/forgot-password', [MemberForgotPasswordController::class, 'sendResetLink'])->name('member.password.email');
+Route::post('/member/forgot-password', [MemberForgotPasswordController::class, 'sendResetLink'])->middleware('throttle:3,10')->name('member.password.email');
 Route::get('/member/reset-password/{token}', [MemberResetPasswordController::class, 'showForm'])->name('member.password.reset');
 Route::post('/member/reset-password', [MemberResetPasswordController::class, 'reset'])->name('member.password.update');
 
 // Auth Routes — Password Management (forgot + reset) — Applicant
 Route::get('/applicant/forgot-password', [ApplicantForgotPasswordController::class, 'showForm'])->name('applicant.password.request');
-Route::post('/applicant/forgot-password', [ApplicantForgotPasswordController::class, 'sendResetLink'])->name('applicant.password.email');
+Route::post('/applicant/forgot-password', [ApplicantForgotPasswordController::class, 'sendResetLink'])->middleware('throttle:3,10')->name('applicant.password.email');
 Route::get('/applicant/reset-password/{token}', [ApplicantResetPasswordController::class, 'showForm'])->name('applicant.password.reset');
 Route::post('/applicant/reset-password', [ApplicantResetPasswordController::class, 'reset'])->name('applicant.password.update');
 
