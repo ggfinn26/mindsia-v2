@@ -203,29 +203,39 @@
         <p class="text-[16px] text-ky-text/70 mb-16">Pengalaman belajar dari alumni dan siswa aktif kami.</p>
         
         <!-- Testimonial Carousel -->
-        <div class="relative w-full h-[650px] md:h-[800px]" id="testimonial-carousel">
+        @if($testimonials->isEmpty())
+        <div class="p-12 text-center border-2 border-dashed border-ky-border/60 rounded-2xl max-w-md mx-auto">
+            <span class="material-symbols-outlined text-[48px] text-ky-text/40 block mb-2">format_quote</span>
+            <p class="text-sm font-semibold text-ky-text/60">Belum ada testimoni.</p>
+        </div>
+        @else
+        <div class="relative w-full h-[550px] md:h-[650px]" id="testimonial-carousel">
             @foreach($testimonials as $index => $testi)
-                <div class="testi-slide absolute inset-0 w-full h-full flex justify-center items-center opacity-0 pointer-events-none transition-all duration-[2s] ease-[cubic-bezier(0.25,1,0.5,1)]" 
+                <div class="testi-slide absolute inset-0 w-full h-full flex justify-center items-center opacity-0 pointer-events-none transition-all duration-700 ease-out" 
                      data-index="{{ $index }}"
-                     style="transform: translateY(80px);">
+                     style="transform: translateY(40px);">
                     
-                    @if($testi->type === 'image')
+                    @if($testi->type === 'image' || (is_object($testi->type) && $testi->type->value === 'image'))
                         <!-- Image/Flyer Testimonial -->
-                        <img src="{{ $testi->image_url }}" alt="Testimoni" class="max-w-[90vw] max-h-[600px] md:max-h-[750px] w-auto h-auto object-contain rounded-2xl shadow-[0_15px_40px_-15px_rgba(0,0,0,0.2)] bg-white">
+                        <img src="{{ $testi->image_url }}" alt="Testimoni {{ $testi->name }}" class="max-w-[90vw] max-h-[500px] md:max-h-[600px] w-auto h-auto object-contain rounded-2xl shadow-[0_15px_40px_-15px_rgba(0,0,0,0.2)] bg-white">
                     @else
                         <!-- Text Testimonial -->
-                        <div class="max-w-[700px] w-full bg-white p-10 rounded-2xl shadow-[0_15px_40px_-15px_rgba(0,0,0,0.15)] relative text-left mx-auto">
-                            <span class="material-symbols-outlined absolute top-8 right-8 text-[60px] text-ky-primary/5">format_quote</span>
-                            <p class="text-[16px] md:text-[20px] text-[#06122B] leading-relaxed italic mb-10 relative z-10">
+                        <div class="max-w-[700px] w-full bg-white p-8 md:p-10 rounded-2xl shadow-[0_15px_40px_-15px_rgba(0,0,0,0.15)] relative text-left mx-auto border border-ky-border/40">
+                            <span class="material-symbols-outlined absolute top-8 right-8 text-[60px] text-ky-primary/5 select-none pointer-events-none">format_quote</span>
+                            <p class="text-[16px] md:text-[20px] text-[#06122B] leading-relaxed italic mb-8 relative z-10">
                                 "{{ $testi->quote }}"
                             </p>
-                            <div class="flex items-center gap-5">
-                                <div class="w-14 h-14 rounded-full bg-ky-primary/10 flex items-center justify-center text-ky-primary font-bold text-[20px]">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 md:w-14 md:h-14 rounded-full bg-ky-primary/10 flex items-center justify-center text-ky-primary font-bold text-[18px] md:text-[20px] shrink-0">
                                     {{ substr($testi->name, 0, 1) }}
                                 </div>
                                 <div>
                                     <div class="font-bold text-[#06122B] text-[16px]">{{ $testi->name }}</div>
-                                    <div class="text-[13px] text-ky-text/60 font-semibold">{{ $testi->program }} • {{ $testi->city }}</div>
+                                    @if($testi->program || $testi->city)
+                                    <div class="text-[13px] text-ky-text/60 font-semibold">
+                                        {{ $testi->program }}{{ $testi->program && $testi->city ? ' - ' : '' }}{{ $testi->city }}
+                                    </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -233,6 +243,16 @@
                 </div>
             @endforeach
         </div>
+
+        {{-- Carousel Indicator Dots --}}
+        @if($testimonials->count() > 1)
+        <div class="flex justify-center items-center gap-2 mt-8">
+            @foreach($testimonials as $index => $testi)
+                <button type="button" class="testi-dot h-2.5 rounded-full transition-all duration-300 {{ $index === 0 ? 'w-8 bg-[#06122B]' : 'w-2.5 bg-ky-text/30' }}" aria-label="Slide {{ $index + 1 }}"></button>
+            @endforeach
+        </div>
+        @endif
+        @endif
     </div>
 </section>
 
@@ -244,39 +264,13 @@
         pointer-events: auto !important;
         z-index: 10;
     }
-    
-    .testi-slide.exit-right {
-        opacity: 0 !important;
-        transform: translateX(150px) !important;
-        z-index: 5;
-    }
 </style>
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.remove('opacity-0', 'translate-y-16');
-                entry.target.classList.add('opacity-100', 'translate-y-0');
-            } else {
-                entry.target.classList.add('opacity-0', 'translate-y-16');
-                entry.target.classList.remove('opacity-100', 'translate-y-0');
-            }
-        });
-    }, { threshold: 0.15, rootMargin: "0px 0px -50px 0px" });
-    
-    document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
-});
-</script>
-
-{{-- ═══ CTA CORPORATE ═══ --}}
+{{-- === CTA CORPORATE === --}}
 <section class="py-32 px-6 relative text-center overflow-hidden" id="daftar">
     <!-- Background Image with Overlay -->
     <div class="absolute inset-0 z-0">
-        <!-- Nanti gambar asli dipasang di src img ini -->
         <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=2070&auto=format&fit=crop" alt="Kampus Mindsia" class="w-full h-full object-cover">
-        <!-- Overlay Gelap agar teks tetap terbaca jelas -->
         <div class="absolute inset-0 bg-[#06122B]/85 backdrop-blur-[2px]"></div>
     </div>
 
@@ -285,7 +279,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <p class="text-[16px] md:text-[18px] text-white/70 leading-relaxed mb-10">
             Pendaftaran siswa baru telah dibuka. Tingkatkan daya saing global Anda bersama fasilitas pendidikan bahasa Inggris terbaik.
         </p>
-        <a href="/member/register" class="inline-flex items-center gap-2 bg-gold text-[#06122B] font-bold text-[16px] py-4 px-10 rounded-none transition-transform hover:-translate-y-1">
+        <a href="/member/register" class="inline-flex items-center gap-2 bg-gold text-[#06122B] font-bold text-[16px] py-4 px-10 rounded-xl transition-all hover:-translate-y-1 shadow-lg hover:shadow-xl">
             Mendaftar Sekarang
         </a>
     </div>
@@ -328,14 +322,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const slides = document.querySelectorAll('.testi-slide');
     const dots = document.querySelectorAll('.testi-dot');
     let currentSlide = 0;
+    let carouselInterval = null;
 
     function showSlide(index) {
+        if (!slides.length) return;
         slides.forEach((slide, i) => {
+            slide.classList.remove('active');
             slide.classList.remove('opacity-100', 'pointer-events-auto');
             slide.classList.add('opacity-0', 'pointer-events-none');
-            slide.style.transform = 'translateY(80px)';
+            slide.style.transform = 'translateY(40px)';
             
             if (i === index) {
+                slide.classList.add('active');
                 slide.classList.add('opacity-100', 'pointer-events-auto');
                 slide.classList.remove('opacity-0', 'pointer-events-none');
                 slide.style.transform = 'translateY(0)';
@@ -345,22 +343,31 @@ document.addEventListener("DOMContentLoaded", () => {
         dots.forEach((dot, i) => {
             dot.classList.toggle('w-8', i === index);
             dot.classList.toggle('bg-[#06122B]', i === index);
-            dot.classList.toggle('w-2', i !== index);
+            dot.classList.toggle('w-2.5', i !== index);
             dot.classList.toggle('bg-ky-text/30', i !== index);
         });
     }
 
     if (slides.length > 0) {
         showSlide(0);
-        setInterval(() => {
-            currentSlide = (currentSlide + 1) % slides.length;
-            showSlide(currentSlide);
-        }, 5000);
+        if (slides.length > 1) {
+            carouselInterval = setInterval(() => {
+                currentSlide = (currentSlide + 1) % slides.length;
+                showSlide(currentSlide);
+            }, 5000);
+        }
         
         dots.forEach((dot, i) => {
             dot.addEventListener('click', () => {
+                if (carouselInterval) clearInterval(carouselInterval);
                 currentSlide = i;
                 showSlide(currentSlide);
+                if (slides.length > 1) {
+                    carouselInterval = setInterval(() => {
+                        currentSlide = (currentSlide + 1) % slides.length;
+                        showSlide(currentSlide);
+                    }, 5000);
+                }
             });
         });
     }

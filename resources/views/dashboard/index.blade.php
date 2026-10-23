@@ -53,13 +53,17 @@
 @section('content')
     <div x-data="{}" >
         <div class="mb-6 flex items-center justify-between">
-            <p class="text-gray-500 font-medium text-sm sm:text-base">Selamat datang kembali, <span class="font-semibold text-gray-800">{{ Auth::user()->name ?? 'Pengguna' }}</span> 👋</p>
+            <p class="font-medium text-sm sm:text-base" style="color: var(--dash-text-muted);">Selamat datang kembali, <span class="font-semibold" style="color: var(--dash-text-heading);">{{ Auth::user()->name ?? 'Pengguna' }}</span> 👋</p>
 
             {{-- Customize toggle --}}
             <button @click="$store.dashboard.customizing = !$store.dashboard.customizing"
-                    :class="$store.dashboard.customizing ? 'bg-indigo-600 text-white' : 'bg-white text-gray-600 border border-gray-200'"
-                    class="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg transition-colors">
-                <span class="material-symbols-outlined text-base">dashboard_customize</span>
+                    class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
+                    :style="$store.dashboard.customizing
+                        ? 'background-color: var(--dash-primary); color: #ffffff;'
+                        : 'background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-body);'"
+                    onmouseover="if(!$store.dashboard.customizing) this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                    onmouseout="if(!$store.dashboard.customizing) this.style.backgroundColor='var(--dash-card-bg)'">
+                <span class="material-symbols-outlined text-[16px]">dashboard_customize</span>
                 <span x-text="$store.dashboard.customizing ? 'Selesai' : 'Atur Widget'"></span>
             </button>
         </div>
@@ -85,8 +89,8 @@
 
                         <div class="mb-8">
                             <div class="flex items-center gap-2 mb-4">
-                                <span class="material-symbols-outlined text-gray-400 text-lg">{{ $catInfo['icon'] }}</span>
-                                <h2 class="text-sm font-semibold text-gray-600 uppercase tracking-wider">{{ $catInfo['label'] }}</h2>
+                                <span class="material-symbols-outlined text-[18px]" style="color: var(--dash-text-muted);">{{ $catInfo['icon'] }}</span>
+                                <h2 class="text-xs font-semibold uppercase tracking-wider font-jakarta" style="color: var(--dash-primary-text);">{{ $catInfo['label'] }}</h2>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 items-start auto-rows-max"
@@ -100,16 +104,19 @@
 
                                         {{-- Customize overlay (drag handle + toggle) --}}
                                         <div x-show="$store.dashboard.customizing"
-                                             class="absolute inset-0 z-50 rounded-xl ring-4 {{ $widget['is_enabled'] ? 'ring-indigo-500' : 'ring-gray-300' }} bg-slate-900/40 backdrop-blur-sm flex flex-col items-center justify-center gap-2"
-                                             style="display: none;">
-                                            <div class="drag-handle cursor-grab active:cursor-grabbing p-2 rounded-lg bg-white shadow border border-gray-100" title="Geser untuk mengubah urutan">
-                                                <span class="material-symbols-outlined text-gray-500 text-xl">drag_indicator</span>
+                                             class="absolute inset-0 z-50 rounded-2xl ring-2 bg-slate-900/40 backdrop-blur-sm flex flex-col items-center justify-center gap-2"
+                                             style="display: none; outline: 2px solid {{ $widget['is_enabled'] ? 'var(--dash-primary)' : 'var(--dash-card-border)' }};">
+                                            <div class="drag-handle cursor-grab active:cursor-grabbing p-2 rounded-lg shadow"
+                                                 style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);"
+                                                 title="Geser untuk mengubah urutan">
+                                                <span class="material-symbols-outlined text-xl" style="color: var(--dash-text-muted);">drag_indicator</span>
                                             </div>
-                                            <label class="flex items-center gap-1.5 bg-white shadow border border-gray-100 rounded-lg px-2 py-1 cursor-pointer">
+                                            <label class="flex items-center gap-1.5 shadow rounded-lg px-2.5 py-1.5 cursor-pointer"
+                                                   style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
                                                 <input type="checkbox" {{ $widget['is_enabled'] ? 'checked' : '' }}
-                                                       class="accent-indigo-600"
+                                                       style="accent-color: var(--dash-primary);"
                                                        onchange="toggleWidget('{{ $widget['key'] }}', this)">
-                                                <span class="text-xs text-gray-600 font-medium">Tampilkan</span>
+                                                <span class="text-xs font-medium" style="color: var(--dash-text-body);">Tampilkan</span>
                                             </label>
                                         </div>
 
@@ -117,14 +124,16 @@
                                         @if(view()->exists('dashboard.widgets.' . $widget['key']) && isset($widgetData[$widget['key']]))
                                             @include('dashboard.widgets.' . $widget['key'], ['data' => $widgetData[$widget['key']]])
                                         @else
-                                            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+                                            <div class="rounded-2xl p-5 shadow-sm"
+                                                 style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
                                                 <div class="flex items-center gap-3 mb-2">
-                                                    <div class="h-10 w-10 rounded-lg bg-gray-50 flex items-center justify-center">
-                                                        <span class="material-symbols-outlined text-gray-400 text-xl">{{ $widget['icon'] }}</span>
+                                                    <div class="h-10 w-10 rounded-lg flex items-center justify-center"
+                                                         style="background-color: var(--dash-nav-hover-bg);">
+                                                        <span class="material-symbols-outlined text-xl" style="color: var(--dash-text-muted);">{{ $widget['icon'] }}</span>
                                                     </div>
-                                                    <h3 class="text-sm font-semibold text-gray-800">{{ $widget['label'] }}</h3>
+                                                    <h3 class="text-sm font-semibold" style="color: var(--dash-text-heading);">{{ $widget['label'] }}</h3>
                                                 </div>
-                                                <p class="text-xs text-gray-400">Widget view belum tersedia.</p>
+                                                <p class="text-xs" style="color: var(--dash-text-muted);">Widget view belum tersedia.</p>
                                             </div>
                                         @endif
                                     </div>
@@ -139,19 +148,21 @@
     @if($widgets->where('is_enabled', true)->isEmpty() && !$widgets->isEmpty())
         {{-- All widgets disabled: hint user to re-enable via Atur Widget --}}
         <div class="flex flex-col items-center justify-center min-h-[60vh] h-full text-center">
-            <div class="h-20 w-20 rounded-full bg-amber-50 flex items-center justify-center mb-5">
-                <span class="material-symbols-outlined text-amber-400 text-4xl">visibility_off</span>
+            <div class="h-20 w-20 rounded-full flex items-center justify-center mb-5"
+                 style="background-color: #fef3c7;">
+                <span class="material-symbols-outlined text-4xl" style="color: #d97706;">visibility_off</span>
             </div>
-            <h2 class="text-xl font-bold font-jakarta text-gray-800 mb-3">Semua Widget Disembunyikan</h2>
-            <p class="text-sm text-gray-500 leading-relaxed max-w-sm">Klik <strong>Atur Widget</strong> di atas untuk menampilkan kembali widget yang Anda butuhkan.</p>
+            <h2 class="text-xl font-bold font-jakarta mb-3" style="color: var(--dash-text-heading);">Semua Widget Disembunyikan</h2>
+            <p class="text-sm leading-relaxed max-w-sm" style="color: var(--dash-text-muted);">Klik <strong>Atur Widget</strong> di atas untuk menampilkan kembali widget yang Anda butuhkan.</p>
         </div>
     @elseif($widgets->isEmpty())
         <div class="flex flex-col items-center justify-center min-h-[60vh] h-full text-center">
-            <div class="h-20 w-20 rounded-full bg-[#EEF4FF] flex items-center justify-center mb-5">
-                <span class="material-symbols-outlined text-[#5586DB] text-4xl">dashboard_customize</span>
+            <div class="h-20 w-20 rounded-full flex items-center justify-center mb-5"
+                 style="background-color: var(--dash-nav-hover-bg);">
+                <span class="material-symbols-outlined text-4xl" style="color: var(--dash-primary);">dashboard_customize</span>
             </div>
-            <h2 class="text-xl font-bold font-jakarta text-gray-800 mb-3">Ruang Kerja Anda</h2>
-            <p class="text-sm text-gray-500 leading-relaxed max-w-sm">Widget dan analitik akan ditampilkan di sini berdasarkan peran dan divisi Anda.</p>
+            <h2 class="text-xl font-bold font-jakarta mb-3" style="color: var(--dash-text-heading);">Ruang Kerja Anda</h2>
+            <p class="text-sm leading-relaxed max-w-sm" style="color: var(--dash-text-muted);">Widget dan analitik akan ditampilkan di sini berdasarkan peran dan divisi Anda.</p>
         </div>
     @endif
 @endsection

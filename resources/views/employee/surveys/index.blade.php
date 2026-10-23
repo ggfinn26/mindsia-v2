@@ -6,12 +6,12 @@
 @section('content')
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6">
 
-    {{-- Page Header --}}
+    {{-- Page Header Pola A --}}
     <div>
         <p class="text-xs font-semibold uppercase tracking-wider mb-1"
            style="color: var(--dash-primary-text);">Personal Dashboard</p>
         <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
-            style="color: var(--dash-text-heading);">Survey Saya</h1>
+           style="color: var(--dash-text-heading);">Survey Saya</h1>
         <p class="text-sm mt-1" style="color: var(--dash-text-muted);">
             Daftar survei yang ditugaskan kepada Anda.
         </p>
@@ -20,30 +20,30 @@
     {{-- Flash messages --}}
     @if(session('success'))
     <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
-         style="background-color: #f0fdf4; border-color: #bbf7d0; color: #059669;">
+         style="background-color: var(--dash-status-success-bg); border-color: #bbf7d0; color: var(--dash-status-success-text);">
         <span class="material-symbols-outlined text-[18px]">check_circle</span>
         {{ session('success') }}
     </div>
     @endif
     @if(session('error'))
     <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
-         style="background-color: #fef2f2; border-color: #fecaca; color: #dc2626;">
+         style="background-color: var(--dash-status-danger-bg); border-color: #fecaca; color: var(--dash-status-danger-text);">
         <span class="material-symbols-outlined text-[18px]">error</span>
         {{ session('error') }}
     </div>
     @endif
 
     @if($surveys->isEmpty())
-        <div class="rounded-2xl px-5 py-16 text-center"
+        <div class="rounded-2xl px-6 py-16 text-center"
              style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
             <span class="material-symbols-outlined block mx-auto mb-3 text-[48px]"
                   style="color: var(--dash-text-faint);">assignment</span>
-            <p class="text-sm font-semibold" style="color: var(--dash-text-muted);">Belum ada survei untuk Anda</p>
-            <p class="text-xs mt-1 mb-4" style="color: var(--dash-text-faint);">
+            <p class="text-base font-bold font-jakarta" style="color: var(--dash-text-heading);">Belum Ada Survei</p>
+            <p class="text-xs mt-1 mb-6 max-w-md mx-auto" style="color: var(--dash-text-muted);">
                 Survei akan muncul di sini setelah ditugaskan kepada Anda.
             </p>
             <a href="{{ route('dashboard') }}"
-               class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+               class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
                style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
                onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
@@ -83,15 +83,15 @@
                                         </p>
                                     @endif
                                 </td>
-                                <td class="px-5 py-3.5 text-center">
+                                <td class="px-5 py-3.5 text-center whitespace-nowrap">
                                     @if($employeeSurvey->answers_exists)
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"
-                                              style="background-color: #f0fdf4; color: #059669; border: 1px solid #bbf7d0;">
+                                              style="background-color: var(--dash-status-success-bg); color: var(--dash-status-success-text); border: 1px solid #bbf7d0;">
                                             Sudah Diisi
                                         </span>
                                     @else
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"
-                                              style="background-color: #fef3c7; color: #d97706; border: 1px solid #fde68a;">
+                                              style="background-color: var(--dash-status-warning-bg); color: var(--dash-status-warning-text); border: 1px solid #fde68a;">
                                             Belum Diisi
                                         </span>
                                     @endif
@@ -131,4 +131,3 @@
     @endif
 </div>
 @endsection
-

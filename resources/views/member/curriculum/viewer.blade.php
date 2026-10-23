@@ -3,8 +3,15 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $item->item_name }} — MINDSIA</title>
+    <title>{{ $item->item_name }} - MINDSIA</title>
     
+    <script>
+        (function() {
+            var theme = localStorage.getItem('dash_theme') || 'blue';
+            var mode = localStorage.getItem('dash_mode') || 'light';
+            document.documentElement.classList.add('theme-' + theme, 'mode-' + mode);
+        })();
+    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0" />
@@ -22,19 +29,28 @@
         }
     </style>
 </head>
-<body class="bg-gray-50">
-    <div id="fullscreen-mask" class="fixed inset-0 z-50 bg-gray-50 flex flex-col">
+<body style="background-color: var(--dash-page-bg); color: var(--dash-text-body);">
+    <div id="fullscreen-mask" class="fixed inset-0 z-50 flex flex-col" style="background-color: var(--dash-page-bg);">
         <!-- Header -->
-        <div class="flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200 text-gray-900 shrink-0">
+        <div class="flex items-center justify-between px-4 py-3 shrink-0"
+             style="background-color: var(--dash-card-bg); border-bottom: 1px solid var(--dash-card-border); color: var(--dash-text-heading);">
             <div class="flex items-center gap-3">
-                <span class="material-symbols-outlined text-[#5586DB]">menu_book</span>
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                     style="background-color: var(--dash-status-info-bg);">
+                    <span class="material-symbols-outlined text-[18px]" style="color: var(--dash-primary);">menu_book</span>
+                </div>
                 <div>
-                    <h1 class="text-sm font-semibold text-gray-900 font-jakarta">{{ $item->item_name }}</h1>
-                    <p class="text-xs text-gray-500">{{ $classroom->class_name }}</p>
+                    <h1 class="text-sm font-bold font-jakarta" style="color: var(--dash-text-heading);">{{ $item->item_name }}</h1>
+                    <p class="text-xs" style="color: var(--dash-text-muted);">{{ $classroom->class_name }}</p>
                 </div>
             </div>
-            <a href="{{ route('member.curriculum.index') }}" class="text-gray-500 hover:text-gray-800 flex items-center text-sm font-medium transition-colors">
-                ✕ Tutup
+            <a href="{{ route('member.curriculum.index') }}"
+               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
+               style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-heading);"
+               onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+               onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                <span class="material-symbols-outlined text-[16px]">close</span>
+                Tutup
             </a>
         </div>
 
@@ -43,7 +59,7 @@
             @if ($fileType === 'pdf')
                 <div id="pdf-container" class="w-full max-w-4xl mx-auto px-4 py-6 flex flex-col items-center">
                     <div id="pdf-pages" class="w-full"></div>
-                    <p id="pdf-loading" class="text-gray-500 my-10 flex flex-col items-center gap-3">
+                    <p id="pdf-loading" class="my-10 flex flex-col items-center gap-3" style="color: var(--dash-text-muted);">
                         <span class="material-symbols-outlined animate-spin text-3xl">autorenew</span>
                         Memuat dokumen PDF...
                     </p>
@@ -59,9 +75,10 @@
                 </div>
             @elseif ($fileType === 'audio')
                 <div class="w-full h-full flex items-center justify-center relative">
-                <div class="bg-white p-8 rounded-2xl border border-gray-200 w-full max-w-md text-center shadow-2xl relative">
-                    <span class="material-symbols-outlined text-6xl text-gray-400 mb-4 block">headphones</span>
-                    <h3 class="text-lg font-medium text-gray-800 font-jakarta mb-6">{{ $item->item_name }}</h3>
+                <div class="p-8 rounded-2xl w-full max-w-md text-center shadow-xl relative"
+                     style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+                    <span class="material-symbols-outlined text-6xl mb-4 block" style="color: var(--dash-text-faint);">headphones</span>
+                    <h3 class="text-lg font-bold font-jakarta mb-6" style="color: var(--dash-text-heading);">{{ $item->item_name }}</h3>
                     <audio id="mat-audio" controls controlsList="nodownload" class="w-full">
                         <source src="{{ $mediaUrl }}">
                         Browser Anda tidak mendukung pemutaran audio.
@@ -76,20 +93,28 @@
                     <canvas id="wm-canvas" class="absolute inset-0 w-full h-full pointer-events-none" style="opacity:0.18;"></canvas>
                 </div>
             @else
-                <div class="text-center text-gray-500 mt-10 px-6">
-                    <p class="text-lg font-semibold text-gray-800 font-jakarta mb-2">{{ $item->item_name }}</p>
-                    <p class="text-sm">Format <strong class="text-gray-900">{{ strtoupper($fileType) }}</strong> tidak dapat ditampilkan langsung.</p>
+                <div class="text-center mt-10 px-6" style="color: var(--dash-text-muted);">
+                    <p class="text-lg font-bold font-jakarta mb-2" style="color: var(--dash-text-heading);">{{ $item->item_name }}</p>
+                    <p class="text-sm">Format <strong style="color: var(--dash-text-heading);">{{ strtoupper($fileType) }}</strong> tidak dapat ditampilkan langsung.</p>
                 </div>
             @endif
         </div>
 
         <!-- Anti-leak Blur Overlay -->
-        <div id="blur-overlay" class="hidden fixed inset-0 z-[60] backdrop-blur-xl bg-gray-900/60 flex items-center justify-center">
-            <div class="bg-white border border-gray-200 rounded-xl p-8 max-w-sm text-center shadow-2xl mx-4">
-                <span class="material-symbols-outlined text-4xl text-red-500 mb-3 block">security</span>
-                <p class="text-lg font-semibold text-gray-900 font-jakarta mb-2">Materi Dilindungi</p>
-                <p class="text-sm text-gray-600 mb-6">Aktivitas mencurigakan terdeteksi. Harap tidak merekam layar atau meninggalkan area tampilan materi.</p>
-                <button id="blur-dismiss" class="bg-[#5586DB] text-white px-6 py-2.5 rounded-lg font-medium hover:bg-[#4370BC] transition-colors w-full">Kembali ke Materi</button>
+        <div id="blur-overlay" class="hidden fixed inset-0 z-[60] backdrop-blur-xl bg-black/60 flex items-center justify-center">
+            <div class="rounded-2xl p-8 max-w-sm text-center shadow-2xl mx-4"
+                 style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+                <div class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"
+                     style="background-color: var(--dash-status-danger-bg);">
+                    <span class="material-symbols-outlined text-2xl" style="color: var(--dash-status-danger-text);">security</span>
+                </div>
+                <p class="text-lg font-bold font-jakarta mb-2" style="color: var(--dash-text-heading);">Materi Dilindungi</p>
+                <p class="text-sm mb-6" style="color: var(--dash-text-muted);">Aktivitas mencurigakan terdeteksi. Harap tidak merekam layar atau meninggalkan area tampilan materi.</p>
+                <button id="blur-dismiss"
+                        class="px-6 py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90 w-full shadow-sm cursor-pointer"
+                        style="background-color: var(--dash-primary);">
+                    Kembali ke Materi
+                </button>
             </div>
         </div>
     </div>

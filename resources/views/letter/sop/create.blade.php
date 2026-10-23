@@ -4,65 +4,154 @@
 @section('header_title', 'Upload Dokumen SOP')
 
 @section('content')
-<div class="max-w-2xl mx-auto space-y-6">
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-3xl mx-auto space-y-6 pb-10">
+    {{-- Header Section Pola B3 --}}
     <div>
-        <a href="{{ route('sop-documents.index') }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700">
-            <span class="material-symbols-outlined text-[16px]">arrow_back</span> Dokumen SOP
+        <a href="{{ route('sop-documents.index') }}" class="dash-back mb-3">
+            <span class="material-symbols-outlined">arrow_back</span> Kembali ke Dokumen SOP
         </a>
-        <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Upload Dokumen SOP</h2>
-        <p class="mt-1 text-sm text-slate-500">Dokumen langsung aktif setelah diupload. <code class="text-xs bg-slate-100 px-1">visible_to</code> kosong = semua role bisa lihat.</p>
+        <p class="text-xs font-bold uppercase tracking-wider mb-1" style="color: var(--dash-primary-text);">Surat</p>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Upload Dokumen SOP</h1>
+        <p class="mt-2 text-sm leading-relaxed" style="color: var(--dash-text-muted);">
+            Dokumen langsung aktif setelah diunggah. Jika hak akses role dikosongkan, dokumen dapat diakses oleh semua role.
+        </p>
     </div>
 
     @if ($errors->any())
-        <div class="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
-            <ul class="list-disc pl-5">@foreach ($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
+        <div class="px-4 py-3 rounded-xl text-sm"
+             style="background-color: color-mix(in srgb, var(--dash-danger) 10%, transparent); border: 1px solid color-mix(in srgb, var(--dash-danger) 25%, transparent); color: var(--dash-danger);"
+             role="alert" aria-live="polite">
+            <div class="flex items-start gap-3">
+                <span class="material-symbols-outlined text-[20px] mt-0.5">error</span>
+                <div>
+                    <p class="font-bold">Terdapat kesalahan pengisian form</p>
+                    <ul class="mt-1 list-disc pl-4 space-y-1">
+                        @foreach ($errors->all() as $e)
+                            <li>{{ $e }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
         </div>
     @endif
 
-    <form method="POST" action="{{ route('sop-documents.store') }}" enctype="multipart/form-data" class="border border-slate-200 bg-white p-6 space-y-4">
+    <form method="POST" action="{{ route('sop-documents.store') }}" enctype="multipart/form-data"
+          class="rounded-2xl"
+          style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);"
+          x-data="{ isSubmitting: false }" @submit="isSubmitting = true">
         @csrf
-        <div class="grid gap-4 sm:grid-cols-2">
-            <div class="sm:col-span-2">
-                <label class="mb-1.5 block text-sm font-medium text-slate-700">Judul dokumen</label>
-                <input type="text" name="title" value="{{ old('title') }}" required maxlength="255" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
-            </div>
-            <div>
-                <label class="mb-1.5 block text-sm font-medium text-slate-700">Kode dokumen</label>
-                <input type="text" name="document_code" value="{{ old('document_code') }}" maxlength="100" placeholder="SOP-HR-001" class="block w-full border-slate-300 text-sm uppercase focus:border-[#215aac] focus:ring-[#215aac]">
-            </div>
-            <div>
-                <label class="mb-1.5 block text-sm font-medium text-slate-700">Versi</label>
-                <input type="text" name="version" value="{{ old('version', '1.0') }}" maxlength="20" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
-            </div>
-            <div>
-                <label class="mb-1.5 block text-sm font-medium text-slate-700">Kategori</label>
-                <input type="text" name="category" value="{{ old('category') }}" maxlength="100" placeholder="HR, Operasional, Keuangan..." class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
-            </div>
-            <div>
-                <label class="mb-1.5 block text-sm font-medium text-slate-700">Tanggal efektif</label>
-                <input type="date" name="effective_date" value="{{ old('effective_date', today()->toDateString()) }}" class="block w-full border-slate-300 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
-            </div>
-        </div>
-        <div class="sm:col-span-2">
-            <label class="mb-1.5 block text-sm font-medium text-slate-700">Visible untuk posisi <span class="text-slate-400 font-normal text-xs">(kosong = semua posisi)</span></label>
-            <div class="mt-1 grid grid-cols-2 gap-1.5 sm:grid-cols-3">
-                @foreach ($roles as $role)
-                    <label class="flex items-center gap-2 text-sm text-slate-700">
-                        <input type="checkbox" name="visible_to[]" value="{{ $role }}"
-                            {{ in_array($role, old('visible_to', [])) ? 'checked' : '' }}
-                            class="rounded border-slate-300 text-[#215aac] focus:ring-[#215aac]">
-                        {{ $role }}
+        <div class="p-5 sm:p-7 space-y-6">
+            <div class="grid gap-5 sm:grid-cols-2">
+                <div class="sm:col-span-2">
+                    <label for="title" class="mb-1.5 block text-sm font-semibold" style="color: var(--dash-text-body);">
+                        Judul dokumen <span style="color: var(--dash-danger);">*</span>
                     </label>
-                @endforeach
+                    <input type="text" id="title" name="title" value="{{ old('title') }}" required maxlength="255"
+                           placeholder="Contoh: Standar Operasional Pelayanan Member"
+                           class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
+                           style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                           onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                           onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                </div>
+
+                <div>
+                    <label for="document_code" class="mb-1.5 block text-sm font-semibold" style="color: var(--dash-text-body);">
+                        Kode dokumen
+                    </label>
+                    <input type="text" id="document_code" name="document_code" value="{{ old('document_code') }}" maxlength="100" placeholder="SOP-HR-001"
+                           class="w-full px-4 py-2.5 text-sm rounded-lg uppercase focus:outline-none transition-all"
+                           style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                           onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                           onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                </div>
+
+                <div>
+                    <label for="version" class="mb-1.5 block text-sm font-semibold" style="color: var(--dash-text-body);">
+                        Versi
+                    </label>
+                    <input type="text" id="version" name="version" value="{{ old('version', '1.0') }}" maxlength="20"
+                           class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
+                           style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                           onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                           onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                </div>
+
+                <div>
+                    <label for="category" class="mb-1.5 block text-sm font-semibold" style="color: var(--dash-text-body);">
+                        Kategori
+                    </label>
+                    <input type="text" id="category" name="category" value="{{ old('category') }}" maxlength="100" placeholder="HR, Operasional, Keuangan..."
+                           class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
+                           style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                           onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                           onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                </div>
+
+                <div>
+                    <label for="effective_date" class="mb-1.5 block text-sm font-semibold" style="color: var(--dash-text-body);">
+                        Tanggal efektif
+                    </label>
+                    <input type="date" id="effective_date" name="effective_date" value="{{ old('effective_date', today()->toDateString()) }}"
+                           class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
+                           style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                           onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                           onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                </div>
+            </div>
+
+            <!-- Role Checkboxes -->
+            <div class="pt-2">
+                <label class="mb-1.5 block text-sm font-semibold" style="color: var(--dash-text-body);">
+                    Akses Dokumen Berdasarkan Role <span class="text-xs font-normal" style="color: var(--dash-text-muted);">(kosongkan jika dapat diakses semua role)</span>
+                </label>
+                <div class="grid grid-cols-2 gap-2.5 sm:grid-cols-3 p-4 rounded-xl"
+                     style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border);">
+                    @foreach ($roles as $role)
+                        <label class="flex items-center gap-2 text-sm cursor-pointer" style="color: var(--dash-text-body);">
+                            <input type="checkbox" name="visible_to[]" value="{{ $role }}"
+                                   {{ in_array($role, old('visible_to', [])) ? 'checked' : '' }}
+                                   class="w-4 h-4 rounded cursor-pointer"
+                                   style="accent-color: var(--dash-primary);">
+                            <span>{{ $role }}</span>
+                        </label>
+                    @endforeach
+                </div>
+            </div>
+
+            <!-- File Upload -->
+            <div class="pt-2">
+                <label for="file" class="mb-1.5 block text-sm font-semibold" style="color: var(--dash-text-body);">
+                    File Dokumen SOP <span style="color: var(--dash-danger);">*</span>
+                </label>
+                <div class="p-3 rounded-xl border border-dashed"
+                     style="background-color: var(--dash-input-bg); border-color: var(--dash-input-border);">
+                    <input type="file" id="file" name="file" required
+                           class="block w-full text-sm cursor-pointer focus:outline-none"
+                           style="color: var(--dash-text-body);"
+                           aria-required="true">
+                </div>
             </div>
         </div>
-        <div>
-            <label class="mb-1.5 block text-sm font-medium text-slate-700">File SOP <span class="text-red-500">*</span></label>
-            <input type="file" name="file" required class="block w-full text-sm text-slate-600">
-        </div>
-        <div class="flex gap-3 pt-2">
-            <button type="submit" class="inline-flex min-h-10 items-center gap-2 bg-[#215aac] px-5 text-sm font-semibold text-white hover:bg-[#194a91]">Upload</button>
-            <a href="{{ route('sop-documents.index') }}" class="inline-flex min-h-10 items-center border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50">Batal</a>
+
+        <!-- Form Actions -->
+        <div class="p-5 sm:px-7 flex flex-col-reverse sm:flex-row items-center justify-end gap-3 rounded-b-2xl"
+             style="background-color: var(--dash-nav-hover-bg); border-top: 1px solid var(--dash-card-border);">
+            <a href="{{ route('sop-documents.index') }}"
+               class="w-full sm:w-auto inline-flex justify-center items-center gap-1.5 px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors"
+               style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+               onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+               onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                <span class="material-symbols-outlined text-[18px]">close</span> Batal
+            </a>
+            <button type="submit"
+                    :disabled="isSubmitting"
+                    class="w-full sm:w-auto inline-flex justify-center items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-70 disabled:cursor-not-allowed"
+                    style="background-color: var(--dash-primary);">
+                <span x-show="!isSubmitting" class="material-symbols-outlined text-[18px]">upload</span>
+                <span x-show="!isSubmitting">Upload Dokumen</span>
+                <span x-show="isSubmitting" class="material-symbols-outlined animate-spin text-[18px]" x-cloak>progress_activity</span>
+                <span x-show="isSubmitting" x-cloak>Mengunggah...</span>
+            </button>
         </div>
     </form>
 </div>

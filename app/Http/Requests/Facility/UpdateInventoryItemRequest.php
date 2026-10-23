@@ -18,6 +18,8 @@ class UpdateInventoryItemRequest extends FormRequest
             'category' => ['nullable', 'string', 'max:100'],
             'inventory_type' => ['sometimes', 'in:FIXED_ASSET,SUPPLIES,OTHER'],
             'unit' => ['sometimes', 'string', 'max:50'],
+            'condition_status' => ['nullable', 'string', 'max:50'],
+            'location' => ['nullable', 'string', 'max:150'],
             'purchase_date' => ['nullable', 'date'],
             'purchase_price' => ['nullable', 'numeric', 'min:0'],
             'input_date' => ['nullable', 'date'],

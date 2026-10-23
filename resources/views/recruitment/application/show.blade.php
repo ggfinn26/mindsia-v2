@@ -1,171 +1,284 @@
 @extends('layouts.dashboard')
 
-@section('content')
-<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-5xl mx-auto" x-data="{
-    showRejectModal: false,
-    showPsikotestModal: false,
-    showInterviewModal: false,
-    showEvalModal: false,
-    showOfferingModal: false,
-    showNegotiateModal: false,
-    showOnboardingModal: false,
-    evalScheduleId: null,
-    openEval(id) { this.evalScheduleId = id; this.showEvalModal = true; },
-}">
+@section('title', 'Detail Aplikasi Lowongan')
+@section('header_title', 'Detail Aplikasi Lowongan')
 
+@section('content')
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-5xl mx-auto space-y-6"
+     x-data="{
+        showRejectModal: false,
+        showPsikotestModal: false,
+        showInterviewModal: false,
+        showEvalModal: false,
+        showOfferingModal: false,
+        showNegotiateModal: false,
+        showOnboardingModal: false,
+        showConfirmActionModal: false,
+        confirmActionUrl: '',
+        confirmActionTitle: '',
+        confirmActionMessage: '',
+        confirmActionMethod: 'POST',
+        confirmActionIsDanger: false,
+        confirmActionBtnText: 'Konfirmasi',
+        evalScheduleId: null,
+        interviewType: 'offline',
+        meetType: '',
+        openEval(id) {
+            this.evalScheduleId = id;
+            this.showEvalModal = true;
+        },
+        promptAction(url, title, message, method = 'POST', isDanger = false, btnText = 'Konfirmasi') {
+            this.confirmActionUrl = url;
+            this.confirmActionTitle = title;
+            this.confirmActionMessage = message;
+            this.confirmActionMethod = method;
+            this.confirmActionIsDanger = isDanger;
+            this.confirmActionBtnText = btnText;
+            this.showConfirmActionModal = true;
+        }
+     }">
+
+    {{-- Page Header Pola B3 --}}
+    <div>
+        <a href="{{ route('recruitment.application.index') }}" class="dash-back mb-3">
+            <span class="material-symbols-outlined">arrow_back</span>Kembali ke Daftar Lamaran
+        </a>
+        <p class="text-xs font-semibold uppercase tracking-wider mb-1"
+           style="color: var(--dash-primary-text);">Rekrutmen</p>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+            style="color: var(--dash-text-heading);">Detail Aplikasi Lowongan</h1>
+        <p class="text-sm mt-1" style="color: var(--dash-text-muted);">
+            Kelola tahapan seleksi, psikotes, wawancara, negosiasi penawaran, dan onboarding.
+        </p>
+    </div>
+
+    {{-- Flash Messages --}}
     @if(session('success'))
-        <div class="mb-4 px-4 py-3 bg-green-50 border border-green-200 rounded-lg text-green-800 text-sm">
-            {{ session('success') }}
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"
+             style="background-color: #f0fdf4; border: 1px solid #bbf7d0; color: #059669;">
+            <span class="material-symbols-outlined text-[18px]">check_circle</span>
+            <p>{{ session('success') }}</p>
         </div>
     @endif
 
-    <div class="mb-8 flex justify-between items-center">
-        <h1 class="text-2xl md:text-3xl text-gray-800 font-bold">Detail Aplikasi Lowongan</h1>
-        <a href="{{ route('recruitment.application.index') }}" class="btn bg-white border-gray-200 hover:border-gray-300 text-gray-600">Kembali</a>
-    </div>
+    @if(session('error'))
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"
+             style="background-color: #fef2f2; border: 1px solid #fecaca; color: #dc2626;">
+            <span class="material-symbols-outlined text-[18px]">error</span>
+            <p>{{ session('error') }}</p>
+        </div>
+    @endif
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         {{-- Sidebar: Profil Pelamar --}}
-        <div class="bg-white shadow-lg rounded-sm border border-gray-200 p-6 md:col-span-1">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">Profil Pelamar</h2>
+        <div class="rounded-2xl p-6 shadow-sm md:col-span-1 space-y-5"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <div class="pb-3" style="border-bottom: 1px solid var(--dash-card-border);">
+                <h2 class="font-jakarta text-base font-bold" style="color: var(--dash-text-heading);">Profil Pelamar</h2>
+                <p class="text-xs mt-0.5" style="color: var(--dash-text-muted);">Data identitas dan latar belakang kandidat</p>
+            </div>
+
             <div class="space-y-4">
                 <div>
-                    <h3 class="text-sm font-semibold text-gray-500 mb-1">Nama Lengkap</h3>
-                    <p class="text-gray-900 font-medium">{{ $jobApplication->applicant->full_name ?? '-' }}</p>
+                    <p class="text-[11px] font-semibold uppercase tracking-wider mb-1" style="color: var(--dash-text-faint);">Nama Lengkap</p>
+                    <p class="text-sm font-semibold" style="color: var(--dash-text-heading);">{{ $jobApplication->applicant->full_name ?? '-' }}</p>
                 </div>
                 <div>
-                    <h3 class="text-sm font-semibold text-gray-500 mb-1">Email</h3>
-                    <p class="text-gray-900 font-medium">{{ $jobApplication->applicant->email ?? '-' }}</p>
+                    <p class="text-[11px] font-semibold uppercase tracking-wider mb-1" style="color: var(--dash-text-faint);">Email</p>
+                    <p class="text-sm font-medium" style="color: var(--dash-text-heading);">{{ $jobApplication->applicant->email ?? '-' }}</p>
                 </div>
                 <div>
-                    <h3 class="text-sm font-semibold text-gray-500 mb-1">WhatsApp</h3>
-                    <p class="text-gray-900 font-medium">
+                    <p class="text-[11px] font-semibold uppercase tracking-wider mb-1" style="color: var(--dash-text-faint);">WhatsApp</p>
+                    <p class="text-sm font-medium" style="color: var(--dash-text-heading);">
                         {{ $jobApplication->applicant->whatsapp_number ? '+62'.$jobApplication->applicant->whatsapp_number : '-' }}
                     </p>
                 </div>
                 <div>
-                    <h3 class="text-sm font-semibold text-gray-500 mb-1">Tanggal Lamar</h3>
-                    <p class="text-gray-900 font-medium">
+                    <p class="text-[11px] font-semibold uppercase tracking-wider mb-1" style="color: var(--dash-text-faint);">Tanggal Melamar</p>
+                    <p class="text-sm font-medium" style="color: var(--dash-text-heading);">
                         {{ $jobApplication->applied_at?->format('d M Y H:i') ?? '-' }}
                     </p>
                 </div>
                 <div>
-                    <h3 class="text-sm font-semibold text-gray-500 mb-1">Sumber</h3>
-                    <p class="text-gray-900 font-medium capitalize">{{ str_replace('_', ' ', $jobApplication->application_source) }}</p>
+                    <p class="text-[11px] font-semibold uppercase tracking-wider mb-1" style="color: var(--dash-text-faint);">Sumber Lamaran</p>
+                    <p class="text-sm font-medium capitalize" style="color: var(--dash-text-heading);">
+                        {{ str_replace('_', ' ', $jobApplication->application_source) }}
+                    </p>
                 </div>
+
                 @if($jobApplication->applicant?->educations?->count())
-                    <div>
-                        <h3 class="text-sm font-semibold text-gray-500 mb-2">Pendidikan</h3>
-                        @foreach($jobApplication->applicant->educations as $edu)
-                            <p class="text-sm text-gray-700">{{ $edu->institution_name }} — {{ $edu->major ?? '-' }} ({{ $edu->graduation_year ?? '-' }})</p>
-                        @endforeach
+                    <div class="pt-3" style="border-top: 1px solid var(--dash-card-border);">
+                        <p class="text-[11px] font-semibold uppercase tracking-wider mb-2" style="color: var(--dash-text-faint);">Pendidikan</p>
+                        <div class="space-y-2">
+                            @foreach($jobApplication->applicant->educations as $edu)
+                                <div class="text-xs p-2.5 rounded-lg"
+                                     style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border);">
+                                    <p class="font-bold" style="color: var(--dash-text-heading);">{{ $edu->institution_name }}</p>
+                                    <p class="mt-0.5" style="color: var(--dash-text-muted);">{{ $edu->major ?? '-' }} ({{ $edu->graduation_year ?? '-' }})</p>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 @endif
+
                 @if($jobApplication->applicant?->workExperiences?->count())
-                    <div>
-                        <h3 class="text-sm font-semibold text-gray-500 mb-2">Pengalaman Kerja</h3>
-                        @foreach($jobApplication->applicant->workExperiences as $exp)
-                            <p class="text-sm text-gray-700">{{ $exp->company_name }} — {{ $exp->position }}</p>
-                        @endforeach
+                    <div class="pt-3" style="border-top: 1px solid var(--dash-card-border);">
+                        <p class="text-[11px] font-semibold uppercase tracking-wider mb-2" style="color: var(--dash-text-faint);">Pengalaman Kerja</p>
+                        <div class="space-y-2">
+                            @foreach($jobApplication->applicant->workExperiences as $exp)
+                                <div class="text-xs p-2.5 rounded-lg"
+                                     style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border);">
+                                    <p class="font-bold" style="color: var(--dash-text-heading);">{{ $exp->company_name }}</p>
+                                    <p class="mt-0.5" style="color: var(--dash-text-muted);">{{ $exp->position }}</p>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 @endif
             </div>
         </div>
 
-        {{-- Main: Tahapan --}}
-        <div class="bg-white shadow-lg rounded-sm border border-gray-200 p-6 md:col-span-2">
-            <div class="flex justify-between items-start mb-6">
+        {{-- Main: Tahapan Rekrutmen --}}
+        <div class="rounded-2xl p-6 shadow-sm md:col-span-2 space-y-6"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            @php
+                $statusMap = [
+                    'applied'   => ['bg' => 'bg-slate-100 dark:bg-slate-800', 'text' => 'text-slate-700 dark:text-slate-300', 'label' => 'Applied'],
+                    'screening' => ['bg' => 'bg-blue-100 dark:bg-blue-950/40', 'text' => 'text-blue-700 dark:text-blue-400', 'label' => 'Screening'],
+                    'interview' => ['bg' => 'bg-amber-100 dark:bg-amber-950/40', 'text' => 'text-amber-700 dark:text-amber-400', 'label' => 'Interview'],
+                    'offering'  => ['bg' => 'bg-purple-100 dark:bg-purple-950/40', 'text' => 'text-purple-700 dark:text-purple-400', 'label' => 'Offering'],
+                    'hired'     => ['bg' => 'bg-emerald-100 dark:bg-emerald-950/40', 'text' => 'text-emerald-700 dark:text-emerald-400', 'label' => 'Hired'],
+                    'rejected'  => ['bg' => 'bg-red-100 dark:bg-red-950/40', 'text' => 'text-red-700 dark:text-red-400', 'label' => 'Rejected'],
+                ];
+                $st = $statusMap[$jobApplication->status] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700', 'label' => ucfirst($jobApplication->status)];
+            @endphp
+
+            <div class="flex items-start justify-between pb-4" style="border-bottom: 1px solid var(--dash-card-border);">
                 <div>
-                    <h2 class="text-xl font-bold text-gray-800 mb-1">Progres Recruitment</h2>
-                    <p class="text-sm text-gray-500">Posisi: <span class="font-semibold text-gray-700">{{ $jobApplication->posting->title ?? 'Reserve/Manual' }}</span></p>
+                    <h2 class="font-jakarta text-lg font-bold" style="color: var(--dash-text-heading);">Progres Rekrutmen</h2>
+                    <p class="text-xs mt-0.5" style="color: var(--dash-text-muted);">
+                        Posisi: <span class="font-semibold" style="color: var(--dash-primary-text);">{{ $jobApplication->posting->title ?? 'Reserve / Manual' }}</span>
+                    </p>
                 </div>
-                @php
-                    $statusColors = [
-                        'applied'   => 'bg-gray-100 text-gray-800',
-                        'screening' => 'bg-blue-100 text-blue-800',
-                        'interview' => 'bg-yellow-100 text-yellow-800',
-                        'offering'  => 'bg-purple-100 text-purple-800',
-                        'hired'     => 'bg-green-100 text-green-800',
-                        'rejected'  => 'bg-red-100 text-red-800',
-                    ];
-                    $statusColor = $statusColors[$jobApplication->status] ?? 'bg-gray-100 text-gray-800';
-                @endphp
-                <span class="px-3 py-1 text-sm font-semibold rounded-full {{ $statusColor }}">
-                    {{ Str::title($jobApplication->status) }}
+                <span class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full {{ $st['bg'] }} {{ $st['text'] }}">
+                    {{ $st['label'] }}
                 </span>
             </div>
 
-            {{-- Timeline stages --}}
-            <div class="relative border-l-2 border-indigo-200 ml-3 mb-8">
-                @forelse($jobApplication->stages as $stage)
-                    <div class="mb-6 ml-6">
-                        <span class="absolute flex items-center justify-center w-6 h-6 {{ $stage->result === 'rejected' ? 'bg-red-400' : 'bg-indigo-500' }} rounded-full -left-3 ring-4 ring-white"></span>
-                        <h3 class="font-bold text-gray-800 capitalize">{{ str_replace('_', ' ', $stage->stage) }}</h3>
-                        <p class="text-xs text-gray-400 mt-0.5">{{ $stage->created_at->format('d M Y H:i') }}</p>
-                        @if($stage->notes)
-                            <p class="text-sm text-gray-600 mt-1">{{ $stage->notes }}</p>
-                        @endif
-                    </div>
-                @empty
-                    <div class="mb-6 ml-6">
-                        <span class="absolute flex items-center justify-center w-6 h-6 bg-gray-200 rounded-full -left-3 ring-4 ring-white"></span>
-                        <p class="text-sm text-gray-500">Belum ada tahapan tercatat.</p>
-                    </div>
-                @endforelse
+            {{-- Timeline Stages --}}
+            <div>
+                <p class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--dash-text-faint);">Jejak Tahapan Seleksi</p>
+                <div class="relative pl-6 space-y-4" style="border-left: 2px solid var(--dash-card-border);">
+                    @forelse($jobApplication->stages as $stage)
+                        @php
+                            $isStageRejected = $stage->result === 'rejected';
+                        @endphp
+                        <div class="relative">
+                            <span class="absolute -left-[31px] top-0.5 flex items-center justify-center w-5 h-5 rounded-full"
+                                  style="background-color: {{ $isStageRejected ? 'var(--dash-danger, #dc2626)' : 'var(--dash-primary)' }}; color: white;">
+                                <span class="material-symbols-outlined text-[12px]">{{ $isStageRejected ? 'close' : 'check' }}</span>
+                            </span>
+                            <h3 class="font-semibold text-sm capitalize" style="color: var(--dash-text-heading);">
+                                {{ str_replace('_', ' ', $stage->stage) }}
+                            </h3>
+                            <p class="text-[11px] mt-0.5" style="color: var(--dash-text-faint);">{{ $stage->created_at->format('d M Y H:i') }}</p>
+                            @if($stage->notes)
+                                <p class="text-xs mt-1 p-2 rounded-lg"
+                                   style="background-color: var(--dash-nav-hover-bg); color: var(--dash-text-body);">
+                                    {{ $stage->notes }}
+                                </p>
+                            @endif
+                        </div>
+                    @empty
+                        <div class="relative">
+                            <span class="absolute -left-[31px] top-0.5 flex items-center justify-center w-5 h-5 rounded-full"
+                                  style="background-color: var(--dash-card-border); color: var(--dash-text-muted);">
+                                <span class="material-symbols-outlined text-[12px]">hourglass_empty</span>
+                            </span>
+                            <p class="text-xs" style="color: var(--dash-text-muted);">Belum ada tahapan seleksi tercatat.</p>
+                        </div>
+                    @endforelse
+                </div>
             </div>
 
-            {{-- Psikotest info (jika sudah ada) --}}
+            {{-- Psikotest Info --}}
             @if($jobApplication->psikotest)
-                <div class="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                    <h3 class="font-semibold text-blue-800 mb-2">Psikotest</h3>
-                    <p class="text-sm text-blue-700">
-                        Tanggal: {{ $jobApplication->psikotest->psikotest_date ? \Carbon\Carbon::parse($jobApplication->psikotest->psikotest_date)->format('d M Y') : '-' }}
+                <div class="p-4 rounded-xl"
+                     style="background-color: color-mix(in srgb, var(--dash-primary) 8%, transparent); border: 1px solid color-mix(in srgb, var(--dash-primary) 20%, transparent);">
+                    <div class="flex items-center gap-2 mb-1.5">
+                        <span class="material-symbols-outlined text-[18px]" style="color: var(--dash-primary);">psychology</span>
+                        <h3 class="font-bold text-sm" style="color: var(--dash-primary-text);">Psikotest Terjadwal</h3>
+                    </div>
+                    <p class="text-xs" style="color: var(--dash-text-body);">
+                        Tanggal: <span class="font-semibold" style="color: var(--dash-text-heading);">{{ $jobApplication->psikotest->psikotest_date ? \Carbon\Carbon::parse($jobApplication->psikotest->psikotest_date)->format('d M Y') : '-' }}</span>
                         @if($jobApplication->psikotest->psikotest_link)
-                            | <a href="{{ $jobApplication->psikotest->psikotest_link }}" target="_blank" class="underline">Link Tes</a>
+                            &bull; <a href="{{ $jobApplication->psikotest->psikotest_link }}" target="_blank" class="underline font-semibold" style="color: var(--dash-primary-text);">Buka Tautan Tes</a>
                         @endif
                     </p>
                 </div>
             @endif
 
-            {{-- Interview schedules (jika ada) --}}
+            {{-- Jadwal Interview --}}
             @if($jobApplication->interviewSchedules->count())
-                <div class="mb-6">
-                    <h3 class="font-semibold text-gray-700 mb-3">Jadwal Interview</h3>
+                <div class="space-y-3">
+                    <p class="text-[11px] font-semibold uppercase tracking-wider" style="color: var(--dash-text-faint);">Jadwal Interview</p>
                     @foreach($jobApplication->interviewSchedules as $schedule)
-                        <div class="p-4 bg-yellow-50 rounded-lg border border-yellow-200 mb-3">
-                            <div class="flex justify-between items-start">
+                        <div class="p-4 rounded-xl space-y-2"
+                             style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border);">
+                            <div class="flex items-start justify-between gap-3">
                                 <div>
-                                    <p class="text-sm font-semibold text-yellow-800">
-                                        {{ \Carbon\Carbon::parse($schedule->scheduled_at)->format('d M Y H:i') }}
-                                        ({{ Str::title($schedule->interview_type) }})
-                                    </p>
+                                    <div class="flex items-center gap-1.5 font-bold text-sm" style="color: var(--dash-text-heading);">
+                                        <span class="material-symbols-outlined text-[16px]" style="color: var(--dash-primary);">event</span>
+                                        <span>{{ \Carbon\Carbon::parse($schedule->scheduled_at)->format('d M Y H:i') }}</span>
+                                        <span class="text-xs px-2 py-0.5 rounded-full font-semibold" style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+                                            {{ Str::title($schedule->interview_type) }}
+                                        </span>
+                                    </div>
                                     @if($schedule->location)
-                                        <p class="text-xs text-yellow-700 mt-1">Lokasi: {{ $schedule->location }}</p>
+                                        <p class="text-xs mt-1" style="color: var(--dash-text-muted);">Lokasi: {{ $schedule->location }}</p>
                                     @endif
                                     @if($schedule->meeting_link)
-                                        <p class="text-xs text-yellow-700 mt-1">Link: <a href="{{ $schedule->meeting_link }}" target="_blank" class="underline">Meeting</a></p>
+                                        <p class="text-xs mt-1" style="color: var(--dash-text-muted);">
+                                            Tautan: <a href="{{ $schedule->meeting_link }}" target="_blank" class="underline font-medium" style="color: var(--dash-primary-text);">Meeting Link</a>
+                                        </p>
                                     @endif
                                     @if($schedule->interviewer)
-                                        <p class="text-xs text-yellow-700 mt-1">Interviewer: {{ $schedule->interviewer->full_name }}</p>
+                                        <p class="text-xs mt-1" style="color: var(--dash-text-muted);">Interviewer: {{ $schedule->interviewer->full_name }}</p>
                                     @endif
                                 </div>
+
                                 @if(!$schedule->evaluation)
-                                    <div class="flex gap-2 ml-2">
+                                    <div class="flex items-center gap-2 shrink-0">
                                         @can('recruitment.interview.evaluate')
-                                            <button type="button" @click="openEval({{ $schedule->id }})" class="text-xs text-indigo-600 hover:text-indigo-800 font-semibold">Isi Evaluasi</button>
+                                            <button type="button" @click="openEval({{ $schedule->id }})"
+                                                    class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-lg text-white transition-opacity hover:opacity-90"
+                                                    style="background-color: var(--dash-primary);">
+                                                <span class="material-symbols-outlined text-[14px]">rate_review</span>
+                                                Isi Evaluasi
+                                            </button>
                                         @endcan
                                         @can('recruitment.interview.delete')
-                                            <form action="{{ route('recruitment.interviews.destroy', $schedule) }}" method="POST" onsubmit="return confirm('Hapus jadwal interview ini?')">
-                                                @csrf @method('DELETE')
-                                                <button type="submit" class="text-xs text-red-500 hover:text-red-700">Hapus</button>
-                                            </form>
+                                            <button type="button"
+                                                    @click="promptAction('{{ route('recruitment.interviews.destroy', $schedule) }}', 'Hapus Jadwal Interview?', 'Jadwal interview ini akan dibatalkan dan dihapus.', 'DELETE', true, 'Ya, Hapus')"
+                                                    class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-white rounded-lg transition-opacity hover:opacity-90"
+                                                    style="background-color: var(--dash-danger, #dc2626);">
+                                                <span class="material-symbols-outlined text-[14px]">delete</span>
+                                                Hapus
+                                            </button>
                                         @endcan
                                     </div>
                                 @endif
                             </div>
+
                             @if($schedule->evaluation)
-                                <div class="mt-3 pt-3 border-t border-yellow-300">
-                                    <p class="text-xs font-semibold text-yellow-800">Evaluasi: Score {{ $schedule->evaluation->total_score }}/20 — {{ Str::title($schedule->evaluation->decision) }}</p>
+                                <div class="pt-2.5 mt-2.5 text-xs flex items-center justify-between"
+                                     style="border-top: 1px solid var(--dash-card-border);">
+                                    <span class="font-medium" style="color: var(--dash-text-muted);">
+                                        Hasil Evaluasi: Skor {{ $schedule->evaluation->total_score }}/20
+                                    </span>
+                                    <span class="font-bold uppercase px-2 py-0.5 rounded-full {{ $schedule->evaluation->decision === 'accepted' ? 'bg-emerald-100 text-emerald-800' : ($schedule->evaluation->decision === 'reserve' ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800') }}">
+                                        {{ $schedule->evaluation->decision }}
+                                    </span>
                                 </div>
                             @endif
                         </div>
@@ -173,460 +286,903 @@
                 </div>
             @endif
 
-            {{-- Action buttons --}}
-            @if(!in_array($jobApplication->status, ['hired', 'rejected']))
-                <div class="mt-6 pt-6 border-t border-gray-200 flex flex-wrap justify-end gap-3">
+            {{-- Offering Letter Section --}}
+            @if($jobApplication->offeringLetter)
+                @php $letter = $jobApplication->offeringLetter; @endphp
+                <div class="p-4 rounded-xl space-y-3"
+                     style="background-color: color-mix(in srgb, #9333ea 8%, transparent); border: 1px solid color-mix(in srgb, #9333ea 20%, transparent);">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[18px]" style="color: #9333ea;">description</span>
+                            <h3 class="font-bold text-sm" style="color: #9333ea;">Offering Letter</h3>
+                        </div>
+                        <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full
+                            {{ $letter->status === 'accepted' ? 'bg-emerald-100 text-emerald-800' : ($letter->status === 'declined' ? 'bg-red-100 text-red-800' : 'bg-purple-100 text-purple-800') }}">
+                            {{ Str::title($letter->status) }}
+                        </span>
+                    </div>
 
-                    {{-- Reject --}}
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <div>
+                            <span style="color: var(--dash-text-muted);">Gaji Ditawarkan:</span>
+                            <span class="font-bold ml-1" style="color: var(--dash-text-heading);">Rp {{ number_format($letter->offered_salary, 0, ',', '.') }}</span>
+                        </div>
+                        @if($letter->agreed_salary)
+                            <div>
+                                <span style="color: var(--dash-text-muted);">Gaji Disepakati:</span>
+                                <span class="font-bold ml-1" style="color: var(--dash-text-heading);">Rp {{ number_format($letter->agreed_salary, 0, ',', '.') }}</span>
+                            </div>
+                        @endif
+                        @if($letter->start_date)
+                            <div>
+                                <span style="color: var(--dash-text-muted);">Tanggal Mulai Kerja:</span>
+                                <span class="font-bold ml-1" style="color: var(--dash-text-heading);">{{ \Carbon\Carbon::parse($letter->start_date)->format('d M Y') }}</span>
+                            </div>
+                        @endif
+                    </div>
+
+                    @if($letter->notes)
+                        <p class="text-xs italic" style="color: var(--dash-text-body);">Catatan: {{ $letter->notes }}</p>
+                    @endif
+
+                    @if(!in_array($letter->status, ['accepted', 'declined']))
+                        <div class="pt-2 flex flex-wrap gap-2" style="border-top: 1px solid color-mix(in srgb, #9333ea 20%, transparent);">
+                            @can('recruitment.offering_letter.negotiate')
+                                <button type="button" @click="showNegotiateModal = true"
+                                        class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors"
+                                        style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-heading);"
+                                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                    <span class="material-symbols-outlined text-[14px]">currency_exchange</span>
+                                    Catat Negosiasi
+                                </button>
+                            @endcan
+                            @can('recruitment.offering_letter.update')
+                                <button type="button"
+                                        @click="promptAction('{{ route('recruitment.offering-letters.accept', $letter) }}', 'Terima Penawaran?', 'Kandidat menyetujui surat penawaran kerja ini.', 'POST', false, 'Konfirmasi Terima')"
+                                        class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-white rounded-lg transition-opacity hover:opacity-90"
+                                        style="background-color: #16a34a;">
+                                    <span class="material-symbols-outlined text-[14px]">check</span>
+                                    Terima Penawaran
+                                </button>
+                                <button type="button"
+                                        @click="promptAction('{{ route('recruitment.offering-letters.decline', $letter) }}', 'Tolak Penawaran?', 'Kandidat menolak penawaran kerja ini. Status lamaran akan ditutup.', 'POST', true, 'Tolak Penawaran')"
+                                        class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-white rounded-lg transition-opacity hover:opacity-90"
+                                        style="background-color: var(--dash-danger, #dc2626);">
+                                    <span class="material-symbols-outlined text-[14px]">close</span>
+                                    Tolak Penawaran
+                                </button>
+                            @endcan
+                        </div>
+                    @endif
+                </div>
+            @endif
+
+            {{-- Onboarding Link --}}
+            @if($jobApplication->onboarding)
+                <div class="p-3.5 rounded-xl flex items-center justify-between"
+                     style="background-color: color-mix(in srgb, #16a34a 10%, transparent); border: 1px solid color-mix(in srgb, #16a34a 25%, transparent);">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[18px]" style="color: #16a34a;">work_history</span>
+                        <span class="text-xs font-bold" style="color: #15803d;">
+                            Onboarding #{{ $jobApplication->onboarding->id }} - {{ Str::title($jobApplication->onboarding->status) }}
+                        </span>
+                    </div>
+                    <a href="{{ route('recruitment.onboarding.show', $jobApplication->onboarding) }}"
+                       class="inline-flex items-center gap-1 text-xs font-bold underline"
+                       style="color: #15803d;">
+                        Buka Onboarding <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                    </a>
+                </div>
+            @endif
+
+            {{-- Action Buttons Row --}}
+            @if(!in_array($jobApplication->status, ['hired', 'rejected']))
+                <div class="pt-5 flex flex-wrap items-center justify-end gap-3"
+                     style="border-top: 1px solid var(--dash-card-border);">
                     @can('recruitment.job_application.review')
-                        <button type="button" @click="showRejectModal = true" class="btn bg-red-500 hover:bg-red-600 text-white">
-                            Reject Pelamar
+                        <button type="button" @click="showRejectModal = true"
+                                class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white rounded-lg transition-opacity hover:opacity-90"
+                                style="background-color: var(--dash-danger, #dc2626);">
+                            <span class="material-symbols-outlined text-[14px]">cancel</span>
+                            Tolak Pelamar
                         </button>
                     @endcan
 
-                    {{-- Advance: applied → psikotest --}}
                     @if($jobApplication->status === 'applied')
                         @can('recruitment.psikotest.create')
-                            <button type="button" @click="showPsikotestModal = true" class="btn bg-indigo-500 hover:bg-indigo-600 text-white">
-                                Mulai Psikotest
+                            <button type="button" @click="showPsikotestModal = true"
+                                    class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white rounded-lg transition-opacity hover:opacity-90"
+                                    style="background-color: var(--dash-primary);">
+                                <span class="material-symbols-outlined text-[14px]">psychology</span>
+                                Jadwalkan Psikotest
                             </button>
                         @endcan
                     @endif
 
-                    {{-- Advance: screening → interview --}}
                     @if($jobApplication->status === 'screening')
                         @can('recruitment.interview.create')
-                            <button type="button" @click="showInterviewModal = true" class="btn bg-indigo-500 hover:bg-indigo-600 text-white">
+                            <button type="button" @click="showInterviewModal = true"
+                                    class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white rounded-lg transition-opacity hover:opacity-90"
+                                    style="background-color: var(--dash-primary);">
+                                <span class="material-symbols-outlined text-[14px]">event</span>
                                 Jadwalkan Interview
                             </button>
                         @endcan
                     @endif
 
-                    {{-- Interview: sudah ada jadwal, bisa tambah lagi --}}
                     @if($jobApplication->status === 'interview')
                         @can('recruitment.interview.create')
-                            <button type="button" @click="showInterviewModal = true" class="btn bg-yellow-500 hover:bg-yellow-600 text-white">
+                            <button type="button" @click="showInterviewModal = true"
+                                    class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-lg transition-colors"
+                                    style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-heading);"
+                                    onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                    onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                <span class="material-symbols-outlined text-[14px]">add</span>
                                 + Jadwal Interview
                             </button>
                         @endcan
-                        {{-- Buat offering letter jika evaluasi accepted & belum ada letter --}}
+
                         @if($jobApplication->interviewEvaluation?->decision === 'accepted' && !$jobApplication->offeringLetter)
                             @can('recruitment.offering_letter.create')
-                                <button type="button" @click="showOfferingModal = true" class="btn bg-purple-600 hover:bg-purple-700 text-white">
+                                <button type="button" @click="showOfferingModal = true"
+                                        class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white rounded-lg transition-opacity hover:opacity-90"
+                                        style="background-color: #9333ea;">
+                                    <span class="material-symbols-outlined text-[14px]">description</span>
                                     Buat Offering Letter
                                 </button>
                             @endcan
                         @endif
                     @endif
 
-                </div>
-            @endif
-
-            {{-- Onboarding trigger (offering=accepted, belum ada onboarding) --}}
-            @if($jobApplication->offeringLetter?->status === 'accepted' && !$jobApplication->onboarding)
-                @can('recruitment.onboarding.create')
-                    <div class="mt-4 flex justify-end">
-                        <button type="button" @click="showOnboardingModal = true" class="btn bg-green-600 hover:bg-green-700 text-white">
-                            Buat Onboarding
-                        </button>
-                    </div>
-                @endcan
-            @endif
-            @if($jobApplication->onboarding)
-                <div class="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center justify-between">
-                    <span class="text-sm text-green-800 font-medium">Onboarding #{{ $jobApplication->onboarding->id }} — {{ Str::title($jobApplication->onboarding->status) }}</span>
-                    <a href="{{ route('recruitment.onboarding.show', $jobApplication->onboarding) }}" class="text-sm text-green-700 underline">Buka →</a>
-                </div>
-            @endif
-
-            {{-- Offering Letter section --}}
-            @if($jobApplication->offeringLetter)
-                @php $letter = $jobApplication->offeringLetter; @endphp
-                <div class="mt-6 p-4 bg-purple-50 rounded-lg border border-purple-200">
-                    <h3 class="font-semibold text-purple-800 mb-3">Offering Letter</h3>
-                    <div class="grid grid-cols-2 gap-3 text-sm mb-3">
-                        <div>
-                            <span class="text-purple-600 font-medium">Gaji Ditawarkan:</span>
-                            <span class="text-gray-900 ml-1">Rp {{ number_format($letter->offered_salary, 0, ',', '.') }}</span>
-                        </div>
-                        @if($letter->agreed_salary)
-                            <div>
-                                <span class="text-purple-600 font-medium">Gaji Disepakati:</span>
-                                <span class="text-gray-900 ml-1">Rp {{ number_format($letter->agreed_salary, 0, ',', '.') }}</span>
-                            </div>
-                        @endif
-                        @if($letter->start_date)
-                            <div>
-                                <span class="text-purple-600 font-medium">Tanggal Mulai:</span>
-                                <span class="text-gray-900 ml-1">{{ \Carbon\Carbon::parse($letter->start_date)->format('d M Y') }}</span>
-                            </div>
-                        @endif
-                        <div>
-                            <span class="text-purple-600 font-medium">Status:</span>
-                            <span class="ml-1 px-2 py-0.5 text-xs font-semibold rounded-full
-                                {{ $letter->status === 'accepted' ? 'bg-green-100 text-green-800' : ($letter->status === 'declined' ? 'bg-red-100 text-red-800' : 'bg-purple-100 text-purple-800') }}">
-                                {{ Str::title($letter->status) }}
-                            </span>
-                        </div>
-                    </div>
-                    @if($letter->notes)
-                        <p class="text-xs text-purple-700 mb-3">Catatan: {{ $letter->notes }}</p>
+                    @if($jobApplication->offeringLetter?->status === 'accepted' && !$jobApplication->onboarding)
+                        @can('recruitment.onboarding.create')
+                            <button type="button" @click="showOnboardingModal = true"
+                                    class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white rounded-lg transition-opacity hover:opacity-90"
+                                    style="background-color: #16a34a;">
+                                <span class="material-symbols-outlined text-[14px]">work_history</span>
+                                Buat Onboarding
+                            </button>
+                        @endcan
                     @endif
-                    @if(!in_array($letter->status, ['accepted', 'declined']))
-                        <div class="flex flex-wrap gap-2">
-                            @can('recruitment.offering_letter.negotiate')
-                                <button type="button" @click="showNegotiateModal = true" class="btn btn-sm bg-yellow-500 hover:bg-yellow-600 text-white text-xs">
-                                    Catat Negosiasi
+                </div>
+            @endif
+        </div>
+    </div>
+
+    {{-- ── Modal: Buat Onboarding ── --}}
+    <template x-teleport="body">
+        <div x-show="showOnboardingModal" style="display:none;" class="relative z-50" role="dialog" aria-modal="true">
+            <div x-show="showOnboardingModal"
+                 x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                 x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
+                 @click="showOnboardingModal = false"></div>
+
+            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <div x-show="showOnboardingModal" @click.away="showOnboardingModal = false"
+                         x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                         x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                         class="relative transform rounded-2xl text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md"
+                         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+
+                        <div class="rounded-t-2xl px-6 py-5"
+                             style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[20px]" style="color: #16a34a;">work_history</span>
+                                    <h3 class="font-jakarta text-base font-bold" style="color: var(--dash-text-heading);">Buat Onboarding Baru</h3>
+                                </div>
+                                <button type="button" @click="showOnboardingModal = false" class="text-xs p-1 rounded-lg transition-colors"
+                                        style="color: var(--dash-text-muted);">
+                                    <span class="material-symbols-outlined text-[18px]">close</span>
                                 </button>
-                            @endcan
-                            @can('recruitment.offering_letter.update')
-                                <form action="{{ route('recruitment.offering-letters.accept', $letter) }}" method="POST" onsubmit="return confirm('Konfirmasi penawaran diterima?')">
-                                    @csrf
-                                    <button type="submit" class="btn btn-sm bg-green-600 hover:bg-green-700 text-white text-xs">Terima Penawaran</button>
-                                </form>
-                                <form action="{{ route('recruitment.offering-letters.decline', $letter) }}" method="POST" onsubmit="return confirm('Penawaran ditolak? Lamaran akan ditutup.')">
-                                    @csrf
-                                    <button type="submit" class="btn btn-sm bg-red-500 hover:bg-red-600 text-white text-xs">Tolak Penawaran</button>
-                                </form>
-                            @endcan
+                            </div>
                         </div>
-                    @endif
-                </div>
-            @endif
-        </div>
-    </div>
 
-    {{-- ── MACRO: modal shell ── color = Tailwind color class prefix (e.g. green, purple) ──────── --}}
-    @php
-    // input class helper reused across all modals
-    $inp = 'w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 bg-gray-50';
-    @endphp
+                        <form action="{{ route('recruitment.application.onboarding.store', $jobApplication) }}" method="POST">
+                            @csrf
+                            <div class="px-6 py-4 space-y-4">
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-faint);">Cabang Penempatan <span class="text-red-500">*</span></label>
+                                    <select name="branch_id" required
+                                            class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                            style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                            onfocus="this.style.borderColor='var(--dash-primary)'"
+                                            onblur="this.style.borderColor='var(--dash-input-border)'">
+                                        <option value="">Pilih Cabang</option>
+                                        @foreach(\App\Models\Branch::orderBy('branch_name')->get() as $branch)
+                                            <option value="{{ $branch->id }}">{{ $branch->branch_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-faint);">Posisi Karyawan <span class="text-red-500">*</span></label>
+                                    <select name="position_id" required
+                                            class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                            style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                            onfocus="this.style.borderColor='var(--dash-primary)'"
+                                            onblur="this.style.borderColor='var(--dash-input-border)'">
+                                        <option value="">Pilih Posisi</option>
+                                        @foreach(\App\Models\Position::orderBy('position_name')->get() as $pos)
+                                            <option value="{{ $pos->id }}">{{ $pos->position_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-faint);">Tipe Karyawan <span class="text-red-500">*</span></label>
+                                    <select name="employment_type" required
+                                            class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                            style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                            onfocus="this.style.borderColor='var(--dash-primary)'"
+                                            onblur="this.style.borderColor='var(--dash-input-border)'">
+                                        <option value="">Pilih Tipe</option>
+                                        <option value="kontrak">Kontrak</option>
+                                        <option value="tetap">Tetap</option>
+                                        <option value="magang">Magang</option>
+                                        <option value="paruh_waktu">Paruh Waktu</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-faint);">Tanggal Mulai Kerja <span class="text-red-500">*</span></label>
+                                    <input type="date" name="start_date" required
+                                           class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                           style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                           onfocus="this.style.borderColor='var(--dash-primary)'"
+                                           onblur="this.style.borderColor='var(--dash-input-border)'">
+                                </div>
+                            </div>
 
-    {{-- ── Modal: Buat Onboarding (green) ─────────────────────────────── --}}
-    <div x-show="showOnboardingModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display:none;">
-        <div @click="showOnboardingModal = false" class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
-        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
-            <div class="bg-green-600 px-6 py-4 flex items-center justify-between">
-                <div class="flex items-center gap-2 text-white">
-                    <span class="material-symbols-outlined text-xl">work_history</span>
-                    <h3 class="text-base font-semibold">Buat Onboarding</h3>
-                </div>
-                <button type="button" @click="showOnboardingModal = false" class="text-white/70 hover:text-white transition-colors">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
-            </div>
-            <form action="{{ route('recruitment.application.onboarding.store', $jobApplication) }}" method="POST" class="p-6 space-y-4">
-                @csrf
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Cabang <span class="text-red-500">*</span></label>
-                    <select name="branch_id" required class="{{ $inp }}">
-                        <option value="">Pilih cabang...</option>
-                        @foreach(\App\Models\Branch::orderBy('branch_name')->get() as $branch)
-                            <option value="{{ $branch->id }}">{{ $branch->branch_name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Posisi <span class="text-red-500">*</span></label>
-                    <select name="position_id" required class="{{ $inp }}">
-                        <option value="">Pilih posisi...</option>
-                        @foreach(\App\Models\Position::orderBy('position_name')->get() as $pos)
-                            <option value="{{ $pos->id }}">{{ $pos->position_name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Tipe Karyawan <span class="text-red-500">*</span></label>
-                    <select name="employment_type" required class="{{ $inp }}">
-                        <option value="">Pilih tipe...</option>
-                        <option value="kontrak">Kontrak</option>
-                        <option value="tetap">Tetap</option>
-                        <option value="magang">Magang</option>
-                        <option value="paruh_waktu">Paruh Waktu</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Tanggal Mulai <span class="text-red-500">*</span></label>
-                    <input type="date" name="start_date" required class="{{ $inp }}">
-                </div>
-                <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
-                    <button type="button" @click="showOnboardingModal = false" class="btn border border-gray-200 text-gray-600 hover:bg-gray-50">Batal</button>
-                    <button type="submit" class="btn bg-green-600 hover:bg-green-700 text-white">Buat Onboarding</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    {{-- ── Modal: Buat Offering Letter (purple) ────────────────────────── --}}
-    <div x-show="showOfferingModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display:none;">
-        <div @click="showOfferingModal = false" class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
-        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
-            <div class="bg-purple-600 px-6 py-4 flex items-center justify-between">
-                <div class="flex items-center gap-2 text-white">
-                    <span class="material-symbols-outlined text-xl">description</span>
-                    <h3 class="text-base font-semibold">Buat Offering Letter</h3>
-                </div>
-                <button type="button" @click="showOfferingModal = false" class="text-white/70 hover:text-white transition-colors">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
-            </div>
-            <form action="{{ route('recruitment.application.offering-letter.store', $jobApplication) }}" method="POST" class="p-6 space-y-4">
-                @csrf
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Gaji Ditawarkan (Rp) <span class="text-red-500">*</span></label>
-                    <input type="number" name="offered_salary" min="0" step="1000" required class="{{ $inp }}" placeholder="6.500.000">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Tanggal Mulai Kerja</label>
-                    <input type="date" name="start_date" class="{{ $inp }}">
-                </div>
-                <div x-data="{ meetType: '' }">
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Pertemuan Penandatanganan</label>
-                    <select name="meeting_type" x-model="meetType" class="{{ $inp }} mb-2">
-                        <option value="">Tidak ada pertemuan</option>
-                        <option value="offline">Offline</option>
-                        <option value="online">Online</option>
-                    </select>
-                    <div x-show="meetType === 'offline'" class="space-y-2">
-                        <input type="datetime-local" name="meeting_at" class="{{ $inp }}">
-                        <input type="text" name="meeting_location" placeholder="Lokasi pertemuan" class="{{ $inp }}">
-                    </div>
-                    <div x-show="meetType === 'online'" class="space-y-2">
-                        <input type="datetime-local" name="meeting_at" class="{{ $inp }}">
-                        <input type="url" name="meeting_link" placeholder="https://meet.google.com/..." class="{{ $inp }}">
+                            <div class="rounded-b-2xl px-6 py-4 flex justify-end gap-3"
+                                 style="background-color: var(--dash-card-bg); border-top: 1px solid var(--dash-card-border);">
+                                <button type="button" @click="showOnboardingModal = false"
+                                        class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                                        style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                    Batal
+                                </button>
+                                <button type="submit"
+                                        class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                                        style="background-color: #16a34a;">
+                                    <span class="material-symbols-outlined text-[16px]">check</span>
+                                    Buat Onboarding
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Catatan</label>
-                    <textarea name="notes" rows="2" class="{{ $inp }}"></textarea>
-                </div>
-                <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
-                    <button type="button" @click="showOfferingModal = false" class="btn border border-gray-200 text-gray-600 hover:bg-gray-50">Batal</button>
-                    <button type="submit" class="btn bg-purple-600 hover:bg-purple-700 text-white">Buat Offering Letter</button>
-                </div>
-            </form>
+            </div>
         </div>
-    </div>
+    </template>
 
-    {{-- ── Modal: Negosiasi (amber) ─────────────────────────────────────── --}}
+    {{-- ── Modal: Buat Offering Letter ── --}}
+    <template x-teleport="body">
+        <div x-show="showOfferingModal" style="display:none;" class="relative z-50" role="dialog" aria-modal="true">
+            <div x-show="showOfferingModal"
+                 x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                 x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
+                 @click="showOfferingModal = false"></div>
+
+            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <div x-show="showOfferingModal" @click.away="showOfferingModal = false"
+                         x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                         x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                         class="relative transform rounded-2xl text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
+                         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+
+                        <div class="rounded-t-2xl px-6 py-5"
+                             style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[20px]" style="color: #9333ea;">description</span>
+                                    <h3 class="font-jakarta text-base font-bold" style="color: var(--dash-text-heading);">Buat Offering Letter</h3>
+                                </div>
+                                <button type="button" @click="showOfferingModal = false" class="text-xs p-1 rounded-lg transition-colors"
+                                        style="color: var(--dash-text-muted);">
+                                    <span class="material-symbols-outlined text-[18px]">close</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <form action="{{ route('recruitment.application.offering-letter.store', $jobApplication) }}" method="POST">
+                            @csrf
+                            <div class="px-6 py-4 space-y-4">
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-faint);">Gaji Ditawarkan (Rp) <span class="text-red-500">*</span></label>
+                                    <input type="number" name="offered_salary" min="0" step="1000" required
+                                           placeholder="Contoh: 6500000"
+                                           class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                           style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                           onfocus="this.style.borderColor='var(--dash-primary)'"
+                                           onblur="this.style.borderColor='var(--dash-input-border)'">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-faint);">Tanggal Mulai Kerja</label>
+                                    <input type="date" name="start_date"
+                                           class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                           style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                           onfocus="this.style.borderColor='var(--dash-primary)'"
+                                           onblur="this.style.borderColor='var(--dash-input-border)'">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-faint);">Pertemuan Penandatanganan</label>
+                                    <select name="meeting_type" x-model="meetType"
+                                            class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all mb-2"
+                                            style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                            onfocus="this.style.borderColor='var(--dash-primary)'"
+                                            onblur="this.style.borderColor='var(--dash-input-border)'">
+                                        <option value="">Tidak ada pertemuan</option>
+                                        <option value="offline">Offline (Tatap Muka)</option>
+                                        <option value="online">Online (Video Call)</option>
+                                    </select>
+                                    <div x-show="meetType === 'offline'" class="space-y-2 mt-2">
+                                        <input type="datetime-local" name="meeting_at"
+                                               class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                               style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);">
+                                        <input type="text" name="meeting_location" placeholder="Lokasi pertemuan..."
+                                               class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                               style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);">
+                                    </div>
+                                    <div x-show="meetType === 'online'" class="space-y-2 mt-2">
+                                        <input type="datetime-local" name="meeting_at"
+                                               class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                               style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);">
+                                        <input type="url" name="meeting_link" placeholder="https://meet.google.com/..."
+                                               class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                               style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-faint);">Catatan Penawaran</label>
+                                    <textarea name="notes" rows="2"
+                                              class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                              style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="rounded-b-2xl px-6 py-4 flex justify-end gap-3"
+                                 style="background-color: var(--dash-card-bg); border-top: 1px solid var(--dash-card-border);">
+                                <button type="button" @click="showOfferingModal = false"
+                                        class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                                        style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                    Batal
+                                </button>
+                                <button type="submit"
+                                        class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                                        style="background-color: #9333ea;">
+                                    <span class="material-symbols-outlined text-[16px]">check</span>
+                                    Buat Offering Letter
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    {{-- ── Modal: Negosiasi Gaji ── --}}
     @if($jobApplication->offeringLetter)
-    <div x-show="showNegotiateModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display:none;">
-        <div @click="showNegotiateModal = false" class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
-        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
-            <div class="bg-amber-500 px-6 py-4 flex items-center justify-between">
-                <div class="flex items-center gap-2 text-white">
-                    <span class="material-symbols-outlined text-xl">currency_exchange</span>
-                    <h3 class="text-base font-semibold">Catat Negosiasi Gaji</h3>
+    <template x-teleport="body">
+        <div x-show="showNegotiateModal" style="display:none;" class="relative z-50" role="dialog" aria-modal="true">
+            <div x-show="showNegotiateModal"
+                 x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                 x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
+                 @click="showNegotiateModal = false"></div>
+
+            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <div x-show="showNegotiateModal" @click.away="showNegotiateModal = false"
+                         x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                         x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                         class="relative transform rounded-2xl text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md"
+                         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+
+                        <div class="rounded-t-2xl px-6 py-5"
+                             style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[20px]" style="color: #d97706;">currency_exchange</span>
+                                    <h3 class="font-jakarta text-base font-bold" style="color: var(--dash-text-heading);">Catat Negosiasi Gaji</h3>
+                                </div>
+                                <button type="button" @click="showNegotiateModal = false" class="text-xs p-1 rounded-lg transition-colors"
+                                        style="color: var(--dash-text-muted);">
+                                    <span class="material-symbols-outlined text-[18px]">close</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <form action="{{ route('recruitment.offering-letters.negotiate', $jobApplication->offeringLetter) }}" method="POST">
+                            @csrf
+                            <div class="px-6 py-4 space-y-4">
+                                <div class="p-3 rounded-xl text-xs"
+                                     style="background-color: color-mix(in srgb, #d97706 10%, transparent); border: 1px solid color-mix(in srgb, #d97706 25%, transparent); color: #b45309;">
+                                    Gaji awal ditawarkan: <span class="font-bold">Rp {{ number_format($jobApplication->offeringLetter->offered_salary, 0, ',', '.') }}</span>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-faint);">Gaji Disepakati (Rp)</label>
+                                    <input type="number" name="agreed_salary" min="0" step="1000"
+                                           value="{{ $jobApplication->offeringLetter->agreed_salary }}"
+                                           placeholder="{{ $jobApplication->offeringLetter->offered_salary }}"
+                                           class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                           style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                           onfocus="this.style.borderColor='var(--dash-primary)'"
+                                           onblur="this.style.borderColor='var(--dash-input-border)'">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-faint);">Catatan Negosiasi</label>
+                                    <textarea name="notes" rows="3"
+                                              class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                              style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);">{{ $jobApplication->offeringLetter->notes }}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="rounded-b-2xl px-6 py-4 flex justify-end gap-3"
+                                 style="background-color: var(--dash-card-bg); border-top: 1px solid var(--dash-card-border);">
+                                <button type="button" @click="showNegotiateModal = false"
+                                        class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                                        style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                    Batal
+                                </button>
+                                <button type="submit"
+                                        class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                                        style="background-color: #d97706;">
+                                    <span class="material-symbols-outlined text-[16px]">save</span>
+                                    Simpan Negosiasi
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <button type="button" @click="showNegotiateModal = false" class="text-white/70 hover:text-white transition-colors">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
             </div>
-            <form action="{{ route('recruitment.offering-letters.negotiate', $jobApplication->offeringLetter) }}" method="POST" class="p-6 space-y-4">
-                @csrf
-                <div class="bg-amber-50 rounded-lg px-4 py-3 text-sm text-amber-800">
-                    Gaji ditawarkan: <strong>Rp {{ number_format($jobApplication->offeringLetter->offered_salary, 0, ',', '.') }}</strong>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Gaji Disepakati (Rp)</label>
-                    <input type="number" name="agreed_salary" min="0" step="1000"
-                        value="{{ $jobApplication->offeringLetter->agreed_salary }}"
-                        class="{{ $inp }}" placeholder="{{ $jobApplication->offeringLetter->offered_salary }}">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Catatan Negosiasi</label>
-                    <textarea name="notes" rows="3" class="{{ $inp }}">{{ $jobApplication->offeringLetter->notes }}</textarea>
-                </div>
-                <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
-                    <button type="button" @click="showNegotiateModal = false" class="btn border border-gray-200 text-gray-600 hover:bg-gray-50">Batal</button>
-                    <button type="submit" class="btn bg-amber-500 hover:bg-amber-600 text-white">Simpan Negosiasi</button>
-                </div>
-            </form>
         </div>
-    </div>
+    </template>
     @endif
 
-    {{-- ── Modal: Reject Pelamar (red) ─────────────────────────────────── --}}
-    <div x-show="showRejectModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display:none;">
-        <div @click="showRejectModal = false" class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
-        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
-            <div class="bg-red-500 px-6 py-4 flex items-center justify-between">
-                <div class="flex items-center gap-2 text-white">
-                    <span class="material-symbols-outlined text-xl">cancel</span>
-                    <h3 class="text-base font-semibold">Tolak Pelamar</h3>
-                </div>
-                <button type="button" @click="showRejectModal = false" class="text-white/70 hover:text-white transition-colors">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
-            </div>
-            <form action="{{ route('recruitment.application.reject', $jobApplication->id) }}" method="POST" class="p-6 space-y-4">
-                @csrf
-                <p class="text-sm text-gray-600">Penolakan bersifat final. Isi alasan dengan jelas agar bisa dikomunikasikan ke pelamar.</p>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Alasan Penolakan <span class="text-red-500">*</span></label>
-                    <textarea name="reason" rows="3" required class="{{ $inp }} focus:ring-red-300 focus:border-red-400"></textarea>
-                </div>
-                <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
-                    <button type="button" @click="showRejectModal = false" class="btn border border-gray-200 text-gray-600 hover:bg-gray-50">Batal</button>
-                    <button type="submit" class="btn bg-red-500 hover:bg-red-600 text-white">Tolak Lamaran</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    {{-- ── Modal: Tolak Pelamar ── --}}
+    <template x-teleport="body">
+        <div x-show="showRejectModal" style="display:none;" class="relative z-50" role="dialog" aria-modal="true">
+            <div x-show="showRejectModal"
+                 x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                 x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
+                 @click="showRejectModal = false"></div>
 
-    {{-- ── Modal: Jadwalkan Psikotest (blue) ───────────────────────────── --}}
-    <div x-show="showPsikotestModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display:none;">
-        <div @click="showPsikotestModal = false" class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
-        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
-            <div class="bg-blue-600 px-6 py-4 flex items-center justify-between">
-                <div class="flex items-center gap-2 text-white">
-                    <span class="material-symbols-outlined text-xl">psychology</span>
-                    <h3 class="text-base font-semibold">Jadwalkan Psikotest</h3>
-                </div>
-                <button type="button" @click="showPsikotestModal = false" class="text-white/70 hover:text-white transition-colors">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
-            </div>
-            <form action="{{ route('recruitment.application.psikotest.store', $jobApplication->id) }}" method="POST" class="p-6 space-y-4">
-                @csrf
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Tanggal Psikotest</label>
-                    <input type="date" name="psikotest_date" class="{{ $inp }}">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Link Tes <span class="text-gray-400 font-normal normal-case">(opsional)</span></label>
-                    <input type="url" name="psikotest_link" placeholder="https://psikotes.link/..." class="{{ $inp }}">
-                </div>
-                <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
-                    <button type="button" @click="showPsikotestModal = false" class="btn border border-gray-200 text-gray-600 hover:bg-gray-50">Batal</button>
-                    <button type="submit" class="btn bg-blue-600 hover:bg-blue-700 text-white">Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
+            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <div x-show="showRejectModal" @click.away="showRejectModal = false"
+                         x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                         x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                         class="relative transform rounded-2xl text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md"
+                         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
 
-    {{-- ── Modal: Evaluasi Interview (indigo) ──────────────────────────── --}}
-    <div x-show="showEvalModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto" style="display:none;">
-        <div @click="showEvalModal = false" class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
-        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg my-auto overflow-hidden">
-            <div class="bg-indigo-600 px-6 py-4 flex items-center justify-between">
-                <div class="flex items-center gap-2 text-white">
-                    <span class="material-symbols-outlined text-xl">rate_review</span>
-                    <h3 class="text-base font-semibold">Evaluasi Interview</h3>
-                </div>
-                <button type="button" @click="showEvalModal = false" class="text-white/70 hover:text-white transition-colors">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
-            </div>
-            <form method="POST" :action="'{{ url('recruitment/interviews') }}/' + evalScheduleId + '/evaluation'" class="p-6 space-y-4">
-                @csrf
-                <p class="text-xs text-gray-500">Skor 1=Kurang · 2=Cukup · 3=Baik · 4=Sangat Baik &nbsp;|&nbsp; Total: 5–8 Buruk · 9–12 Sedang · 13–17 Bagus · 18–20 Sangat Bagus</p>
-                @php
-                    $criteria = [
-                        'score_education'     => 'Pendidikan & Kompetensi Teknis',
-                        'score_experience'    => 'Pengalaman Kerja',
-                        'score_personality'   => 'Kepribadian, Penampilan & Tata Krama',
-                        'score_communication' => 'Komunikasi & Interpersonal',
-                        'score_problem_solving' => 'Problem-solving, Logika & Analitis',
-                    ];
-                @endphp
-                @foreach($criteria as $field => $label)
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">{{ $label }} <span class="text-red-500">*</span></label>
-                        <select name="{{ $field }}" required class="{{ $inp }}">
-                            <option value="">Pilih skor...</option>
-                            <option value="1">1 — Kurang</option>
-                            <option value="2">2 — Cukup</option>
-                            <option value="3">3 — Baik</option>
-                            <option value="4">4 — Sangat Baik</option>
-                        </select>
-                    </div>
-                @endforeach
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Gaji Sekarang</label>
-                        <input type="number" name="current_salary" min="0" step="1000" class="{{ $inp }}" placeholder="0">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Gaji Diinginkan</label>
-                        <input type="number" name="desired_salary" min="0" step="1000" class="{{ $inp }}" placeholder="0">
+                        <div class="rounded-t-2xl px-6 py-5"
+                             style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
+                            <div class="flex items-start gap-3.5">
+                                <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-950/40 flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-red-600 dark:text-red-400 text-[22px]">cancel</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-jakarta text-base font-bold" style="color: var(--dash-text-heading);">Tolak Pelamar?</h3>
+                                    <p class="mt-1 text-sm leading-relaxed" style="color: var(--dash-text-muted);">
+                                        Penolakan bersifat final. Isi alasan penolakan secara jelas.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form action="{{ route('recruitment.application.reject', $jobApplication->id) }}" method="POST">
+                            @csrf
+                            <div class="px-6 py-4 space-y-3">
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-faint);">Alasan Penolakan <span class="text-red-500">*</span></label>
+                                    <textarea name="reason" rows="3" required
+                                              placeholder="Tuliskan alasan penolakan..."
+                                              class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                              style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                              onfocus="this.style.borderColor='var(--dash-danger)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-danger) 20%, transparent)'"
+                                              onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="rounded-b-2xl px-6 py-4 flex justify-end gap-3"
+                                 style="background-color: var(--dash-card-bg); border-top: 1px solid var(--dash-card-border);">
+                                <button type="button" @click="showRejectModal = false"
+                                        class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                                        style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                    Batal
+                                </button>
+                                <button type="submit"
+                                        class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                                        style="background-color: var(--dash-danger, #dc2626);">
+                                    <span class="material-symbols-outlined text-[16px]">cancel</span>
+                                    Tolak Lamaran
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Kesimpulan <span class="text-red-500">*</span></label>
-                    <select name="decision" required class="{{ $inp }}">
-                        <option value="">Pilih kesimpulan...</option>
-                        <option value="accepted">✅ Diterima</option>
-                        <option value="reserve">⏳ Cadangan</option>
-                        <option value="rejected">❌ Tidak Diterima</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Catatan Tambahan</label>
-                    <textarea name="notes" rows="2" class="{{ $inp }}"></textarea>
-                </div>
-                <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
-                    <button type="button" @click="showEvalModal = false" class="btn border border-gray-200 text-gray-600 hover:bg-gray-50">Batal</button>
-                    <button type="submit" class="btn bg-indigo-600 hover:bg-indigo-700 text-white">Simpan Evaluasi</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    {{-- ── Modal: Jadwalkan Interview (yellow) ─────────────────────────── --}}
-    <div x-show="showInterviewModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto" style="display:none;">
-        <div @click="showInterviewModal = false" class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
-        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md my-auto overflow-hidden">
-            <div class="bg-yellow-500 px-6 py-4 flex items-center justify-between">
-                <div class="flex items-center gap-2 text-white">
-                    <span class="material-symbols-outlined text-xl">event_available</span>
-                    <h3 class="text-base font-semibold">Jadwalkan Interview</h3>
-                </div>
-                <button type="button" @click="showInterviewModal = false" class="text-white/70 hover:text-white transition-colors">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
             </div>
-            <form action="{{ route('recruitment.application.interviews.store', $jobApplication->id) }}" method="POST" class="p-6 space-y-4">
-                @csrf
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Tipe Interview <span class="text-red-500">*</span></label>
-                    <select name="interview_type" required class="{{ $inp }}" x-model="interviewType" x-init="interviewType = 'offline'">
-                        <option value="offline">Offline</option>
-                        <option value="online">Online</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Waktu Interview <span class="text-red-500">*</span></label>
-                    <input type="datetime-local" name="scheduled_at" required class="{{ $inp }}">
-                </div>
-                <div x-show="interviewType === 'offline'">
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Lokasi</label>
-                    <input type="text" name="location" class="{{ $inp }}" placeholder="Ruang Wawancara, Lt. 2">
-                </div>
-                <div x-show="interviewType === 'online'">
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Link Meeting</label>
-                    <input type="url" name="meeting_link" class="{{ $inp }}" placeholder="https://meet.google.com/...">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Interviewer <span class="text-red-500">*</span></label>
-                    <select name="interviewer_employee_id" required class="{{ $inp }}">
-                        <option value="">Pilih interviewer...</option>
-                        @foreach(\App\Models\Employee::orderBy('full_name')->get() as $emp)
-                            <option value="{{ $emp->id }}">{{ $emp->full_name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Catatan</label>
-                    <textarea name="notes" rows="2" class="{{ $inp }}"></textarea>
-                </div>
-                <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
-                    <button type="button" @click="showInterviewModal = false" class="btn border border-gray-200 text-gray-600 hover:bg-gray-50">Batal</button>
-                    <button type="submit" class="btn bg-yellow-500 hover:bg-yellow-600 text-white">Jadwalkan</button>
-                </div>
-            </form>
         </div>
-    </div>
+    </template>
 
+    {{-- ── Modal: Jadwalkan Psikotest ── --}}
+    <template x-teleport="body">
+        <div x-show="showPsikotestModal" style="display:none;" class="relative z-50" role="dialog" aria-modal="true">
+            <div x-show="showPsikotestModal"
+                 x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                 x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
+                 @click="showPsikotestModal = false"></div>
+
+            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <div x-show="showPsikotestModal" @click.away="showPsikotestModal = false"
+                         x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                         x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                         class="relative transform rounded-2xl text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md"
+                         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+
+                        <div class="rounded-t-2xl px-6 py-5"
+                             style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[20px]" style="color: var(--dash-primary);">psychology</span>
+                                    <h3 class="font-jakarta text-base font-bold" style="color: var(--dash-text-heading);">Jadwalkan Psikotest</h3>
+                                </div>
+                                <button type="button" @click="showPsikotestModal = false" class="text-xs p-1 rounded-lg transition-colors"
+                                        style="color: var(--dash-text-muted);">
+                                    <span class="material-symbols-outlined text-[18px]">close</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <form action="{{ route('recruitment.application.psikotest.store', $jobApplication->id) }}" method="POST">
+                            @csrf
+                            <div class="px-6 py-4 space-y-4">
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-faint);">Tanggal Psikotest</label>
+                                    <input type="date" name="psikotest_date"
+                                           class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                           style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                           onfocus="this.style.borderColor='var(--dash-primary)'"
+                                           onblur="this.style.borderColor='var(--dash-input-border)'">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-faint);">Tautan Tes (opsional)</label>
+                                    <input type="url" name="psikotest_link" placeholder="https://..."
+                                           class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                           style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                           onfocus="this.style.borderColor='var(--dash-primary)'"
+                                           onblur="this.style.borderColor='var(--dash-input-border)'">
+                                </div>
+                            </div>
+
+                            <div class="rounded-b-2xl px-6 py-4 flex justify-end gap-3"
+                                 style="background-color: var(--dash-card-bg); border-top: 1px solid var(--dash-card-border);">
+                                <button type="button" @click="showPsikotestModal = false"
+                                        class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                                        style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                    Batal
+                                </button>
+                                <button type="submit"
+                                        class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                                        style="background-color: var(--dash-primary);">
+                                    <span class="material-symbols-outlined text-[16px]">save</span>
+                                    Simpan Jadwal
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    {{-- ── Modal: Evaluasi Interview ── --}}
+    <template x-teleport="body">
+        <div x-show="showEvalModal" style="display:none;" class="relative z-50" role="dialog" aria-modal="true">
+            <div x-show="showEvalModal"
+                 x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                 x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
+                 @click="showEvalModal = false"></div>
+
+            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <div x-show="showEvalModal" @click.away="showEvalModal = false"
+                         x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                         x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                         class="relative transform rounded-2xl text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
+                         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+
+                        <div class="rounded-t-2xl px-6 py-5"
+                             style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[20px]" style="color: var(--dash-primary);">rate_review</span>
+                                    <h3 class="font-jakarta text-base font-bold" style="color: var(--dash-text-heading);">Evaluasi Hasil Interview</h3>
+                                </div>
+                                <button type="button" @click="showEvalModal = false" class="text-xs p-1 rounded-lg transition-colors"
+                                        style="color: var(--dash-text-muted);">
+                                    <span class="material-symbols-outlined text-[18px]">close</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <form method="POST" :action="'{{ url('recruitment/interviews') }}/' + evalScheduleId + '/evaluation'">
+                            @csrf
+                            <div class="px-6 py-4 space-y-4 max-h-[65vh] overflow-y-auto">
+                                <p class="text-xs p-2.5 rounded-lg"
+                                   style="background-color: var(--dash-nav-hover-bg); color: var(--dash-text-muted);">
+                                    Skor: 1=Kurang, 2=Cukup, 3=Baik, 4=Sangat Baik &bull; Total: 5-8 Buruk, 9-12 Sedang, 13-17 Bagus, 18-20 Sangat Bagus.
+                                </p>
+
+                                @php
+                                    $criteria = [
+                                        'score_education'       => 'Pendidikan & Kompetensi Teknis',
+                                        'score_experience'      => 'Pengalaman Kerja',
+                                        'score_personality'     => 'Kepribadian & Tata Krama',
+                                        'score_communication'   => 'Komunikasi & Interpersonal',
+                                        'score_problem_solving' => 'Problem-solving & Analitis',
+                                    ];
+                                @endphp
+                                @foreach($criteria as $field => $label)
+                                    <div>
+                                        <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-faint);">{{ $label }} <span class="text-red-500">*</span></label>
+                                        <select name="{{ $field }}" required
+                                                class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                                style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                                onfocus="this.style.borderColor='var(--dash-primary)'"
+                                                onblur="this.style.borderColor='var(--dash-input-border)'">
+                                            <option value="">Pilih Skor</option>
+                                            <option value="1">1 - Kurang</option>
+                                            <option value="2">2 - Cukup</option>
+                                            <option value="3">3 - Baik</option>
+                                            <option value="4">4 - Sangat Baik</option>
+                                        </select>
+                                    </div>
+                                @endforeach
+
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-faint);">Gaji Sekarang (Rp)</label>
+                                        <input type="number" name="current_salary" min="0" step="1000"
+                                               class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                               style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-faint);">Gaji Diinginkan (Rp)</label>
+                                        <input type="number" name="desired_salary" min="0" step="1000"
+                                               class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                               style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-faint);">Kesimpulan <span class="text-red-500">*</span></label>
+                                    <select name="decision" required
+                                            class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                            style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                            onfocus="this.style.borderColor='var(--dash-primary)'"
+                                            onblur="this.style.borderColor='var(--dash-input-border)'">
+                                        <option value="">Pilih Kesimpulan</option>
+                                        <option value="accepted">Diterima</option>
+                                        <option value="reserve">Cadangan</option>
+                                        <option value="rejected">Tidak Diterima</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-faint);">Catatan Tambahan</label>
+                                    <textarea name="notes" rows="2"
+                                              class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                              style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="rounded-b-2xl px-6 py-4 flex justify-end gap-3"
+                                 style="background-color: var(--dash-card-bg); border-top: 1px solid var(--dash-card-border);">
+                                <button type="button" @click="showEvalModal = false"
+                                        class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                                        style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                    Batal
+                                </button>
+                                <button type="submit"
+                                        class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                                        style="background-color: var(--dash-primary);">
+                                    <span class="material-symbols-outlined text-[16px]">save</span>
+                                    Simpan Evaluasi
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    {{-- ── Modal: Jadwalkan Interview ── --}}
+    <template x-teleport="body">
+        <div x-show="showInterviewModal" style="display:none;" class="relative z-50" role="dialog" aria-modal="true">
+            <div x-show="showInterviewModal"
+                 x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                 x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
+                 @click="showInterviewModal = false"></div>
+
+            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <div x-show="showInterviewModal" @click.away="showInterviewModal = false"
+                         x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                         x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                         class="relative transform rounded-2xl text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md"
+                         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+
+                        <div class="rounded-t-2xl px-6 py-5"
+                             style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[20px]" style="color: var(--dash-primary);">event</span>
+                                    <h3 class="font-jakarta text-base font-bold" style="color: var(--dash-text-heading);">Jadwalkan Interview</h3>
+                                </div>
+                                <button type="button" @click="showInterviewModal = false" class="text-xs p-1 rounded-lg transition-colors"
+                                        style="color: var(--dash-text-muted);">
+                                    <span class="material-symbols-outlined text-[18px]">close</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <form action="{{ route('recruitment.application.interviews.store', $jobApplication->id) }}" method="POST">
+                            @csrf
+                            <div class="px-6 py-4 space-y-4">
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-faint);">Tipe Interview <span class="text-red-500">*</span></label>
+                                    <select name="interview_type" required x-model="interviewType"
+                                            class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                            style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                            onfocus="this.style.borderColor='var(--dash-primary)'"
+                                            onblur="this.style.borderColor='var(--dash-input-border)'">
+                                        <option value="offline">Offline (Tatap Muka)</option>
+                                        <option value="online">Online (Video Call)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-faint);">Waktu Interview <span class="text-red-500">*</span></label>
+                                    <input type="datetime-local" name="scheduled_at" required
+                                           class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                           style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                           onfocus="this.style.borderColor='var(--dash-primary)'"
+                                           onblur="this.style.borderColor='var(--dash-input-border)'">
+                                </div>
+                                <div x-show="interviewType === 'offline'">
+                                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-faint);">Lokasi</label>
+                                    <input type="text" name="location" placeholder="Ruang Wawancara..."
+                                           class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                           style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);">
+                                </div>
+                                <div x-show="interviewType === 'online'">
+                                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-faint);">Tautan Meeting</label>
+                                    <input type="url" name="meeting_link" placeholder="https://meet.google.com/..."
+                                           class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                           style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-faint);">Interviewer <span class="text-red-500">*</span></label>
+                                    <select name="interviewer_employee_id" required
+                                            class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                            style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                            onfocus="this.style.borderColor='var(--dash-primary)'"
+                                            onblur="this.style.borderColor='var(--dash-input-border)'">
+                                        <option value="">Pilih Interviewer</option>
+                                        @foreach(\App\Models\Employee::orderBy('full_name')->get() as $emp)
+                                            <option value="{{ $emp->id }}">{{ $emp->full_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-faint);">Catatan</label>
+                                    <textarea name="notes" rows="2"
+                                              class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                              style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="rounded-b-2xl px-6 py-4 flex justify-end gap-3"
+                                 style="background-color: var(--dash-card-bg); border-top: 1px solid var(--dash-card-border);">
+                                <button type="button" @click="showInterviewModal = false"
+                                        class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                                        style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                    Batal
+                                </button>
+                                <button type="submit"
+                                        class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                                        style="background-color: var(--dash-primary);">
+                                    <span class="material-symbols-outlined text-[16px]">save</span>
+                                    Simpan Jadwal
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    {{-- ── Modal Konfirmasi Aksi Generic (Zero Browser Confirm) ── --}}
+    <template x-teleport="body">
+        <div x-show="showConfirmActionModal" style="display:none;" class="relative z-50" role="dialog" aria-modal="true">
+            <div x-show="showConfirmActionModal"
+                 x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                 x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
+                 @click="showConfirmActionModal = false"></div>
+
+            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <div x-show="showConfirmActionModal" @click.away="showConfirmActionModal = false"
+                         x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                         x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                         class="relative transform rounded-2xl text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md"
+                         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+
+                        <div class="rounded-t-2xl px-6 py-5"
+                             style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
+                            <div class="flex items-start gap-3.5">
+                                <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                                     :class="confirmActionIsDanger ? 'bg-red-100 dark:bg-red-950/40' : 'bg-blue-100 dark:bg-blue-950/40'">
+                                    <span class="material-symbols-outlined text-[22px]"
+                                          :class="confirmActionIsDanger ? 'text-red-600 dark:text-red-400' : 'text-blue-600 dark:text-blue-400'"
+                                          x-text="confirmActionIsDanger ? 'warning' : 'help_outline'"></span>
+                                </div>
+                                <div>
+                                    <h3 class="font-jakarta text-base font-bold" style="color: var(--dash-text-heading);" x-text="confirmActionTitle"></h3>
+                                    <p class="mt-1 text-sm leading-relaxed" style="color: var(--dash-text-muted);" x-text="confirmActionMessage"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form :action="confirmActionUrl" method="POST">
+                            @csrf
+                            <input type="hidden" name="_method" :value="confirmActionMethod">
+                            <div class="rounded-b-2xl px-6 py-4 flex justify-end gap-3"
+                                 style="background-color: var(--dash-card-bg); border-top: 1px solid var(--dash-card-border);">
+                                <button type="button" @click="showConfirmActionModal = false"
+                                        class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                                        style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                    Batal
+                                </button>
+                                <button type="submit"
+                                        class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                                        :style="confirmActionIsDanger ? 'background-color: var(--dash-danger, #dc2626);' : 'background-color: var(--dash-primary);'">
+                                    <span class="material-symbols-outlined text-[16px]" x-text="confirmActionIsDanger ? 'close' : 'check'"></span>
+                                    <span x-text="confirmActionBtnText"></span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
 </div>
 @endsection

@@ -26,29 +26,41 @@ class MyStudentProgressWidget implements WidgetDataProviderInterface
 
         $activeClasses = MemberClass::whereHas('classRoom', fn ($q) => $q->where('tutor_id', $employeeId))
             ->where('status', 'active')
-            ->with('program:id,program_name')
+            ->with(['classRoom.program', 'curriculumProgress', 'memberRegistration.memberData'])
             ->get();
 
-        $classProgress = $activeClasses->map(function ($class) {
-            $members = MemberCurriculumProgress::where('member_class_id', $class->id)
-                ->selectRaw('member_id, COUNT(*) as total, SUM(is_completed) as completed')
-                ->groupBy('member_id')
-                ->get();
+        $allMembersProgress = [];
+        $classProgress = $activeClasses->groupBy('class_id')->map(function ($members) use (&$allMembersProgress) {
+            $first = $members->first();
+            $classAvg = $members->avg(function ($mc) use (&$allMembersProgress) {
+                $total = $mc->curriculumProgress->count();
+                $completed = $mc->curriculumProgress->where('status', 'completed')->count();
+                $pct = $total > 0 ? round(($completed / $total) * 100, 1) : 0;
+                $allMembersProgress[] = $pct;
 
-            $avgProgress = $members->avg(fn ($m) => $m->total > 0
-                ? round(($m->completed / $m->total) * 100, 1)
-                : 0);
+                return $pct;
+            });
 
             return [
-                'program' => $class->program?->program_name ?? '-',
+                'program' => $first->classRoom?->program?->program_name ?? '-',
+                'class_name' => $first->classRoom?->class_name ?? '-',
                 'member_count' => $members->count(),
-                'avg_progress_percent' => round($avgProgress ?? 0, 1),
+                'avg_progress_percent' => round($classAvg ?? 0, 1),
             ];
-        })->toArray();
+        })->values()->toArray();
+
+        $totalStudents = count($allMembersProgress);
+        $onTrack = count(array_filter($allMembersProgress, fn ($pct) => $pct >= 50));
+        $behind = $totalStudents - $onTrack;
+        $avgRate = $totalStudents > 0 ? round(array_sum($allMembersProgress) / $totalStudents, 1) : 0;
 
         return [
+            'total_students' => $totalStudents,
+            'on_track' => $onTrack,
+            'behind' => $behind,
+            'avg_completion_rate' => $avgRate,
             'classes' => $classProgress,
-            'total_active_classes' => $activeClasses->count(),
+            'total_active_classes' => $activeClasses->pluck('class_id')->unique()->count(),
             'period' => $now->translatedFormat('F Y'),
         ];
     }
@@ -62,18 +74,17 @@ class MyStudentProgressWidget implements WidgetDataProviderInterface
             return [];
         }
 
-        $activeClasses = MemberClass::whereHas('classRoom', fn ($q) => $q->where('tutor_id', $employeeId))
+        $activeClassIds = MemberClass::whereHas('classRoom', fn ($q) => $q->where('tutor_id', $employeeId))
             ->where('status', 'active')
-            ->with('program:id,program_name')
-            ->pluck('id', 'program.program_name');
+            ->pluck('id');
 
-        return MemberCurriculumProgress::whereIn('member_class_id', $activeClasses->values())
-            ->with('member:id,full_name', 'curriculumItem:id,item_name')
+        return MemberCurriculumProgress::whereIn('member_class_id', $activeClassIds)
+            ->with(['memberClass.memberRegistration.memberData', 'curriculumItem:id,item_name'])
             ->get()
             ->map(fn ($p) => [
-                'member' => $p->member?->full_name ?? '-',
+                'member' => $p->memberClass?->memberRegistration?->memberData?->full_name ?? '-',
                 'item' => $p->curriculumItem?->item_name ?? '-',
-                'is_completed' => $p->is_completed ? 'Ya' : 'Tidak',
+                'is_completed' => $p->status === 'completed' ? 'Ya' : 'Tidak',
             ])->toArray();
     }
 }

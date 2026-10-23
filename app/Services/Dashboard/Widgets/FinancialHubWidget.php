@@ -29,7 +29,7 @@ class FinancialHubWidget implements WidgetDataProviderInterface
         $now = Carbon::create($currentYear, $currentMonth, 1);
         $prev = $now->copy()->subMonth();
 
-        $applyTimeFilter = function($query, $pType, $m, $y, $sem, $dateCol) {
+        $applyTimeFilter = function ($query, $pType, $m, $y, $sem, $dateCol) {
             $query->whereYear($dateCol, $y);
             if ($pType === 'monthly') {
                 $query->whereMonth($dateCol, $m);
@@ -40,10 +40,11 @@ class FinancialHubWidget implements WidgetDataProviderInterface
                     $query->whereMonth($dateCol, '>=', 7)->whereMonth($dateCol, '<=', 12);
                 }
             }
+
             return $query;
         };
 
-        $applyMonthYearFilter = function($query, $pType, $m, $y, $sem) {
+        $applyMonthYearFilter = function ($query, $pType, $m, $y, $sem) {
             $query->where('period_year', $y);
             if ($pType === 'monthly') {
                 $query->where('period_month', $m);
@@ -54,6 +55,7 @@ class FinancialHubWidget implements WidgetDataProviderInterface
                     $query->where('period_month', '>=', 7)->where('period_month', '<=', 12);
                 }
             }
+
             return $query;
         };
 
@@ -96,7 +98,7 @@ class FinancialHubWidget implements WidgetDataProviderInterface
         } else {
             $prevRevenueByBranchQuery->where('id', '<', 0);
         }
-        
+
         $prevRevenueByBranch = $prevRevenueByBranchQuery->whereHas('registration.memberData', fn ($q) => $q->whereIn('branch_id', $branchIds))
             ->with(['registration:id,members_data_id', 'registration.memberData:id,branch_id'])
             ->get(['id', 'member_registration_id', 'amount'])
@@ -125,6 +127,9 @@ class FinancialHubWidget implements WidgetDataProviderInterface
                 'abbr' => substr($abbr, 0, 3),
                 'area_name' => $branch->area?->name ?? '-',
                 'revenue' => $revenue,
+                'payroll' => $payroll,
+                'operational' => $operational,
+                'modal' => $payroll + $operational,
                 'profit' => $profit,
                 'margin' => $margin,
                 'trend' => $trend,
@@ -156,7 +161,7 @@ class FinancialHubWidget implements WidgetDataProviderInterface
         }
         $prevNatPayroll = $prevNatPayrollQuery->whereHas('employee', fn ($e) => $e->whereIn('branch_id', $branchIds))
             ->sum('net_amount');
-            
+
         $prevNatOpQuery = BranchMonthlyCost::query();
         if ($periodType === 'monthly') {
             $prevNatOpQuery = $applyMonthYearFilter($prevNatOpQuery, 'monthly', $prev->month, $prev->year, 1);
@@ -221,9 +226,9 @@ class FinancialHubWidget implements WidgetDataProviderInterface
 
         $periodString = $now->translatedFormat('F Y');
         if ($periodType === 'yearly') {
-            $periodString = 'Tahun ' . $currentYear;
+            $periodString = 'Tahun '.$currentYear;
         } elseif ($periodType === 'semester') {
-            $periodString = 'Semester ' . $semester . ' ' . $currentYear;
+            $periodString = 'Semester '.$semester.' '.$currentYear;
         }
 
         return [
@@ -269,7 +274,7 @@ class FinancialHubWidget implements WidgetDataProviderInterface
             ->where('p.admin_fee_mode', 'per_registration')
             ->where('p.admin_fee_timing', 'on_registration');
         $query1 = $applyTimeFilter($query1, $periodType, $month, $year, $semester, 'mr.created_at');
-        
+
         $rows = $query1->groupBy('md.branch_id')
             ->selectRaw('md.branch_id, SUM(p.admin_fee) as total')
             ->pluck('total', 'branch_id');
@@ -284,16 +289,16 @@ class FinancialHubWidget implements WidgetDataProviderInterface
             ->join('programs as p', 'mr.program_id', '=', 'p.id')
             ->where('pay.payment_status', 'paid')
             ->whereIn('md.branch_id', $ids)
-            ->where(function($q) {
+            ->where(function ($q) {
                 $q->where('p.admin_fee_timing', 'per_payment')
-                  ->orWhere(function($q2) {
-                      $q2->where('p.admin_fee_timing', 'on_first_payment')
-                         ->where('pay.installment_number', 1);
-                  });
+                    ->orWhere(function ($q2) {
+                        $q2->where('p.admin_fee_timing', 'on_first_payment')
+                            ->where('pay.installment_number', 1);
+                    });
             });
-            
+
         $query2 = $applyTimeFilter($query2, $periodType, $month, $year, $semester, 'pay.paid_at');
-        
+
         $rows2 = $query2->groupBy('md.branch_id')
             ->selectRaw('md.branch_id, SUM(p.admin_fee) as total')
             ->pluck('total', 'branch_id');
@@ -313,6 +318,7 @@ class FinancialHubWidget implements WidgetDataProviderInterface
             'cabang' => $b['name'],
             'area' => $b['area_name'],
             'revenue' => $b['revenue'],
+            'modal' => $b['modal'],
             'profit' => $b['profit'],
             'margin' => $b['margin'],
             'trend' => $b['trend'],

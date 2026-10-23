@@ -78,7 +78,7 @@
 </div>
 
 {{-- II. PETA SEGMENTASI PROGRAM --}}
-<h2 class="section-title">II. Peta Segmentasi Program — Top 4</h2>
+<h2 class="section-title">II. Peta Segmentasi Program - Top 4</h2>
 @forelse (array_chunk(array_slice($data['by_program'], 0, 4), 2) as $row)
 <div class="grid-2" style="margin-bottom: 0;">
     @foreach ($row as $prog)

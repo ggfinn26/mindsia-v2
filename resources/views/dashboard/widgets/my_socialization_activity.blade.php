@@ -1,32 +1,35 @@
 @props(['data'])
-<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
+
+<div class="rounded-2xl transition-all p-5 flex flex-col h-full" style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
     <div class="flex items-center gap-3 mb-4">
-        <div class="h-10 w-10 rounded-lg bg-teal-50 flex items-center justify-center">
-            <span class="material-symbols-outlined text-teal-600 text-xl">handshake</span>
+        <div class="h-10 w-10 rounded-lg flex items-center justify-center shrink-0" style="background-color: var(--dash-primary-bg); color: var(--dash-primary-text);">
+            <span class="material-symbols-outlined text-xl">handshake</span>
         </div>
         <div>
-            <h3 class="text-sm font-semibold text-gray-800">My Socialization Activity</h3>
-            <p class="text-xs text-gray-400">{{ $data['period'] ?? '-' }}</p>
+            <h3 class="text-sm font-semibold" style="color: var(--dash-text-heading);">My Socialization Activity</h3>
+            <p class="text-xs" style="color: var(--dash-text-muted);">{{ $data['period'] ?? '-' }}</p>
         </div>
     </div>
-    <div class="grid grid-cols-3 gap-2">
-        <div class="text-center p-2 rounded-lg bg-teal-50">
-            <p class="text-xl font-bold text-teal-600">{{ $data['events_attended'] ?? 0 }}</p>
-            <p class="text-xs text-gray-400 mt-0.5">Events</p>
+    <div class="space-y-3 flex-grow flex flex-col justify-between">
+        <div class="grid grid-cols-3 gap-2">
+            <div class="text-center p-2 rounded-lg" style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border);">
+                <p class="text-xl font-bold font-jakarta" style="color: var(--dash-primary-text);">{{ $data['events_attended'] ?? 0 }}</p>
+                <p class="text-xs mt-0.5" style="color: var(--dash-text-muted);">Events</p>
+            </div>
+            <div class="text-center p-2 rounded-lg" style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border);">
+                <p class="text-xl font-bold font-jakarta" style="color: var(--dash-status-info-text);">{{ $data['prospects_met'] ?? 0 }}</p>
+                <p class="text-xs mt-0.5" style="color: var(--dash-text-muted);">Prospek</p>
+            </div>
+            <div class="text-center p-2 rounded-lg" style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border);">
+                <p class="text-xl font-bold font-jakarta" style="color: var(--dash-status-success-text);">{{ $data['converted'] ?? 0 }}</p>
+                <p class="text-xs mt-0.5" style="color: var(--dash-text-muted);">Closing</p>
+            </div>
         </div>
-        <div class="text-center p-2 rounded-lg bg-blue-50">
-            <p class="text-xl font-bold text-blue-600">{{ $data['prospects_met'] ?? 0 }}</p>
-            <p class="text-xs text-gray-400 mt-0.5">Prospek</p>
-        </div>
-        <div class="text-center p-2 rounded-lg bg-emerald-50">
-            <p class="text-xl font-bold text-emerald-600">{{ $data['converted'] ?? 0 }}</p>
-            <p class="text-xs text-gray-400 mt-0.5">Closing</p>
-        </div>
+        @if(isset($data['conversion_rate']))
+            <div class="pt-2 border-t flex justify-between items-center" style="border-color: var(--dash-card-border);">
+                <span class="text-xs font-medium" style="color: var(--dash-text-muted);">Conversion Rate</span>
+                <span class="text-xs font-bold" style="color: var(--dash-primary-text);">{{ $data['conversion_rate'] }}%</span>
+            </div>
+        @endif
     </div>
-    @if(isset($data['conversion_rate']))
-        <div class="mt-3 pt-3 border-t border-gray-50 flex justify-between">
-            <span class="text-xs text-gray-400">Conversion Rate</span>
-            <span class="text-xs font-bold text-teal-600">{{ $data['conversion_rate'] }}%</span>
-        </div>
-    @endif
 </div>

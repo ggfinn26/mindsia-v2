@@ -56,13 +56,13 @@
             @endif
         </div>
         @endif
-        <button id="nav-ham" @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden flex items-center justify-center bg-transparent border-none p-1.5 text-ky-text transition-colors" aria-label="Menu">
+        <button id="nav-ham" @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden flex items-center justify-center bg-transparent border-none p-2 min-w-[44px] min-h-[44px] text-ky-text transition-colors rounded-lg hover:bg-gray-100" aria-label="Menu">
             <!-- Hamburger Icon -->
-            <svg x-show="!mobileMenuOpen" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-8 h-8">
+            <svg x-show="!mobileMenuOpen" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-7 h-7">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
             </svg>
             <!-- Close Icon -->
-            <svg x-show="mobileMenuOpen" x-cloak xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-8 h-8">
+            <svg x-show="mobileMenuOpen" x-cloak xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-7 h-7">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
         </button>
@@ -70,31 +70,31 @@
 
     <!-- Mobile Menu -->
     <div x-show="mobileMenuOpen" x-cloak class="md:hidden bg-white border-t border-gray-100 shadow-lg absolute w-full left-0 top-[68px]">
-        <div class="flex flex-col px-6 py-4 gap-4">
+        <div class="flex flex-col px-6 py-4 gap-2">
             @if(request()->is('karir*') || request()->is('applicant*'))
-                <a href="{{ url('/') }}" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Beranda</a>
-                <a href="{{ route('careers.index') }}#lowongan" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Lowongan Pekerjaan</a>
+                <a href="{{ url('/') }}" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Beranda</a>
+                <a href="{{ route('careers.index') }}#lowongan" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Lowongan Pekerjaan</a>
             @elseif(request()->routeIs('company.landing'))
-                <a href="{{ url('/') }}" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Beranda</a>
-                <a href="#tentang" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Tentang Kami</a>
-                <a href="#visi-misi" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Visi & Misi</a>
-                <a href="#wilayah" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Wilayah</a>
-                <a href="#galeri" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Galeri</a>
+                <a href="{{ url('/') }}" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Beranda</a>
+                <a href="#tentang" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Tentang Kami</a>
+                <a href="#visi-misi" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Visi & Misi</a>
+                <a href="#wilayah" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Wilayah</a>
+                <a href="#galeri" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Galeri</a>
             @else
-                <a href="#konsep" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Konsep</a>
-                <a href="#program" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Program</a>
-                <a href="#cabang" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Cabang</a>
-                <a href="#testimoni" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Testimoni</a>
-                <a href="/karir" @click="mobileMenuOpen = false" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary">Karir</a>
+                <a href="#konsep" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Konsep</a>
+                <a href="#program" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Program</a>
+                <a href="#cabang" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Cabang</a>
+                <a href="#testimoni" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Testimoni</a>
+                <a href="/karir" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Karir</a>
             @endif
             @if(!request()->routeIs('company.landing'))
-            <div class="h-[1px] bg-gray-100 w-full my-1"></div>
+            <div class="h-[1px] bg-gray-100 w-full my-2"></div>
             @if(request()->is('karir*') || request()->is('applicant*'))
-                <a href="{{ route('applicant.login') }}" class="text-[14px] font-semibold bg-gray-100 text-gray-700 py-2 px-5 rounded-lg text-center shadow-sm border border-gray-200">Login Pelamar</a>
-                <a href="{{ route('applicant.register') }}" class="text-[14px] font-semibold bg-[#DBB940] text-[#06122B] py-2 px-4 rounded-lg text-center shadow-sm hover:opacity-90 transition-opacity">Daftar Pelamar</a>
+                <a href="{{ route('applicant.login') }}" class="min-h-[44px] flex items-center justify-center text-[14px] font-semibold bg-gray-100 text-gray-700 py-2.5 px-5 rounded-lg text-center shadow-sm border border-gray-200 hover:bg-gray-200 transition-colors">Login Pelamar</a>
+                <a href="{{ route('applicant.register') }}" class="min-h-[44px] flex items-center justify-center text-[14px] font-semibold bg-[#DBB940] text-[#06122B] py-2.5 px-4 rounded-lg text-center shadow-sm hover:opacity-90 transition-opacity">Daftar Pelamar</a>
             @else
-                <a href="{{ route('member.login', [], false) }}" class="text-[14px] font-semibold bg-gray-100 text-gray-700 py-2 px-5 rounded-lg text-center shadow-sm border border-gray-200">Login Member</a>
-                <a href="/member/register" class="text-[14px] font-semibold bg-[#DBB940] text-[#06122B] py-2 px-4 rounded-lg text-center shadow-sm hover:opacity-90 transition-opacity">Daftar</a>
+                <a href="{{ route('member.login', [], false) }}" class="min-h-[44px] flex items-center justify-center text-[14px] font-semibold bg-gray-100 text-gray-700 py-2.5 px-5 rounded-lg text-center shadow-sm border border-gray-200 hover:bg-gray-200 transition-colors">Login Member</a>
+                <a href="/member/register" class="min-h-[44px] flex items-center justify-center text-[14px] font-semibold bg-[#DBB940] text-[#06122B] py-2.5 px-4 rounded-lg text-center shadow-sm hover:opacity-90 transition-opacity">Daftar</a>
             @endif
             @endif
         </div>

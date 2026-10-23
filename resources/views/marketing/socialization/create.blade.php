@@ -1,9 +1,10 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Buat Sosialisasi')
+@section('title', 'Buat Sosialisasi - MINDSIA')
+@section('header_title', 'Buat Sosialisasi')
 
 @section('content')
-<div class="max-w-2xl mx-auto py-6 px-4 sm:px-6 lg:px-8"
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-3xl mx-auto space-y-6"
     x-data="{
         noInstitusi: {{ old('institution_id') ? 'false' : (old('location_name') ? 'true' : 'false') }},
         selectedEmployees: {{ json_encode(old('employee_ids', [])) }},
@@ -28,15 +29,23 @@
         }
     }">
 
-    <div class="flex items-center gap-4 mb-6">
-        <a href="{{ route('socializations.index') }}" class="text-gray-500 hover:text-gray-700">
-            <span class="material-symbols-outlined text-xl">arrow_back</span>
+    {{-- Page Header Pola B3 --}}
+    <div>
+        <a href="{{ route('socializations.index') }}" class="dash-back mb-3">
+            <span class="material-symbols-outlined">arrow_back</span>Kembali ke Daftar Sosialisasi
         </a>
-        <h1 class="text-xl font-bold text-gray-900">Buat Sosialisasi Baru</h1>
+        <p class="text-xs font-bold uppercase tracking-wider mb-1"
+           style="color: var(--dash-primary-text);">Pemasaran</p>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+            style="color: var(--dash-text-heading);">Buat Sosialisasi Baru</h1>
+        <p class="text-sm mt-1" style="color: var(--dash-text-muted);">
+            Isi detail lokasi, jadwal pelaksanaan, dan penugasan tim.
+        </p>
     </div>
 
     @if ($errors->any())
-        <div class="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
+        <div class="px-4 py-3 rounded-xl text-sm"
+             style="background-color: #fef2f2; border: 1px solid #fecaca; color: #dc2626;">
             <ul class="list-disc list-inside space-y-1">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -45,177 +54,240 @@
         </div>
     @endif
 
-    <form action="{{ route('socializations.store') }}" method="POST" class="space-y-5">
+    <form action="{{ route('socializations.store') }}" method="POST" class="space-y-6">
         @csrf
 
         {{-- Area info --}}
-        <div class="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-600">
-            <span class="font-medium text-gray-700">Area:</span>
-            {{ $area?->name ?? 'Semua Area' }}
+        <div class="rounded-xl px-4 py-3 text-sm flex items-center gap-2"
+             style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-body);">
+            <span class="material-symbols-outlined text-[18px]" style="color: var(--dash-text-muted);">location_on</span>
+            <span class="font-semibold" style="color: var(--dash-text-heading);">Area:</span>
+            <span>{{ $area?->name ?? 'Semua Area' }}</span>
             @if ($area?->region)
-                <span class="text-gray-400 mx-1">·</span>
-                <span class="text-gray-400">{{ $area->region->name }}</span>
+                <span style="color: var(--dash-text-faint);">·</span>
+                <span style="color: var(--dash-text-muted);">{{ $area->region->name }}</span>
             @endif
         </div>
 
         {{-- SECTION: Lokasi --}}
-        <div class="bg-white shadow-sm rounded-xl border border-gray-100 p-6 space-y-4">
-            <h2 class="text-sm font-semibold text-gray-700">Lokasi Sosialisasi</h2>
-
-            {{-- Institution dropdown --}}
-            <div x-show="!noInstitusi">
-                <label for="institution_id" class="block text-sm font-medium text-gray-700 mb-1">
-                    Institusi / Sekolah <span class="text-red-500">*</span>
-                </label>
-                <select name="institution_id" id="institution_id"
-                    class="block w-full border-gray-300 rounded-lg shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500 @error('institution_id') border-red-300 @enderror">
-                    <option value="">-- Pilih Institusi --</option>
-                    @foreach ($institutions as $inst)
-                        <option value="{{ $inst->id }}" {{ old('institution_id') == $inst->id ? 'selected' : '' }}>
-                            {{ $inst->institution_name }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('institution_id') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+        <div class="rounded-2xl"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <div class="px-6 py-4 rounded-t-2xl"
+                 style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                <h2 class="font-semibold text-sm" style="color: var(--dash-text-heading);">Lokasi Sosialisasi</h2>
             </div>
+            <div class="p-6 space-y-4">
+                {{-- Institution dropdown --}}
+                <div x-show="!noInstitusi">
+                    <label for="institution_id" class="block text-sm font-medium mb-1" style="color: var(--dash-text-body);">
+                        Institusi / Sekolah <span class="text-red-500">*</span>
+                    </label>
+                    <select name="institution_id" id="institution_id"
+                        class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
+                        style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                        onfocus="this.style.borderColor='var(--dash-primary)'"
+                        onblur="this.style.borderColor='var(--dash-input-border)'">
+                        <option value="">Pilih Institusi ...</option>
+                        @foreach ($institutions as $inst)
+                            <option value="{{ $inst->id }}" {{ old('institution_id') == $inst->id ? 'selected' : '' }}>
+                                {{ $inst->institution_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('institution_id') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                </div>
 
-            {{-- Toggle: bukan institusi --}}
-            <label class="flex items-center gap-3 cursor-pointer select-none">
-                <input type="checkbox" x-model="noInstitusi"
-                    class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
-                <span class="text-sm text-gray-700">Institusi tidak ditemukan / bukan sekolah</span>
-            </label>
-
-            {{-- location_name muncul saat toggle --}}
-            <div x-show="noInstitusi" x-cloak>
-                <label for="location_name" class="block text-sm font-medium text-gray-700 mb-1">
-                    Nama Lokasi <span class="text-red-500">*</span>
+                {{-- Toggle: bukan institusi --}}
+                <label class="flex items-center gap-3 cursor-pointer select-none">
+                    <input type="checkbox" x-model="noInstitusi"
+                        class="w-4 h-4 rounded"
+                        style="accent-color: var(--dash-primary);">
+                    <span class="text-sm font-medium" style="color: var(--dash-text-body);">Institusi tidak ditemukan / bukan sekolah</span>
                 </label>
-                <input type="text" name="location_name" id="location_name"
-                    value="{{ old('location_name') }}"
-                    placeholder="Contoh: Gedung Serbaguna RT 05 Kelurahan Antang"
-                    class="block w-full border-gray-300 rounded-lg shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500 @error('location_name') border-red-300 @enderror">
-                @error('location_name') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+
+                {{-- location_name muncul saat toggle --}}
+                <div x-show="noInstitusi" x-cloak>
+                    <label for="location_name" class="block text-sm font-medium mb-1" style="color: var(--dash-text-body);">
+                        Nama Lokasi <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" name="location_name" id="location_name"
+                        value="{{ old('location_name') }}"
+                        placeholder="Contoh: Gedung Serbaguna RT 05 Kelurahan Antang"
+                        class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
+                        style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                        onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                        onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                    @error('location_name') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                </div>
             </div>
         </div>
 
         {{-- SECTION: Jadwal --}}
-        <div class="bg-white shadow-sm rounded-xl border border-gray-100 p-6 space-y-4">
-            <h2 class="text-sm font-semibold text-gray-700">Jadwal</h2>
-
-            <div>
-                <label for="schedule_date" class="block text-sm font-medium text-gray-700 mb-1">
-                    Tanggal <span class="text-red-500">*</span>
-                </label>
-                <input type="date" name="schedule_date" id="schedule_date"
-                    value="{{ old('schedule_date') }}" required
-                    class="block w-full border-gray-300 rounded-lg shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500 @error('schedule_date') border-red-300 @enderror">
-                @error('schedule_date') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+        <div class="rounded-2xl"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <div class="px-6 py-4 rounded-t-2xl"
+                 style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                <h2 class="font-semibold text-sm" style="color: var(--dash-text-heading);">Jadwal Pelaksanaan</h2>
             </div>
-
-            <div class="grid grid-cols-2 gap-4">
+            <div class="p-6 space-y-4">
                 <div>
-                    <label for="start_time" class="block text-sm font-medium text-gray-700 mb-1">
-                        Jam Mulai <span class="text-red-500">*</span>
+                    <label for="schedule_date" class="block text-sm font-medium mb-1" style="color: var(--dash-text-body);">
+                        Tanggal <span class="text-red-500">*</span>
                     </label>
-                    <input type="time" name="start_time" id="start_time"
-                        value="{{ old('start_time') }}" required
-                        class="block w-full border-gray-300 rounded-lg shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500 @error('start_time') border-red-300 @enderror">
-                    @error('start_time') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                    <input type="date" name="schedule_date" id="schedule_date"
+                        value="{{ old('schedule_date') }}" required
+                        class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
+                        style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                        onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                        onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                    @error('schedule_date') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
-                <div>
-                    <label for="end_time" class="block text-sm font-medium text-gray-700 mb-1">
-                        Jam Selesai <span class="text-red-500">*</span>
-                    </label>
-                    <input type="time" name="end_time" id="end_time"
-                        value="{{ old('end_time') }}" required
-                        class="block w-full border-gray-300 rounded-lg shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500 @error('end_time') border-red-300 @enderror">
-                    @error('end_time') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="start_time" class="block text-sm font-medium mb-1" style="color: var(--dash-text-body);">
+                            Jam Mulai <span class="text-red-500">*</span>
+                        </label>
+                        <input type="time" name="start_time" id="start_time"
+                            value="{{ old('start_time') }}" required
+                            class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
+                            style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                            onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                            onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                        @error('start_time') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label for="end_time" class="block text-sm font-medium mb-1" style="color: var(--dash-text-body);">
+                            Jam Selesai <span class="text-red-500">*</span>
+                        </label>
+                        <input type="time" name="end_time" id="end_time"
+                            value="{{ old('end_time') }}" required
+                            class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
+                            style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                            onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                            onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                        @error('end_time') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                    </div>
                 </div>
             </div>
         </div>
 
         {{-- SECTION: Pegawai yang ditugaskan --}}
-        <div class="bg-white shadow-sm rounded-xl border border-gray-100 p-6 space-y-3">
-            <div class="flex items-center justify-between">
-                <h2 class="text-sm font-semibold text-gray-700">
+        <div class="rounded-2xl"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <div class="px-6 py-4 rounded-t-2xl flex items-center justify-between"
+                 style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                <h2 class="font-semibold text-sm" style="color: var(--dash-text-heading);">
                     Pegawai yang Ditugaskan <span class="text-red-500">*</span>
                 </h2>
                 <button type="button" @click="toggleAll()"
-                    class="text-xs font-medium text-indigo-600 hover:text-indigo-800 focus:outline-none"
+                    class="text-xs font-semibold focus:outline-none hover:underline"
+                    style="color: var(--dash-primary);"
                     x-text="allSelected ? 'Batal Semua' : 'Pilih Semua'">
                 </button>
             </div>
+            <div class="p-6 space-y-4">
+                @error('employee_ids') <p class="text-xs text-red-600">{{ $message }}</p> @enderror
 
-            @error('employee_ids') <p class="text-xs text-red-600">{{ $message }}</p> @enderror
+                @if ($eligibleEmployees->isEmpty())
+                    <p class="text-sm font-medium" style="color: var(--dash-text-faint);">Tidak ada pegawai di area ini.</p>
+                @else
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[16px] pointer-events-none"
+                              style="color: var(--dash-text-muted);">search</span>
+                        <input type="text" x-model="search" placeholder="Cari nama pegawai..."
+                            class="w-full pr-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                            style="padding-left: 2.5rem !important; background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                            onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                            onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                    </div>
 
-            @if ($eligibleEmployees->isEmpty())
-                <p class="text-sm text-gray-400">Tidak ada pegawai di area ini.</p>
-            @else
-                <div class="relative">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[16px]">search</span>
-                    <input type="text" x-model="search" placeholder="Cari nama pegawai..."
-                        style="padding-left: 2rem !important"
-                        class="w-full pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-200 transition-colors">
-                </div>
+                    <div class="rounded-xl max-h-52 overflow-y-auto divide-y"
+                         style="border: 1px solid var(--dash-card-border); border-color: var(--dash-card-border);">
+                        <template x-for="emp in filtered" :key="emp.id">
+                            <label class="flex items-center gap-3 px-4 py-2.5 cursor-pointer transition-colors"
+                                   onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                   onmouseout="this.style.backgroundColor='transparent'">
+                                <input type="checkbox"
+                                    :value="emp.id"
+                                    x-model="selectedEmployees"
+                                    class="w-4 h-4 rounded"
+                                    style="accent-color: var(--dash-primary);">
+                                <span class="text-sm" style="color: var(--dash-text-heading);" x-text="emp.name"></span>
+                            </label>
+                        </template>
+                        <p x-show="filtered.length === 0" class="px-4 py-3 text-sm text-center" style="color: var(--dash-text-faint);">
+                            Tidak ditemukan.
+                        </p>
+                    </div>
 
-                <div class="border border-gray-200 rounded-xl max-h-52 overflow-y-auto divide-y divide-gray-50">
-                    <template x-for="emp in filtered" :key="emp.id">
-                        <label class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 cursor-pointer">
-                            <input type="checkbox"
-                                :value="emp.id"
-                                x-model="selectedEmployees"
-                                class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
-                            <span class="text-sm text-gray-700" x-text="emp.name"></span>
-                        </label>
-                    </template>
-                    <p x-show="filtered.length === 0" class="px-4 py-3 text-sm text-gray-400 text-center">
-                        Tidak ditemukan.
+                    <p class="text-xs font-medium" style="color: var(--dash-text-muted);" x-show="selectedEmployees.length > 0">
+                        <span x-text="selectedEmployees.length" class="font-bold"></span> pegawai dipilih
                     </p>
-                </div>
 
-                <p class="text-xs text-gray-400" x-show="selectedEmployees.length > 0">
-                    <span x-text="selectedEmployees.length"></span> pegawai dipilih
-                </p>
-
-                {{-- Hidden inputs untuk yang dipilih --}}
-                <template x-for="id in selectedEmployees" :key="id">
-                    <input type="hidden" name="employee_ids[]" :value="id">
-                </template>
-            @endif
+                    {{-- Hidden inputs untuk yang dipilih --}}
+                    <template x-for="id in selectedEmployees" :key="id">
+                        <input type="hidden" name="employee_ids[]" :value="id">
+                    </template>
+                @endif
+            </div>
         </div>
 
         {{-- SECTION: Fee Partner --}}
-        <div class="bg-white shadow-sm rounded-xl border border-gray-100 p-6 space-y-4">
-            <h2 class="text-sm font-semibold text-gray-700">Fee Partner <span class="text-gray-400 font-normal">(opsional)</span></h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label for="partner_fee_amount" class="block text-sm font-medium text-gray-700 mb-1">Jumlah Fee (Rp)</label>
-                    <input type="number" name="partner_fee_amount" id="partner_fee_amount"
-                        value="{{ old('partner_fee_amount') }}" min="0" step="1000" placeholder="0"
-                        class="block w-full border-gray-300 rounded-lg shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500">
-                </div>
-                <div>
-                    <label for="partner_fee_due_date" class="block text-sm font-medium text-gray-700 mb-1">Tenggat Fee</label>
-                    <input type="date" name="partner_fee_due_date" id="partner_fee_due_date"
-                        value="{{ old('partner_fee_due_date') }}"
-                        class="block w-full border-gray-300 rounded-lg shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500">
+        <div class="rounded-2xl"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <div class="px-6 py-4 rounded-t-2xl"
+                 style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                <h2 class="font-semibold text-sm" style="color: var(--dash-text-heading);">
+                    Fee Partner <span class="font-normal" style="color: var(--dash-text-muted);">(opsional)</span>
+                </h2>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="partner_fee_amount" class="block text-sm font-medium mb-1" style="color: var(--dash-text-body);">Jumlah Fee (Rp)</label>
+                        <input type="number" name="partner_fee_amount" id="partner_fee_amount"
+                            value="{{ old('partner_fee_amount') }}" min="0" step="1000" placeholder="0"
+                            class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
+                            style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                            onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                            onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                    </div>
+                    <div>
+                        <label for="partner_fee_due_date" class="block text-sm font-medium mb-1" style="color: var(--dash-text-body);">Tenggat Fee</label>
+                        <input type="date" name="partner_fee_due_date" id="partner_fee_due_date"
+                            value="{{ old('partner_fee_due_date') }}"
+                            class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
+                            style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                            onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                            onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                    </div>
                 </div>
             </div>
         </div>
 
         {{-- Actions: dua tombol sesuai flow.md --}}
-        <div class="flex justify-end gap-3 pb-4">
+        <div class="flex items-center justify-end gap-3 pt-2 pb-6">
             <a href="{{ route('socializations.index') }}"
-                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                <span class="material-symbols-outlined text-[16px]">close</span>
                 Batal
             </a>
             <button type="submit" name="schedule_now" value="0"
-                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                style="color: var(--dash-text-heading); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                <span class="material-symbols-outlined text-[16px]">save</span>
                 Simpan sebagai Draft
             </button>
             <button type="submit" name="schedule_now" value="1"
-                class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700">
+                class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                style="background-color: var(--dash-primary);">
+                <span class="material-symbols-outlined text-[16px]">event_available</span>
                 Jadwalkan
             </button>
         </div>

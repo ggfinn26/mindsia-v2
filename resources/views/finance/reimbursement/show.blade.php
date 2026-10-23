@@ -14,149 +14,201 @@
     ];
 @endphp
 
-<div class="max-w-5xl mx-auto space-y-6">
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-4xl mx-auto space-y-6"
+     x-data="{
+        deleteModalOpen: false,
+        deleteUrl: '',
+        deleteItemDesc: '',
+        payModalOpen: false
+     }">
+    {{-- Page Header Pola B3 --}}
     <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div>
-            <a href="{{ route('reimbursements.index') }}" class="mb-2 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-[#215aac] transition-colors">
-                <span class="material-symbols-outlined text-[16px]">arrow_back</span> Kembali ke Daftar
+            <a href="{{ route('reimbursements.index') }}" class="dash-back mb-3">
+                <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                Kembali ke Reimbursement Saya
             </a>
-            <h2 class="font-jakarta text-3xl font-bold tracking-tight text-slate-900">{{ $reimbursement->business_purpose }}</h2>
-            <div class="mt-2 flex items-center gap-3">
-                <span class="inline-flex rounded-md px-2.5 py-1 text-xs font-bold uppercase tracking-wide {{ $statusBadge[$reimbursement->status] ?? 'bg-slate-100' }} shadow-sm">{{ $reimbursement->status }}</span>
-                <span class="text-sm font-medium text-slate-500 flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-[16px] text-slate-400">calendar_month</span>
-                    {{ $reimbursement->expense_period_start?->format('d M') }} – {{ $reimbursement->expense_period_end?->format('d M Y') }}
+            <p class="text-xs font-bold uppercase tracking-wider mb-1"
+               style="color: var(--dash-primary-text);">Keuangan</p>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+                style="color: var(--dash-text-heading);">{{ $reimbursement->business_purpose }}</h1>
+            <div class="mt-2 flex items-center gap-2">
+                <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold {{ $statusBadge[$reimbursement->status] ?? 'bg-slate-100 text-slate-700' }}">
+                    {{ str_replace('_', ' ', $reimbursement->status) }}
+                </span>
+                <span class="text-xs" style="color: var(--dash-text-muted);">
+                    {{ $reimbursement->expense_period_start?->format('d M') }} - {{ $reimbursement->expense_period_end?->format('d M Y') }}
                 </span>
             </div>
         </div>
-        <div class="flex flex-wrap gap-2 sm:mt-6">
+        <div class="flex flex-wrap items-center gap-2">
             @if ($reimbursement->isDraft())
-                <a href="{{ route('reimbursements.edit', $reimbursement) }}" class="inline-flex min-h-[40px] items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50 hover:text-slate-900 transition-colors">
-                    <span class="material-symbols-outlined text-[18px]">edit</span> Edit
+                <a href="{{ route('reimbursements.edit', $reimbursement) }}"
+                   class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+                   style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                   onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                   onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                    Edit
                 </a>
                 <form method="POST" action="{{ route('reimbursements.submit', $reimbursement) }}" class="inline-flex">
                     @csrf
-                    <button type="submit" class="inline-flex min-h-[40px] items-center gap-2 rounded-lg bg-[#215aac] px-4 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-colors">
-                        <span class="material-symbols-outlined text-[18px]">send</span> Ajukan
+                    <button type="submit"
+                            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                            style="background-color: var(--dash-primary);">
+                        <span class="material-symbols-outlined text-[18px]">send</span>
+                        Ajukan
                     </button>
                 </form>
             @elseif ($reimbursement->status === 'APPROVED')
                 @can('finance.reimbursement.pay')
-                    <div x-data="{ open: false }">
-                        <button @click="open = true" class="inline-flex min-h-[40px] items-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-bold text-white shadow-sm hover:bg-emerald-700 transition-colors">
-                            <span class="material-symbols-outlined text-[18px]">payments</span> Tandai Dibayar
-                        </button>
-
-                        <div x-show="open" x-transition.opacity class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @keydown.escape.window="open = false" style="display:none">
-                            <div @click.stop class="w-full max-w-sm rounded-xl bg-white p-6 shadow-xl space-y-4">
-                                <div class="flex items-center gap-3">
-                                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100">
-                                        <span class="material-symbols-outlined text-emerald-600 text-[20px]">payments</span>
-                                    </div>
-                                    <div>
-                                        <h3 class="font-jakarta text-base font-bold text-slate-900">Konfirmasi Pembayaran</h3>
-                                        <p class="text-xs text-slate-500">Tindakan ini tidak dapat dibatalkan.</p>
-                                    </div>
-                                </div>
-                                <p class="text-sm text-slate-700">Tandai reimbursement <span class="font-semibold">{{ $reimbursement->business_purpose }}</span> sebagai sudah dibayar?</p>
-                                <div class="flex justify-end gap-3 pt-2 border-t border-slate-100">
-                                    <button @click="open = false" class="inline-flex min-h-[38px] items-center rounded-lg border border-slate-200 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50">
-                                        Batal
-                                    </button>
-                                    <form method="POST" action="{{ route('reimbursements.mark-paid', $reimbursement) }}" class="inline-flex">
-                                        @csrf
-                                        <button type="submit" class="inline-flex min-h-[38px] items-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-bold text-white hover:bg-emerald-700">
-                                            <span class="material-symbols-outlined text-[16px]">check</span> Ya, Tandai Dibayar
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <button type="button" @click="payModalOpen = true"
+                            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                            style="background-color: #16a34a;">
+                        <span class="material-symbols-outlined text-[18px]">payments</span>
+                        Tandai Dibayar
+                    </button>
                 @endcan
             @endif
         </div>
     </div>
 
+    {{-- Flash Messages --}}
     @if (session('success'))
-        <div class="flex gap-3 border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-            <span class="material-symbols-outlined text-[20px]">check_circle</span><p>{{ session('success') }}</p>
-        </div>
-    @endif
-    @if ($errors->any())
-        <div class="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
-            <ul class="list-disc pl-5">@foreach ($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"
+             style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-heading);">
+            <span class="material-symbols-outlined text-[18px]" style="color: var(--dash-primary);">check_circle</span>
+            <p>{{ session('success') }}</p>
         </div>
     @endif
 
-    {{-- Info --}}
-    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 rounded-xl border border-slate-100 bg-white p-6 shadow-sm">
-        <div>
-            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Pegawai</p>
-            <p class="mt-1 font-medium text-slate-900">{{ $reimbursement->employee?->full_name }}</p>
+    @if ($errors->any())
+        <div class="flex items-start gap-3 px-4 py-3 rounded-xl text-sm font-medium"
+             style="background-color: color-mix(in srgb, var(--dash-danger) 10%, transparent); border: 1px solid color-mix(in srgb, var(--dash-danger) 25%, transparent); color: var(--dash-danger);">
+            <span class="material-symbols-outlined text-[18px] shrink-0">error</span>
+            <ul class="list-disc list-inside space-y-0.5">
+                @foreach ($errors->all() as $e)
+                    <li>{{ $e }}</li>
+                @endforeach
+            </ul>
         </div>
-        <div>
-            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Total</p>
-            <p class="mt-1 font-jakarta text-lg font-black text-emerald-600">Rp {{ number_format($reimbursement->total_amount, 0, ',', '.') }}</p>
+    @endif
+
+    {{-- Meta Info Cards --}}
+    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
+        <div class="p-4 rounded-2xl shadow-sm"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <p class="text-[11px] font-bold uppercase tracking-wider" style="color: var(--dash-text-faint);">Pegawai</p>
+            <p class="mt-1 text-sm font-semibold truncate" style="color: var(--dash-text-heading);">
+                {{ $reimbursement->employee?->full_name ?? '-' }}
+            </p>
         </div>
-        @if ($reimbursement->review_notes)
-            <div class="rounded-lg bg-slate-50 p-3">
-                <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Catatan review</p>
-                <p class="mt-1 text-sm text-slate-700">{{ $reimbursement->review_notes }}</p>
-            </div>
-        @endif
-        @if ($reimbursement->rejection_notes)
-            <div class="col-span-2 sm:col-span-3 rounded-lg border border-red-100 bg-red-50 p-4">
-                <p class="text-xs font-semibold uppercase tracking-wider text-red-600">Alasan ditolak</p>
-                <p class="mt-1 text-sm font-medium text-red-800">{{ $reimbursement->rejection_notes }}</p>
-            </div>
-        @endif
+        <div class="p-4 rounded-2xl shadow-sm"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <p class="text-[11px] font-bold uppercase tracking-wider" style="color: var(--dash-text-faint);">Total Reimbursement</p>
+            <p class="mt-1 text-sm font-bold truncate tabular-nums" style="color: var(--dash-primary-text);">
+                Rp {{ number_format($reimbursement->total_amount, 0, ',', '.') }}
+            </p>
+        </div>
+        <div class="col-span-2 sm:col-span-1 p-4 rounded-2xl shadow-sm"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <p class="text-[11px] font-bold uppercase tracking-wider" style="color: var(--dash-text-faint);">Status Saat Ini</p>
+            <p class="mt-1 text-sm font-semibold truncate" style="color: var(--dash-text-heading);">
+                {{ str_replace('_', ' ', $reimbursement->status) }}
+            </p>
+        </div>
     </div>
 
-    {{-- Items --}}
-    <div class="overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm">
-        <div class="border-b border-slate-100 px-6 py-4">
-            <h3 class="font-jakarta text-base font-bold text-slate-900">Rincian Pengeluaran</h3>
+    {{-- Notes if any --}}
+    @if ($reimbursement->review_notes)
+        <div class="p-4 rounded-xl text-sm"
+             style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-heading);">
+            <p class="text-[11px] font-bold uppercase tracking-wider mb-1" style="color: var(--dash-text-faint);">Catatan Review</p>
+            <p class="text-sm">{{ $reimbursement->review_notes }}</p>
         </div>
+    @endif
+
+    @if ($reimbursement->rejection_notes)
+        <div class="flex items-start gap-3 p-4 rounded-xl text-sm font-medium"
+             style="background-color: color-mix(in srgb, var(--dash-danger) 10%, transparent); border: 1px solid color-mix(in srgb, var(--dash-danger) 25%, transparent); color: var(--dash-danger);">
+            <span class="material-symbols-outlined text-[20px] shrink-0">error</span>
+            <div>
+                <h2 class="text-sm font-bold">Alasan Penolakan</h2>
+                <p class="mt-0.5 text-sm">{{ $reimbursement->rejection_notes }}</p>
+            </div>
+        </div>
+    @endif
+
+    {{-- Items Card --}}
+    <div class="rounded-2xl shadow-sm"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <div class="px-6 py-4 rounded-t-2xl flex items-center justify-between"
+             style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+            <h2 class="text-sm font-semibold" style="color: var(--dash-text-heading);">Rincian Pengeluaran</h2>
+            <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full"
+                  style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-muted);">
+                {{ $reimbursement->items->count() }} Pengeluaran
+            </span>
+        </div>
+
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-100 text-sm">
-                <thead class="bg-slate-50 text-left text-xs font-bold uppercase tracking-wider text-slate-500">
-                    <tr>
-                        <th class="px-6 py-4">Tanggal</th>
-                        <th class="px-6 py-4">Kategori</th>
-                        <th class="px-6 py-4">Deskripsi</th>
-                        <th class="px-6 py-4 text-right">Jumlah</th>
-                        @if ($reimbursement->isDraft()) <th class="px-6 py-4 text-right w-20">Aksi</th> @endif
+            <table class="w-full text-sm text-left">
+                <thead>
+                    <tr style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
+                        <th class="px-4 py-3.5 uppercase tracking-wider text-[11px] font-bold"
+                            style="color: var(--dash-text-muted);">Tanggal & Kategori</th>
+                        <th class="px-4 py-3.5 uppercase tracking-wider text-[11px] font-bold"
+                            style="color: var(--dash-text-muted);">Deskripsi</th>
+                        <th class="px-4 py-3.5 uppercase tracking-wider text-[11px] font-bold text-right"
+                            style="color: var(--dash-text-muted);">Jumlah</th>
+                        @if ($reimbursement->isDraft())
+                            <th class="px-4 py-3.5 uppercase tracking-wider text-[11px] font-bold text-right"
+                                style="color: var(--dash-text-muted);">Aksi</th>
+                        @endif
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-50">
+                <tbody class="divide-y" style="border-color: var(--dash-card-border);">
                     @forelse ($reimbursement->items as $item)
-                        <tr class="hover:bg-slate-50/50 transition-colors">
-                            <td class="px-6 py-4 text-slate-600 font-medium">{{ $item->expense_date?->format('d M Y') }}</td>
-                            <td class="px-6 py-4 font-semibold text-slate-900 uppercase text-[13px] tracking-wide">{{ str_replace('_', ' ', $item->category) }}</td>
-                            <td class="px-6 py-4 text-slate-700 font-medium">{{ $item->description }}
-                                @if ($item->notes) <p class="mt-0.5 text-xs text-slate-400">{{ $item->notes }}</p> @endif
+                        <tr style="border-bottom: 1px solid var(--dash-card-border);"
+                            onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                            onmouseout="this.style.backgroundColor='transparent'">
+                            <td class="px-4 py-3">
+                                <p class="text-xs font-medium" style="color: var(--dash-text-heading);">
+                                    {{ $item->expense_date?->format('d M Y') }}
+                                </p>
+                                <span class="inline-block mt-0.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider"
+                                      style="background-color: var(--dash-nav-hover-bg); color: var(--dash-text-muted);">
+                                    {{ str_replace('_', ' ', $item->category) }}
+                                </span>
                             </td>
-                            <td class="px-6 py-4 text-right tabular-nums font-bold text-emerald-600">Rp {{ number_format($item->amount, 0, ',', '.') }}</td>
+                            <td class="px-4 py-3">
+                                <p class="text-xs font-medium" style="color: var(--dash-text-body);">{{ $item->description }}</p>
+                                @if ($item->notes)
+                                    <p class="text-[11px] mt-0.5" style="color: var(--dash-text-muted);">{{ $item->notes }}</p>
+                                @endif
+                            </td>
+                            <td class="px-4 py-3 text-right tabular-nums text-xs font-bold" style="color: var(--dash-primary-text);">
+                                Rp {{ number_format($item->amount, 0, ',', '.') }}
+                            </td>
                             @if ($reimbursement->isDraft())
-                                <td class="px-6 py-4 text-right">
-                                    <form method="POST" action="{{ route('reimbursement-items.destroy', [$reimbursement, $item]) }}" onsubmit="return confirm('Hapus item ini?')" class="inline-flex">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="inline-flex items-center justify-center rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 p-1.5 transition-colors" title="Hapus">
-                                            <span class="material-symbols-outlined text-[18px]">delete</span>
-                                        </button>
-                                    </form>
+                                <td class="px-4 py-3 text-right">
+                                    <button type="button"
+                                            @click="deleteUrl = '{{ route('reimbursement-items.destroy', [$reimbursement, $item]) }}'; deleteItemDesc = '{{ addslashes($item->description) }}'; deleteModalOpen = true"
+                                            class="inline-flex items-center justify-center p-1.5 rounded-lg text-white transition-opacity hover:opacity-90"
+                                            style="background-color: var(--dash-danger);"
+                                            title="Hapus Item">
+                                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                                    </button>
                                 </td>
                             @endif
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="{{ $reimbursement->isDraft() ? 5 : 4 }}" class="px-6 py-12 text-center">
-                                <div class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-50 mb-3">
-                                    <span class="material-symbols-outlined text-slate-400 text-2xl">receipt_long</span>
-                                </div>
-                                <h3 class="text-sm font-medium text-slate-900">Belum ada item pengeluaran</h3>
-                                <p class="mt-1 text-sm text-slate-500">Silakan tambahkan rincian pengeluaran di bawah.</p>
+                            <td colspan="{{ $reimbursement->isDraft() ? 4 : 3 }}" class="px-4 py-12 text-center">
+                                <span class="material-symbols-outlined text-[48px] block mx-auto mb-3"
+                                      style="color: var(--dash-text-faint);">receipt_long</span>
+                                <p class="text-sm font-semibold" style="color: var(--dash-text-muted);">Belum ada item pengeluaran.</p>
+                                <p class="text-xs mt-1" style="color: var(--dash-text-faint);">Tambahkan bukti pengeluaran melalui form di bawah.</p>
                             </td>
                         </tr>
                     @endforelse
@@ -164,79 +216,220 @@
             </table>
         </div>
 
+        {{-- Form Tambah Pengeluaran Baru --}}
+        @if ($reimbursement->isDraft())
+            <div class="p-6 rounded-b-2xl border-t"
+                 style="border-color: var(--dash-card-border); background-color: var(--dash-card-bg);">
+                <h3 class="text-sm font-semibold mb-4" style="color: var(--dash-text-heading);">Tambah Pengeluaran</h3>
+                <form method="POST" action="{{ route('reimbursement-items.store', $reimbursement) }}"
+                      class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
+                    @csrf
+                    <div class="sm:col-span-3">
+                        <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide"
+                               style="color: var(--dash-text-faint);">Tanggal <span class="text-red-500">*</span></label>
+                        <input type="date" name="expense_date" required
+                               class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                               style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                               onfocus="this.style.borderColor='var(--dash-primary)'"
+                               onblur="this.style.borderColor='var(--dash-input-border)'" />
+                    </div>
+                    <div class="sm:col-span-3">
+                        <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide"
+                               style="color: var(--dash-text-faint);">Kategori <span class="text-red-500">*</span></label>
+                        <select name="category" required
+                                class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                onfocus="this.style.borderColor='var(--dash-primary)'"
+                                onblur="this.style.borderColor='var(--dash-input-border)'">
+                            <option value="">Pilih Kategori...</option>
+                            @foreach (['transport' => 'Transport', 'makan' => 'Makan', 'akomodasi' => 'Akomodasi', 'perlengkapan' => 'Perlengkapan', 'lainnya' => 'Lainnya'] as $val => $label)
+                                <option value="{{ $val }}">{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="sm:col-span-3">
+                        <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide"
+                               style="color: var(--dash-text-faint);">Deskripsi <span class="text-red-500">*</span></label>
+                        <input type="text" name="description" required maxlength="255" placeholder="Detail pengeluaran..."
+                               class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                               style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                               onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                               onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'" />
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide"
+                               style="color: var(--dash-text-faint);">Jumlah (Rp) <span class="text-red-500">*</span></label>
+                        <div class="relative" x-data="{
+                                rawValue: '',
+                                format(val) {
+                                    let num = val.toString().replace(/[^0-9]/g, '');
+                                    return num ? new Intl.NumberFormat('id-ID').format(num) : '';
+                                }
+                             }">
+                            <input type="text" :value="format(rawValue)"
+                                   @input="rawValue = $event.target.value.replace(/[^0-9]/g, ''); $event.target.value = format(rawValue)"
+                                   required placeholder="0"
+                                   class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                   style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                   onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                   onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'" />
+                            <input type="hidden" name="amount" x-model="rawValue" />
+                        </div>
+                    </div>
+                    <div class="sm:col-span-1">
+                        <button type="submit"
+                                class="w-full inline-flex items-center justify-center h-[38px] rounded-lg text-white font-semibold transition-opacity hover:opacity-90"
+                                style="background-color: var(--dash-primary);"
+                                title="Catat Pengeluaran">
+                            <span class="material-symbols-outlined text-[20px]">add</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        @endif
     </div>
 
-    @if ($reimbursement->isDraft())
-        <div class="rounded-xl border border-slate-100 bg-slate-50/50 px-6 py-5">
-            <p class="mb-3 text-xs font-bold uppercase tracking-wider text-slate-700">Tambah Pengeluaran</p>
-            <form method="POST" action="{{ route('reimbursement-items.store', $reimbursement) }}" class="grid gap-4 md:grid-cols-12 items-end">
-                @csrf
-                <div class="md:col-span-2">
-                    <label class="mb-1.5 block text-xs font-bold text-slate-700">Tanggal</label>
-                    <input type="date" name="expense_date" required class="block w-full rounded-lg border-slate-200 bg-white px-3 py-2.5 text-sm focus:border-[#215aac] focus:ring-[#215aac] shadow-sm">
-                </div>
-                <div class="md:col-span-2">
-                    <label class="mb-1.5 block text-xs font-bold text-slate-700">Kategori</label>
-                    <select name="category" required class="block w-full rounded-lg border-slate-200 bg-white px-3 py-2.5 text-sm focus:border-[#215aac] focus:ring-[#215aac] shadow-sm">
-                        <option value="">— Pilih —</option>
-                        @foreach (['transport' => 'Transport', 'makan' => 'Makan', 'akomodasi' => 'Akomodasi', 'perlengkapan' => 'Perlengkapan', 'lainnya' => 'Lainnya'] as $val => $label)
-                            <option value="{{ $val }}">{{ $label }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="md:col-span-3">
-                    <label class="mb-1.5 block text-xs font-bold text-slate-700">Deskripsi</label>
-                    <input type="text" name="description" required maxlength="255" placeholder="Detail pengeluaran..." class="block w-full rounded-lg border-slate-200 bg-white px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-[#215aac] focus:ring-[#215aac] shadow-sm">
-                </div>
-                <div class="md:col-span-3">
-                    <label class="mb-1.5 block text-xs font-bold text-slate-700">Jumlah (Rp)</label>
-                    <div class="flex rounded-lg shadow-sm" x-data="{
-                            rawValue: '',
-                            format(val) {
-                                let num = val.toString().replace(/[^0-9]/g, '');
-                                return num ? new Intl.NumberFormat('id-ID').format(num) : '';
-                            }
-                        }">
-                        <span class="inline-flex items-center rounded-l-lg border border-r-0 border-slate-200 bg-slate-100 px-3 text-sm font-bold text-slate-500">Rp</span>
-                        <input type="text" :value="format(rawValue)" @input="rawValue = $event.target.value.replace(/[^0-9]/g, ''); $event.target.value = format(rawValue)" required placeholder="0" class="block w-full min-w-0 flex-1 rounded-none rounded-r-lg border-slate-200 bg-white px-3 py-2.5 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
-                        <input type="hidden" name="amount" x-model="rawValue">
-                    </div>
-                </div>
-                <div class="md:col-span-2">
-                    <button type="submit" class="inline-flex min-h-[42px] w-full items-center justify-center gap-2 rounded-lg bg-[#215aac] px-4 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-all">
-                        <span class="material-symbols-outlined text-[18px]">add</span> Catat
-                    </button>
-                </div>
-            </form>
-        </div>
-    @endif
-
-    {{-- Review Form --}}
+    {{-- Review Form Card --}}
     @if ($reimbursement->status === 'PENDING_REVIEW')
         @can('finance.reimbursement.review')
-            <div class="rounded-xl border border-slate-100 bg-white p-6 shadow-sm space-y-4">
-                <h3 class="font-jakarta text-base font-bold text-slate-900 border-b border-slate-100 pb-3">Review Reimbursement</h3>
+            <div class="rounded-2xl shadow-sm p-6 space-y-4"
+                 style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+                <div class="border-b pb-3" style="border-color: var(--dash-card-border);">
+                    <h2 class="text-base font-semibold" style="color: var(--dash-text-heading);">Review Pengajuan Reimbursement</h2>
+                    <p class="text-xs mt-0.5" style="color: var(--dash-text-muted);">Pilih untuk menyetujui atau menolak pengajuan klaim ini.</p>
+                </div>
                 <form method="POST" action="{{ route('reimbursements.review', $reimbursement) }}" class="space-y-4 pt-1">
                     @csrf
                     <div>
-                        <label class="mb-1.5 block text-xs font-bold text-slate-700">Catatan review</label>
-                        <textarea name="review_notes" rows="2" class="block w-full rounded-lg border-slate-200 bg-white px-3 py-2 text-sm focus:border-[#215aac] focus:ring-[#215aac] shadow-sm"></textarea>
+                        <label class="mb-1.5 block text-xs font-semibold" style="color: var(--dash-text-body);">Catatan Review</label>
+                        <textarea name="review_notes" rows="2" placeholder="Catatan tambahan persetujuan..."
+                                  class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                  style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                  onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                  onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'"></textarea>
                     </div>
                     <div>
-                        <label class="mb-1.5 block text-xs font-bold text-red-700">Alasan penolakan <span class="font-medium text-slate-400">(wajib jika ditolak)</span></label>
-                        <textarea name="rejection_notes" rows="2" class="block w-full rounded-lg border-red-200 bg-red-50/50 px-3 py-2 text-sm focus:border-red-500 focus:ring-red-500 shadow-sm"></textarea>
+                        <label class="mb-1.5 block text-xs font-semibold" style="color: var(--dash-danger);">
+                            Alasan Penolakan <span class="font-normal text-xs" style="color: var(--dash-text-faint);">(Wajib diisi jika memilih tolak)</span>
+                        </label>
+                        <textarea name="rejection_notes" rows="2" placeholder="Berikan alasan penolakan jika ditolak..."
+                                  class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                  style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                  onfocus="this.style.borderColor='var(--dash-danger)'"
+                                  onblur="this.style.borderColor='var(--dash-input-border)'"></textarea>
                     </div>
-                    <div class="flex flex-wrap gap-3 pt-2">
-                        <button type="submit" name="action" value="approve" class="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-lg bg-emerald-600 px-6 text-sm font-bold text-white shadow-sm hover:bg-emerald-700 transition-colors">
-                            <span class="material-symbols-outlined text-[18px]">check_circle</span> Setujui
+                    <div class="flex flex-wrap items-center gap-3 pt-2">
+                        <button type="submit" name="action" value="approve"
+                                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                                style="background-color: #16a34a;">
+                            <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                            Setujui Pengajuan
                         </button>
-                        <button type="submit" name="action" value="reject" class="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-lg border border-red-200 bg-white px-6 text-sm font-bold text-red-700 shadow-sm hover:bg-red-50 transition-colors">
-                            <span class="material-symbols-outlined text-[18px]">cancel</span> Tolak
+                        <button type="submit" name="action" value="reject"
+                                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                                style="background-color: var(--dash-danger);">
+                            <span class="material-symbols-outlined text-[18px]">cancel</span>
+                            Tolak Pengajuan
                         </button>
                     </div>
                 </form>
             </div>
         @endcan
     @endif
+
+    {{-- Modal Konfirmasi Hapus Item (Custom Alpine.js, ZERO Browser Confirm) --}}
+    <div x-show="deleteModalOpen"
+         x-transition.opacity
+         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"
+         style="display: none;"
+         @keydown.escape.window="deleteModalOpen = false">
+        <div @click.stop
+             class="w-full max-w-md rounded-2xl shadow-xl space-y-4"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <div class="p-5 rounded-t-2xl flex items-center gap-3 border-b"
+                 style="border-color: var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                     style="background-color: color-mix(in srgb, var(--dash-danger) 15%, transparent); color: var(--dash-danger);">
+                    <span class="material-symbols-outlined text-[22px]">delete</span>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold" style="color: var(--dash-text-heading);">Hapus Item Pengeluaran</h3>
+                    <p class="text-xs" style="color: var(--dash-text-muted);">Konfirmasi penghapusan</p>
+                </div>
+            </div>
+            <div class="px-5 py-2">
+                <p class="text-sm" style="color: var(--dash-text-body);">
+                    Apakah Anda yakin ingin menghapus item pengeluaran <span class="font-semibold" style="color: var(--dash-text-heading);" x-text="deleteItemDesc"></span>?
+                </p>
+            </div>
+            <div class="p-4 rounded-b-2xl border-t flex justify-end gap-2.5"
+                 style="border-color: var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                <button type="button" @click="deleteModalOpen = false"
+                        class="px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                        style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-muted);"
+                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                    Batal
+                </button>
+                <form :action="deleteUrl" method="POST" class="inline-flex">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit"
+                            class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg text-white transition-opacity hover:opacity-90"
+                            style="background-color: var(--dash-danger);">
+                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                        Ya, Hapus
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Modal Konfirmasi Tandai Dibayar (Custom Alpine.js, ZERO Browser Confirm) --}}
+    <div x-show="payModalOpen"
+         x-transition.opacity
+         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"
+         style="display: none;"
+         @keydown.escape.window="payModalOpen = false">
+        <div @click.stop
+             class="w-full max-w-md rounded-2xl shadow-xl space-y-4"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <div class="p-5 rounded-t-2xl flex items-center gap-3 border-b"
+                 style="border-color: var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                     style="background-color: color-mix(in srgb, #16a34a 15%, transparent); color: #16a34a;">
+                    <span class="material-symbols-outlined text-[22px]">payments</span>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold" style="color: var(--dash-text-heading);">Konfirmasi Pembayaran</h3>
+                    <p class="text-xs" style="color: var(--dash-text-muted);">Tindakan ini tidak dapat dibatalkan</p>
+                </div>
+            </div>
+            <div class="px-5 py-2">
+                <p class="text-sm" style="color: var(--dash-text-body);">
+                    Tandai reimbursement <span class="font-semibold" style="color: var(--dash-text-heading);">{{ $reimbursement->business_purpose }}</span> sejumlah <span class="font-bold tabular-nums" style="color: var(--dash-primary-text);">Rp {{ number_format($reimbursement->total_amount, 0, ',', '.') }}</span> sebagai sudah dibayar?
+                </p>
+            </div>
+            <div class="p-4 rounded-b-2xl border-t flex justify-end gap-2.5"
+                 style="border-color: var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                <button type="button" @click="payModalOpen = false"
+                        class="px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                        style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-muted);"
+                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                    Batal
+                </button>
+                <form method="POST" action="{{ route('reimbursements.mark-paid', $reimbursement) }}" class="inline-flex">
+                    @csrf
+                    <button type="submit"
+                            class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg text-white transition-opacity hover:opacity-90"
+                            style="background-color: #16a34a;">
+                        <span class="material-symbols-outlined text-[16px]">check</span>
+                        Ya, Tandai Dibayar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

@@ -4,84 +4,120 @@
 @section('header_title', 'Review Program')
 
 @section('content')
-<div class="max-w-3xl mx-auto space-y-5">
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-4xl mx-auto space-y-6">
 
+    {{-- Page Header Pola A --}}
     <div>
-        <h2 class="text-xl font-bold font-jakarta text-gray-900">Review Program</h2>
-        <p class="text-sm text-gray-500 mt-0.5">Berikan ulasan untuk program yang telah Anda selesaikan.</p>
+        <p class="text-xs font-semibold uppercase tracking-wider mb-1"
+           style="color: var(--dash-primary-text);">Portal Siswa</p>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+            style="color: var(--dash-text-heading);">Review Program</h1>
+        <p class="text-sm mt-1" style="color: var(--dash-text-muted);">
+            Berikan ulasan dan penilaian untuk program yang telah Anda selesaikan.
+        </p>
     </div>
 
     @if(session('success'))
-    <div class="flex items-center gap-2 px-4 py-3 bg-green-50 border border-green-200 rounded-xl text-sm text-green-700 font-medium">
-        <span class="material-symbols-outlined text-green-500" style="font-size:18px">check_circle</span>
+    <div class="flex items-center gap-2.5 px-4 py-3 rounded-xl text-sm font-semibold shadow-sm"
+         style="background-color: var(--dash-status-success-bg); border: 1px solid var(--dash-card-border); color: var(--dash-status-success-text);">
+        <span class="material-symbols-outlined text-[20px]">check_circle</span>
         {{ session('success') }}
     </div>
     @endif
 
     @if($registrations->isEmpty())
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-12 flex flex-col items-center justify-center text-center">
-        <div class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center mb-4">
-            <span class="material-symbols-outlined text-[#5586DB] text-3xl">rate_review</span>
+    {{-- Empty State Card --}}
+    <div class="rounded-2xl p-12 flex flex-col items-center justify-center text-center shadow-sm"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <div class="w-16 h-16 rounded-full flex items-center justify-center mb-4"
+             style="background-color: var(--dash-status-info-bg);">
+            <span class="material-symbols-outlined text-3xl" style="color: var(--dash-primary);">rate_review</span>
         </div>
-        <h3 class="text-base font-bold text-gray-900 font-jakarta mb-1">Belum Ada Program Selesai</h3>
-        <p class="text-sm text-gray-500 max-w-xs mx-auto">Review tersedia setelah program Anda dinyatakan lulus.</p>
+        <h3 class="text-base sm:text-lg font-bold font-jakarta mb-1" style="color: var(--dash-text-heading);">Belum Ada Program Selesai</h3>
+        <p class="text-sm max-w-sm mx-auto mb-6" style="color: var(--dash-text-muted);">Review program tersedia setelah status kelulusan Anda diperbarui.</p>
+        <a href="{{ route('member.dashboard') }}"
+           class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90 shadow-sm"
+           style="background-color: var(--dash-primary);">
+            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+            Kembali ke Dashboard
+        </a>
     </div>
 
     @else
     @foreach($registrations as $reg)
     @php $review = $reg->review; @endphp
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+    <div class="rounded-2xl shadow-sm overflow-hidden"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
 
         {{-- Program header --}}
-        <div class="flex items-start gap-3 p-5 border-b border-gray-100">
-            <div class="w-10 h-10 rounded-xl bg-[#5586DB]/10 flex items-center justify-center flex-shrink-0">
-                <span class="material-symbols-outlined text-[#5586DB]" style="font-size:20px">local_library</span>
+        <div class="flex items-start gap-3.5 p-5 sm:p-6"
+             style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                 style="background-color: var(--dash-status-info-bg);">
+                <span class="material-symbols-outlined text-[20px]" style="color: var(--dash-primary);">local_library</span>
             </div>
             <div class="flex-1 min-w-0">
-                <h3 class="font-bold text-gray-900 font-jakarta leading-tight">{{ $reg->program->program_name ?? '-' }}</h3>
-                <p class="text-xs text-gray-500 mt-0.5">
+                <h3 class="font-bold font-jakarta text-base leading-tight" style="color: var(--dash-text-heading);">
+                    {{ $reg->program->program_name ?? '-' }}
+                </h3>
+                <p class="text-xs mt-1" style="color: var(--dash-text-muted);">
                     Selesai {{ $reg->updated_at?->translatedFormat('M Y') }}
                     &middot;
-                    <span class="{{ $reg->graduation_status === 'LULUS' ? 'text-green-600' : 'text-red-500' }} font-semibold">{{ $reg->graduation_status }}</span>
+                    <span class="font-bold" style="color: {{ $reg->graduation_status === 'LULUS' ? 'var(--dash-status-success-text)' : 'var(--dash-status-danger-text)' }};">
+                        {{ $reg->graduation_status }}
+                    </span>
                 </p>
             </div>
         </div>
 
-        <div class="p-5">
+        <div class="p-5 sm:p-6">
             @if($review)
             {{-- Display existing review --}}
-            <div class="{{ $review->is_approved ? '' : 'mb-5' }}">
+            <div class="{{ $review->is_approved ? '' : 'mb-6' }}">
                 <div class="flex items-center justify-between mb-2">
-                    <div class="flex items-center gap-0.5">
+                    <div class="flex items-center gap-1">
                         @for($i = 1; $i <= 5; $i++)
-                        <span class="material-symbols-outlined {{ $i <= $review->rating ? 'text-amber-400' : 'text-gray-200' }}" style="font-size:18px">star</span>
+                        <span class="material-symbols-outlined text-[20px] {{ $i <= $review->rating ? 'text-amber-400' : '' }}"
+                              style="{{ $i > $review->rating ? 'color: var(--dash-text-faint);' : '' }}">star</span>
                         @endfor
-                        <span class="text-xs text-gray-500 ml-1.5">{{ $review->rating }}/5</span>
+                        <span class="text-xs font-semibold ml-1.5" style="color: var(--dash-text-muted);">{{ $review->rating }}/5</span>
                     </div>
-                    <span class="text-xs px-2 py-1 rounded-md border font-semibold
-                        {{ $review->is_approved ? 'bg-green-50 text-green-700 border-green-200' : 'bg-amber-50 text-amber-600 border-amber-200' }}">
+                    <span class="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full font-semibold shadow-xs"
+                          style="{{ $review->is_approved ? 'background-color: var(--dash-status-success-bg); color: var(--dash-status-success-text); border: 1px solid var(--dash-card-border);' : 'background-color: var(--dash-status-warning-bg); color: var(--dash-status-warning-text); border: 1px solid var(--dash-card-border);' }}">
+                        <span class="material-symbols-outlined text-[13px]">{{ $review->is_approved ? 'check' : 'schedule' }}</span>
                         {{ $review->is_approved ? 'Disetujui' : 'Menunggu Persetujuan' }}
                     </span>
                 </div>
                 @if($review->review)
-                <p class="text-sm text-gray-700 leading-relaxed mt-2">{{ $review->review }}</p>
+                <p class="text-sm leading-relaxed mt-3" style="color: var(--dash-text-body);">{{ $review->review }}</p>
                 @endif
             </div>
 
             @unless($review->is_approved)
-            <form method="POST" action="{{ route('member.reviews.update', $review) }}" class="border-t border-gray-100 pt-4 space-y-3">
+            <form method="POST" action="{{ route('member.reviews.update', $review) }}"
+                  class="pt-5 space-y-4" style="border-top: 1px solid var(--dash-card-border);">
                 @csrf @method('PUT')
                 <div>
-                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1.5">Program</p>
-                    <div class="text-sm font-medium text-gray-800 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl">
+                    <p class="text-xs font-bold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-muted);">Program</p>
+                    <div class="text-sm font-semibold px-3.5 py-2.5 rounded-xl font-jakarta"
+                         style="background-color: var(--dash-page-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-heading);">
                         {{ $reg->program->program_name ?? '-' }}
                     </div>
                 </div>
-                @include('member.reviews._rating-input', ['currentRating' => $review->rating])
-                <textarea name="review" rows="3"
-                    class="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5586DB]/30 focus:border-[#5586DB] resize-none"
-                    placeholder="Tulis ulasan Anda... (opsional, min. 10 karakter)">{{ old('review', $review->review) }}</textarea>
-                <button type="submit" class="px-4 py-2 text-sm font-semibold bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-muted);">Rating</p>
+                    @include('member.reviews._rating-input', ['currentRating' => $review->rating])
+                </div>
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-muted);">Ulasan Anda</p>
+                    <textarea name="review" rows="3"
+                        class="w-full text-sm rounded-xl px-3.5 py-2.5 resize-none transition-colors focus:outline-none"
+                        style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                        placeholder="Tulis ulasan Anda... (opsional, min. 10 karakter)">{{ old('review', $review->review) }}</textarea>
+                </div>
+                <button type="submit"
+                        class="px-5 py-2.5 text-xs font-semibold rounded-lg text-white transition-opacity hover:opacity-90 shadow-sm cursor-pointer"
+                        style="background-color: var(--dash-primary);">
                     Perbarui Review
                 </button>
             </form>
@@ -89,22 +125,32 @@
 
             @else
             {{-- New review form --}}
-            <form method="POST" action="{{ route('member.reviews.store') }}" class="space-y-3">
+            <form method="POST" action="{{ route('member.reviews.store') }}" class="space-y-4">
                 @csrf
                 <input type="hidden" name="member_registration_id" value="{{ $reg->id }}">
                 <div>
-                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1.5">Program</p>
-                    <div class="text-sm font-medium text-gray-800 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl">
+                    <p class="text-xs font-bold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-muted);">Program</p>
+                    <div class="text-sm font-semibold px-3.5 py-2.5 rounded-xl font-jakarta"
+                         style="background-color: var(--dash-page-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-heading);">
                         {{ $reg->program->program_name ?? '-' }}
                     </div>
                 </div>
-                @include('member.reviews._rating-input', ['currentRating' => 0])
-                <textarea name="review" rows="3"
-                    class="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5586DB]/30 focus:border-[#5586DB] resize-none"
-                    placeholder="Tulis ulasan Anda... (opsional, min. 10 karakter)">{{ old('review') }}</textarea>
-                @error('rating')<p class="text-xs text-red-500">{{ $message }}</p>@enderror
-                @error('review')<p class="text-xs text-red-500">{{ $message }}</p>@enderror
-                <button type="submit" class="px-4 py-2 text-sm font-semibold bg-[#5586DB] text-white rounded-lg hover:bg-[#4370BC] transition-colors">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-muted);">Rating</p>
+                    @include('member.reviews._rating-input', ['currentRating' => 0])
+                </div>
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wider mb-1.5" style="color: var(--dash-text-muted);">Ulasan Anda</p>
+                    <textarea name="review" rows="3"
+                        class="w-full text-sm rounded-xl px-3.5 py-2.5 resize-none transition-colors focus:outline-none"
+                        style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                        placeholder="Tulis ulasan Anda... (opsional, min. 10 karakter)">{{ old('review') }}</textarea>
+                </div>
+                @error('rating')<p class="text-xs font-medium" style="color: var(--dash-status-danger-text);">{{ $message }}</p>@enderror
+                @error('review')<p class="text-xs font-medium" style="color: var(--dash-status-danger-text);">{{ $message }}</p>@enderror
+                <button type="submit"
+                        class="px-5 py-2.5 text-xs font-semibold rounded-lg text-white transition-opacity hover:opacity-90 shadow-sm cursor-pointer"
+                        style="background-color: var(--dash-primary);">
                     Kirim Review
                 </button>
             </form>

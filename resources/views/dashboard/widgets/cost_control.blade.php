@@ -3,7 +3,7 @@
 @php
     $utilization = $data['utilization_percent'] ?? 0;
     $isOverBudget = $utilization > 100;
-    $barColor = $isOverBudget ? 'bg-red-500' : ($utilization > 80 ? 'bg-amber-500' : 'bg-emerald-500');
+    $barBg = $isOverBudget ? 'var(--dash-status-danger-text)' : ($utilization > 80 ? 'var(--dash-status-warning-text)' : 'var(--dash-status-success-text)');
     $categoryLabels = [
         'sewa' => 'Sewa', 'listrik' => 'Listrik', 'air' => 'Air',
         'internet' => 'Internet', 'gaji_non_employee' => 'Gaji Non-Employee',
@@ -12,19 +12,19 @@
     ];
 @endphp
 
-<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow relative overflow-hidden flex flex-col h-full">
+<div class="rounded-2xl transition-all p-5 relative overflow-hidden flex flex-col h-full" style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
     <div class="flex items-center justify-between mb-4 z-10">
         <div class="flex items-center gap-3">
-            <div class="h-10 w-10 rounded-lg {{ $isOverBudget ? 'bg-red-50' : 'bg-violet-50' }} flex items-center justify-center">
-                <span class="material-symbols-outlined {{ $isOverBudget ? 'text-red-500' : 'text-violet-600' }} text-xl">account_balance_wallet</span>
+            <div class="h-10 w-10 rounded-lg flex items-center justify-center shrink-0" style="background-color: {{ $isOverBudget ? 'var(--dash-status-danger-bg)' : 'var(--dash-primary-bg)' }}; color: {{ $isOverBudget ? 'var(--dash-status-danger-text)' : 'var(--dash-primary-text)' }};">
+                <span class="material-symbols-outlined text-xl">account_balance_wallet</span>
             </div>
             <div>
-                <h3 class="text-sm font-semibold text-gray-800">Cost Control</h3>
-                <p class="text-xs text-gray-400">{{ $data['period'] ?? '-' }}</p>
+                <h3 class="text-sm font-semibold" style="color: var(--dash-text-heading);">Cost Control</h3>
+                <p class="text-xs" style="color: var(--dash-text-muted);">{{ $data['period'] ?? '-' }}</p>
             </div>
         </div>
         @if(isset($data['pending_budget_count']) && $data['pending_budget_count'] > 0)
-            <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-amber-100 text-amber-700">
+            <span class="px-2.5 py-1 text-xs font-bold rounded-full" style="background-color: var(--dash-status-warning-bg); color: var(--dash-status-warning-text);">
                 {{ $data['pending_budget_count'] }} draft
             </span>
         @endif
@@ -34,46 +34,46 @@
         <div>
             <div class="flex items-end justify-between mb-1">
                 <div>
-                    <p class="text-xs text-gray-400 mb-0.5">Budget</p>
-                    <p class="text-lg font-bold text-gray-900 font-jakarta leading-none">Rp {{ number_format($data['budget_total'] ?? 0, 0, ',', '.') }}</p>
+                    <p class="text-xs font-medium mb-0.5" style="color: var(--dash-text-muted);">Budget</p>
+                    <p class="text-base sm:text-lg font-bold font-jakarta leading-none" style="color: var(--dash-text-heading);">Rp {{ number_format($data['budget_total'] ?? 0, 0, ',', '.') }}</p>
                 </div>
                 <div class="text-right">
-                    <p class="text-xs text-gray-400 mb-0.5">Actual</p>
-                    <p class="text-lg font-bold {{ $isOverBudget ? 'text-red-600' : 'text-gray-900' }} font-jakarta leading-none">Rp {{ number_format($data['actual_total'] ?? 0, 0, ',', '.') }}</p>
+                    <p class="text-xs font-medium mb-0.5" style="color: var(--dash-text-muted);">Actual</p>
+                    <p class="text-base sm:text-lg font-bold font-jakarta leading-none" style="color: {{ $isOverBudget ? 'var(--dash-status-danger-text)' : 'var(--dash-text-heading)' }};">Rp {{ number_format($data['actual_total'] ?? 0, 0, ',', '.') }}</p>
                 </div>
             </div>
             
             <div class="mt-3">
                 <div class="flex items-center justify-between mb-1">
-                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Utilization</span>
-                    <span class="text-xs font-bold {{ $isOverBudget ? 'text-red-600' : 'text-gray-700' }}">{{ $utilization }}%</span>
+                    <span class="text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Utilization</span>
+                    <span class="text-xs font-bold" style="color: {{ $isOverBudget ? 'var(--dash-status-danger-text)' : 'var(--dash-text-heading)' }};">{{ $utilization }}%</span>
                 </div>
-                <div class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
-                    <div class="{{ $barColor }} h-2.5 rounded-full transition-all" style="width: {{ min($utilization, 100) }}%"></div>
+                <div class="w-full rounded-full h-2.5 overflow-hidden" style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border);">
+                    <div class="h-2.5 rounded-full transition-all" style="width: {{ min($utilization, 100) }}%; background-color: {{ $barBg }};"></div>
                 </div>
             </div>
         </div>
 
         @if(isset($data['variance']))
-        <div class="flex items-center justify-between pt-2 border-t border-gray-50">
-            <span class="text-xs font-medium text-gray-500">Variance</span>
-            <span class="text-sm font-bold {{ $data['variance'] >= 0 ? 'text-emerald-600' : 'text-red-500' }}">
-                {{ $data['variance'] >= 0 ? '+' : '' }}Rp {{ number_format($data['variance'], 0, ',', '.') }}
-            </span>
-        </div>
+            <div class="flex items-center justify-between pt-2 border-t" style="border-color: var(--dash-card-border);">
+                <span class="text-xs font-medium" style="color: var(--dash-text-muted);">Variance</span>
+                <span class="text-sm font-bold" style="color: {{ $data['variance'] >= 0 ? 'var(--dash-status-success-text)' : 'var(--dash-status-danger-text)' }};">
+                    {{ $data['variance'] >= 0 ? '+' : '' }}Rp {{ number_format($data['variance'], 0, ',', '.') }}
+                </span>
+            </div>
         @endif
 
         @if(!empty($data['cost_by_category']))
-        <div class="pt-3 border-t border-gray-50">
-            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Cost Breakdown</p>
-            <div class="relative" style="height: 140px;">
-                @php
-                    $chartData = array_values($data['cost_by_category']);
-                    $chartLabels = array_map(fn($k) => $categoryLabels[$k] ?? ucfirst($k), array_keys($data['cost_by_category']));
-                @endphp
-                <div id="chart-cost-{{ Str::random(5) }}" data-series='@json($chartData)' data-labels='@json($chartLabels)'></div>
+            <div class="pt-3 border-t" style="border-color: var(--dash-card-border);">
+                <p class="text-xs font-semibold uppercase tracking-wider mb-2" style="color: var(--dash-text-muted);">Cost Breakdown</p>
+                <div class="relative" style="height: 140px;">
+                    @php
+                        $chartData = array_values($data['cost_by_category']);
+                        $chartLabels = array_map(fn($k) => $categoryLabels[$k] ?? ucfirst($k), array_keys($data['cost_by_category']));
+                    @endphp
+                    <div id="chart-cost-{{ Str::random(5) }}" data-series='@json($chartData)' data-labels='@json($chartLabels)'></div>
+                </div>
             </div>
-        </div>
         @endif
     </div>
 </div>
@@ -100,7 +100,7 @@
                         },
                         stroke: {
                             width: 2,
-                            colors: ['#ffffff']
+                            colors: ['transparent']
                         },
                         plotOptions: {
                             pie: {
@@ -131,7 +131,7 @@
                                 }
                             }
                         },
-                        colors: ['#8b5cf6', '#a78bfa', '#c4b5fd', '#ddd6fe', '#ede9fe', '#6366f1', '#818cf8', '#a5b4fc']
+                        colors: ['#5586db', '#38bdf8', '#fbbf24', '#059669', '#dc2626', '#818cf8', '#a78bfa', '#f97316']
                     };
                     
                     new ApexCharts(container, options).render();

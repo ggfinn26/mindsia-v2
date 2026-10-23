@@ -107,19 +107,7 @@
         <div id="instruction-panel" class="max-w-3xl mx-auto hidden">
             {{-- Part A --}}
             <div id="instr-a" class="hidden">
-                <div class="bg-white rounded-xl border border-indigo-200 shadow-sm p-6 mb-4">
-                    <p class="text-xs text-indigo-500 uppercase font-bold tracking-wider mb-1">Section 1 — Listening Comprehension</p>
-                    <p class="text-xs text-gray-500 mb-4">Time: approximately 35 minutes (including the reading of the directions for each part)</p>
-                    <p class="text-sm text-gray-700 leading-relaxed mb-4">
-                        In this section of the test, you will have an opportunity to demonstrate your ability to understand conversations and talks in English. There are three parts to this section. Answer all the questions on the basis of what is <strong>stated</strong> or <strong>implied</strong> by the speakers you hear. Do not take notes or write in your test book at any time. <strong>Do not</strong> turn the pages until you are told to do so.
-                    </p>
-                    <div class="border-t border-gray-100 pt-4">
-                        <p class="text-xs text-indigo-600 uppercase font-bold tracking-wider mb-2">Part A</p>
-                        <p class="text-sm text-gray-700 leading-relaxed">
-                            <span class="font-semibold underline">Directions:</span> In Part A you will hear short conversations between two people. After each conversation, you will hear a question about the conversation. The conversations and questions will not be repeated. After you hear a question, read the four possible answers in your test book and choose the best answer. Then, on your answer sheet, find the number of the question and fill in the space that corresponds to the letter of the answer you have chosen.
-                        </p>
-                    </div>
-                </div>
+                @include('toefl.partials.listening-directions', ['part' => 'A'])
                 <div class="flex justify-end">
                     <button type="button" id="start-part-a-btn"
                         class="inline-flex items-center gap-2 px-6 py-2.5 bg-indigo-500 hover:bg-indigo-600 text-white font-medium rounded-lg text-sm transition-colors">
@@ -131,18 +119,7 @@
 
             {{-- Part B --}}
             <div id="instr-b" class="hidden">
-                <div class="bg-white rounded-xl border border-amber-200 shadow-sm p-6 mb-4">
-                    <p class="text-xs text-amber-600 uppercase font-bold tracking-wider mb-3">Part B</p>
-                    <p class="text-sm text-gray-700 leading-relaxed mb-3">
-                        <span class="font-semibold">Directions:</span> In this part of the test, you will hear longer conversations. After each conversation, you will hear several questions. The conversations and questions will not be repeated.
-                    </p>
-                    <p class="text-sm text-gray-700 leading-relaxed mb-3">
-                        After you hear a question, read the four possible answers in your test book and choose the best answer. Then, on your answer sheet, find the number of the question and fill in the space that corresponds to the letter of the answer you have chosen.
-                    </p>
-                    <p class="text-sm text-gray-700 font-medium">
-                        Remember, you are not allowed to take notes or write in your test book.
-                    </p>
-                </div>
+                @include('toefl.partials.listening-directions', ['part' => 'B'])
                 <div class="flex justify-end">
                     <button type="button" id="start-part-b-btn"
                         class="inline-flex items-center gap-2 px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-lg text-sm transition-colors">
@@ -154,15 +131,7 @@
 
             {{-- Part C --}}
             <div id="instr-c" class="hidden">
-                <div class="bg-white rounded-xl border border-teal-200 shadow-sm p-6 mb-4">
-                    <p class="text-xs text-teal-600 uppercase font-bold tracking-wider mb-3">Part C</p>
-                    <p class="text-sm text-gray-700 leading-relaxed mb-3">
-                        <span class="font-semibold underline">Directions:</span> In this part of the test, you will hear several talks. After each talk, you will hear some questions. The talks and questions will not be repeated.
-                    </p>
-                    <p class="text-sm text-gray-700 leading-relaxed">
-                        After you hear a question, read the four possible answers in your test book and choose the best answer. Then, on your answer sheet, find the number of the question and fill in the space that corresponds to the letter of the answer you have chosen.
-                    </p>
-                </div>
+                @include('toefl.partials.listening-directions', ['part' => 'C'])
                 <div class="flex justify-end">
                     <button type="button" id="start-part-c-btn"
                         class="inline-flex items-center gap-2 px-6 py-2.5 bg-teal-500 hover:bg-teal-600 text-white font-medium rounded-lg text-sm transition-colors">

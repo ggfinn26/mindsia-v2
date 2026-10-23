@@ -1,59 +1,59 @@
 @props(['data'])
 
-<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
+<div class="rounded-2xl transition-all p-5 flex flex-col h-full" style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
     <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-3">
-            <div class="h-10 w-10 rounded-lg {{ ($data['expiring_soon'] ?? 0) > 0 ? 'bg-amber-50' : 'bg-sky-50' }} flex items-center justify-center">
-                <span class="material-symbols-outlined {{ ($data['expiring_soon'] ?? 0) > 0 ? 'text-amber-600' : 'text-sky-600' }} text-xl">description</span>
+            <div class="h-10 w-10 rounded-lg flex items-center justify-center shrink-0" style="background-color: {{ ($data['expiring_soon'] ?? 0) > 0 ? 'var(--dash-status-warning-bg)' : 'var(--dash-primary-bg)' }}; color: {{ ($data['expiring_soon'] ?? 0) > 0 ? 'var(--dash-status-warning-text)' : 'var(--dash-primary-text)' }};">
+                <span class="material-symbols-outlined text-xl">description</span>
             </div>
             <div>
-                <h3 class="text-sm font-semibold text-gray-800">Contract Status</h3>
-                <p class="text-xs text-gray-400">{{ $data['period'] ?? '-' }}</p>
+                <h3 class="text-sm font-semibold" style="color: var(--dash-text-heading);">Contract Status</h3>
+                <p class="text-xs" style="color: var(--dash-text-muted);">{{ $data['period'] ?? '-' }}</p>
             </div>
         </div>
         @if(($data['expiring_soon'] ?? 0) > 0)
-            <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-amber-100 text-amber-700">
+            <span class="px-2.5 py-1 text-xs font-bold rounded-full" style="background-color: var(--dash-status-warning-bg); color: var(--dash-status-warning-text);">
                 {{ $data['expiring_soon'] }} segera berakhir
             </span>
         @endif
     </div>
 
-    <div class="space-y-3">
+    <div class="space-y-3 flex-grow flex flex-col justify-between">
         <div>
-            <p class="text-xs text-gray-400 mb-1">Kontrak Aktif</p>
-            <p class="text-2xl font-bold text-gray-900 font-jakarta">{{ $data['active_contracts'] ?? 0 }}</p>
+            <p class="text-xs mb-1 font-medium" style="color: var(--dash-text-muted);">Kontrak Aktif</p>
+            <p class="text-2xl sm:text-3xl font-bold font-jakarta tracking-tight" style="color: var(--dash-text-heading);">{{ $data['active_contracts'] ?? 0 }}</p>
         </div>
 
-        <div class="grid grid-cols-2 gap-3 pt-2 border-t border-gray-50">
-            <div>
-                <p class="text-xs text-gray-400">Diperpanjang</p>
-                <p class="text-sm font-semibold text-blue-600">{{ $data['extended_contracts'] ?? 0 }}</p>
+        <div class="grid grid-cols-2 gap-3 pt-2 border-t" style="border-color: var(--dash-card-border);">
+            <div class="p-2.5 rounded-lg" style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border);">
+                <p class="text-xs font-medium" style="color: var(--dash-text-muted);">Diperpanjang</p>
+                <p class="text-base font-bold mt-0.5" style="color: var(--dash-primary-text);">{{ $data['extended_contracts'] ?? 0 }}</p>
             </div>
-            <div>
-                <p class="text-xs text-gray-400">Ditangguhkan</p>
-                <p class="text-sm font-semibold text-amber-600">{{ $data['suspended_contracts'] ?? 0 }}</p>
+            <div class="p-2.5 rounded-lg" style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border);">
+                <p class="text-xs font-medium" style="color: var(--dash-text-muted);">Ditangguhkan</p>
+                <p class="text-base font-bold mt-0.5" style="color: var(--dash-status-warning-text);">{{ $data['suspended_contracts'] ?? 0 }}</p>
             </div>
         </div>
 
         @if(($data['pending_extensions'] ?? 0) > 0)
-        <div class="flex items-center justify-between pt-2 border-t border-gray-50">
-            <span class="text-xs text-gray-400">Permohonan Perpanjangan</span>
-            <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-blue-100 text-blue-700">{{ $data['pending_extensions'] }}</span>
-        </div>
+            <div class="flex items-center justify-between pt-2 border-t" style="border-color: var(--dash-card-border);">
+                <span class="text-xs font-medium" style="color: var(--dash-text-muted);">Permohonan Perpanjangan</span>
+                <span class="px-2 py-0.5 text-xs font-bold rounded-full" style="background-color: var(--dash-primary-bg); color: var(--dash-primary-text);">{{ $data['pending_extensions'] }}</span>
+            </div>
         @endif
 
         @if(!empty($data['by_status']))
-        <div class="pt-2 border-t border-gray-50">
-            <p class="text-xs text-gray-400 mb-2">Distribusi Status</p>
-            <div class="space-y-1">
-                @foreach($data['by_status'] as $status => $count)
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs text-gray-500">{{ ucfirst($status) }}</span>
-                        <span class="text-xs font-medium text-gray-700">{{ $count }}</span>
-                    </div>
-                @endforeach
+            <div class="pt-2 border-t" style="border-color: var(--dash-card-border);">
+                <p class="text-xs mb-2 font-medium" style="color: var(--dash-text-muted);">Distribusi Status</p>
+                <div class="space-y-1">
+                    @foreach($data['by_status'] as $status => $count)
+                        <div class="flex items-center justify-between text-xs">
+                            <span style="color: var(--dash-text-body);">{{ ucfirst($status) }}</span>
+                            <span class="font-bold" style="color: var(--dash-text-heading);">{{ $count }}</span>
+                        </div>
+                    @endforeach
+                </div>
             </div>
-        </div>
         @endif
     </div>
 </div>

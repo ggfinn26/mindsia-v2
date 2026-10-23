@@ -1,64 +1,64 @@
 @props(['data'])
 
-<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
+<div class="rounded-2xl transition-all p-5 flex flex-col h-full" style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
     <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-3">
-            <div class="h-10 w-10 rounded-lg {{ ($data['overdue_termins'] ?? 0) > 0 ? 'bg-red-50' : 'bg-purple-50' }} flex items-center justify-center">
-                <span class="material-symbols-outlined {{ ($data['overdue_termins'] ?? 0) > 0 ? 'text-red-500' : 'text-purple-600' }} text-xl">real_estate_agent</span>
+            <div class="h-10 w-10 rounded-lg flex items-center justify-center shrink-0" style="background-color: {{ ($data['overdue_termins'] ?? 0) > 0 ? 'var(--dash-status-danger-bg)' : 'var(--dash-primary-bg)' }}; color: {{ ($data['overdue_termins'] ?? 0) > 0 ? 'var(--dash-status-danger-text)' : 'var(--dash-primary-text)' }};">
+                <span class="material-symbols-outlined text-xl">real_estate_agent</span>
             </div>
             <div>
-                <h3 class="text-sm font-semibold text-gray-800">Branch Rent Contracts</h3>
-                <p class="text-xs text-gray-400">{{ $data['period'] ?? '-' }}</p>
+                <h3 class="text-sm font-semibold" style="color: var(--dash-text-heading);">Branch Rent Contracts</h3>
+                <p class="text-xs" style="color: var(--dash-text-muted);">{{ $data['period'] ?? '-' }}</p>
             </div>
         </div>
         @if(($data['expiring_soon'] ?? 0) > 0)
-            <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-amber-100 text-amber-700">
+            <span class="px-2.5 py-1 text-xs font-bold rounded-full" style="background-color: var(--dash-status-warning-bg); color: var(--dash-status-warning-text);">
                 {{ $data['expiring_soon'] }} segera berakhir
             </span>
         @endif
     </div>
 
-    <div class="space-y-3">
+    <div class="space-y-3 flex-grow flex flex-col justify-between">
         <div>
-            <p class="text-xs text-gray-400 mb-1">Kontrak Aktif</p>
-            <p class="text-2xl font-bold text-gray-900 font-jakarta">{{ $data['active_contracts'] ?? 0 }}</p>
+            <p class="text-xs mb-1 font-medium" style="color: var(--dash-text-muted);">Kontrak Aktif</p>
+            <p class="text-2xl sm:text-3xl font-bold font-jakarta tracking-tight" style="color: var(--dash-text-heading);">{{ $data['active_contracts'] ?? 0 }}</p>
         </div>
 
-        <div class="flex items-center justify-between pt-2 border-t border-gray-50">
-            <span class="text-xs text-gray-400">Total Sewa</span>
-            <span class="text-sm font-semibold text-gray-700">Rp {{ number_format($data['total_rent_amount'] ?? 0, 0, ',', '.') }}</span>
+        <div class="flex items-center justify-between pt-2 border-t" style="border-color: var(--dash-card-border);">
+            <span class="text-xs font-medium" style="color: var(--dash-text-muted);">Total Sewa</span>
+            <span class="text-sm font-semibold" style="color: var(--dash-text-heading);">Rp {{ number_format($data['total_rent_amount'] ?? 0, 0, ',', '.') }}</span>
         </div>
 
-        <div class="grid grid-cols-2 gap-3 pt-2 border-t border-gray-50">
-            <div>
-                <p class="text-xs text-gray-400">Termin Dibayar</p>
-                <p class="text-sm font-semibold text-emerald-600">Rp {{ number_format($data['total_paid'] ?? 0, 0, ',', '.') }}</p>
+        <div class="grid grid-cols-2 gap-3 pt-2 border-t" style="border-color: var(--dash-card-border);">
+            <div class="p-2.5 rounded-lg" style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border);">
+                <p class="text-xs font-medium" style="color: var(--dash-text-muted);">Termin Dibayar</p>
+                <p class="text-sm font-bold mt-0.5" style="color: var(--dash-status-success-text);">Rp {{ number_format($data['total_paid'] ?? 0, 0, ',', '.') }}</p>
             </div>
-            <div>
-                <p class="text-xs text-gray-400">Termin Belum Bayar</p>
-                <p class="text-sm font-semibold text-red-500">Rp {{ number_format($data['total_unpaid'] ?? 0, 0, ',', '.') }}</p>
+            <div class="p-2.5 rounded-lg" style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border);">
+                <p class="text-xs font-medium" style="color: var(--dash-text-muted);">Termin Belum Bayar</p>
+                <p class="text-sm font-bold mt-0.5" style="color: var(--dash-status-danger-text);">Rp {{ number_format($data['total_unpaid'] ?? 0, 0, ',', '.') }}</p>
             </div>
         </div>
 
         @if(($data['overdue_termins'] ?? 0) > 0)
-        <div class="flex items-center justify-between pt-2 border-t border-gray-50">
-            <span class="text-xs text-gray-400">Termin Overdue</span>
-            <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-700">{{ $data['overdue_termins'] }}</span>
-        </div>
+            <div class="flex items-center justify-between pt-2 border-t" style="border-color: var(--dash-card-border);">
+                <span class="text-xs font-medium" style="color: var(--dash-text-muted);">Termin Overdue</span>
+                <span class="px-2 py-0.5 text-xs font-bold rounded-full" style="background-color: var(--dash-status-danger-bg); color: var(--dash-status-danger-text);">{{ $data['overdue_termins'] }}</span>
+            </div>
         @endif
 
         @if(!empty($data['by_status']))
-        <div class="pt-2 border-t border-gray-50">
-            <p class="text-xs text-gray-400 mb-2">Status Kontrak</p>
-            <div class="space-y-1">
-                @foreach($data['by_status'] as $status => $count)
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs text-gray-500">{{ ucfirst($status) }}</span>
-                        <span class="text-xs font-medium text-gray-700">{{ $count }}</span>
-                    </div>
-                @endforeach
+            <div class="pt-2 border-t" style="border-color: var(--dash-card-border);">
+                <p class="text-xs mb-2 font-medium" style="color: var(--dash-text-muted);">Status Kontrak</p>
+                <div class="space-y-1">
+                    @foreach($data['by_status'] as $status => $count)
+                        <div class="flex items-center justify-between text-xs">
+                            <span style="color: var(--dash-text-body);">{{ ucfirst($status) }}</span>
+                            <span class="font-semibold" style="color: var(--dash-text-heading);">{{ $count }}</span>
+                        </div>
+                    @endforeach
+                </div>
             </div>
-        </div>
         @endif
     </div>
 </div>

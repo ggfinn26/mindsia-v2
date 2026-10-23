@@ -382,7 +382,7 @@ Route::middleware(['auth:member', EnsureEmailIsVerified::class, 'no.back'])->gro
     Route::get('/member/program/{program}/register', [ProgramRegistrationController::class, 'create'])->name('member.program.register');
     Route::post('/member/program/{program}/register', [ProgramRegistrationController::class, 'store'])->name('member.program.register.post');
 
-    // Akademik — hanya member aktif
+    // Akademik - hanya member aktif
     Route::middleware('member.active')->group(function () {
         Route::get('/member/class', function () {
             $memberData = auth('member')->user()->memberData;
@@ -1160,6 +1160,7 @@ Route::middleware(['auth:web', EnsureEmailIsVerified::class, 'password.changed',
     // TOEFL Domain — Admin
     Route::resource('toefl-tests', ToeflTestController::class);
     Route::post('toefl-tests/{toeflTest}/publish', [ToeflTestController::class, 'publish'])->name('toefl-tests.publish');
+    Route::post('toefl-tests/{toeflTest}/unpublish', [ToeflTestController::class, 'unpublish'])->name('toefl-tests.unpublish');
     Route::post('toefl-tests/{toeflTest}/passages', [ToeflPassageController::class, 'store'])->name('toefl.passages.store');
     Route::patch('toefl-passages/{passage}', [ToeflPassageController::class, 'update'])->name('toefl.passages.update');
     Route::delete('toefl-passages/{passage}', [ToeflPassageController::class, 'destroy'])->name('toefl.passages.destroy');

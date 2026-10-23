@@ -61,6 +61,17 @@
                     </button>
                 @endcan
             @endif
+            @if ($toeflTest->status === 'published')
+                @can('toefl.test.publish')
+                    <button type="button" @click="showUnpublishModal = true"
+                            class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                            style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                            onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                            onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                        <span class="material-symbols-outlined text-[16px]">unpublished</span>Kembalikan ke Draft
+                    </button>
+                @endcan
+            @endif
             @if ($toeflTest->status === 'published' && $toeflTest->is_trial)
                 <button type="button"
                     x-data
@@ -773,6 +784,39 @@
                         class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
                         style="background-color: #059669;">
                         <span class="material-symbols-outlined text-[16px]">publish</span>Ya, Publish
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endcan
+
+
+    {{-- Unpublish Confirmation Modal --}}
+    @can('toefl.test.publish')
+    <div x-show="showUnpublishModal" x-cloak
+        class="fixed inset-0 z-50 flex items-center justify-center p-4"
+        @keydown.escape.window="showUnpublishModal = false">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" @click="showUnpublishModal = false"></div>
+        <div class="relative rounded-2xl shadow-2xl w-full max-w-md transition-all"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);"
+             @click.stop>
+            <div class="rounded-t-2xl px-6 py-5" style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
+                <h3 class="font-jakarta text-base font-bold" style="color: var(--dash-text-heading);">Kembalikan ke Draft?</h3>
+                <p class="mt-1 text-sm" style="color: var(--dash-text-muted);">Test tidak bisa dikerjakan peserta sampai dipublish ulang. Hanya bisa dilakukan jika belum ada session pengerjaan.</p>
+            </div>
+            <div class="rounded-b-2xl flex justify-end gap-3 px-6 py-4" style="background-color: var(--dash-card-bg); border-top: 1px solid var(--dash-card-border);">
+                <button type="button" @click="showUnpublishModal = false"
+                    class="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg"
+                    style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                    onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                    onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">Batal</button>
+                <form action="{{ route('toefl-tests.unpublish', $toeflTest) }}" method="POST" class="m-0">
+                    @csrf
+                    <button type="submit"
+                        class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                        style="background-color: var(--dash-primary);">
+                        Ya, Kembalikan
                     </button>
                 </form>
             </div>

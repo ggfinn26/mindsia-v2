@@ -71,41 +71,59 @@
     ]);
 @endphp
 
-@section('content')
-<div class="max-w-5xl mx-auto space-y-5">
+@push('head-scripts')
+<style>
+    .cal-clickable-cell:hover {
+        background-color: var(--dash-nav-hover-bg) !important;
+    }
+</style>
+@endpush
 
-    {{-- Page header --}}
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+@section('content')
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6">
+
+    {{-- Page Header Pola A --}}
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h2 class="text-xl font-bold font-jakarta text-gray-900">Jadwal Kelas</h2>
-            <p class="text-sm text-gray-500 mt-0.5">Kalender pertemuan untuk semua kelas aktif Anda.</p>
+            <p class="text-xs font-semibold uppercase tracking-wider mb-1"
+               style="color: var(--dash-primary-text);">Portal Siswa</p>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+                style="color: var(--dash-text-heading);">Jadwal Kelas</h1>
+            <p class="text-sm mt-1" style="color: var(--dash-text-muted);">
+                Kalender pertemuan untuk semua kelas aktif Anda.
+            </p>
         </div>
-        <div class="flex items-center gap-1.5 text-xs bg-red-50 border border-red-100 rounded-lg px-3 py-1.5 self-start sm:self-auto">
-            <span class="w-2 h-2 rounded-full bg-red-400 flex-shrink-0"></span>
-            <span class="font-medium text-red-600">Hari Libur Nasional</span>
+        <div class="flex items-center gap-2 text-xs rounded-lg px-3 py-1.5 self-start sm:self-auto shadow-sm"
+             style="background-color: var(--dash-status-danger-bg); border: 1px solid var(--dash-card-border); color: var(--dash-status-danger-text);">
+            <span class="w-2 h-2 rounded-full bg-red-500 flex-shrink-0"></span>
+            <span class="font-semibold">Hari Libur Nasional</span>
         </div>
     </div>
 
     @if($memberClasses->isEmpty())
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-12 flex flex-col items-center justify-center text-center">
-        <div class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center mb-4">
-            <span class="material-symbols-outlined text-[#5586DB] text-3xl">calendar_today</span>
-        </div>
-        <h3 class="text-base font-bold text-gray-900 font-jakarta mb-1">Belum Ada Kelas Aktif</h3>
-        <p class="text-sm text-gray-500 max-w-xs mx-auto mb-5">Anda belum terdaftar di kelas manapun. Silakan cek riwayat registrasi.</p>
+    {{-- Empty State Card --}}
+    <div class="rounded-2xl p-12 flex flex-col items-center justify-center text-center shadow-sm"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <span class="material-symbols-outlined block mx-auto mb-3 text-[48px]"
+              style="color: var(--dash-text-faint);">calendar_today</span>
+        <h3 class="text-base sm:text-lg font-bold font-jakarta mb-1" style="color: var(--dash-text-heading);">Belum Ada Kelas Aktif</h3>
+        <p class="text-sm max-w-md mx-auto mb-6" style="color: var(--dash-text-muted);">
+            Anda belum terdaftar di kelas manapun. Silakan cek riwayat registrasi program Anda.
+        </p>
         <a href="{{ route('member.dashboard') }}"
-           class="px-5 py-2 bg-[#5586DB] text-white text-sm font-semibold rounded-lg hover:bg-[#4370BC] transition-colors">
+           class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90 shadow-sm"
+           style="background-color: var(--dash-primary);">
+            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
             Kembali ke Dashboard
         </a>
     </div>
-
     @else
 
     {{-- Legend --}}
     @if(count($classLegend) > 0)
     <div class="flex flex-wrap gap-x-5 gap-y-2">
         @foreach($classLegend as $item)
-        <span class="flex items-center gap-1.5 text-xs font-medium text-gray-600">
+        <span class="flex items-center gap-1.5 text-xs font-semibold" style="color: var(--dash-text-muted);">
             <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background-color: {{ $item['color'] }}"></span>
             {{ $item['name'] }}
         </span>
@@ -113,23 +131,36 @@
     </div>
     @endif
 
-    {{-- Calendar card --}}
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm">
+    {{-- Calendar Card --}}
+    <div class="rounded-2xl shadow-sm overflow-hidden"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
         <div class="p-5 sm:p-6">
 
             {{-- Nav bar: prev/title/next centered, today button pinned right --}}
-            <div class="relative flex items-center justify-center gap-1 mb-5">
-                <button id="cal-prev"
-                    class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 transition-colors">
-                    <span class="material-symbols-outlined" style="font-size:20px">chevron_left</span>
+            <div class="relative flex items-center justify-center gap-2 mb-6">
+                <button id="cal-prev" type="button"
+                    class="w-9 h-9 flex items-center justify-center rounded-lg transition-colors cursor-pointer"
+                    style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                    onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                    onmouseout="this.style.backgroundColor='var(--dash-card-bg)'"
+                    title="Bulan sebelumnya">
+                    <span class="material-symbols-outlined text-[20px]">chevron_left</span>
                 </button>
-                <h3 id="cal-title" class="text-sm font-bold text-gray-900 font-jakarta w-44 text-center select-none"></h3>
-                <button id="cal-next"
-                    class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 transition-colors">
-                    <span class="material-symbols-outlined" style="font-size:20px">chevron_right</span>
+                <h3 id="cal-title" class="text-base font-bold font-jakarta w-48 text-center select-none"
+                    style="color: var(--dash-text-heading);"></h3>
+                <button id="cal-next" type="button"
+                    class="w-9 h-9 flex items-center justify-center rounded-lg transition-colors cursor-pointer"
+                    style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                    onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                    onmouseout="this.style.backgroundColor='var(--dash-card-bg)'"
+                    title="Bulan berikutnya">
+                    <span class="material-symbols-outlined text-[20px]">chevron_right</span>
                 </button>
-                <button id="cal-today"
-                    class="absolute right-0 px-3 py-1.5 text-xs font-semibold text-[#5586DB] border border-[#5586DB]/30 rounded-lg hover:bg-blue-50 transition-colors">
+                <button id="cal-today" type="button"
+                    class="absolute right-0 px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer"
+                    style="color: var(--dash-primary); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                    onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                    onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
                     Hari Ini
                 </button>
             </div>

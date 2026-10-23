@@ -95,3 +95,37 @@ it('can delete a toefl test', function () {
 
     expect(ToeflTest::count())->toBe(0);
 });
+
+it('can unpublish a published toefl test without sessions', function () {
+    $test = ToeflTest::create([
+        'created_by_employee_id' => $this->employee->id,
+        'test_name' => 'Test 1',
+        'listening_time_limit' => 30,
+        'structure_time_limit' => 25,
+        'reading_time_limit' => 55,
+        'status' => ToeflTest::STATUS_PUBLISHED,
+        'published_by_employee_id' => $this->employee->id,
+        'published_at' => now(),
+    ]);
+
+    actingAs($this->admin)->post(route('toefl-tests.unpublish', $test))->assertRedirect();
+
+    expect($test->fresh())->status->toBe(ToeflTest::STATUS_DRAFT)->published_at->toBeNull();
+    actingAs($this->admin)->get(route('toefl-tests.edit', $test))->assertOk();
+});
+
+it('shows unpublish action instead of edit for published tests on the index', function () {
+    $test = ToeflTest::create([
+        'created_by_employee_id' => $this->employee->id,
+        'test_name' => 'Published Test',
+        'listening_time_limit' => 30,
+        'structure_time_limit' => 25,
+        'reading_time_limit' => 55,
+        'status' => ToeflTest::STATUS_PUBLISHED,
+    ]);
+
+    actingAs($this->admin)->get(route('toefl-tests.index'))
+        ->assertOk()
+        ->assertSee('Ya, Kembalikan', false)
+        ->assertDontSee(route('toefl-tests.edit', $test), false);
+});

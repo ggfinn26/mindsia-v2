@@ -52,22 +52,24 @@ $formConfig = [
 
 <script>window.__letterForm = @json($formConfig);</script>
 
-<div class="max-w-3xl mx-auto space-y-6 sm:space-y-8 pb-10" x-data="letterGeneratorForm(window.__letterForm)">
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-3xl mx-auto space-y-6 pb-10" x-data="letterGeneratorForm(window.__letterForm)">
     <div>
-        <a href="{{ route('out-letters-generate.index') }}" class="inline-flex items-center gap-1.5 text-[13px] font-semibold text-slate-500 hover:text-slate-800 transition-colors mb-3">
-            <span class="material-symbols-outlined text-[18px]">arrow_back</span> Kembali ke daftar surat
+        <a href="{{ route('out-letters-generate.index') }}" class="dash-back mb-3">
+            <span class="material-symbols-outlined">arrow_back</span> Kembali ke Surat Keluar
         </a>
-        <h2 class="font-jakarta text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Buat Surat Keluar</h2>
-        <p class="mt-2 text-[14px] text-slate-600">Pilih template lalu lengkapi isian. Dokumen dibuat sebagai <strong>Draft</strong>.</p>
+        <p class="text-xs font-bold uppercase tracking-wider mb-1" style="color: var(--dash-primary-text);">Surat</p>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Buat Surat Keluar</h1>
+        <p class="mt-2 text-sm" style="color: var(--dash-text-muted);">Pilih template lalu lengkapi isian. Dokumen dibuat sebagai <strong>Draft</strong>.</p>
     </div>
 
     @if ($errors->any())
-        <div class="border border-red-200 bg-red-50 p-4 rounded-lg">
+        <div class="p-4 rounded-xl"
+             style="background-color: color-mix(in srgb, var(--dash-danger) 10%, transparent); border: 1px solid color-mix(in srgb, var(--dash-danger) 25%, transparent);">
             <div class="flex items-start gap-3">
-                <span class="material-symbols-outlined text-[20px] text-red-600 mt-0.5">error</span>
+                <span class="material-symbols-outlined text-[20px] mt-0.5" style="color: var(--dash-danger);">error</span>
                 <div>
-                    <p class="text-[13px] font-bold text-red-800">Terdapat kesalahan</p>
-                    <ul class="mt-1 list-disc pl-4 text-[13px] text-red-700 space-y-1">
+                    <p class="text-sm font-bold" style="color: var(--dash-danger);">Terdapat kesalahan</p>
+                    <ul class="mt-1 list-disc pl-4 text-sm space-y-1" style="color: var(--dash-danger);">
                         @foreach ($errors->all() as $e)<li>{{ $e }}</li>@endforeach
                     </ul>
                 </div>
@@ -76,40 +78,50 @@ $formConfig = [
     @endif
 
     <form method="POST" action="{{ route('out-letters-generate.store') }}"
-          class="bg-white border border-slate-200 shadow-sm rounded-xl"
+          class="rounded-2xl"
+          style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);"
           @submit="isSubmitting = true">
         @csrf
 
         <div class="p-5 sm:p-7 space-y-7">
 
-            {{-- Template ──────────────────────────────────────────────────── --}}
+            {{-- Template --}}
             <div class="space-y-4">
-                <h3 class="font-jakarta text-[15px] font-bold text-slate-800 pb-2 border-b border-slate-100">Template Surat</h3>
+                <h2 class="font-jakarta text-base font-bold pb-2" style="color: var(--dash-text-heading); border-bottom: 1px solid var(--dash-card-border);">Template Surat</h2>
                 <div>
-                    <label class="mb-1.5 block text-[13px] font-bold text-slate-700">Template <span class="text-red-500">*</span></label>
+                    <label class="mb-1.5 block text-sm font-medium" style="color: var(--dash-text-body);">Template <span style="color: var(--dash-danger);">*</span></label>
                     <div class="relative" @click.away="showTemplateDD = false">
                         <button type="button" @click="showTemplateDD = !showTemplateDD; showBranchDD = false; showEmployeeDD = false; showSignerDD = false"
-                                class="w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] text-left flex items-center justify-between gap-2 focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
-                            <span x-text="selectedTemplateName" :class="selectedTemplateId ? 'text-slate-900' : 'text-slate-400'" class="truncate"></span>
-                            <span class="material-symbols-outlined text-[18px] text-slate-400 flex-shrink-0">expand_more</span>
+                                class="w-full px-3 py-2 rounded-lg text-sm text-left flex items-center justify-between gap-2 focus:outline-none transition-all"
+                                style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                onfocus="this.style.borderColor='var(--dash-primary)'"
+                                onblur="this.style.borderColor='var(--dash-input-border)'">
+                            <span x-text="selectedTemplateName" :style="selectedTemplateId ? '' : 'color: var(--dash-text-faint)'" class="truncate"></span>
+                            <span class="material-symbols-outlined text-[18px] flex-shrink-0" style="color: var(--dash-text-faint);">expand_more</span>
                         </button>
                         <input type="hidden" name="letter_template_id" :value="selectedTemplateId">
                         <div x-show="showTemplateDD" x-transition x-cloak
-                             class="absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg overflow-hidden">
-                            <div class="p-2 bg-slate-50 border-b border-slate-100">
+                             class="absolute z-50 w-full mt-1 rounded-lg shadow-lg"
+                             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+                            <div class="p-2 rounded-t-lg" style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
                                 <div class="relative">
-                                    <span class="material-symbols-outlined absolute left-3 top-2 text-slate-400 text-[16px]">search</span>
+                                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[16px] pointer-events-none" style="color: var(--dash-text-muted);">search</span>
                                     <input type="text" x-model="searchTemplate" placeholder="Cari template..."
-                                           style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-white border border-slate-200 rounded-md text-[13px] focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
+                                           class="w-full pr-3 py-1.5 rounded-lg text-sm focus:outline-none transition-all"
+                                           style="padding-left: 2.5rem !important; background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                           onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                           onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'"
                                            @click.stop>
                                 </div>
                             </div>
                             <ul class="max-h-52 overflow-y-auto py-1">
-                                <li x-show="filteredTemplates.length === 0" class="px-4 py-2 text-[13px] text-slate-500 text-center">Tidak ditemukan</li>
+                                <li x-show="filteredTemplates.length === 0" class="px-4 py-2 text-sm text-center" style="color: var(--dash-text-muted);">Tidak ditemukan</li>
                                 <template x-for="item in filteredTemplates" :key="item.id">
                                     <li @click="selectTemplate(item.id)"
-                                        class="px-4 py-2 text-[13px] text-slate-700 hover:bg-[#215aac] hover:text-white cursor-pointer"
-                                        :class="selectedTemplateId == item.id ? 'bg-[#EEF4FF] font-semibold' : ''"
+                                        class="px-4 py-2 text-sm cursor-pointer"
+                                        :style="selectedTemplateId == item.id ? 'background-color: var(--dash-nav-hover-bg); font-weight: 600; color: var(--dash-text-heading)' : 'color: var(--dash-text-body)'"
+                                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                        onmouseout="this.style.backgroundColor=''"
                                         x-text="item.name"></li>
                                 </template>
                             </ul>
@@ -118,52 +130,62 @@ $formConfig = [
                 </div>
             </div>
 
-            {{-- Dynamic sections ──────────────────────────────────────────── --}}
+            {{-- Dynamic sections --}}
             <div x-show="templateVars.length > 0" x-cloak class="space-y-7">
 
-                {{-- Auto vars info ──────────────────────────────────────── --}}
+                {{-- Auto vars info --}}
                 <div x-show="autoVars.length > 0">
-                    <p class="text-[12px] font-semibold uppercase tracking-wide text-slate-400 mb-2">Diisi Otomatis Sistem</p>
+                    <p class="text-[11px] font-semibold uppercase tracking-wide mb-2" style="color: var(--dash-text-faint);">Diisi Otomatis Sistem</p>
                     <div class="flex flex-wrap gap-2">
                         <template x-for="v in autoVars" :key="v.key">
-                            <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[12px] text-slate-500">
+                            <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs"
+                                  style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-muted);">
                                 <span class="material-symbols-outlined text-[14px]">auto_awesome</span>
                                 <span x-text="v.label"></span>
-                                <span x-show="v.note" class="text-slate-400" x-text="v.note ? '— ' + v.note : ''"></span>
+                                <span x-show="v.note" style="color: var(--dash-text-faint);" x-text="v.note ? '- ' + v.note : ''"></span>
                             </span>
                         </template>
                     </div>
                 </div>
 
-                {{-- Cabang ──────────────────────────────────────────────── --}}
+                {{-- Cabang --}}
                 <div x-show="showBranch" x-cloak class="space-y-4">
-                    <h3 class="font-jakarta text-[15px] font-bold text-slate-800 pb-2 border-b border-slate-100">Cabang</h3>
+                    <h2 class="font-jakarta text-base font-bold pb-2" style="color: var(--dash-text-heading); border-bottom: 1px solid var(--dash-card-border);">Cabang</h2>
                     <div class="grid gap-5 sm:grid-cols-2">
                         <div>
-                            <label class="mb-1.5 block text-[13px] font-bold text-slate-700">Cabang <span class="text-red-500">*</span></label>
+                            <label class="mb-1.5 block text-sm font-medium" style="color: var(--dash-text-body);">Cabang <span style="color: var(--dash-danger);">*</span></label>
                             <div class="relative" @click.away="showBranchDD = false">
                                 <button type="button" @click="showBranchDD = !showBranchDD; showTemplateDD = false; showEmployeeDD = false; showSignerDD = false"
-                                        class="w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] text-left flex items-center justify-between gap-2 focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
-                                    <span x-text="selectedBranchName" :class="selectedBranchId ? 'text-slate-900' : 'text-slate-400'" class="truncate"></span>
-                                    <span class="material-symbols-outlined text-[18px] text-slate-400 flex-shrink-0">expand_more</span>
+                                        class="w-full px-3 py-2 rounded-lg text-sm text-left flex items-center justify-between gap-2 focus:outline-none transition-all"
+                                        style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                        onfocus="this.style.borderColor='var(--dash-primary)'"
+                                        onblur="this.style.borderColor='var(--dash-input-border)'">
+                                    <span x-text="selectedBranchName" :style="selectedBranchId ? '' : 'color: var(--dash-text-faint)'" class="truncate"></span>
+                                    <span class="material-symbols-outlined text-[18px] flex-shrink-0" style="color: var(--dash-text-faint);">expand_more</span>
                                 </button>
                                 <input type="hidden" name="branch_id" :value="selectedBranchId">
                                 <div x-show="showBranchDD" x-transition x-cloak
-                                     class="absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg overflow-hidden">
-                                    <div class="p-2 bg-slate-50 border-b border-slate-100">
+                                     class="absolute z-50 w-full mt-1 rounded-lg shadow-lg"
+                                     style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+                                    <div class="p-2 rounded-t-lg" style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
                                         <div class="relative">
-                                            <span class="material-symbols-outlined absolute left-3 top-2 text-slate-400 text-[16px]">search</span>
+                                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[16px] pointer-events-none" style="color: var(--dash-text-muted);">search</span>
                                             <input type="text" x-model="searchBranch" placeholder="Cari cabang..."
-                                                   style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-white border border-slate-200 rounded-md text-[13px] focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
+                                                   class="w-full pr-3 py-1.5 rounded-lg text-sm focus:outline-none transition-all"
+                                                   style="padding-left: 2.5rem !important; background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                                   onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                                   onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'"
                                                    @click.stop>
                                         </div>
                                     </div>
                                     <ul class="max-h-52 overflow-y-auto py-1">
-                                        <li x-show="filteredBranches.length === 0" class="px-4 py-2 text-[13px] text-slate-500 text-center">Tidak ditemukan</li>
+                                        <li x-show="filteredBranches.length === 0" class="px-4 py-2 text-sm text-center" style="color: var(--dash-text-muted);">Tidak ditemukan</li>
                                         <template x-for="item in filteredBranches" :key="item.id">
                                             <li @click="selectBranch(item.id)"
-                                                class="px-4 py-2 text-[13px] text-slate-700 hover:bg-[#215aac] hover:text-white cursor-pointer"
-                                                :class="selectedBranchId == item.id ? 'bg-[#EEF4FF] font-semibold' : ''"
+                                                class="px-4 py-2 text-sm cursor-pointer"
+                                                :style="selectedBranchId == item.id ? 'background-color: var(--dash-nav-hover-bg); font-weight: 600; color: var(--dash-text-heading)' : 'color: var(--dash-text-body)'"
+                                                onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                                onmouseout="this.style.backgroundColor=''"
                                                 x-text="item.name"></li>
                                         </template>
                                     </ul>
@@ -171,41 +193,53 @@ $formConfig = [
                             </div>
                         </div>
                         <div x-show="templateVars.some(v => v.key === 'kota_cabang')">
-                            <label class="mb-1.5 block text-[13px] font-bold text-slate-700">Teks di Dokumen <span class="text-slate-400 font-normal text-[12px]">(bisa diubah)</span></label>
+                            <label class="mb-1.5 block text-sm font-medium" style="color: var(--dash-text-body);">Teks di Dokumen <span class="text-xs font-normal" style="color: var(--dash-text-faint);">(bisa diubah)</span></label>
                             <input type="text" name="manual_vars[kota_cabang]" x-model="values['kota_cabang']"
-                                   class="block w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] focus:bg-white focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
+                                   class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                   style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                   onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                   onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
                         </div>
                     </div>
                 </div>
 
-                {{-- Pegawai ───────────────────────────────────────────────── --}}
+                {{-- Pegawai --}}
                 <div x-show="showEmployee" x-cloak class="space-y-4">
-                    <h3 class="font-jakarta text-[15px] font-bold text-slate-800 pb-2 border-b border-slate-100">Pegawai yang Dituju</h3>
+                    <h2 class="font-jakarta text-base font-bold pb-2" style="color: var(--dash-text-heading); border-bottom: 1px solid var(--dash-card-border);">Pegawai yang Dituju</h2>
                     <div>
-                        <label class="mb-1.5 block text-[13px] font-bold text-slate-700">Nama Pegawai</label>
+                        <label class="mb-1.5 block text-sm font-medium" style="color: var(--dash-text-body);">Nama Pegawai</label>
                         <div class="relative" @click.away="showEmployeeDD = false">
                             <button type="button" @click="showEmployeeDD = !showEmployeeDD; showTemplateDD = false; showBranchDD = false; showSignerDD = false"
-                                    class="w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] text-left flex items-center justify-between gap-2 focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
-                                <span x-text="selectedEmployeeName" :class="selectedEmployeeId ? 'text-slate-900' : 'text-slate-400'" class="truncate"></span>
-                                <span class="material-symbols-outlined text-[18px] text-slate-400 flex-shrink-0">expand_more</span>
+                                    class="w-full px-3 py-2 rounded-lg text-sm text-left flex items-center justify-between gap-2 focus:outline-none transition-all"
+                                    style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                    onfocus="this.style.borderColor='var(--dash-primary)'"
+                                    onblur="this.style.borderColor='var(--dash-input-border)'">
+                                <span x-text="selectedEmployeeName" :style="selectedEmployeeId ? '' : 'color: var(--dash-text-faint)'" class="truncate"></span>
+                                <span class="material-symbols-outlined text-[18px] flex-shrink-0" style="color: var(--dash-text-faint);">expand_more</span>
                             </button>
                             <input type="hidden" name="employee_id" :value="selectedEmployeeId">
                             <div x-show="showEmployeeDD" x-transition x-cloak
-                                 class="absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg overflow-hidden">
-                                <div class="p-2 bg-slate-50 border-b border-slate-100">
+                                 class="absolute z-50 w-full mt-1 rounded-lg shadow-lg"
+                                 style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+                                <div class="p-2 rounded-t-lg" style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
                                     <div class="relative">
-                                        <span class="material-symbols-outlined absolute left-3 top-2 text-slate-400 text-[16px]">search</span>
+                                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[16px] pointer-events-none" style="color: var(--dash-text-muted);">search</span>
                                         <input type="text" x-model="searchEmployee" placeholder="Cari pegawai..."
-                                               style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-white border border-slate-200 rounded-md text-[13px] focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
+                                               class="w-full pr-3 py-1.5 rounded-lg text-sm focus:outline-none transition-all"
+                                               style="padding-left: 2.5rem !important; background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                               onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                               onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'"
                                                @click.stop>
                                     </div>
                                 </div>
                                 <ul class="max-h-52 overflow-y-auto py-1">
-                                    <li x-show="filteredEmployees.length === 0" class="px-4 py-2 text-[13px] text-slate-500 text-center">Tidak ditemukan</li>
+                                    <li x-show="filteredEmployees.length === 0" class="px-4 py-2 text-sm text-center" style="color: var(--dash-text-muted);">Tidak ditemukan</li>
                                     <template x-for="item in filteredEmployees" :key="item.id">
                                         <li @click="selectEmployee(item.id)"
-                                            class="px-4 py-2 text-[13px] text-slate-700 hover:bg-[#215aac] hover:text-white cursor-pointer"
-                                            :class="selectedEmployeeId == item.id ? 'bg-[#EEF4FF] font-semibold' : ''"
+                                            class="px-4 py-2 text-sm cursor-pointer"
+                                            :style="selectedEmployeeId == item.id ? 'background-color: var(--dash-nav-hover-bg); font-weight: 600; color: var(--dash-text-heading)' : 'color: var(--dash-text-body)'"
+                                            onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                            onmouseout="this.style.backgroundColor=''"
                                             x-text="item.name"></li>
                                     </template>
                                 </ul>
@@ -215,42 +249,54 @@ $formConfig = [
                     <div x-show="varsByType('employee_derived').length > 0" class="grid gap-4 sm:grid-cols-2">
                         <template x-for="v in varsByType('employee_derived')" :key="v.key">
                             <div>
-                                <label class="mb-1 block text-[13px] font-medium text-slate-600" x-text="v.label"></label>
+                                <label class="mb-1 block text-sm font-medium" style="color: var(--dash-text-body);" x-text="v.label"></label>
                                 <input type="text" :name="'manual_vars[' + v.key + ']'" x-model="values[v.key]"
-                                       class="block w-full min-h-[40px] px-3 py-2 rounded-lg border border-slate-200 bg-[#F8FAFC] text-[13px] focus:bg-white focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
+                                       class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                       style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                       onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                       onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
                             </div>
                         </template>
                     </div>
                 </div>
 
-                {{-- Penandatangan ────────────────────────────────────────── --}}
+                {{-- Penandatangan --}}
                 <div x-show="showSigner" x-cloak class="space-y-4">
-                    <h3 class="font-jakarta text-[15px] font-bold text-slate-800 pb-2 border-b border-slate-100">Penandatangan</h3>
+                    <h2 class="font-jakarta text-base font-bold pb-2" style="color: var(--dash-text-heading); border-bottom: 1px solid var(--dash-card-border);">Penandatangan</h2>
                     <div>
-                        <label class="mb-1.5 block text-[13px] font-bold text-slate-700">Pilih Penandatangan</label>
+                        <label class="mb-1.5 block text-sm font-medium" style="color: var(--dash-text-body);">Pilih Penandatangan</label>
                         <div class="relative" @click.away="showSignerDD = false">
                             <button type="button" @click="showSignerDD = !showSignerDD; showTemplateDD = false; showBranchDD = false; showEmployeeDD = false"
-                                    class="w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] text-left flex items-center justify-between gap-2 focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
-                                <span x-text="selectedSignerName" :class="selectedSignerId ? 'text-slate-900' : 'text-slate-400'" class="truncate"></span>
-                                <span class="material-symbols-outlined text-[18px] text-slate-400 flex-shrink-0">expand_more</span>
+                                    class="w-full px-3 py-2 rounded-lg text-sm text-left flex items-center justify-between gap-2 focus:outline-none transition-all"
+                                    style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                    onfocus="this.style.borderColor='var(--dash-primary)'"
+                                    onblur="this.style.borderColor='var(--dash-input-border)'">
+                                <span x-text="selectedSignerName" :style="selectedSignerId ? '' : 'color: var(--dash-text-faint)'" class="truncate"></span>
+                                <span class="material-symbols-outlined text-[18px] flex-shrink-0" style="color: var(--dash-text-faint);">expand_more</span>
                             </button>
                             <input type="hidden" name="signer_employee_id" :value="selectedSignerId">
                             <div x-show="showSignerDD" x-transition x-cloak
-                                 class="absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg overflow-hidden">
-                                <div class="p-2 bg-slate-50 border-b border-slate-100">
+                                 class="absolute z-50 w-full mt-1 rounded-lg shadow-lg"
+                                 style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+                                <div class="p-2 rounded-t-lg" style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
                                     <div class="relative">
-                                        <span class="material-symbols-outlined absolute left-3 top-2 text-slate-400 text-[16px]">search</span>
+                                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[16px] pointer-events-none" style="color: var(--dash-text-muted);">search</span>
                                         <input type="text" x-model="searchSigner" placeholder="Cari penandatangan..."
-                                               style="padding-left: 2.5rem !important" class="w-full pr-3 py-1.5 bg-white border border-slate-200 rounded-md text-[13px] focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac]"
+                                               class="w-full pr-3 py-1.5 rounded-lg text-sm focus:outline-none transition-all"
+                                               style="padding-left: 2.5rem !important; background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                               onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                               onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'"
                                                @click.stop>
                                     </div>
                                 </div>
                                 <ul class="max-h-52 overflow-y-auto py-1">
-                                    <li x-show="filteredSigners.length === 0" class="px-4 py-2 text-[13px] text-slate-500 text-center">Tidak ditemukan</li>
+                                    <li x-show="filteredSigners.length === 0" class="px-4 py-2 text-sm text-center" style="color: var(--dash-text-muted);">Tidak ditemukan</li>
                                     <template x-for="item in filteredSigners" :key="item.id">
                                         <li @click="selectSigner(item.id)"
-                                            class="px-4 py-2 text-[13px] text-slate-700 hover:bg-[#215aac] hover:text-white cursor-pointer"
-                                            :class="selectedSignerId == item.id ? 'bg-[#EEF4FF] font-semibold' : ''"
+                                            class="px-4 py-2 text-sm cursor-pointer"
+                                            :style="selectedSignerId == item.id ? 'background-color: var(--dash-nav-hover-bg); font-weight: 600; color: var(--dash-text-heading)' : 'color: var(--dash-text-body)'"
+                                            onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                            onmouseout="this.style.backgroundColor=''"
                                             x-text="item.name"></li>
                                     </template>
                                 </ul>
@@ -260,44 +306,56 @@ $formConfig = [
                     <div x-show="varsByType('signer_derived').length > 0" class="grid gap-4 sm:grid-cols-2">
                         <template x-for="v in varsByType('signer_derived')" :key="v.key">
                             <div>
-                                <label class="mb-1 block text-[13px] font-medium text-slate-600" x-text="v.label"></label>
+                                <label class="mb-1 block text-sm font-medium" style="color: var(--dash-text-body);" x-text="v.label"></label>
                                 <input type="text" :name="'manual_vars[' + v.key + ']'" x-model="values[v.key]"
-                                       class="block w-full min-h-[40px] px-3 py-2 rounded-lg border border-slate-200 bg-[#F8FAFC] text-[13px] focus:bg-white focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
+                                       class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                       style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                       onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                       onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
                             </div>
                         </template>
                     </div>
                 </div>
 
-                {{-- Date + Text vars ─────────────────────────────────────── --}}
+                {{-- Date + Text vars --}}
                 <div x-show="dateVars.length > 0 || textVars.length > 0" x-cloak class="space-y-4">
-                    <h3 class="font-jakarta text-[15px] font-bold text-slate-800 pb-2 border-b border-slate-100">Isian Dokumen</h3>
+                    <h2 class="font-jakarta text-base font-bold pb-2" style="color: var(--dash-text-heading); border-bottom: 1px solid var(--dash-card-border);">Isian Dokumen</h2>
                     <div class="grid gap-5 sm:grid-cols-2">
                         <template x-for="v in dateVars" :key="v.key">
                             <div>
-                                <label class="mb-1.5 block text-[13px] font-bold text-slate-700" x-text="v.label"></label>
+                                <label class="mb-1.5 block text-sm font-medium" style="color: var(--dash-text-body);" x-text="v.label"></label>
                                 <input type="date" :name="'manual_vars[' + v.key + ']'" x-model="values[v.key]"
-                                       class="block w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] focus:bg-white focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
+                                       class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                       style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                       onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                       onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
                             </div>
                         </template>
                         <template x-for="v in textVars" :key="v.key">
                             <div>
-                                <label class="mb-1.5 block text-[13px] font-bold text-slate-700" x-text="v.label"></label>
+                                <label class="mb-1.5 block text-sm font-medium" style="color: var(--dash-text-body);" x-text="v.label"></label>
                                 <input type="text" :name="'manual_vars[' + v.key + ']'" x-model="values[v.key]"
-                                       class="block w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] focus:bg-white focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
+                                       class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                       style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                       onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                       onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
                             </div>
                         </template>
                     </div>
                 </div>
 
-                {{-- Repeatable vars ──────────────────────────────────────── --}}
+                {{-- Repeatable vars --}}
                 <div x-show="repeatableVars.length > 0" x-cloak class="space-y-5">
-                    <h3 class="font-jakarta text-[15px] font-bold text-slate-800 pb-2 border-b border-slate-100">Daftar Isian (bisa ditambah)</h3>
+                    <h2 class="font-jakarta text-base font-bold pb-2" style="color: var(--dash-text-heading); border-bottom: 1px solid var(--dash-card-border);">Daftar Isian (bisa ditambah)</h2>
                     <template x-for="v in repeatableVars" :key="v.key">
                         <div class="space-y-2">
                             <div class="flex items-center justify-between">
-                                <label class="text-[13px] font-bold text-slate-700" x-text="v.label"></label>
+                                <label class="text-sm font-medium" style="color: var(--dash-text-body);" x-text="v.label"></label>
                                 <button type="button" @click="addRow(v.key)"
-                                        class="inline-flex items-center gap-1 text-[12px] font-semibold text-[#215aac] hover:text-[#194a91]">
+                                        class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors"
+                                        style="color: var(--dash-primary-text);"
+                                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                        onmouseout="this.style.backgroundColor='transparent'">
                                     <span class="material-symbols-outlined text-[16px]">add</span> Tambah baris
                                 </button>
                             </div>
@@ -307,11 +365,15 @@ $formConfig = [
                                            :name="'manual_vars[' + v.key + '][' + i + ']'"
                                            :value="row"
                                            @input="updateRow(v.key, i, $event.target.value)"
-                                           class="block flex-1 min-h-[40px] px-3 py-2 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[13px] focus:bg-white focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
+                                           class="flex-1 px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                           style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                           onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                           onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
                                     <button type="button" @click="removeRow(v.key, i)"
                                             x-show="getRows(v.key).length > 1"
-                                            class="p-2 text-slate-400 hover:text-red-500 transition-colors">
-                                        <span class="material-symbols-outlined text-[18px]">remove_circle</span>
+                                            class="inline-flex items-center justify-center px-2 rounded-lg text-white transition-opacity hover:opacity-90"
+                                            style="background-color: var(--dash-danger);">
+                                        <span class="material-symbols-outlined text-[18px]">delete</span>
                                     </button>
                                 </div>
                             </template>
@@ -319,19 +381,25 @@ $formConfig = [
                     </template>
                 </div>
 
-                {{-- Metadata ────────────────────────────────────────────── --}}
+                {{-- Metadata --}}
                 <div class="space-y-4">
-                    <h3 class="font-jakarta text-[15px] font-bold text-slate-800 pb-2 border-b border-slate-100">Metadata Surat</h3>
+                    <h2 class="font-jakarta text-base font-bold pb-2" style="color: var(--dash-text-heading); border-bottom: 1px solid var(--dash-card-border);">Metadata Surat</h2>
                     <div class="grid gap-5 sm:grid-cols-2">
                         <div>
-                            <label class="mb-1.5 block text-[13px] font-bold text-slate-700">Penerima <span class="text-slate-400 font-normal text-[12px]">(ditampilkan di daftar)</span></label>
+                            <label class="mb-1.5 block text-sm font-medium" style="color: var(--dash-text-body);">Penerima <span class="text-xs font-normal" style="color: var(--dash-text-faint);">(ditampilkan di daftar)</span></label>
                             <input type="text" name="recipient" value="{{ old('recipient') }}" maxlength="255"
-                                   class="block w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] focus:bg-white focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
+                                   class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                   style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                   onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                   onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
                         </div>
                         <div>
-                            <label class="mb-1.5 block text-[13px] font-bold text-slate-700">Catatan Internal <span class="text-slate-400 font-normal text-[12px]">(tidak tercetak)</span></label>
+                            <label class="mb-1.5 block text-sm font-medium" style="color: var(--dash-text-body);">Catatan Internal <span class="text-xs font-normal" style="color: var(--dash-text-faint);">(tidak tercetak)</span></label>
                             <input type="text" name="notes" value="{{ old('notes') }}"
-                                   class="block w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 bg-[#F8FAFC] text-[14px] focus:bg-white focus:outline-none focus:border-[#215aac] focus:ring-1 focus:ring-[#215aac] transition-colors">
+                                   class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                   style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                   onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                   onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
                         </div>
                     </div>
                 </div>
@@ -340,13 +408,18 @@ $formConfig = [
 
         </div>
 
-        <div class="border-t border-slate-100 bg-slate-50 p-5 sm:px-7 flex flex-col-reverse sm:flex-row items-center justify-end gap-3 rounded-b-xl">
+        <div class="p-5 sm:px-7 flex flex-col-reverse sm:flex-row items-center justify-end gap-3 rounded-b-2xl"
+             style="background-color: var(--dash-nav-hover-bg); border-top: 1px solid var(--dash-card-border);">
             <a href="{{ route('out-letters-generate.index') }}"
-               class="w-full sm:w-auto inline-flex justify-center min-h-[44px] items-center border border-slate-300 bg-white px-5 rounded-lg text-[14px] font-bold text-slate-700 hover:bg-slate-50 transition-colors">
-                Batal
+               class="w-full sm:w-auto inline-flex justify-center items-center gap-1.5 px-5 py-2 rounded-lg text-sm font-semibold transition-colors"
+               style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+               onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+               onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                <span class="material-symbols-outlined text-[18px]">close</span> Batal
             </a>
             <button type="submit" :disabled="isSubmitting || !selectedTemplateId"
-                    class="w-full sm:w-auto inline-flex justify-center min-h-[44px] items-center gap-2 bg-[#215aac] px-6 rounded-lg text-[14px] font-bold text-white hover:bg-[#194a91] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    class="w-full sm:w-auto inline-flex justify-center items-center gap-1.5 px-6 py-2 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+                    style="background-color: var(--dash-primary);">
                 <span x-show="!isSubmitting" class="material-symbols-outlined text-[18px]">draft</span>
                 <span x-show="!isSubmitting">Buat Surat (Draft)</span>
                 <span x-show="isSubmitting" class="material-symbols-outlined animate-spin text-[18px]" x-cloak>progress_activity</span>

@@ -51,6 +51,18 @@ class ToeflTestRepository
         ]);
     }
 
+    public function unpublish(ToeflTest $test): void
+    {
+        abort_unless($test->status === ToeflTest::STATUS_PUBLISHED, 422, 'Test belum dipublikasikan.');
+        abort_if($test->sessions()->exists(), 422, 'Test sudah memiliki session - tidak bisa dikembalikan ke draft.');
+
+        $test->update([
+            'status' => ToeflTest::STATUS_DRAFT,
+            'published_by_employee_id' => null,
+            'published_at' => null,
+        ]);
+    }
+
     public function verifyPassword(ToeflTest $test, ?string $password): bool
     {
         if ($test->password === null) {

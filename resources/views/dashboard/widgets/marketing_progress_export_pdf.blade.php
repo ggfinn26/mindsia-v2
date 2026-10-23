@@ -176,7 +176,7 @@
 
 <div class="doc-foot">
     <div class="foot-left">Dicetak: {{ $printedAt ?? now()->format('d M Y, H:i') }} WIB</div>
-    <div class="foot-right">MINDSIA v2 — Laporan Progress Marketing</div>
+    <div class="foot-right">MINDSIA v2 - Laporan Progress Marketing</div>
 </div>
 
 </body>

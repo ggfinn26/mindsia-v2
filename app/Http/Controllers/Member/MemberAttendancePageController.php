@@ -36,7 +36,7 @@ class MemberAttendancePageController extends Controller
                     return [
                         'date' => $schedule->schedule_date,
                         'time' => Carbon::parse($schedule->start_time)->format('H:i')
-                                      .' – '.Carbon::parse($schedule->end_time)->format('H:i'),
+                                      .' - '.Carbon::parse($schedule->end_time)->format('H:i'),
                         'material' => $schedule->material_taught,
                         'status' => $record?->status ?? ($isPast ? 'unrecorded' : 'scheduled'),
                         'notes' => $record?->notes,

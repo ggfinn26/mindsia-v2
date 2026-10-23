@@ -4,107 +4,189 @@
 @section('header_title', 'Finance')
 
 @section('content')
-<div class="mx-auto max-w-4xl space-y-6">
-    <div class="flex items-center justify-between">
+@php
+    $statusBadge = [
+        'draft'          => 'bg-slate-100 text-slate-700',
+        'ops_review'     => 'bg-blue-100 text-blue-800',
+        'finance_review' => 'bg-amber-100 text-amber-800',
+        'accepted'       => 'bg-emerald-100 text-emerald-800',
+        'sent'           => 'bg-purple-100 text-purple-800',
+        'inventory_draft'=> 'bg-teal-100 text-teal-800',
+    ];
+@endphp
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-4xl mx-auto space-y-6"
+     x-data="{
+        deleteModalOpen: false,
+        deleteUrl: '',
+        deleteItemName: '',
+        sendModalOpen: false
+     }">
+    {{-- Page Header Pola B3 --}}
+    <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div>
-            <a href="{{ route('budget-estimates.index') }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700 transition-colors">
-                <span class="material-symbols-outlined text-[16px]">arrow_back</span> Kembali
+            <a href="{{ route('budget-estimates.index') }}" class="dash-back mb-3">
+                <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                Kembali ke Anggaran Cabang
             </a>
-            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">Detail Estimasi Anggaran</h2>
+            <p class="text-xs font-bold uppercase tracking-wider mb-1"
+               style="color: var(--dash-primary-text);">Keuangan</p>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+                style="color: var(--dash-text-heading);">{{ $budgetEstimate->title }}</h1>
+            <div class="mt-2 flex items-center gap-2">
+                <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold {{ $statusBadge[$budgetEstimate->status] ?? 'bg-slate-100 text-slate-700' }}">
+                    {{ str_replace('_', ' ', ucfirst($budgetEstimate->status)) }}
+                </span>
+                <span class="text-xs" style="color: var(--dash-text-muted);">
+                    {{ Carbon\Carbon::create(null, $budgetEstimate->period_month)->translatedFormat('F') }} {{ $budgetEstimate->period_year }}
+                    &bull; {{ $budgetEstimate->branch?->branch_name ?? '-' }}
+                </span>
+            </div>
         </div>
-        <div>
-            @if ($budgetEstimate->status === 'draft')
-                <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-800">Draft</span>
-            @elseif ($budgetEstimate->status === 'ops_review')
-                <span class="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">Review OPS</span>
-            @elseif ($budgetEstimate->status === 'finance_review')
-                <span class="inline-flex items-center rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-600/20">Review Finance</span>
-            @elseif ($budgetEstimate->status === 'accepted')
-                <span class="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">Diterima</span>
-            @elseif ($budgetEstimate->status === 'sent')
-                <span class="inline-flex items-center rounded-full bg-purple-50 px-2.5 py-0.5 text-xs font-medium text-purple-700 ring-1 ring-inset ring-purple-700/10">Terkirim</span>
-            @elseif ($budgetEstimate->status === 'inventory_draft')
-                <span class="inline-flex items-center rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10">Draft Inventory</span>
-            @endif
-        </div>
+        @if ($budgetEstimate->isDraft())
+            <div class="flex items-center gap-2">
+                <a href="{{ route('budget-estimates.edit', $budgetEstimate) }}"
+                   class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+                   style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                   onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                   onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                    Edit Anggaran
+                </a>
+            </div>
+        @endif
     </div>
 
+    {{-- Rejection Notes Alert --}}
     @if ($budgetEstimate->rejection_notes)
-        <div class="flex items-start gap-3 rounded-xl border border-red-100 bg-red-50 p-4 shadow-sm">
-            <span class="material-symbols-outlined text-red-500">error</span>
+        <div class="flex items-start gap-3 p-4 rounded-xl text-sm font-medium"
+             style="background-color: color-mix(in srgb, var(--dash-danger) 10%, transparent); border: 1px solid color-mix(in srgb, var(--dash-danger) 25%, transparent); color: var(--dash-danger);">
+            <span class="material-symbols-outlined text-[20px] shrink-0">error</span>
             <div>
-                <h3 class="text-sm font-semibold text-red-800">Catatan Penolakan</h3>
-                <p class="mt-1 text-sm text-red-700">{{ $budgetEstimate->rejection_notes }}</p>
+                <h2 class="text-sm font-bold">Catatan Penolakan</h2>
+                <p class="mt-0.5 text-sm">{{ $budgetEstimate->rejection_notes }}</p>
             </div>
         </div>
     @endif
 
-    {{-- Meta Info --}}
+    {{-- Flash Messages --}}
+    @if (session('success'))
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"
+             style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-heading);">
+            <span class="material-symbols-outlined text-[18px]" style="color: var(--dash-primary);">check_circle</span>
+            <p>{{ session('success') }}</p>
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"
+             style="background-color: color-mix(in srgb, var(--dash-danger) 10%, transparent); border: 1px solid color-mix(in srgb, var(--dash-danger) 25%, transparent); color: var(--dash-danger);">
+            <span class="material-symbols-outlined text-[18px]">error</span>
+            <p>{{ session('error') }}</p>
+        </div>
+    @endif
+
+    {{-- Meta Info Cards --}}
     <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <div class="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Judul</p>
-            <p class="mt-1.5 text-sm font-semibold text-slate-900">{{ $budgetEstimate->title }}</p>
+        <div class="p-4 rounded-2xl shadow-sm"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <p class="text-[11px] font-bold uppercase tracking-wider" style="color: var(--dash-text-faint);">Cabang</p>
+            <p class="mt-1 text-sm font-semibold truncate" style="color: var(--dash-text-heading);">
+                {{ $budgetEstimate->branch?->branch_name ?? '-' }}
+            </p>
         </div>
-        <div class="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Bulan</p>
-            <p class="mt-1.5 text-sm font-semibold text-slate-900">{{ Carbon\Carbon::create(null, $budgetEstimate->period_month)->translatedFormat('F') }} {{ $budgetEstimate->period_year }}</p>
+        <div class="p-4 rounded-2xl shadow-sm"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <p class="text-[11px] font-bold uppercase tracking-wider" style="color: var(--dash-text-faint);">Periode</p>
+            <p class="mt-1 text-sm font-semibold truncate" style="color: var(--dash-text-heading);">
+                {{ Carbon\Carbon::create(null, $budgetEstimate->period_month)->translatedFormat('F') }} {{ $budgetEstimate->period_year }}
+            </p>
         </div>
-        <div class="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Estimasi</p>
-            <p class="mt-1.5 text-sm font-semibold text-emerald-600">Rp {{ number_format($budgetEstimate->total_amount, 0, ',', '.') }}</p>
+        <div class="p-4 rounded-2xl shadow-sm"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <p class="text-[11px] font-bold uppercase tracking-wider" style="color: var(--dash-text-faint);">Total Estimasi</p>
+            <p class="mt-1 text-sm font-bold truncate tabular-nums" style="color: var(--dash-primary-text);">
+                Rp {{ number_format($budgetEstimate->total_amount, 0, ',', '.') }}
+            </p>
         </div>
-        <div class="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Cabang</p>
-            <p class="mt-1.5 text-sm font-semibold text-slate-900">{{ $budgetEstimate->branch?->branch_name ?? '—' }}</p>
+        <div class="p-4 rounded-2xl shadow-sm"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <p class="text-[11px] font-bold uppercase tracking-wider" style="color: var(--dash-text-faint);">Diajukan Oleh</p>
+            <p class="mt-1 text-sm font-semibold truncate" style="color: var(--dash-text-heading);">
+                {{ $budgetEstimate->submittedBy?->full_name ?? '-' }}
+            </p>
         </div>
     </div>
 
-    {{-- Items --}}
-    <div class="overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm">
-        <div class="border-b border-slate-100 px-6 py-4 flex items-center justify-between">
-            <h3 class="font-jakarta text-base font-bold text-slate-900">Rincian Item Anggaran</h3>
-            <span class="text-xs font-medium text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">{{ $budgetEstimate->items->count() }} Item</span>
+    {{-- Items Card --}}
+    <div class="rounded-2xl shadow-sm"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <div class="px-6 py-4 rounded-t-2xl flex items-center justify-between"
+             style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+            <h2 class="text-sm font-semibold" style="color: var(--dash-text-heading);">Rincian Item Anggaran</h2>
+            <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full"
+                  style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-muted);">
+                {{ $budgetEstimate->items->count() }} Item
+            </span>
         </div>
+
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-100 text-sm">
-                <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
-                    <tr>
-                        <th class="px-6 py-4">Item</th>
-                        <th class="px-6 py-4 text-right">Qty</th>
-                        <th class="px-6 py-4 text-right">Harga Est.</th>
-                        <th class="px-6 py-4 text-right">Subtotal</th>
-                        @if ($budgetEstimate->isDraft()) <th class="px-6 py-4"></th> @endif
+            <table class="w-full text-sm text-left">
+                <thead>
+                    <tr style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
+                        <th class="px-4 py-3.5 uppercase tracking-wider text-[11px] font-bold"
+                            style="color: var(--dash-text-muted);">Item & Catatan</th>
+                        <th class="px-4 py-3.5 uppercase tracking-wider text-[11px] font-bold text-center"
+                            style="color: var(--dash-text-muted);">Qty</th>
+                        <th class="px-4 py-3.5 uppercase tracking-wider text-[11px] font-bold text-right"
+                            style="color: var(--dash-text-muted);">Harga Est.</th>
+                        <th class="px-4 py-3.5 uppercase tracking-wider text-[11px] font-bold text-right"
+                            style="color: var(--dash-text-muted);">Subtotal</th>
+                        @if ($budgetEstimate->isDraft())
+                            <th class="px-4 py-3.5 uppercase tracking-wider text-[11px] font-bold text-right"
+                                style="color: var(--dash-text-muted);">Aksi</th>
+                        @endif
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-50">
+                <tbody class="divide-y" style="border-color: var(--dash-card-border);">
                     @forelse ($budgetEstimate->items as $item)
-                        <tr class="hover:bg-slate-50/50 transition-colors">
-                            <td class="px-6 py-4">
-                                <p class="font-medium text-slate-900">{{ $item->item_name }}</p>
-                                @if ($item->notes) <p class="mt-0.5 text-xs text-slate-500">{{ $item->notes }}</p> @endif
+                        <tr style="border-bottom: 1px solid var(--dash-card-border);"
+                            onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                            onmouseout="this.style.backgroundColor='transparent'">
+                            <td class="px-4 py-3">
+                                <p class="font-medium text-xs" style="color: var(--dash-text-heading);">{{ $item->item_name }}</p>
+                                @if ($item->notes)
+                                    <p class="text-[11px] mt-0.5" style="color: var(--dash-text-muted);">{{ $item->notes }}</p>
+                                @endif
                             </td>
-                            <td class="px-6 py-4 text-right font-medium text-slate-700">{{ $item->quantity }}</td>
-                            <td class="px-6 py-4 text-right tabular-nums text-slate-600">Rp {{ number_format($item->estimated_price, 0, ',', '.') }}</td>
-                            <td class="px-6 py-4 text-right tabular-nums font-bold text-emerald-600">Rp {{ number_format($item->total_price, 0, ',', '.') }}</td>
+                            <td class="px-4 py-3 text-center text-xs font-semibold" style="color: var(--dash-text-heading);">
+                                {{ $item->quantity }}
+                            </td>
+                            <td class="px-4 py-3 text-right tabular-nums text-xs" style="color: var(--dash-text-muted);">
+                                Rp {{ number_format($item->estimated_price, 0, ',', '.') }}
+                            </td>
+                            <td class="px-4 py-3 text-right tabular-nums text-xs font-bold" style="color: var(--dash-primary-text);">
+                                Rp {{ number_format($item->total_price, 0, ',', '.') }}
+                            </td>
                             @if ($budgetEstimate->isDraft())
-                                <td class="px-6 py-4 text-right">
-                                    <form method="POST" action="{{ route('budget-estimate-items.destroy', [$budgetEstimate, $item]) }}" onsubmit="return confirm('Hapus item ini?')">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="inline-flex items-center justify-center rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 p-1.5 transition-colors" title="Hapus">
-                                            <span class="material-symbols-outlined text-[18px]">delete</span>
-                                        </button>
-                                    </form>
+                                <td class="px-4 py-3 text-right">
+                                    <button type="button"
+                                            @click="deleteUrl = '{{ route('budget-estimate-items.destroy', [$budgetEstimate, $item]) }}'; deleteItemName = '{{ addslashes($item->item_name) }}'; deleteModalOpen = true"
+                                            class="inline-flex items-center justify-center p-1.5 rounded-lg text-white transition-opacity hover:opacity-90"
+                                            style="background-color: var(--dash-danger);"
+                                            title="Hapus Item">
+                                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                                    </button>
                                 </td>
                             @endif
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-12 text-center">
-                                <div class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-50 mb-3">
-                                    <span class="material-symbols-outlined text-slate-400 text-2xl">receipt_long</span>
-                                </div>
-                                <h3 class="text-sm font-medium text-slate-900">Belum ada item</h3>
-                                <p class="mt-1 text-sm text-slate-500">Tambahkan rincian barang/kebutuhan di bawah.</p>
+                            <td colspan="{{ $budgetEstimate->isDraft() ? 5 : 4 }}" class="px-4 py-12 text-center">
+                                <span class="material-symbols-outlined text-[48px] block mx-auto mb-3"
+                                      style="color: var(--dash-text-faint);">receipt_long</span>
+                                <p class="text-sm font-semibold" style="color: var(--dash-text-muted);">Belum ada item anggaran.</p>
+                                <p class="text-xs mt-1" style="color: var(--dash-text-faint);">Tambahkan rincian barang atau kebutuhan melalui form di bawah.</p>
                             </td>
                         </tr>
                     @endforelse
@@ -112,57 +194,88 @@
             </table>
         </div>
 
+        {{-- Form Tambah Item Baru --}}
         @if ($budgetEstimate->isDraft())
             @can('finance.budget_estimate.create')
-            <div class="border-t border-slate-100 bg-slate-50/50 px-6 py-5">
-                <p class="mb-4 text-sm font-bold text-slate-800">Tambah Item Baru</p>
-                <form method="POST" action="{{ route('budget-estimate-items.store', $budgetEstimate) }}" class="grid grid-cols-12 gap-3 items-end">
-                    @csrf
-                    <div class="col-span-12 md:col-span-4">
-                        <label class="mb-1.5 block text-xs font-semibold text-slate-700">Nama Item</label>
-                        <input type="text" name="item_name" required maxlength="255" placeholder="Cth: Tinta Printer" class="block w-full rounded-lg border-slate-200 bg-white px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-[#215aac] focus:ring-[#215aac]">
-                    </div>
-                    <div class="col-span-6 md:col-span-2">
-                        <label class="mb-1.5 block text-xs font-semibold text-slate-700">Qty</label>
-                        <input type="number" name="quantity" required min="1" value="1" class="block w-full rounded-lg border-slate-200 bg-white px-3 py-2.5 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
-                    </div>
-                    <div class="col-span-6 md:col-span-3">
-                        <label class="mb-1.5 block text-xs font-semibold text-slate-700">Harga Est.</label>
-                        <div class="flex rounded-lg shadow-sm" x-data="{
-                                rawValue: '{{ old('estimated_price') }}',
-                                format(val) {
-                                    let num = val.toString().replace(/[^0-9]/g, '');
-                                    return num ? new Intl.NumberFormat('id-ID').format(num) : '';
-                                }
-                            }">
-                            <span class="inline-flex items-center rounded-l-lg border border-r-0 border-slate-200 bg-slate-100 px-3 text-sm font-bold text-slate-500">Rp</span>
-                            <input type="text" :value="format(rawValue)" @input="rawValue = $event.target.value.replace(/[^0-9]/g, ''); $event.target.value = format(rawValue)" required placeholder="0" class="block w-full min-w-0 flex-1 rounded-none rounded-r-lg border-slate-200 bg-white px-3 py-2.5 text-sm focus:border-[#215aac] focus:ring-[#215aac]">
-                            <input type="hidden" name="estimated_price" x-model="rawValue">
+                <div class="p-6 rounded-b-2xl border-t"
+                     style="border-color: var(--dash-card-border); background-color: var(--dash-card-bg);">
+                    <h3 class="text-sm font-semibold mb-4" style="color: var(--dash-text-heading);">Tambah Item Baru</h3>
+                    <form method="POST" action="{{ route('budget-estimate-items.store', $budgetEstimate) }}"
+                          class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
+                        @csrf
+                        <div class="sm:col-span-4">
+                            <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide"
+                                   style="color: var(--dash-text-faint);">Nama Item <span class="text-red-500">*</span></label>
+                            <input type="text" name="item_name" required maxlength="255" placeholder="Cth: Tinta Printer"
+                                   class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                   style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                   onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                   onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'" />
                         </div>
-                    </div>
-                    <div class="col-span-12 md:col-span-2">
-                        <label class="mb-1.5 block text-xs font-semibold text-slate-700">Catatan</label>
-                        <input type="text" name="notes" maxlength="255" placeholder="Opsional" class="block w-full rounded-lg border-slate-200 bg-white px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-[#215aac] focus:ring-[#215aac]">
-                    </div>
-                    <div class="col-span-12 md:col-span-1">
-                        <button type="submit" class="inline-flex h-10 w-full items-center justify-center rounded-lg bg-[#215aac] text-sm font-semibold text-white shadow-sm hover:bg-[#194a91] transition-all">
-                            <span class="material-symbols-outlined text-[20px]">add</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
+                        <div class="sm:col-span-2">
+                            <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide"
+                                   style="color: var(--dash-text-faint);">Qty <span class="text-red-500">*</span></label>
+                            <input type="number" name="quantity" required min="1" value="1"
+                                   class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                   style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                   onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                   onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'" />
+                        </div>
+                        <div class="sm:col-span-3">
+                            <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide"
+                                   style="color: var(--dash-text-faint);">Harga Est. (Rp) <span class="text-red-500">*</span></label>
+                            <div class="relative" x-data="{
+                                    rawValue: '{{ old('estimated_price') }}',
+                                    format(val) {
+                                        let num = val.toString().replace(/[^0-9]/g, '');
+                                        return num ? new Intl.NumberFormat('id-ID').format(num) : '';
+                                    }
+                                 }">
+                                <input type="text" :value="format(rawValue)"
+                                       @input="rawValue = $event.target.value.replace(/[^0-9]/g, ''); $event.target.value = format(rawValue)"
+                                       required placeholder="0"
+                                       class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                       style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                       onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                       onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'" />
+                                <input type="hidden" name="estimated_price" x-model="rawValue" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide"
+                                   style="color: var(--dash-text-faint);">Catatan</label>
+                            <input type="text" name="notes" maxlength="255" placeholder="Opsional"
+                                   class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                   style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                   onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                   onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'" />
+                        </div>
+                        <div class="sm:col-span-1">
+                            <button type="submit"
+                                    class="w-full inline-flex items-center justify-center h-[38px] rounded-lg text-white font-semibold transition-opacity hover:opacity-90"
+                                    style="background-color: var(--dash-primary);"
+                                    title="Tambah Item">
+                                <span class="material-symbols-outlined text-[20px]">add</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
             @endcan
         @endif
     </div>
 
-    {{-- Actions --}}
-    <div class="flex flex-wrap items-center gap-3 pt-4 border-t border-slate-200">
+    {{-- Workflow Approval Actions --}}
+    <div class="p-5 rounded-2xl flex flex-wrap items-center gap-3"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
         @if ($budgetEstimate->isDraft())
             @can('finance.budget_estimate.create')
                 <form method="POST" action="{{ route('budget-estimates.submit-ops', $budgetEstimate) }}">
                     @csrf
-                    <button type="submit" class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-[#215aac] px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#194a91] transition-all">
-                        <span class="material-symbols-outlined text-[18px]">send</span> Ajukan ke OPS
+                    <button type="submit"
+                            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                            style="background-color: var(--dash-primary);">
+                        <span class="material-symbols-outlined text-[18px]">send</span>
+                        Ajukan ke OPS
                     </button>
                 </form>
             @endcan
@@ -170,39 +283,148 @@
             @can('finance.budget_estimate.ops_review')
                 <form method="POST" action="{{ route('budget-estimates.submit-finance', $budgetEstimate) }}">
                     @csrf
-                    <button type="submit" class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-[#215aac] px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#194a91] transition-all">
-                        <span class="material-symbols-outlined text-[18px]">forward</span> Teruskan ke Finance
+                    <button type="submit"
+                            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                            style="background-color: var(--dash-primary);">
+                        <span class="material-symbols-outlined text-[18px]">forward</span>
+                        Teruskan ke Finance
                     </button>
                 </form>
             @endcan
         @elseif ($budgetEstimate->status === 'finance_review')
             @can('finance.budget_estimate.finance_review')
-                <form method="POST" action="{{ route('budget-estimates.review-finance', $budgetEstimate) }}" class="flex items-center gap-3 bg-white p-2 rounded-xl border border-slate-200 shadow-sm w-full sm:w-auto">
+                <form method="POST" action="{{ route('budget-estimates.review-finance', $budgetEstimate) }}"
+                      class="flex flex-wrap items-center gap-2 flex-1">
                     @csrf
                     <input type="hidden" name="action" value="reject">
-                    <input type="text" name="rejection_notes" placeholder="Catatan penolakan..." required class="block w-full min-w-[200px] rounded-lg border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-red-500 focus:bg-white focus:ring-red-500">
-                    <button type="submit" class="inline-flex min-h-10 items-center gap-2 rounded-lg border border-red-200 bg-white px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 transition-colors">
-                        Tolak
+                    <input type="text" name="rejection_notes" placeholder="Catatan penolakan jika ditolak..." required
+                           class="flex-1 min-w-[200px] px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                           style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                           onfocus="this.style.borderColor='var(--dash-danger)'"
+                           onblur="this.style.borderColor='var(--dash-input-border)'" />
+                    <button type="submit"
+                            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                            style="background-color: var(--dash-danger);">
+                        <span class="material-symbols-outlined text-[18px]">cancel</span>
+                        Tolak Anggaran
                     </button>
                 </form>
                 <form method="POST" action="{{ route('budget-estimates.review-finance', $budgetEstimate) }}">
                     @csrf
                     <input type="hidden" name="action" value="accept">
-                    <button type="submit" class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-emerald-600 px-6 py-2 text-sm font-bold text-white shadow-sm hover:bg-emerald-700 transition-all">
-                        <span class="material-symbols-outlined text-[18px]">check_circle</span> Setujui Anggaran
+                    <button type="submit"
+                            class="inline-flex items-center gap-1.5 px-5 py-2 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                            style="background-color: #16a34a;">
+                        <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                        Setujui Anggaran
                     </button>
                 </form>
             @endcan
         @elseif ($budgetEstimate->status === 'accepted')
             @can('finance.budget_estimate.send')
-                <form method="POST" action="{{ route('budget-estimates.send', $budgetEstimate) }}" onsubmit="return confirm('Kirim anggaran ini? Draft inventory akan dibuat otomatis.')">
-                    @csrf
-                    <button type="submit" class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-purple-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-purple-700 transition-all">
-                        <span class="material-symbols-outlined text-[18px]">inventory_2</span> Kirim & Buat Draft Inventory
-                    </button>
-                </form>
+                <button type="button" @click="sendModalOpen = true"
+                        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                        style="background-color: #7c3aed;">
+                    <span class="material-symbols-outlined text-[18px]">inventory_2</span>
+                    Kirim & Buat Draft Inventory
+                </button>
             @endcan
         @endif
+    </div>
+
+    {{-- Modal Konfirmasi Hapus Item (Custom Alpine.js, ZERO Browser Confirm) --}}
+    <div x-show="deleteModalOpen"
+         x-transition.opacity
+         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"
+         style="display: none;"
+         @keydown.escape.window="deleteModalOpen = false">
+        <div @click.stop
+             class="w-full max-w-md rounded-2xl shadow-xl space-y-4"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <div class="p-5 rounded-t-2xl flex items-center gap-3 border-b"
+                 style="border-color: var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                     style="background-color: color-mix(in srgb, var(--dash-danger) 15%, transparent); color: var(--dash-danger);">
+                    <span class="material-symbols-outlined text-[22px]">delete</span>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold" style="color: var(--dash-text-heading);">Hapus Item Anggaran</h3>
+                    <p class="text-xs" style="color: var(--dash-text-muted);">Konfirmasi penghapusan item</p>
+                </div>
+            </div>
+            <div class="px-5 py-2">
+                <p class="text-sm" style="color: var(--dash-text-body);">
+                    Apakah Anda yakin ingin menghapus item <span class="font-semibold" style="color: var(--dash-text-heading);" x-text="deleteItemName"></span> dari estimasi anggaran ini?
+                </p>
+            </div>
+            <div class="p-4 rounded-b-2xl border-t flex justify-end gap-2.5"
+                 style="border-color: var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                <button type="button" @click="deleteModalOpen = false"
+                        class="px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                        style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-muted);"
+                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                    Batal
+                </button>
+                <form :action="deleteUrl" method="POST" class="inline-flex">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit"
+                            class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg text-white transition-opacity hover:opacity-90"
+                            style="background-color: var(--dash-danger);">
+                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                        Ya, Hapus
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Modal Konfirmasi Kirim & Buat Draft Inventory (Custom Alpine.js, ZERO Browser Confirm) --}}
+    <div x-show="sendModalOpen"
+         x-transition.opacity
+         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"
+         style="display: none;"
+         @keydown.escape.window="sendModalOpen = false">
+        <div @click.stop
+             class="w-full max-w-md rounded-2xl shadow-xl space-y-4"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <div class="p-5 rounded-t-2xl flex items-center gap-3 border-b"
+                 style="border-color: var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                     style="background-color: color-mix(in srgb, #7c3aed 15%, transparent); color: #7c3aed;">
+                    <span class="material-symbols-outlined text-[22px]">inventory_2</span>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold" style="color: var(--dash-text-heading);">Kirim & Buat Inventory</h3>
+                    <p class="text-xs" style="color: var(--dash-text-muted);">Konfirmasi pengiriman anggaran</p>
+                </div>
+            </div>
+            <div class="px-5 py-2">
+                <p class="text-sm" style="color: var(--dash-text-body);">
+                    Kirim anggaran <span class="font-semibold" style="color: var(--dash-text-heading);">{{ $budgetEstimate->title }}</span> sekarang? Draft inventory akan dibuat secara otomatis.
+                </p>
+            </div>
+            <div class="p-4 rounded-b-2xl border-t flex justify-end gap-2.5"
+                 style="border-color: var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                <button type="button" @click="sendModalOpen = false"
+                        class="px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                        style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-muted);"
+                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                        onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                    Batal
+                </button>
+                <form method="POST" action="{{ route('budget-estimates.send', $budgetEstimate) }}" class="inline-flex">
+                    @csrf
+                    <button type="submit"
+                            class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg text-white transition-opacity hover:opacity-90"
+                            style="background-color: #7c3aed;">
+                        <span class="material-symbols-outlined text-[16px]">send</span>
+                        Ya, Kirim Sekarang
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 @endsection

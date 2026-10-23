@@ -1,27 +1,27 @@
 @props(['data'])
 
-<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow relative overflow-hidden flex flex-col h-full">
+<div class="rounded-2xl transition-all relative overflow-hidden flex flex-col h-full p-5" style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
     <div class="flex items-center justify-between mb-4 z-10">
         <div class="flex items-center gap-3">
-            <div class="h-10 w-10 rounded-lg bg-emerald-50 flex items-center justify-center">
-                <span class="material-symbols-outlined text-emerald-600 text-xl">payments</span>
+            <div class="h-10 w-10 rounded-lg flex items-center justify-center shrink-0" style="background-color: var(--dash-status-success-bg); color: var(--dash-status-success-text);">
+                <span class="material-symbols-outlined text-xl">payments</span>
             </div>
             <div>
-                <h3 class="text-sm font-semibold text-gray-800">Revenue</h3>
-                <p class="text-xs text-gray-400">{{ $data['period'] ?? '-' }}</p>
+                <h3 class="text-sm font-semibold" style="color: var(--dash-text-heading);">Revenue</h3>
+                <p class="text-xs" style="color: var(--dash-text-muted);">{{ $data['period'] ?? '-' }}</p>
             </div>
         </div>
         @if(isset($data['trend_percent']))
-            <div class="flex items-center gap-1 px-2 py-1 rounded-full {{ $data['trend_percent'] >= 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-500' }}">
+            <div class="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold" style="background-color: {{ $data['trend_percent'] >= 0 ? 'var(--dash-status-success-bg)' : 'var(--dash-status-danger-bg)' }}; color: {{ $data['trend_percent'] >= 0 ? 'var(--dash-status-success-text)' : 'var(--dash-status-danger-text)' }};">
                 <span class="material-symbols-outlined text-sm">{{ $data['trend_percent'] >= 0 ? 'trending_up' : 'trending_down' }}</span>
-                <span class="text-xs font-bold">{{ abs($data['trend_percent']) }}%</span>
+                <span>{{ abs($data['trend_percent']) }}%</span>
             </div>
         @endif
     </div>
 
     <div class="z-10 flex-grow">
-        <p class="text-xs text-gray-400 mb-1 font-medium uppercase tracking-wider">Total Revenue</p>
-        <p class="text-3xl font-bold text-gray-900 font-jakarta tracking-tight">Rp {{ number_format($data['member_revenue'] ?? 0, 0, ',', '.') }}</p>
+        <p class="text-xs mb-1 font-medium uppercase tracking-wider" style="color: var(--dash-text-muted);">Total Revenue</p>
+        <p class="text-2xl sm:text-3xl font-bold font-jakarta tracking-tight" style="color: var(--dash-text-heading);">Rp {{ number_format($data['member_revenue'] ?? 0, 0, ',', '.') }}</p>
     </div>
     
     @if(isset($data['history_data']) && !empty($data['history_data']))
@@ -29,11 +29,11 @@
             <div id="chart-revenue-{{ Str::random(5) }}" data-history='@json($data['history_data'])' data-labels='@json($data['history_labels'])'></div>
         </div>
     @else
-        <div class="mt-4 pt-4 border-t border-gray-50 z-10">
+        <div class="mt-4 pt-4 border-t z-10" style="border-color: var(--dash-card-border);">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-xs text-gray-400">Payroll Cost</p>
-                    <p class="text-sm font-semibold text-gray-600">Rp {{ number_format($data['payroll_cost'] ?? 0, 0, ',', '.') }}</p>
+                    <p class="text-xs" style="color: var(--dash-text-muted);">Payroll Cost</p>
+                    <p class="text-sm font-semibold" style="color: var(--dash-text-heading);">Rp {{ number_format($data['payroll_cost'] ?? 0, 0, ',', '.') }}</p>
                 </div>
             </div>
         </div>

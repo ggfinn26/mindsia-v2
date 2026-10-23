@@ -4,61 +4,98 @@
 @section('header_title', 'Riwayat Registrasi')
 
 @section('content')
-<div class="max-w-6xl mx-auto">
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6">
+
+    {{-- Page Header Pola A --}}
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h2 class="text-2xl font-bold font-jakarta text-gray-900">Riwayat Registrasi</h2>
-            <p class="text-sm text-gray-500 mt-1">Daftar program yang pernah Anda daftarkan.</p>
+            <p class="text-xs font-semibold uppercase tracking-wider mb-1"
+               style="color: var(--dash-primary-text);">Portal Siswa</p>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+                style="color: var(--dash-text-heading);">Riwayat Registrasi</h1>
+            <p class="text-sm mt-1" style="color: var(--dash-text-muted);">
+                Daftar program yang pernah Anda daftarkan.
+            </p>
         </div>
+        <a href="{{ route('member.program.browse') }}"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold text-white transition-opacity hover:opacity-90 shadow-sm self-start sm:self-auto"
+           style="background-color: var(--dash-primary);">
+            <span class="material-symbols-outlined text-[16px]">add</span>
+            Daftar Program Baru
+        </a>
     </div>
 
     @if($registrations->isEmpty())
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-10 flex flex-col items-center justify-center text-center">
-            <div class="h-20 w-20 rounded-full bg-blue-50 flex items-center justify-center mb-4">
-                <span class="material-symbols-outlined text-[#5586DB] text-4xl">history_edu</span>
+        {{-- Empty State Card --}}
+        <div class="rounded-2xl p-12 flex flex-col items-center justify-center text-center shadow-sm"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <div class="h-16 w-16 rounded-full flex items-center justify-center mb-4"
+                 style="background-color: var(--dash-status-info-bg);">
+                <span class="material-symbols-outlined text-3xl" style="color: var(--dash-primary);">history_edu</span>
             </div>
-            <h3 class="text-lg font-bold text-gray-900 font-jakarta mb-2">Belum Ada Riwayat Registrasi</h3>
-            <p class="text-gray-500 max-w-md mx-auto mb-6">Anda belum pernah mendaftar ke program apa pun.</p>
-            <a href="{{ route('member.program.browse') }}" class="px-5 py-2.5 bg-[#5586DB] text-white font-medium rounded-lg hover:bg-[#4370BC] transition-colors shadow-sm">
+            <h3 class="text-base sm:text-lg font-bold font-jakarta mb-1" style="color: var(--dash-text-heading);">Belum Ada Riwayat Registrasi</h3>
+            <p class="text-sm max-w-md mx-auto mb-6" style="color: var(--dash-text-muted);">Anda belum pernah mendaftar ke program apa pun.</p>
+            <a href="{{ route('member.program.browse') }}"
+               class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90 shadow-sm"
+               style="background-color: var(--dash-primary);">
+                <span class="material-symbols-outlined text-[18px]">explore</span>
                 Lihat Katalog Program
             </a>
         </div>
     @else
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <table class="min-w-full divide-y divide-gray-100 text-sm">
-                <thead class="bg-gray-50 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    <tr>
-                        <th class="px-6 py-3">Program</th>
-                        <th class="px-6 py-3">Skema Bayar</th>
-                        <th class="px-6 py-3">Total Tagihan</th>
-                        <th class="px-6 py-3">Status</th>
-                        <th class="px-6 py-3">Tanggal Daftar</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100">
-                    @foreach($registrations as $registration)
-                        <tr class="hover:bg-gray-50/70">
-                            <td class="px-6 py-4 font-medium text-gray-900">
-                                {{ $registration->program?->program_name ?? $registration->receipt_program_name }}
-                            </td>
-                            <td class="px-6 py-4 text-gray-600">
-                                {{ $registration->receipt_payment_plan_label ?? '—' }}
-                            </td>
-                            <td class="px-6 py-4 text-gray-900">
-                                Rp {{ number_format($registration->final_price, 0, ',', '.') }}
-                            </td>
-                            <td class="px-6 py-4">
-                                <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $registration->status_color }}">
-                                    {{ $registration->status_label }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-gray-500">
-                                {{ $registration->created_at->format('d M Y') }}
-                            </td>
+        <div class="rounded-2xl shadow-sm overflow-hidden"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-sm">
+                    <thead style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
+                        <tr>
+                            <th class="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Program</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Skema Bayar</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Total Tagihan</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Status</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Tanggal Daftar</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody class="divide-y" style="border-color: var(--dash-card-border);">
+                        @foreach($registrations as $registration)
+                            @php
+                                $statusBg = match ($registration->payment_status) {
+                                    'paid_full' => 'var(--dash-status-success-bg)',
+                                    'installments' => 'var(--dash-status-info-bg)',
+                                    default => 'var(--dash-status-danger-bg)',
+                                };
+                                $statusText = match ($registration->payment_status) {
+                                    'paid_full' => 'var(--dash-status-success-text)',
+                                    'installments' => 'var(--dash-status-info-text)',
+                                    default => 'var(--dash-status-danger-text)',
+                                };
+                            @endphp
+                            <tr class="transition-colors"
+                                onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                onmouseout="this.style.backgroundColor='transparent'">
+                                <td class="px-6 py-4 font-semibold font-jakarta" style="color: var(--dash-text-heading);">
+                                    {{ $registration->program?->program_name ?? $registration->receipt_program_name }}
+                                </td>
+                                <td class="px-6 py-4" style="color: var(--dash-text-body);">
+                                    {{ $registration->receipt_payment_plan_label ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4 font-semibold font-jakarta" style="color: var(--dash-text-heading);">
+                                    Rp {{ number_format($registration->final_price, 0, ',', '.') }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold shadow-xs"
+                                          style="background-color: {{ $statusBg }}; color: {{ $statusText }}; border: 1px solid var(--dash-card-border);">
+                                        {{ $registration->status_label }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4" style="color: var(--dash-text-muted);">
+                                    {{ $registration->created_at->format('d M Y') }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     @endif
 </div>

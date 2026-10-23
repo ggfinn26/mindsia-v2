@@ -4,57 +4,90 @@
 @section('header_title', 'Status Cicilan')
 
 @section('content')
-<div class="max-w-6xl mx-auto space-y-6">
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6">
+
+    {{-- Page Header Pola A --}}
     <div>
-        <h2 class="text-2xl font-bold font-jakarta text-gray-900">Status Cicilan</h2>
-        <p class="text-sm text-gray-500 mt-1">Pantau tagihan dan jadwal pembayaran cicilan program Anda.</p>
+        <p class="text-xs font-semibold uppercase tracking-wider mb-1"
+           style="color: var(--dash-primary-text);">Portal Siswa</p>
+        <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+            style="color: var(--dash-text-heading);">Status Cicilan</h1>
+        <p class="text-sm mt-1" style="color: var(--dash-text-muted);">
+            Pantau tagihan dan jadwal pembayaran cicilan program Anda.
+        </p>
     </div>
 
     @if($registrations->isEmpty())
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-10 flex flex-col items-center justify-center text-center">
-            <div class="h-20 w-20 rounded-full bg-blue-50 flex items-center justify-center mb-4">
-                <span class="material-symbols-outlined text-[#5586DB] text-4xl">receipt_long</span>
+        {{-- Empty State Card --}}
+        <div class="rounded-2xl p-12 flex flex-col items-center justify-center text-center shadow-sm"
+             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+            <div class="h-16 w-16 rounded-full flex items-center justify-center mb-4"
+                 style="background-color: var(--dash-status-info-bg);">
+                <span class="material-symbols-outlined text-3xl" style="color: var(--dash-primary);">receipt_long</span>
             </div>
-            <h3 class="text-lg font-bold text-gray-900 font-jakarta mb-2">Tidak Ada Tagihan Aktif</h3>
-            <p class="text-gray-500 max-w-md mx-auto mb-6">Saat ini Anda tidak memiliki tagihan atau cicilan program yang sedang berjalan.</p>
-            <a href="{{ route('member.dashboard') }}" class="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors shadow-sm">
+            <h3 class="text-base sm:text-lg font-bold font-jakarta mb-1" style="color: var(--dash-text-heading);">Tidak Ada Tagihan Aktif</h3>
+            <p class="text-sm max-w-md mx-auto mb-6" style="color: var(--dash-text-muted);">Saat ini Anda tidak memiliki tagihan atau cicilan program yang sedang berjalan.</p>
+            <a href="{{ route('member.dashboard') }}"
+               class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90 shadow-sm"
+               style="background-color: var(--dash-primary);">
+                <span class="material-symbols-outlined text-[18px]">arrow_back</span>
                 Kembali ke Dashboard
             </a>
         </div>
     @else
         @foreach($registrations as $registration)
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
+            @php
+                $statusBg = match ($registration->payment_status) {
+                    'paid_full' => 'var(--dash-status-success-bg)',
+                    'installments' => 'var(--dash-status-info-bg)',
+                    default => 'var(--dash-status-danger-bg)',
+                };
+                $statusText = match ($registration->payment_status) {
+                    'paid_full' => 'var(--dash-status-success-text)',
+                    'installments' => 'var(--dash-status-info-text)',
+                    default => 'var(--dash-status-danger-text)',
+                };
+            @endphp
+            <div class="rounded-2xl shadow-sm overflow-hidden"
+                 style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+                {{-- Header --}}
+                <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2"
+                     style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
                     <div>
-                        <h3 class="font-semibold text-gray-900">
+                        <h3 class="font-bold font-jakarta text-base" style="color: var(--dash-text-heading);">
                             {{ $registration->program?->program_name ?? $registration->receipt_program_name }}
                         </h3>
-                        <p class="text-xs text-gray-500 mt-0.5">{{ $registration->receipt_payment_plan_label ?? '—' }}</p>
+                        <p class="text-xs mt-0.5" style="color: var(--dash-text-muted);">
+                            Skema: {{ $registration->receipt_payment_plan_label ?? '-' }}
+                        </p>
                     </div>
-                    <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $registration->status_color }}">
+                    <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold shadow-xs self-start sm:self-auto"
+                          style="background-color: {{ $statusBg }}; color: {{ $statusText }}; border: 1px solid var(--dash-card-border);">
                         {{ $registration->status_label }}
                     </span>
                 </div>
 
                 @if($registration->payments->isEmpty())
-                    <p class="px-6 py-6 text-sm text-center text-gray-400">Belum ada data cicilan.</p>
+                    <p class="px-6 py-8 text-sm text-center" style="color: var(--dash-text-faint);">Belum ada data cicilan.</p>
                 @else
-                    <div class="divide-y divide-gray-100">
+                    <div class="divide-y" style="border-color: var(--dash-card-border);">
                         @foreach($registration->payments->sortBy('installment_number') as $payment)
-                            <div class="px-6 py-4 flex items-center gap-4">
-                                <div class="shrink-0 w-8 h-8 rounded-full flex items-center justify-center
-                                    {{ $payment->payment_status === 'paid' ? 'bg-green-100' : 'bg-gray-100' }}">
-                                    <span class="material-symbols-outlined text-[16px] {{ $payment->payment_status === 'paid' ? 'text-green-600' : 'text-gray-400' }}">
+                            <div class="px-6 py-4 flex items-center gap-4 transition-colors"
+                                 onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                 onmouseout="this.style.backgroundColor='transparent'">
+                                <div class="shrink-0 w-8 h-8 rounded-full flex items-center justify-center"
+                                     style="{{ $payment->payment_status === 'paid' ? 'background-color: var(--dash-status-success-bg); color: var(--dash-status-success-text);' : 'background-color: var(--dash-nav-hover-bg); color: var(--dash-text-faint); border: 1px solid var(--dash-card-border);' }}">
+                                    <span class="material-symbols-outlined text-[18px]">
                                         {{ $payment->payment_status === 'paid' ? 'check_circle' : 'radio_button_unchecked' }}
                                     </span>
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-semibold text-gray-900">
+                                    <p class="text-sm font-semibold font-jakarta" style="color: var(--dash-text-heading);">
                                         {{ $payment->installment_number === 1 ? 'DP / Cicilan 1' : 'Cicilan ' . $payment->installment_number }}
-                                        <span class="ml-2 font-bold text-[#5586DB]">Rp {{ number_format($payment->amount, 0, ',', '.') }}</span>
+                                        <span class="ml-2 font-bold" style="color: var(--dash-primary);">Rp {{ number_format($payment->amount, 0, ',', '.') }}</span>
                                     </p>
-                                    <p class="text-xs text-gray-400 mt-0.5">
-                                        Jatuh tempo: {{ $payment->due_date?->format('d M Y') ?? '—' }}
+                                    <p class="text-xs mt-0.5" style="color: var(--dash-text-muted);">
+                                        Jatuh tempo: {{ $payment->due_date?->format('d M Y') ?? '-' }}
                                         @if($payment->paid_at)
                                             · Dibayar: {{ $payment->paid_at->format('d M Y') }}
                                         @endif
@@ -62,15 +95,18 @@
                                 </div>
                                 <div class="shrink-0">
                                     @if($payment->payment_status === 'paid')
-                                        <span class="inline-flex items-center gap-1 text-xs font-semibold text-green-700 bg-green-100 px-2.5 py-1 rounded-full">
+                                        <span class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full shadow-xs"
+                                              style="background-color: var(--dash-status-success-bg); color: var(--dash-status-success-text); border: 1px solid var(--dash-card-border);">
                                             <span class="material-symbols-outlined text-[13px]">check</span> Terkonfirmasi
                                         </span>
                                     @elseif($payment->due_date && $payment->due_date->isPast())
-                                        <span class="inline-flex items-center gap-1 text-xs font-semibold text-red-700 bg-red-100 px-2.5 py-1 rounded-full">
+                                        <span class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full shadow-xs"
+                                              style="background-color: var(--dash-status-danger-bg); color: var(--dash-status-danger-text); border: 1px solid var(--dash-card-border);">
                                             <span class="material-symbols-outlined text-[13px]">warning</span> Jatuh Tempo
                                         </span>
                                     @else
-                                        <span class="inline-flex items-center gap-1 text-xs font-semibold text-amber-700 bg-amber-100 px-2.5 py-1 rounded-full">
+                                        <span class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full shadow-xs"
+                                              style="background-color: var(--dash-status-warning-bg); color: var(--dash-status-warning-text); border: 1px solid var(--dash-card-border);">
                                             <span class="material-symbols-outlined text-[13px]">schedule</span> Menunggu
                                         </span>
                                     @endif
@@ -82,18 +118,21 @@
                         $paid = $registration->payments->where('payment_status', 'paid')->sum('amount');
                         $sisa = $registration->final_price - $paid;
                     @endphp
-                    <div class="px-6 py-3 border-t border-gray-100 bg-gray-50/50 space-y-1 text-sm">
+                    <div class="px-6 py-4 space-y-1.5 text-sm"
+                         style="background-color: var(--dash-nav-hover-bg); border-top: 1px solid var(--dash-card-border);">
                         <div class="flex justify-between">
-                            <span class="text-gray-500">Total Tagihan</span>
-                            <span class="font-bold text-gray-900">Rp {{ number_format($registration->final_price, 0, ',', '.') }}</span>
+                            <span style="color: var(--dash-text-muted);">Total Tagihan</span>
+                            <span class="font-bold font-jakarta" style="color: var(--dash-text-heading);">Rp {{ number_format($registration->final_price, 0, ',', '.') }}</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-gray-500">Sudah Dibayar</span>
-                            <span class="text-green-700 font-semibold">Rp {{ number_format($paid, 0, ',', '.') }}</span>
+                            <span style="color: var(--dash-text-muted);">Sudah Dibayar</span>
+                            <span class="font-semibold font-jakarta" style="color: var(--dash-status-success-text);">Rp {{ number_format($paid, 0, ',', '.') }}</span>
                         </div>
-                        <div class="flex justify-between border-t border-gray-200 pt-1">
-                            <span class="font-semibold text-gray-700">Sisa Tagihan</span>
-                            <span class="font-bold {{ $sisa > 0 ? 'text-red-600' : 'text-green-700' }}">Rp {{ number_format($sisa, 0, ',', '.') }}</span>
+                        <div class="flex justify-between pt-1.5" style="border-top: 1px solid var(--dash-card-border);">
+                            <span class="font-semibold" style="color: var(--dash-text-heading);">Sisa Tagihan</span>
+                            <span class="font-bold font-jakarta" style="color: {{ $sisa > 0 ? 'var(--dash-status-danger-text)' : 'var(--dash-status-success-text)' }};">
+                                Rp {{ number_format($sisa, 0, ',', '.') }}
+                            </span>
                         </div>
                     </div>
                 @endif

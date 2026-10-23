@@ -209,8 +209,8 @@
                 <table style="width: 100%; border: none; margin: 0;">
                     @forelse($data['data_a']['programs'] as $p)
                         <tr>
-                            <td style="border: none; border-bottom: 1px solid #f3f4f3; padding: 8px;">{{ $p->name }}</td>
-                            <td style="border: none; border-bottom: 1px solid #f3f4f3; text-align: right; font-family: 'Courier New'; font-weight: bold;">{{ $p->cnt }}</td>
+                            <td style="border: none; border-bottom: 1px solid #f3f4f3; padding: 8px;">{{ data_get($p, 'name') }}</td>
+                            <td style="border: none; border-bottom: 1px solid #f3f4f3; text-align: right; font-family: 'Courier New'; font-weight: bold;">{{ data_get($p, 'cnt') }}</td>
                         </tr>
                     @empty
                         <tr><td colspan="2" style="border: none; text-align: center; color: #7e7663; padding: 10px;"><em>Tidak ada data</em></td></tr>
@@ -221,8 +221,8 @@
                 <table style="width: 100%; border: none; margin: 0;">
                     @forelse($data['data_b']['programs'] as $p)
                         <tr>
-                            <td style="border: none; border-bottom: 1px solid #f3f4f3; padding: 8px;">{{ $p->name }}</td>
-                            <td style="border: none; border-bottom: 1px solid #f3f4f3; text-align: right; font-family: 'Courier New'; font-weight: bold;">{{ $p->cnt }}</td>
+                            <td style="border: none; border-bottom: 1px solid #f3f4f3; padding: 8px;">{{ data_get($p, 'name') }}</td>
+                            <td style="border: none; border-bottom: 1px solid #f3f4f3; text-align: right; font-family: 'Courier New'; font-weight: bold;">{{ data_get($p, 'cnt') }}</td>
                         </tr>
                     @empty
                         <tr><td colspan="2" style="border: none; text-align: center; color: #7e7663; padding: 10px;"><em>Tidak ada data</em></td></tr>

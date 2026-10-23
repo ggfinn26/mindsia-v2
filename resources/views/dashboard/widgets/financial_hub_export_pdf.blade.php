@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="utf-8">
-    <title>Laporan Komparasi Finansial MINDSIA — {{ $data['period'] ?? '-' }}</title>
+    <title>Laporan Komparasi Finansial MINDSIA - {{ $data['period'] ?? '-' }}</title>
     <style>
         /* Sovereign Executive Design System for PDF */
         @page {
@@ -355,6 +355,7 @@
             <th>Entitas Cabang</th>
             <th>Area Operasi</th>
             <th class="text-right">Realisasi Omzet</th>
+            <th class="text-right">Modal (Beban)</th>
             <th class="text-right">Laba Bersih</th>
             <th class="text-center">Margin</th>
             <th class="text-right">Deviasi Rerata</th>
@@ -364,7 +365,7 @@
     <tbody>
         @foreach ($byArea as $areaName => $areaBranches)
             <tr class="area-header">
-                <td colspan="8">{{ $areaName ?: 'Area Tidak Dikategorikan' }} ({{ count($areaBranches) }} Cabang)</td>
+                <td colspan="9">{{ $areaName ?: 'Area Tidak Dikategorikan' }} ({{ count($areaBranches) }} Cabang)</td>
             </tr>
             @foreach ($areaBranches as $i => $branch)
                 @php
@@ -377,6 +378,7 @@
                     <td><strong>{{ $branch['name'] }}</strong></td>
                     <td style="color: #4c4635;">{{ $branch['area_name'] }}</td>
                     <td class="text-right td-numeric">Rp {{ number_format($branch['revenue'], 0, ',', '.') }}</td>
+                    <td class="text-right td-numeric val-negative">Rp {{ number_format($branch['modal'] ?? 0, 0, ',', '.') }}</td>
                     <td class="text-right td-numeric {{ $profPos ? 'val-positive' : 'val-negative' }}">Rp {{ number_format($branch['profit'], 0, ',', '.') }}</td>
                     <td class="text-center td-numeric">{{ $branch['margin'] }}%</td>
                     <td class="text-right td-numeric {{ $isPos ? 'val-positive' : 'val-negative' }}">{{ $isPos ? '+' : '' }}{{ $branch['vs_national'] }}%</td>

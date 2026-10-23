@@ -7,7 +7,7 @@
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-5xl mx-auto space-y-6">
     {{-- Page Header --}}
     <div>
-        <p class="text-xs font-semibold uppercase tracking-wider mb-1"
+        <p class="text-xs font-bold uppercase tracking-wider mb-1"
            style="color: var(--dash-primary-text);">Personal Dashboard</p>
         <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
             style="color: var(--dash-text-heading);">Notifikasi Saya</h1>
@@ -24,6 +24,7 @@
             <p>{{ session('success') }}</p>
         </div>
     @endif
+
     @if(session('error'))
         <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
              style="background-color: #fef2f2; border-color: #fecaca; color: #dc2626;">
@@ -52,9 +53,9 @@
                             onmouseout="this.style.backgroundColor='transparent'">
                             <td class="px-6 py-4">
                                 <div class="flex items-start gap-3">
-                                    <div class="mt-0.5 w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                                    <div class="mt-0.5 w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
                                          style="background-color: var(--dash-nav-hover-bg); color: var(--dash-primary-text);">
-                                        <span class="material-symbols-outlined text-[18px]">notifications</span>
+                                        <span class="material-symbols-outlined text-[20px]">notifications</span>
                                     </div>
                                     <div>
                                         <p class="font-semibold text-sm" style="color: var(--dash-text-heading);">
@@ -86,7 +87,7 @@
                     @empty
                         <tr>
                             <td colspan="3" class="px-6 py-16 text-center">
-                                <span class="material-symbols-outlined text-4xl block mb-2" style="color: var(--dash-text-faint);">notifications_none</span>
+                                <span class="material-symbols-outlined text-[48px] block mb-2" style="color: var(--dash-text-faint);">notifications_none</span>
                                 <p class="font-semibold text-sm" style="color: var(--dash-text-heading);">Belum ada notifikasi</p>
                                 <p class="text-xs mt-1" style="color: var(--dash-text-muted);">Notifikasi baru akan muncul di sini jika ada aktivitas akun atau pengumuman.</p>
                             </td>
@@ -95,6 +96,7 @@
                 </tbody>
             </table>
         </div>
+
         @if($notifications->hasPages())
             <div class="px-6 py-4" style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);">
                 {{ $notifications->links() }}

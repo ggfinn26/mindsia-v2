@@ -14,13 +14,7 @@ class AlertContractExpiryCommand extends Command
 
     protected $description = 'Kirim alert kontrak mendekati berakhir: H-31 (sekali) dan H-7 s.d. H-1 (harian)';
 
-    public function __construct(
-        private readonly TelegramLogService $telegram,
-    ) {
-        parent::__construct();
-    }
-
-    public function handle(): void
+    public function handle(TelegramLogService $telegram): void
     {
         $today = now()->toDateString();
 
@@ -35,7 +29,7 @@ class AlertContractExpiryCommand extends Command
             ->get();
 
         foreach ($expiringH31 as $status) {
-            $this->sendAlert($status, 31);
+            $this->sendAlert($status, 31, $telegram);
         }
 
         // H-7 s.d. H-1: harian
@@ -46,13 +40,13 @@ class AlertContractExpiryCommand extends Command
 
         foreach ($expiringNear as $status) {
             $daysLeft = (int) now()->diffInDays($status->contract_end_date);
-            $this->sendAlert($status, $daysLeft);
+            $this->sendAlert($status, $daysLeft, $telegram);
         }
 
         $this->info('Contract expiry alerts sent.');
     }
 
-    private function sendAlert(EmploymentStatus $status, int $daysLeft): void
+    private function sendAlert(EmploymentStatus $status, int $daysLeft, TelegramLogService $telegram): void
     {
         $employee = $status->employee;
         $positionName = $status->position?->name ?? '-';
@@ -83,7 +77,7 @@ class AlertContractExpiryCommand extends Command
             });
 
         // Telegram group log
-        $this->telegram->log('WARN', 'employment', 'contract_expiry_alert', $message);
+        $telegram->log('WARN', 'employment', 'contract_expiry_alert', $message);
 
         $this->line("Alert sent: {$employee->full_name} (H-{$daysLeft})");
     }

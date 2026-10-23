@@ -4,43 +4,82 @@
 @section('header_title', 'Surat Keluar')
 
 @section('content')
-<div class="max-w-3xl mx-auto space-y-6">
-    <div class="flex items-start justify-between gap-4">
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-4xl mx-auto space-y-6 pb-10">
+    {{-- Header Section Pola B3 --}}
+    <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div>
-            <a href="{{ route('out-letters-upload.index') }}" class="mb-1 flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700">
-                <span class="material-symbols-outlined text-[16px]">arrow_back</span> Arsip Surat Keluar
+            <a href="{{ route('out-letters-upload.index') }}" class="dash-back mb-3">
+                <span class="material-symbols-outlined">arrow_back</span> Kembali ke Arsip Surat Keluar
             </a>
-            <h2 class="font-jakarta text-2xl font-bold tracking-tight text-slate-900">{{ $outLetterViaUpload->subject }}</h2>
-            <p class="mt-0.5 font-mono text-sm text-slate-400">{{ $outLetterViaUpload->letter_number ?? '—' }}</p>
+            <p class="text-xs font-bold uppercase tracking-wider mb-1" style="color: var(--dash-primary-text);">Surat Keluar</p>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">
+                {{ $outLetterViaUpload->subject }}
+            </h1>
+            <p class="font-mono text-xs mt-2 px-2.5 py-1 rounded-md inline-block"
+               style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-faint);">
+                {{ $outLetterViaUpload->letter_number ?? '-' }}
+            </p>
         </div>
-        <div class="flex gap-2">
+        <div class="flex gap-2 shrink-0">
             @can('letter.out.update')
-                <a href="{{ route('out-letters-upload.edit', $outLetterViaUpload) }}" class="inline-flex min-h-9 items-center border border-slate-300 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50">Edit</a>
+                <a href="{{ route('out-letters-upload.edit', $outLetterViaUpload) }}"
+                   class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-colors"
+                   style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                   onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                   onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                    <span class="material-symbols-outlined text-[18px]">edit</span> Edit
+                </a>
             @endcan
             @if ($outLetterViaUpload->telegram_file_id)
-                <a href="{{ route('out-letters-upload.download', $outLetterViaUpload) }}" class="inline-flex min-h-9 items-center gap-1 border border-slate-300 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50">
-                    <span class="material-symbols-outlined text-[16px]">download</span> Download
+                <a href="{{ route('out-letters-upload.download', $outLetterViaUpload) }}"
+                   class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                   style="background-color: var(--dash-primary);">
+                    <span class="material-symbols-outlined text-[18px]">download</span> Download
                 </a>
             @endif
         </div>
     </div>
 
     @if (session('success'))
-        <div class="flex gap-3 border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-            <span class="material-symbols-outlined text-[20px]">check_circle</span>
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+             style="background-color: #f0fdf4; border-color: #bbf7d0; color: #059669;">
+            <span class="material-symbols-outlined text-[18px]">check_circle</span>
             <p>{{ session('success') }}</p>
         </div>
     @endif
 
-    <div class="border border-slate-200 bg-white p-5 text-sm">
-        <div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
-            <div><p class="text-xs text-slate-500">Tanggal</p><p class="mt-1 font-medium">{{ $outLetterViaUpload->letter_date?->format('d M Y') ?? '—' }}</p></div>
-            <div><p class="text-xs text-slate-500">Penerima</p><p class="mt-1 text-slate-700">{{ $outLetterViaUpload->recipient ?? '—' }}</p></div>
-            <div><p class="text-xs text-slate-500">Jenis</p><p class="mt-1 text-slate-700">{{ $outLetterViaUpload->letter_type ?? '—' }}</p></div>
-            <div><p class="text-xs text-slate-500">File</p><p class="mt-1 text-slate-700">{{ $outLetterViaUpload->original_name ?? '—' }}</p></div>
-            <div><p class="text-xs text-slate-500">Diupload oleh</p><p class="mt-1 text-slate-700">{{ $outLetterViaUpload->uploadedBy?->full_name ?? '—' }}</p></div>
+    <div class="rounded-2xl overflow-hidden"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <div class="px-5 sm:px-6 py-4"
+             style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+            <h2 class="font-jakarta text-sm font-bold" style="color: var(--dash-text-heading);">Informasi Surat Keluar</h2>
+        </div>
+        <div class="p-5 sm:p-6 grid grid-cols-2 gap-5 sm:grid-cols-3">
+            <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider" style="color: var(--dash-text-muted);">Tanggal Surat</p>
+                <p class="mt-1 text-sm font-medium" style="color: var(--dash-text-heading);">{{ $outLetterViaUpload->letter_date?->format('d M Y') ?? '-' }}</p>
+            </div>
+            <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider" style="color: var(--dash-text-muted);">Penerima</p>
+                <p class="mt-1 text-sm font-medium" style="color: var(--dash-text-body);">{{ $outLetterViaUpload->recipient ?? '-' }}</p>
+            </div>
+            <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider" style="color: var(--dash-text-muted);">Jenis Surat</p>
+                <p class="mt-1 text-sm font-medium" style="color: var(--dash-text-body);">{{ $outLetterViaUpload->letter_type ?? '-' }}</p>
+            </div>
+            <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider" style="color: var(--dash-text-muted);">File Dokumen</p>
+                <p class="mt-1 text-sm font-medium" style="color: var(--dash-text-body);">{{ $outLetterViaUpload->original_name ?? ($outLetterViaUpload->telegram_file_id ? 'Ada' : '-') }}</p>
+            </div>
+            <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider" style="color: var(--dash-text-muted);">Diupload Oleh</p>
+                <p class="mt-1 text-sm font-medium" style="color: var(--dash-text-body);">{{ $outLetterViaUpload->uploadedBy?->full_name ?? '-' }}</p>
+            </div>
             @if ($outLetterViaUpload->notes)
-                <div class="col-span-2 sm:col-span-3"><p class="text-xs text-slate-500">Catatan</p><p class="mt-1 text-slate-700">{{ $outLetterViaUpload->notes }}</p></div>
+                <div class="col-span-2 sm:col-span-3">
+                    <p class="text-[11px] font-bold uppercase tracking-wider" style="color: var(--dash-text-muted);">Catatan Internal</p>
+                    <p class="mt-1 text-sm" style="color: var(--dash-text-body);">{{ $outLetterViaUpload->notes }}</p>
+                </div>
             @endif
         </div>
     </div>

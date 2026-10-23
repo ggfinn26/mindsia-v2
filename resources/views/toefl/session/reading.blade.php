@@ -50,18 +50,7 @@
 
             {{-- Instructions panel --}}
             <div id="instr-panel">
-                <div class="bg-white rounded-xl border border-green-200 shadow-sm p-6 mb-5">
-                    <p class="text-xs text-green-700 uppercase font-bold tracking-wider mb-1">Section 3 — Reading Comprehension</p>
-                    <p class="text-xs text-gray-500 mb-4">Time: 55 minutes (including the reading of the directions)</p>
-                    <p class="text-sm text-gray-700 leading-relaxed mb-4">
-                        This section is designed to measure your ability to read and understand short passages similar in topic and style to those students are likely to encounter in North American universities and colleges.
-                    </p>
-                    <div class="border-t border-gray-100 pt-4">
-                        <p class="text-sm text-gray-700 leading-relaxed">
-                            <span class="font-semibold underline">Directions:</span> In this section you will read several passages. Each one is followed by a number of questions about it. Choose one best answer, (A), (B), (C), or (D), to each question. Answer all questions on the basis of what is <strong>stated</strong> or <strong>implied</strong> in the passage.
-                        </p>
-                    </div>
-                </div>
+                @include('toefl.partials.reading-directions')
                 <div class="flex justify-end">
                     <button type="button" id="start-btn"
                         class="inline-flex items-center gap-2 px-6 py-2.5 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg text-sm transition-colors">

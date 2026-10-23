@@ -77,6 +77,15 @@ class ToeflTestController extends Controller
         return redirect()->route('toefl-tests.show', $toeflTest)->with('success', 'Test dipublikasikan.');
     }
 
+    public function unpublish(Request $request, ToeflTest $toeflTest): RedirectResponse
+    {
+        abort_unless($request->user()->can('toefl.test.publish'), 403);
+
+        $this->repository->unpublish($toeflTest);
+
+        return redirect()->route('toefl-tests.show', $toeflTest)->with('success', 'Test dikembalikan ke draft.');
+    }
+
     public function destroy(ToeflTest $toeflTest): RedirectResponse
     {
         abort_if($toeflTest->sessions()->exists(), 422, 'Test sudah memiliki session — tidak bisa dihapus.');

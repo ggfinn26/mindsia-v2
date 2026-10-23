@@ -27,25 +27,7 @@
 
             {{-- Instructions panel (shown first, hidden when questions start) --}}
             <div id="instr-panel">
-                <div class="bg-white rounded-xl border border-purple-200 shadow-sm p-6 mb-5">
-                    <p class="text-xs text-purple-600 uppercase font-bold tracking-wider mb-1">Section 2 — Structure and Written Expression</p>
-                    <p class="text-xs text-gray-500 mb-4">Time: 25 minutes (including the reading of the directions)</p>
-                    <p class="text-sm text-gray-700 leading-relaxed mb-4">
-                        This section is designed to measure your ability to recognize language that is appropriate for standard written English. There are two types of questions in this section, with special directions for each type.
-                    </p>
-                    <div class="border-t border-gray-100 pt-4 mb-4">
-                        <p class="text-xs text-purple-600 uppercase font-bold tracking-wider mb-2">Structure</p>
-                        <p class="text-sm text-gray-700 leading-relaxed">
-                            <span class="font-semibold underline">Directions:</span> These questions are incomplete sentences. Beneath each sentence you will see four words or phrases, marked (A), (B), (C), and (D). Choose the one word or phrase that best completes the sentence. Then, on your answer sheet, find the number of the question and fill in the space that corresponds to the letter of the answer you have chosen.
-                        </p>
-                    </div>
-                    <div class="border-t border-gray-100 pt-4">
-                        <p class="text-xs text-purple-600 uppercase font-bold tracking-wider mb-2">Written Expression</p>
-                        <p class="text-sm text-gray-700 leading-relaxed">
-                            <span class="font-semibold underline">Directions:</span> In these questions, each sentence has four underlined words or phrases. The four underlined parts of the sentence are marked (A), (B), (C), and (D). Identify the one underlined word or phrase that must be changed in order for the sentence to be correct. Then, on your answer sheet, find the number of the question and fill in the space that corresponds to the letter of the answer you have chosen.
-                        </p>
-                    </div>
-                </div>
+                @include('toefl.partials.structure-directions')
                 <div class="flex justify-end">
                     <button type="button" id="start-btn"
                         class="inline-flex items-center gap-2 px-6 py-2.5 bg-purple-500 hover:bg-purple-600 text-white font-medium rounded-lg text-sm transition-colors">

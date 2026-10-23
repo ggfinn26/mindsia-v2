@@ -7,6 +7,7 @@ document.addEventListener("alpine:init", () => {
         questionType: "multiple_choice",
         questionId: null,
         showPublishModal: false,
+        showUnpublishModal: false,
         showPassageModal: false,
         passageMode: "create",
         passageId: null,

@@ -1,6 +1,6 @@
 @extends('layouts.landing')
 
-@section('title', 'Tentang MINDSIA — Company Profile')
+@section('title', 'Tentang MINDSIA - Company Profile')
 @section('description', 'Kenali lebih dalam visi, misi, filosofi, dan perjalanan MINDSIA English Academy sejak 2019.')
 
 @section('content')
@@ -280,12 +280,6 @@
             @endforeach
         </div>
         @else
-        <div class="p-12 border border-dashed border-ky-border/80 text-ky-text/50 text-center rounded-2xl">
-            Belum ada foto galeri.
-        </div>
-        @endif
-        
-        @if($photos->isEmpty())
         <div class="p-12 border border-dashed border-ky-border/80 text-ky-text/50 text-center rounded-2xl">
             Belum ada foto galeri.
         </div>

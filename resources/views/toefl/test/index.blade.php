@@ -9,7 +9,10 @@
     confirmTitle: '',
     confirmMessage: '',
     confirmActionUrl: '',
-    confirmMethod: 'DELETE'
+    confirmMethod: 'DELETE',
+    confirmLabel: 'Ya, Hapus',
+    confirmIcon: 'delete',
+    confirmDanger: true
 }">
     <div class="flex items-start justify-between gap-4">
         <div>
@@ -89,6 +92,7 @@
                                    onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
                                     <span class="material-symbols-outlined text-[14px]">visibility</span>Lihat
                                 </a>
+                                @if ($test->status === 'draft')
                                 @can('toefl.test.update')
                                     <a href="{{ route('toefl-tests.edit', $test->id) }}"
                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors"
@@ -98,9 +102,21 @@
                                         <span class="material-symbols-outlined text-[14px]">edit</span>Edit
                                     </a>
                                 @endcan
+                                @else
+                                @can('toefl.test.publish')
+                                    <button type="button"
+                                            @click="showConfirmModal = true; confirmTitle = 'Kembalikan ke Draft'; confirmMessage = 'Test tidak bisa dikerjakan peserta sampai dipublish ulang. Hanya bisa jika belum ada session pengerjaan.'; confirmActionUrl = '{{ route('toefl-tests.unpublish', $test->id) }}'; confirmMethod = 'POST'; confirmLabel = 'Ya, Kembalikan'; confirmIcon = 'unpublished'; confirmDanger = false"
+                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors"
+                                            style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                                            onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                            onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                        <span class="material-symbols-outlined text-[14px]">unpublished</span>Draft
+                                    </button>
+                                @endcan
+                                @endif
                                 @can('toefl.test.delete')
                                     <button type="button"
-                                            @click="showConfirmModal = true; confirmTitle = 'Hapus Test'; confirmMessage = 'Yakin ingin menghapus test ini?'; confirmActionUrl = '{{ route('toefl-tests.destroy', $test->id) }}'"
+                                            @click="showConfirmModal = true; confirmTitle = 'Hapus Test'; confirmMessage = 'Yakin ingin menghapus test ini?'; confirmActionUrl = '{{ route('toefl-tests.destroy', $test->id) }}'; confirmMethod = 'DELETE'; confirmLabel = 'Ya, Hapus'; confirmIcon = 'delete'; confirmDanger = true"
                                             class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
                                             style="background-color: #dc2626;">
                                         <span class="material-symbols-outlined text-[14px]">delete</span>Hapus

@@ -1,13 +1,16 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Tambah Calon Member')
-@section('header_title', 'Tambah Calon Member')
+@section('title', 'Tambah Calon Anggota - MINDSIA')
+@section('header_title', 'Tambah Calon Anggota')
 
 @section('content')
 @php
     $backUrl = request('socialization_id')
         ? route('socializations.show', request('socialization_id'))
         : route('prospective-members.index');
+    $backLabel = request('socialization_id')
+        ? 'Kembali ke Detail Sosialisasi'
+        : 'Kembali ke Daftar Calon Anggota';
 @endphp
 
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-3xl mx-auto space-y-6">
@@ -15,12 +18,15 @@
     {{-- Page Header (Pola B3) --}}
     <div>
         <a href="{{ $backUrl }}" class="dash-back mb-3">
-            <span class="material-symbols-outlined">arrow_back</span>Kembali
+            <span class="material-symbols-outlined">arrow_back</span>{{ $backLabel }}
         </a>
-        <p class="text-xs font-semibold uppercase tracking-wider mb-1"
-           style="color: var(--dash-primary-text);">Marketing</p>
+        <p class="text-xs font-bold uppercase tracking-wider mb-1"
+           style="color: var(--dash-primary-text);">Pemasaran</p>
         <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
-            style="color: var(--dash-text-heading);">Tambah Calon Member</h1>
+            style="color: var(--dash-text-heading);">Tambah Calon Anggota</h1>
+        <p class="text-sm mt-1" style="color: var(--dash-text-muted);">
+            Lengkapi data profil calon anggota baru untuk ditindaklanjuti.
+        </p>
     </div>
 
     {{-- Validation errors --}}
@@ -41,11 +47,11 @@
             <input type="hidden" name="socialization_id" value="{{ request('socialization_id') }}">
         @endif
 
-        <div class="rounded-2xl overflow-hidden"
+        <div class="rounded-2xl"
              style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
-            <div class="px-6 py-4"
+            <div class="px-6 py-4 rounded-t-2xl"
                  style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
-                <h2 class="text-sm font-semibold" style="color: var(--dash-text-heading);">Data Calon Member</h2>
+                <h2 class="text-sm font-semibold" style="color: var(--dash-text-heading);">Data Calon Anggota</h2>
             </div>
             <div class="px-6 py-5 space-y-5">
 
@@ -160,7 +166,7 @@
             </div>
 
             {{-- Footer --}}
-            <div class="px-6 py-4 flex items-center gap-3"
+            <div class="px-6 py-4 rounded-b-2xl flex items-center gap-3"
                  style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
                 <button type="submit"
                         class="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
@@ -173,6 +179,7 @@
                    style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-muted);"
                    onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                    onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                    <span class="material-symbols-outlined text-[16px]">close</span>
                     Batal
                 </a>
             </div>

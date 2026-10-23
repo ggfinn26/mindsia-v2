@@ -2,7 +2,7 @@
 
 namespace App\Services\Dashboard\Widgets;
 
-use App\Models\MemberClass;
+use App\Models\ClassRoom;
 use App\Services\Dashboard\WidgetDataProviderInterface;
 use Carbon\Carbon;
 
@@ -23,24 +23,35 @@ class MyClassesWidget implements WidgetDataProviderInterface
             return ['error' => 'Employee not found'];
         }
 
-        $classes = MemberClass::whereHas('classRoom', fn ($q) => $q->where('tutor_id', $employeeId))
-            ->with('program:id,program_name', 'classRoom:id,room_name,branch_id')
-            ->get();
+        $classesQuery = ClassRoom::where('tutor_id', $employeeId)
+            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
+            ->with('program:id,program_name')
+            ->withCount(['memberClasses as active_members_count' => fn ($q) => $q->where('status', 'active')]);
+
+        $classes = $classesQuery->get();
+
+        $activeClasses = $classes->where('status', 'active');
+        $totalStudents = (int) $activeClasses->sum('active_members_count');
+
+        $classList = $activeClasses->map(fn ($c) => [
+            'name' => $c->class_name,
+            'program' => $c->program?->program_name ?? '-',
+            'member_count' => (int) $c->active_members_count,
+            'status' => $c->status,
+        ])->values()->toArray();
 
         $byStatus = $classes->groupBy('status')
             ->map(fn ($g) => $g->count())
             ->toArray();
 
-        $active = $classes->where('status', 'active')->map(fn ($c) => [
-            'program' => $c->program?->program_name ?? '-',
-            'room' => $c->classRoom?->room_name ?? '-',
-            'status' => $c->status,
-        ])->values()->toArray();
-
         return [
+            'total_classes' => $activeClasses->count(),
+            'total_students' => $totalStudents,
+            'classes' => $classList,
+            // Compatibility keys
             'by_status' => $byStatus,
-            'active_classes' => $active,
-            'total_active' => $byStatus['active'] ?? 0,
+            'active_classes' => $classList,
+            'total_active' => $activeClasses->count(),
             'period' => $now->translatedFormat('F Y'),
         ];
     }
@@ -54,12 +65,16 @@ class MyClassesWidget implements WidgetDataProviderInterface
             return [];
         }
 
-        return MemberClass::whereHas('classRoom', fn ($q) => $q->where('tutor_id', $employeeId))
+        return ClassRoom::where('tutor_id', $employeeId)
+            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
             ->with('program:id,program_name')
+            ->withCount(['memberClasses as active_members_count' => fn ($q) => $q->where('status', 'active')])
             ->get()
             ->map(fn ($c) => [
+                'class_name' => $c->class_name,
                 'program' => $c->program?->program_name ?? '-',
                 'status' => $c->status,
+                'students' => (int) $c->active_members_count,
                 'start_date' => $c->start_date?->format('Y-m-d'),
             ])->toArray();
     }

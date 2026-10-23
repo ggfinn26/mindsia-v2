@@ -4,6 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Dashboard - MINDSIA')</title>
+    <script>
+        (function() {
+            var theme = localStorage.getItem('dash_theme') || 'blue';
+            var mode = localStorage.getItem('dash_mode') || 'light';
+            document.documentElement.classList.add('theme-' + theme, 'mode-' + mode);
+        })();
+    </script>
     @stack('head-scripts')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -59,7 +66,7 @@
         <header class="h-16 flex items-center justify-between px-4 sm:px-6 z-10 shrink-0" style="background-color: var(--dash-topbar-bg); border-bottom: 1px solid var(--dash-topbar-border);">
             <div class="flex items-center">
                 <!-- Mobile menu button -->
-                <button @click="sidebarOpen = true" class="md:hidden w-11 h-11 -ml-2 mr-2 flex items-center justify-center rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 active:bg-gray-200 focus:outline-none">
+                <button @click="sidebarOpen = true" class="md:hidden w-11 h-11 -ml-2 mr-2 flex items-center justify-center rounded-lg transition-colors focus:outline-none" style="color: var(--dash-text-muted);" onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'" onmouseout="this.style.backgroundColor='transparent'">
                     <span class="material-symbols-outlined">menu</span>
                 </button>
                 <h1 class="text-lg sm:text-xl font-bold font-jakarta" style="color: var(--dash-text-heading);">@yield('header_title', 'Dashboard')</h1>

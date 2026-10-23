@@ -6,9 +6,9 @@
 @section('content')
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6">
 
-    {{-- Page Header --}}
+    {{-- Page Header Pola A --}}
     <div>
-        <p class="text-xs font-semibold uppercase tracking-wider mb-1"
+        <p class="text-xs font-bold uppercase tracking-wider mb-1"
            style="color: var(--dash-primary-text);">Profil Saya</p>
         <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
             style="color: var(--dash-text-heading);">Surat Saya</h1>
@@ -48,7 +48,7 @@
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead>
-                        <tr style="border-bottom: 1px solid var(--dash-card-border);">
+                        <tr style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
                             <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide"
                                 style="color: var(--dash-text-muted);">Level</th>
                             <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide"
@@ -71,9 +71,9 @@
                             <td class="px-5 py-3.5">
                                 <span class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-red-100 text-red-800">SP {{ $sp->sp_level }}</span>
                             </td>
-                            <td class="px-5 py-3.5 font-mono text-xs" style="color: var(--dash-text-body);">{{ $sp->letter_number ?? '—' }}</td>
-                            <td class="px-5 py-3.5" style="color: var(--dash-text-body);">{{ $sp->issued_at?->format('d M Y') ?? '—' }}</td>
-                            <td class="px-5 py-3.5" style="color: var(--dash-text-body);">{{ $sp->expires_at?->format('d M Y') ?? '—' }}</td>
+                            <td class="px-5 py-3.5 font-mono text-xs" style="color: var(--dash-text-body);">{{ $sp->letter_number ?? '-' }}</td>
+                            <td class="px-5 py-3.5" style="color: var(--dash-text-body);">{{ $sp->issued_at?->format('d M Y') ?? '-' }}</td>
+                            <td class="px-5 py-3.5" style="color: var(--dash-text-body);">{{ $sp->expires_at?->format('d M Y') ?? '-' }}</td>
                             <td class="px-5 py-3.5">
                                 @if($sp->is_active)
                                     <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-red-100 text-red-800">Aktif</span>
@@ -92,7 +92,7 @@
                                         <span class="material-symbols-outlined text-[14px]">download</span>PDF
                                     </a>
                                 @else
-                                    <span class="text-xs" style="color: var(--dash-text-faint);">—</span>
+                                    <span class="text-xs" style="color: var(--dash-text-faint);">-</span>
                                 @endif
                             </td>
                         </tr>
@@ -127,7 +127,7 @@
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead>
-                        <tr style="border-bottom: 1px solid var(--dash-card-border);">
+                        <tr style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
                             <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide"
                                 style="color: var(--dash-text-muted);">Nomor / Perihal</th>
                             <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide"
@@ -145,10 +145,10 @@
                             onmouseout="this.style.backgroundColor='transparent'">
                             <td class="px-5 py-3.5">
                                 <p class="font-semibold" style="color: var(--dash-text-heading);">{{ $letter->subject ?? $letter->letter_type }}</p>
-                                <p class="mt-0.5 font-mono text-xs" style="color: var(--dash-text-faint);">{{ $letter->letter_number ?? '—' }}</p>
+                                <p class="mt-0.5 font-mono text-xs" style="color: var(--dash-text-faint);">{{ $letter->letter_number ?? '-' }}</p>
                             </td>
                             <td class="px-5 py-3.5" style="color: var(--dash-text-body);">{{ $letter->template?->template_name ?? $letter->letter_type }}</td>
-                            <td class="px-5 py-3.5" style="color: var(--dash-text-body);">{{ $letter->published_at?->format('d M Y') ?? $letter->letter_date?->format('d M Y') ?? '—' }}</td>
+                            <td class="px-5 py-3.5" style="color: var(--dash-text-body);">{{ $letter->published_at?->format('d M Y') ?? $letter->letter_date?->format('d M Y') ?? '-' }}</td>
                             <td class="px-5 py-3.5 text-right">
                                 @if($letter->telegram_file_id)
                                     <a href="{{ route('out-letters-generate.download', $letter) }}"
@@ -159,7 +159,7 @@
                                         <span class="material-symbols-outlined text-[14px]">download</span>PDF
                                     </a>
                                 @else
-                                    <span class="text-xs" style="color: var(--dash-text-faint);">—</span>
+                                    <span class="text-xs" style="color: var(--dash-text-faint);">-</span>
                                 @endif
                             </td>
                         </tr>
@@ -181,7 +181,7 @@
             </div>
             @if($contracts->isNotEmpty())
                 <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-800">{{ $contracts->count() }}</span>
-        @endif
+            @endif
         </div>
 
         @if($contracts->isEmpty())
@@ -194,7 +194,7 @@
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead>
-                        <tr style="border-bottom: 1px solid var(--dash-card-border);">
+                        <tr style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
                             <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide"
                                 style="color: var(--dash-text-muted);">Tipe Kontrak</th>
                             <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide"
@@ -214,11 +214,11 @@
                                 {{ match($contract->type_employment) {
                                     'permanent' => 'Tetap (Permanent)',
                                     'contract'  => 'Kontrak',
-                                    default     => ucfirst($contract->type_employment ?? '—'),
+                                    default     => ucfirst($contract->type_employment ?? '-'),
                                 } }}
                             </td>
-                            <td class="px-5 py-3.5" style="color: var(--dash-text-body);">{{ $contract->contract_start_date?->format('d M Y') ?? '—' }}</td>
-                            <td class="px-5 py-3.5" style="color: var(--dash-text-body);">{{ $contract->contract_end_date?->format('d M Y') ?? '—' }}</td>
+                            <td class="px-5 py-3.5" style="color: var(--dash-text-body);">{{ $contract->contract_start_date?->format('d M Y') ?? '-' }}</td>
+                            <td class="px-5 py-3.5" style="color: var(--dash-text-body);">{{ $contract->contract_end_date?->format('d M Y') ?? '-' }}</td>
                             <td class="px-5 py-3.5 text-right">
                                 <span class="inline-flex items-center gap-1 text-xs font-semibold"
                                       style="color: #059669;">

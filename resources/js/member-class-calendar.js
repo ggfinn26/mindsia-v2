@@ -70,10 +70,10 @@ document.addEventListener("DOMContentLoaded", function () {
             cells.push({ d: cells.length - startOff - daysInMon + 1, own: false, key: null });
         }
 
-        var html = '<div class="grid grid-cols-7 border-b border-gray-100">';
+        var html = '<div class="grid grid-cols-7" style="border-bottom: 1px solid var(--dash-card-border);">';
         DAYS_SHORT.forEach(function (day) {
             html +=
-                '<div class="text-center text-xs font-bold text-gray-400 uppercase tracking-wide py-2">' +
+                '<div class="text-center text-xs font-bold uppercase tracking-wide py-2" style="color: var(--dash-text-muted);">' +
                 day +
                 "</div>";
         });
@@ -86,28 +86,40 @@ document.addEventListener("DOMContentLoaded", function () {
             var isToday = cell.key === todayKey;
             var clickable = cell.own && (evs.length > 0 || isHoliday);
 
-            var borders = (idx + 1) % 7 === 0 ? "border-b border-gray-100" : "border-r border-b border-gray-100";
-            var bg = !cell.own ? "bg-gray-50/60" : isHoliday ? "bg-red-50" : "";
+            var borderStyle = (idx + 1) % 7 === 0
+                ? "border-bottom: 1px solid var(--dash-card-border);"
+                : "border-right: 1px solid var(--dash-card-border); border-bottom: 1px solid var(--dash-card-border);";
+            var bgStyle = !cell.own
+                ? "background-color: var(--dash-nav-hover-bg); opacity: 0.5;"
+                : isHoliday
+                    ? "background-color: var(--dash-status-danger-bg);"
+                    : "";
+
+            var cursorClass = clickable ? " cursor-pointer cal-clickable-cell transition-colors" : "";
 
             html +=
-                '<div class="' +
-                borders +
+                '<div class="min-h-[76px] p-1.5' +
+                cursorClass +
+                '" style="' +
+                borderStyle +
                 " " +
-                bg +
-                " min-h-[76px] p-1.5" +
-                (clickable ? " cursor-pointer hover:bg-gray-50 transition-colors" : "") +
+                bgStyle +
                 '"' +
                 (cell.key && cell.own ? ' data-date="' + cell.key + '"' : "") +
                 ">";
 
             if (isToday) {
                 html +=
-                    '<div class="w-6 h-6 rounded-full bg-[#5586DB] text-white text-xs font-bold flex items-center justify-center mb-1 mx-auto leading-none">' +
+                    '<div class="w-6 h-6 rounded-full text-white text-xs font-bold flex items-center justify-center mb-1 mx-auto leading-none" style="background-color: var(--dash-primary);">' +
                     cell.d +
                     "</div>";
             } else {
-                var nc = !cell.own ? "text-gray-300" : isHoliday ? "text-red-400 font-medium" : "text-gray-600";
-                html += '<div class="text-xs ' + nc + ' text-center mb-1 leading-6">' + cell.d + "</div>";
+                var colorStyle = !cell.own
+                    ? "color: var(--dash-text-faint);"
+                    : isHoliday
+                        ? "color: var(--dash-status-danger-text); font-weight: 600;"
+                        : "color: var(--dash-text-heading);";
+                html += '<div class="text-xs text-center mb-1 leading-6" style="' + colorStyle + '">' + cell.d + "</div>";
             }
 
             if (cell.own) {
@@ -121,13 +133,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
                 if (evs.length > 2) {
                     html +=
-                        '<div class="text-gray-400 px-1 leading-none" style="font-size:0.6rem">+' +
+                        '<div class="px-1 leading-none" style="font-size:0.6rem; color: var(--dash-text-muted);">+' +
                         (evs.length - 2) +
                         " lagi</div>";
                 }
                 if (isHoliday && evs.length === 0) {
                     html +=
-                        '<div class="text-red-400 font-medium px-0.5 leading-[1.35rem] truncate" style="font-size:0.6rem">' +
+                        '<div class="font-medium px-0.5 leading-[1.35rem] truncate" style="font-size:0.6rem; color: var(--dash-status-danger-text);">' +
                         esc(holidayMap[cell.key] || "Libur") +
                         "</div>";
                 }
@@ -160,46 +172,50 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (isHol && holName) {
             body +=
-                '<div class="flex items-center gap-2 px-3 py-2 bg-red-50 rounded-lg mb-3">' +
-                '<span class="w-2 h-2 rounded-full bg-red-400 flex-shrink-0"></span>' +
-                '<span class="text-sm text-red-600 font-medium">' +
+                '<div class="flex items-center gap-2 px-3 py-2 rounded-lg mb-3" style="background-color: var(--dash-status-danger-bg); border: 1px solid var(--dash-card-border); color: var(--dash-status-danger-text);">' +
+                '<span class="w-2 h-2 rounded-full bg-red-500 flex-shrink-0"></span>' +
+                '<span class="text-sm font-semibold">' +
                 esc(holName) +
                 "</span></div>";
         }
 
         evs.forEach(function (e, i) {
             var p = e.props || {};
-            var border = i < evs.length - 1 ? "border-b border-gray-100" : "";
+            var borderStyle = i < evs.length - 1 ? "border-bottom: 1px solid var(--dash-card-border);" : "";
             body +=
-                '<div class="flex gap-3 py-3 ' +
-                border +
+                '<div class="flex gap-3 py-3" style="' +
+                borderStyle +
                 '">' +
-                '<div class="w-0.5 rounded-full flex-shrink-0 self-stretch" style="background:' +
+                '<div class="w-1 rounded-full flex-shrink-0 self-stretch" style="background:' +
                 esc(e.color) +
                 '"></div>' +
                 '<div class="flex-1 min-w-0">' +
-                '<div class="font-semibold text-gray-800 text-sm leading-snug">' +
+                '<div class="font-semibold text-sm leading-snug" style="color: var(--dash-text-heading);">' +
                 esc(e.title) +
                 "</div>" +
-                (p.time ? '<div class="text-xs text-gray-400 mt-1">' + esc(p.time) + "</div>" : "") +
-                (p.tutor ? '<div class="text-xs text-gray-500 mt-0.5">' + esc(p.tutor) + "</div>" : "") +
+                (p.time ? '<div class="text-xs mt-1" style="color: var(--dash-text-muted);">' + esc(p.time) + "</div>" : "") +
+                (p.tutor ? '<div class="text-xs mt-0.5" style="color: var(--dash-text-body);">' + esc(p.tutor) + "</div>" : "") +
                 (p.material && p.material !== "-"
-                    ? '<div class="text-xs text-gray-400 mt-0.5 truncate">' + esc(p.material) + "</div>"
+                    ? '<div class="text-xs mt-0.5 truncate" style="color: var(--dash-text-faint);">' + esc(p.material) + "</div>"
                     : "") +
                 "</div></div>";
         });
 
         var modal = document.createElement("dialog");
         modal.className =
-            "p-0 rounded-2xl shadow-xl border-0 overflow-hidden w-full max-w-xs m-auto backdrop:bg-gray-900/40";
+            "p-0 rounded-2xl shadow-2xl border-0 overflow-hidden w-full max-w-sm m-auto backdrop:bg-black/50 backdrop:backdrop-blur-sm";
+        modal.style.backgroundColor = "var(--dash-card-bg)";
+        modal.style.border = "1px solid var(--dash-card-border)";
+        modal.style.color = "var(--dash-text-body)";
+
         modal.innerHTML =
             '<div class="p-5">' +
-            '<div class="flex items-center justify-between mb-4">' +
-            '<span class="text-sm font-bold text-gray-900 font-jakarta">' +
+            '<div class="flex items-center justify-between mb-4 pb-3" style="border-bottom: 1px solid var(--dash-card-border);">' +
+            '<span class="text-sm font-bold font-jakarta" style="color: var(--dash-text-heading);">' +
             esc(label) +
             "</span>" +
-            '<button type="button" class="close-btn w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">' +
-            '<span class="material-symbols-outlined text-gray-500" style="font-size:13px">close</span>' +
+            '<button type="button" class="close-btn w-7 h-7 flex items-center justify-center rounded-lg transition-colors cursor-pointer" style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);">' +
+            '<span class="material-symbols-outlined text-[16px]">close</span>' +
             "</button></div>" +
             "<div>" +
             body +

@@ -11,303 +11,368 @@
     $activationStatus = $member->activation_status;
 @endphp
 
-<div class="max-w-4xl mx-auto space-y-6">
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-4xl mx-auto space-y-6"
+     x-data="{ showConfirmModal: false, confirmTitle: '', confirmMessage: '', confirmActionUrl: '', confirmMethod: 'POST', confirmActionText: 'Konfirmasi' }">
 
-    <div class="mb-2">
-        <a href="{{ route('members.show', $member) }}"
-           class="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">
-            <span class="material-symbols-outlined text-[20px] mr-1">arrow_back</span>
+    {{-- Page Header Pola B3 --}}
+    <div>
+        <a href="{{ route('members.show', $member) }}" class="dash-back mb-3 inline-flex items-center gap-1.5 text-xs font-semibold">
+            <span class="material-symbols-outlined text-[16px]">arrow_back</span>
             Kembali ke Profil {{ $member->full_name }}
         </a>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                <p class="text-xs font-bold uppercase tracking-wider mb-1" style="color: var(--dash-primary-text);">Member & Marketing</p>
+                <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--dash-text-heading);">Detail Registrasi Program</h1>
+                <p class="text-sm mt-1" style="color: var(--dash-text-muted);">Informasi program keikutsertaan, rincian tagihan, dan jadwal cicilan.</p>
+            </div>
+        </div>
     </div>
 
+    {{-- Flash messages --}}
     @if (session('success'))
-        <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm font-medium">
-            {{ session('success') }}
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+             style="background-color: #f0fdf4; border-color: #bbf7d0; color: #059669;">
+            <span class="material-symbols-outlined text-[18px]">check_circle</span>
+            <p>{{ session('success') }}</p>
         </div>
     @endif
     @if (session('error'))
-        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm font-medium">
-            {{ session('error') }}
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+             style="background-color: #fef2f2; border-color: #fecaca; color: #dc2626;">
+            <span class="material-symbols-outlined text-[18px]">error</span>
+            <p>{{ session('error') }}</p>
         </div>
     @endif
     @if ($errors->any())
-        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm font-medium">
-            <ul class="list-disc list-inside">
+        <div class="px-4 py-3 rounded-xl text-sm font-medium"
+             style="background-color: #fef2f2; border: 1px solid #fecaca; color: #dc2626;">
+            <ul class="list-disc list-inside space-y-1 text-xs">
                 @foreach ($errors->all() as $e) <li>{{ $e }}</li> @endforeach
             </ul>
         </div>
     @endif
 
-    {{-- ── Identitas Member ── --}}
-    <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
-            <h3 class="font-semibold text-gray-900">Identitas Member</h3>
+    {{-- Identitas Member Card --}}
+    <div class="rounded-2xl overflow-hidden shadow-sm"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <div class="px-6 py-4 border-b flex items-center justify-between flex-wrap gap-3"
+             style="border-color: var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+            <h2 class="font-jakarta text-sm font-bold uppercase tracking-wide" style="color: var(--dash-text-heading);">Identitas Member</h2>
             <div class="flex items-center gap-2 flex-wrap">
                 @if($activationStatus === ActivationStatus::Ditangguhkan)
-                    <span class="inline-flex items-center gap-1 text-xs font-semibold text-red-700 bg-red-100 px-2.5 py-1 rounded-full">
+                    <span class="inline-flex items-center gap-1 text-xs font-semibold text-red-700 bg-red-100 px-2.5 py-0.5 rounded-full">
                         <span class="material-symbols-outlined text-[14px]">block</span> Ditangguhkan
                     </span>
                 @elseif($isActive && $activationStatus === ActivationStatus::Aktif)
-                    <span class="inline-flex items-center gap-1 text-xs font-semibold text-green-700 bg-green-100 px-2.5 py-1 rounded-full">
+                    <span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full">
                         <span class="material-symbols-outlined text-[14px]">check_circle</span> Akun Aktif
                     </span>
                 @else
-                    <span class="inline-flex items-center gap-1 text-xs font-semibold text-amber-700 bg-amber-100 px-2.5 py-1 rounded-full">
+                    <span class="inline-flex items-center gap-1 text-xs font-semibold text-amber-700 bg-amber-100 px-2.5 py-0.5 rounded-full">
                         <span class="material-symbols-outlined text-[14px]">pending</span> Menunggu Pembayaran
                     </span>
                 @endif
 
                 @can('member.payment.manage')
                     @if($activationStatus === ActivationStatus::Aktif)
-                        <form method="POST" action="{{ route('members.suspend', $member) }}">
-                            @csrf
-                            <button type="submit"
-                                    onclick="return confirm('Tangguhkan akun member ini?')"
-                                    class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors">
-                                <span class="material-symbols-outlined text-[14px]">block</span> Tangguhkan
-                            </button>
-                        </form>
+                        <button type="button"
+                                @click="showConfirmModal = true; confirmTitle = 'Tangguhkan Akun'; confirmMessage = 'Yakin ingin menangguhkan akun member {{ addslashes($member->full_name) }}? Akses login portal akan dinonaktifkan.'; confirmActionUrl = '{{ route('members.suspend', $member) }}'; confirmMethod = 'POST'; confirmActionText = 'Tangguhkan'"
+                                class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                                style="background-color: #dc2626;">
+                            <span class="material-symbols-outlined text-[14px]">block</span> Tangguhkan
+                        </button>
                     @elseif($activationStatus === ActivationStatus::Ditangguhkan)
-                        <form method="POST" action="{{ route('members.activate', $member) }}">
-                            @csrf
-                            <button type="submit"
-                                    class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 transition-colors">
-                                <span class="material-symbols-outlined text-[14px]">check_circle</span> Aktifkan
-                            </button>
-                        </form>
+                        <button type="button"
+                                @click="showConfirmModal = true; confirmTitle = 'Aktifkan Akun'; confirmMessage = 'Yakin ingin mengaktifkan kembali akun member {{ addslashes($member->full_name) }}?'; confirmActionUrl = '{{ route('members.activate', $member) }}'; confirmMethod = 'POST'; confirmActionText = 'Aktifkan'"
+                                class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                                style="background-color: var(--dash-primary);">
+                            <span class="material-symbols-outlined text-[14px]">check_circle</span> Aktifkan
+                        </button>
                     @endif
                 @endcan
             </div>
         </div>
-        <dl class="divide-y divide-gray-100">
-            <div class="px-6 py-3 grid grid-cols-3 gap-4 text-sm">
-                <dt class="font-medium text-gray-500">Nama</dt>
-                <dd class="col-span-2 text-gray-900">{{ $member->full_name }}</dd>
+        <dl class="divide-y" style="border-color: var(--dash-card-border);">
+            <div class="px-6 py-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <dt class="text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Nama Lengkap</dt>
+                <dd class="sm:col-span-2 text-sm font-medium" style="color: var(--dash-text-heading);">{{ $member->full_name }}</dd>
             </div>
-            <div class="px-6 py-3 grid grid-cols-3 gap-4 text-sm">
-                <dt class="font-medium text-gray-500">Email</dt>
-                <dd class="col-span-2 text-gray-900">{{ $member->account?->email ?? $member->email ?? '—' }}</dd>
+            <div class="px-6 py-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <dt class="text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Email</dt>
+                <dd class="sm:col-span-2 text-sm" style="color: var(--dash-text-body);">{{ $member->account?->email ?? $member->email ?? '-' }}</dd>
             </div>
-            <div class="px-6 py-3 grid grid-cols-3 gap-4 text-sm">
-                <dt class="font-medium text-gray-500">WhatsApp</dt>
-                <dd class="col-span-2 text-gray-900">{{ $member->whatsapp_number ?? '—' }}</dd>
+            <div class="px-6 py-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <dt class="text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">WhatsApp</dt>
+                <dd class="sm:col-span-2 text-sm font-mono" style="color: var(--dash-text-body);">{{ $member->whatsapp_number ?? '-' }}</dd>
             </div>
-            <div class="px-6 py-3 grid grid-cols-3 gap-4 text-sm">
-                <dt class="font-medium text-gray-500">Cabang</dt>
-                <dd class="col-span-2 text-gray-900">{{ $member->branch?->branch_name ?? '—' }}</dd>
+            <div class="px-6 py-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <dt class="text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Cabang</dt>
+                <dd class="sm:col-span-2 text-sm" style="color: var(--dash-text-body);">{{ $member->branch?->branch_name ?? '-' }}</dd>
             </div>
         </dl>
     </div>
 
-    {{-- ── Program & Harga ── --}}
-    <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-            <h3 class="font-semibold text-gray-900">Program & Pembayaran</h3>
+    {{-- Program & Harga Card --}}
+    <div class="rounded-2xl overflow-hidden shadow-sm"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <div class="px-6 py-4 border-b"
+             style="border-color: var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+            <h2 class="font-jakarta text-sm font-bold uppercase tracking-wide" style="color: var(--dash-text-heading);">Program & Rincian Pembayaran</h2>
         </div>
-        <dl class="divide-y divide-gray-100">
-            <div class="px-6 py-3 grid grid-cols-3 gap-4 text-sm">
-                <dt class="font-medium text-gray-500">Program</dt>
-                <dd class="col-span-2 text-gray-900 font-semibold">{{ $registration->receipt_program_name }}</dd>
+        <dl class="divide-y" style="border-color: var(--dash-card-border);">
+            <div class="px-6 py-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <dt class="text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Program</dt>
+                <dd class="sm:col-span-2 text-sm font-bold" style="color: var(--dash-text-heading);">{{ $registration->receipt_program_name }}</dd>
             </div>
-            <div class="px-6 py-3 grid grid-cols-3 gap-4 text-sm">
-                <dt class="font-medium text-gray-500">Skema Bayar</dt>
-                <dd class="col-span-2 text-gray-900">{{ $registration->receipt_payment_plan_label ?? '—' }}</dd>
+            <div class="px-6 py-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <dt class="text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Skema Bayar</dt>
+                <dd class="sm:col-span-2 text-sm" style="color: var(--dash-text-body);">{{ $registration->receipt_payment_plan_label ?? '-' }}</dd>
             </div>
-            <div class="px-6 py-3 grid grid-cols-3 gap-4 text-sm">
-                <dt class="font-medium text-gray-500">Harga Normal</dt>
-                <dd class="col-span-2 text-gray-900">Rp {{ number_format($registration->original_price, 0, ',', '.') }}</dd>
+            <div class="px-6 py-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <dt class="text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Harga Normal</dt>
+                <dd class="sm:col-span-2 text-sm font-mono" style="color: var(--dash-text-body);">Rp {{ number_format($registration->original_price, 0, ',', '.') }}</dd>
             </div>
             @if($registration->discount_amount > 0)
-            <div class="px-6 py-3 grid grid-cols-3 gap-4 text-sm">
-                <dt class="font-medium text-gray-500">Diskon</dt>
-                <dd class="col-span-2 text-green-700">
-                    − Rp {{ number_format($registration->discount_amount, 0, ',', '.') }}
+            <div class="px-6 py-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <dt class="text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Diskon</dt>
+                <dd class="sm:col-span-2 text-sm font-mono text-emerald-700">
+                    - Rp {{ number_format($registration->discount_amount, 0, ',', '.') }}
                     @if($registration->discount_code)
-                        <span class="ml-1 text-xs text-gray-400">({{ $registration->discount_code }})</span>
+                        <span class="ml-1 text-xs" style="color: var(--dash-text-muted);">({{ $registration->discount_code }})</span>
                     @endif
                 </dd>
             </div>
             @endif
-            <div class="px-6 py-3 grid grid-cols-3 gap-4 text-sm">
-                <dt class="font-medium text-gray-500">Total Tagihan</dt>
-                <dd class="col-span-2 text-gray-900 font-bold text-base">Rp {{ number_format($registration->final_price, 0, ',', '.') }}</dd>
+            <div class="px-6 py-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <dt class="text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Total Tagihan</dt>
+                <dd class="sm:col-span-2 text-base font-bold font-mono" style="color: var(--dash-text-heading);">Rp {{ number_format($registration->final_price, 0, ',', '.') }}</dd>
             </div>
-            <div class="px-6 py-3 grid grid-cols-3 gap-4 text-sm">
-                <dt class="font-medium text-gray-500">Status Bayar</dt>
-                <dd class="col-span-2">
+            <div class="px-6 py-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <dt class="text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Status Bayar</dt>
+                <dd class="sm:col-span-2">
                     @php
                         $statusMap = [
                             'unpaid'       => ['label' => 'Belum Bayar',     'class' => 'bg-red-100 text-red-700'],
                             'installments' => ['label' => 'Cicilan Berjalan','class' => 'bg-blue-100 text-blue-700'],
-                            'paid_full'    => ['label' => 'Lunas',            'class' => 'bg-green-100 text-green-700'],
-                            'paid'         => ['label' => 'Lunas',            'class' => 'bg-green-100 text-green-700'],
+                            'paid_full'    => ['label' => 'Lunas',            'class' => 'bg-emerald-100 text-emerald-700'],
+                            'paid'         => ['label' => 'Lunas',            'class' => 'bg-emerald-100 text-emerald-700'],
                         ];
-                        $st = $statusMap[$registration->payment_status] ?? ['label' => $registration->payment_status, 'class' => 'bg-gray-100 text-gray-700'];
+                        $st = $statusMap[$registration->payment_status] ?? ['label' => $registration->payment_status, 'class' => 'bg-slate-100 text-slate-700'];
                     @endphp
-                    <span class="inline-flex text-xs font-semibold px-2.5 py-1 rounded-full {{ $st['class'] }}">{{ $st['label'] }}</span>
+                    <span class="inline-flex text-xs font-semibold px-2.5 py-0.5 rounded-full {{ $st['class'] }}">{{ $st['label'] }}</span>
                 </dd>
             </div>
             @if($registration->employee)
-            <div class="px-6 py-3 grid grid-cols-3 gap-4 text-sm">
-                <dt class="font-medium text-gray-500">Dibuat oleh</dt>
-                <dd class="col-span-2 text-gray-900">{{ $registration->employee->full_name }}</dd>
+            <div class="px-6 py-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <dt class="text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Didaftarkan Oleh</dt>
+                <dd class="sm:col-span-2 text-sm" style="color: var(--dash-text-body);">{{ $registration->employee->full_name }}</dd>
             </div>
             @endif
         </dl>
     </div>
 
-    {{-- ── Cicilan ── --}}
-    <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-            <h3 class="font-semibold text-gray-900">Cicilan Pembayaran</h3>
-            <p class="text-xs text-gray-400 mt-0.5">Aktivasi akun otomatis saat cicilan pertama dikonfirmasi.</p>
+    {{-- Cicilan Pembayaran Card --}}
+    <div class="rounded-2xl overflow-hidden shadow-sm"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <div class="px-6 py-4 border-b"
+             style="border-color: var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+            <h2 class="font-jakarta text-sm font-bold uppercase tracking-wide" style="color: var(--dash-text-heading);">Cicilan Pembayaran</h2>
+            <p class="text-xs mt-0.5" style="color: var(--dash-text-muted);">Aktivasi akun portal member otomatis aktif setelah cicilan pertama dikonfirmasi.</p>
         </div>
 
-        <div class="divide-y divide-gray-100">
+        <div class="divide-y" style="border-color: var(--dash-card-border);">
             @forelse($registration->payments->sortBy('installment_number') as $payment)
-            <div class="px-6 py-4 flex items-start gap-4 flex-wrap sm:flex-nowrap">
+            <div class="px-6 py-4 flex items-start gap-4 flex-wrap sm:flex-nowrap"
+                 style="background-color: transparent;"
+                 onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                 onmouseout="this.style.backgroundColor='transparent'">
                 {{-- Status icon --}}
-                <div class="shrink-0 w-8 h-8 rounded-full flex items-center justify-center mt-0.5
-                    {{ $payment->payment_status === 'paid' ? 'bg-green-100' : 'bg-gray-100' }}">
-                    <span class="material-symbols-outlined text-[16px] {{ $payment->payment_status === 'paid' ? 'text-green-600' : 'text-gray-400' }}">
+                <div class="shrink-0 w-8 h-8 rounded-full flex items-center justify-center mt-0.5"
+                     style="background-color: {{ $payment->payment_status === 'paid' ? '#dcfce7' : 'var(--dash-nav-hover-bg)' }};">
+                    <span class="material-symbols-outlined text-[18px]"
+                          style="color: {{ $payment->payment_status === 'paid' ? '#059669' : 'var(--dash-text-muted)' }};">
                         {{ $payment->payment_status === 'paid' ? 'check_circle' : 'radio_button_unchecked' }}
                     </span>
                 </div>
 
                 {{-- Info --}}
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-semibold text-gray-900">
+                    <p class="text-sm font-semibold" style="color: var(--dash-text-heading);">
                         {{ $payment->installment_number === 1 ? 'DP / Cicilan 1' : 'Cicilan ' . $payment->installment_number }}
-                        <span class="ml-2 font-bold text-[#5586DB]">Rp {{ number_format($payment->amount, 0, ',', '.') }}</span>
+                        <span class="ml-2 font-bold font-mono" style="color: var(--dash-primary-text);">Rp {{ number_format($payment->amount, 0, ',', '.') }}</span>
                     </p>
-                    <div class="flex items-center gap-2 mt-0.5 flex-wrap"
-                         x-data="{ editDue: false }">
-                        <p class="text-xs text-gray-400">
-                            Jatuh tempo: <span x-show="!editDue">{{ $payment->due_date?->format('d M Y') ?? '—' }}</span>
+                    <div class="flex items-center gap-2 mt-0.5 flex-wrap" x-data="{ editDue: false }">
+                        <p class="text-xs" style="color: var(--dash-text-muted);">
+                            Jatuh tempo: <span x-show="!editDue">{{ $payment->due_date?->format('d M Y') ?? '-' }}</span>
                         </p>
                         @can('member.payment.manage')
                         <button type="button" x-show="!editDue" @click="editDue = true"
-                                class="text-[10px] font-medium text-[#5586DB] hover:underline">Ubah</button>
+                                class="text-[11px] font-semibold hover:underline" style="color: var(--dash-primary-text);">Ubah</button>
                         <form x-show="editDue" x-cloak
                               action="{{ route('member-payments.update', $payment) }}" method="POST"
                               class="flex items-center gap-1.5">
                             @csrf @method('PATCH')
                             <input type="date" name="due_date"
                                    value="{{ $payment->due_date?->format('Y-m-d') }}"
-                                   class="text-xs border border-gray-300 rounded px-2 py-0.5 focus:border-[#5586DB] focus:ring-[#5586DB]">
+                                   class="text-xs rounded-lg px-2 py-1 focus:outline-none"
+                                   style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);">
                             <button type="submit"
-                                    class="text-[10px] font-semibold text-white bg-[#5586DB] px-2 py-1 rounded hover:bg-[#4370BC]">Simpan</button>
+                                    class="text-[11px] font-semibold text-white px-2.5 py-1 rounded-lg hover:opacity-90"
+                                    style="background-color: var(--dash-primary);">Simpan</button>
                             <button type="button" @click="editDue = false"
-                                    class="text-[10px] font-medium text-gray-500 hover:text-gray-700">Batal</button>
+                                    class="text-[11px] font-medium" style="color: var(--dash-text-muted);">Batal</button>
                         </form>
                         @endcan
                         @if($payment->paid_at)
-                            <p class="text-xs text-gray-400">· Dibayar: {{ $payment->paid_at->format('d M Y') }}</p>
+                            <p class="text-xs" style="color: var(--dash-text-muted);">· Dibayar: {{ $payment->paid_at->format('d M Y') }}</p>
                         @endif
                     </div>
                     @if($payment->notes)
-                        <p class="text-xs text-gray-500 mt-1 italic">{{ $payment->notes }}</p>
+                        <p class="text-xs mt-1 italic" style="color: var(--dash-text-muted);">{{ $payment->notes }}</p>
                     @endif
                 </div>
 
                 {{-- Action --}}
                 <div class="shrink-0">
                     @if($payment->payment_status === 'paid')
-                        <span class="inline-flex items-center gap-1 text-xs font-semibold text-green-700 bg-green-100 px-2.5 py-1 rounded-full">
+                        <span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">
                             <span class="material-symbols-outlined text-[13px]">check</span> Terkonfirmasi
                         </span>
                     @else
                         @can('member.payment.manage')
-                        <form action="{{ route('member-payments.update', $payment) }}" method="POST"
-                              x-data="{
-                                  open: false,
-                                  methodOpen: false,
-                                  method: '',
-                                  methods: [
-                                      { value: 'transfer_bank', label: 'Transfer Bank' },
-                                      { value: 'cash',          label: 'Cash' },
-                                      { value: 'qris',          label: 'QRIS' },
-                                      { value: 'e_wallet',      label: 'E-Wallet (GoPay/OVO/Dana)' },
-                                      { value: 'lainnya',       label: 'Lainnya' },
-                                  ],
-                                  get methodLabel() {
-                                      const m = this.methods.find(x => x.value === this.method);
-                                      return m ? m.label : 'Pilih metode...';
-                                  }
-                              }" class="relative">
-                            @csrf
-                            @method('PATCH')
-                            <input type="hidden" name="payment_status" value="paid">
-                            <input type="hidden" name="payment_method" :value="method">
-
+                        <div x-data="{
+                                open: false,
+                                method: 'transfer_bank',
+                                methods: [
+                                    { value: 'transfer_bank', label: 'Transfer Bank' },
+                                    { value: 'cash',          label: 'Cash / Tunai' },
+                                    { value: 'qris',          label: 'QRIS' },
+                                    { value: 'e_wallet',      label: 'E-Wallet (GoPay/OVO/Dana)' },
+                                    { value: 'lainnya',       label: 'Lainnya' },
+                                ]
+                            }">
                             <button type="button" @click="open = true"
-                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-[#5586DB] rounded-lg hover:bg-[#4370BC] transition-colors">
-                                <span class="material-symbols-outlined text-[14px]">upload_file</span>
+                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                                    style="background-color: var(--dash-primary);">
+                                <span class="material-symbols-outlined text-[14px]">payments</span>
                                 Konfirmasi Bayar
                             </button>
 
-                            {{-- Modal konfirmasi --}}
-                            <div x-show="open" x-cloak
-                                 class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-                                <div class="bg-white rounded-xl shadow-xl w-full max-w-sm p-6 space-y-4" @click.stop>
-                                    <h4 class="font-semibold text-gray-900">Konfirmasi Pembayaran</h4>
-                                    <p class="text-sm text-gray-500">
-                                        {{ $payment->installment_number === 1 ? 'DP / Cicilan 1' : 'Cicilan ' . $payment->installment_number }}
-                                        — <strong>Rp {{ number_format($payment->amount, 0, ',', '.') }}</strong>
-                                    </p>
-                                    <div class="space-y-3">
+                            {{-- Modal konfirmasi pembayaran kustom (NO overflow-hidden on card) --}}
+                            <div x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+                                <div class="w-full max-w-sm rounded-2xl shadow-2xl text-left"
+                                     style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);"
+                                     @click.stop>
+                                    <div class="px-6 py-4 rounded-t-2xl border-b"
+                                         style="border-color: var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                                        <h3 class="font-jakarta text-base font-bold" style="color: var(--dash-text-heading);">Konfirmasi Pembayaran</h3>
+                                        <p class="text-xs mt-0.5" style="color: var(--dash-text-muted);">
+                                            {{ $payment->installment_number === 1 ? 'DP / Cicilan 1' : 'Cicilan ' . $payment->installment_number }}
+                                            - <strong class="font-mono">Rp {{ number_format($payment->amount, 0, ',', '.') }}</strong>
+                                        </p>
+                                    </div>
+                                    <form action="{{ route('member-payments.update', $payment) }}" method="POST" class="p-6 space-y-4">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input type="hidden" name="payment_status" value="paid">
 
-                                        {{-- Custom dropdown metode bayar --}}
                                         <div>
-                                            <label class="block text-xs font-medium text-gray-700 mb-1">Metode Bayar</label>
-                                            <div class="relative" @click.away="methodOpen = false">
-                                                <div @click="methodOpen = !methodOpen"
-                                                     class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-sm flex justify-between items-center cursor-pointer hover:border-[#5586DB] transition-colors">
-                                                    <span :class="method ? 'text-gray-900' : 'text-gray-400'"
-                                                          x-text="methodLabel"></span>
-                                                    <span class="material-symbols-outlined text-[16px] text-gray-400 shrink-0">expand_more</span>
-                                                </div>
-                                                <div x-show="methodOpen" x-transition x-cloak
-                                                     class="absolute z-[60] w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
-                                                    <ul class="py-1">
-                                                        <template x-for="m in methods" :key="m.value">
-                                                            <li @click="method = m.value; methodOpen = false"
-                                                                class="px-4 py-2 text-sm text-gray-700 hover:bg-[#5586DB] hover:text-white cursor-pointer"
-                                                                :class="method === m.value ? 'bg-[#EFF6FF] font-semibold' : ''"
-                                                                x-text="m.label"></li>
-                                                        </template>
-                                                    </ul>
-                                                </div>
-                                            </div>
+                                            <label class="block text-xs font-semibold uppercase tracking-wide mb-1.5" style="color: var(--dash-text-body);">Metode Pembayaran</label>
+                                            <select name="payment_method" x-model="method"
+                                                    class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                                    style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                                    onfocus="this.style.borderColor='var(--dash-primary)'"
+                                                    onblur="this.style.borderColor='var(--dash-input-border)'">
+                                                <template x-for="m in methods" :key="m.value">
+                                                    <option :value="m.value" x-text="m.label"></option>
+                                                </template>
+                                            </select>
                                         </div>
 
                                         <div>
-                                            <label class="block text-xs font-medium text-gray-700 mb-1">Catatan</label>
-                                            <textarea name="notes" rows="2" placeholder="Opsional"
-                                                      class="w-full rounded-lg border-gray-300 text-sm px-3 py-2 border focus:border-[#5586DB] focus:ring-[#5586DB]"></textarea>
+                                            <label class="block text-xs font-semibold uppercase tracking-wide mb-1.5" style="color: var(--dash-text-body);">Catatan Pembayaran</label>
+                                            <textarea name="notes" rows="2" placeholder="Catatan transaksi (opsional)..."
+                                                      class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
+                                                      style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                                      onfocus="this.style.borderColor='var(--dash-primary)'"
+                                                      onblur="this.style.borderColor='var(--dash-input-border)'"></textarea>
                                         </div>
-                                    </div>
-                                    <div class="flex gap-2 justify-end">
-                                        <button type="button" @click="open = false; methodOpen = false; method = ''"
-                                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
-                                            Batal
-                                        </button>
-                                        <button type="submit"
-                                                class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700">
-                                            Konfirmasi
-                                        </button>
-                                    </div>
+
+                                        <div class="flex gap-2 justify-end pt-2">
+                                            <button type="button" @click="open = false"
+                                                    class="px-4 py-2 text-xs font-semibold rounded-lg transition-colors"
+                                                    style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                                                    onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                                    onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                                Batal
+                                            </button>
+                                            <button type="submit"
+                                                    class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                                                    style="background-color: var(--dash-primary);">
+                                                <span class="material-symbols-outlined text-[14px]">check</span>
+                                                Konfirmasi
+                                            </button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
-                        </form>
+                        </div>
                         @endcan
                     @endif
                 </div>
             </div>
             @empty
-                <p class="px-6 py-8 text-sm text-center text-gray-400">Belum ada data cicilan.</p>
+                <div class="px-6 py-12 text-center">
+                    <span class="material-symbols-outlined text-[48px] block mx-auto mb-3" style="color: var(--dash-text-faint);">receipt_long</span>
+                    <p class="text-sm font-semibold" style="color: var(--dash-text-muted);">Belum ada data cicilan pembayaran.</p>
+                </div>
             @endforelse
+        </div>
+    </div>
+
+    {{-- Modal Konfirmasi Aksi (ZERO BROWSER CONFIRM) --}}
+    <div x-show="showConfirmModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
+            <div x-show="showConfirmModal" @click="showConfirmModal = false" class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+            </div>
+            <div x-show="showConfirmModal"
+                 class="relative z-10 inline-block align-bottom rounded-2xl text-left shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full"
+                 style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+                <div class="p-6 rounded-t-2xl">
+                    <div class="sm:flex sm:items-start gap-4">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-11 w-11 rounded-full sm:mx-0"
+                             style="background-color: #fee2e2; color: #dc2626;">
+                            <span class="material-symbols-outlined text-[24px]">warning</span>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:text-left flex-1">
+                            <h3 class="font-jakarta text-lg font-bold" style="color: var(--dash-text-heading);" x-text="confirmTitle"></h3>
+                            <div class="mt-2">
+                                <p class="text-sm" style="color: var(--dash-text-muted);" x-text="confirmMessage"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-6 py-4 rounded-b-2xl flex flex-col-reverse sm:flex-row sm:justify-end gap-2"
+                     style="background-color: var(--dash-nav-hover-bg); border-top: 1px solid var(--dash-card-border);">
+                    <button type="button" @click="showConfirmModal = false"
+                            class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                            style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                            onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                            onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                        Batal
+                    </button>
+                    <button type="button" @click="$refs.actionConfirmForm.submit()"
+                            class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
+                            :style="confirmActionText === 'Tangguhkan' ? 'background-color: #dc2626;' : 'background-color: var(--dash-primary);'"
+                            x-text="confirmActionText">
+                    </button>
+                </div>
+                <form x-ref="actionConfirmForm" :action="confirmActionUrl" method="POST" class="hidden">
+                    @csrf
+                </form>
+            </div>
         </div>
     </div>
 

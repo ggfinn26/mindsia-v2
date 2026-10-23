@@ -1,5 +1,8 @@
 @extends('layouts.dashboard')
 
+@section('title', $memberSurvey->survey->survey_name . ' - MINDSIA')
+@section('header_title', $memberSurvey->isSubmitted() ? 'Jawaban Survey' : 'Isi Survey')
+
 @section('content')
 @php
     $isSubmitted = $memberSurvey->isSubmitted();
@@ -9,51 +12,62 @@
     }
     $survey = $memberSurvey->survey;
 @endphp
-<div class="max-w-4xl mx-auto space-y-6">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-4xl mx-auto space-y-6">
+
+    {{-- Page Header Pola B3 --}}
+    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div>
-            <a href="{{ route('member.surveys.index') }}" class="mb-2 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-[#215aac] transition-colors">
-                <span class="material-symbols-outlined text-[16px]">arrow_back</span> Kembali ke Daftar
+            <a href="{{ route('member.surveys.index') }}" class="dash-back mb-3">
+                <span class="material-symbols-outlined">arrow_back</span>Kembali ke Survey Saya
             </a>
-            <h1 class="font-jakarta text-3xl font-bold tracking-tight text-slate-900">{{ $survey->survey_name }}</h1>
+            <p class="text-xs font-semibold uppercase tracking-wider mb-1"
+               style="color: var(--dash-primary-text);">Portal Siswa</p>
+            <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
+                style="color: var(--dash-text-heading);">{{ $survey->survey_name }}</h1>
             @if($survey->survey_description)
-                <p class="mt-2 text-sm text-slate-600">{{ $survey->survey_description }}</p>
+                <p class="text-sm mt-1" style="color: var(--dash-text-muted);">{{ $survey->survey_description }}</p>
             @endif
         </div>
-        <div class="flex items-center">
+        <div class="shrink-0">
             @if($isSubmitted)
-                <span class="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-bold uppercase tracking-wide bg-emerald-100 text-emerald-800 shadow-sm">
-                    <span class="material-symbols-outlined text-[18px]">check_circle</span> Sudah Diisi
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold"
+                      style="background-color: var(--dash-status-success-bg); color: var(--dash-status-success-text); border: 1px solid #bbf7d0;">
+                    <span class="material-symbols-outlined text-[16px]">check_circle</span>
+                    Sudah Diisi
                 </span>
             @else
-                <span class="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-bold uppercase tracking-wide bg-amber-100 text-amber-800 shadow-sm">
-                    <span class="material-symbols-outlined text-[18px]">pending</span> Belum Diisi
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold"
+                      style="background-color: var(--dash-status-warning-bg); color: var(--dash-status-warning-text); border: 1px solid #fde68a;">
+                    <span class="material-symbols-outlined text-[16px]">pending</span>
+                    Belum Diisi
                 </span>
             @endif
         </div>
     </div>
 
+    {{-- Flash messages --}}
     @if(session('error'))
-        <div class="flex items-center gap-3 rounded-xl border border-red-100 bg-red-50 p-4 text-sm text-red-800 shadow-sm">
-            <span class="material-symbols-outlined text-[20px] text-red-600">error</span>
-            <p class="font-medium">{{ session('error') }}</p>
-        </div>
-    @endif
-    
-    @if ($errors->any())
-        <div class="rounded-xl border border-red-100 bg-red-50 p-4 text-sm text-red-800 shadow-sm">
-            <div class="flex items-start gap-3">
-                <span class="material-symbols-outlined text-[20px] text-red-600 mt-0.5">error</span>
-                <ul class="list-disc pl-5 font-medium space-y-1">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        </div>
+    <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
+         style="background-color: var(--dash-status-danger-bg); border-color: #fecaca; color: var(--dash-status-danger-text);">
+        <span class="material-symbols-outlined text-[18px]">error</span>
+        {{ session('error') }}
+    </div>
     @endif
 
-    <div class="overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm">
+    @if ($errors->any())
+    <div class="px-4 py-3 rounded-xl text-sm"
+         style="background-color: var(--dash-status-danger-bg); border: 1px solid #fecaca; color: var(--dash-status-danger-text);">
+        <ul class="list-disc list-inside space-y-1">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+
+    {{-- Card Form --}}
+    <div class="rounded-2xl"
+         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
         <form action="{{ route('member.surveys.submit', $memberSurvey) }}" method="POST">
             @csrf
             <div class="p-6 sm:p-8 space-y-8">
@@ -64,68 +78,106 @@
                     @endphp
                     <div class="space-y-3">
                         <input type="hidden" name="answers[{{ $index }}][question_id]" value="{{ $question->id }}">
-                        
-                        <p class="font-jakarta text-base font-bold text-slate-900">
-                            <span class="text-[#215aac]">{{ $qIndex }}.</span> {{ $question->question_text }}
+
+                        <p class="font-jakarta text-base font-bold" style="color: var(--dash-text-heading);">
+                            <span style="color: var(--dash-primary);">{{ $qIndex }}.</span> {{ $question->question_text }}
                         </p>
 
-                        <div class="pl-5">
+                        <div class="pl-2 sm:pl-5">
                             @if($question->question_type === 'text')
                                 @if($isSubmitted)
-                                    <p class="text-sm font-medium text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-200">{{ $answer?->answer_text ?? '-' }}</p>
+                                    <div class="p-4 rounded-xl text-sm leading-relaxed"
+                                         style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-body);">
+                                        {{ $answer?->answer_text ?: '-' }}
+                                    </div>
                                 @else
-                                    <textarea name="answers[{{ $index }}][answer_text]" rows="3" required class="block w-full rounded-lg border-slate-200 bg-white px-3 py-2.5 text-sm focus:border-[#215aac] focus:ring-[#215aac] shadow-sm" placeholder="Tuliskan jawaban Anda..."></textarea>
+                                    <textarea name="answers[{{ $index }}][answer_text]" rows="3" required
+                                              class="w-full px-4 py-3 text-sm rounded-xl focus:outline-none transition-all"
+                                              style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                              onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                              onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'"
+                                              placeholder="Tuliskan jawaban Anda...">{{ old("answers.$index.answer_text") }}</textarea>
                                 @endif
-                            
+
                             @elseif($question->question_type === 'scale')
                                 @if($isSubmitted)
-                                    <div class="inline-flex items-center gap-3 rounded-lg bg-slate-50 p-3 border border-slate-200">
-                                        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wide">{{ $question->scale_min_label }}</span>
-                                        <span class="text-lg font-black text-[#215aac]">{{ $answer?->answer_value ?? '-' }}</span>
-                                        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wide">{{ $question->scale_max_label }}</span>
+                                    <div class="inline-flex items-center gap-4 rounded-xl p-3.5 text-sm"
+                                         style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border);">
+                                        @if($question->scale_min_label)
+                                            <span class="text-xs font-semibold uppercase tracking-wide" style="color: var(--dash-text-muted);">{{ $question->scale_min_label }}</span>
+                                        @endif
+                                        <span class="text-2xl font-black font-jakarta px-3 py-1 rounded-lg"
+                                              style="background-color: var(--dash-primary-bg); color: var(--dash-primary);">
+                                            {{ $answer?->answer_value ?? '-' }}
+                                        </span>
+                                        @if($question->scale_max_label)
+                                            <span class="text-xs font-semibold uppercase tracking-wide" style="color: var(--dash-text-muted);">{{ $question->scale_max_label }}</span>
+                                        @endif
                                     </div>
                                 @else
-                                    <div class="flex items-center gap-4" x-data="{ selected: null }">
-                                        @if($question->scale_min_label)
-                                            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wide">{{ $question->scale_min_label }}</span>
-                                        @endif
+                                    <div class="space-y-2.5" x-data="{ selected: {{ old("answers.$index.answer_value") ? old("answers.$index.answer_value") : 'null' }} }">
+                                        <div class="flex items-center gap-3 flex-wrap">
+                                            @if($question->scale_min_label)
+                                                <span class="text-xs font-semibold uppercase tracking-wide shrink-0" style="color: var(--dash-text-muted);">{{ $question->scale_min_label }}</span>
+                                            @endif
 
-                                        <div class="flex items-center gap-2">
-                                            @for($i = $question->scale_min; $i <= $question->scale_max; $i++)
-                                                <label class="relative flex cursor-pointer items-center justify-center rounded-full border w-10 h-10 bg-white transition-colors"
-                                                       :class="selected === {{ $i }} ? 'bg-[#215aac] border-[#215aac] text-white' : 'border-slate-200 hover:bg-slate-50 text-slate-700'">
-                                                    <input type="radio" name="answers[{{ $index }}][answer_value]" value="{{ $i }}" required
-                                                           class="sr-only" @change="selected = {{ $i }}">
-                                                    <span class="text-sm font-bold pointer-events-none"
-                                                          :class="selected === {{ $i }} ? 'text-white' : 'text-slate-700'">{{ $i }}</span>
-                                                </label>
-                                            @endfor
+                                            <div class="flex items-center gap-2 flex-wrap">
+                                                @for($i = $question->scale_min; $i <= $question->scale_max; $i++)
+                                                    <label class="relative flex cursor-pointer items-center justify-center rounded-xl min-w-[44px] min-h-[44px] w-11 h-11 transition-all font-bold text-sm select-none"
+                                                           :style="selected === {{ $i }}
+                                                               ? 'background-color: var(--dash-primary); border: 1px solid var(--dash-primary); color: #ffffff; box-shadow: 0 2px 8px color-mix(in srgb, var(--dash-primary) 30%, transparent);'
+                                                               : 'border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-heading);'"
+                                                           onmouseover="if (this.querySelector('input').checked !== true) this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                                           onmouseout="if (this.querySelector('input').checked !== true) this.style.backgroundColor='var(--dash-card-bg)'">
+                                                        <input type="radio" name="answers[{{ $index }}][answer_value]" value="{{ $i }}" required
+                                                               class="sr-only" @change="selected = {{ $i }}"
+                                                               {{ old("answers.$index.answer_value") == $i ? 'checked' : '' }}>
+                                                        <span>{{ $i }}</span>
+                                                    </label>
+                                                @endfor
+                                            </div>
+
+                                            @if($question->scale_max_label)
+                                                <span class="text-xs font-semibold uppercase tracking-wide shrink-0" style="color: var(--dash-text-muted);">{{ $question->scale_max_label }}</span>
+                                            @endif
                                         </div>
-
-                                        @if($question->scale_max_label)
-                                            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wide">{{ $question->scale_max_label }}</span>
-                                        @endif
                                     </div>
                                 @endif
-                            
+
                             @elseif($question->question_type === 'single_choice' || $question->question_type === 'multiple_choice')
                                 @php
                                     $inputType = $question->question_type === 'single_choice' ? 'radio' : 'checkbox';
-                                    $inputName = $question->question_type === 'single_choice' ? "answers[{$index}][choice_ids][]" : "answers[{$index}][choice_ids][]";
-                                    $selectedChoiceIds = $isSubmitted && $answer ? $answer->selectedChoices->pluck('id')->toArray() : [];
+                                    $selectedChoiceIds = $isSubmitted && $answer ? $answer->selectedChoices->pluck('id')->toArray() : (old("answers.$index.choice_ids") ?? []);
                                 @endphp
-                                
+
                                 <div class="space-y-2">
                                     @foreach($question->choices as $choice)
-                                        <label class="flex items-start gap-3 p-3 rounded-lg border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-colors {{ $isSubmitted ? '' : 'cursor-pointer' }}">
-                                            <input type="{{ $inputType }}" 
-                                                   name="{{ $inputName }}" 
-                                                   value="{{ $choice->id }}" 
-                                                   class="{{ $inputType === 'radio' ? 'form-radio rounded-full' : 'form-checkbox rounded' }} mt-0.5 text-[#215aac] focus:ring-[#215aac] border-slate-300 bg-white"
+                                        @php
+                                            $isSelected = in_array($choice->id, $selectedChoiceIds);
+                                        @endphp
+                                        <label class="flex items-center gap-3.5 p-3.5 rounded-xl border transition-colors min-h-[48px] {{ $isSubmitted ? '' : 'cursor-pointer' }}"
+                                               style="{{ $isSubmitted && $isSelected
+                                                   ? 'border: 1px solid var(--dash-primary); background-color: var(--dash-primary-bg);'
+                                                   : 'border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);' }}"
+                                               @if(!$isSubmitted)
+                                               onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                               onmouseout="this.style.backgroundColor='var(--dash-card-bg)'"
+                                               @endif>
+                                            <input type="{{ $inputType }}"
+                                                   name="answers[{{ $index }}][choice_ids][]"
+                                                   value="{{ $choice->id }}"
+                                                   class="shrink-0 w-4 h-4 rounded"
+                                                   style="accent-color: var(--dash-primary);"
                                                    {{ $isSubmitted ? 'disabled' : '' }}
-                                                   {{ in_array($choice->id, $selectedChoiceIds) ? 'checked' : '' }}
+                                                   {{ $isSelected ? 'checked' : '' }}
                                                    {{ !$isSubmitted && $question->question_type === 'single_choice' ? 'required' : '' }}>
-                                            <span class="text-sm font-medium text-slate-700">{{ $choice->choice_text }}</span>
+                                            <span class="text-sm font-medium {{ $isSubmitted && $isSelected ? 'font-semibold' : '' }}"
+                                                  style="color: {{ $isSubmitted && $isSelected ? 'var(--dash-text-heading)' : 'var(--dash-text-body)' }};">
+                                                {{ $choice->choice_text }}
+                                            </span>
+                                            @if($isSubmitted && $isSelected)
+                                                <span class="material-symbols-outlined text-[18px] ml-auto shrink-0" style="color: var(--dash-primary);">check_circle</span>
+                                            @endif
                                         </label>
                                     @endforeach
                                 </div>
@@ -134,15 +186,20 @@
                     </div>
                 @endforeach
             </div>
-            
+
             @if(!$isSubmitted)
-                <div class="bg-slate-50 px-6 py-4 sm:px-8 border-t border-slate-100 flex justify-end">
-                    <button type="submit" class="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-lg bg-[#215aac] px-8 text-sm font-bold text-white shadow-sm hover:bg-[#194a91] transition-all">
-                        <span class="material-symbols-outlined text-[18px]">send</span> Submit Jawaban
+                <div class="px-6 py-4 sm:px-8 flex justify-end items-center rounded-b-2xl"
+                     style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
+                    <button type="submit"
+                            class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                            style="background-color: var(--dash-primary);">
+                        <span class="material-symbols-outlined text-[18px]">send</span>
+                        Kirim Jawaban Survey
                     </button>
                 </div>
             @endif
         </form>
     </div>
+
 </div>
 @endsection

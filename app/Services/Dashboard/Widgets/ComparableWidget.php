@@ -5,7 +5,6 @@ namespace App\Services\Dashboard\Widgets;
 use App\Models\Branch;
 use App\Models\Program;
 use App\Services\Dashboard\WidgetDataProviderInterface;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class ComparableWidget implements WidgetDataProviderInterface
@@ -19,14 +18,14 @@ class ComparableWidget implements WidgetDataProviderInterface
     {
         $branches = Branch::where('is_active', true)->get(['id', 'branch_name']);
         $programs = Program::where('is_active', true)->get(['id', 'program_name']);
-        
+
         $branchAId = $filters['branch_a'] ?? $branches->first()?->id;
         $branchBId = $filters['branch_b'] ?? ($branches->count() > 1 ? $branches[1]->id : $branchAId);
         $programId = $filters['program_id'] ?? null;
         $year = (int) ($filters['year'] ?? now()->year);
         $monthStart = (int) ($filters['month_start'] ?? now()->month);
         $monthEnd = (int) ($filters['month_end'] ?? now()->month);
-        
+
         if ($monthEnd < $monthStart) {
             $monthEnd = $monthStart;
         }
@@ -40,7 +39,7 @@ class ComparableWidget implements WidgetDataProviderInterface
             'programs' => $programs->toArray(),
             'branch_a' => $branchA?->toArray(),
             'branch_b' => $branchB?->toArray(),
-            'program'  => $program?->toArray(),
+            'program' => $program?->toArray(),
             'filters' => [
                 'year' => $year,
                 'month_start' => $monthStart,
@@ -55,7 +54,7 @@ class ComparableWidget implements WidgetDataProviderInterface
 
     private function getBranchMetrics(?int $branchId, int $start, int $end, int $year, ?int $programId = null): array
     {
-        if (!$branchId) {
+        if (! $branchId) {
             return ['members' => 0, 'revenue' => 0, 'programs' => []];
         }
 
@@ -65,7 +64,7 @@ class ComparableWidget implements WidgetDataProviderInterface
             ->whereYear('mr.created_at', $year)
             ->whereMonth('mr.created_at', '>=', $start)
             ->whereMonth('mr.created_at', '<=', $end);
-            
+
         if ($programId) {
             $membersQuery->where('mr.program_id', $programId);
         }
@@ -79,7 +78,7 @@ class ComparableWidget implements WidgetDataProviderInterface
             ->whereYear('mp.paid_at', $year)
             ->whereMonth('mp.paid_at', '>=', $start)
             ->whereMonth('mp.paid_at', '<=', $end);
-            
+
         if ($programId) {
             $revenueQuery->where('mr.program_id', $programId);
         }
@@ -92,48 +91,55 @@ class ComparableWidget implements WidgetDataProviderInterface
             ->whereYear('mr.created_at', $year)
             ->whereMonth('mr.created_at', '>=', $start)
             ->whereMonth('mr.created_at', '<=', $end);
-            
+
         if ($programId) {
             $programsQuery->where('mr.program_id', $programId);
         }
-        
-        $programsRaw = $programsQuery
+
+        $programs = $programsQuery
             ->selectRaw('p.program_name as name, COUNT(*) as cnt')
             ->groupBy('p.id', 'p.program_name')
             ->orderByDesc('cnt')
             ->limit(5)
-            ->get();
+            ->get()
+            ->map(fn ($item) => [
+                'name' => (string) $item->name,
+                'cnt' => (int) $item->cnt,
+            ])
+            ->values()
+            ->toArray();
 
         return [
             'members' => $members,
             'revenue' => $revenue,
-            'programs' => $programsRaw->toArray(),
+            'programs' => $programs,
         ];
     }
-    
+
     private function formatPeriod(int $start, int $end, int $year): string
     {
         $months = [1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'Mei', 6 => 'Jun', 7 => 'Jul', 8 => 'Ags', 9 => 'Sep', 10 => 'Okt', 11 => 'Nov', 12 => 'Des'];
         if ($start === $end) {
-            return ($months[$start] ?? '') . ' ' . $year;
+            return ($months[$start] ?? '').' '.$year;
         }
-        return ($months[$start] ?? '') . ' - ' . ($months[$end] ?? '') . ' ' . $year;
+
+        return ($months[$start] ?? '').' - '.($months[$end] ?? '').' '.$year;
     }
 
     public function getExportData(array $filters = []): array
     {
         $data = $this->getData($filters);
-        
+
         return [
             [
                 'Komparasi' => 'Member Baru',
-                'Cabang A (' . ($data['branch_a']['branch_name'] ?? '-') . ')' => $data['data_a']['members'],
-                'Cabang B (' . ($data['branch_b']['branch_name'] ?? '-') . ')' => $data['data_b']['members'],
+                'Cabang A ('.($data['branch_a']['branch_name'] ?? '-').')' => $data['data_a']['members'],
+                'Cabang B ('.($data['branch_b']['branch_name'] ?? '-').')' => $data['data_b']['members'],
             ],
             [
                 'Komparasi' => 'Revenue',
-                'Cabang A (' . ($data['branch_a']['branch_name'] ?? '-') . ')' => $data['data_a']['revenue'],
-                'Cabang B (' . ($data['branch_b']['branch_name'] ?? '-') . ')' => $data['data_b']['revenue'],
+                'Cabang A ('.($data['branch_a']['branch_name'] ?? '-').')' => $data['data_a']['revenue'],
+                'Cabang B ('.($data['branch_b']['branch_name'] ?? '-').')' => $data['data_b']['revenue'],
             ],
         ];
     }

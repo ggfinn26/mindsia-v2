@@ -4,29 +4,29 @@
     $isPositive = ($data['profit'] ?? 0) >= 0;
 @endphp
 
-<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow relative overflow-hidden flex flex-col h-full">
+<div class="rounded-2xl transition-all relative overflow-hidden flex flex-col h-full p-5" style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
     <div class="flex items-center justify-between mb-4 z-10">
         <div class="flex items-center gap-3">
-            <div class="h-10 w-10 rounded-lg {{ $isPositive ? 'bg-blue-50' : 'bg-red-50' }} flex items-center justify-center">
-                <span class="material-symbols-outlined {{ $isPositive ? 'text-blue-600' : 'text-red-500' }} text-xl">trending_up</span>
+            <div class="h-10 w-10 rounded-lg flex items-center justify-center shrink-0" style="background-color: {{ $isPositive ? 'var(--dash-primary-bg)' : 'var(--dash-status-danger-bg)' }}; color: {{ $isPositive ? 'var(--dash-primary-text)' : 'var(--dash-status-danger-text)' }};">
+                <span class="material-symbols-outlined text-xl">trending_up</span>
             </div>
             <div>
-                <h3 class="text-sm font-semibold text-gray-800">Net Profit</h3>
-                <p class="text-xs text-gray-400">{{ $data['period'] ?? '-' }}</p>
+                <h3 class="text-sm font-semibold" style="color: var(--dash-text-heading);">Net Profit</h3>
+                <p class="text-xs" style="color: var(--dash-text-muted);">{{ $data['period'] ?? '-' }}</p>
             </div>
         </div>
         @if(isset($data['trend_percent']))
-            <div class="flex items-center gap-1 px-2 py-1 rounded-full {{ $data['trend_percent'] >= 0 ? 'bg-blue-50 text-blue-600' : 'bg-red-50 text-red-500' }}">
+            <div class="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold" style="background-color: {{ $data['trend_percent'] >= 0 ? 'var(--dash-primary-bg)' : 'var(--dash-status-danger-bg)' }}; color: {{ $data['trend_percent'] >= 0 ? 'var(--dash-primary-text)' : 'var(--dash-status-danger-text)' }};">
                 <span class="material-symbols-outlined text-sm">{{ $data['trend_percent'] >= 0 ? 'trending_up' : 'trending_down' }}</span>
-                <span class="text-xs font-bold">{{ abs($data['trend_percent']) }}%</span>
+                <span>{{ abs($data['trend_percent']) }}%</span>
             </div>
         @endif
     </div>
 
     <div class="z-10 flex-grow">
         <div class="flex items-end gap-2 mb-1">
-            <p class="text-3xl font-bold {{ $isPositive ? 'text-gray-900' : 'text-red-600' }} font-jakarta tracking-tight">Rp {{ number_format($data['profit'] ?? 0, 0, ',', '.') }}</p>
-            <span class="text-xs font-semibold px-2 py-0.5 rounded-full {{ ($data['margin_percent'] ?? 0) >= 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700' }} mb-1">
+            <p class="text-2xl sm:text-3xl font-bold font-jakarta tracking-tight" style="color: {{ $isPositive ? 'var(--dash-text-heading)' : 'var(--dash-status-danger-text)' }};">Rp {{ number_format($data['profit'] ?? 0, 0, ',', '.') }}</p>
+            <span class="text-xs font-semibold px-2 py-0.5 rounded-full mb-1" style="background-color: {{ ($data['margin_percent'] ?? 0) >= 0 ? 'var(--dash-status-success-bg)' : 'var(--dash-status-danger-bg)' }}; color: {{ ($data['margin_percent'] ?? 0) >= 0 ? 'var(--dash-status-success-text)' : 'var(--dash-status-danger-text)' }};">
                 Margin: {{ $data['margin_percent'] ?? 0 }}%
             </span>
         </div>

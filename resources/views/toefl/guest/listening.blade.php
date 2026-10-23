@@ -117,7 +117,18 @@
 
         <div class="max-w-3xl mx-auto space-y-4">
             @foreach ($questions as $index => $question)
-                @php $saved = $answers->get($question->id); @endphp
+                @php
+                    $saved = $answers->get($question->id);
+                    $directionPart = match ($question->display_order) {
+                        1 => 'A',
+                        31 => 'B',
+                        39 => 'C',
+                        default => null,
+                    };
+                @endphp
+                @if ($directionPart)
+                    @include('toefl.partials.listening-directions', ['part' => $directionPart])
+                @endif
                 <div id="q-{{ $question->id }}"
                     class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 transition-all duration-300 opacity-40 pointer-events-none"
                     data-question-id="{{ $question->id }}">
