@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class Program extends Model
 {
@@ -42,9 +43,16 @@ class Program extends Model
         return $this->image_path ? Storage::url($this->image_path) : 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=800&auto=format&fit=crop';
     }
 
+    /**
+     * Short plain-text teaser for cards. Strips the rich-text formatting stored
+     * in program_description so markup never leaks into card UI.
+     */
     public function getTaglineAttribute(): ?string
     {
-        return $this->program_description;
+        $withSpaces = preg_replace('/<[^>]+>/', ' ', (string) $this->program_description);
+        $plain = trim(preg_replace('/\s+/', ' ', html_entity_decode($withSpaces)));
+
+        return $plain === '' ? null : Str::limit($plain, 160);
     }
 
     public function getIsFeaturedAttribute(): bool

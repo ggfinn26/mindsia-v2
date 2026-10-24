@@ -15,6 +15,7 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Mews\Purifier\Facades\Purifier;
 use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\SimpleType\Jc;
@@ -49,6 +50,7 @@ class ProgramController extends Controller implements HasMiddleware
     public function store(StoreProgramRequest $request): RedirectResponse
     {
         $data = $request->validated();
+        $data['program_description'] = $this->cleanDescription($data['program_description'] ?? null);
 
         if ($request->hasFile('image')) {
             $data['image_path'] = $request->file('image')->store('programs', 'public');
@@ -85,6 +87,7 @@ class ProgramController extends Controller implements HasMiddleware
     public function update(UpdateProgramRequest $request, Program $program): RedirectResponse
     {
         $data = $request->validated();
+        $data['program_description'] = $this->cleanDescription($data['program_description'] ?? null);
 
         if ($request->hasFile('image')) {
             if ($program->image_path) {
@@ -107,6 +110,18 @@ class ProgramController extends Controller implements HasMiddleware
         $program->update($data);
 
         return redirect()->route('programs.show', $program)->with('success', 'Program berhasil diperbarui.');
+    }
+
+    /**
+     * Sanitize rich-text description (allow basic formatting, strip anything unsafe).
+     */
+    private function cleanDescription(?string $html): ?string
+    {
+        if ($html === null || trim(strip_tags($html)) === '') {
+            return null;
+        }
+
+        return Purifier::clean($html);
     }
 
     public function downloadReceiptTemplate(): Response

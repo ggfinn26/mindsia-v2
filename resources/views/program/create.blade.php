@@ -190,11 +190,7 @@
 
                 <div>
                     <label class="block text-sm font-medium mb-1" style="color: var(--dash-text-body);">Deskripsi <span class="text-xs font-normal" style="color: var(--dash-text-faint);">(Opsional)</span></label>
-                    <textarea name="program_description" rows="4"
-                              class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
-                              style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
-                              onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
-                              onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">{{ old('program_description') }}</textarea>
+                    <x-rich-editor name="program_description" :rows="4" />
                     @error('program_description')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                 </div>
 

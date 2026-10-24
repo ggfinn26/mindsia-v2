@@ -54,6 +54,7 @@ import "./passage-preview";
 import "./toefl-test-show";
 import "./member-class-calendar";
 import "./rent-contract-create";
+import "./rich-editor";
 
 import Sortable from "sortablejs";
 window.Sortable = Sortable;

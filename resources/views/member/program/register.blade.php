@@ -43,6 +43,9 @@
             <p class="text-sm mt-1" style="color: var(--dash-text-muted);">
                 Biaya Program: <span class="font-bold" style="color: var(--dash-primary);">Rp {{ number_format($program->program_price, 0, ',', '.') }}</span>
             </p>
+            @if ($program->program_description)
+                <div class="rich-content text-sm mt-4" style="color: var(--dash-text-body);">{!! clean($program->program_description) !!}</div>
+            @endif
         </div>
         @php
             $hasBranch      = $memberData->branch_id && $memberData->branch;

@@ -77,9 +77,22 @@
                             style="color: var(--dash-text-heading);">
                             {{ $program->program_name }}
                         </h3>
-                        <p class="text-sm mb-4 flex-grow" style="color: var(--dash-text-muted);">
-                            {{ $program->tagline ?? 'Program intensif dengan metode pengajaran berstandar internasional.' }}
-                        </p>
+                        @if ($program->program_description)
+                            <div x-data="{ open: false }" class="mb-4 flex-grow">
+                                <div class="rich-content text-sm overflow-hidden transition-all" :class="open || 'max-h-16'" style="color: var(--dash-text-muted);">
+                                    {!! clean($program->program_description) !!}
+                                </div>
+                                <button type="button" @click="open = !open"
+                                        class="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold" style="color: var(--dash-primary);">
+                                    <span class="material-symbols-outlined text-[16px]" x-text="open ? 'expand_less' : 'expand_more'"></span>
+                                    <span x-text="open ? 'Ringkas' : 'Selengkapnya'"></span>
+                                </button>
+                            </div>
+                        @else
+                            <p class="text-sm mb-4 flex-grow" style="color: var(--dash-text-muted);">
+                                Program intensif dengan metode pengajaran berstandar internasional.
+                            </p>
+                        @endif
                         
                         <div class="mb-4">
                             @if($isExhausted)

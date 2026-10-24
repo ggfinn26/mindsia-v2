@@ -87,6 +87,54 @@ test('PQ-03 store program creates record and redirects to index', function () {
     ]);
 });
 
+test('PQ-03c store sanitizes description - keeps basic formatting, strips scripts', function () {
+    $code = 'PRG-'.uniqid();
+
+    $this->actingAs($this->boardUser)
+        ->post(route('programs.store'), [
+            'program_name' => 'Formatted',
+            'program_code' => $code,
+            'program_price' => 1000000,
+            'program_description' => '<p style="text-align: justify;"><strong>Tebal</strong></p>'
+                .'<ul><li>Poin</li></ul><script>alert(1)</script><a href="javascript:evil()">x</a>',
+        ])
+        ->assertRedirect(route('programs.index'));
+
+    $saved = Program::where('program_code', $code)->value('program_description');
+
+    expect($saved)
+        ->toContain('<strong>Tebal</strong>')
+        ->toContain('text-align:justify')
+        ->toContain('<ul>')
+        ->not->toContain('<script>')
+        ->not->toContain('javascript:');
+});
+
+test('PQ-03e tagline strips rich-text markup for card teasers', function () {
+    $program = Program::factory()->create([
+        'program_description' => '<p style="text-align:center;"><strong>EMP</strong> program keren</p><ul><li>Satu</li></ul>',
+    ]);
+
+    expect($program->tagline)
+        ->toBe('EMP program keren Satu')
+        ->not->toContain('<');
+});
+
+test('PQ-03d store with blank description stores null', function () {
+    $code = 'PRG-'.uniqid();
+
+    $this->actingAs($this->boardUser)
+        ->post(route('programs.store'), [
+            'program_name' => 'Blank',
+            'program_code' => $code,
+            'program_price' => 1000000,
+            'program_description' => '   ',
+        ])
+        ->assertRedirect(route('programs.index'));
+
+    expect(Program::where('program_code', $code)->value('program_description'))->toBeNull();
+});
+
 test('PQ-03b store program without permission returns 403', function () {
     $this->actingAs($this->regularUser)
         ->post(route('programs.store'), [

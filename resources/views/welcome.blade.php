@@ -134,7 +134,7 @@
             <div class="group bg-white rounded-2xl shadow-[0_10px_30px_-15px_rgba(0,0,0,0.1)] hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] flex flex-col relative overflow-hidden transition-all duration-500 border border-ky-border/50">
                 <!-- Image Header -->
                 <div class="h-64 w-full overflow-hidden relative bg-ky-surface">
-                    <img src="{{ $lp->image_url }}" alt="Program {{ $lp->program_name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <img src="{{ $lp->image_url }}" alt="Program {{ $lp->program_name }}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700">
                     <div class="absolute inset-0 bg-[#06122B]/10 group-hover:bg-transparent transition-colors"></div>
                     @if($lp->is_featured)
                     <div class="absolute top-4 right-4 bg-gold text-[#06122B] text-[10px] font-black uppercase tracking-wider py-1.5 px-3 rounded-full shadow-md">
@@ -146,7 +146,17 @@
                 <div class="p-8 flex-grow flex flex-col">
                     <div class="text-[11px] font-black text-ky-primary uppercase tracking-widest mb-2">{{ $lp->level_label ?? 'UMUM' }}</div>
                     <h3 class="font-sans font-black text-[22px] text-[#06122B] mb-3 leading-tight">{{ $lp->program_name }}</h3>
-                    <p class="text-[14px] text-ky-text/70 mb-6 flex-grow">{{ $lp->tagline ?? 'Program intensif dengan metode pengajaran berstandar internasional.' }}</p>
+                    @if ($lp->program_description)
+                        <div x-data="{ open: false }" class="mb-6 flex-grow">
+                            <div class="rich-content text-[14px] text-ky-text/70 overflow-hidden transition-all" :class="open || 'max-h-16'">{!! clean($lp->program_description) !!}</div>
+                            <button type="button" @click="open = !open" class="mt-1.5 inline-flex items-center gap-1 text-[13px] font-bold text-ky-primary">
+                                <span class="material-symbols-outlined text-[16px]" x-text="open ? 'expand_less' : 'expand_more'"></span>
+                                <span x-text="open ? 'Ringkas' : 'Selengkapnya'"></span>
+                            </button>
+                        </div>
+                    @else
+                        <p class="text-[14px] text-ky-text/70 mb-6 flex-grow">Program intensif dengan metode pengajaran berstandar internasional.</p>
+                    @endif
                     
                     <!-- Promo Box -->
                     <div class="mb-8 bg-ky-surface p-4 rounded-xl border border-ky-border/50">

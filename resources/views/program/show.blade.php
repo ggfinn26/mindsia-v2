@@ -87,7 +87,7 @@
                 </div>
                 <div>
                     <dt class="text-xs font-semibold uppercase tracking-wide mb-1" style="color: var(--dash-text-muted);">Deskripsi</dt>
-                    <dd class="mt-1 text-sm" style="color: var(--dash-text-heading);">{{ $program->program_description ?: '-' }}</dd>
+                    <dd class="rich-content mt-1 text-sm" style="color: var(--dash-text-heading);">{!! $program->program_description ? clean($program->program_description) : '-' !!}</dd>
                 </div>
             </dl>
         </div>
