@@ -6,16 +6,18 @@
 @section('content')
 @php
     $statusColors = [
-        'draft'     => 'bg-gray-100 text-gray-700',
-        'scheduled' => 'bg-blue-100 text-blue-700',
-        'completed' => 'bg-emerald-100 text-emerald-700',
-        'cancelled' => 'bg-red-100 text-red-700',
+        'draft'                => 'bg-gray-100 text-gray-700',
+        'scheduled'            => 'bg-blue-100 text-blue-700',
+        'awaiting_validation'  => 'bg-purple-100 text-purple-700',
+        'completed'            => 'bg-emerald-100 text-emerald-700',
+        'cancelled'            => 'bg-red-100 text-red-700',
     ];
     $statusLabels = [
-        'draft'     => 'Draft',
-        'scheduled' => 'Terjadwal',
-        'completed' => 'Selesai',
-        'cancelled' => 'Dibatalkan',
+        'draft'                => 'Draft',
+        'scheduled'            => 'Terjadwal',
+        'awaiting_validation'  => 'Menunggu Validasi',
+        'completed'            => 'Selesai',
+        'cancelled'            => 'Dibatalkan',
     ];
 @endphp
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6">

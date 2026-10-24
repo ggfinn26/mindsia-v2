@@ -55,7 +55,26 @@ class SocializationRepository
 
     public function cancel(Socialization $socialization): void
     {
-        abort_if($socialization->status === Socialization::STATUS_COMPLETED, 422, 'Sosialisasi selesai tidak bisa dibatalkan.');
+        abort_unless(
+            in_array($socialization->status, [Socialization::STATUS_DRAFT, Socialization::STATUS_SCHEDULED], true),
+            422,
+            'Hanya sosialisasi draft atau terjadwal yang bisa dibatalkan.'
+        );
+
+        $socialization->update(['status' => Socialization::STATUS_CANCELLED]);
+    }
+
+    /**
+     * Pembatalan pengecualian untuk sosialisasi yang sudah Menunggu Validasi
+     * (mis. kendala di lapangan yang lupa dibatalkan). Dijaga permission terpisah.
+     */
+    public function forceCancel(Socialization $socialization): void
+    {
+        abort_unless(
+            $socialization->status === Socialization::STATUS_AWAITING_VALIDATION,
+            422,
+            'Batalkan paksa hanya untuk sosialisasi berstatus Menunggu Validasi.'
+        );
 
         $socialization->update(['status' => Socialization::STATUS_CANCELLED]);
     }

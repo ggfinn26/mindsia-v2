@@ -241,6 +241,7 @@ class PermissionLabels
             'marketing.ranking_rule.manage' => ['label' => 'Kelola Aturan Ranking Marketing', 'description' => null],
             'marketing.socialization.assign' => ['label' => 'Assign Sosialisasi', 'description' => null],
             'marketing.socialization.create' => ['label' => 'Buat Sosialisasi', 'description' => null],
+            'marketing.socialization.force_cancel' => ['label' => 'Batalkan Paksa Sosialisasi', 'description' => 'Membatalkan sosialisasi yang sudah Menunggu Validasi (aksi pengecualian).'],
             'marketing.socialization.partner_fee.update' => ['label' => 'Edit Biaya Mitra Sosialisasi', 'description' => null],
             'marketing.socialization.update' => ['label' => 'Edit Sosialisasi', 'description' => null],
             'marketing.target.set' => ['label' => 'Set Target Marketing', 'description' => null],

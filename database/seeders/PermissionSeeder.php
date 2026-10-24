@@ -244,6 +244,7 @@ class PermissionSeeder extends Seeder
             'marketing.socialization.create',
             'marketing.socialization.update',
             'marketing.socialization.assign',
+            'marketing.socialization.force_cancel',
             'marketing.prospective_member.create',
             'marketing.prospective_member.update',
             'marketing.prospective.view_area',

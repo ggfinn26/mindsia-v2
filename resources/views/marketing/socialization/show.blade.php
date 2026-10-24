@@ -6,22 +6,25 @@
 @section('content')
 @php
     $statusBorderLeft = [
-        'draft'     => 'border-l-amber-400',
-        'scheduled' => 'border-l-blue-500',
-        'completed' => 'border-l-emerald-500',
-        'cancelled' => 'border-l-red-400',
+        'draft'                => 'border-l-amber-400',
+        'scheduled'            => 'border-l-blue-500',
+        'awaiting_validation'  => 'border-l-purple-500',
+        'completed'            => 'border-l-emerald-500',
+        'cancelled'            => 'border-l-red-400',
     ];
     $statusBadge = [
-        'draft'     => 'bg-amber-50 text-amber-700 border-amber-200',
-        'scheduled' => 'bg-blue-50 text-blue-700 border-blue-200',
-        'completed' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
-        'cancelled' => 'bg-red-50 text-red-700 border-red-200',
+        'draft'                => 'bg-amber-50 text-amber-700 border-amber-200',
+        'scheduled'            => 'bg-blue-50 text-blue-700 border-blue-200',
+        'awaiting_validation'  => 'bg-purple-50 text-purple-700 border-purple-200',
+        'completed'            => 'bg-emerald-50 text-emerald-700 border-emerald-200',
+        'cancelled'            => 'bg-red-50 text-red-700 border-red-200',
     ];
     $statusLabels = [
-        'draft'     => 'Draft',
-        'scheduled' => 'Terjadwal',
-        'completed' => 'Selesai',
-        'cancelled' => 'Dibatalkan',
+        'draft'                => 'Draft',
+        'scheduled'            => 'Terjadwal',
+        'awaiting_validation'  => 'Menunggu Validasi',
+        'completed'            => 'Selesai',
+        'cancelled'            => 'Dibatalkan',
     ];
     $feeStatusBadge = [
         'none'    => 'bg-gray-100 text-gray-600 border-gray-200',
@@ -65,6 +68,7 @@
         showAssignModal: false,
         showFeeModal: false,
         showCancelModal: false,
+        showForceCancelModal: false,
         showCompleteModal: false,
         showScheduleModal: false,
         showDeleteModal: false
@@ -119,12 +123,22 @@
                         Batalkan
                     </button>
                 @endif
-                @if ($socialization->status === 'scheduled')
+                @if (in_array($socialization->status, ['scheduled', 'awaiting_validation']))
                     <button type="button" @click="showCompleteModal = true"
                         class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-white rounded-lg hover:opacity-90 transition-opacity"
                         style="background-color: #059669;">
                         <span class="material-symbols-outlined text-[16px]">check_circle</span>
                         Selesaikan
+                    </button>
+                @endif
+            @endcan
+            @can('marketing.socialization.force_cancel')
+                @if ($socialization->status === 'awaiting_validation')
+                    <button type="button" @click="showForceCancelModal = true"
+                        class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-semibold rounded-lg transition-colors"
+                        style="color: #dc2626; border: 1px solid #fecaca; background-color: #fef2f2;">
+                        <span class="material-symbols-outlined text-[16px]">cancel</span>
+                        Batalkan Paksa
                     </button>
                 @endif
             @endcan
@@ -702,6 +716,63 @@
             </div>
         </div>
     </template>
+
+    {{-- MODAL: Batalkan Paksa (hanya status Menunggu Validasi, guarded permission) --}}
+    @can('marketing.socialization.force_cancel')
+    <template x-teleport="body">
+        <div x-show="showForceCancelModal" style="display: none;" class="relative z-50" role="dialog" aria-modal="true">
+            <div x-show="showForceCancelModal"
+                 x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                 x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
+                 @click="showForceCancelModal = false"></div>
+
+            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <div x-show="showForceCancelModal" @click.away="showForceCancelModal = false"
+                         x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                         x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                         class="relative transform rounded-2xl text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md"
+                         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+                        <div class="rounded-t-2xl px-6 py-5"
+                             style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
+                            <div class="flex items-start gap-3.5">
+                                <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-red-600 text-[22px]">cancel</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-jakarta text-base font-bold" style="color: var(--dash-text-heading);">Batalkan Paksa Sosialisasi?</h3>
+                                    <p class="mt-1 text-sm leading-relaxed" style="color: var(--dash-text-muted);">
+                                        Sosialisasi ini sudah Menunggu Validasi. Pembatalan paksa hanya untuk kendala lapangan yang lupa dibatalkan dan tidak dapat dikembalikan.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rounded-b-2xl px-6 py-4 flex justify-end gap-3"
+                             style="background-color: var(--dash-card-bg); border-top: 1px solid var(--dash-card-border);">
+                            <button type="button" @click="showForceCancelModal = false"
+                                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                                    style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
+                                    onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                    onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                Batal
+                            </button>
+                            <form action="{{ route('socializations.force-cancel', $socialization) }}" method="POST" class="m-0">
+                                @csrf
+                                <button type="submit"
+                                        class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+                                        style="background-color: var(--dash-danger, #dc2626);">
+                                    <span class="material-symbols-outlined text-[16px]">cancel</span>
+                                    Ya, Batalkan Paksa
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+    @endcan
 
     {{-- MODAL: Selesaikan Sosialisasi --}}
     <template x-teleport="body">

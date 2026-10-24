@@ -15,6 +15,7 @@ use App\Repositories\Marketing\ProspectiveMemberRepository;
 use App\Repositories\Marketing\SocializationRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class SocializationController extends Controller
@@ -77,11 +78,24 @@ class SocializationController extends Controller
 
         $validated = $request->validated();
 
-        $socialization = $this->repository->create(array_merge($validated, [
-            'area_id' => $areaId,
-            'created_by_employee_id' => $employee->id,
-            'status' => $status,
-        ]));
+        $scheduleData = [
+            'schedule_date' => $validated['schedule_date'],
+            'start_time' => $validated['start_time'],
+            'end_time' => $validated['end_time'],
+        ];
+        unset($validated['schedule_date'], $validated['start_time'], $validated['end_time']);
+
+        $socialization = DB::transaction(function () use ($validated, $areaId, $employee, $status, $scheduleData) {
+            $soc = $this->repository->create(array_merge($validated, [
+                'area_id' => $areaId,
+                'created_by_employee_id' => $employee->id,
+                'status' => $status,
+            ]));
+
+            $soc->schedules()->create($scheduleData);
+
+            return $soc;
+        });
 
         return redirect()->route('socializations.show', $socialization)
             ->with('success', 'Sosialisasi berhasil dibuat.');
@@ -145,6 +159,15 @@ class SocializationController extends Controller
         $this->repository->update($socialization, $request->validated());
 
         return redirect()->route('socializations.show', $socialization)->with('success', 'Sosialisasi berhasil diperbarui.');
+    }
+
+    public function forceCancel(Request $request, Socialization $socialization): RedirectResponse
+    {
+        abort_unless($request->user()->can('marketing.socialization.force_cancel'), 403);
+
+        $this->repository->forceCancel($socialization);
+
+        return redirect()->route('socializations.show', $socialization)->with('success', 'Sosialisasi dibatalkan paksa.');
     }
 
     public function schedule(Request $request, Socialization $socialization): RedirectResponse

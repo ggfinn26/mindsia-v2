@@ -801,6 +801,7 @@ Route::domain($sub('employee'))
         Route::resource('socializations', SocializationController::class);
         Route::post('socializations/{socialization}/schedule', [SocializationController::class, 'schedule'])->name('socializations.schedule');
         Route::post('socializations/{socialization}/cancel', [SocializationController::class, 'cancel'])->name('socializations.cancel');
+        Route::post('socializations/{socialization}/force-cancel', [SocializationController::class, 'forceCancel'])->name('socializations.force-cancel');
         Route::post('socializations/{socialization}/complete', [SocializationController::class, 'complete'])->name('socializations.complete');
         Route::post('socializations/{socialization}/assign-employee', [SocializationController::class, 'assignEmployee'])->name('socializations.assign-employee');
         Route::patch('socializations/{socialization}/override-kelas/{employeeSocialization}', [SocializationController::class, 'overrideEmployeeKelas'])->name('socializations.override-kelas');

@@ -27,6 +27,10 @@ Schedule::call(fn () => Artisan::call('payroll:generate-monthly-slips'))
 Schedule::call(fn () => Artisan::call('notification:alert-contract-expiry'))
     ->name('notification:alert-contract-expiry')->withoutOverlapping()->dailyAt('09:00');
 
+// Sosialisasi yang jadwalnya sudah lewat -> Menunggu Validasi (nunggu laporan divalidasi).
+Schedule::call(fn () => Artisan::call('socialization:await-validation'))
+    ->name('socialization:await-validation')->withoutOverlapping()->dailyAt('01:00');
+
 // ponytail: telegram:sync dinonaktifkan - TelegramStorageService::syncFilesFromGroup()
 // tidak pernah diimplementasi (command + job rujuk method hantu, error 13x/hari).
 // Storage = local disk primary, Telegram cuma backup async, jadi polling fallback ini

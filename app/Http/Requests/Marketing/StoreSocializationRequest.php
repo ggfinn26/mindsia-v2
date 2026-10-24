@@ -17,6 +17,9 @@ class StoreSocializationRequest extends FormRequest
             'branch_id' => ['required', 'exists:branches,id'],
             'institution_id' => ['nullable', 'exists:institutions,id'],
             'location_name' => ['nullable', 'string', 'max:255'],
+            'schedule_date' => ['required', 'date', 'after_or_equal:today'],
+            'start_time' => ['required', 'date_format:H:i'],
+            'end_time' => ['required', 'date_format:H:i'],
             'schedule_now' => ['nullable', 'boolean'],
             'partner_fee_amount' => ['nullable', 'numeric', 'min:0'],
             'partner_fee_due_date' => ['nullable', 'date'],
@@ -36,6 +39,12 @@ class StoreSocializationRequest extends FormRequest
             $amount = $this->input('partner_fee_amount');
             if ($amount !== null && (float) $amount > 0 && empty($this->input('partner_fee_due_date'))) {
                 $v->errors()->add('partner_fee_due_date', 'Tanggal jatuh tempo wajib diisi jika ada biaya partner.');
+            }
+
+            $start = $this->input('start_time');
+            $end = $this->input('end_time');
+            if ($start && $end && $end <= $start) {
+                $v->errors()->add('end_time', 'Jam selesai harus setelah jam mulai.');
             }
         });
     }

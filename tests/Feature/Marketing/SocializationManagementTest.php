@@ -117,6 +117,9 @@ test('SM-01 SM-04 create socialization successfully', function () {
         'branch_id' => $this->branch->id,
         'institution_id' => $this->institutionId,
         'location_name' => 'SMK Negeri 1',
+        'schedule_date' => now()->addDay()->format('Y-m-d'),
+        'start_time' => '08:00',
+        'end_time' => '10:00',
         'schedule_now' => false,
     ]);
 
@@ -134,6 +137,9 @@ test('SM-02 create and schedule socialization', function () {
         'branch_id' => $this->branch->id,
         'institution_id' => $this->institutionId,
         'location_name' => 'SMK Negeri 2',
+        'schedule_date' => now()->addDay()->format('Y-m-d'),
+        'start_time' => '08:00',
+        'end_time' => '10:00',
         'schedule_now' => true,
     ]);
 
@@ -183,6 +189,9 @@ test('SM-25 SM-26 partner fee 0 and due date without amount allowed', function (
     $response = $this->actingAs($this->user)->post(route('socializations.store'), [
         'branch_id' => $this->branch->id,
         'location_name' => 'SMK 4',
+        'schedule_date' => now()->addDay()->format('Y-m-d'),
+        'start_time' => '08:00',
+        'end_time' => '10:00',
         'partner_fee_amount' => 0, // SM-25
         'partner_fee_due_date' => '2026-12-01', // SM-26
     ]);
@@ -392,4 +401,112 @@ test('SM-30 partner fee status paid requires partner_fee_paid_at', function () {
         ]);
 
     $response->assertInvalid(['partner_fee_paid_at']);
+});
+
+test('SM-36 create persists the schedule row', function () {
+    $this->user->givePermissionTo('marketing.socialization.create');
+
+    $this->actingAs($this->user)->post(route('socializations.store'), [
+        'branch_id' => $this->branch->id,
+        'institution_id' => $this->institutionId,
+        'location_name' => 'SMK Jadwal',
+        'schedule_date' => now()->addDay()->format('Y-m-d'),
+        'start_time' => '08:00',
+        'end_time' => '10:00',
+        'schedule_now' => true,
+    ])->assertRedirect();
+
+    $soc = Socialization::where('location_name', 'SMK Jadwal')->firstOrFail();
+    $this->assertDatabaseHas('socialization_schedules', [
+        'socialization_id' => $soc->id,
+        'start_time' => '08:00:00',
+        'end_time' => '10:00:00',
+    ]);
+});
+
+test('SM-37 create requires schedule fields', function () {
+    $this->user->givePermissionTo('marketing.socialization.create');
+
+    $this->actingAs($this->user)->post(route('socializations.store'), [
+        'branch_id' => $this->branch->id,
+        'location_name' => 'SMK Tanpa Jadwal',
+    ])->assertInvalid(['schedule_date', 'start_time', 'end_time']);
+});
+
+test('SM-38 end_time must be after start_time', function () {
+    $this->user->givePermissionTo('marketing.socialization.create');
+
+    $this->actingAs($this->user)->post(route('socializations.store'), [
+        'branch_id' => $this->branch->id,
+        'location_name' => 'SMK Jam Salah',
+        'schedule_date' => now()->addDay()->format('Y-m-d'),
+        'start_time' => '10:00',
+        'end_time' => '08:00',
+    ])->assertInvalid(['end_time']);
+});
+
+test('SM-39 job flips past scheduled socialization to awaiting_validation and leaves future alone', function () {
+    $past = createSocialization(['status' => Socialization::STATUS_SCHEDULED]);
+    $past->schedules()->create(['schedule_date' => now()->subDay()->format('Y-m-d'), 'start_time' => '08:00', 'end_time' => '10:00']);
+
+    $future = createSocialization(['status' => Socialization::STATUS_SCHEDULED]);
+    $future->schedules()->create(['schedule_date' => now()->addDay()->format('Y-m-d'), 'start_time' => '08:00', 'end_time' => '10:00']);
+
+    $this->artisan('socialization:await-validation')->assertSuccessful();
+
+    $this->assertEquals(Socialization::STATUS_AWAITING_VALIDATION, $past->fresh()->status);
+    $this->assertEquals(Socialization::STATUS_SCHEDULED, $future->fresh()->status);
+});
+
+test('SM-40 normal cancel is blocked for awaiting_validation', function () {
+    $this->user->givePermissionTo('marketing.socialization.update');
+
+    $socialization = createSocialization(['status' => Socialization::STATUS_AWAITING_VALIDATION]);
+
+    $this->actingAs($this->user)
+        ->post(route('socializations.cancel', $socialization))
+        ->assertUnprocessable();
+
+    $this->assertEquals(Socialization::STATUS_AWAITING_VALIDATION, $socialization->fresh()->status);
+});
+
+test('SM-41 force-cancel is forbidden without permission', function () {
+    $socialization = createSocialization(['status' => Socialization::STATUS_AWAITING_VALIDATION]);
+
+    $this->actingAs($this->user)
+        ->post(route('socializations.force-cancel', $socialization))
+        ->assertForbidden();
+
+    $this->assertEquals(Socialization::STATUS_AWAITING_VALIDATION, $socialization->fresh()->status);
+});
+
+test('SM-42 force-cancel succeeds with permission', function () {
+    $this->user->givePermissionTo('marketing.socialization.force_cancel');
+
+    $socialization = createSocialization(['status' => Socialization::STATUS_AWAITING_VALIDATION]);
+
+    $this->actingAs($this->user)
+        ->post(route('socializations.force-cancel', $socialization))
+        ->assertRedirect();
+
+    $this->assertEquals(Socialization::STATUS_CANCELLED, $socialization->fresh()->status);
+});
+
+test('SM-43 force-cancel button hidden without permission, shown with it', function () {
+    $socialization = createSocialization(['status' => Socialization::STATUS_AWAITING_VALIDATION]);
+    $socialization->schedules()->create(['schedule_date' => now()->subDay()->format('Y-m-d'), 'start_time' => '08:00', 'end_time' => '10:00']);
+
+    // tanpa permission: butuh salah satu permission view (update) agar lolos gate show, tombol tetap tersembunyi
+    $this->user->givePermissionTo('marketing.socialization.update');
+    $this->actingAs($this->user)
+        ->get(route('socializations.show', $socialization))
+        ->assertOk()
+        ->assertDontSee('Batalkan Paksa');
+
+    // dengan permission: tombol muncul
+    $this->user->givePermissionTo('marketing.socialization.force_cancel');
+    $this->actingAs($this->user)
+        ->get(route('socializations.show', $socialization))
+        ->assertOk()
+        ->assertSee('Batalkan Paksa');
 });

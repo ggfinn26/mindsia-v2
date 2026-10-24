@@ -34,6 +34,8 @@ class Socialization extends Model
 
     const STATUS_SCHEDULED = 'scheduled';
 
+    const STATUS_AWAITING_VALIDATION = 'awaiting_validation';
+
     const STATUS_COMPLETED = 'completed';
 
     const STATUS_CANCELLED = 'cancelled';
