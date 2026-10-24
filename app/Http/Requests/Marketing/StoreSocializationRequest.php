@@ -14,10 +14,12 @@ class StoreSocializationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'branch_id' => ['required', 'exists:branches,id'],
             'institution_id' => ['nullable', 'exists:institutions,id'],
             'location_name' => ['nullable', 'string', 'max:255'],
             'schedule_now' => ['nullable', 'boolean'],
+            'schedule_date' => ['required_if:schedule_now,1', 'nullable', 'date'],
+            'start_time' => ['required_if:schedule_now,1', 'nullable', 'date_format:H:i'],
+            'end_time' => ['required_if:schedule_now,1', 'nullable', 'date_format:H:i', 'after:start_time'],
             'partner_fee_amount' => ['nullable', 'numeric', 'min:0'],
             'partner_fee_due_date' => ['nullable', 'date'],
         ];

@@ -85,11 +85,24 @@ class SocializationController extends Controller
 
         $validated = $request->validated();
 
+        $scheduleDate = $validated['schedule_date'] ?? null;
+        $startTime = $validated['start_time'] ?? null;
+        $endTime = $validated['end_time'] ?? null;
+        unset($validated['schedule_date'], $validated['start_time'], $validated['end_time']);
+
         $socialization = $this->repository->create(array_merge($validated, [
             'area_id' => $areaId,
             'created_by_employee_id' => $employee->id,
             'status' => $status,
         ]));
+
+        if ($scheduleDate && $startTime && $endTime) {
+            $socialization->schedules()->create([
+                'schedule_date' => $scheduleDate,
+                'start_time' => $startTime,
+                'end_time' => $endTime,
+            ]);
+        }
 
         return redirect()->route('socializations.show', $socialization)
             ->with('success', 'Sosialisasi berhasil dibuat.');

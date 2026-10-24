@@ -6,10 +6,19 @@ use App\Models\Position;
 use App\Models\PositionAttendanceSetting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\View\View;
 
-class PositionAttendanceSettingController extends Controller
+class PositionAttendanceSettingController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('can:attendance.schedule_rule.manage'),
+        ];
+    }
+
     public function index(): View
     {
         $positions = Position::with('attendanceSetting')
