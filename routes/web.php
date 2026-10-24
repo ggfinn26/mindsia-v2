@@ -278,9 +278,14 @@ Route::domain('career.'.config('app.domain'))->group(function () {
 Route::get('/karir', fn () => redirect()->route('careers.index', [], 301))->name('careers.index.legacy');
 Route::get('/karir/{jobPosting}', fn ($jobPosting) => redirect()->route('careers.show', $jobPosting, 301))->name('careers.show.legacy');
 
-Route::get('/employee', function () {
-    return view('employee');
-})->name('employee.landing');
+// Employee landing (entry + login UI) -> employee.mindsia.id (root)
+// Real-bound (bukan $sub) agar root '/' tidak bentrok dengan home di env testing.
+Route::domain('employee.'.config('app.domain'))->group(function () {
+    Route::get('/', fn () => view('employee'))->name('employee.landing');
+});
+
+// Redirect 301 /employee lama -> subdomain
+Route::get('/employee', fn () => redirect()->route('employee.landing', [], 301))->name('employee.landing.legacy');
 
 Route::get('/member', function () {
     return view('member');

@@ -56,6 +56,15 @@ class SubdomainRoutingTest extends TestCase
         $this->get('/employee/login')->assertStatus(301);
     }
 
+    public function test_employee_landing_on_subdomain_and_legacy_redirects(): void
+    {
+        $this->assertStringContainsString('employee.mindsia.id', route('employee.landing'));
+
+        $this->get('http://mindsia.id/employee')
+            ->assertStatus(301)
+            ->assertRedirect(route('employee.landing'));
+    }
+
     public function test_applicant_routes_generated_on_applicant_subdomain(): void
     {
         $this->assertStringContainsString('applicant.mindsia.id/login', route('applicant.login'));
