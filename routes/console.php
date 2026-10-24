@@ -12,20 +12,20 @@ Artisan::command('inspire', function () {
 // spawn sub-proses akan gagal. Pakai Schedule::call() + Artisan::call() agar command jalan
 // in-process. Satu cron cukup: `* * * * * php artisan schedule:run`.
 Schedule::call(fn () => Artisan::call('facility:check-rent-overdue'))
-    ->dailyAt('00:00')->withoutOverlapping()->name('facility:check-rent-overdue');
+    ->name('facility:check-rent-overdue')->withoutOverlapping()->dailyAt('00:00');
 
 Schedule::call(fn () => Artisan::call('facility:send-rent-due-soon'))
-    ->dailyAt('00:00')->withoutOverlapping()->name('facility:send-rent-due-soon');
+    ->name('facility:send-rent-due-soon')->withoutOverlapping()->dailyAt('00:00');
 
 Schedule::call(fn () => Artisan::call('recruitment:close-expired-postings'))
-    ->dailyAt('00:05')->withoutOverlapping()->name('recruitment:close-expired-postings');
+    ->name('recruitment:close-expired-postings')->withoutOverlapping()->dailyAt('00:05');
 
 // GAP-116: daily agar pay_date custom (bukan tanggal 3) tetap ter-trigger
 Schedule::call(fn () => Artisan::call('payroll:generate-monthly-slips'))
-    ->dailyAt('06:00')->withoutOverlapping()->name('payroll:generate-monthly-slips');
+    ->name('payroll:generate-monthly-slips')->withoutOverlapping()->dailyAt('06:00');
 
 Schedule::call(fn () => Artisan::call('notification:alert-contract-expiry'))
-    ->dailyAt('09:00')->withoutOverlapping()->name('notification:alert-contract-expiry');
+    ->name('notification:alert-contract-expiry')->withoutOverlapping()->dailyAt('09:00');
 
 Schedule::call(fn () => Artisan::call('telegram:sync', ['--limit' => 50]))
-    ->everyFiveMinutes()->withoutOverlapping()->name('telegram:sync');
+    ->name('telegram:sync')->withoutOverlapping()->everyFiveMinutes();
