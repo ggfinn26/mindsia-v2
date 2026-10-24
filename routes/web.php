@@ -196,7 +196,13 @@ use App\Models\ToeflSession;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/company', CompanyController::class)->name('company.landing');
+// Company profile -> company.mindsia.id (root)
+Route::domain('company.'.config('app.domain'))->group(function () {
+    Route::get('/', CompanyController::class)->name('company.landing');
+});
+
+// Redirect 301 URL lama /company -> subdomain
+Route::get('/company', fn () => redirect()->route('company.landing', [], 301))->name('company.landing.legacy');
 
 Route::get('/api/branches-map', fn () => response()->json(
     Branch::select('provinces.name as province_name')
@@ -217,44 +223,51 @@ Route::get('/api/branches-map', fn () => response()->json(
 
 Route::get('/', HomeController::class)->name('home');
 
-Route::get('/karir', function () {
-    $openings = JobPosting::where('status', 'published')
-        ->with(['branch', 'permintaan.requirementsAuto'])
-        ->orderByDesc('publish_date')
-        ->get()
-        ->map(function ($p) {
-            $req = $p->permintaan?->requirementsAuto;
+// Karir -> career.mindsia.id (root)
+Route::domain('career.'.config('app.domain'))->group(function () {
+    Route::get('/', function () {
+        $openings = JobPosting::where('status', 'published')
+            ->with(['branch', 'permintaan.requirementsAuto'])
+            ->orderByDesc('publish_date')
+            ->get()
+            ->map(function ($p) {
+                $req = $p->permintaan?->requirementsAuto;
 
-            return (object) [
-                'id' => $p->id,
-                'position' => $p->title,
-                'branch' => (object) ['name' => $p->branch?->branch_name ?? 'MINDSIA Learning Center'],
-                'education_requirement' => $req?->minimum_education_level ?? null,
-                'experience_requirement' => $req?->minimum_year_experience ? 'Min '.$req->minimum_year_experience.' Tahun' : null,
-                'job_description' => $p->job_description,
-            ];
-        });
+                return (object) [
+                    'id' => $p->id,
+                    'position' => $p->title,
+                    'branch' => (object) ['name' => $p->branch?->branch_name ?? 'MINDSIA Learning Center'],
+                    'education_requirement' => $req?->minimum_education_level ?? null,
+                    'experience_requirement' => $req?->minimum_year_experience ? 'Min '.$req->minimum_year_experience.' Tahun' : null,
+                    'job_description' => $p->job_description,
+                ];
+            });
 
-    return view('careers.index', compact('openings'));
-})->name('careers.index');
+        return view('careers.index', compact('openings'));
+    })->name('careers.index');
 
-Route::get('/karir/{jobPosting}', function (JobPosting $jobPosting) {
-    abort_unless($jobPosting->status === 'published', 404);
-    $jobPosting->load(['branch', 'permintaan.requirementsAuto']);
-    $req = $jobPosting->permintaan?->requirementsAuto;
+    Route::get('/{jobPosting}', function (JobPosting $jobPosting) {
+        abort_unless($jobPosting->status === 'published', 404);
+        $jobPosting->load(['branch', 'permintaan.requirementsAuto']);
+        $req = $jobPosting->permintaan?->requirementsAuto;
 
-    $job = (object) [
-        'id' => $jobPosting->id,
-        'position' => $jobPosting->title,
-        'branch' => (object) ['name' => $jobPosting->branch?->branch_name ?? 'MINDSIA Learning Center'],
-        'education_requirement' => $req?->minimum_education_level ?? null,
-        'experience_requirement' => $req?->minimum_year_experience ? 'Min '.$req->minimum_year_experience.' Tahun' : null,
-        'job_description' => $jobPosting->job_description,
-        'job_responsibilities' => $jobPosting->job_responsibilities,
-    ];
+        $job = (object) [
+            'id' => $jobPosting->id,
+            'position' => $jobPosting->title,
+            'branch' => (object) ['name' => $jobPosting->branch?->branch_name ?? 'MINDSIA Learning Center'],
+            'education_requirement' => $req?->minimum_education_level ?? null,
+            'experience_requirement' => $req?->minimum_year_experience ? 'Min '.$req->minimum_year_experience.' Tahun' : null,
+            'job_description' => $jobPosting->job_description,
+            'job_responsibilities' => $jobPosting->job_responsibilities,
+        ];
 
-    return view('careers.show', compact('job'));
-})->name('careers.show');
+        return view('careers.show', compact('job'));
+    })->name('careers.show');
+});
+
+// Redirect 301 URL lama /karir -> subdomain
+Route::get('/karir', fn () => redirect()->route('careers.index', [], 301))->name('careers.index.legacy');
+Route::get('/karir/{jobPosting}', fn ($jobPosting) => redirect()->route('careers.show', $jobPosting, 301))->name('careers.show.legacy');
 
 Route::get('/employee', function () {
     return view('employee');

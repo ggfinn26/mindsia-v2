@@ -17,6 +17,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application Base Domain
+    |--------------------------------------------------------------------------
+    |
+    | Domain dasar untuk routing subdomain (employee/applicant/company/career).
+    | Produksi: mindsia.id. Lokal: set APP_DOMAIN=mindsia.test di .env dan
+    | tambahkan entri /etc/hosts untuk tiap subdomain -> 127.0.0.1.
+    |
+    */
+
+    'domain' => env('APP_DOMAIN', 'mindsia.id'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |
