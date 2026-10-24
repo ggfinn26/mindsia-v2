@@ -6,27 +6,7 @@
 @section('content')
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-3xl mx-auto space-y-6"
     x-data="{
-        noInstitusi: {{ old('institution_id') ? 'false' : (old('location_name') ? 'true' : 'false') }},
-        selectedEmployees: {{ json_encode(old('employee_ids', [])) }},
-        search: '',
-        employees: {{ $eligibleEmployees->map(fn($e) => ['id' => $e->id, 'name' => $e->full_name])->values()->toJson() }},
-        get filtered() {
-            if (!this.search) return this.employees;
-            const s = this.search.toLowerCase();
-            return this.employees.filter(e => e.name.toLowerCase().includes(s));
-        },
-        get allSelected() {
-            return this.filtered.length > 0 && this.filtered.every(e => this.selectedEmployees.includes(e.id));
-        },
-        toggleAll() {
-            const ids = this.filtered.map(e => e.id);
-            const allChecked = ids.every(id => this.selectedEmployees.includes(id));
-            if (allChecked) {
-                this.selectedEmployees = this.selectedEmployees.filter(id => !ids.includes(id));
-            } else {
-                this.selectedEmployees = [...new Set([...this.selectedEmployees, ...ids])];
-            }
-        }
+        noInstitusi: {{ old('institution_id') ? 'false' : (old('location_name') ? 'true' : 'false') }}
     }">
 
     {{-- Page Header Pola B3 --}}
@@ -39,7 +19,7 @@
         <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
             style="color: var(--dash-text-heading);">Buat Sosialisasi Baru</h1>
         <p class="text-sm mt-1" style="color: var(--dash-text-muted);">
-            Isi detail lokasi, jadwal pelaksanaan, dan penugasan tim.
+            Isi detail lokasi dan jadwal pelaksanaan. Penugasan tim dilakukan setelah sosialisasi dibuat.
         </p>
     </div>
 
@@ -169,67 +149,6 @@
                         @error('end_time') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                     </div>
                 </div>
-            </div>
-        </div>
-
-        {{-- SECTION: Pegawai yang ditugaskan --}}
-        <div class="rounded-2xl"
-             style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
-            <div class="px-6 py-4 rounded-t-2xl flex items-center justify-between"
-                 style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
-                <h2 class="font-semibold text-sm" style="color: var(--dash-text-heading);">
-                    Pegawai yang Ditugaskan <span class="text-red-500">*</span>
-                </h2>
-                <button type="button" @click="toggleAll()"
-                    class="text-xs font-semibold focus:outline-none hover:underline"
-                    style="color: var(--dash-primary);"
-                    x-text="allSelected ? 'Batal Semua' : 'Pilih Semua'">
-                </button>
-            </div>
-            <div class="p-6 space-y-4">
-                @error('employee_ids') <p class="text-xs text-red-600">{{ $message }}</p> @enderror
-
-                @if ($eligibleEmployees->isEmpty())
-                    <p class="text-sm font-medium" style="color: var(--dash-text-faint);">Tidak ada pegawai di area ini.</p>
-                @else
-                    <div class="relative">
-                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[16px] pointer-events-none"
-                              style="color: var(--dash-text-muted);">search</span>
-                        <input type="text" x-model="search" placeholder="Cari nama pegawai..."
-                            class="w-full pr-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
-                            style="padding-left: 2.5rem !important; background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
-                            onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
-                            onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
-                    </div>
-
-                    <div class="rounded-xl max-h-52 overflow-y-auto divide-y"
-                         style="border: 1px solid var(--dash-card-border); border-color: var(--dash-card-border);">
-                        <template x-for="emp in filtered" :key="emp.id">
-                            <label class="flex items-center gap-3 px-4 py-2.5 cursor-pointer transition-colors"
-                                   onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
-                                   onmouseout="this.style.backgroundColor='transparent'">
-                                <input type="checkbox"
-                                    :value="emp.id"
-                                    x-model="selectedEmployees"
-                                    class="w-4 h-4 rounded"
-                                    style="accent-color: var(--dash-primary);">
-                                <span class="text-sm" style="color: var(--dash-text-heading);" x-text="emp.name"></span>
-                            </label>
-                        </template>
-                        <p x-show="filtered.length === 0" class="px-4 py-3 text-sm text-center" style="color: var(--dash-text-faint);">
-                            Tidak ditemukan.
-                        </p>
-                    </div>
-
-                    <p class="text-xs font-medium" style="color: var(--dash-text-muted);" x-show="selectedEmployees.length > 0">
-                        <span x-text="selectedEmployees.length" class="font-bold"></span> pegawai dipilih
-                    </p>
-
-                    {{-- Hidden inputs untuk yang dipilih --}}
-                    <template x-for="id in selectedEmployees" :key="id">
-                        <input type="hidden" name="employee_ids[]" :value="id">
-                    </template>
-                @endif
             </div>
         </div>
 

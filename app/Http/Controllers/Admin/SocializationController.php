@@ -64,15 +64,7 @@ class SocializationController extends Controller
             ->when($area?->region_id, fn ($q) => $q->where('regions_id', $area->region_id))
             ->get(['id', 'institution_name']);
 
-        $eligibleEmployees = $area
-            ? Employee::where('is_active', true)
-                ->where(fn ($q) => $q
-                    ->where('area_id', $area->id)
-                    ->orWhereHas('branch', fn ($b) => $b->where('areas_id', $area->id))
-                )->orderBy('full_name')->get(['id', 'full_name'])
-            : Employee::where('is_active', true)->orderBy('full_name')->get(['id', 'full_name']);
-
-        return view('marketing.socialization.create', compact('employee', 'institutions', 'area', 'eligibleEmployees'));
+        return view('marketing.socialization.create', compact('employee', 'institutions', 'area'));
     }
 
     public function store(StoreSocializationRequest $request): RedirectResponse
