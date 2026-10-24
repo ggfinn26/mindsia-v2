@@ -27,5 +27,7 @@ Schedule::call(fn () => Artisan::call('payroll:generate-monthly-slips'))
 Schedule::call(fn () => Artisan::call('notification:alert-contract-expiry'))
     ->name('notification:alert-contract-expiry')->withoutOverlapping()->dailyAt('09:00');
 
-Schedule::call(fn () => Artisan::call('telegram:sync', ['--limit' => 50]))
-    ->name('telegram:sync')->withoutOverlapping()->everyFiveMinutes();
+// ponytail: telegram:sync dinonaktifkan - TelegramStorageService::syncFilesFromGroup()
+// tidak pernah diimplementasi (command + job rujuk method hantu, error 13x/hari).
+// Storage = local disk primary, Telegram cuma backup async, jadi polling fallback ini
+// belum dibutuhkan. Re-enable kalau method-nya sudah ditulis + ditest.
