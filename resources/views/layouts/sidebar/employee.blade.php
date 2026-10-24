@@ -46,7 +46,7 @@
 @can('finance.reimbursement.view')
 <x-dashboard.nav-item href="{{ route('reimbursements.index') }}" icon="receipt" :active="request()->routeIs('reimbursements.*') && !request()->routeIs('reimbursements.review-list')">Reimbursement Saya</x-dashboard.nav-item>
 @endcan
-@if(auth()->user()->employee && \App\Models\EmployeeSocialization::where('employee_id', auth()->user()->employee->id)->exists())
+@if(auth()->user()->employee)
 <x-dashboard.nav-item href="{{ route('my-socializations.index') }}" icon="campaign" :active="request()->routeIs('my-socializations.*')">Sosialisasi Saya</x-dashboard.nav-item>
 @endif
 @if(auth()->user()->employee)
