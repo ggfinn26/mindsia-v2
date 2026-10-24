@@ -15,8 +15,11 @@ class TelegramLogService
 
     public function __construct()
     {
-        $this->botToken = env('TELEGRAM_BOT_TOKEN');
-        $this->groupLogId = (int) env('GROUP_LOG');
+        // Baca via config() bukan env(): saat production menjalankan config:cache,
+        // env() mengembalikan null di luar file config dan null gagal di-assign ke
+        // properti string non-nullable (TypeError 500 di setiap request).
+        $this->botToken = (string) config('services.telegram.bot_token');
+        $this->groupLogId = (int) config('services.telegram.log_chat_id');
     }
 
     public function log(string $level, string $domain, string $action, string $detail): void

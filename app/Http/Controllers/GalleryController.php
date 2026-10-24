@@ -10,7 +10,7 @@ class GalleryController extends Controller
 {
     public function index()
     {
-        $botToken = env('TELEGRAM_BOT_TOKEN');
+        $botToken = config('services.telegram.bot_token');
 
         $files = DB::table('telegram_files')->orderBy('created_at', 'desc')->get();
         Log::info('Gallery: Found '.count($files).' files in DB');

@@ -25,7 +25,7 @@ class FileProxyController extends Controller
                 ->header('Cache-Control', 'public, max-age=3600');
         }
 
-        $botToken = env('TELEGRAM_BOT_TOKEN');
+        $botToken = config('services.telegram.bot_token');
 
         try {
             $response = Http::post("https://api.telegram.org/bot{$botToken}/getFile", [
