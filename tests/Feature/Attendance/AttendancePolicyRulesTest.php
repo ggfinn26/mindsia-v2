@@ -92,6 +92,31 @@ class AttendancePolicyRulesTest extends TestCase
         $response->assertForbidden();
     }
 
+    public function test_attendance_policy_index_renders(): void
+    {
+        AttendancePolicy::factory()->create();
+
+        $this->actingAs($this->admin)
+            ->get(route('attendance-policies.index'))
+            ->assertOk();
+    }
+
+    public function test_attendance_policy_create_renders(): void
+    {
+        $this->actingAs($this->admin)
+            ->get(route('attendance-policies.create'))
+            ->assertOk();
+    }
+
+    public function test_attendance_policy_edit_renders(): void
+    {
+        $policy = AttendancePolicy::factory()->create();
+
+        $this->actingAs($this->admin)
+            ->get(route('attendance-policies.edit', $policy))
+            ->assertOk();
+    }
+
     // ─────────────── Attendance Rule CRUD ───────────────
 
     // ── AP-01: Create rule berhasil ──

@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Area;
 use App\Models\AttendancePolicy;
+use App\Models\Branch;
+use App\Models\Region;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Collection;
 use Illuminate\View\View;
 
 class AttendancePolicyController extends Controller implements HasMiddleware
@@ -28,7 +32,7 @@ class AttendancePolicyController extends Controller implements HasMiddleware
 
     public function create(): View
     {
-        return view('attendance.policy.create');
+        return view('attendance.policy.create', $this->formOptions());
     }
 
     public function store(Request $request): RedirectResponse
@@ -68,9 +72,24 @@ class AttendancePolicyController extends Controller implements HasMiddleware
 
     public function edit(AttendancePolicy $attendancePolicy): View
     {
-        return view('attendance.policy.edit', [
-            'policy' => $attendancePolicy->load(['workScheduleConfig', 'sessionConfig']),
-        ]);
+        return view('attendance.policy.edit', array_merge(
+            ['policy' => $attendancePolicy->load(['workScheduleConfig', 'sessionConfig'])],
+            $this->formOptions(),
+        ));
+    }
+
+    /**
+     * Dropdown options for the scope selectors on create/edit forms.
+     *
+     * @return array{branches: Collection, areas: Collection, regions: Collection}
+     */
+    private function formOptions(): array
+    {
+        return [
+            'branches' => Branch::orderBy('branch_name')->get(['id', 'branch_name']),
+            'areas' => Area::orderBy('name')->get(['id', 'name']),
+            'regions' => Region::orderBy('name')->get(['id', 'name']),
+        ];
     }
 
     public function update(Request $request, AttendancePolicy $attendancePolicy): RedirectResponse
