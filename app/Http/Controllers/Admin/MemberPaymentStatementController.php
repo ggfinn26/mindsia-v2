@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Branch;
 use App\Models\MemberPayment;
 use App\Models\MemberRegistration;
 use Illuminate\Http\Request;
@@ -12,7 +13,28 @@ class MemberPaymentStatementController extends Controller
 {
     public function index(Request $request): View
     {
-        abort_unless($request->user()->can('marketing.member_payment_statement.view'), 403);
+        $user = $request->user();
+
+        // Tab scope digerakkan permission (per posisi). Urutan tab - sempit ke luas.
+        $scopes = [];
+        if ($user->can('marketing.member_payment_statement.view')) {
+            $scopes[] = 'self';
+        }
+        if ($user->can('marketing.member_payment_statement.view_area')) {
+            $scopes[] = 'area';
+        }
+        if ($user->can('marketing.member_payment_statement.view_national')) {
+            $scopes[] = 'national';
+        }
+        abort_if(empty($scopes), 403);
+
+        $scope = $request->input('scope');
+        if (! in_array($scope, $scopes, true)) {
+            $scope = $scopes[count($scopes) - 1]; // default scope terluas yang dimiliki
+        }
+
+        $employee = $user->employee;
+        abort_if($scope !== 'national' && ! $employee, 403, 'Akun ini tidak terhubung ke data karyawan.');
 
         $branchId = $request->input('branch_id');
         $sort = $request->input('sort', 'member_name');
@@ -37,6 +59,14 @@ class MemberPaymentStatementController extends Controller
                 'program',
                 'payments' => fn ($q) => $q->orderBy('installment_number'),
             ])
+            ->when($scope === 'self', fn ($q) => $q->whereHas(
+                'memberData',
+                fn ($q2) => $q2->where('referred_by_employee_id', $employee->id)
+            ))
+            ->when($scope === 'area', fn ($q) => $q->whereHas(
+                'memberData',
+                fn ($q2) => $q2->whereIn('branch_id', Branch::where('areas_id', $employee->area_id)->pluck('id'))
+            ))
             ->when($branchId, fn ($q) => $q->whereHas(
                 'memberData',
                 fn ($q2) => $q2->where('branch_id', $branchId)
@@ -80,6 +110,6 @@ class MemberPaymentStatementController extends Controller
 
         $registrations = $query->paginate(25)->withQueryString();
 
-        return view('marketing.member-payment-statement.index', compact('registrations', 'sort', 'direction'));
+        return view('marketing.member-payment-statement.index', compact('registrations', 'sort', 'direction', 'scopes', 'scope'));
     }
 }

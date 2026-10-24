@@ -22,21 +22,45 @@ class ProspectiveMemberController extends Controller
 
     public function index(Request $request): View
     {
-        abort_unless($request->user()->canAny([
-            'marketing.prospective.view_area',
-            'marketing.prospective.view_national',
-            'marketing.prospective_member.view',
-            'marketing.prospective_member.create',
-        ]), 403);
+        $user = $request->user();
 
-        $canViewNational = $request->user()->can('marketing.prospective.view_national');
+        // Tab scope digerakkan permission (per posisi) - seragam dengan member payment statement.
+        $scopes = [];
+        if ($user->canAny(['marketing.prospective_member.view', 'marketing.prospective_member.create'])) {
+            $scopes[] = 'self';
+        }
+        if ($user->can('marketing.prospective.view_area')) {
+            $scopes[] = 'area';
+        }
+        if ($user->can('marketing.prospective.view_national')) {
+            $scopes[] = 'national';
+        }
+        abort_if(empty($scopes), 403);
+
+        $scope = $request->input('scope');
+        if (! in_array($scope, $scopes, true)) {
+            $scope = $scopes[count($scopes) - 1]; // default scope terluas yang dimiliki
+        }
+
+        $employee = $user->employee;
+        abort_if($scope !== 'national' && ! $employee, 403, 'Akun ini tidak terhubung ke data karyawan.');
+
         $filters = $request->only(['status', 'branch_id', 'employee_id', 'search', 'sort', 'dir']);
-        $branches = Branch::active()->orderBy('branch_name')->get(['id', 'branch_name']);
-        $employees = Employee::where('is_active', true)->orderBy('full_name')->get(['id', 'full_name']);
+        if ($scope === 'self') {
+            $filters['employee_id'] = $employee->id;
+            unset($filters['branch_id']);
+        } elseif ($scope === 'area') {
+            $filters['area_id'] = $employee->area_id;
+        }
+
+        $showFilters = $scope !== 'self';
+        $branches = $showFilters ? Branch::active()->orderBy('branch_name')->get(['id', 'branch_name']) : collect();
+        $employees = $showFilters ? Employee::where('is_active', true)->orderBy('full_name')->get(['id', 'full_name']) : collect();
 
         return view('marketing.prospective-member.index', [
             'leads' => $this->repository->paginate($filters),
-            'canViewNational' => $canViewNational,
+            'scopes' => $scopes,
+            'scope' => $scope,
             'branches' => $branches,
             'employees' => $employees,
         ]);

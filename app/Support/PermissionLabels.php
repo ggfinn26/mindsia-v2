@@ -231,7 +231,9 @@ class PermissionLabels
 
             // ── Marketing ─────────────────────────────────────────────
             'marketing.kpi.view' => ['label' => 'Lihat KPI Marketing', 'description' => null],
-            'marketing.member_payment_statement.view' => ['label' => 'Lihat Laporan Pembayaran Member', 'description' => null],
+            'marketing.member_payment_statement.view' => ['label' => 'Lihat Laporan Pembayaran Member (milik sendiri)', 'description' => 'Hanya member yang direferral sendiri.'],
+            'marketing.member_payment_statement.view_area' => ['label' => 'Lihat Laporan Pembayaran Member (se-area)', 'description' => 'Semua member di cabang-cabang area sendiri.'],
+            'marketing.member_payment_statement.view_national' => ['label' => 'Lihat Laporan Pembayaran Member (nasional)', 'description' => 'Semua member tanpa batas area.'],
             'marketing.monthly_revenue_data.view' => ['label' => 'Lihat Data Pendapatan Bulanan (Semua)', 'description' => null],
             'marketing.monthly_revenue_data.view_branch' => ['label' => 'Lihat Data Pendapatan Bulanan (Cabang)', 'description' => null],
             'marketing.prospective_member.create' => ['label' => 'Tambah Calon Member', 'description' => null],

@@ -255,6 +255,8 @@ class PermissionSeeder extends Seeder
             'marketing.view_own_performance',
             'marketing.wa_template.manage',
             'marketing.member_payment_statement.view',
+            'marketing.member_payment_statement.view_area',
+            'marketing.member_payment_statement.view_national',
             'marketing.monthly_revenue_data.view',
             'marketing.monthly_revenue_data.view_branch',
             'marketing.socialization.partner_fee.update',

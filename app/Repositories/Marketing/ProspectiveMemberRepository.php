@@ -17,6 +17,7 @@ class ProspectiveMemberRepository
             ->when(! empty($filters['status']), fn ($q) => $q->where('status', $filters['status']))
             ->when(! empty($filters['socialization_id']), fn ($q) => $q->where('socialization_id', $filters['socialization_id']))
             ->when(! empty($filters['branch_id']), fn ($q) => $q->whereHas('capturedBy', fn ($e) => $e->where('branch_id', $filters['branch_id'])))
+            ->when(! empty($filters['area_id']), fn ($q) => $q->whereHas('capturedBy', fn ($e) => $e->where('area_id', $filters['area_id'])))
             ->when(! empty($filters['search']), fn ($q) => $q->where(fn ($s) => $s
                 ->where('full_name', 'like', '%'.$filters['search'].'%')
                 ->orWhere('whatsapp_number', 'like', '%'.$filters['search'].'%')

@@ -19,6 +19,22 @@
         </div>
     </div>
 
+    {{-- Tab scope (muncul sesuai permission posisi) --}}
+    @if (count($scopes) > 1)
+        @php $scopeLabels = ['self' => 'Saya', 'area' => 'Se-Area', 'national' => 'Nasional']; @endphp
+        <div class="flex flex-wrap gap-2 border-b" style="border-color: var(--dash-card-border);">
+            @foreach ($scopes as $s)
+                <a href="{{ route('marketing.member-payment-statement', ['scope' => $s]) }}"
+                   class="px-4 py-2.5 text-sm font-semibold -mb-px border-b-2 transition-colors"
+                   style="{{ $scope === $s
+                       ? 'border-color: var(--dash-primary); color: var(--dash-primary);'
+                       : 'border-color: transparent; color: var(--dash-text-muted);' }}">
+                    {{ $scopeLabels[$s] ?? $s }}
+                </a>
+            @endforeach
+        </div>
+    @endif
+
     {{-- Flash Messages --}}
     @if (session('success'))
         <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
@@ -36,9 +52,12 @@
     @endif
 
     {{-- Filter Card --}}
+    @if (in_array($scope, ['area', 'national']))
     <form method="GET" class="flex flex-wrap gap-4 items-end p-4 sm:p-5 rounded-2xl"
           style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
-        @can('marketing.member_payment_statement.view_branch')
+        <input type="hidden" name="scope" value="{{ $scope }}">
+        <input type="hidden" name="sort" value="{{ $sort }}">
+        <input type="hidden" name="direction" value="{{ $direction }}">
             <div class="w-full sm:w-48">
                 <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide"
                        style="color: var(--dash-text-faint);">Cabang</label>
@@ -53,32 +72,6 @@
                     @endforeach
                 </select>
             </div>
-        @endcan
-        <div class="w-full sm:w-48">
-            <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide"
-                   style="color: var(--dash-text-faint);">Urutkan</label>
-            <select name="sort"
-                    class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
-                    style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
-                    onfocus="this.style.borderColor='var(--dash-primary)'"
-                    onblur="this.style.borderColor='var(--dash-input-border)'">
-                <option value="member_name" @selected($sort === 'member_name')>Nama member</option>
-                <option value="institution" @selected($sort === 'institution')>Institusi</option>
-                <option value="payment_status" @selected($sort === 'payment_status')>Status pembayaran</option>
-            </select>
-        </div>
-        <div class="w-full sm:w-36">
-            <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide"
-                   style="color: var(--dash-text-faint);">Arah</label>
-            <select name="direction"
-                    class="w-full px-3 py-2 text-sm rounded-lg focus:outline-none transition-all"
-                    style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
-                    onfocus="this.style.borderColor='var(--dash-primary)'"
-                    onblur="this.style.borderColor='var(--dash-input-border)'">
-                <option value="asc" @selected($direction === 'asc')>Naik (A - Z)</option>
-                <option value="desc" @selected($direction === 'desc')>Turun (Z - A)</option>
-            </select>
-        </div>
         <div class="flex items-center gap-2">
             <button type="submit"
                     class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
@@ -87,7 +80,7 @@
                 Terapkan
             </button>
             @if(request()->hasAny(['branch_id', 'sort', 'direction']))
-                <a href="{{ route('marketing.member-payment-statement') }}"
+                <a href="{{ route('marketing.member-payment-statement', ['scope' => $scope]) }}"
                    class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-semibold rounded-lg transition-colors"
                    style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
                    onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
@@ -98,6 +91,15 @@
             @endif
         </div>
     </form>
+    @endif
+
+    @php
+        $sortUrl = fn ($key) => request()->fullUrlWithQuery([
+            'sort' => $key,
+            'direction' => ($sort === $key && $direction === 'asc') ? 'desc' : 'asc',
+        ]);
+        $sortIcon = fn ($key) => $sort !== $key ? 'unfold_more' : ($direction === 'asc' ? 'arrow_upward' : 'arrow_downward');
+    @endphp
 
     {{-- Table Card (Fullpage - Zero Horizontal Scroll) --}}
     <div class="rounded-2xl overflow-hidden"
@@ -111,12 +113,26 @@
         <div class="overflow-x-auto">
             <table class="w-full text-sm text-left">
                 <thead>
+                    @php
+                        $th = 'px-4 py-3 text-xs font-semibold uppercase tracking-wide';
+                        $thLink = 'inline-flex items-center gap-1 hover:underline';
+                    @endphp
                     <tr style="border-bottom: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
-                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide" style="color: var(--dash-text-muted);">Member & Kontak</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide" style="color: var(--dash-text-muted);">Program</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide" style="color: var(--dash-text-muted);">DP & Cicilan</th>
-                        <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide" style="color: var(--dash-text-muted);">Pembayaran</th>
-                        <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide" style="color: var(--dash-text-muted);">Status</th>
+                        <th class="{{ $th }} text-left" style="color: var(--dash-text-muted);">
+                            <a href="{{ $sortUrl('member_name') }}" class="{{ $thLink }}">Member & Kontak <span class="material-symbols-outlined text-[14px]">{{ $sortIcon('member_name') }}</span></a>
+                        </th>
+                        <th class="{{ $th }} text-left" style="color: var(--dash-text-muted);">
+                            <a href="{{ $sortUrl('program') }}" class="{{ $thLink }}">Program <span class="material-symbols-outlined text-[14px]">{{ $sortIcon('program') }}</span></a>
+                        </th>
+                        <th class="{{ $th }} text-left" style="color: var(--dash-text-muted);">
+                            <a href="{{ $sortUrl('cicilan') }}" class="{{ $thLink }}">DP & Cicilan <span class="material-symbols-outlined text-[14px]">{{ $sortIcon('cicilan') }}</span></a>
+                        </th>
+                        <th class="{{ $th }} text-right" style="color: var(--dash-text-muted);">
+                            <a href="{{ $sortUrl('total_dibayar') }}" class="{{ $thLink }}">Pembayaran <span class="material-symbols-outlined text-[14px]">{{ $sortIcon('total_dibayar') }}</span></a>
+                        </th>
+                        <th class="{{ $th }} text-right" style="color: var(--dash-text-muted);">
+                            <a href="{{ $sortUrl('payment_status') }}" class="{{ $thLink }}">Status <span class="material-symbols-outlined text-[14px]">{{ $sortIcon('payment_status') }}</span></a>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>

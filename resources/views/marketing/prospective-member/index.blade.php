@@ -39,7 +39,7 @@
                style="color: var(--dash-primary-text);">Pemasaran</p>
             <h1 class="font-jakarta text-2xl md:text-3xl font-bold tracking-tight"
                 style="color: var(--dash-text-heading);">
-                {{ $canViewNational ? 'Calon Anggota Nasional' : 'Calon Anggota Area' }}
+                {{ ['self' => 'Calon Anggota Saya', 'area' => 'Calon Anggota Area', 'national' => 'Calon Anggota Nasional'][$scope] ?? 'Calon Anggota' }}
             </h1>
             <p class="text-sm mt-1" style="color: var(--dash-text-muted);">
                 Total {{ $leads->total() }} calon anggota terdata dalam sistem.
@@ -55,6 +55,22 @@
         @endcan
     </div>
 
+    {{-- Tab scope (muncul sesuai permission posisi) --}}
+    @if (count($scopes) > 1)
+        @php $scopeLabels = ['self' => 'Saya', 'area' => 'Se-Area', 'national' => 'Nasional']; @endphp
+        <div class="flex flex-wrap gap-2 border-b" style="border-color: var(--dash-card-border);">
+            @foreach ($scopes as $s)
+                <a href="{{ route('prospective-members.index', ['scope' => $s]) }}"
+                   class="px-4 py-2.5 text-sm font-semibold -mb-px border-b-2 transition-colors"
+                   style="{{ $scope === $s
+                       ? 'border-color: var(--dash-primary); color: var(--dash-primary);'
+                       : 'border-color: transparent; color: var(--dash-text-muted);' }}">
+                    {{ $scopeLabels[$s] ?? $s }}
+                </a>
+            @endforeach
+        </div>
+    @endif
+
     {{-- Flash Messages --}}
     @if (session('success'))
     <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
@@ -68,6 +84,7 @@
     <form method="GET" action="{{ route('prospective-members.index') }}"
         class="flex flex-wrap gap-4 items-end p-4 sm:p-5 rounded-2xl"
         style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
+        <input type="hidden" name="scope" value="{{ $scope }}">
         <div class="flex-1 min-w-[200px]">
             <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide"
                    style="color: var(--dash-text-faint);">Cari Calon</label>
@@ -140,7 +157,7 @@
                 Filter
             </button>
             @if (request()->hasAny(['search', 'status', 'branch_id', 'employee_id']))
-                <a href="{{ route('prospective-members.index') }}"
+                <a href="{{ route('prospective-members.index', ['scope' => $scope]) }}"
                    class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-semibold rounded-lg transition-colors"
                    style="color: var(--dash-text-muted); border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg);"
                    onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"

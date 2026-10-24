@@ -42,3 +42,23 @@ test('PS-04 user with permission and branch_id filter gets 200', function () {
         ->get(route('marketing.member-payment-statement', ['branch_id' => 999]))
         ->assertOk();
 });
+
+// PS-05: self scope (.view only) requires a linked employee; user tanpa employee ditolak
+test('PS-05 self scope without linked employee is blocked', function () {
+    $user = User::factory()->create(['employee_id' => null]);
+    $user->givePermissionTo('marketing.member_payment_statement.view');
+
+    $this->actingAs($user)
+        ->get(route('marketing.member-payment-statement'))
+        ->assertForbidden();
+});
+
+// PS-06: user national bisa akses walau tanpa employee (scope terluas jadi default)
+test('PS-06 national scope works without employee', function () {
+    $user = User::factory()->create(['employee_id' => null]);
+    $user->givePermissionTo('marketing.member_payment_statement.view_national');
+
+    $this->actingAs($user)
+        ->get(route('marketing.member-payment-statement'))
+        ->assertOk();
+});
