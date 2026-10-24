@@ -76,7 +76,7 @@
                                 'sick' => 'Sakit',
                                 'permission' => 'Izin',
                                 'leave' => 'Cuti',
-                                default => ucfirst($leave->leave_type),
+                                default => \App\Support\EnumLabels::get('leave_type', $leave->leave_type),
                             };
 
                             $statusMap = [
@@ -85,7 +85,7 @@
                                 'rejected'  => ['Ditolak',    'background-color: #fee2e2; color: #dc2626; border: 1px solid #fecaca;'],
                                 'cancelled' => ['Dibatalkan', 'background-color: var(--dash-nav-hover-bg); color: var(--dash-text-muted); border: 1px solid var(--dash-card-border);'],
                             ];
-                            [$statusText, $badgeStyle] = $statusMap[$leave->status] ?? [ucfirst($leave->status), 'background-color: var(--dash-nav-hover-bg); color: var(--dash-text-body); border: 1px solid var(--dash-card-border);'];
+                            [$statusText, $badgeStyle] = $statusMap[$leave->status] ?? [\App\Support\EnumLabels::get('request_status', $leave->status), 'background-color: var(--dash-nav-hover-bg); color: var(--dash-text-body); border: 1px solid var(--dash-card-border);'];
                         @endphp
                         <tr style="border-bottom: 1px solid var(--dash-card-border);"
                             onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"

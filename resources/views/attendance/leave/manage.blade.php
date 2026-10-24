@@ -104,7 +104,7 @@
                                 'cancelled' => ['Dibatalkan', 'background-color: var(--dash-nav-hover-bg); color: var(--dash-text-muted); border: 1px solid var(--dash-card-border);'],
                                 'pending'   => ['Menunggu',   'background-color: #fef3c7; color: #d97706; border: 1px solid #fde68a;'],
                             ];
-                            [$statusLabel, $badgeStyle] = $statusMap[$req->status] ?? [ucfirst($req->status), 'background-color: var(--dash-nav-hover-bg); color: var(--dash-text-body); border: 1px solid var(--dash-card-border);'];
+                            [$statusLabel, $badgeStyle] = $statusMap[$req->status] ?? [\App\Support\EnumLabels::get('request_status', $req->status), 'background-color: var(--dash-nav-hover-bg); color: var(--dash-text-body); border: 1px solid var(--dash-card-border);'];
                         @endphp
                         <tr style="border-bottom: 1px solid var(--dash-card-border);"
                             onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
@@ -118,7 +118,7 @@
                                 </div>
                             </td>
                             <td class="px-5 py-3.5 font-medium" style="color: var(--dash-text-body);">
-                                {{ $req->leaveTypeLabel() ?? ucfirst(str_replace('_', ' ', $req->leave_type)) }}
+                                {{ $req->leaveTypeLabel() ?? \App\Support\EnumLabels::get('leave_type', $req->leave_type) }}
                             </td>
                             <td class="px-5 py-3.5 text-xs" style="color: var(--dash-text-muted);">
                                 {{ $req->start_date->translatedFormat('d M Y') }}

@@ -285,7 +285,7 @@
                             'permission' => ['dot' => '#06b6d4', 'bg' => '#ecfeff', 'text' => '#155e75', 'label' => 'Izin'],
                             'holiday'    => ['dot' => '#14b8a6', 'bg' => '#f0fdfa', 'text' => '#134e4a', 'label' => 'Libur'],
                             'absent'     => ['dot' => '#ef4444', 'bg' => '#fef2f2', 'text' => '#991b1b', 'label' => 'Alpha'],
-                            default      => ['dot' => '#94a3b8', 'bg' => '#f8fafc', 'text' => '#475569', 'label' => ucfirst($log->status ?? '-')],
+                            default      => ['dot' => '#94a3b8', 'bg' => '#f8fafc', 'text' => '#475569', 'label' => \App\Support\EnumLabels::get('attendance_status', $log->status)],
                         };
                     @endphp
                     <div class="flex items-center gap-3 px-5 py-3 transition-colors"

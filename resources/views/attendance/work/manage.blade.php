@@ -164,7 +164,7 @@
                                     'leave'      => ['bg' => 'var(--dash-primary-bg)',        'text' => 'var(--dash-primary-text)',        'label' => 'Cuti'],
                                     'holiday'    => ['bg' => 'var(--dash-status-default-bg)', 'text' => 'var(--dash-status-default-text)', 'label' => 'Libur'],
                                     'absent'     => ['bg' => 'var(--dash-status-danger-bg)',  'text' => 'var(--dash-status-danger-text)',  'label' => 'Alpha'],
-                                    default      => ['bg' => 'var(--dash-status-default-bg)', 'text' => 'var(--dash-status-default-text)', 'label' => ucfirst($log->status ?? '-')],
+                                    default      => ['bg' => 'var(--dash-status-default-bg)', 'text' => 'var(--dash-status-default-text)', 'label' => \App\Support\EnumLabels::get('attendance_status', $log->status)],
                                 };
                             @endphp
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"

@@ -259,7 +259,7 @@
                                         'leave'      => ['Cuti',         'background-color: #f3e8ff; color: #7e22ce; border: 1px solid #e9d5ff;'],
                                         'holiday'    => ['Libur',        'background-color: #ccfbf1; color: #0f766e; border: 1px solid #99f6e4;'],
                                     ];
-                                    [$label, $badgeStyle] = $statusMap[$log->status] ?? [ucfirst($log->status), 'background-color: var(--dash-nav-hover-bg); color: var(--dash-text-body); border: 1px solid var(--dash-card-border);'];
+                                    [$label, $badgeStyle] = $statusMap[$log->status] ?? [\App\Support\EnumLabels::get('attendance_status', $log->status), 'background-color: var(--dash-nav-hover-bg); color: var(--dash-text-body); border: 1px solid var(--dash-card-border);'];
                                 @endphp
                                 <tr style="border-bottom: 1px solid var(--dash-card-border);"
                                     onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
