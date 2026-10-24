@@ -315,7 +315,8 @@ Route::prefix('toefl-trial')->name('toefl.guest.')->group(function () {
 
 // Auth Routes — Employee (web guard)
 Route::get('/employee/login', [LoginController::class, 'showLogin'])->name('login');
-Route::post('/employee/login', [LoginController::class, 'login'])->middleware('throttle:5,1')->name('login.post');
+// Throttle ditangani RateLimiter in-app di LoginRequest (keyed email|ip, reset-on-success).
+Route::post('/employee/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/employee/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Auth Routes — Register Employee (2 steps)
@@ -326,7 +327,8 @@ Route::post('/daftar', [RegisterController::class, 'register'])->middleware('thr
 
 // Auth Routes — Member (member guard)
 Route::get('/member/login', [MemberLoginController::class, 'showLogin'])->name('member.login');
-Route::post('/member/login', [MemberLoginController::class, 'login'])->middleware('throttle:5,1')->name('member.login.post');
+// Throttle ditangani RateLimiter in-app di MemberLoginRequest (keyed email|ip, reset-on-success).
+Route::post('/member/login', [MemberLoginController::class, 'login'])->name('member.login.post');
 Route::post('/member/logout', [MemberLoginController::class, 'logout'])->name('member.logout');
 
 // Auth Routes — Member Register (public)
@@ -478,7 +480,8 @@ Route::middleware(['auth:member', EnsureEmailIsVerified::class, 'no.back'])->gro
 
 // Auth Routes — Applicant (applicant guard)
 Route::get('/applicant/login', [ApplicantLoginController::class, 'showLogin'])->name('applicant.login');
-Route::post('/applicant/login', [ApplicantLoginController::class, 'login'])->middleware('throttle:5,1')->name('applicant.login.post');
+// Throttle ditangani RateLimiter in-app di ApplicantLoginRequest (keyed email|ip, reset-on-success).
+Route::post('/applicant/login', [ApplicantLoginController::class, 'login'])->name('applicant.login.post');
 Route::post('/applicant/logout', [ApplicantLoginController::class, 'logout'])->name('applicant.logout');
 
 // Applicant authenticated routes

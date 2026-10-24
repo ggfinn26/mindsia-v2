@@ -114,4 +114,49 @@ class GuardIsolationTest extends TestCase
         $this->get(route('applicant.dashboard'))
             ->assertRedirect(route('applicant.login'));
     }
+
+    // ─── Login satu guard harus mematikan session guard lain (single identity) ─
+
+    public function test_member_login_terminates_active_employee_session(): void
+    {
+        $this->actingAs($this->employee, 'web');
+        $this->assertAuthenticated('web');
+
+        $this->post(route('member.login.post'), [
+            'email' => 'guard.member@mindsia.test',
+            'password' => 'password',
+        ])->assertRedirect(route('member.dashboard'));
+
+        $this->assertAuthenticated('member');
+        $this->assertGuest('web');
+    }
+
+    public function test_employee_login_terminates_active_member_session(): void
+    {
+        $this->actingAs($this->member, 'member');
+        $this->assertAuthenticated('member');
+
+        $this->post(route('login.post'), [
+            'email' => $this->employee->email,
+            'password' => 'password',
+        ])->assertRedirect(route('dashboard'));
+
+        $this->assertAuthenticated('web');
+        $this->assertGuest('member');
+    }
+
+    public function test_applicant_login_terminates_other_sessions(): void
+    {
+        $this->actingAs($this->employee, 'web');
+        $this->actingAs($this->member, 'member');
+
+        $this->post(route('applicant.login.post'), [
+            'email' => 'guard.applicant@mindsia.test',
+            'password' => 'password',
+        ])->assertRedirect(route('applicant.dashboard'));
+
+        $this->assertAuthenticated('applicant');
+        $this->assertGuest('web');
+        $this->assertGuest('member');
+    }
 }

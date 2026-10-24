@@ -19,9 +19,15 @@ class LoginController extends Controller
     {
         if ($request->authenticate()) {
             $request->session()->regenerate();
-            auth()->user()->update(['last_login_at' => now()]);
 
-            if (! auth()->user()->hasVerifiedEmail()) {
+            // Satu identitas per session: matikan guard lain agar session tidak tabrakan.
+            auth('member')->logout();
+            auth('applicant')->logout();
+
+            $user = auth('web')->user();
+            $user->update(['last_login_at' => now()]);
+
+            if (! $user->hasVerifiedEmail()) {
                 if ($request->expectsJson()) {
                     return response()->json(['redirect' => route('verification.notice')]);
                 }

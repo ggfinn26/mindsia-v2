@@ -2,8 +2,11 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Http\Middleware\PreventBackHistory;
 use App\Models\ApplicantAccount;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Tests\Support\CreatesMember;
 use Tests\TestCase;
 
@@ -111,5 +114,20 @@ class SessionSecurityTest extends TestCase
         $this->post(route('applicant.logout'));
 
         $this->assertGuest('applicant');
+    }
+
+    // ─── Anti back-button cache (bfcache) ───────────────────────────────────────
+
+    public function test_prevent_back_history_sends_no_store_headers(): void
+    {
+        $middleware = new PreventBackHistory;
+
+        $response = $middleware->handle(
+            new Request,
+            fn () => new Response('ok'),
+        );
+
+        $this->assertStringContainsString('no-store', (string) $response->headers->get('Cache-Control'));
+        $this->assertSame('no-cache', $response->headers->get('Pragma'));
     }
 }

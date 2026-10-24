@@ -21,6 +21,10 @@ class MemberLoginController extends Controller
         if ($request->authenticate()) {
             $request->session()->regenerate();
 
+            // Satu identitas per session: matikan guard lain agar session tidak tabrakan.
+            auth('web')->logout();
+            auth('applicant')->logout();
+
             $member = auth('member')->user();
 
             if (! $member->is_active) {

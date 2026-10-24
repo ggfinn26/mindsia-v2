@@ -20,6 +20,10 @@ class ApplicantLoginController extends Controller
         if ($request->authenticate()) {
             $request->session()->regenerate();
 
+            // Satu identitas per session: matikan guard lain agar session tidak tabrakan.
+            auth('web')->logout();
+            auth('member')->logout();
+
             $applicant = auth('applicant')->user();
 
             // Email verification checked via middleware
