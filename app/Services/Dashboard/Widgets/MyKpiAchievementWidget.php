@@ -26,17 +26,17 @@ class MyKpiAchievementWidget implements WidgetDataProviderInterface
         $evaluation = EmployeeKpiEvaluation::where('employee_id', $employeeId)
             ->whereMonth('period_start_date', $now->month)
             ->whereYear('period_start_date', $now->year)
-            ->with('items:id,evaluation_id,indicator_name,target_value,actual_value,weight,score')
+            ->with('items:id,employee_kpi_evaluation_id,indicator_name_snapshot,target_value,actual_value,weight_snapshot,score')
             ->first();
 
         $totalScore = $evaluation?->total_score ?? 0;
         $grade = $evaluation?->grade ?? '-';
 
         $items = $evaluation?->items->map(fn ($item) => [
-            'indicator' => $item->indicator_name,
+            'indicator' => $item->indicator_name_snapshot,
             'target' => $item->target_value,
             'actual' => $item->actual_value,
-            'weight' => $item->weight,
+            'weight' => $item->weight_snapshot,
             'score' => $item->score,
         ])->toArray() ?? [];
 
@@ -64,7 +64,7 @@ class MyKpiAchievementWidget implements WidgetDataProviderInterface
 
         return $evaluations->flatMap(fn ($ev) => $ev->items->map(fn ($item) => [
             'period' => $ev->period_start_date?->format('Y-m'),
-            'indicator' => $item->indicator_name,
+            'indicator' => $item->indicator_name_snapshot,
             'target' => $item->target_value,
             'actual' => $item->actual_value,
             'score' => $item->score,
