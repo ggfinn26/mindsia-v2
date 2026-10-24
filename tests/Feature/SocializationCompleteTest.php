@@ -83,3 +83,20 @@ it('cannot complete an already completed socialization', function () {
         ->post(route('socializations.complete', $soc), ['results' => []])
         ->assertStatus(422);
 });
+
+it('creates a schedule row when storing a scheduled socialization', function () {
+    actingAs($this->admin)
+        ->post(route('socializations.store'), [
+            'location_name' => 'SMA Negeri 1',
+            'schedule_now' => 1,
+            'schedule_date' => now()->toDateString(),
+            'start_time' => '08:00',
+            'end_time' => '10:00',
+        ])
+        ->assertRedirect();
+
+    $soc = Socialization::latest('id')->first();
+    expect($soc)->not->toBeNull();
+    expect($soc->schedules()->count())->toBe(1);
+    expect($soc->schedules()->first()->schedule_date->toDateString())->toBe(now()->toDateString());
+});
