@@ -133,7 +133,7 @@
             @foreach($landingPrograms as $index => $lp)
             <div class="group bg-white rounded-2xl shadow-[0_10px_30px_-15px_rgba(0,0,0,0.1)] hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] flex flex-col relative overflow-hidden transition-all duration-500 border border-ky-border/50">
                 <!-- Image Header -->
-                <div class="h-48 w-full overflow-hidden relative bg-ky-surface">
+                <div class="h-64 w-full overflow-hidden relative bg-ky-surface">
                     <img src="{{ $lp->image_url }}" alt="Program {{ $lp->program_name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                     <div class="absolute inset-0 bg-[#06122B]/10 group-hover:bg-transparent transition-colors"></div>
                     @if($lp->is_featured)
