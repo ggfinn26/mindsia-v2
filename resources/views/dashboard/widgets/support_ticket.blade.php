@@ -38,7 +38,7 @@
                         <p class="text-[11px]" style="color: var(--dash-text-muted);">{{ $ticket['member'] ?? '-' }}</p>
                     </div>
                     <span class="text-xs ml-2 px-2 py-0.5 rounded-full capitalize font-semibold shrink-0" style="background-color: {{ $badgeBg }}; color: {{ $badgeText }};">
-                        {{ str_replace('_', ' ', $status) }}
+                        {{ \App\Support\EnumLabels::get('support_ticket_status', $status) }}
                     </span>
                 </div>
             @empty

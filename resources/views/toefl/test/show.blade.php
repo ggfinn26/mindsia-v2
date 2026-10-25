@@ -32,7 +32,7 @@
                             default        => 'background-color:var(--dash-nav-hover-bg);color:var(--dash-text-muted);',
                         };
                     @endphp
-                    <span class="px-2 py-0.5 text-xs font-semibold rounded-full" style="{{ $levelStyle }}">{{ ucfirst($toeflTest->level) }}</span>
+                    <span class="px-2 py-0.5 text-xs font-semibold rounded-full" style="{{ $levelStyle }}">{{ \App\Support\EnumLabels::get('toefl_level', $toeflTest->level) }}</span>
                 @endif
             </div>
             <p class="text-sm mt-1.5" style="color: var(--dash-text-muted);">

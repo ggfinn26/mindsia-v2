@@ -457,7 +457,7 @@
                                         <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold"
                                               style="background-color: color-mix(in srgb, var(--dash-danger) 10%, transparent); color: var(--dash-danger);">
                                             <span class="material-symbols-outlined text-[13px]">cancel</span>
-                                            {{ ucfirst($payment->payment_status) }}
+                                            {{ \App\Support\EnumLabels::get('payment_status', $payment->payment_status) }}
                                         </span>
                                     @endif
                                 </td>

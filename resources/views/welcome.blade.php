@@ -78,7 +78,7 @@
     </section>
 
 
-{{-- ═══ KONSEP HESA (Symmetrical Corporate Grid) ═══ --}}
+{{-- ═══ SISTEM 24 HESA (Symmetrical Corporate Grid) ═══ --}}
 <section class="py-24 px-6 bg-ky-surface" id="konsep" aria-label="Sistem 24 HESA">
     <div class="max-w-[1200px] mx-auto">
         
@@ -97,14 +97,14 @@
             <div class="bg-white p-10 shadow-sm border border-ky-border/50 hover:shadow-lg transition-all duration-300 rounded-2xl group flex flex-col items-center text-center">
                 <div class="w-16 h-16 rounded-full bg-ky-primary/5 flex items-center justify-center text-[24px] font-black text-ky-primary mb-6 group-hover:scale-110 group-hover:bg-gold transition-all">01</div>
                 <h3 class="font-sans text-[20px] font-bold mb-3 text-[#06122B]">English House</h3>
-                <p class="text-[15px] text-ky-text/70 leading-relaxed">Meningkatkan kepercayaan diri dalam mempraktikkan percakapan bahasa Inggris secara nyata di lingkungan asrama.</p>
+                <p class="text-[15px] text-ky-text/70 leading-relaxed">Lingkungan belajar yang nyaman seperti di rumah, untuk membangun kebiasaan berbahasa Inggris melalui interaksi sehari-hari.</p>
             </div>
             
             <!-- Card 2 -->
             <div class="bg-white p-10 shadow-sm border border-ky-border/50 hover:shadow-lg transition-all duration-300 rounded-2xl group flex flex-col items-center text-center">
                 <div class="w-16 h-16 rounded-full bg-ky-primary/5 flex items-center justify-center text-[24px] font-black text-ky-primary mb-6 group-hover:scale-110 group-hover:bg-gold transition-all">02</div>
                 <h3 class="font-sans text-[20px] font-bold mb-3 text-[#06122B]">English Cafe</h3>
-                <p class="text-[15px] text-ky-text/70 leading-relaxed">Meningkatkan kemampuan memahami bahasa Inggris dalam berbagai konteks obrolan sehari-hari dengan santai.</p>
+                <p class="text-[15px] text-ky-text/70 leading-relaxed">Lingkungan belajar yang santai ala kafe, untuk melatih keberanian berbicara bahasa Inggris melalui obrolan dan interaksi sosial.</p>
             </div>
             
             <!-- Card 3 -->
@@ -112,10 +112,48 @@
                 <div class="absolute inset-0 bg-gradient-to-br from-gold/10 to-transparent"></div>
                 <div class="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center text-[24px] font-black text-gold mb-6 group-hover:scale-110 group-hover:bg-gold group-hover:text-[#06122B] transition-all relative z-10">03</div>
                 <h3 class="font-sans text-[20px] font-bold mb-3 text-white relative z-10">English Point</h3>
-                <p class="text-[15px] text-white/70 leading-relaxed relative z-10">Mengembangkan kemampuan berfikir dalam bahasa Inggris melalui interaksi yang intens dan sumber daya mandiri.</p>
+                <p class="text-[15px] text-white/70 leading-relaxed relative z-10">Lingkungan belajar yang menjadi titik praktik bahasa Inggris untuk mengasah kemampuan berbicara melalui aktivitas yang singkat, fokus, dan interaktif.</p>
             </div>
         </div>
         
+    </div>
+</section>
+
+{{-- ═══ BENEFITS (header sticky kiri, daftar 8 poin kanan; sengaja bukan grid kartu agar beda ritme dari HESA) ═══ --}}
+@php
+    $benefits = [
+        ['Nationally Recognized Certificates', 'Sertifikat Berstandar Nasional dan Berlisensi', 'Anda akan memperoleh sertifikat sebagai bukti pencapaian dan hasil pembelajaran sesuai ketentuan program yang diikuti.'],
+        ['Guaranteed Classes', 'Kelas Bergaransi tanpa biaya tambahan', 'Anda akan mendapatkan kelas pengulangan jika target kelas belum tercapai.'],
+        ['Free Cross Branch Discussions', 'Pindah Kelas dan Diskusi Lintas Cabang tanpa biaya tambahan', 'Anda dapat berpindah kelas ke cabang MINDSIA lainnya tanpa biaya tambahan serta dapat mengikuti diskusi dan berlatih bahasa Inggris saat berkunjung ke cabang lain.'],
+        ['24 Hours English Service Area (24 HESA)', 'Area layanan bahasa Inggris 24 jam', 'Anda bersama Civitas Mindsia diwajibkan untuk menggunakan bahasa Inggris selama 24 jam untuk membentuk kebiasaan berbahasa Inggris.'],
+        ['Flexible Learning Schedule', 'Jadwal belajar yang fleksibel', 'Anda dapat menyesuaikan jadwal belajar dengan aktivitas dan kebutuhan masing-masing sesuai pilihan jadwal yang tersedia.'],
+        ['Fun and Engaging Learning Methods', 'Metode belajar yang menyenangkan dan interaktif', 'Proses pembelajaran dirancang agar lebih menarik, interaktif, dan mendorong Anda untuk aktif menggunakan bahasa Inggris.'],
+        ['Learning Assessment Report', 'Laporan hasil penilaian pembelajaran', 'Anda akan memperoleh laporan hasil penilaian untuk mengetahui perkembangan kemampuan, pencapaian, dan aspek yang masih perlu ditingkatkan.'],
+        ['Young and Friendly Tutors', 'Tutor Muda dan Bersahabat', 'Tutor muda yang ramah, komunikatif, dan dekat dengan Anda sehingga suasana belajar lebih nyaman dan menyenangkan.'],
+    ];
+@endphp
+<section class="py-24 px-6 bg-[#06122B]" id="benefits" aria-labelledby="benefits-title">
+    <div class="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+        <div class="lg:col-span-4">
+            <div class="lg:sticky lg:top-28">
+                <div class="w-12 h-1 bg-gold mb-6"></div>
+                <h2 id="benefits-title" class="font-sans font-black text-[36px] md:text-[42px] tracking-tight text-white mb-4 leading-tight">Mengapa Harus MINDSIA?</h2>
+                <p class="text-[16px] text-white/75 leading-relaxed">8 alasan mengapa ribuan alumni memilih belajar di MINDSIA</p>
+            </div>
+        </div>
+
+        <ol class="lg:col-span-8 border-t border-white/15">
+            @foreach($benefits as $i => [$english, $headline, $description])
+            <li class="grid grid-cols-[3rem_1fr] sm:grid-cols-[4.5rem_1fr] gap-x-4 sm:gap-x-6 py-8 border-b border-white/15">
+                <span class="font-sans font-black text-[28px] sm:text-[36px] leading-none text-gold" aria-hidden="true">{{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}</span>
+                <div>
+                    <p class="text-[13px] font-semibold text-gold/90 mb-1">{{ $english }}</p>
+                    <h3 class="font-sans font-bold text-[20px] sm:text-[22px] text-white leading-snug mb-2">{{ $headline }}</h3>
+                    <p class="text-[15px] text-white/75 leading-relaxed">{{ $description }}</p>
+                </div>
+            </li>
+            @endforeach
+        </ol>
     </div>
 </section>
 
@@ -182,7 +220,7 @@
     <div class="max-w-[1200px] mx-auto">
         <div class="mb-16 border-l-[4px] border-gold pl-6">
             <h2 class="font-sans font-black text-[36px] md:text-[42px] tracking-tight text-[#06122B] mb-2">Mindsivers</h2>
-            <p class="text-[16px] text-ky-text/70">Momen dan dokumentasi kegiatan Mindsivers.</p>
+            <p class="text-[16px] text-ky-text/70">Momen dan Dokumentasi kegiatan MINDSIA.</p>
         </div>
         
         @if($galleries->isNotEmpty())

@@ -89,7 +89,7 @@
                                 $color = $statusColors[$session->status] ?? 'bg-slate-100 text-slate-600';
                             @endphp
                             <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full {{ $color }}">
-                                {{ Str::title(str_replace('_', ' ', $session->status)) }}
+                                {{ \App\Support\EnumLabels::get('toefl_session_status', $session->status) }}
                             </span>
                         </td>
                         <td class="px-5 py-3.5 text-right font-bold tabular-nums" style="color: var(--dash-text-heading);">

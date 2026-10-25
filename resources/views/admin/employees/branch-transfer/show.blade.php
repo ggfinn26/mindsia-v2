@@ -113,7 +113,7 @@
                     };
                 @endphp
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $statusBadgeClass }}">
-                    {{ ucfirst($transfer->status) }}
+                    {{ \App\Support\EnumLabels::get('request_status', $transfer->status) }}
                 </span>
             </div>
             @if ($transfer->notes)

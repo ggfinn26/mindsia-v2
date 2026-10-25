@@ -111,7 +111,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 mb-12">
             <div class="md:col-span-1">
                 <img src="/img/logo/mindsia-logo.webp" alt="MINDSIA" class="w-24 md:w-44 h-auto object-contain mb-4 md:mb-8">
-                <p class="text-[14px] text-ky-text/70 leading-relaxed">Lembaga kursus bahasa Inggris terpadu dengan fasilitas asrama wajib bahasa Inggris.</p>
+                <p class="text-[14px] text-ky-text/70 leading-relaxed">Lembaga atau perusahaan yang bergerak khusus dalam pengembangan skill bahasa Inggris sejak 2019 dengan sistem 24 Hours English Service Area.</p>
             </div>
             <div>
                 <div class="text-[12px] font-semibold text-ky-text mb-4">Kantor Pusat</div>
@@ -131,7 +131,7 @@
                         <li><a href="#wilayah" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Wilayah Cabang</a></li>
                         <li><a href="/karir" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Karir</a></li>
                     @else
-                        <li><a href="#konsep" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Konsep HESA</a></li>
+                        <li><a href="#konsep" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Sistem 24 HESA</a></li>
                         <li><a href="#program" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Program</a></li>
                         <li><a href="#cabang" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Cabang</a></li>
                         <li><a href="{{ route('company.landing') }}" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Company Profile</a></li>

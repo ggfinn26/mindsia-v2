@@ -14,7 +14,7 @@
         <div class="space-y-1.5">
             @foreach($data['by_status'] ?? [] as $status => $info)
                 <div class="flex items-center justify-between text-xs">
-                    <span class="capitalize" style="color: var(--dash-text-body);">{{ str_replace('_', ' ', $status) }}</span>
+                    <span style="color: var(--dash-text-body);">{{ \App\Support\EnumLabels::get('payment_status', $status) }}</span>
                     <div class="text-right">
                         <span class="font-bold" style="color: var(--dash-text-heading);">{{ $info['count'] }}</span>
                         <span class="ml-1" style="color: var(--dash-text-muted);">/ Rp {{ number_format($info['total'], 0, ',', '.') }}</span>

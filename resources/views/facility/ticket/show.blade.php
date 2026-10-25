@@ -30,7 +30,7 @@
 
     $sc = $statusConfig[$facilityTicket->status] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700', 'label' => \App\Support\EnumLabels::get('facility_ticket_status', $facilityTicket->status)];
     $pc = $priorityConfig[$facilityTicket->priority] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700', 'label' => \App\Support\EnumLabels::get('priority', $facilityTicket->priority)];
-    $catLabel = $categoryConfig[$facilityTicket->category] ?? ucfirst($facilityTicket->category);
+    $catLabel = $categoryConfig[$facilityTicket->category] ?? \App\Support\EnumLabels::humanize($facilityTicket->category ?? '');
 @endphp
 
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-4xl mx-auto space-y-6">

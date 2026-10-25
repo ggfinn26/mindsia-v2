@@ -83,9 +83,9 @@
                 <tbody>
                     @forelse ($tickets as $ticket)
                         @php
-                            $sc = $statusConfig[$ticket->status] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700', 'label' => ucfirst(str_replace('_', ' ', $ticket->status))];
-                            $pc = $priorityConfig[$ticket->priority] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700', 'label' => ucfirst($ticket->priority)];
-                            $catLabel = $categoryConfig[$ticket->category] ?? ucfirst($ticket->category);
+                            $sc = $statusConfig[$ticket->status] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700', 'label' => \App\Support\EnumLabels::get('support_ticket_status', $ticket->status)];
+                            $pc = $priorityConfig[$ticket->priority] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700', 'label' => \App\Support\EnumLabels::get('priority', $ticket->priority)];
+                            $catLabel = $categoryConfig[$ticket->category] ?? \App\Support\EnumLabels::get('ticket_category', $ticket->category);
                         @endphp
                         <tr style="border-bottom: 1px solid var(--dash-card-border);"
                             onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"

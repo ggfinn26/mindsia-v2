@@ -40,7 +40,7 @@
                 <div class="space-y-1">
                     @foreach($data['by_condition'] as $condition => $count)
                         <div class="flex items-center justify-between text-xs">
-                            <span style="color: var(--dash-text-body);">{{ $conditionLabels[$condition] ?? ucfirst(str_replace('_', ' ', $condition)) }}</span>
+                            <span style="color: var(--dash-text-body);">{{ $conditionLabels[$condition] ?? \App\Support\EnumLabels::get('inventory_condition', $condition) }}</span>
                             <span class="font-semibold" style="color: {{ in_array($condition, ['DAMAGED', 'UNUSABLE']) ? 'var(--dash-status-danger-text)' : 'var(--dash-text-heading)' }};">{{ $count }}</span>
                         </div>
                     @endforeach
@@ -54,7 +54,7 @@
                 <div class="space-y-1">
                     @foreach($data['by_type'] as $type => $count)
                         <div class="flex items-center justify-between text-xs">
-                            <span style="color: var(--dash-text-body);">{{ $typeLabels[$type] ?? ucfirst(str_replace('_', ' ', $type)) }}</span>
+                            <span style="color: var(--dash-text-body);">{{ $typeLabels[$type] ?? \App\Support\EnumLabels::humanize($type) }}</span>
                             <span class="font-semibold" style="color: var(--dash-text-heading);">{{ $count }}</span>
                         </div>
                     @endforeach

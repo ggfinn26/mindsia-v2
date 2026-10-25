@@ -50,7 +50,8 @@
             'completed'      => ['bg' => 'bg-emerald-100 dark:bg-emerald-950/40', 'text' => 'text-emerald-700 dark:text-emerald-400', 'label' => 'Completed'],
             'rejected'       => ['bg' => 'bg-red-100 dark:bg-red-950/40', 'text' => 'text-red-700 dark:text-red-400', 'label' => 'Rejected'],
         ];
-        $st = $statusColors[$employeeOnboarding->status] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700', 'label' => ucfirst($employeeOnboarding->status)];
+        $st = $statusColors[$employeeOnboarding->status] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700'];
+        $st['label'] = \App\Support\EnumLabels::get('onboarding_status', $employeeOnboarding->status);
         $candidateName = $employeeOnboarding->application->applicant->full_name ?? '-';
         $branchName = $employeeOnboarding->branch->branch_name ?? '-';
         $positionName = $employeeOnboarding->position->position_name ?? '-';

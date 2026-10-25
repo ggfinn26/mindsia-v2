@@ -152,7 +152,7 @@
                             $statusLabel = match ($registration->payment_status) {
                                 'paid', 'lunas' => 'Lunas',
                                 'partial', 'installment' => 'Cicil',
-                                default => ucfirst($registration->payment_status),
+                                default => \App\Support\EnumLabels::get('payment_status', $registration->payment_status),
                             };
 
                             $dp = $registration->payments->where('installment_number', 1)->first();

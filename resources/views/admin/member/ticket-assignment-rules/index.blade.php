@@ -85,7 +85,7 @@
                             'complaint'  => 'Pengaduan',
                             'suggestion' => 'Saran',
                             'question'   => 'Pertanyaan',
-                            default      => ucfirst($rule->category),
+                            default      => \App\Support\EnumLabels::get('ticket_category', $rule->category),
                         };
                         $categoryBadgeClass = match($rule->category) {
                             'complaint'  => 'bg-red-100 text-red-700',

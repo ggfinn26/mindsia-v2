@@ -214,7 +214,7 @@
                                 {{ match($contract->type_employment) {
                                     'permanent' => 'Tetap (Permanent)',
                                     'contract'  => 'Kontrak',
-                                    default     => ucfirst($contract->type_employment ?? '-'),
+                                    default     => \App\Support\EnumLabels::get('employment_type', $contract->type_employment),
                                 } }}
                             </td>
                             <td class="px-5 py-3.5" style="color: var(--dash-text-body);">{{ $contract->contract_start_date?->format('d M Y') ?? '-' }}</td>

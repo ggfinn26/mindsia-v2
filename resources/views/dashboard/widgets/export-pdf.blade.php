@@ -21,7 +21,7 @@
         <thead>
             <tr>
                 @foreach($headers as $header)
-                    <th>{{ ucfirst(str_replace('_', ' ', $header)) }}</th>
+                    <th>{{ \App\Support\EnumLabels::humanize($header) }}</th>
                 @endforeach
             </tr>
         </thead>

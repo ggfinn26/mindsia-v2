@@ -272,7 +272,7 @@
                             </span>
                         </td>
                         <td class="px-5 py-3.5 text-xs" style="color: var(--dash-text-body);">
-                            {{ ucfirst($registration->graduation_status ?? '-') }}
+                            {{ \App\Support\EnumLabels::get('graduation_status', $registration->graduation_status) }}
                         </td>
                         <td class="px-5 py-3.5 text-right">
                             <a href="{{ route('registrations.show', $registration) }}"

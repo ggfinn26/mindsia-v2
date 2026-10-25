@@ -202,7 +202,7 @@
                                     'leave'      => ['Cuti',         'var(--dash-primary-bg)',        'var(--dash-primary-text)'],
                                     'holiday'    => ['Libur',        'var(--dash-status-default-bg)', 'var(--dash-status-default-text)'],
                                 ];
-                                [$label, $badgeBg, $badgeText] = $statusMap[$log->status] ?? [ucfirst($log->status), 'var(--dash-status-default-bg)', 'var(--dash-status-default-text)'];
+                                [$label, $badgeBg, $badgeText] = $statusMap[$log->status] ?? [\App\Support\EnumLabels::get('attendance_status', $log->status), 'var(--dash-status-default-bg)', 'var(--dash-status-default-text)'];
                             @endphp
                             <tr style="border-bottom: 1px solid var(--dash-card-border);"
                                 class="transition-colors"

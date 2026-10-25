@@ -52,7 +52,7 @@
                 <div class="space-y-1">
                     @foreach($data['by_leave_type'] as $type => $count)
                         <div class="flex items-center justify-between text-xs">
-                            <span style="color: var(--dash-text-body);">{{ ucfirst($type) }}</span>
+                            <span style="color: var(--dash-text-body);">{{ \App\Support\EnumLabels::get('leave_type', $type) }}</span>
                             <span class="font-semibold" style="color: var(--dash-text-heading);">{{ $count }}</span>
                         </div>
                     @endforeach

@@ -85,7 +85,7 @@
 
                 <div class="mt-6">
                     @foreach($grouped as $categoryKey => $categoryWidgets)
-                        @php($catInfo = $categories[$categoryKey] ?? ['label' => ucfirst($categoryKey), 'icon' => 'dashboard'])
+                        @php($catInfo = $categories[$categoryKey] ?? ['label' => \App\Support\EnumLabels::get('widget_category', $categoryKey), 'icon' => 'dashboard'])
 
                         <div class="mb-8">
                             <div class="flex items-center gap-2 mb-4">

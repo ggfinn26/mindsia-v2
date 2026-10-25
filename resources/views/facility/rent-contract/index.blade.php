@@ -76,7 +76,7 @@
                                 'bg' => 'bg-slate-100',
                                 'text' => 'text-slate-700',
                                 'dot' => 'bg-slate-400',
-                                'label' => ucfirst($contract->status ?? 'Unknown'),
+                                'label' => \App\Support\EnumLabels::get('contract_status', $contract->status),
                             ];
                         @endphp
                         <tr style="border-bottom: 1px solid var(--dash-card-border);"

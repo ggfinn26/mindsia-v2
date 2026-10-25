@@ -78,7 +78,7 @@
                     ];
                 @endphp
                 <span class="px-2.5 py-1 text-xs font-semibold rounded-full" style="{{ $statusStyles[$class->status] ?? 'background-color: var(--dash-status-default-bg); color: var(--dash-status-default-text);' }}">
-                    {{ $statusLabels[$class->status] ?? ucfirst($class->status) }}
+                    {{ $statusLabels[$class->status] ?? \App\Support\EnumLabels::get('class_status', $class->status) }}
                 </span>
             </div>
             <p class="text-sm mt-1" style="color: var(--dash-text-muted);">
@@ -303,7 +303,7 @@
                             <td class="px-4 py-3 whitespace-nowrap">
                                 <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full"
                                       style="{{ $mcStatusStyles[$mc->status] ?? 'background-color: var(--dash-status-default-bg); color: var(--dash-status-default-text);' }}">
-                                    {{ ucfirst($mc->status) }}
+                                    {{ \App\Support\EnumLabels::get('class_status', $mc->status) }}
                                 </span>
                             </td>
                             <td class="px-4 py-3 whitespace-nowrap text-sm" style="color: var(--dash-text-muted);">

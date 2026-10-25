@@ -130,7 +130,7 @@
                             <td class="px-5 py-3.5">
                                 @if ($item->condition_status)
                                     <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold {{ $conditionBadges[$item->condition_status] ?? 'bg-slate-100 text-slate-600' }}">
-                                        {{ $conditionLabels[$item->condition_status] ?? ucfirst($item->condition_status) }}
+                                        {{ $conditionLabels[$item->condition_status] ?? \App\Support\EnumLabels::get('inventory_condition', $item->condition_status) }}
                                     </span>
                                 @else
                                     <span style="color: var(--dash-text-faint);">-</span>
@@ -138,7 +138,7 @@
                             </td>
                             <td class="px-5 py-3.5">
                                 <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold {{ $statusBadge[$item->status] ?? 'bg-slate-100 text-slate-600' }}">
-                                    {{ $item->status === 'active' ? 'Aktif' : ($item->status === 'disposed' ? 'Disposed' : ucfirst($item->status)) }}
+                                    {{ \App\Support\EnumLabels::get('inventory_item_status', $item->status) }}
                                 </span>
                             </td>
                             <td class="px-5 py-3.5 text-right whitespace-nowrap">

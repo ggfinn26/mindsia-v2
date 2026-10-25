@@ -23,13 +23,13 @@
         'complaint'  => 'Pengaduan',
         'suggestion' => 'Saran',
         'question'   => 'Pertanyaan',
-        default      => ucfirst($ticket->category),
+        default      => \App\Support\EnumLabels::get('ticket_category', $ticket->category),
     };
     $priorityLabel = match($ticket->priority) {
         'low'    => 'Rendah',
         'medium' => 'Sedang',
         'high'   => 'Tinggi',
-        default  => ucfirst($ticket->priority ?? ''),
+        default  => \App\Support\EnumLabels::get('priority', $ticket->priority),
     };
 @endphp
 

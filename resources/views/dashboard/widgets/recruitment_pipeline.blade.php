@@ -46,7 +46,7 @@
                 <div class="space-y-1">
                     @foreach($data['by_status'] as $status => $count)
                         <div class="flex items-center justify-between text-xs">
-                            <span style="color: var(--dash-text-body);">{{ ucfirst($status) }}</span>
+                            <span style="color: var(--dash-text-body);">{{ \App\Support\EnumLabels::get('recruitment_stage', $status) }}</span>
                             <span class="font-semibold" style="color: var(--dash-text-heading);">{{ $count }}</span>
                         </div>
                     @endforeach

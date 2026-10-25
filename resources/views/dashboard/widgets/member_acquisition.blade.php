@@ -37,7 +37,7 @@
                 <div class="flex flex-wrap gap-1.5">
                     @foreach($data['pipeline'] as $status => $count)
                         <span class="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full font-medium" style="background-color: var(--dash-nav-hover-bg); color: var(--dash-text-body); border: 1px solid var(--dash-card-border);">
-                            {{ ucfirst($status) }}: <strong style="color: var(--dash-text-heading);">{{ $count }}</strong>
+                            {{ \App\Support\EnumLabels::get('payment_status', $status) }}: <strong style="color: var(--dash-text-heading);">{{ $count }}</strong>
                         </span>
                     @endforeach
                 </div>

@@ -69,7 +69,7 @@
                 <div class="relative" style="height: 140px;">
                     @php
                         $chartData = array_values($data['cost_by_category']);
-                        $chartLabels = array_map(fn($k) => $categoryLabels[$k] ?? ucfirst($k), array_keys($data['cost_by_category']));
+                        $chartLabels = array_map(fn($k) => $categoryLabels[$k] ?? \App\Support\EnumLabels::get('cost_category', $k), array_keys($data['cost_by_category']));
                     @endphp
                     <div id="chart-cost-{{ Str::random(5) }}" data-series='@json($chartData)' data-labels='@json($chartLabels)'></div>
                 </div>

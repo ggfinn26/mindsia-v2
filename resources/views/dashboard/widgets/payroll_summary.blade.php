@@ -47,7 +47,7 @@
                 <div class="space-y-1">
                     @foreach($data['by_payment_status'] as $status => $count)
                         <div class="flex items-center justify-between text-xs">
-                            <span style="color: var(--dash-text-body);">{{ ucfirst($status) }}</span>
+                            <span style="color: var(--dash-text-body);">{{ \App\Support\EnumLabels::get('payment_status', $status) }}</span>
                             <span class="font-semibold" style="color: {{ $status === 'paid' ? 'var(--dash-status-success-text)' : ($status === 'failed' ? 'var(--dash-status-danger-text)' : 'var(--dash-status-warning-text)') }};">{{ $count }}</span>
                         </div>
                     @endforeach

@@ -153,7 +153,8 @@
                                 'hired'     => ['bg' => 'bg-emerald-100 dark:bg-emerald-950/40', 'text' => 'text-emerald-700 dark:text-emerald-400', 'label' => 'Hired'],
                                 'rejected'  => ['bg' => 'bg-red-100 dark:bg-red-950/40', 'text' => 'text-red-700 dark:text-red-400', 'label' => 'Rejected'],
                             ];
-                            $st = $statusMap[$application->status] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700', 'label' => ucfirst($application->status)];
+                            $st = $statusMap[$application->status] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700'];
+                            $st['label'] = \App\Support\EnumLabels::get('recruitment_stage', $application->status);
                             $applicantName = $application->applicant->full_name ?? '-';
                             $postingTitle = $application->posting->title ?? 'Reserve / Manual';
                             $sourceName = \App\Support\EnumLabels::get('application_source', $application->application_source);

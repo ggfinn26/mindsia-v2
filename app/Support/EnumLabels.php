@@ -208,6 +208,100 @@ class EnumLabels
             'failed' => 'Gagal',
             'unknown' => 'Tidak Diketahui',
         ],
+
+        // Status kelulusan member
+        'graduation_status' => [
+            'BELUM_LULUS' => 'Belum Lulus',
+            'LULUS' => 'Lulus',
+        ],
+
+        // Onboarding karyawan baru
+        'onboarding_status' => [
+            'in_progress' => 'Dalam Proses',
+            'completed' => 'Selesai',
+            'expired' => 'Kedaluwarsa',
+        ],
+
+        // Periode payroll
+        'payroll_period_status' => [
+            'draft' => 'Draft',
+            'review' => 'Review',
+            'finalized' => 'Final',
+        ],
+
+        // TOEFL - status tes & sesi, level
+        'toefl_test_status' => [
+            'draft' => 'Draft',
+            'published' => 'Terbit',
+        ],
+        'toefl_session_status' => [
+            'in_progress' => 'Dalam Proses',
+            'completed' => 'Selesai',
+            'expired' => 'Kedaluwarsa',
+        ],
+        'toefl_level' => [
+            'beginner' => 'Pemula',
+            'intermediate' => 'Menengah',
+            'advanced' => 'Lanjutan',
+        ],
+
+        // Kelas
+        'class_status' => [
+            'draft' => 'Draft',
+            'published' => 'Terbit',
+            'closed' => 'Ditutup',
+            'active' => 'Aktif',
+            'inactive' => 'Nonaktif',
+            'ongoing' => 'Berlangsung',
+            'completed' => 'Selesai',
+        ],
+
+        // Kontrak kerja
+        'contract_status' => [
+            'active' => 'Aktif',
+            'expired' => 'Kedaluwarsa',
+            'terminated' => 'Diberhentikan',
+            'draft' => 'Draft',
+        ],
+
+        // Tiket dukungan - status
+        'support_ticket_status' => [
+            'open' => 'Terbuka',
+            'in_progress' => 'Dalam Proses',
+            'pending' => 'Menunggu',
+            'resolved' => 'Selesai',
+            'closed' => 'Ditutup',
+        ],
+
+        // Rekrutmen - penawaran kerja
+        'offer_status' => [
+            'sent' => 'Terkirim',
+            'negotiating' => 'Negosiasi',
+            'accepted' => 'Diterima',
+            'declined' => 'Ditolak',
+        ],
+
+        // Rekrutmen - keputusan evaluasi/interview
+        'decision' => [
+            'approved' => 'Disetujui',
+            'accepted' => 'Diterima',
+            'reserve' => 'Cadangan',
+            'rejected' => 'Ditolak',
+        ],
+
+        // Kondisi inventaris fasilitas
+        'inventory_condition' => [
+            'GOOD' => 'Baik',
+            'NEEDS_REPAIR' => 'Perlu Perbaikan',
+            'DAMAGED' => 'Rusak',
+            'UNUSABLE' => 'Tidak Terpakai',
+        ],
+
+        // Status item inventaris
+        'inventory_item_status' => [
+            'active' => 'Aktif',
+            'disposed' => 'Dilepas',
+        ],
     ];
 
     public static function get(string $group, ?string $value): string

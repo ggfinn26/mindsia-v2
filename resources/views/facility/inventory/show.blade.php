@@ -67,11 +67,11 @@
                     {{ $inventoryItem->item_code }}
                 </span>
                 <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold {{ $statusBadge[$inventoryItem->status] ?? 'bg-slate-100 text-slate-600' }}">
-                    {{ $inventoryItem->status === 'active' ? 'Aktif' : ($inventoryItem->status === 'disposed' ? 'Disposed' : ucfirst($inventoryItem->status)) }}
+                    {{ \App\Support\EnumLabels::get('inventory_item_status', $inventoryItem->status) }}
                 </span>
                 @if ($inventoryItem->condition_status)
                     <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold {{ $conditionBadges[$inventoryItem->condition_status] ?? 'bg-slate-100 text-slate-600' }}">
-                        {{ $conditionLabels[$inventoryItem->condition_status] ?? ucfirst($inventoryItem->condition_status) }}
+                        {{ $conditionLabels[$inventoryItem->condition_status] ?? \App\Support\EnumLabels::get('inventory_condition', $inventoryItem->condition_status) }}
                     </span>
                 @endif
                 <span class="text-xs" style="color: var(--dash-text-muted);">
@@ -279,7 +279,7 @@
                                     <div class="flex items-center gap-2">
                                         <span class="px-2 py-0.5 text-xs font-semibold rounded-md"
                                               style="background-color: var(--dash-primary-bg); color: var(--dash-primary-text);">
-                                            {{ $historyLabels[$history->change_type] ?? ucfirst($history->change_type ?: 'Perubahan') }}
+                                            {{ $historyLabels[$history->change_type] ?? \App\Support\EnumLabels::humanize($history->change_type ?: 'Perubahan') }}
                                         </span>
                                         <span class="text-xs" style="color: var(--dash-text-muted);">
                                             oleh <strong style="color: var(--dash-text-heading);">{{ $history->changedBy?->full_name ?: 'Sistem' }}</strong>

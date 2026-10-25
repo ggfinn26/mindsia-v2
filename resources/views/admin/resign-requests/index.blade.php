@@ -77,7 +77,7 @@
                             </td>
                             <td class="px-5 py-3.5">
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $statusClass }}">
-                                    {{ ucfirst($req->status) }}
+                                    {{ \App\Support\EnumLabels::get('request_status', $req->status) }}
                                 </span>
                             </td>
                             <td class="px-5 py-3.5 text-right">

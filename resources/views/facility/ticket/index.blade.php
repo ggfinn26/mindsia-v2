@@ -87,7 +87,7 @@
                         @php
                             $sc = $statusConfig[$ticket->status] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700', 'label' => \App\Support\EnumLabels::get('facility_ticket_status', $ticket->status)];
                             $pc = $priorityConfig[$ticket->priority] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700', 'label' => \App\Support\EnumLabels::get('priority', $ticket->priority)];
-                            $catLabel = $categoryConfig[$ticket->category] ?? ucfirst($ticket->category);
+                            $catLabel = $categoryConfig[$ticket->category] ?? \App\Support\EnumLabels::humanize($ticket->category ?? '');
                         @endphp
                         <tr style="border-bottom: 1px solid var(--dash-card-border);"
                             onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"

@@ -65,7 +65,8 @@
             'published' => ['bg' => 'bg-emerald-100 dark:bg-emerald-950/40', 'text' => 'text-emerald-700 dark:text-emerald-400', 'label' => 'Dipublikasikan'],
             'closed'    => ['bg' => 'bg-red-100 dark:bg-red-950/40', 'text' => 'text-red-700 dark:text-red-400', 'label' => 'Ditutup'],
         ];
-        $st = $statusMap[$jobPosting->status] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700', 'label' => ucfirst($jobPosting->status)];
+        $st = $statusMap[$jobPosting->status] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700'];
+        $st['label'] = \App\Support\EnumLabels::get('class_status', $jobPosting->status);
     @endphp
 
     {{-- Card 1: Informasi Utama Lowongan --}}

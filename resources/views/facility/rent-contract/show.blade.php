@@ -21,7 +21,7 @@
         'bg' => 'bg-slate-100',
         'text' => 'text-slate-700',
         'dot' => 'bg-slate-400',
-        'label' => ucfirst($branchRentContract->status ?? 'Unknown'),
+        'label' => \App\Support\EnumLabels::get('contract_status', $branchRentContract->status),
     ];
 
     $paidTerminTotal = $branchRentContract->termins->where('status', 'paid')->sum('amount');
@@ -283,7 +283,7 @@
                                     'bg' => 'bg-slate-100',
                                     'text' => 'text-slate-700',
                                     'dot' => 'bg-slate-400',
-                                    'label' => ucfirst($termin->status),
+                                    'label' => \App\Support\EnumLabels::get('payment_status', $termin->status),
                                 ];
                                 $formattedAmount = number_format($termin->amount, 0, ',', '.');
                                 $dueDateText = $termin->due_date?->format('d M Y') ?? '-';

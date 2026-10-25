@@ -125,7 +125,7 @@
                             'complaint'  => 'Pengaduan',
                             'suggestion' => 'Saran',
                             'question'   => 'Pertanyaan',
-                            default      => ucfirst($ticket->category),
+                            default      => \App\Support\EnumLabels::get('ticket_category', $ticket->category),
                         };
                     @endphp
                     <tr style="border-bottom: 1px solid var(--dash-card-border);"

@@ -68,7 +68,7 @@
                             };
                         @endphp
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $statusClass }}">
-                            {{ ucfirst($resignRequest->status) }}
+                            {{ \App\Support\EnumLabels::get('request_status', $resignRequest->status) }}
                         </span>
                     </div>
                 </div>

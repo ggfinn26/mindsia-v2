@@ -36,7 +36,7 @@
                 <div class="space-y-1">
                     @foreach($data['by_type'] as $type => $count)
                         <div class="flex items-center justify-between text-xs">
-                            <span style="color: var(--dash-text-body);">{{ ucfirst($type) }}</span>
+                            <span style="color: var(--dash-text-body);">{{ \App\Support\EnumLabels::humanize($type) }}</span>
                             <span class="font-semibold" style="color: var(--dash-text-heading);">{{ $count }}</span>
                         </div>
                     @endforeach
@@ -50,7 +50,7 @@
                 <div class="space-y-1">
                     @foreach($data['by_decision'] as $decision => $count)
                         <div class="flex items-center justify-between text-xs">
-                            <span style="color: var(--dash-text-body);">{{ ucfirst($decision) }}</span>
+                            <span style="color: var(--dash-text-body);">{{ \App\Support\EnumLabels::get('decision', $decision) }}</span>
                             <span class="font-semibold" style="color: {{ $decision === 'accepted' ? 'var(--dash-status-success-text)' : ($decision === 'rejected' ? 'var(--dash-status-danger-text)' : 'var(--dash-status-warning-text)') }};">{{ $count }}</span>
                         </div>
                     @endforeach

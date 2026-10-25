@@ -82,7 +82,7 @@
                                 @else
                                     <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold"
                                           style="background-color: var(--dash-status-default-bg); color: var(--dash-status-default-text);">
-                                        {{ ucfirst($period->status) }}
+                                        {{ \App\Support\EnumLabels::get('payroll_period_status', $period->status) }}
                                     </span>
                                 @endif
                             </td>
