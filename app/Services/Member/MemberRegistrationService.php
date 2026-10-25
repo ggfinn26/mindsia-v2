@@ -89,18 +89,13 @@ class MemberRegistrationService
 
     private function generateInstallments(MemberRegistration $registration, ProgramPaymentPlan $plan): void
     {
-        $count = $plan->type === 'cash' ? 1 : (int) $plan->installment_count;
         $now = now();
-        $installments = [];
+        $rows = [];
 
-        for ($i = 1; $i <= $count; $i++) {
-            $amount = $i === 1
-                ? (int) $plan->dp_amount
-                : (int) $plan->per_installment_amount;
-
-            $installments[] = [
+        foreach ($this->installmentAmounts($registration, $plan) as $index => $amount) {
+            $rows[] = [
                 'member_registration_id' => $registration->id,
-                'installment_number' => $i,
+                'installment_number' => $index + 1,
                 'amount' => $amount,
                 'payment_status' => 'unpaid',
                 'created_at' => $now,
@@ -108,6 +103,48 @@ class MemberRegistrationService
             ];
         }
 
-        MemberPayment::insert($installments);
+        MemberPayment::insert($rows);
+    }
+
+    /**
+     * Nominal tiap cicilan agar total == final_price (otoritatif), DP-first.
+     * DP menyerap diskon; jika diskon melebihi DP, sisanya dikurangi dari cicilan berikutnya.
+     *
+     * @return list<int>
+     */
+    public function installmentAmounts(MemberRegistration $registration, ProgramPaymentPlan $plan): array
+    {
+        $total = (int) $registration->final_price;
+
+        if ($plan->type === 'cash') {
+            return [$total];
+        }
+
+        $count = max(1, (int) $plan->installment_count);
+
+        if ($count === 1) {
+            return [$total];
+        }
+
+        $per = (int) $plan->per_installment_amount;
+        $tail = array_fill(0, $count - 1, $per);
+        $dp = $total - ($per * ($count - 1));
+
+        if ($dp >= 0) {
+            return array_merge([$dp], $tail);
+        }
+
+        $deficit = -$dp;
+        foreach ($tail as $i => $amount) {
+            $cut = min($amount, $deficit);
+            $tail[$i] = $amount - $cut;
+            $deficit -= $cut;
+
+            if ($deficit === 0) {
+                break;
+            }
+        }
+
+        return array_merge([0], $tail);
     }
 }
