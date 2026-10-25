@@ -407,7 +407,7 @@
     <x-dashboard.nav-item href="{{ route('admin.landing.testimonials.index') }}" :active="request()->routeIs('admin.landing.testimonials.*')" :isChild="true">Testimoni</x-dashboard.nav-item>
     @endcan
     @can('landing.photo.manage')
-    <x-dashboard.nav-item href="{{ route('admin.landing.photos.index', ['section' => 'landing']) }}" :active="request()->routeIs('admin.landing.photos.*') && request('section') === 'landing'" :isChild="true">Galeri Landing</x-dashboard.nav-item>
+    <x-dashboard.nav-item href="{{ route('admin.landing.photos.index', ['section' => 'home']) }}" :active="request()->routeIs('admin.landing.photos.*') && request('section') === 'home'" :isChild="true">Galeri Landing</x-dashboard.nav-item>
     <x-dashboard.nav-item href="{{ route('admin.landing.photos.index', ['section' => 'company']) }}" :active="request()->routeIs('admin.landing.photos.*') && request('section') === 'company'" :isChild="true">Galeri Profil Perusahaan</x-dashboard.nav-item>
     @endcan
     @can('landing.leader.manage')
