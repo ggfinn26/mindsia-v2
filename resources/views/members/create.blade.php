@@ -8,19 +8,19 @@
 </head>
 <body class="w-full flex flex-col md:flex-row bg-white text-ky-text font-sans antialiased min-h-screen">
     <!-- Left Form -->
-    <div class="w-full md:w-[55%] lg:w-1/2 flex flex-col p-8 md:p-12 overflow-y-auto bg-white border-r border-ky-border/50 shadow-[10px_0_30px_rgba(0,0,0,0.02)] z-10 relative">
+    <div class="w-full md:w-[55%] lg:w-1/2 flex flex-col p-8 md:p-12 overflow-y-auto bg-white border-r border-slate-300 shadow-[10px_0_30px_rgba(0,0,0,0.02)] z-10 relative">
         <a href="{{ url('/') }}" class="mb-10 inline-block">
             <img src="/img/logo/mindsia-logo.webp" alt="Mindsia Logo" class="h-8 w-auto">
         </a>
         <h1 class="font-sans font-black text-[32px] md:text-[36px] text-[#06122B] mb-2 tracking-tight">Pendaftaran Siswa Baru</h1>
         <p class="text-[15px] text-ky-text/60 mb-8">Lengkapi formulir pendaftaran di bawah ini untuk memulai.</p>
 
-        <form action="{{ route('public.store') }}" method="POST" class="bg-ky-surface border border-ky-border/50 rounded-2xl p-6 md:p-8 shadow-sm">
+        <form action="{{ route('public.store') }}" method="POST" class="bg-ky-surface border border-slate-300 rounded-2xl p-6 md:p-8 shadow-sm">
             @csrf
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
                 <div>
                     <label class="block mb-2 text-[12px] font-bold text-ky-text/80 uppercase tracking-wider">Cabang *</label>
-                    <select name="branch_id" class="w-full px-4 py-3 bg-white border border-ky-border/50 rounded-xl text-[14px] focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors">
+                    <select name="branch_id" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-[14px] focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors">
                         <option value="">-- Pilih Cabang --</option>
                         @foreach($branches as $branch)
                             <option value="{{ $branch->id }}">{{ $branch->name }}</option>
@@ -29,7 +29,7 @@
                 </div>
                 <div>
                     <label class="block mb-2 text-[12px] font-bold text-ky-text/80 uppercase tracking-wider">Program *</label>
-                    <select name="program_id" class="w-full px-4 py-3 bg-white border border-ky-border/50 rounded-xl text-[14px] focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors">
+                    <select name="program_id" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-[14px] focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors">
                         <option value="">-- Pilih Program --</option>
                         @foreach($programs as $program)
                             <option value="{{ $program->id }}" {{ request('program') == $program->id ? 'selected' : '' }}>
@@ -42,30 +42,30 @@
 
             <div class="mb-5">
                 <label class="block mb-2 text-[12px] font-bold text-ky-text/80 uppercase tracking-wider">Nama Lengkap *</label>
-                <input name="name" type="text" class="w-full px-4 py-3 bg-white border border-ky-border/50 rounded-xl text-[14px] focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors" required>
+                <input name="name" type="text" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-[14px] focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors" required>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
                 <div>
                     <label class="block mb-2 text-[12px] font-bold text-ky-text/80 uppercase tracking-wider">Email *</label>
-                    <input name="email" type="email" class="w-full px-4 py-3 bg-white border border-ky-border/50 rounded-xl text-[14px] focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors" required>
+                    <input name="email" type="email" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-[14px] focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors" required>
                 </div>
                 <div>
                     <label class="block mb-2 text-[12px] font-bold text-ky-text/80 uppercase tracking-wider">Asal Kota *</label>
-                    <input name="city" type="text" class="w-full px-4 py-3 bg-white border border-ky-border/50 rounded-xl text-[14px] focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors" required>
+                    <input name="city" type="text" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-[14px] focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors" required>
                 </div>
             </div>
 
             <div class="mb-8">
                 <label class="block mb-2 text-[12px] font-bold text-ky-text/80 uppercase tracking-wider">WhatsApp *</label>
                 <div class="flex">
-                    <span class="inline-flex items-center px-4 bg-[#F8F9FA] border border-r-0 border-ky-border/50 rounded-l-xl text-[14px] font-bold text-ky-text/70">+62</span>
-                    <input name="whatsapp" type="tel" placeholder="8xxxxxxxxxx" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')" class="w-full min-w-0 flex-1 px-4 py-3 bg-white border border-ky-border/50 rounded-r-xl text-[14px] focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors" required  minlength="8" maxlength="15">
+                    <span class="inline-flex items-center px-4 bg-[#F8F9FA] border border-r-0 border-slate-300 rounded-l-xl text-[14px] font-bold text-ky-text/70">+62</span>
+                    <input name="whatsapp" type="tel" placeholder="8xxxxxxxxxx" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '')" class="w-full min-w-0 flex-1 px-4 py-3 bg-white border border-slate-300 rounded-r-xl text-[14px] focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors" required  minlength="8" maxlength="15">
                 </div>
             </div>
 
-            <div class="pt-6 border-t border-ky-border/50 flex flex-col-reverse sm:flex-row justify-end gap-3">
-                <a href="{{ url('/') }}" class="px-6 py-3.5 bg-white border border-ky-border/50 rounded-xl text-[13px] font-bold hover:bg-ky-surface transition-colors text-ky-text/70 hover:text-[#06122B] text-center">Batal</a>
+            <div class="pt-6 border-t border-slate-300 flex flex-col-reverse sm:flex-row justify-end gap-3">
+                <a href="{{ url('/') }}" class="px-6 py-3.5 bg-white border border-slate-300 rounded-xl text-[13px] font-bold hover:bg-ky-surface transition-colors text-ky-text/70 hover:text-[#06122B] text-center">Batal</a>
                 <button type="submit" class="px-8 py-3.5 bg-[#06122B] text-white rounded-xl text-[13px] font-bold shadow-md hover:bg-gold hover:text-[#06122B] transition-colors text-center">Submit Pendaftaran</button>
             </div>
         </form>

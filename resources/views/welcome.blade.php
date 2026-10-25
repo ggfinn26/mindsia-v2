@@ -94,14 +94,14 @@
         <!-- Symmetrical 3-Column Grid -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Card 1 -->
-            <div class="bg-white p-10 shadow-sm border border-ky-border/50 hover:shadow-lg transition-all duration-300 rounded-2xl group flex flex-col items-center text-center">
+            <div class="bg-white p-10 shadow-[0_10px_30px_-8px_rgba(6,18,43,0.18)] hover:shadow-lg transition-all duration-300 rounded-2xl group flex flex-col items-center text-center">
                 <div class="w-16 h-16 rounded-full bg-ky-primary/5 flex items-center justify-center text-[24px] font-black text-ky-primary mb-6 group-hover:scale-110 group-hover:bg-gold transition-all">01</div>
                 <h3 class="font-sans text-[20px] font-bold mb-3 text-[#06122B]">English House</h3>
                 <p class="text-[15px] text-ky-text/70 leading-relaxed">Lingkungan belajar yang nyaman seperti di rumah, untuk membangun kebiasaan berbahasa Inggris melalui interaksi sehari-hari.</p>
             </div>
             
             <!-- Card 2 -->
-            <div class="bg-white p-10 shadow-sm border border-ky-border/50 hover:shadow-lg transition-all duration-300 rounded-2xl group flex flex-col items-center text-center">
+            <div class="bg-white p-10 shadow-[0_10px_30px_-8px_rgba(6,18,43,0.18)] hover:shadow-lg transition-all duration-300 rounded-2xl group flex flex-col items-center text-center">
                 <div class="w-16 h-16 rounded-full bg-ky-primary/5 flex items-center justify-center text-[24px] font-black text-ky-primary mb-6 group-hover:scale-110 group-hover:bg-gold transition-all">02</div>
                 <h3 class="font-sans text-[20px] font-bold mb-3 text-[#06122B]">English Cafe</h3>
                 <p class="text-[15px] text-ky-text/70 leading-relaxed">Lingkungan belajar yang santai ala kafe, untuk melatih keberanian berbicara bahasa Inggris melalui obrolan dan interaksi sosial.</p>
@@ -169,7 +169,7 @@
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             @foreach($landingPrograms as $index => $lp)
-            <div class="group bg-white rounded-2xl shadow-[0_10px_30px_-15px_rgba(0,0,0,0.1)] hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] flex flex-col relative overflow-hidden transition-all duration-500 border border-ky-border/50">
+            <div class="group bg-white rounded-2xl shadow-[0_10px_30px_-15px_rgba(0,0,0,0.1)] hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] flex flex-col relative overflow-hidden transition-all duration-500">
                 <!-- Image Header -->
                 <div class="h-64 w-full overflow-hidden relative bg-ky-surface">
                     <img src="{{ $lp->image_url }}" alt="Program {{ $lp->program_name }}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700">
@@ -197,7 +197,7 @@
                     @endif
                     
                     <!-- Promo Box -->
-                    <div class="mb-8 bg-ky-surface p-4 rounded-xl border border-ky-border/50">
+                    <div class="mb-8 bg-slate-50 p-4 rounded-xl">
                         <div class="flex items-center gap-2 mb-1.5">
                             <span class="material-symbols-outlined text-[16px] text-gold">workspace_premium</span>
                             <div class="text-[11px] font-black text-[#06122B] uppercase tracking-wider">Limited Time Offer</div>
@@ -235,7 +235,7 @@
         </div>
 
         @if($testimonials->isEmpty())
-        <div class="p-12 text-center border-2 border-dashed border-ky-border/60 rounded-2xl max-w-md mx-auto">
+        <div class="p-12 text-center border-2 border-dashed border-slate-200 rounded-2xl max-w-md mx-auto">
             <span class="material-symbols-outlined text-[48px] text-ky-text/40 block mb-2">format_quote</span>
             <p class="text-sm font-semibold text-ky-text/60">Belum ada testimoni.</p>
         </div>
@@ -254,12 +254,12 @@
                             <img src="{{ $testi->image_url }}" alt="Testimoni {{ $testi->name }}" class="w-full h-full object-cover" loading="lazy">
                         </div>
                     @else
-                        <div class="w-full h-full rounded-3xl bg-white border border-ky-border/40 shadow-[0_25px_50px_-12px_rgba(6,18,43,0.35)] p-8 md:p-9 flex flex-col text-left relative">
+                        <div class="w-full h-full rounded-3xl bg-white shadow-[0_25px_50px_-12px_rgba(6,18,43,0.35)] p-8 md:p-9 flex flex-col text-left relative">
                             <span class="material-symbols-outlined absolute top-6 right-6 text-[56px] text-ky-primary/5 select-none pointer-events-none">format_quote</span>
                             <p class="text-[15px] md:text-[17px] text-[#06122B] leading-relaxed italic relative z-10 flex-1 overflow-hidden">
                                 "{{ $testi->quote }}"
                             </p>
-                            <div class="flex items-center gap-3 pt-5 mt-4 border-t border-ky-border/40">
+                            <div class="flex items-center gap-3 pt-5 mt-4 border-t border-slate-200">
                                 <div class="w-12 h-12 rounded-full bg-ky-primary/10 flex items-center justify-center text-ky-primary font-bold text-[18px] shrink-0">
                                     {{ substr($testi->name, 0, 1) }}
                                 </div>
@@ -281,11 +281,11 @@
             @if($testimonials->count() > 1)
             <div class="flex justify-center items-center gap-4 mt-10">
                 <button type="button" @click="prev()" aria-label="Sebelumnya"
-                        class="w-12 h-12 rounded-full border border-ky-border flex items-center justify-center text-[#06122B] hover:bg-[#06122B] hover:text-white hover:border-[#06122B] transition-colors">
+                        class="w-12 h-12 rounded-full border border-slate-300 flex items-center justify-center text-[#06122B] hover:bg-[#06122B] hover:text-white hover:border-[#06122B] transition-colors">
                     <span class="material-symbols-outlined">arrow_back</span>
                 </button>
                 <button type="button" @click="next()" aria-label="Berikutnya"
-                        class="w-12 h-12 rounded-full border border-ky-border flex items-center justify-center text-[#06122B] hover:bg-[#06122B] hover:text-white hover:border-[#06122B] transition-colors">
+                        class="w-12 h-12 rounded-full border border-slate-300 flex items-center justify-center text-[#06122B] hover:bg-[#06122B] hover:text-white hover:border-[#06122B] transition-colors">
                     <span class="material-symbols-outlined">arrow_forward</span>
                 </button>
             </div>

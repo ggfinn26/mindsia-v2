@@ -76,18 +76,18 @@
             @if($items->count() > 1)
             <div class="flex justify-center items-center gap-4 mt-6">
                 <button type="button" @click="prev()" aria-label="Sebelumnya"
-                        class="w-12 h-12 rounded-full border border-ky-border flex items-center justify-center text-[#06122B] hover:bg-[#06122B] hover:text-white hover:border-[#06122B] transition-colors">
+                        class="w-12 h-12 rounded-full border border-slate-300 flex items-center justify-center text-[#06122B] hover:bg-[#06122B] hover:text-white hover:border-[#06122B] transition-colors">
                     <span class="material-symbols-outlined">arrow_back</span>
                 </button>
                 <button type="button" @click="next()" aria-label="Berikutnya"
-                        class="w-12 h-12 rounded-full border border-ky-border flex items-center justify-center text-[#06122B] hover:bg-[#06122B] hover:text-white hover:border-[#06122B] transition-colors">
+                        class="w-12 h-12 rounded-full border border-slate-300 flex items-center justify-center text-[#06122B] hover:bg-[#06122B] hover:text-white hover:border-[#06122B] transition-colors">
                     <span class="material-symbols-outlined">arrow_forward</span>
                 </button>
             </div>
             @endif
         </div>
         @else
-        <div class="p-12 border border-dashed border-ky-border/80 text-ky-text/50 text-center rounded-2xl max-w-md mx-auto">
+        <div class="p-12 border border-dashed border-slate-200 text-slate-400 text-center rounded-2xl max-w-md mx-auto">
             Belum ada foto galeri.
         </div>
         @endif

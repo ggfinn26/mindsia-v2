@@ -21,7 +21,7 @@
 </a>
 
 {{-- Nav --}}
-<nav id="lp-nav" x-data="{ mobileMenuOpen: false }" class="fixed top-0 w-full z-40 bg-white/90 backdrop-blur-md border-b border-ky-border/50 transition-all duration-300 shadow-sm" aria-label="Navigasi utama">
+<nav id="lp-nav" x-data="{ mobileMenuOpen: false }" class="fixed top-0 w-full z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 transition-all duration-300 shadow-sm" aria-label="Navigasi utama">
     <div class="max-w-[1100px] mx-auto px-6 flex items-center justify-between h-[68px] md:h-[100px]">
         <a href="{{ url('/') }}" class="hover:opacity-80 transition-opacity" title="MINDSIA">
             <!-- Normal logo (not inverted) -->
@@ -106,7 +106,7 @@
 </main>
 
 {{-- Footer --}}
-<footer class="bg-ky-card border-t border-ky-border mt-20" aria-label="Footer">
+<footer class="bg-ky-card border-t border-slate-200 mt-20" aria-label="Footer">
     <div class="max-w-[1100px] mx-auto px-6 pt-14 pb-8">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 mb-12">
             <div class="md:col-span-1">
@@ -154,7 +154,7 @@
                 </div>
             </div>
         </div>
-        <div class="border-t border-ky-border pt-6 text-center">
+        <div class="border-t border-slate-200 pt-6 text-center">
             <p class="text-[13px] text-ky-text/50">© {{ date('Y') }} MINDSIA English Course</p>
         </div>
     </div>

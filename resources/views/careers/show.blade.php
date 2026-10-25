@@ -11,9 +11,9 @@
             Kembali ke Daftar Karir
         </a>
 
-        <div class="bg-white rounded-2xl shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] border border-ky-border/50 overflow-hidden">
+        <div class="bg-white rounded-2xl shadow-[0_20px_40px_-15px_rgba(6,18,43,0.12)] overflow-hidden">
             <!-- Header -->
-            <div class="p-8 md:p-12 border-b border-ky-border/50 relative overflow-hidden">
+            <div class="p-8 md:p-12 border-b border-slate-200 relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-64 h-64 bg-ky-surface rounded-full -mr-20 -mt-20 opacity-50 z-0"></div>
                 
                 <div class="relative z-10">
@@ -44,14 +44,14 @@
                     <p class="mb-8 leading-relaxed">{{ $job->job_description }}</p>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-                        <div class="bg-ky-surface p-6 rounded-xl border border-ky-border/50">
+                        <div class="bg-slate-50 p-6 rounded-xl">
                             <div class="flex items-center gap-3 mb-4 text-[#06122B]">
                                 <span class="material-symbols-outlined text-gold">school</span>
                                 <h4 class="font-bold m-0">Kualifikasi Pendidikan</h4>
                             </div>
                             <p class="text-[14px] m-0">{{ $job->education_requirement }}</p>
                         </div>
-                        <div class="bg-ky-surface p-6 rounded-xl border border-ky-border/50">
+                        <div class="bg-slate-50 p-6 rounded-xl">
                             <div class="flex items-center gap-3 mb-4 text-[#06122B]">
                                 <span class="material-symbols-outlined text-gold">work_history</span>
                                 <h4 class="font-bold m-0">Pengalaman</h4>
@@ -66,7 +66,7 @@
                     @endif
                 </div>
                 
-                <div class="mt-12 pt-8 border-t border-ky-border/50 flex justify-end">
+                <div class="mt-12 pt-8 border-t border-slate-200 flex justify-end">
                     <a href="{{ route('applicant.register') }}" class="inline-block px-10 py-4 bg-[#06122B] text-white rounded-xl text-[14px] font-bold shadow-lg hover:bg-gold hover:text-[#06122B] transition-all hover:-translate-y-1">Lamar Posisi Ini Sekarang</a>
                 </div>
             </div>

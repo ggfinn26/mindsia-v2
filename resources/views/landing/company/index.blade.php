@@ -74,14 +74,14 @@
                             <p class="text-base">24 Hours English Service Area memadukan English House, English Cafe, dan English Point untuk membiasakan siswa berbahasa penuh waktu.</p>
                         </div>
                     </div>
-                    <div class="p-8 bg-white border border-ky-border/50 rounded-2xl shadow-sm">
+                    <div class="p-8 bg-white rounded-2xl shadow-[0_10px_30px_-8px_rgba(6,18,43,0.18)]">
                         <h4 class="font-bold text-xs tracking-widest uppercase text-ky-primary mb-4">Pilar Belajar MINDSIA</h4>
                         <div class="flex flex-wrap gap-2.5">
-                            <span class="px-3.5 py-1.5 bg-ky-surface border border-ky-border/50 text-[#06122B] text-sm font-medium rounded-lg">Fun Learning</span>
-                            <span class="px-3.5 py-1.5 bg-ky-surface border border-ky-border/50 text-[#06122B] text-sm font-medium rounded-lg">Interactive</span>
-                            <span class="px-3.5 py-1.5 bg-ky-surface border border-ky-border/50 text-[#06122B] text-sm font-medium rounded-lg">Flexible</span>
-                            <span class="px-3.5 py-1.5 bg-ky-surface border border-ky-border/50 text-[#06122B] text-sm font-medium rounded-lg">Relevant</span>
-                            <span class="px-3.5 py-1.5 bg-ky-surface border border-ky-border/50 text-[#06122B] text-sm font-medium rounded-lg">Confident</span>
+                            <span class="px-3.5 py-1.5 bg-slate-50 text-[#06122B] text-sm font-medium rounded-lg">Fun Learning</span>
+                            <span class="px-3.5 py-1.5 bg-slate-50 text-[#06122B] text-sm font-medium rounded-lg">Interactive</span>
+                            <span class="px-3.5 py-1.5 bg-slate-50 text-[#06122B] text-sm font-medium rounded-lg">Flexible</span>
+                            <span class="px-3.5 py-1.5 bg-slate-50 text-[#06122B] text-sm font-medium rounded-lg">Relevant</span>
+                            <span class="px-3.5 py-1.5 bg-slate-50 text-[#06122B] text-sm font-medium rounded-lg">Confident</span>
                         </div>
                     </div>
                 </div>
@@ -91,7 +91,7 @@
 </section>
 
 {{-- VISI & MISI --}}
-<section class="py-16 md:py-24 px-6 bg-white border-t border-ky-border/50" id="visi-misi">
+<section class="py-16 md:py-24 px-6 bg-white border-t border-slate-200" id="visi-misi">
     <div class="max-w-[1100px] mx-auto">
         <div class="mb-24 text-center max-w-[850px] mx-auto">
             <span class="material-symbols-outlined text-ky-primary/20 text-5xl mb-6">visibility</span>
@@ -101,19 +101,19 @@
             </p>
         </div>
         
-        <div class="border-t border-ky-border/50 pt-20">
+        <div class="border-t border-slate-200 pt-20">
             <div class="grid md:grid-cols-12 gap-12">
                 <div class="md:col-span-4">
                     <h2 class="font-sans font-black text-sm text-ky-primary tracking-widest uppercase mb-3">Misi Perusahaan</h2>
                     <h3 class="font-sans font-bold text-3xl text-[#06122B] tracking-tight">Langkah Konkret Kami</h3>
                 </div>
                 <div class="md:col-span-8 grid sm:grid-cols-2 gap-8">
-                    <div class="p-8 bg-ky-surface border border-ky-border/50 rounded-2xl">
+                    <div class="p-8 bg-white rounded-2xl shadow-[0_10px_30px_-8px_rgba(6,18,43,0.18)]">
                         <div class="text-5xl font-black text-ky-primary/15 mb-6">01</div>
                         <h4 class="font-bold text-xl text-[#06122B] mb-3">Ekspansi Jaringan</h4>
                         <p class="text-ky-text/75 leading-relaxed text-lg">Mewujudkan <strong>100 cabang</strong> MINDSIA di seluruh Indonesia pada tahun 2030.</p>
                     </div>
-                    <div class="p-8 bg-ky-surface border border-ky-border/50 rounded-2xl">
+                    <div class="p-8 bg-white rounded-2xl shadow-[0_10px_30px_-8px_rgba(6,18,43,0.18)]">
                         <div class="text-5xl font-black text-ky-primary/15 mb-6">02</div>
                         <h4 class="font-bold text-xl text-[#06122B] mb-3">Penciptaan Dampak</h4>
                         <p class="text-ky-text/75 leading-relaxed text-lg">Mewujudkan <strong>100.000 member</strong> pada tahun 2030 yang mampu berbahasa Inggris dengan fasih.</p>
@@ -125,10 +125,10 @@
 </section>
 
 {{-- FILOSOFI LOGO --}}
-<section class="py-16 md:py-24 px-6 bg-ky-surface border-t border-ky-border/50" id="filosofi">
+<section class="py-16 md:py-24 px-6 bg-ky-surface border-t border-slate-200" id="filosofi">
     <div class="max-w-[1100px] mx-auto">
         <div class="grid md:grid-cols-12 gap-16 items-center">
-            <div class="md:col-span-5 flex justify-center p-12 bg-white rounded-[2rem] border border-ky-border/50 shadow-sm">
+            <div class="md:col-span-5 flex justify-center p-12 bg-white rounded-[2rem] shadow-[0_10px_30px_-8px_rgba(6,18,43,0.18)]">
                 <img src="/img/logo/mindsia-logo.png" alt="Logo MINDSIA" class="w-full max-w-[260px] opacity-90 mix-blend-multiply">
             </div>
             <div class="md:col-span-7">
@@ -188,7 +188,7 @@
 </section>
 
 {{-- KODE ETIK --}}
-<section class="py-16 md:py-24 px-6 bg-white border-t border-ky-border/50" id="kode-etik">
+<section class="py-16 md:py-24 px-6 bg-white border-t border-slate-200" id="kode-etik">
     <div class="max-w-[1100px] mx-auto text-center">
         <h2 class="font-sans font-black text-sm text-ky-primary tracking-widest uppercase mb-3">Nilai Inti</h2>
         <h3 class="font-sans font-bold text-3xl md:text-4xl text-[#06122B] tracking-tight mb-16">Kode Etik Perusahaan</h3>
@@ -205,7 +205,7 @@
 </section>
 
 {{-- STRUKTUR KEPEMIMPINAN --}}
-<section class="py-16 md:py-24 px-6 bg-ky-surface border-t border-ky-border/50" id="struktur">
+<section class="py-16 md:py-24 px-6 bg-ky-surface border-t border-slate-200" id="struktur">
     <div class="max-w-[1100px] mx-auto">
         <div class="mb-16 text-center">
             <h2 class="font-sans font-black text-sm text-ky-primary tracking-widest uppercase mb-3">Manajemen</h2>
@@ -213,8 +213,8 @@
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
             @forelse($leaders as $leader)
-            <div class="bg-white p-6 rounded-2xl border border-ky-border/50 text-center shadow-sm hover:border-ky-primary/30 transition-colors flex flex-col h-full">
-                <div class="w-full mb-4 flex-grow flex items-center justify-center rounded-xl bg-ky-primary/5 overflow-hidden border border-ky-primary/10">
+            <div class="bg-white p-6 rounded-2xl text-center shadow-[0_10px_30px_-8px_rgba(6,18,43,0.18)] hover:shadow-lg transition-shadow flex flex-col h-full">
+                <div class="w-full mb-4 flex-grow flex items-center justify-center rounded-xl bg-slate-50 overflow-hidden">
                     @if($leader->photo_url)
                         <img src="{{ $leader->photo_url }}" alt="{{ $leader->name }}" class="w-full h-auto object-contain block">
                     @else
@@ -267,7 +267,7 @@
 ])
 
 {{-- OUR HEADQUARTER --}}
-<section class="py-16 md:py-24 px-6 bg-white border-t border-ky-border/50" id="headquarter">
+<section class="py-16 md:py-24 px-6 bg-white border-t border-slate-200" id="headquarter">
     <div class="max-w-[1100px] mx-auto">
         <div class="grid md:grid-cols-12 gap-12 items-center">
             <div class="md:col-span-5">
@@ -276,7 +276,7 @@
                 <p class="text-ky-text/75 text-lg leading-relaxed mb-10">
                     Kunjungi kantor pusat kami untuk berdiskusi langsung mengenai program unggulan, peluang kemitraan, maupun informasi karir secara komprehensif.
                 </p>
-                <div class="flex items-start gap-5 p-6 bg-ky-surface border border-ky-border/50 rounded-2xl">
+                <div class="flex items-start gap-5 p-6 bg-white rounded-2xl shadow-[0_10px_30px_-8px_rgba(6,18,43,0.18)]">
                     <div class="w-12 h-12 shrink-0 rounded-full bg-ky-primary/10 flex items-center justify-center text-ky-primary mt-0.5">
                         <span class="material-symbols-outlined text-[24px]">location_on</span>
                     </div>
@@ -291,7 +291,7 @@
                 </div>
             </div>
             <div class="md:col-span-7">
-                <div class="w-full h-[450px] rounded-[2rem] overflow-hidden border border-ky-border/50 shadow-sm bg-gray-100">
+                <div class="w-full h-[450px] rounded-[2rem] overflow-hidden shadow-[0_10px_30px_-8px_rgba(6,18,43,0.18)] bg-gray-100">
                     <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d729.7438572271869!2d107.71931406687877!3d-6.925367717518738!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68dd35656d3575%3A0x6ceefa4593eacbca!2sMINDSIA%20BANDUNG%20I.%20CIPADUNG!5e0!3m2!1sid!2sid!4v1789320988600!5m2!1sid!2sid" class="w-full h-full border-0" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
                 </div>
             </div>
@@ -300,7 +300,7 @@
 </section>
 
 {{-- LEVEL UP PROJECT & SUBDOMAIN --}}
-<section class="py-32 px-6 bg-ky-surface border-t border-ky-border/50 text-center" id="levelup">
+<section class="py-32 px-6 bg-ky-surface border-t border-slate-200 text-center" id="levelup">
     <div class="max-w-[800px] mx-auto">
         <div class="w-16 h-16 mx-auto bg-ky-primary/10 text-ky-primary rounded-2xl flex items-center justify-center mb-8">
             <span class="material-symbols-outlined text-[32px]">rocket_launch</span>
@@ -313,7 +313,7 @@
             <a href="{{ url('/') }}#program" class="inline-flex items-center justify-center bg-[#06122B] text-white font-bold py-4 px-8 rounded-xl hover:bg-black transition-colors shadow-sm">
                 Lihat Program Kami
             </a>
-            <a href="{{ config('app.url_karir') }}" class="inline-flex items-center justify-center bg-white border border-ky-border/80 text-[#06122B] font-bold py-4 px-8 rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
+            <a href="{{ config('app.url_karir') }}" class="inline-flex items-center justify-center bg-white border border-slate-300 text-[#06122B] font-bold py-4 px-8 rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
                 Karir MINDSIA
             </a>
         </div>

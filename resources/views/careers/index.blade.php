@@ -25,7 +25,7 @@
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="p-8 rounded-2xl bg-ky-surface border border-ky-border/50 text-center group hover:border-gold/50 transition-colors">
+            <div class="p-8 rounded-2xl bg-white shadow-[0_10px_30px_-8px_rgba(6,18,43,0.18)] text-center group border border-transparent hover:border-gold/50 transition-all">
                 <div class="w-16 h-16 bg-[#06122B] text-gold rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                     <span class="material-symbols-outlined text-[32px]">school</span>
                 </div>
@@ -33,7 +33,7 @@
                 <p class="text-[14px] text-ky-text/70">Kembangkan diri Anda di lingkungan yang sangat mendukung pertumbuhan intelektual dan profesional.</p>
             </div>
             
-            <div class="p-8 rounded-2xl bg-ky-surface border border-ky-border/50 text-center group hover:border-gold/50 transition-colors">
+            <div class="p-8 rounded-2xl bg-white shadow-[0_10px_30px_-8px_rgba(6,18,43,0.18)] text-center group border border-transparent hover:border-gold/50 transition-all">
                 <div class="w-16 h-16 bg-[#06122B] text-gold rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                     <span class="material-symbols-outlined text-[32px]">trending_up</span>
                 </div>
@@ -41,7 +41,7 @@
                 <p class="text-[14px] text-ky-text/70">Kami menyediakan jalur promosi dan evaluasi KPI yang transparan untuk setiap anggota tim.</p>
             </div>
             
-            <div class="p-8 rounded-2xl bg-ky-surface border border-ky-border/50 text-center group hover:border-gold/50 transition-colors">
+            <div class="p-8 rounded-2xl bg-white shadow-[0_10px_30px_-8px_rgba(6,18,43,0.18)] text-center group border border-transparent hover:border-gold/50 transition-all">
                 <div class="w-16 h-16 bg-[#06122B] text-gold rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                     <span class="material-symbols-outlined text-[32px]">location_city</span>
                 </div>
@@ -63,7 +63,7 @@
 
         @if($openings->isEmpty())
         <!-- Empty State -->
-        <div class="w-full bg-white rounded-2xl shadow-sm border border-ky-border/50 p-16 text-center">
+        <div class="w-full bg-white rounded-2xl shadow-[0_10px_30px_-8px_rgba(6,18,43,0.18)] p-16 text-center">
             <div class="text-[48px] text-ky-text/20 mb-6 font-['Material_Symbols_Outlined']">work_off</div>
             <h3 class="text-[20px] font-bold text-[#06122B] mb-2">Belum Ada Lowongan</h3>
             <p class="text-[15px] text-ky-text/60">Saat ini belum ada posisi yang sedang kami cari. Pantau terus halaman ini untuk update terbaru.</p>
@@ -72,7 +72,7 @@
         <!-- Job List -->
         <div class="flex flex-col gap-6 w-full">
             @foreach($openings as $req)
-            <a href="{{ route('careers.show', $req->id) }}" class="group bg-white rounded-2xl shadow-sm border border-ky-border/50 p-8 hover:border-[#06122B]/20 transition-all duration-300 block hover:shadow-[0_15px_30px_-10px_rgba(0,0,0,0.1)] relative overflow-hidden">
+            <a href="{{ route('careers.show', $req->id) }}" class="group bg-white rounded-2xl shadow-[0_10px_30px_-8px_rgba(6,18,43,0.18)] border border-transparent p-8 hover:border-[#06122B]/20 transition-all duration-300 block hover:shadow-[0_15px_30px_-10px_rgba(0,0,0,0.1)] relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-ky-surface rounded-full -mr-10 -mt-10 opacity-50 group-hover:scale-150 transition-transform duration-700 ease-out z-0"></div>
                 <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div>
@@ -88,15 +88,15 @@
                     
                     <div class="flex flex-wrap md:justify-end gap-2">
                         @if($req->education_requirement)
-                        <span class="text-[11px] font-bold bg-ky-surface text-ky-text/70 px-3 py-1.5 uppercase tracking-wider rounded-lg border border-ky-border/50 flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px]">school</span> {{ $req->education_requirement }}</span>
+                        <span class="text-[11px] font-bold bg-slate-100 text-slate-500 px-3 py-1.5 uppercase tracking-wider rounded-lg flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px]">school</span> {{ $req->education_requirement }}</span>
                         @endif
                         @if($req->experience_requirement)
-                        <span class="text-[11px] font-bold bg-ky-surface text-ky-text/70 px-3 py-1.5 uppercase tracking-wider rounded-lg border border-ky-border/50 flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px]">work_history</span> {{ $req->experience_requirement }}</span>
+                        <span class="text-[11px] font-bold bg-slate-100 text-slate-500 px-3 py-1.5 uppercase tracking-wider rounded-lg flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px]">work_history</span> {{ $req->experience_requirement }}</span>
                         @endif
                     </div>
                 </div>
                 
-                <div class="relative z-10 mt-6 pt-6 border-t border-ky-border/50 flex items-center justify-between text-[13px] font-bold text-[#06122B] group-hover:text-gold transition-colors">
+                <div class="relative z-10 mt-6 pt-6 border-t border-slate-200 flex items-center justify-between text-[13px] font-bold text-[#06122B] group-hover:text-gold transition-colors">
                     <span class="uppercase tracking-wider">Lihat Detail & Lamar</span>
                     <div class="w-10 h-10 rounded-full bg-ky-surface group-hover:bg-[#06122B] group-hover:text-gold flex items-center justify-center transition-all shadow-sm">
                         <span class="material-symbols-outlined">arrow_forward</span>
