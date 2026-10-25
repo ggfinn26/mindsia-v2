@@ -89,7 +89,7 @@ class MemberRegistrationService
     private function calculateDiscount(Discount $discount, int $originalPrice): int
     {
         if ($discount->discount_type === 'percentage') {
-            return (int) round($originalPrice * $discount->discount_nominal / 100);
+            return min((int) round($originalPrice * $discount->discount_nominal / 100), $originalPrice);
         }
 
         return min($discount->discount_nominal, $originalPrice);
