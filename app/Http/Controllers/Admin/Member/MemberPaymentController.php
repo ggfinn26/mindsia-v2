@@ -14,6 +14,7 @@ use App\Models\MemberRegistration;
 use App\Models\ProspectiveMember;
 use App\Repositories\Member\MemberRegistrationRepository;
 use App\Services\Marketing\MarketingSnapshotService;
+use App\Services\Member\MemberRegistrationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +25,7 @@ class MemberPaymentController extends Controller
     public function __construct(
         private readonly MemberRegistrationRepository $registrationRepo,
         private readonly MarketingSnapshotService $snapshotService,
+        private readonly MemberRegistrationService $registrationService,
     ) {}
 
     public function store(Request $request, MemberRegistration $registration): RedirectResponse
@@ -72,6 +74,10 @@ class MemberPaymentController extends Controller
 
             $this->registrationRepo->syncPaymentStatus($registration);
             $registration->refresh();
+
+            if (($data['payment_status'] ?? null) === 'paid') {
+                $this->registrationService->consumePromoQuota($registration);
+            }
 
             if ($registration->payment_status !== 'unpaid') {
                 MemberAccount::where('members_data_id', $membersDataId)

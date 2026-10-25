@@ -30,10 +30,6 @@ class MemberRegistrationService
                 $this->validateDiscount($discount, $data['program_id']);
 
                 $discountAmount = $this->calculateDiscount($discount, $originalPrice);
-
-                if ($discount->discount_quota !== null) {
-                    $discount->decrement('discount_quota');
-                }
             }
 
             $installmentCount = $plan->type === 'cash' ? 1 : (int) $plan->installment_count;
@@ -60,6 +56,32 @@ class MemberRegistrationService
             $this->generateInstallments($registration, $plan);
 
             return $registration;
+        });
+    }
+
+    /**
+     * Konsumsi quota promo saat pembayaran pertama berhasil. Idempotent (sekali per registrasi).
+     */
+    public function consumePromoQuota(MemberRegistration $registration): void
+    {
+        if (! $registration->discount_id || $registration->promo_quota_consumed) {
+            return;
+        }
+
+        DB::transaction(function () use ($registration) {
+            $locked = MemberRegistration::whereKey($registration->id)->lockForUpdate()->first();
+
+            if (! $locked || ! $locked->discount_id || $locked->promo_quota_consumed) {
+                return;
+            }
+
+            $discount = Discount::whereKey($locked->discount_id)->lockForUpdate()->first();
+
+            if ($discount && $discount->discount_quota !== null && $discount->discount_quota > 0) {
+                $discount->decrement('discount_quota');
+            }
+
+            $locked->update(['promo_quota_consumed' => true]);
         });
     }
 

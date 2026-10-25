@@ -24,6 +24,7 @@ class MemberRegistration extends Model
         'discount_code',
         'discount_amount',
         'final_price',
+        'promo_quota_consumed',
         'graduation_status',
         'payment_status',
         'installment_type',
@@ -35,6 +36,7 @@ class MemberRegistration extends Model
         'original_price' => 'integer',
         'discount_amount' => 'integer',
         'final_price' => 'integer',
+        'promo_quota_consumed' => 'boolean',
     ];
 
     public function getFormattedNumberAttribute(): string
