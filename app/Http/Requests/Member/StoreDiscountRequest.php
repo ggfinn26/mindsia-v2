@@ -16,7 +16,7 @@ class StoreDiscountRequest extends FormRequest
         return [
             'discount_code' => ['required', 'string', 'max:50', 'unique:discounts,discount_code'],
             'discount_type' => ['required', 'in:percentage,fixed_amount'],
-            'discount_nominal' => ['required', 'integer', 'min:0'],
+            'discount_nominal' => ['required', 'integer', 'min:0', $this->discount_type === 'percentage' ? 'max:100' : 'max:4294967295'],
             'discount_quota' => ['nullable', 'integer', 'min:0'],
             'starts_at' => ['nullable', 'date'],
             'expired_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
