@@ -65,6 +65,14 @@ class MemberRegistrationService
 
     private function validateDiscount(Discount $discount, int $programId): void
     {
+        if (! $discount->is_active) {
+            throw new \RuntimeException('Diskon tidak aktif.');
+        }
+
+        if ($discount->starts_at && $discount->starts_at->isFuture()) {
+            throw new \RuntimeException('Diskon belum berlaku.');
+        }
+
         if (! $discount->isValidForProgram($programId)) {
             throw new \RuntimeException('Diskon tidak berlaku untuk program ini.');
         }
