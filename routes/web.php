@@ -45,6 +45,7 @@ use App\Http\Controllers\Admin\Kpi\KpiTemplateIndicatorController;
 use App\Http\Controllers\Admin\Landing\LandingLeaderController;
 use App\Http\Controllers\Admin\Landing\LandingPhotoController;
 use App\Http\Controllers\Admin\Landing\LandingTestimonialController;
+use App\Http\Controllers\Admin\Landing\PhotoCategoryController;
 use App\Http\Controllers\Admin\Letter\InLetterController;
 use App\Http\Controllers\Admin\Letter\LetterTemplateController;
 use App\Http\Controllers\Admin\Letter\OutLetterViaGenerateController;
@@ -610,6 +611,7 @@ Route::domain($sub('employee'))
         // Landing Page Management
         Route::prefix('admin/landing')->name('admin.landing.')->group(function () {
             Route::patch('photos/reorder', [LandingPhotoController::class, 'reorder'])->name('photos.reorder');
+            Route::resource('categories', PhotoCategoryController::class)->except(['show']);
             Route::resource('photos', LandingPhotoController::class)->except(['show']);
             Route::resource('leaders', LandingLeaderController::class)->except(['show']);
             Route::get('testimonials/from-review/{memberReview}', [LandingTestimonialController::class, 'fromReview'])->name('testimonials.from-review');

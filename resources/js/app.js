@@ -10,6 +10,8 @@ import "./select-enhance-with-semua-option";
 import "./branch-picker";
 import "./socialization-create";
 import "./wa-picker";
+import "./gallery-coverflow";
+import "./count-up";
 window.Alpine = Alpine;
 Alpine.plugin(collapse);
 Alpine.store("dashboard", { customizing: false });

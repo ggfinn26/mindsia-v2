@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Landing\StoreActivityPhotoRequest;
 use App\Http\Requests\Landing\UpdateActivityPhotoRequest;
 use App\Models\ActivityPhoto;
+use App\Models\PhotoCategory;
 use App\Services\TelegramStorageService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -19,7 +20,8 @@ class LandingPhotoController extends Controller
     public function index(Request $request): View
     {
         $section = $request->input('section', 'company');
-        $photos = ActivityPhoto::where('section', $section)
+        $photos = ActivityPhoto::with('category')
+            ->where('section', $section)
             ->orderBy('sort_order')
             ->get();
 
@@ -29,8 +31,9 @@ class LandingPhotoController extends Controller
     public function create(Request $request): View
     {
         $section = $request->input('section', 'company');
+        $categories = PhotoCategory::ordered()->get();
 
-        return view('admin.landing.photos.create', compact('section'));
+        return view('admin.landing.photos.create', compact('section', 'categories'));
     }
 
     public function store(StoreActivityPhotoRequest $request): RedirectResponse
@@ -45,6 +48,7 @@ class LandingPhotoController extends Controller
 
         ActivityPhoto::create([
             'section' => $request->section,
+            'category_id' => $request->category_id,
             'title' => $request->title,
             'caption' => $request->caption,
             'storage_path' => $result['file_id'],
@@ -58,12 +62,14 @@ class LandingPhotoController extends Controller
 
     public function edit(ActivityPhoto $photo): View
     {
-        return view('admin.landing.photos.edit', compact('photo'));
+        $categories = PhotoCategory::ordered()->get();
+
+        return view('admin.landing.photos.edit', compact('photo', 'categories'));
     }
 
     public function update(UpdateActivityPhotoRequest $request, ActivityPhoto $photo): RedirectResponse
     {
-        $data = $request->only(['title', 'caption', 'sort_order']);
+        $data = $request->only(['category_id', 'title', 'caption', 'sort_order']);
         $data['is_active'] = $request->boolean('is_active', $photo->is_active);
 
         if ($request->hasFile('photo')) {

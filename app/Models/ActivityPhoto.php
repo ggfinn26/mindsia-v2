@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
 
 class ActivityPhoto extends Model
 {
     protected $fillable = [
         'section',
+        'category_id',
         'title',
         'caption',
         'telegram_file_id',
@@ -20,6 +22,11 @@ class ActivityPhoto extends Model
     ];
 
     protected $casts = ['is_active' => 'boolean'];
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(PhotoCategory::class, 'category_id');
+    }
 
     public function scopeVisible(Builder $query): void
     {

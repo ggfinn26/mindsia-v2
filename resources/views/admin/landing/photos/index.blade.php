@@ -19,12 +19,22 @@
                style="color: var(--dash-text-muted);">Kelola foto galeri beranda dan company profile.</p>
         </div>
         @can('landing.photo.manage')
-        <a href="{{ route('admin.landing.photos.create', ['section' => $section]) }}"
-           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity shrink-0"
-           style="background-color: var(--dash-primary);">
-            <span class="material-symbols-outlined text-[18px]">add_photo_alternate</span>
-            Tambah Foto
-        </a>
+        <div class="flex items-center gap-2 shrink-0">
+            <a href="{{ route('admin.landing.categories.index') }}"
+               class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+               style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+               onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+               onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                <span class="material-symbols-outlined text-[18px]">sell</span>
+                Kelola Kategori
+            </a>
+            <a href="{{ route('admin.landing.photos.create', ['section' => $section]) }}"
+               class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+               style="background-color: var(--dash-primary);">
+                <span class="material-symbols-outlined text-[18px]">add_photo_alternate</span>
+                Tambah Foto
+            </a>
+        </div>
         @endcan
     </div>
 
@@ -84,6 +94,11 @@
             </div>
             <div class="p-4 flex flex-col justify-between flex-grow">
                 <div>
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold mb-1.5"
+                          style="background-color: var(--dash-nav-hover-bg); color: var(--dash-primary-text); border: 1px solid var(--dash-card-border);">
+                        <span class="material-symbols-outlined text-[12px]">sell</span>
+                        {{ $photo->category?->name ?? 'Umum' }}
+                    </span>
                     <p class="text-sm font-semibold truncate" style="color: var(--dash-text-heading);">
                         {{ $photo->title ?: '(Tanpa judul)' }}
                     </p>

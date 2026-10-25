@@ -12,7 +12,7 @@ class CompanyController extends Controller
 {
     public function __invoke(Request $request)
     {
-        $photos = ActivityPhoto::forSection('company')->get();
+        $photos = ActivityPhoto::with('category')->forSection('company')->get();
 
         $leaders = LandingLeader::visible()->get();
 

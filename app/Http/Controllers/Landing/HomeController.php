@@ -15,7 +15,7 @@ class HomeController extends Controller
     {
         $landingPrograms = Program::where('is_active', true)->get();
 
-        $galleries = ActivityPhoto::forSection('home')->get();
+        $galleries = ActivityPhoto::with('category')->forSection('home')->get();
 
         $testimonials = LandingTestimonial::visible()->get()
             ->map(fn ($t) => (object) [

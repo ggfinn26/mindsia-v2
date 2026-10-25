@@ -19,14 +19,18 @@
 
         </div>
         
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 pt-12 border-t border-white/10">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 pt-12 border-t border-white/10">
             <div>
                 <div class="text-xs font-semibold text-white/40 tracking-widest uppercase mb-2">Berdiri Sejak</div>
                 <div class="text-4xl font-bold text-white">2019</div>
             </div>
             <div>
-                <div class="text-xs font-semibold text-white/40 tracking-widest uppercase mb-2">Target Cabang (2025)</div>
-                <div class="text-4xl font-bold text-white">24</div>
+                <div class="text-xs font-semibold text-white/40 tracking-widest uppercase mb-2">Cabang pada Tahun 2026</div>
+                <div class="text-4xl font-bold text-white" data-count-to="35">35</div>
+            </div>
+            <div>
+                <div class="text-xs font-semibold text-white/40 tracking-widest uppercase mb-2">Alumni</div>
+                <div class="text-4xl font-bold text-white" data-count-to="10000" data-count-suffix="+">10.000+</div>
             </div>
             <div>
                 <div class="text-xs font-semibold text-white/40 tracking-widest uppercase mb-2">Sistem Pembelajaran</div>
@@ -63,7 +67,7 @@
                     <div class="grid sm:grid-cols-2 gap-10 mb-10">
                         <div>
                             <h4 class="font-bold text-[#06122B] mb-2">Perkembangan Pesat</h4>
-                            <p class="text-base">Berdiri sejak 2019, pada tahun 2025 kami menargetkan 24 cabang yang tersebar di Jawa Barat, Banten, dan Jawa Tengah.</p>
+                            <p class="text-base">Berdiri sejak 2019, pada tahun 2026 kami memiliki 35 cabang yang tersebar di Banten, Jawa Barat, dan Jawa Tengah.</p>
                         </div>
                         <div>
                             <h4 class="font-bold text-[#06122B] mb-2">Sistem 24 HESA</h4>
@@ -253,39 +257,14 @@
 </section>
 
 {{-- GALERI --}}
-<section class="py-16 md:py-24 px-6 bg-white" id="galeri">
-    <div class="max-w-[1100px] mx-auto">
-        <div class="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div>
-                <h2 class="font-sans font-black text-sm text-ky-primary tracking-widest uppercase mb-3">Dokumentasi</h2>
-                <h3 class="font-sans font-bold text-3xl md:text-4xl text-[#06122B] tracking-tight">Galeri MINDSIA</h3>
-            </div>
-        </div>
-        
-        @if($photos->isNotEmpty())
-        <div class="flex flex-col max-w-[1100px] mx-auto">
-            @foreach($photos as $index => $photo)
-            <div class="scroll-reveal opacity-0 translate-y-16 transition-all duration-1000 ease-out flex flex-col md:flex-row {{ $index % 2 == 1 ? 'md:flex-row-reverse' : '' }} gap-10 md:gap-16 items-center mb-32 last:mb-0">
-                
-                <div class="w-full md:w-7/12 rounded-3xl overflow-hidden bg-ky-surface/80 border border-ky-border/40 p-4 shadow-sm group aspect-[4/3]">
-                    <img src="{{ $photo->photo_url }}" alt="{{ $photo->title }}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-1000">
-                </div>
-                
-                <div class="w-full md:w-5/12 px-2 text-center md:text-left">
-                    <h4 class="font-sans font-black text-3xl md:text-4xl text-[#06122B] tracking-tight mb-4">{{ $photo->title }}</h4>
-                    <p class="text-xl text-ky-text/75 leading-relaxed">{{ $photo->caption }}</p>
-                </div>
-
-            </div>
-            @endforeach
-        </div>
-        @else
-        <div class="p-12 border border-dashed border-ky-border/80 text-ky-text/50 text-center rounded-2xl">
-            Belum ada foto galeri.
-        </div>
-        @endif
-    </div>
-</section>
+@include('landing.partials.gallery-carousel', [
+    'items'     => $photos,
+    'sectionId' => 'galeri',
+    'bg'        => 'bg-white',
+    'eyebrow'   => 'Dokumentasi',
+    'title'     => 'Galeri MINDSIA',
+    'subtitle'  => 'Jejak kegiatan dan pencapaian MINDSIA.',
+])
 
 {{-- OUR HEADQUARTER --}}
 <section class="py-16 md:py-24 px-6 bg-white border-t border-ky-border/50" id="headquarter">

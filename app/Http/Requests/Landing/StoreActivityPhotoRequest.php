@@ -15,6 +15,7 @@ class StoreActivityPhotoRequest extends FormRequest
     {
         return [
             'section' => ['required', 'in:home,company'],
+            'category_id' => ['required', 'integer', 'exists:photo_categories,id'],
             'title' => ['nullable', 'string', 'max:150'],
             'caption' => ['nullable', 'string'],
             'photo' => ['required', 'file', 'mimes:webp', 'max:5120'],

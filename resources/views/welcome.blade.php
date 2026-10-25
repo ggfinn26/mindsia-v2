@@ -216,69 +216,55 @@
     </div>
 </section>
 {{-- ═══ MINDSIVERS GALLERY ═══ --}}
-<section class="py-24 px-6 bg-ky-surface" id="gallery" aria-label="Galeri Mindsivers">
-    <div class="max-w-[1200px] mx-auto">
-        <div class="mb-16 border-l-[4px] border-gold pl-6">
-            <h2 class="font-sans font-black text-[36px] md:text-[42px] tracking-tight text-[#06122B] mb-2">Mindsivers</h2>
-            <p class="text-[16px] text-ky-text/70">Momen dan Dokumentasi kegiatan MINDSIA.</p>
-        </div>
-        
-        @if($galleries->isNotEmpty())
-        <div class="flex flex-col max-w-[1100px] mx-auto">
-            @foreach($galleries as $index => $gallery)
-            <div class="scroll-reveal opacity-0 translate-y-16 transition-all duration-1000 ease-out flex flex-col md:flex-row {{ $index % 2 == 1 ? 'md:flex-row-reverse' : '' }} gap-10 md:gap-16 items-center mb-32 last:mb-0">
-                
-                <div class="w-full md:w-7/12 rounded-3xl overflow-hidden shadow-lg group">
-                    <img src="{{ $gallery->image }}" alt="{{ $gallery->title }}" class="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-1000">
-                </div>
-                
-                <div class="w-full md:w-5/12 px-2 text-center md:text-left">
-                    <h3 class="font-sans font-black text-3xl md:text-4xl text-[#06122B] tracking-tight mb-4">{{ $gallery->title }}</h3>
-                    <p class="text-xl text-ky-text/75 leading-relaxed">{{ $gallery->caption ?? '' }}</p>
-                </div>
-
-            </div>
-            @endforeach
-        </div>
-        @endif
-    </div>
-</section>
+@include('landing.partials.gallery-carousel', [
+    'items'     => $galleries,
+    'sectionId' => 'gallery',
+    'bg'        => 'bg-ky-surface',
+    'eyebrow'   => 'Galeri',
+    'title'     => 'Mindsivers',
+    'subtitle'  => 'Momen dan Dokumentasi kegiatan MINDSIA.',
+])
 
 {{-- ═══ TESTIMONI ═══ --}}
 <section class="py-24 px-6 bg-white overflow-hidden" id="testimoni" aria-label="Testimoni">
-    <div class="max-w-[800px] mx-auto text-center">
-        <h2 class="font-sans font-black text-[36px] md:text-[42px] tracking-tight text-[#06122B] mb-4">Kata Mereka</h2>
-        <p class="text-[16px] text-ky-text/70 mb-16">Pengalaman belajar dari alumni dan siswa aktif kami.</p>
-        
-        <!-- Testimonial Carousel -->
+    <div class="max-w-[1200px] mx-auto">
+        <div class="text-center mb-14">
+            <p class="font-sans font-bold text-sm text-ky-primary tracking-widest uppercase mb-3">Testimoni</p>
+            <h2 class="font-sans font-black text-[36px] md:text-[42px] tracking-tight text-[#06122B] mb-3">Kata Mereka</h2>
+            <p class="text-[16px] text-ky-text/70 max-w-xl mx-auto">Pengalaman belajar dari alumni dan siswa aktif kami.</p>
+        </div>
+
         @if($testimonials->isEmpty())
         <div class="p-12 text-center border-2 border-dashed border-ky-border/60 rounded-2xl max-w-md mx-auto">
             <span class="material-symbols-outlined text-[48px] text-ky-text/40 block mb-2">format_quote</span>
             <p class="text-sm font-semibold text-ky-text/60">Belum ada testimoni.</p>
         </div>
         @else
-        <div class="relative w-full h-[550px] md:h-[650px]" id="testimonial-carousel">
-            @foreach($testimonials as $index => $testi)
-                <div class="testi-slide absolute inset-0 w-full h-full flex justify-center items-center opacity-0 pointer-events-none transition-all duration-700 ease-out" 
-                     data-index="{{ $index }}"
-                     style="transform: translateY(40px);">
-                    
+        <div x-data="galleryCoverflow({{ $testimonials->count() }})">
+
+            <div class="relative h-[540px] md:h-[700px]" style="perspective: 1600px;">
+                @foreach($testimonials as $index => $testi)
+                <div class="absolute left-1/2 top-0 w-[340px] h-[480px] md:w-[470px] md:h-[640px] transition-all duration-500 ease-out cursor-pointer"
+                     style="transform-style: preserve-3d;"
+                     :style="slideStyle({{ $index }})"
+                     @click="go({{ $index }})">
+
                     @if($testi->type === 'image' || (is_object($testi->type) && $testi->type->value === 'image'))
-                        <!-- Image/Flyer Testimonial -->
-                        <img src="{{ $testi->image_url }}" alt="Testimoni {{ $testi->name }}" class="max-w-[90vw] max-h-[500px] md:max-h-[600px] w-auto h-auto object-contain rounded-2xl shadow-[0_15px_40px_-15px_rgba(0,0,0,0.2)] bg-white">
+                        <div class="w-full h-full rounded-3xl overflow-hidden shadow-[0_25px_50px_-12px_rgba(6,18,43,0.35)] bg-white">
+                            <img src="{{ $testi->image_url }}" alt="Testimoni {{ $testi->name }}" class="w-full h-full object-cover" loading="lazy">
+                        </div>
                     @else
-                        <!-- Text Testimonial -->
-                        <div class="max-w-[700px] w-full bg-white p-8 md:p-10 rounded-2xl shadow-[0_15px_40px_-15px_rgba(0,0,0,0.15)] relative text-left mx-auto border border-ky-border/40">
-                            <span class="material-symbols-outlined absolute top-8 right-8 text-[60px] text-ky-primary/5 select-none pointer-events-none">format_quote</span>
-                            <p class="text-[16px] md:text-[20px] text-[#06122B] leading-relaxed italic mb-8 relative z-10">
+                        <div class="w-full h-full rounded-3xl bg-white border border-ky-border/40 shadow-[0_25px_50px_-12px_rgba(6,18,43,0.35)] p-8 md:p-9 flex flex-col text-left relative">
+                            <span class="material-symbols-outlined absolute top-6 right-6 text-[56px] text-ky-primary/5 select-none pointer-events-none">format_quote</span>
+                            <p class="text-[15px] md:text-[17px] text-[#06122B] leading-relaxed italic relative z-10 flex-1 overflow-hidden">
                                 "{{ $testi->quote }}"
                             </p>
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 md:w-14 md:h-14 rounded-full bg-ky-primary/10 flex items-center justify-center text-ky-primary font-bold text-[18px] md:text-[20px] shrink-0">
+                            <div class="flex items-center gap-3 pt-5 mt-4 border-t border-ky-border/40">
+                                <div class="w-12 h-12 rounded-full bg-ky-primary/10 flex items-center justify-center text-ky-primary font-bold text-[18px] shrink-0">
                                     {{ substr($testi->name, 0, 1) }}
                                 </div>
                                 <div>
-                                    <div class="font-bold text-[#06122B] text-[16px]">{{ $testi->name }}</div>
+                                    <div class="font-bold text-[#06122B] text-[15px]">{{ $testi->name }}</div>
                                     @if($testi->program || $testi->city)
                                     <div class="text-[13px] text-ky-text/60 font-semibold">
                                         {{ $testi->program }}{{ $testi->program && $testi->city ? ' - ' : '' }}{{ $testi->city }}
@@ -289,30 +275,25 @@
                         </div>
                     @endif
                 </div>
-            @endforeach
-        </div>
+                @endforeach
+            </div>
 
-        {{-- Carousel Indicator Dots --}}
-        @if($testimonials->count() > 1)
-        <div class="flex justify-center items-center gap-2 mt-8">
-            @foreach($testimonials as $index => $testi)
-                <button type="button" class="testi-dot h-2.5 rounded-full transition-all duration-300 {{ $index === 0 ? 'w-8 bg-[#06122B]' : 'w-2.5 bg-ky-text/30' }}" aria-label="Slide {{ $index + 1 }}"></button>
-            @endforeach
+            @if($testimonials->count() > 1)
+            <div class="flex justify-center items-center gap-4 mt-10">
+                <button type="button" @click="prev()" aria-label="Sebelumnya"
+                        class="w-12 h-12 rounded-full border border-ky-border flex items-center justify-center text-[#06122B] hover:bg-[#06122B] hover:text-white hover:border-[#06122B] transition-colors">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                </button>
+                <button type="button" @click="next()" aria-label="Berikutnya"
+                        class="w-12 h-12 rounded-full border border-ky-border flex items-center justify-center text-[#06122B] hover:bg-[#06122B] hover:text-white hover:border-[#06122B] transition-colors">
+                    <span class="material-symbols-outlined">arrow_forward</span>
+                </button>
+            </div>
+            @endif
         </div>
-        @endif
         @endif
     </div>
 </section>
-
-<style>
-    /* Custom Animation Classes for Carousel */
-    .testi-slide.active {
-        opacity: 1 !important;
-        transform: translateY(0) !important;
-        pointer-events: auto !important;
-        z-index: 10;
-    }
-</style>
 
 {{-- === CTA CORPORATE === --}}
 <section class="py-32 px-6 relative text-center overflow-hidden" id="daftar">
@@ -365,60 +346,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     });
-
-    // Testimonial Carousel
-    const slides = document.querySelectorAll('.testi-slide');
-    const dots = document.querySelectorAll('.testi-dot');
-    let currentSlide = 0;
-    let carouselInterval = null;
-
-    function showSlide(index) {
-        if (!slides.length) return;
-        slides.forEach((slide, i) => {
-            slide.classList.remove('active');
-            slide.classList.remove('opacity-100', 'pointer-events-auto');
-            slide.classList.add('opacity-0', 'pointer-events-none');
-            slide.style.transform = 'translateY(40px)';
-            
-            if (i === index) {
-                slide.classList.add('active');
-                slide.classList.add('opacity-100', 'pointer-events-auto');
-                slide.classList.remove('opacity-0', 'pointer-events-none');
-                slide.style.transform = 'translateY(0)';
-            }
-        });
-        
-        dots.forEach((dot, i) => {
-            dot.classList.toggle('w-8', i === index);
-            dot.classList.toggle('bg-[#06122B]', i === index);
-            dot.classList.toggle('w-2.5', i !== index);
-            dot.classList.toggle('bg-ky-text/30', i !== index);
-        });
-    }
-
-    if (slides.length > 0) {
-        showSlide(0);
-        if (slides.length > 1) {
-            carouselInterval = setInterval(() => {
-                currentSlide = (currentSlide + 1) % slides.length;
-                showSlide(currentSlide);
-            }, 5000);
-        }
-        
-        dots.forEach((dot, i) => {
-            dot.addEventListener('click', () => {
-                if (carouselInterval) clearInterval(carouselInterval);
-                currentSlide = i;
-                showSlide(currentSlide);
-                if (slides.length > 1) {
-                    carouselInterval = setInterval(() => {
-                        currentSlide = (currentSlide + 1) % slides.length;
-                        showSlide(currentSlide);
-                    }, 5000);
-                }
-            });
-        });
-    }
 
     // Existing Intersection Observer for Scroll Reveal
     const observer = new IntersectionObserver((entries) => {

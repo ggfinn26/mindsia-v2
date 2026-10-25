@@ -14,6 +14,7 @@ class UpdateActivityPhotoRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'category_id' => ['required', 'integer', 'exists:photo_categories,id'],
             'title' => ['nullable', 'string', 'max:150'],
             'caption' => ['nullable', 'string'],
             'photo' => ['sometimes', 'file', 'mimes:webp', 'max:5120'],

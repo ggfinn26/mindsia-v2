@@ -4,6 +4,7 @@ use App\Enums\TestimonialType;
 use App\Models\ActivityPhoto;
 use App\Models\LandingLeader;
 use App\Models\LandingTestimonial;
+use App\Models\PhotoCategory;
 use App\Models\User;
 use App\Services\TelegramStorageService;
 use Illuminate\Http\UploadedFile;
@@ -79,11 +80,13 @@ it('stores a new landing photo successfully', function () {
             ->andReturn(['file_id' => 'mock_photo_file_id']);
     });
 
+    $category = PhotoCategory::create(['name' => 'Rakernas 2026']);
     $file = UploadedFile::fake()->create('activity.webp', 200, 'image/webp');
 
     $response = $this->actingAs($this->user)
         ->post(route('admin.landing.photos.store'), [
             'section' => 'company',
+            'category_id' => $category->id,
             'title' => 'Foto Baru',
             'caption' => 'Keterangan foto baru',
             'photo' => $file,
@@ -96,6 +99,7 @@ it('stores a new landing photo successfully', function () {
 
     $this->assertDatabaseHas('activity_photos', [
         'section' => 'company',
+        'category_id' => $category->id,
         'title' => 'Foto Baru',
         'storage_path' => 'mock_photo_file_id',
     ]);
@@ -128,8 +132,11 @@ it('updates an existing landing photo successfully', function () {
         'sort_order' => 1,
     ]);
 
+    $category = PhotoCategory::create(['name' => 'PINE']);
+
     $response = $this->actingAs($this->user)
         ->put(route('admin.landing.photos.update', $photo), [
+            'category_id' => $category->id,
             'title' => 'Foto Terupdate',
             'caption' => 'Caption Terupdate',
             'sort_order' => 2,
@@ -141,6 +148,7 @@ it('updates an existing landing photo successfully', function () {
 
     $this->assertDatabaseHas('activity_photos', [
         'id' => $photo->id,
+        'category_id' => $category->id,
         'title' => 'Foto Terupdate',
         'caption' => 'Caption Terupdate',
         'sort_order' => 2,

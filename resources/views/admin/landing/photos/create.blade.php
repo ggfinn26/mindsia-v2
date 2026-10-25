@@ -42,6 +42,29 @@
                 @enderror
             </div>
 
+            {{-- Kategori --}}
+            <div>
+                <label class="block text-sm font-medium mb-1.5" style="color: var(--dash-text-body);">
+                    Kategori <span class="text-red-500">*</span>
+                </label>
+                <select name="category_id" required
+                        class="w-full px-4 py-2.5 text-sm rounded-lg focus:outline-none transition-all"
+                        style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                        onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                        onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                    <option value="">Pilih kategori</option>
+                    @foreach($categories as $category)
+                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                    @endforeach
+                </select>
+                @if($categories->isEmpty())
+                    <p class="mt-1.5 text-xs" style="color: var(--dash-text-muted);">Belum ada kategori. <a href="{{ route('admin.landing.categories.create') }}" class="font-semibold underline">Buat kategori dulu</a>.</p>
+                @endif
+                @error('category_id')
+                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                @enderror
+            </div>
+
             {{-- Judul --}}
             <div>
                 <label class="block text-sm font-medium mb-1.5" style="color: var(--dash-text-body);">
