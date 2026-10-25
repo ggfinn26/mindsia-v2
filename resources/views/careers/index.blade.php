@@ -24,29 +24,53 @@
             <div class="w-16 h-1 bg-gold mx-auto"></div>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="p-8 rounded-2xl bg-white shadow-[0_10px_30px_-8px_rgba(6,18,43,0.18)] text-center group border border-transparent hover:border-gold/50 transition-all">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="p-8 rounded-2xl bg-white shadow-[0_10px_30px_-8px_rgba(6,18,43,0.18)] text-center group border border-transparent hover:border-gold/50 transition-all flex flex-col items-center">
                 <div class="w-16 h-16 bg-[#06122B] text-gold rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                     <span class="material-symbols-outlined text-[32px]">school</span>
                 </div>
-                <h3 class="font-bold text-[20px] text-[#06122B] mb-3">Lingkungan Akademik</h3>
-                <p class="text-[14px] text-ky-text/70">Kembangkan diri Anda di lingkungan yang sangat mendukung pertumbuhan intelektual dan profesional.</p>
+                <h3 class="font-bold text-[20px] text-[#06122B] mb-3">Lingkungan Akademik Profesional</h3>
+                <p class="text-[14px] text-ky-text/70 leading-relaxed">Ekosistem kerja yang kondusif, berbasis literasi, dan mendukung budaya saling berbagi ilmu.</p>
             </div>
             
-            <div class="p-8 rounded-2xl bg-white shadow-[0_10px_30px_-8px_rgba(6,18,43,0.18)] text-center group border border-transparent hover:border-gold/50 transition-all">
+            <div class="p-8 rounded-2xl bg-white shadow-[0_10px_30px_-8px_rgba(6,18,43,0.18)] text-center group border border-transparent hover:border-gold/50 transition-all flex flex-col items-center">
                 <div class="w-16 h-16 bg-[#06122B] text-gold rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                     <span class="material-symbols-outlined text-[32px]">trending_up</span>
                 </div>
-                <h3 class="font-bold text-[20px] text-[#06122B] mb-3">Jenjang Karir Jelas</h3>
-                <p class="text-[14px] text-ky-text/70">Kami menyediakan jalur promosi dan evaluasi KPI yang transparan untuk setiap anggota tim.</p>
+                <h3 class="font-bold text-[20px] text-[#06122B] mb-3">Jenjang Karier Jelas</h3>
+                <p class="text-[14px] text-ky-text/70 leading-relaxed">Kami menyediakan jalur promosi dan evaluasi KPI yang transparan untuk setiap anggota tim.</p>
             </div>
             
-            <div class="p-8 rounded-2xl bg-white shadow-[0_10px_30px_-8px_rgba(6,18,43,0.18)] text-center group border border-transparent hover:border-gold/50 transition-all">
+            <div class="p-8 rounded-2xl bg-white shadow-[0_10px_30px_-8px_rgba(6,18,43,0.18)] text-center group border border-transparent hover:border-gold/50 transition-all flex flex-col items-center">
                 <div class="w-16 h-16 bg-[#06122B] text-gold rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                    <span class="material-symbols-outlined text-[32px]">location_city</span>
+                    <span class="material-symbols-outlined text-[32px]">business_center</span>
                 </div>
-                <h3 class="font-bold text-[20px] text-[#06122B] mb-3">Fasilitas Lengkap</h3>
-                <p class="text-[14px] text-ky-text/70">Nikmati kenyamanan bekerja dengan dukungan fasilitas asrama dan lingkungan kerja bertaraf global.</p>
+                <h3 class="font-bold text-[20px] text-[#06122B] mb-3">Fasilitas Kerja Lengkap</h3>
+                <p class="text-[14px] text-ky-text/70 leading-relaxed">Dukungan ruang kerja yang nyaman, literatur terkini, dan infrastruktur berbasis teknologi modern.</p>
+            </div>
+
+            <div class="p-8 rounded-2xl bg-white shadow-[0_10px_30px_-8px_rgba(6,18,43,0.18)] text-center group border border-transparent hover:border-gold/50 transition-all flex flex-col items-center">
+                <div class="w-16 h-16 bg-[#06122B] text-gold rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-[32px]">payments</span>
+                </div>
+                <h3 class="font-bold text-[20px] text-[#06122B] mb-3">Gaji Pokok Kompetitif</h3>
+                <p class="text-[14px] text-ky-text/70 leading-relaxed">Pemberian imbalan bulanan tetap yang bersaing dan sesuai dengan keahlian serta tanggung jawab Anda.</p>
+            </div>
+
+            <div class="p-8 rounded-2xl bg-white shadow-[0_10px_30px_-8px_rgba(6,18,43,0.18)] text-center group border border-transparent hover:border-gold/50 transition-all flex flex-col items-center">
+                <div class="w-16 h-16 bg-[#06122B] text-gold rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-[32px]">workspace_premium</span>
+                </div>
+                <h3 class="font-bold text-[20px] text-[#06122B] mb-3">Bonus Performa</h3>
+                <p class="text-[14px] text-ky-text/70 leading-relaxed">Apresiasi finansial tambahan yang diberikan berdasarkan pencapaian target dan produktivitas kerja.</p>
+            </div>
+
+            <div class="p-8 rounded-2xl bg-white shadow-[0_10px_30px_-8px_rgba(6,18,43,0.18)] text-center group border border-transparent hover:border-gold/50 transition-all flex flex-col items-center">
+                <div class="w-16 h-16 bg-[#06122B] text-gold rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-[32px]">health_and_safety</span>
+                </div>
+                <h3 class="font-bold text-[20px] text-[#06122B] mb-3">Tunjangan Kesejahteraan</h3>
+                <p class="text-[14px] text-ky-text/70 leading-relaxed">Dukungan proteksi tambahan untuk memastikan kenyamanan dan keamanan Anda selama bekerja.</p>
             </div>
         </div>
     </div>
