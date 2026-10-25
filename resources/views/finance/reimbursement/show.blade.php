@@ -34,7 +34,7 @@
                 style="color: var(--dash-text-heading);">{{ $reimbursement->business_purpose }}</h1>
             <div class="mt-2 flex items-center gap-2">
                 <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold {{ $statusBadge[$reimbursement->status] ?? 'bg-slate-100 text-slate-700' }}">
-                    {{ str_replace('_', ' ', $reimbursement->status) }}
+                    {{ \App\Support\EnumLabels::get('reimbursement_status', $reimbursement->status) }}
                 </span>
                 <span class="text-xs" style="color: var(--dash-text-muted);">
                     {{ $reimbursement->expense_period_start?->format('d M') }} - {{ $reimbursement->expense_period_end?->format('d M Y') }}
@@ -114,7 +114,7 @@
              style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
             <p class="text-[11px] font-bold uppercase tracking-wider" style="color: var(--dash-text-faint);">Status Saat Ini</p>
             <p class="mt-1 text-sm font-semibold truncate" style="color: var(--dash-text-heading);">
-                {{ str_replace('_', ' ', $reimbursement->status) }}
+                {{ \App\Support\EnumLabels::get('reimbursement_status', $reimbursement->status) }}
             </p>
         </div>
     </div>
@@ -178,7 +178,7 @@
                                 </p>
                                 <span class="inline-block mt-0.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider"
                                       style="background-color: var(--dash-nav-hover-bg); color: var(--dash-text-muted);">
-                                    {{ str_replace('_', ' ', $item->category) }}
+                                    {{ \App\Support\EnumLabels::get('reimbursement_category', $item->category) }}
                                 </span>
                             </td>
                             <td class="px-4 py-3">

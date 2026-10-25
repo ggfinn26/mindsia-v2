@@ -166,7 +166,7 @@
                             </td>
                             <td class="px-4 py-3 text-center">
                                 <span class="inline-flex rounded-full px-2.5 py-0.5 text-[11px] font-semibold {{ $statusBadge[$est->status] ?? 'bg-slate-100 text-slate-600' }}">
-                                    {{ str_replace('_', ' ', ucfirst($est->status)) }}
+                                    {{ \App\Support\EnumLabels::get('budget_status', $est->status) }}
                                 </span>
                             </td>
                             <td class="px-4 py-3 text-right">

@@ -275,7 +275,7 @@
                                 <td class="px-4 py-3">
                                     <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider mb-0.5"
                                           style="background-color: var(--dash-nav-hover-bg); color: var(--dash-text-muted);">
-                                        {{ str_replace('_', ' ', $cost->category) }}
+                                        {{ \App\Support\EnumLabels::get('cost_category', $cost->category) }}
                                     </span>
                                     <p class="text-xs font-medium" style="color: var(--dash-text-heading);">
                                         {{ $cost->description ?? '-' }}

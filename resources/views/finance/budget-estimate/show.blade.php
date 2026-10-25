@@ -35,7 +35,7 @@
                 style="color: var(--dash-text-heading);">{{ $budgetEstimate->title }}</h1>
             <div class="mt-2 flex items-center gap-2">
                 <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold {{ $statusBadge[$budgetEstimate->status] ?? 'bg-slate-100 text-slate-700' }}">
-                    {{ str_replace('_', ' ', ucfirst($budgetEstimate->status)) }}
+                    {{ \App\Support\EnumLabels::get('budget_status', $budgetEstimate->status) }}
                 </span>
                 <span class="text-xs" style="color: var(--dash-text-muted);">
                     {{ Carbon\Carbon::create(null, $budgetEstimate->period_month)->translatedFormat('F') }} {{ $budgetEstimate->period_year }}

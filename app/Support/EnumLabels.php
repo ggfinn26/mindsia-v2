@@ -69,6 +69,62 @@ class EnumLabels
             'freelance' => 'Lepas',
             'probation' => 'Masa Percobaan',
         ],
+
+        // Reimbursement (nilai uppercase)
+        'reimbursement_status' => [
+            'DRAFT' => 'Draft',
+            'PENDING_REVIEW' => 'Menunggu Review',
+            'APPROVED' => 'Disetujui',
+            'REJECTED' => 'Ditolak',
+            'PAID' => 'Dibayar',
+        ],
+
+        // Estimasi anggaran cabang
+        'budget_status' => [
+            'draft' => 'Draft',
+            'ops_review' => 'Review Operasional',
+            'finance_review' => 'Review Keuangan',
+            'accepted' => 'Diterima',
+            'sent' => 'Terkirim',
+            'inventory_draft' => 'Draft Inventaris',
+        ],
+
+        // Kategori biaya operasional cabang
+        'cost_category' => [
+            'sewa' => 'Sewa',
+            'listrik' => 'Listrik',
+            'air' => 'Air',
+            'internet' => 'Internet',
+            'gaji_non_employee' => 'Gaji Non-Karyawan',
+            'peralatan' => 'Peralatan',
+            'kebersihan' => 'Kebersihan',
+            'keamanan' => 'Keamanan',
+            'lainnya' => 'Lainnya',
+        ],
+
+        // Kategori item reimbursement
+        'reimbursement_category' => [
+            'transport' => 'Transport',
+            'makan' => 'Makan',
+            'akomodasi' => 'Akomodasi',
+            'perlengkapan' => 'Perlengkapan',
+            'lainnya' => 'Lainnya',
+        ],
+
+        // Tiket dukungan
+        'ticket_category' => [
+            'complaint' => 'Keluhan',
+            'suggestion' => 'Saran',
+            'question' => 'Pertanyaan',
+        ],
+
+        // Prioritas (tiket)
+        'priority' => [
+            'low' => 'Rendah',
+            'medium' => 'Sedang',
+            'high' => 'Tinggi',
+            'urgent' => 'Mendesak',
+        ],
     ];
 
     public static function get(string $group, ?string $value): string
