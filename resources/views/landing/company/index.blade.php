@@ -37,7 +37,7 @@
                 <div class="text-4xl font-bold text-gold">24 HESA</div>
             </div>
             <div class="flex items-center md:justify-end">
-                <a href="{{ url('/') }}#program" class="group inline-flex items-center gap-3 text-white font-semibold hover:text-gold transition-colors">
+                <a href="{{ route('home') }}#program" class="group inline-flex items-center gap-3 text-white font-semibold hover:text-gold transition-colors">
                     Lihat Program
                     <span class="w-10 h-10 shrink-0 rounded-full border border-white/20 flex items-center justify-center group-hover:border-gold transition-colors">
                         <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
@@ -310,10 +310,10 @@
             Peningkatan mutu fasilitas secara berkelanjutan. Ekspansi cabang baru mengusung rancangan fungsional, arsitektur matang, serta ekosistem wajib bahasa Inggris yang konsisten.
         </p>
         <div class="grid sm:grid-cols-2 gap-4 max-w-[500px] mx-auto">
-            <a href="{{ url('/') }}#program" class="inline-flex items-center justify-center bg-[#06122B] text-white font-bold py-4 px-8 rounded-xl hover:bg-black transition-colors shadow-sm">
+            <a href="{{ route('home') }}#program" class="inline-flex items-center justify-center bg-[#06122B] text-white font-bold py-4 px-8 rounded-xl hover:bg-black transition-colors shadow-sm">
                 Lihat Program Kami
             </a>
-            <a href="{{ config('app.url_karir') }}" class="inline-flex items-center justify-center bg-white border border-slate-300 text-[#06122B] font-bold py-4 px-8 rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
+            <a href="{{ route('careers.index') }}" class="inline-flex items-center justify-center bg-white border border-slate-300 text-[#06122B] font-bold py-4 px-8 rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
                 Karir MINDSIA
             </a>
         </div>

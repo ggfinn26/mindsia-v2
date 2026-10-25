@@ -13,6 +13,15 @@
     <noscript><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0&display=swap" rel="stylesheet"></noscript>
 </head>
 
+@php
+    $isCareer = request()->routeIs('careers.*') || request()->is('karir*') || str_starts_with(request()->getHost(), 'career.');
+    $isCompany = request()->routeIs('company.*') || request()->is('company*') || str_starts_with(request()->getHost(), 'company.');
+    $isApplicant = request()->is('applicant*') || str_starts_with(request()->getHost(), 'applicant.');
+    $homeUrl = route('home');
+    $companyUrl = route('company.landing');
+    $careerUrl = route('careers.index');
+@endphp
+
 <body class="font-sans antialiased overflow-x-hidden bg-ky-surface text-ky-text">
 
 {{-- FAB WhatsApp --}}
@@ -23,31 +32,36 @@
 {{-- Nav --}}
 <nav id="lp-nav" x-data="{ mobileMenuOpen: false }" class="fixed top-0 w-full z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 transition-all duration-300 shadow-sm" aria-label="Navigasi utama">
     <div class="max-w-[1100px] mx-auto px-6 flex items-center justify-between h-[68px] md:h-[100px]">
-        <a href="{{ url('/') }}" class="hover:opacity-80 transition-opacity" title="MINDSIA">
+        <a href="{{ $homeUrl }}" class="hover:opacity-80 transition-opacity" title="MINDSIA">
             <!-- Normal logo (not inverted) -->
             <img src="/img/logo/mindsia-logo.webp" alt="MINDSIA" class="h-12 md:h-20 w-auto object-contain drop-shadow-sm py-2">
         </a>
         <div class="hidden md:flex gap-4 items-center">
-            @if(request()->is('karir*') || request()->is('applicant*'))
-                <a href="{{ url('/') }}" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Beranda</a>
-                <a href="{{ route('careers.index') }}#lowongan" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Lowongan Pekerjaan</a>
-            @elseif(request()->routeIs('company.landing'))
-                <a href="{{ url('/') }}" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Beranda</a>
+            @if($isCareer || $isApplicant)
+                <a href="{{ $homeUrl }}" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Beranda</a>
+                <a href="{{ $careerUrl }}#lowongan" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Lowongan Pekerjaan</a>
+                <a href="{{ $companyUrl }}" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Company Profile</a>
+            @elseif($isCompany)
+                <a href="{{ $homeUrl }}" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Beranda</a>
                 <a href="#tentang" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Tentang Kami</a>
                 <a href="#visi-misi" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Visi & Misi</a>
                 <a href="#wilayah" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Wilayah</a>
                 <a href="#galeri" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Galeri</a>
+                <a href="{{ $careerUrl }}" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Karir</a>
             @else
-                <a href="#konsep" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Konsep</a>
+                <a href="#konsep" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Sistem 24 HESA</a>
+                <a href="#benefits" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Mengapa MINDSIA</a>
                 <a href="#program" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Program</a>
-                <a href="#cabang" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Cabang</a>
+                <a href="{{ $companyUrl }}#wilayah" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Cabang</a>
+                <a href="#gallery" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Galeri</a>
                 <a href="#testimoni" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Testimoni</a>
-                <a href="/karir" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Karir</a>
+                <a href="{{ $companyUrl }}" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Company Profile</a>
+                <a href="{{ $careerUrl }}" class="text-[14px] font-medium text-ky-text/80 hover:text-ky-primary transition-colors">Karir</a>
             @endif
         </div>
-        @if(!request()->routeIs('company.landing'))
+        @if(!$isCompany)
         <div class="hidden md:flex items-center gap-3">
-            @if(request()->is('karir*') || request()->is('applicant*'))
+            @if($isCareer || $isApplicant)
                 <a href="{{ route('applicant.login') }}" class="text-[14px] font-semibold bg-gray-100 text-gray-700 py-2 px-5 rounded-lg no-underline transition-all duration-200 hover:bg-gray-200 shadow-sm border border-gray-200">Login Pelamar</a>
                 <a href="{{ route('applicant.register') }}" class="text-[14px] font-semibold bg-[#DBB940] text-[#06122B] py-2 px-5 rounded-lg no-underline transition-all duration-200 hover:opacity-90 shadow-sm">Daftar Pelamar</a>
             @else
@@ -71,25 +85,30 @@
     <!-- Mobile Menu -->
     <div x-show="mobileMenuOpen" x-cloak class="md:hidden bg-white border-t border-gray-100 shadow-lg absolute w-full left-0 top-[68px]">
         <div class="flex flex-col px-6 py-4 gap-2">
-            @if(request()->is('karir*') || request()->is('applicant*'))
-                <a href="{{ url('/') }}" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Beranda</a>
-                <a href="{{ route('careers.index') }}#lowongan" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Lowongan Pekerjaan</a>
-            @elseif(request()->routeIs('company.landing'))
-                <a href="{{ url('/') }}" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Beranda</a>
+            @if($isCareer || $isApplicant)
+                <a href="{{ $homeUrl }}" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Beranda</a>
+                <a href="{{ $careerUrl }}#lowongan" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Lowongan Pekerjaan</a>
+                <a href="{{ $companyUrl }}" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Company Profile</a>
+            @elseif($isCompany)
+                <a href="{{ $homeUrl }}" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Beranda</a>
                 <a href="#tentang" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Tentang Kami</a>
                 <a href="#visi-misi" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Visi & Misi</a>
                 <a href="#wilayah" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Wilayah</a>
                 <a href="#galeri" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Galeri</a>
+                <a href="{{ $careerUrl }}" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Karir</a>
             @else
-                <a href="#konsep" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Konsep</a>
+                <a href="#konsep" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Sistem 24 HESA</a>
+                <a href="#benefits" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Mengapa MINDSIA</a>
                 <a href="#program" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Program</a>
-                <a href="#cabang" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Cabang</a>
+                <a href="{{ $companyUrl }}#wilayah" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Cabang</a>
+                <a href="#gallery" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Galeri</a>
                 <a href="#testimoni" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Testimoni</a>
-                <a href="/karir" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Karir</a>
+                <a href="{{ $companyUrl }}" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Company Profile</a>
+                <a href="{{ $careerUrl }}" @click="mobileMenuOpen = false" class="min-h-[44px] flex items-center px-3 py-2 text-[15px] font-medium text-ky-text/80 hover:text-ky-primary hover:bg-gray-50 rounded-lg transition-colors">Karir</a>
             @endif
-            @if(!request()->routeIs('company.landing'))
+            @if(!$isCompany)
             <div class="h-[1px] bg-gray-100 w-full my-2"></div>
-            @if(request()->is('karir*') || request()->is('applicant*'))
+            @if($isCareer || $isApplicant)
                 <a href="{{ route('applicant.login') }}" class="min-h-[44px] flex items-center justify-center text-[14px] font-semibold bg-gray-100 text-gray-700 py-2.5 px-5 rounded-lg text-center shadow-sm border border-gray-200 hover:bg-gray-200 transition-colors">Login Pelamar</a>
                 <a href="{{ route('applicant.register') }}" class="min-h-[44px] flex items-center justify-center text-[14px] font-semibold bg-[#DBB940] text-[#06122B] py-2.5 px-4 rounded-lg text-center shadow-sm hover:opacity-90 transition-opacity">Daftar Pelamar</a>
             @else
@@ -120,22 +139,23 @@
             <div>
                 <div class="text-[12px] font-semibold text-ky-text mb-4">Navigasi</div>
                 <ul class="list-none flex flex-col gap-3 m-0 p-0">
-                    @if(request()->is('karir*') || request()->is('applicant*'))
-                        <li><a href="{{ url('/') }}" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Beranda</a></li>
-                        <li><a href="{{ route('careers.index') }}#lowongan" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Lowongan Pekerjaan</a></li>
-                        <li><a href="{{ route('company.landing') }}" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Tentang Kami</a></li>
-                    @elseif(request()->routeIs('company.landing'))
-                        <li><a href="{{ url('/') }}" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Beranda</a></li>
+                    @if($isCareer || $isApplicant)
+                        <li><a href="{{ $homeUrl }}" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Beranda</a></li>
+                        <li><a href="{{ $careerUrl }}#lowongan" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Lowongan Pekerjaan</a></li>
+                        <li><a href="{{ $companyUrl }}" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Company Profile</a></li>
+                    @elseif($isCompany)
+                        <li><a href="{{ $homeUrl }}" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Beranda</a></li>
                         <li><a href="#tentang" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Tentang Kami</a></li>
                         <li><a href="#visi-misi" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Visi & Misi</a></li>
                         <li><a href="#wilayah" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Wilayah Cabang</a></li>
-                        <li><a href="/karir" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Karir</a></li>
+                        <li><a href="{{ $careerUrl }}" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Karir</a></li>
                     @else
                         <li><a href="#konsep" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Sistem 24 HESA</a></li>
+                        <li><a href="#benefits" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Mengapa MINDSIA</a></li>
                         <li><a href="#program" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Program</a></li>
-                        <li><a href="#cabang" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Cabang</a></li>
-                        <li><a href="{{ route('company.landing') }}" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Company Profile</a></li>
-                        <li><a href="/karir" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Karir</a></li>
+                        <li><a href="{{ $companyUrl }}#wilayah" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Wilayah Cabang</a></li>
+                        <li><a href="{{ $companyUrl }}" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Company Profile</a></li>
+                        <li><a href="{{ $careerUrl }}" class="text-[14px] text-ky-text/70 hover:text-ky-primary transition-colors">Karir</a></li>
                     @endif
                 </ul>
             </div>
