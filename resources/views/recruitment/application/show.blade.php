@@ -102,7 +102,7 @@
                 <div>
                     <p class="text-[11px] font-semibold uppercase tracking-wider mb-1" style="color: var(--dash-text-faint);">Sumber Lamaran</p>
                     <p class="text-sm font-medium capitalize" style="color: var(--dash-text-heading);">
-                        {{ str_replace('_', ' ', $jobApplication->application_source) }}
+                        {{ \App\Support\EnumLabels::get('application_source', $jobApplication->application_source) }}
                     </p>
                 </div>
 
@@ -179,7 +179,7 @@
                                 <span class="material-symbols-outlined text-[12px]">{{ $isStageRejected ? 'close' : 'check' }}</span>
                             </span>
                             <h3 class="font-semibold text-sm capitalize" style="color: var(--dash-text-heading);">
-                                {{ str_replace('_', ' ', $stage->stage) }}
+                                {{ \App\Support\EnumLabels::get('recruitment_stage', $stage->stage) }}
                             </h3>
                             <p class="text-[11px] mt-0.5" style="color: var(--dash-text-faint);">{{ $stage->created_at->format('d M Y H:i') }}</p>
                             @if($stage->notes)

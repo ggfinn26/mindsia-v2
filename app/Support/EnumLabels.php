@@ -125,6 +125,52 @@ class EnumLabels
             'high' => 'Tinggi',
             'urgent' => 'Mendesak',
         ],
+
+        // Rekrutmen - jenis permintaan
+        'request_type' => [
+            'new_position' => 'Posisi Baru',
+            'replacement' => 'Penggantian',
+        ],
+
+        // Rekrutmen - sumber lamaran
+        'application_source' => [
+            'job_posting' => 'Lowongan',
+            'referral' => 'Referral',
+            'walk_in' => 'Walk-in',
+            'archive' => 'Arsip',
+        ],
+
+        // Rekrutmen - tahap/status lamaran
+        'recruitment_stage' => [
+            'applied' => 'Melamar',
+            'screening' => 'Seleksi Berkas',
+            'interview' => 'Wawancara',
+            'interview_scheduled' => 'Wawancara Dijadwalkan',
+            'evaluated' => 'Dievaluasi',
+            'offering' => 'Penawaran',
+            'hired' => 'Diterima',
+            'rejected' => 'Ditolak',
+        ],
+
+        // Rekrutmen - status permintaan karyawan
+        'job_request_status' => [
+            'draft' => 'Draft',
+            'pending_hr_review' => 'Menunggu Review HR',
+            'pending_ops_approval' => 'Menunggu Persetujuan Ops',
+            'approved' => 'Disetujui',
+            'rejected' => 'Ditolak',
+            'fulfilled' => 'Terpenuhi',
+        ],
+
+        // Fasilitas - status tiket
+        'facility_ticket_status' => [
+            'open' => 'Terbuka',
+            'verified' => 'Terverifikasi',
+            'resolved' => 'Selesai',
+            'rejected' => 'Ditolak',
+            'pending_review' => 'Menunggu Review',
+            'approved' => 'Disetujui',
+        ],
     ];
 
     public static function get(string $group, ?string $value): string

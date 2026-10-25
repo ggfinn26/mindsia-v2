@@ -107,7 +107,7 @@
                 </div>
                 <div>
                     <span class="text-xs" style="color: var(--dash-text-muted);">Tipe Karyawan</span>
-                    <p class="font-medium mt-0.5 capitalize" style="color: var(--dash-text-heading);">{{ str_replace('_', ' ', $employeeOnboarding->employment_type ?? '-') }}</p>
+                    <p class="font-medium mt-0.5" style="color: var(--dash-text-heading);">{{ \App\Support\EnumLabels::get('employment_type', $employeeOnboarding->employment_type) }}</p>
                 </div>
                 <div>
                     <span class="text-xs" style="color: var(--dash-text-muted);">Tanggal Mulai</span>

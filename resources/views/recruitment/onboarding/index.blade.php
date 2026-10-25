@@ -111,7 +111,7 @@
                             $candidateName = optional(optional($onboarding->application)->applicant)->full_name ?? '-';
                             $branchName = optional($onboarding->branch)->branch_name ?? optional($onboarding->branch)->name ?? '-';
                             $positionName = optional($onboarding->position)->position_name ?? optional($onboarding->position)->name ?? '-';
-                            $empType = str_replace('_', ' ', Str::title($onboarding->employment_type ?? '-'));
+                            $empType = \App\Support\EnumLabels::get('employment_type', $onboarding->employment_type);
                         @endphp
                         <tr style="border-bottom: 1px solid var(--dash-card-border);"
                             onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"

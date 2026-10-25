@@ -129,11 +129,12 @@
                                 'rejected' => ['bg' => 'bg-red-100 dark:bg-red-950/40', 'text' => 'text-red-700 dark:text-red-400', 'label' => 'Rejected'],
                                 'fulfilled' => ['bg' => 'bg-purple-100 dark:bg-purple-950/40', 'text' => 'text-purple-700 dark:text-purple-400', 'label' => 'Fulfilled'],
                             ];
-                            $st = $statusMap[$permintaan->status] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700', 'label' => ucfirst($permintaan->status)];
+                            $st = $statusMap[$permintaan->status] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700'];
+                            $st['label'] = \App\Support\EnumLabels::get('job_request_status', $permintaan->status);
                             $posName = optional($permintaan->detail)->position->position_name ?? optional($permintaan->detail)->position->name ?? '-';
                             $branchName = $permintaan->branch->branch_name ?? '-';
-                            $requestType = str_replace('_', ' ', Str::title(optional($permintaan->detail)->request_type ?? '-'));
-                            $empType = str_replace('_', ' ', Str::title(optional($permintaan->detail)->employment_type ?? '-'));
+                            $requestType = \App\Support\EnumLabels::get('request_type', optional($permintaan->detail)->request_type);
+                            $empType = \App\Support\EnumLabels::get('employment_type', optional($permintaan->detail)->employment_type);
                             $currentHc = optional($permintaan->detail)->current_headcount ?? 0;
                             $targetHc = optional($permintaan->detail)->headcount ?? 0;
                         @endphp

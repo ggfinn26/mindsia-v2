@@ -156,7 +156,7 @@
                             $st = $statusMap[$application->status] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700', 'label' => ucfirst($application->status)];
                             $applicantName = $application->applicant->full_name ?? '-';
                             $postingTitle = $application->posting->title ?? 'Reserve / Manual';
-                            $sourceName = str_replace('_', ' ', Str::title($application->application_source));
+                            $sourceName = \App\Support\EnumLabels::get('application_source', $application->application_source);
                         @endphp
                         <tr style="border-bottom: 1px solid var(--dash-card-border);"
                             onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"

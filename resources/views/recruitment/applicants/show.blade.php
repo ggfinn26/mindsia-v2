@@ -231,7 +231,8 @@
                             'hired'     => ['bg' => 'bg-emerald-100 dark:bg-emerald-950/40', 'text' => 'text-emerald-700 dark:text-emerald-400', 'label' => 'Hired'],
                             'rejected'  => ['bg' => 'bg-red-100 dark:bg-red-950/40', 'text' => 'text-red-700 dark:text-red-400', 'label' => 'Rejected'],
                         ];
-                        $st = $statusMap[$app->status] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700', 'label' => ucfirst($app->status)];
+                        $st = $statusMap[$app->status] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700'];
+                        $st['label'] = \App\Support\EnumLabels::get('recruitment_stage', $app->status);
                     @endphp
                     <div class="flex items-center justify-between p-3.5 rounded-xl"
                          style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border);">

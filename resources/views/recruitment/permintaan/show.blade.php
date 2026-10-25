@@ -86,7 +86,7 @@
             'rejected'             => ['bg' => 'bg-red-100 dark:bg-red-950/40', 'text' => 'text-red-700 dark:text-red-400', 'label' => 'Ditolak'],
             'fulfilled'            => ['bg' => 'bg-purple-100 dark:bg-purple-950/40', 'text' => 'text-purple-700 dark:text-purple-400', 'label' => 'Terpenuhi'],
         ];
-        $st = $statusColors[$jobPermintaan->status] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700', 'label' => ucfirst($jobPermintaan->status)];
+        $st = $statusColors[$jobPermintaan->status] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700', 'label' => \App\Support\EnumLabels::get('job_request_status', $jobPermintaan->status)];
     @endphp
 
     {{-- Main Info Card --}}
@@ -133,7 +133,7 @@
             <div>
                 <p class="text-[11px] font-semibold uppercase tracking-wider mb-1" style="color: var(--dash-text-faint);">Tipe Pekerjaan</p>
                 <p class="text-sm font-medium capitalize" style="color: var(--dash-text-heading);">
-                    {{ str_replace('_', ' ', $jobPermintaan->detail?->employment_type ?? '-') }}
+                    {{ \App\Support\EnumLabels::get('employment_type', $jobPermintaan->detail?->employment_type) }}
                 </p>
             </div>
             <div>

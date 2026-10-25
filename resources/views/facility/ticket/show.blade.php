@@ -28,8 +28,8 @@
         'other'      => 'Lainnya',
     ];
 
-    $sc = $statusConfig[$facilityTicket->status] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700', 'label' => ucfirst(str_replace('_', ' ', $facilityTicket->status))];
-    $pc = $priorityConfig[$facilityTicket->priority] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700', 'label' => ucfirst($facilityTicket->priority)];
+    $sc = $statusConfig[$facilityTicket->status] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700', 'label' => \App\Support\EnumLabels::get('facility_ticket_status', $facilityTicket->status)];
+    $pc = $priorityConfig[$facilityTicket->priority] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700', 'label' => \App\Support\EnumLabels::get('priority', $facilityTicket->priority)];
     $catLabel = $categoryConfig[$facilityTicket->category] ?? ucfirst($facilityTicket->category);
 @endphp
 
@@ -491,7 +491,7 @@
                 <div class="relative pl-6 space-y-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-[var(--dash-card-border)]">
                     @foreach ($facilityTicket->statusHistories as $h)
                         @php
-                            $histSc = $statusConfig[$h->to_status] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700', 'label' => ucfirst(str_replace('_', ' ', $h->to_status))];
+                            $histSc = $statusConfig[$h->to_status] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-700', 'label' => \App\Support\EnumLabels::get('facility_ticket_status', $h->to_status)];
                         @endphp
                         <div class="relative flex items-start justify-between gap-4">
                             <div class="absolute -left-6 top-1 w-3.5 h-3.5 rounded-full border-2"
