@@ -29,7 +29,7 @@ Schedule::call(fn () => Artisan::call('notification:alert-contract-expiry'))
 
 // Sosialisasi yang jadwalnya sudah lewat -> Menunggu Validasi (nunggu laporan divalidasi).
 Schedule::call(fn () => Artisan::call('socialization:await-validation'))
-    ->name('socialization:await-validation')->withoutOverlapping()->dailyAt('01:00');
+    ->name('socialization:await-validation')->withoutOverlapping()->everyThirtyMinutes();
 
 // ponytail: telegram:sync dinonaktifkan - TelegramStorageService::syncFilesFromGroup()
 // tidak pernah diimplementasi (command + job rujuk method hantu, error 13x/hari).
