@@ -102,7 +102,7 @@
                     @endphp
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
                           style="{{ $channelStyles[$template->type] ?? 'background-color: var(--dash-nav-hover-bg); color: var(--dash-text-muted); border: 1px solid var(--dash-card-border);' }}">
-                        {{ $channelLabels[$template->type] ?? ucfirst($template->type) }}
+                        {{ $channelLabels[$template->type] ?? \App\Support\EnumLabels::get('notification_channel', $template->type) }}
                     </span>
                 </div>
             </div>

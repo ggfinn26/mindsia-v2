@@ -70,7 +70,7 @@
                                     $color = $statusColors[$file->backup_status] ?? 'bg-gray-100 text-gray-700';
                                 @endphp
                                 <span class="inline-flex px-2 py-0.5 text-xs font-semibold rounded-full {{ $color }}">
-                                    {{ ucfirst($file->backup_status ?? 'unknown') }}
+                                    {{ \App\Support\EnumLabels::get('backup_status', $file->backup_status ?? 'unknown') }}
                                 </span>
                             </td>
                             <td class="px-4 py-3 whitespace-nowrap text-gray-600">{{ $file->retry_count }}</td>

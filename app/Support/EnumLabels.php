@@ -171,6 +171,43 @@ class EnumLabels
             'pending_review' => 'Menunggu Review',
             'approved' => 'Disetujui',
         ],
+
+        // Kanal notifikasi / template
+        'notification_channel' => [
+            'email' => 'Email',
+            'telegram' => 'Telegram',
+            'whatsapp' => 'WhatsApp',
+            'in-app' => 'Dalam Aplikasi',
+            'in_app' => 'Dalam Aplikasi',
+            'sms' => 'SMS',
+        ],
+
+        // Status pengiriman notifikasi
+        'notification_status' => [
+            'pending' => 'Menunggu',
+            'sent' => 'Terkirim',
+            'failed' => 'Gagal',
+            'read' => 'Dibaca',
+            'unread' => 'Belum Dibaca',
+        ],
+
+        // Jenis integrasi (bot, api key)
+        'integration_type' => [
+            'telegram' => 'Telegram',
+            'whatsapp' => 'WhatsApp',
+            'email' => 'Email',
+            'convertapi' => 'ConvertAPI',
+        ],
+
+        // Status backup Telegram
+        'backup_status' => [
+            'ok' => 'Berhasil',
+            'synced' => 'Tersinkron',
+            'uploaded' => 'Terunggah',
+            'pending' => 'Menunggu',
+            'failed' => 'Gagal',
+            'unknown' => 'Tidak Diketahui',
+        ],
     ];
 
     public static function get(string $group, ?string $value): string

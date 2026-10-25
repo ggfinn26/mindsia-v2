@@ -61,7 +61,7 @@
                     <option value="">Tanpa Bot Terkait</option>
                     @foreach($bots as $bot)
                     <option value="{{ $bot->id }}" {{ old('bot_id', $webhook->bot_id) == $bot->id ? 'selected' : '' }}>
-                        {{ $bot->name }} ({{ ucfirst($bot->type) }})
+                        {{ $bot->name }} ({{ \App\Support\EnumLabels::get('integration_type', $bot->type) }})
                     </option>
                     @endforeach
                 </select>

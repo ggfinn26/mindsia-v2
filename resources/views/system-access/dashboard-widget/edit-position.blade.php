@@ -53,7 +53,7 @@
                         style="border-color: var(--dash-border-subtle); background-color: var(--dash-page-bg);">
                         <div class="flex items-center gap-2">
                             <h2 class="font-jakarta text-xs font-bold uppercase tracking-wider" style="color: var(--dash-text-heading);">
-                                {{ $categoryLabel[$category] ?? ucfirst($category) }}
+                                {{ $categoryLabel[$category] ?? \App\Support\EnumLabels::get('widget_category', $category) }}
                             </h2>
                             @if ($categoryActiveCount > 0)
                                 <span class="inline-flex rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-700">{{ $categoryActiveCount }}/{{ $keys->count() }}</span>

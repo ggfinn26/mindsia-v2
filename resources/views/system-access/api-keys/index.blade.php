@@ -145,7 +145,7 @@
                             @else
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"
                                   style="background-color: var(--dash-nav-hover-bg); color: var(--dash-text-muted);">
-                                {{ ucfirst($key->type) }}
+                                {{ \App\Support\EnumLabels::get('integration_type', $key->type) }}
                             </span>
                             @endif
                         </td>

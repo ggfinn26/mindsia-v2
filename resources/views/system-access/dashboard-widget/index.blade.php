@@ -96,7 +96,7 @@
             <div class="overflow-hidden rounded-2xl border shadow-sm" style="background-color: var(--dash-card-bg); border-color: var(--dash-border-subtle);">
                 <div class="border-b px-5 py-3.5" style="border-color: var(--dash-border-subtle); background-color: var(--dash-page-bg);">
                     <h2 class="font-jakarta text-xs font-bold uppercase tracking-wider" style="color: var(--dash-text-heading);">
-                        {{ $categoryLabel[$category] ?? ucfirst($category) }}
+                        {{ $categoryLabel[$category] ?? \App\Support\EnumLabels::get('widget_category', $category) }}
                     </h2>
                 </div>
                 <div class="divide-y" style="border-color: var(--dash-border-subtle);">

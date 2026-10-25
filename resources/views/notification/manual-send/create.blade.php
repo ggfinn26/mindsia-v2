@@ -85,7 +85,7 @@
                     <option value="">Pilih template...</option>
                     @foreach ($templates as $tpl)
                     <option value="{{ $tpl->template_key }}" {{ old('template_key') === $tpl->template_key ? 'selected' : '' }}>
-                        {{ $tpl->template_key }} ({{ ucfirst($tpl->type) }})
+                        {{ $tpl->template_key }} ({{ \App\Support\EnumLabels::get('notification_channel', $tpl->type) }})
                     </option>
                     @endforeach
                 </select>

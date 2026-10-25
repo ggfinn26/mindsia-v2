@@ -170,7 +170,7 @@
                                 @else
                                     <span class="inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-md"
                                           style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-muted);">
-                                        {{ ucfirst($log->notification_type) }}
+                                        {{ \App\Support\EnumLabels::get('notification_channel', $log->notification_type) }}
                                     </span>
                                 @endif
                             </td>
@@ -206,7 +206,7 @@
                                 @else
                                     <span class="inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-md"
                                           style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-muted);">
-                                        {{ ucfirst($log->notification_status) }}
+                                        {{ \App\Support\EnumLabels::get('notification_status', $log->notification_status) }}
                                     </span>
                                 @endif
 
