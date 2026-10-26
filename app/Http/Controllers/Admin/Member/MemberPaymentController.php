@@ -2,30 +2,21 @@
 
 namespace App\Http\Controllers\Admin\Member;
 
-use App\Enums\Member\ActivationStatus;
+use App\Actions\Member\MarkMemberPaymentPaid;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Member\UpdateMemberPaymentRequest;
-use App\Jobs\SendPaymentReceiptJob;
-use App\Models\Employee;
-use App\Models\MemberAccount;
-use App\Models\MemberData;
 use App\Models\MemberPayment;
 use App\Models\MemberRegistration;
-use App\Models\ProspectiveMember;
 use App\Repositories\Member\MemberRegistrationRepository;
-use App\Services\Marketing\MarketingSnapshotService;
-use App\Services\Member\MemberRegistrationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
 
 class MemberPaymentController extends Controller
 {
     public function __construct(
         private readonly MemberRegistrationRepository $registrationRepo,
-        private readonly MarketingSnapshotService $snapshotService,
-        private readonly MemberRegistrationService $registrationService,
     ) {}
 
     public function store(Request $request, MemberRegistration $registration): RedirectResponse
@@ -62,53 +53,18 @@ class MemberPaymentController extends Controller
             }
         }
 
-        DB::transaction(function () use ($memberPayment, $data) {
-            if (($data['payment_status'] ?? null) === 'paid' && ! $memberPayment->paid_at) {
-                $data['paid_at'] = now();
-            }
-
-            $memberPayment->update($data);
-
-            $registration = $memberPayment->registration;
-            $membersDataId = $registration->members_data_id;
-
-            $this->registrationRepo->syncPaymentStatus($registration);
-            $registration->refresh();
-
-            if (($data['payment_status'] ?? null) === 'paid') {
-                $this->registrationService->consumePromoQuota($registration);
-            }
-
-            if ($registration->payment_status !== 'unpaid') {
-                MemberAccount::where('members_data_id', $membersDataId)
-                    ->update(['is_active' => true]);
-
-                MemberData::where('id', $membersDataId)
-                    ->update(['activation_status' => ActivationStatus::Aktif->value]);
-
-                $member = MemberData::find($membersDataId);
-                if ($member) {
-                    ProspectiveMember::where('status', '!=', ProspectiveMember::STATUS_FIXED)
-                        ->where(function ($q) use ($member) {
-                            $q->when($member->whatsapp_number, fn ($q) => $q->orWhere('whatsapp_number', $member->whatsapp_number))
-                                ->when($member->email, fn ($q) => $q->orWhere('email', $member->email));
-                        })
-                        ->update(['status' => ProspectiveMember::STATUS_FIXED]);
-                }
-            }
-        });
-
         if (($data['payment_status'] ?? null) === 'paid') {
-            dispatch(new SendPaymentReceiptJob($memberPayment));
-
-            $employeeId = $memberPayment->registration->memberData?->referred_by_employee_id;
-            $paidAt = $memberPayment->fresh()->paid_at ?? now();
-            if ($employeeId) {
-                $employee = Employee::with('branch.area.region')->find($employeeId);
-                if ($employee) {
-                    $this->snapshotService->append($employee, (int) $paidAt->month, (int) $paidAt->year);
-                }
+            // Persist field lain (bukti, catatan, metode) dulu; transisi -> paid + side effect lewat action.
+            $extra = Arr::except($data, ['payment_status', 'paid_at']);
+            if ($extra !== []) {
+                $memberPayment->update($extra);
             }
+
+            $method = $data['payment_method'] ?? $memberPayment->payment_method ?? 'manual';
+            app(MarkMemberPaymentPaid::class)->handle($memberPayment->fresh(), $method, null);
+        } else {
+            $memberPayment->update($data);
+            $this->registrationRepo->syncPaymentStatus($memberPayment->registration);
         }
 
         return redirect()->back()->with('success', 'Data pembayaran berhasil diperbarui.');
