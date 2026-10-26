@@ -177,11 +177,11 @@
                                         :disabled="loading"
                                         :title="result ? ('Sisa kuota: ' + formatQuota(result.remaining_quota ?? result.seconds_left) + '. Klik untuk cek ulang.') : (error ? (error + '. Klik untuk coba lagi.') : 'Cek kuota ConvertAPI')"
                                         class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors border"
-                                        :class="result ? 'text-violet-700 bg-violet-50 border-violet-200 hover:bg-violet-100' : (error ? 'text-rose-700 bg-rose-50 border-rose-200 hover:bg-rose-100' : 'text-violet-700 bg-violet-50 border-violet-200 hover:bg-violet-100 disabled:opacity-50')">
+                                        :class="(result && (expired || habis)) || error ? 'text-rose-700 bg-rose-50 border-rose-200 hover:bg-rose-100' : 'text-violet-700 bg-violet-50 border-violet-200 hover:bg-violet-100 disabled:opacity-50'">
                                     <span class="material-symbols-outlined text-[14px]"
                                           :class="loading ? 'animate-spin' : ''"
-                                          x-text="loading ? 'sync' : (result ? 'tune' : (error ? 'error' : 'analytics'))">analytics</span>
-                                    <span x-text="loading ? 'Memeriksa...' : (result ? ('Sisa: ' + formatQuota(result.remaining_quota ?? result.seconds_left)) : (error ? 'Gagal cek' : 'Cek Kuota'))">Cek Kuota</span>
+                                          x-text="loading ? 'sync' : ((result && (expired || habis)) || error ? 'error' : (result ? 'tune' : 'analytics'))">analytics</span>
+                                    <span x-text="statusText">Cek Kuota</span>
                                 </button>
                                 @endif
 
@@ -343,6 +343,25 @@ function quotaChecker(url) {
         loading: false,
         result: null,
         error: null,
+        // Expired = tanggal langganan (SubscriptionValidUntil) sudah lewat.
+        get expired() {
+            if (!this.result || !this.result.reset_date) return false;
+            const d = new Date(this.result.reset_date);
+            return !isNaN(d.getTime()) && d < new Date();
+        },
+        // Habis = sisa kuota <= 0.
+        get habis() {
+            if (!this.result) return false;
+            return Number(this.result.remaining_quota ?? this.result.seconds_left) <= 0;
+        },
+        get statusText() {
+            if (this.loading) return 'Memeriksa...';
+            if (this.error) return 'Gagal cek';
+            if (!this.result) return 'Cek Kuota';
+            if (this.expired) return 'EXPIRED';
+            if (this.habis) return 'HABIS';
+            return 'Sisa: ' + formatQuota(this.result.remaining_quota ?? this.result.seconds_left);
+        },
         async check() {
             this.loading = true;
             this.error = null;
