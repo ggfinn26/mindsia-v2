@@ -172,6 +172,7 @@ use App\Http\Controllers\Member\MemberMyTicketController;
 use App\Http\Controllers\Member\MemberNotificationController;
 use App\Http\Controllers\Member\MemberNpsPageController;
 use App\Http\Controllers\Member\MemberProfileController;
+use App\Http\Controllers\Member\MemberReceiptController;
 use App\Http\Controllers\Member\MemberReviewController;
 use App\Http\Controllers\Member\MemberSurveyController;
 use App\Http\Controllers\Member\ProgramRegistrationController;
@@ -442,7 +443,7 @@ Route::middleware(['auth:member', EnsureEmailIsVerified::class, 'no.back'])->gro
     Route::get('/member/registration', function () {
         $memberData = auth('member')->user()->memberData;
         $registrations = $memberData
-            ? $memberData->registrations()->with('program')->orderByDesc('created_at')->get()
+            ? $memberData->registrations()->with(['program', 'payments'])->orderByDesc('created_at')->get()
             : collect();
 
         return view('member.registration.index', compact('registrations'));
@@ -460,6 +461,10 @@ Route::middleware(['auth:member', EnsureEmailIsVerified::class, 'no.back'])->gro
     })->name('member.payment.upload');
     Route::post('/member/payments/{memberPayment}/doku', [DokuPaymentController::class, 'pay'])
         ->name('member.doku.pay');
+    Route::get('/member/payments/{memberPayment}/receipt', [MemberReceiptController::class, 'download'])
+        ->name('member.receipt.download');
+    Route::post('/member/payments/{memberPayment}/receipt/generate', [MemberReceiptController::class, 'generate'])
+        ->name('member.receipt.generate');
 
     // Survei & Review
     Route::get('/member/reviews', [MemberReviewController::class, 'index'])->name('member.reviews.index');

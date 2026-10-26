@@ -6,6 +6,19 @@
 @section('content')
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6">
 
+    @if(session('success'))
+        <div class="rounded-xl px-4 py-3 text-sm font-medium"
+             style="background-color: var(--dash-status-success-bg); color: var(--dash-status-success-text); border: 1px solid var(--dash-card-border);">
+            {{ session('success') }}
+        </div>
+    @endif
+    @if(session('error'))
+        <div class="rounded-xl px-4 py-3 text-sm font-medium"
+             style="background-color: var(--dash-status-danger-bg); color: var(--dash-status-danger-text); border: 1px solid var(--dash-card-border);">
+            {{ session('error') }}
+        </div>
+    @endif
+
     {{-- Page Header Pola A --}}
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -54,11 +67,13 @@
                             <th class="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Total Tagihan</th>
                             <th class="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Status</th>
                             <th class="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Tanggal Daftar</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider" style="color: var(--dash-text-muted);">Kwitansi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y" style="border-color: var(--dash-card-border);">
                         @foreach($registrations as $registration)
                             @php
+                                $paidPayments = $registration->payments->where('payment_status', 'paid')->sortBy('installment_number');
                                 $statusBg = match ($registration->payment_status) {
                                     'paid_full' => 'var(--dash-status-success-bg)',
                                     'installments' => 'var(--dash-status-info-bg)',
@@ -90,6 +105,36 @@
                                 </td>
                                 <td class="px-6 py-4" style="color: var(--dash-text-muted);">
                                     {{ $registration->created_at->format('d M Y') }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    @if($paidPayments->isEmpty())
+                                        <span class="text-xs" style="color: var(--dash-text-faint);">-</span>
+                                    @else
+                                        <div class="flex flex-col gap-1.5">
+                                            @foreach($paidPayments as $payment)
+                                                @if($payment->telegram_receipt_id)
+                                                    <a href="{{ route('member.receipt.download', $payment) }}"
+                                                       class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white transition-opacity hover:opacity-90 w-fit"
+                                                       style="background-color: var(--dash-primary);">
+                                                        <span class="material-symbols-outlined text-[14px]">download</span>
+                                                        Cicilan {{ $payment->installment_number }}
+                                                    </a>
+                                                @else
+                                                    <form method="POST" action="{{ route('member.receipt.generate', $payment) }}" class="m-0">
+                                                        @csrf
+                                                        <button type="submit"
+                                                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors w-fit"
+                                                                style="border: 1px solid var(--dash-card-border); background-color: var(--dash-card-bg); color: var(--dash-text-body);"
+                                                                onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
+                                                                onmouseout="this.style.backgroundColor='var(--dash-card-bg)'">
+                                                            <span class="material-symbols-outlined text-[14px]">receipt_long</span>
+                                                            Buat Cicilan {{ $payment->installment_number }}
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            @endforeach
+                                        </div>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

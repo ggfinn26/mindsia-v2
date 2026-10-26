@@ -18,6 +18,7 @@ class MemberPayment extends Model
         'payment_status',
         'payment_method',
         'telegram_payment_proof_id',
+        'telegram_receipt_id',
         'due_date',
         'paid_at',
         'notes',
