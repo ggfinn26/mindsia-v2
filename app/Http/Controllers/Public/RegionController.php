@@ -81,7 +81,7 @@ class RegionController extends Controller
 
     public function getIndonesianProvinces(): JsonResponse
     {
-        $path = base_path('../data-indonesia/provinsi.json');
+        $path = public_path('data-indonesia/provinsi.json');
         if (! file_exists($path)) {
             return response()->json([]);
         }
@@ -97,7 +97,7 @@ class RegionController extends Controller
             return response()->json([]);
         }
 
-        $kotaPath = base_path('../data-indonesia/kota/'.$provinceId.'.json');
+        $kotaPath = public_path('data-indonesia/kabupaten/'.$provinceId.'.json');
         if (! file_exists($kotaPath)) {
             return response()->json([]);
         }
