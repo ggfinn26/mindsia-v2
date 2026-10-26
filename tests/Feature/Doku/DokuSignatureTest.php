@@ -25,6 +25,17 @@ it('verify menerima signature yang cocok dan menolak yang salah', function () {
     expect($wrongSecret->verify($valid, 'req-9', '2026-10-25T00:00:00Z', $target, $body))->toBeFalse();
 });
 
+it('menolak verify jika kredensial kosong (anti-forgery saat misconfigurasi)', function () {
+    $target = '/webhooks/doku';
+    $body = '{"transaction":{"status":"SUCCESS"}}';
+
+    // Attacker menandatangani dengan secret kosong, meniru deploy tanpa DOKU_SECRET_KEY.
+    $forged = (new DokuSignature('', ''))->sign('req-9', '2026-10-25T00:00:00Z', $target, $body);
+
+    expect((new DokuSignature('', ''))->verify($forged, 'req-9', '2026-10-25T00:00:00Z', $target, $body))->toBeFalse();
+    expect((new DokuSignature('CLIENT-X', ''))->verify($forged, 'req-9', '2026-10-25T00:00:00Z', $target, $body))->toBeFalse();
+});
+
 it('GET tanpa body tidak menyertakan Digest', function () {
     $sig = new DokuSignature('CLIENT-X', 'secret-key');
     $withBody = $sig->sign('req-1', '2026-10-25T00:00:00Z', '/orders/v1/status/INV-1', '');

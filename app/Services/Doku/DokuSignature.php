@@ -28,6 +28,11 @@ class DokuSignature
 
     public function verify(string $signature, string $requestId, string $timestamp, string $requestTarget, ?string $rawBody = null): bool
     {
+        // Tolak kalau kredensial belum diisi: HMAC dengan secret kosong bisa dipalsukan attacker.
+        if ($this->secretKey === '' || $this->clientId === '') {
+            return false;
+        }
+
         return hash_equals($this->sign($requestId, $timestamp, $requestTarget, $rawBody), $signature);
     }
 
