@@ -46,6 +46,7 @@ use App\Services\Alerts\EmployeeAlertProvider;
 use App\Services\Alerts\FacilityAlertProvider;
 use App\Services\Alerts\RentAlertProvider;
 use App\Services\Alerts\StrategicAlertService;
+use App\Services\Doku\DokuSignature;
 use Closure;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\URL;
@@ -64,6 +65,13 @@ class AppServiceProvider extends ServiceProvider
             new FacilityAlertProvider,
             new EmployeeAlertProvider,
         ]));
+
+        $this->app->singleton(DokuSignature::class, function () {
+            return new DokuSignature(
+                (string) config('services.doku.client_id'),
+                (string) config('services.doku.secret_key'),
+            );
+        });
     }
 
     /**

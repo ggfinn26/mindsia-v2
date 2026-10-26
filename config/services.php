@@ -41,4 +41,11 @@ return [
         'log_chat_id' => env('GROUP_LOG'),
     ],
 
+    'doku' => [
+        'client_id' => env('DOKU_CLIENT_ID'),
+        'secret_key' => env('DOKU_SECRET_KEY'),
+        'base_url' => env('DOKU_BASE_URL', 'https://api-sandbox.doku.com'),
+        'notification_url' => env('DOKU_NOTIFICATION_URL'),
+    ],
+
 ];
