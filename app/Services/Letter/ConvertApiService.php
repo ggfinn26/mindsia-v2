@@ -3,12 +3,15 @@
 namespace App\Services\Letter;
 
 use App\Models\ApiKey;
+use App\Services\TelegramLogService;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class ConvertApiService
 {
     private const ENDPOINT = 'https://v2.convertapi.com/convert/docx/to/pdf';
+
+    public function __construct(private readonly TelegramLogService $telegramLog) {}
 
     /**
      * Convert a local DOCX file to PDF binary.
@@ -37,15 +40,23 @@ class ConvertApiService
                 ->attach('File', fopen($localDocxPath, 'r'), basename($localDocxPath))
                 ->post(self::ENDPOINT.'?StoreFile=true');
 
-            if ($response->status() === 429) {
-                Log::warning('ConvertApi 429 Rate Limit hit.', ['key_id' => $keyRecord?->id]);
+            // 429 = rate limit; 403 = kuota/credits habis atau key kadaluarsa/invalid.
+            // Dua-duanya: key mati, nonaktifkan + alert telegram + rotasi ke key lain.
+            if (in_array($response->status(), [403, 429], true)) {
+                $reason = $response->status() === 403 ? 'kuota habis / kadaluarsa' : 'rate limit (429)';
+                Log::warning('ConvertApi key ditolak', ['status' => $response->status(), 'key_id' => $keyRecord?->id]);
 
-                // Nonaktifkan key yang sudah limit
                 if ($keyRecord) {
                     $keyRecord->update(['is_active' => false]);
                 }
 
-                // Lanjut ke loop berikutnya untuk mencoba key lain
+                $this->telegramLog->log(
+                    'WARNING',
+                    'ConvertApi',
+                    'Key dinonaktifkan (HTTP '.$response->status().')',
+                    'Key ID '.($keyRecord?->id ?? 'ENV').' ditolak - '.$reason.'. Rotasi ke key berikutnya. Cek System - API Keys.',
+                );
+
                 continue;
             }
 
@@ -76,6 +87,13 @@ class ConvertApiService
         }
 
         Log::error('ConvertApi: All keys exhausted or reached max retries due to 429 Rate Limit');
+
+        $this->telegramLog->log(
+            'ERROR',
+            'ConvertApi',
+            'Semua key habis/limit',
+            'Semua ConvertApi key nonaktif/limit. Konversi dokumen (slip/kwitansi/surat) GAGAL. Tambah atau aktifkan key di System - API Keys.',
+        );
 
         return null;
     }
