@@ -28,6 +28,10 @@ class DokuCheckoutService
             'order' => [
                 'amount' => $amount,
                 'invoice_number' => $invoice,
+                // Redirect browser balik ke halaman cicilan setelah bayar; auto_redirect
+                // melewati halaman "Back to Merchant" DOKU. Status tetap di-update via webhook.
+                'callback_url' => route('member.payment.installments'),
+                'auto_redirect' => true,
             ],
             'payment' => [
                 'payment_due_date' => 60,

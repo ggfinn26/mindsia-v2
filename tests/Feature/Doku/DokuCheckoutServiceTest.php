@@ -2,9 +2,10 @@
 
 use App\Models\MemberPayment;
 use App\Services\Doku\DokuCheckoutService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 beforeEach(function () {
     config()->set('services.doku.client_id', 'CLIENT-X');
@@ -43,7 +44,9 @@ it('membuat checkout, menyimpan transaction pending, dan set member_payment pend
     Http::assertSent(function ($request) {
         return $request->hasHeader('Client-Id', 'CLIENT-X')
             && $request->hasHeader('Signature')
-            && $request['order']['amount'] === 1500000;
+            && $request['order']['amount'] === 1500000
+            && ! empty($request['order']['callback_url'])
+            && $request['order']['auto_redirect'] === true;
     });
 });
 
