@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MemberPayment extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'member_registration_id',
         'installment_number',
@@ -29,5 +33,10 @@ class MemberPayment extends Model
     public function registration(): BelongsTo
     {
         return $this->belongsTo(MemberRegistration::class, 'member_registration_id');
+    }
+
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(PaymentTransaction::class);
     }
 }
