@@ -44,7 +44,8 @@ class MemberRegistration extends Model
 
     public function getFormattedNumberAttribute(): string
     {
-        $branchCode = $this->employee?->branch?->code_branches ?? 'XX';
+        // Kode cabang diambil dari cabang member (tempat daftar), bukan employee perujuk.
+        $branchCode = $this->memberData?->branch?->code_branches ?? 'XX';
         $programCode = $this->program?->program_code ?? 'XX';
         $monthYear = Carbon::parse($this->created_at)->format('my');
         $seq = str_pad((string) $this->id, 4, '0', STR_PAD_LEFT);
