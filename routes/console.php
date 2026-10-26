@@ -31,6 +31,10 @@ Schedule::call(fn () => Artisan::call('notification:alert-contract-expiry'))
 Schedule::call(fn () => Artisan::call('socialization:await-validation'))
     ->name('socialization:await-validation')->withoutOverlapping()->everyThirtyMinutes();
 
+// Fallback DOKU: poll check-status untuk transaksi pending yang kedaluwarsa (jaring webhook miss).
+Schedule::call(fn () => Artisan::call('doku:sync-pending'))
+    ->name('doku:sync-pending')->withoutOverlapping()->everyFifteenMinutes();
+
 // ponytail: telegram:sync dinonaktifkan - TelegramStorageService::syncFilesFromGroup()
 // tidak pernah diimplementasi (command + job rujuk method hantu, error 13x/hari).
 // Storage = local disk primary, Telegram cuma backup async, jadi polling fallback ini
