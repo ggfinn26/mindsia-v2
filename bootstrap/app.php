@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustProxies(at: env('TRUSTED_PROXIES', ''));
+        $middleware->validateCsrfTokens(except: ['webhooks/doku']);
         $middleware->alias([
             'password.changed' => EnsurePasswordChanged::class,
             'no.back' => PreventBackHistory::class,
