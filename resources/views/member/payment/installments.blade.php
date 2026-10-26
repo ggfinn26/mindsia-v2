@@ -70,6 +70,12 @@
                 @if($registration->payments->isEmpty())
                     <p class="px-6 py-8 text-sm text-center" style="color: var(--dash-text-faint);">Belum ada data cicilan.</p>
                 @else
+                    @php
+                        $nextPayable = $registration->payments
+                            ->where('payment_status', '!=', 'paid')
+                            ->sortBy('installment_number')
+                            ->first();
+                    @endphp
                     <div class="divide-y" style="border-color: var(--dash-card-border);">
                         @foreach($registration->payments->sortBy('installment_number') as $payment)
                             <div class="px-6 py-4 flex items-center gap-4 transition-colors"
@@ -93,7 +99,7 @@
                                         @endif
                                     </p>
                                 </div>
-                                <div class="shrink-0">
+                                <div class="shrink-0 flex flex-col items-end gap-2">
                                     @if($payment->payment_status === 'paid')
                                         <span class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full shadow-xs"
                                               style="background-color: var(--dash-status-success-bg); color: var(--dash-status-success-text); border: 1px solid var(--dash-card-border);">
@@ -109,6 +115,18 @@
                                               style="background-color: var(--dash-status-warning-bg); color: var(--dash-status-warning-text); border: 1px solid var(--dash-card-border);">
                                             <span class="material-symbols-outlined text-[13px]">schedule</span> Menunggu
                                         </span>
+                                    @endif
+
+                                    @if($payment->payment_status !== 'paid' && $nextPayable && $payment->id === $nextPayable->id)
+                                        <form method="POST" action="{{ route('member.doku.pay', $payment) }}">
+                                            @csrf
+                                            <button type="submit"
+                                                    class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold text-white transition-opacity hover:opacity-90 shadow-sm"
+                                                    style="background-color: var(--dash-primary);">
+                                                <span class="material-symbols-outlined text-[16px]">payments</span>
+                                                Bayar via DOKU
+                                            </button>
+                                        </form>
                                     @endif
                                 </div>
                             </div>

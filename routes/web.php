@@ -164,6 +164,7 @@ use App\Http\Controllers\Landing\CompanyController;
 use App\Http\Controllers\Landing\HomeController;
 use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\Member\CurriculumInteractiveController as MemberCurriculumInteractiveController;
+use App\Http\Controllers\Member\DokuPaymentController;
 use App\Http\Controllers\Member\MemberAttendancePageController;
 use App\Http\Controllers\Member\MemberCurriculumController;
 use App\Http\Controllers\Member\MemberDashboardController;
@@ -457,6 +458,8 @@ Route::middleware(['auth:member', EnsureEmailIsVerified::class, 'no.back'])->gro
     Route::get('/member/payment/upload', function () {
         return view('member.payment.upload');
     })->name('member.payment.upload');
+    Route::post('/member/payments/{memberPayment}/doku', [DokuPaymentController::class, 'pay'])
+        ->name('member.doku.pay');
 
     // Survei & Review
     Route::get('/member/reviews', [MemberReviewController::class, 'index'])->name('member.reviews.index');
