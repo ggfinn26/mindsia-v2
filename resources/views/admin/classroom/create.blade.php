@@ -51,7 +51,7 @@
                     <label class="block text-sm font-semibold mb-1.5" style="color: var(--dash-text-body);">
                         Program <span class="text-red-500">*</span>
                     </label>
-                    <select name="program_id" required
+                    <select name="program_id" id="program_id" required onchange="onProgramChange(this.value)"
                             class="w-full text-sm px-3.5 py-2.5 rounded-lg focus:outline-none transition-all cursor-pointer"
                             style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
                             onfocus="this.style.borderColor='var(--dash-primary)'"
@@ -64,6 +64,23 @@
                     @error('program_id')
                         <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                     @enderror
+                </div>
+
+                {{-- Slot Jadwal Program (muncul jika program punya jadwal) --}}
+                <div id="program_slot_wrap" class="hidden">
+                    <label class="block text-sm font-semibold mb-1.5" style="color: var(--dash-text-body);">
+                        Slot Jadwal Program <span class="text-red-500">*</span>
+                    </label>
+                    <select id="program_slot" onchange="onSlotChange(this.value)"
+                            class="w-full text-sm px-3.5 py-2.5 rounded-lg focus:outline-none transition-all cursor-pointer"
+                            style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                            onfocus="this.style.borderColor='var(--dash-primary)'"
+                            onblur="this.style.borderColor='var(--dash-input-border)'">
+                        <option value="">Pilih Slot Jadwal</option>
+                    </select>
+                    <p class="text-xs mt-1.5" style="color: var(--dash-primary-text);">
+                        Hari &amp; jam utama mengikuti slot program dan terkunci. Jika cabang ini butuh jadwal berbeda, buat program varian.
+                    </p>
                 </div>
 
                 {{-- Cabang --}}
@@ -330,6 +347,81 @@ function updateSecondaryDay(day) {
 }
 const initialDay = document.getElementById('day_of_week').value;
 if (initialDay) updateSecondaryDay(initialDay);
+
+// Jadwal per program: kelas mewarisi slot program dan menguncinya.
+const PROGRAM_SCHEDULES = @js($programs->mapWithKeys(fn ($p) => [$p->id => $p->schedule ?? []]));
+let currentSlots = [];
+
+function onProgramChange(programId) {
+    currentSlots = PROGRAM_SCHEDULES[programId] || [];
+    const wrap = document.getElementById('program_slot_wrap');
+    const sel = document.getElementById('program_slot');
+    unlockSchedule();
+    sel.innerHTML = '<option value="">Pilih Slot Jadwal</option>';
+
+    if (currentSlots.length === 0) {
+        wrap.classList.add('hidden');
+        return;
+    }
+    currentSlots.forEach((s, i) => {
+        const o = document.createElement('option');
+        o.value = String(i);
+        o.textContent = `${s.day} (${s.start} - ${s.end})`;
+        sel.appendChild(o);
+    });
+    wrap.classList.remove('hidden');
+    if (currentSlots.length === 1) {
+        sel.value = '0';
+        onSlotChange('0');
+    }
+}
+
+function onSlotChange(idx) {
+    if (idx === '' || !currentSlots[idx]) {
+        unlockSchedule();
+        return;
+    }
+    lockSchedule(currentSlots[idx]);
+}
+
+function lockSchedule(slot) {
+    const day = document.getElementById('day_of_week');
+    const sp = document.querySelector('[name="start_time_primary"]');
+    const ep = document.querySelector('[name="end_time_primary"]');
+
+    day.value = slot.day;
+    updateSecondaryDay(slot.day);
+    day.setAttribute('disabled', 'disabled');
+    day.style.opacity = '0.6';
+    // select disabled tidak ikut submit -> mirror ke hidden input.
+    let hidden = document.getElementById('day_of_week_hidden');
+    if (!hidden) {
+        hidden = document.createElement('input');
+        hidden.type = 'hidden';
+        hidden.name = 'day_of_week';
+        hidden.id = 'day_of_week_hidden';
+        day.form.appendChild(hidden);
+    }
+    hidden.value = slot.day;
+
+    if (sp) { sp.value = slot.start; sp.readOnly = true; sp.style.opacity = '0.6'; }
+    if (ep) { ep.value = slot.end; ep.readOnly = true; ep.style.opacity = '0.6'; }
+}
+
+function unlockSchedule() {
+    const day = document.getElementById('day_of_week');
+    day.removeAttribute('disabled');
+    day.style.opacity = '';
+    document.getElementById('day_of_week_hidden')?.remove();
+    const sp = document.querySelector('[name="start_time_primary"]');
+    const ep = document.querySelector('[name="end_time_primary"]');
+    if (sp) { sp.readOnly = false; sp.style.opacity = ''; }
+    if (ep) { ep.readOnly = false; ep.style.opacity = ''; }
+}
+
+// Re-apply jika form kembali dgn old program (mis. setelah error validasi).
+const initialProgram = document.getElementById('program_id').value;
+if (initialProgram) onProgramChange(initialProgram);
 
 function classroomForm(tutors, branches, initialBranchId, initialTutorId) {
     return {

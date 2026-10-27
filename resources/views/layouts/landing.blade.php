@@ -17,7 +17,8 @@
     $isCareer = request()->routeIs('careers.*') || request()->is('karir*') || str_starts_with(request()->getHost(), 'career.');
     $isCompany = request()->routeIs('company.*') || request()->is('company*') || str_starts_with(request()->getHost(), 'company.');
     $isApplicant = request()->is('applicant*') || str_starts_with(request()->getHost(), 'applicant.');
-    $homeUrl = route('home');
+    // route('home') tak punya domain constraint -> ikut host saat ini (subdomain). Paksa apex via helper.
+    $homeUrl = apex_url();
     $companyUrl = route('company.landing');
     $careerUrl = route('careers.index');
 @endphp
@@ -66,7 +67,7 @@
                 <a href="{{ route('applicant.register') }}" class="text-[14px] font-semibold bg-[#DBB940] text-[#06122B] py-2 px-5 rounded-lg no-underline transition-all duration-200 hover:opacity-90 shadow-sm">Daftar Pelamar</a>
             @else
                 <a href="{{ route('member.login', [], false) }}" class="text-[14px] font-semibold bg-gray-100 text-gray-700 py-2 px-5 rounded-lg no-underline transition-all duration-200 hover:bg-gray-200 shadow-sm border border-gray-200">Login</a>
-                <a href="/member/register" class="text-[14px] font-semibold bg-[#DBB940] text-[#06122B] py-2 px-5 rounded-lg no-underline transition-all duration-200 hover:opacity-90 shadow-sm">Daftar</a>
+                <a href="{{ route('member.register') }}" class="text-[14px] font-semibold bg-[#DBB940] text-[#06122B] py-2 px-5 rounded-lg no-underline transition-all duration-200 hover:opacity-90 shadow-sm">Daftar</a>
             @endif
         </div>
         @endif
@@ -113,7 +114,7 @@
                 <a href="{{ route('applicant.register') }}" class="min-h-[44px] flex items-center justify-center text-[14px] font-semibold bg-[#DBB940] text-[#06122B] py-2.5 px-4 rounded-lg text-center shadow-sm hover:opacity-90 transition-opacity">Daftar Pelamar</a>
             @else
                 <a href="{{ route('member.login', [], false) }}" class="min-h-[44px] flex items-center justify-center text-[14px] font-semibold bg-gray-100 text-gray-700 py-2.5 px-5 rounded-lg text-center shadow-sm border border-gray-200 hover:bg-gray-200 transition-colors">Login Member</a>
-                <a href="/member/register" class="min-h-[44px] flex items-center justify-center text-[14px] font-semibold bg-[#DBB940] text-[#06122B] py-2.5 px-4 rounded-lg text-center shadow-sm hover:opacity-90 transition-opacity">Daftar</a>
+                <a href="{{ route('member.register') }}" class="min-h-[44px] flex items-center justify-center text-[14px] font-semibold bg-[#DBB940] text-[#06122B] py-2.5 px-4 rounded-lg text-center shadow-sm hover:opacity-90 transition-opacity">Daftar</a>
             @endif
             @endif
         </div>

@@ -122,6 +122,8 @@
 {{-- ═══ BENEFITS (header sticky kiri, daftar 8 poin kanan; sengaja bukan grid kartu agar beda ritme dari HESA) ═══ --}}
 @php
     $benefits = [
+        ['Affordable Fees', 'Harga Belajar Terjangkau', 'MINDSIA menawarkan biaya belajar yang terjangkau tanpa mengesampingkan kualitas pembelajaran.'],
+        ['Sitting on the Floor', 'Belajar dengan Metode Lesehan', 'Suasana belajar yang santai dan nyaman serta memberikan ruang gerak yang lebih leluasa untuk berinteraksi.'],
         ['Nationally Recognized Certificates', 'Sertifikat Berstandar Nasional dan Berlisensi', 'Anda akan memperoleh sertifikat sebagai bukti pencapaian dan hasil pembelajaran sesuai ketentuan program yang diikuti.'],
         ['Guaranteed Classes', 'Kelas Bergaransi tanpa biaya tambahan', 'Anda akan mendapatkan kelas pengulangan jika target kelas belum tercapai.'],
         ['Free Cross Branch Discussions', 'Pindah Kelas dan Diskusi Lintas Cabang tanpa biaya tambahan', 'Anda dapat berpindah kelas ke cabang MINDSIA lainnya tanpa biaya tambahan serta dapat mengikuti diskusi dan berlatih bahasa Inggris saat berkunjung ke cabang lain.'],
@@ -138,7 +140,7 @@
             <div class="lg:sticky lg:top-28">
                 <div class="w-12 h-1 bg-gold mb-6"></div>
                 <h2 id="benefits-title" class="font-sans font-black text-[36px] md:text-[42px] tracking-tight text-white mb-4 leading-tight">Mengapa Harus MINDSIA?</h2>
-                <p class="text-[16px] text-white/75 leading-relaxed">8 alasan mengapa ribuan alumni memilih belajar di MINDSIA</p>
+                <p class="text-[16px] text-white/75 leading-relaxed">10 alasan mengapa ribuan alumni memilih belajar di MINDSIA</p>
             </div>
         </div>
 
@@ -205,8 +207,8 @@
                         <div class="text-[12px] text-ky-text/70 leading-snug">Take your English skills to the next level with our special program offer.</div>
                     </div>
                     
-                    <a href="/register?program={{ $lp->id }}" class="flex items-center justify-center gap-2 w-full bg-[#06122B] text-white py-3.5 rounded-xl text-[13px] font-bold group-hover:bg-gold group-hover:text-[#06122B] transition-all shadow-md group-hover:shadow-lg">
-                        Pilih Program
+                    <a href="{{ route('program.show', $lp->slug) }}" class="flex items-center justify-center gap-2 w-full bg-[#06122B] text-white py-3.5 rounded-xl text-[13px] font-bold group-hover:bg-gold group-hover:text-[#06122B] transition-all shadow-md group-hover:shadow-lg">
+                        Lihat Program
                         <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
                     </a>
                 </div>
@@ -220,9 +222,9 @@
     'items'     => $galleries,
     'sectionId' => 'gallery',
     'bg'        => 'bg-ky-surface',
-    'eyebrow'   => 'Galeri',
-    'title'     => 'Mindsivers',
-    'subtitle'  => 'Momen dan Dokumentasi kegiatan MINDSIA.',
+    'eyebrow'   => 'Dokumentasi',
+    'title'     => 'Galeri MINDSIA',
+    'subtitle'  => 'Momen dan Kegiatan MINDSIA.',
 ])
 
 {{-- ═══ TESTIMONI ═══ --}}
@@ -308,7 +310,7 @@
         <p class="text-[16px] md:text-[18px] text-white/70 leading-relaxed mb-10">
             Pendaftaran siswa baru telah dibuka. Tingkatkan daya saing global Anda bersama fasilitas pendidikan bahasa Inggris terbaik.
         </p>
-        <a href="/member/register" class="inline-flex items-center gap-2 bg-gold text-[#06122B] font-bold text-[16px] py-4 px-10 rounded-xl transition-all hover:-translate-y-1 shadow-lg hover:shadow-xl">
+        <a href="{{ route('member.register') }}" class="inline-flex items-center gap-2 bg-gold text-[#06122B] font-bold text-[16px] py-4 px-10 rounded-xl transition-all hover:-translate-y-1 shadow-lg hover:shadow-xl">
             Mendaftar Sekarang
         </a>
     </div>

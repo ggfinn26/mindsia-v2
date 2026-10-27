@@ -207,7 +207,11 @@
                 </div>
 
             </div>
+        </div>
 
+        @include('program.partials.landing-fields')
+
+        <div class="rounded-2xl overflow-hidden mt-6" style="background-color: var(--dash-card-bg); border: 1px solid var(--dash-card-border);">
             {{-- Actions --}}
             <div class="flex gap-3 justify-end px-6 py-4 rounded-b-2xl" style="border-top: 1px solid var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
                 <a href="{{ route('programs.index') }}"

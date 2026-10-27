@@ -51,6 +51,7 @@ class ProgramController extends Controller implements HasMiddleware
     {
         $data = $request->validated();
         $data['program_description'] = $this->cleanDescription($data['program_description'] ?? null);
+        $data = $this->sanitizeLandingData($data);
 
         if ($request->hasFile('image')) {
             $data['image_path'] = $request->file('image')->store('programs', 'public');
@@ -88,6 +89,7 @@ class ProgramController extends Controller implements HasMiddleware
     {
         $data = $request->validated();
         $data['program_description'] = $this->cleanDescription($data['program_description'] ?? null);
+        $data = $this->sanitizeLandingData($data);
 
         if ($request->hasFile('image')) {
             if ($program->image_path) {
@@ -122,6 +124,33 @@ class ProgramController extends Controller implements HasMiddleware
         }
 
         return Purifier::clean($html);
+    }
+
+    /**
+     * Drop empty rows from the repeatable landing fields before persisting.
+     *
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    private function sanitizeLandingData(array $data): array
+    {
+        if (array_key_exists('facilities', $data)) {
+            $data['facilities'] = array_values(array_filter((array) $data['facilities'], fn ($v) => filled($v)));
+        }
+
+        if (array_key_exists('benefits', $data)) {
+            $data['benefits'] = array_values(array_filter((array) $data['benefits'], fn ($v) => filled($v)));
+        }
+
+        if (array_key_exists('schedule', $data)) {
+            $data['schedule'] = array_values(array_filter((array) $data['schedule'], fn ($row) => filled($row['day'] ?? null)));
+        }
+
+        if (array_key_exists('faqs', $data)) {
+            $data['faqs'] = array_values(array_filter((array) $data['faqs'], fn ($row) => filled($row['q'] ?? null)));
+        }
+
+        return $data;
     }
 
     public function downloadReceiptTemplate(): Response

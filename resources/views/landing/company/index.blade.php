@@ -1,9 +1,14 @@
 @extends('layouts.landing')
 
 @section('title', 'Tentang MINDSIA - Company Profile')
-@section('description', 'Kenali lebih dalam visi, misi, filosofi, dan perjalanan MINDSIA English Academy sejak 2019.')
+@section('description', 'Kenali lebih dalam visi, misi, filosofi, dan perjalanan MINDSIA English Course sejak 2019.')
 
 @section('content')
+
+@php
+    // Halaman program ada di landing apex (home), bukan subdomain company.
+    $programUrl = apex_url('#program');
+@endphp
 
 {{-- HERO --}}
 <section class="relative bg-navy pt-28 md:pt-32 pb-16 md:pb-20 border-b border-white/5" id="hero">
@@ -37,7 +42,7 @@
                 <div class="text-4xl font-bold text-gold">24 HESA</div>
             </div>
             <div class="flex items-center md:justify-end">
-                <a href="{{ route('home') }}#program" class="group inline-flex items-center gap-3 text-white font-semibold hover:text-gold transition-colors">
+                <a href="{{ $programUrl }}" class="group inline-flex items-center gap-3 text-white font-semibold hover:text-gold transition-colors">
                     Lihat Program
                     <span class="w-10 h-10 shrink-0 rounded-full border border-white/20 flex items-center justify-center group-hover:border-gold transition-colors">
                         <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
@@ -62,7 +67,7 @@
             <div class="md:col-span-8">
                 <div class="prose prose-lg text-ky-text/75 leading-relaxed max-w-none">
                     <p class="text-2xl font-medium text-[#06122B] leading-relaxed mb-10">
-                        MINDSIA English Academy lahir dari kebutuhan nyata: meruntuhkan metode hafalan pasif dan membangun ekosistem praktik berbahasa yang hidup.
+                        MINDSIA English Course lahir dari kebutuhan nyata: meruntuhkan metode hafalan pasif dan membangun ekosistem praktik berbahasa yang hidup.
                     </p>
                     <div class="grid sm:grid-cols-2 gap-10 mb-10">
                         <div>
@@ -71,7 +76,7 @@
                         </div>
                         <div>
                             <h4 class="font-bold text-[#06122B] mb-2">Sistem 24 HESA</h4>
-                            <p class="text-base">24 Hours English Service Area memadukan English House, English Cafe, dan English Point untuk membiasakan siswa berbahasa penuh waktu.</p>
+                            <p class="text-base">24 Hours English Service Area memadukan English House, English Cafe, dan English Point untuk membangun kebiasaan berbahasa Inggris sepanjang waktu.</p>
                         </div>
                     </div>
                     <div class="p-8 bg-white rounded-2xl shadow-[0_10px_30px_-8px_rgba(6,18,43,0.18)]">
@@ -249,10 +254,35 @@
         </div>
         
         <div class="bg-[#0A1628] rounded-3xl border border-white/10 p-2 md:p-8 mb-16 shadow-2xl">
-            <svg id="indonesia-map" class="w-full" style="height: 480px;"></svg>
+            <div id="indonesia-map" class="w-full rounded-2xl overflow-hidden" style="height: 480px; z-index: 0;"></div>
         </div>
         
-        <div id="branch-list" class="grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-8"></div>
+        <div id="branch-list" class="grid grid-cols-1 md:grid-cols-3 gap-5 items-start"></div>
+    </div>
+
+    {{-- Modal embed Google Maps per cabang --}}
+    <div id="branch-modal" class="fixed inset-0 z-[1100] hidden items-center justify-center p-4">
+        <div id="branch-modal-backdrop" class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+        <div class="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl">
+            <div class="flex items-center justify-between gap-4 px-6 py-4 border-b border-slate-200 rounded-t-2xl">
+                <div>
+                    <div class="text-[11px] font-bold text-ky-primary uppercase tracking-widest">Cabang MINDSIA</div>
+                    <h4 id="branch-modal-title" class="font-sans font-bold text-xl text-[#06122B]"></h4>
+                </div>
+                <button type="button" id="branch-modal-close" aria-label="Tutup" class="w-10 h-10 shrink-0 rounded-lg flex items-center justify-center text-[#06122B] hover:bg-slate-100 transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="w-full h-[460px] bg-gray-100">
+                <iframe id="branch-modal-iframe" class="w-full h-full border-0" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+            </div>
+            <div class="px-6 py-4 border-t border-slate-200 rounded-b-2xl flex justify-end">
+                <a id="branch-modal-link" href="#" target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-[#06122B] text-white font-bold py-2.5 px-5 rounded-lg hover:bg-black transition-colors text-sm">
+                    <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+                    Buka di Google Maps
+                </a>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -310,7 +340,7 @@
             Peningkatan mutu fasilitas secara berkelanjutan. Ekspansi cabang baru mengusung rancangan fungsional, arsitektur matang, serta ekosistem wajib bahasa Inggris yang konsisten.
         </p>
         <div class="grid sm:grid-cols-2 gap-4 max-w-[500px] mx-auto">
-            <a href="{{ route('home') }}#program" class="inline-flex items-center justify-center bg-[#06122B] text-white font-bold py-4 px-8 rounded-xl hover:bg-black transition-colors shadow-sm">
+            <a href="{{ $programUrl }}" class="inline-flex items-center justify-center bg-[#06122B] text-white font-bold py-4 px-8 rounded-xl hover:bg-black transition-colors shadow-sm">
                 Lihat Program Kami
             </a>
             <a href="{{ route('careers.index') }}" class="inline-flex items-center justify-center bg-white border border-slate-300 text-[#06122B] font-bold py-4 px-8 rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
@@ -372,98 +402,99 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 </script>
 
-{{-- D3.js peta Indonesia --}}
-<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"
-        integrity="sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i"
-        crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"
-        integrity="sha384-Ukv1p/xTma6P4/2bY5KzWBw+ydSpXmhCMtyciIQVDJ1RmOxtCYNMF1uXT9T63H67"
-        crossorigin="anonymous"></script>
+{{-- Leaflet peta cabang (tile OpenStreetMap, tanpa API key) --}}
+<link rel="stylesheet" href="{{ asset('vendor/leaflet/leaflet.css') }}" />
+<script src="{{ asset('vendor/leaflet/leaflet.js') }}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', async function () {
     try {
-        const res = await fetch('/api/branches-map');
-        const branches = await res.json();
+        // Modal embed Google Maps per cabang.
+        const modal = document.getElementById('branch-modal');
+        // Lepas modal ke <body>: main punya overflow-x-hidden yang meng-clip overlay fixed.
+        document.body.appendChild(modal);
+        const modalIframe = document.getElementById('branch-modal-iframe');
+        const modalTitle = document.getElementById('branch-modal-title');
+        const modalLink = document.getElementById('branch-modal-link');
 
-        const branchMap = {};
-        branches.forEach(b => { branchMap[b.province] = b; });
-        const MINDSIA_PROVINCES = Object.keys(branchMap);
+        function openBranch(b) {
+            modalTitle.textContent = b.name;
+            modalIframe.src = `https://www.google.com/maps?q=${b.lat},${b.lng}&z=16&hl=id&output=embed`;
+            modalLink.href = b.gmaps || `https://maps.google.com/?q=${b.lat},${b.lng}`;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+        function closeBranch() {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            modalIframe.src = '';
+        }
+        document.getElementById('branch-modal-close').addEventListener('click', closeBranch);
+        document.getElementById('branch-modal-backdrop').addEventListener('click', closeBranch);
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeBranch(); });
 
-        const svg = d3.select('#indonesia-map');
-        const width = svg.node().getBoundingClientRect().width || 1100;
-        const height = 480;
-        svg.attr('viewBox', `0 0 ${width} ${height}`);
-
-        const g = svg.append('g');
-
-        const topology = await d3.json('https://raw.githubusercontent.com/denyherianto/indonesia-geojson-topojson-maps-with-38-provinces/main/TopoJSON/indonesia-38-provinces.topo.json');
-        const features = topojson.feature(topology, topology.objects['indonesia-38-prov-topo']).features;
-
-        const projection = d3.geoMercator().fitSize([width, height], { type: 'FeatureCollection', features });
-        const path = d3.geoPath().projection(projection);
-
-        const tooltip = d3.select('body').append('div')
-            .style('position', 'fixed')
-            .style('background', '#fff')
-            .style('color', '#06122B')
-            .style('padding', '10px 14px')
-            .style('font-size', '13px')
-            .style('border', '1px solid #E2E8F0')
-            .style('box-shadow', '0 10px 25px -5px rgba(0,0,0,0.1)')
-            .style('pointer-events', 'none')
-            .style('opacity', 0)
-            .style('z-index', 1000)
-            .style('transition', 'opacity 0.1s');
-
-        g.selectAll('path')
-            .data(features)
-            .join('path')
-            .attr('d', path)
-            .attr('fill', d => {
-                const prov = d.properties.PROVINSI || '';
-                return MINDSIA_PROVINCES.some(p => prov.toLowerCase().includes(p.toLowerCase())) ? '#FBBF24' : 'rgba(255,255,255,0.05)';
-            })
-            .attr('stroke', '#06122B')
-            .attr('stroke-width', 0.8)
-            .on('mouseover', function (event, d) {
-                const prov = d.properties.PROVINSI || '';
-                const data = branches.find(b => prov.toLowerCase().includes(b.province.toLowerCase()));
-                if (data) {
-                    tooltip.style('opacity', 1)
-                           .html(`<strong class="text-[14px] font-sans font-bold block mb-1">${data.province}</strong><span class="text-[#06122B]">${data.total} cabang</span>`);
-                    d3.select(this)
-                      .attr('fill', '#F59E0B')
-                      .attr('stroke', '#fff')
-                      .attr('stroke-width', 1);
-                }
-            })
-            .on('mousemove', event => {
-                tooltip.style('left', (event.clientX + 16) + 'px').style('top', (event.clientY - 30) + 'px');
-            })
-            .on('mouseout', function (event, d) {
-                const prov = d.properties.PROVINSI || '';
-                const isActive = MINDSIA_PROVINCES.some(p => prov.toLowerCase().includes(p.toLowerCase()));
-                d3.select(this)
-                  .attr('fill', isActive ? '#FBBF24' : 'rgba(255,255,255,0.05)')
-                  .attr('stroke', '#06122B')
-                  .attr('stroke-width', 0.8);
-                tooltip.style('opacity', 0);
-            });
-
+        // Daftar cabang per provinsi.
+        const branches = await (await fetch('/api/branches-map')).json();
         const list = document.getElementById('branch-list');
         branches.forEach(b => {
-            const citiesHtml = b.cities.map(c => `<span class="text-white/60">${c}</span>`).join(' <span class="text-white/20 mx-1.5">•</span> ');
+            const chips = b.cities.map(c => `<span class="text-white/80 text-sm bg-white/5 border border-white/10 rounded-lg px-3 py-1.5">${c}</span>`).join('');
             list.innerHTML += `
-                <div class="py-4 border-t border-white/10">
-                    <div class="flex justify-between items-baseline mb-3">
-                        <div class="font-sans font-bold text-white text-lg tracking-wide">${b.province}</div>
-                        <div class="text-gold text-xs font-bold tracking-widest uppercase">${b.total} Cabang</div>
+                <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+                    <div class="flex items-center justify-between gap-4 mb-4">
+                        <h4 class="font-sans font-bold text-white text-xl tracking-wide">${b.province}</h4>
+                        <span class="shrink-0 text-gold text-xs font-bold tracking-widest uppercase bg-gold/10 border border-gold/30 rounded-full px-3 py-1">${b.total} Cabang</span>
                     </div>
-                    <div class="text-sm leading-relaxed text-white/50">
-                        ${citiesHtml}
+                    <div class="flex flex-wrap gap-2">
+                        ${chips}
                     </div>
                 </div>`;
         });
+
+        // Peta Leaflet + marker tiap cabang.
+        const points = (await (await fetch('/api/branches-points')).json())
+            .filter(p => p.lat != null && p.lng != null);
+
+        // View awal wajib sebelum tambah layer vektor (geojson/marker), kalau tidak _clipPoints crash. fitBounds menyusul.
+        const map = L.map('indonesia-map', { scrollWheelZoom: false }).setView([-7.2, 108.0], 7);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors',
+            maxZoom: 19,
+        }).addTo(map);
+
+        // Highlight provinsi yang punya cabang (Banten, Jawa Barat, Jawa Tengah).
+        const HILITE = ['banten', 'jawa barat', 'jawa tengah'];
+        const totalByProv = {};
+        branches.forEach(b => { totalByProv[b.province.toLowerCase()] = b.total; });
+        try {
+            const geo = await (await fetch('https://raw.githubusercontent.com/denyherianto/indonesia-geojson-topojson-maps-with-38-provinces/main/GeoJSON/indonesia-38-provinces.geojson')).json();
+            geo.features = geo.features.filter(f => HILITE.some(h => (f.properties.PROVINSI || '').toLowerCase().includes(h)));
+            L.geoJSON(geo, {
+                style: { color: '#FBBF24', weight: 1.5, fillColor: '#FBBF24', fillOpacity: 0.18 },
+                onEachFeature: (feature, layer) => {
+                    const name = feature.properties.PROVINSI;
+                    const total = totalByProv[name.toLowerCase()] || 0;
+                    layer.bindTooltip(`<strong>${name}</strong> - ${total} cabang`, { sticky: true });
+                    layer.on('mouseover', () => layer.setStyle({ fillOpacity: 0.35 }));
+                    layer.on('mouseout', () => layer.setStyle({ fillOpacity: 0.18 }));
+                },
+            }).addTo(map);
+        } catch (e) { console.warn('Highlight provinsi gagal dimuat', e); }
+
+        const markers = points.map(p => {
+            const m = L.circleMarker([+p.lat, +p.lng], {
+                radius: 6, color: '#06122B', weight: 1.5, fillColor: '#FBBF24', fillOpacity: 1,
+            }).addTo(map);
+            m.bindTooltip(`${p.name} - ${p.province}`, { direction: 'top' });
+            m.on('mouseover', () => m.setStyle({ fillColor: '#F59E0B', radius: 8 }));
+            m.on('mouseout', () => m.setStyle({ fillColor: '#FBBF24', radius: 6 }));
+            m.on('click', () => openBranch(p));
+            return m;
+        });
+
+        if (markers.length) {
+            map.fitBounds(L.featureGroup(markers).getBounds().pad(0.15));
+        } else {
+            map.setView([-7.0, 108.0], 7);
+        }
     } catch(err) {
         console.error("Map rendering error: ", err);
     }

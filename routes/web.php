@@ -233,7 +233,21 @@ Route::get('/api/branches-map', fn () => response()->json(
         ])
 ));
 
+Route::get('/api/branches-points', fn () => response()->json(
+    Branch::select('branches.branch_name as name', 'provinces.name as province', 'branches.latitude as lat', 'branches.longitude as lng', 'branches.gmaps_url as gmaps')
+        ->join('areas', 'branches.areas_id', '=', 'areas.id')
+        ->join('regions', 'areas.region_id', '=', 'regions.id')
+        ->join('provinces', 'regions.province_id', '=', 'provinces.id')
+        ->where('branches.is_active', true)
+        ->whereNotNull('branches.latitude')
+        ->whereNotNull('branches.longitude')
+        ->get()
+));
+
 Route::get('/', HomeController::class)->name('home');
+
+// Halaman detail program (apex) -> /program/{slug}
+Route::get('/program/{program:slug}', [App\Http\Controllers\Landing\ProgramController::class, 'show'])->name('program.show');
 
 // Karir -> career.mindsia.id (root)
 Route::domain('career.'.config('app.domain'))->group(function () {

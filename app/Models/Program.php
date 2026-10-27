@@ -15,12 +15,21 @@ class Program extends Model
 
     protected $fillable = [
         'program_name',
+        'slug',
         'program_code',
         'program_price',
         'admin_fee',
         'admin_fee_mode',
         'admin_fee_timing',
         'program_description',
+        'tagline',
+        'badge',
+        'target_level',
+        'duration',
+        'facilities',
+        'benefits',
+        'schedule',
+        'faqs',
         'image_path',
         'receipt_template_path',
         'is_active',
@@ -30,7 +39,25 @@ class Program extends Model
         'program_price' => 'decimal:2',
         'admin_fee' => 'decimal:2',
         'is_active' => 'boolean',
+        'facilities' => 'array',
+        'benefits' => 'array',
+        'schedule' => 'array',
+        'faqs' => 'array',
     ];
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
+    protected static function booted(): void
+    {
+        static::saving(function (Program $program) {
+            if (empty($program->slug) && ! empty($program->program_name)) {
+                $program->slug = Str::slug($program->program_name);
+            }
+        });
+    }
 
     // Landing page accessors — map DB columns to view-expected properties
     public function getCodeAttribute(): string
@@ -49,6 +76,10 @@ class Program extends Model
      */
     public function getTaglineAttribute(): ?string
     {
+        if (! empty($this->attributes['tagline'])) {
+            return $this->attributes['tagline'];
+        }
+
         $withSpaces = preg_replace('/<[^>]+>/', ' ', (string) $this->program_description);
         $plain = trim(preg_replace('/\s+/', ' ', html_entity_decode($withSpaces)));
 

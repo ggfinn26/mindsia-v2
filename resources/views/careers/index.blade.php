@@ -53,7 +53,7 @@
                 <div class="w-16 h-16 bg-[#06122B] text-gold rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                     <span class="material-symbols-outlined text-[32px]">payments</span>
                 </div>
-                <h3 class="font-bold text-[20px] text-[#06122B] mb-3">Gaji Pokok Kompetitif</h3>
+                <h3 class="font-bold text-[20px] text-[#06122B] mb-3">Gaji Pokok</h3>
                 <p class="text-[14px] text-ky-text/70 leading-relaxed">Pemberian imbalan bulanan tetap yang bersaing dan sesuai dengan keahlian serta tanggung jawab Anda.</p>
             </div>
 

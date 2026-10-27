@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\ClassRoom;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreProgramRequest extends FormRequest
@@ -41,6 +42,21 @@ class StoreProgramRequest extends FormRequest
             'image' => ['nullable', 'image', 'max:2048'],
             'receipt_template' => ['nullable', 'file', 'mimes:docx', 'max:20480'],
             'is_active' => ['boolean'],
+            'tagline' => ['nullable', 'string', 'max:500'],
+            'badge' => ['nullable', 'string', 'max:100'],
+            'target_level' => ['nullable', 'string', 'max:100'],
+            'duration' => ['nullable', 'string', 'max:100'],
+            'facilities' => ['nullable', 'array'],
+            'facilities.*' => ['nullable', 'string', 'max:255'],
+            'benefits' => ['nullable', 'array'],
+            'benefits.*' => ['nullable', 'string', 'max:255'],
+            'schedule' => ['nullable', 'array'],
+            'schedule.*.day' => ['nullable', 'in:'.implode(',', ClassRoom::PRIMARY_DAYS)],
+            'schedule.*.start' => ['nullable', 'date_format:H:i'],
+            'schedule.*.end' => ['nullable', 'date_format:H:i'],
+            'faqs' => ['nullable', 'array'],
+            'faqs.*.q' => ['nullable', 'string', 'max:255'],
+            'faqs.*.a' => ['nullable', 'string', 'max:2000'],
         ];
     }
 }

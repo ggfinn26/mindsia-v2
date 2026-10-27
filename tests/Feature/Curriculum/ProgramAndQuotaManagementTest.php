@@ -135,6 +135,58 @@ test('PQ-03d store with blank description stores null', function () {
     expect(Program::where('program_code', $code)->value('program_description'))->toBeNull();
 });
 
+test('PQ-03f store program persists landing fields, drops empty rows, auto-slugs', function () {
+    $code = 'PRG-'.uniqid();
+
+    $this->actingAs($this->boardUser)
+        ->post(route('programs.store'), [
+            'program_name' => 'Landing Rich Program',
+            'program_code' => $code,
+            'program_price' => 3000000,
+            'tagline' => 'Program penuh fitur',
+            'badge' => 'Favorit',
+            'target_level' => 'Lanjutan',
+            'duration' => '3 Bulan',
+            'facilities' => ['Sertifikat', '', 'Kelas garansi'],
+            'benefits' => ['Interaktif'],
+            'schedule' => [
+                ['day' => 'Senin', 'start' => '08:00', 'end' => '10:00'],
+                ['day' => '', 'start' => '', 'end' => ''],
+            ],
+            'faqs' => [
+                ['q' => 'Berapa lama?', 'a' => '3 bulan'],
+                ['q' => '', 'a' => 'tanpa tanya'],
+            ],
+        ])
+        ->assertRedirect(route('programs.index'));
+
+    $program = Program::where('program_code', $code)->first();
+
+    expect($program->slug)->toBe('landing-rich-program');
+    expect($program->getRawOriginal('tagline'))->toBe('Program penuh fitur');
+    expect($program->badge)->toBe('Favorit');
+    expect($program->facilities)->toBe(['Sertifikat', 'Kelas garansi']);
+    expect($program->benefits)->toBe(['Interaktif']);
+    expect($program->schedule)->toHaveCount(1);
+    expect($program->schedule[0]['day'])->toBe('Senin');
+    expect($program->faqs)->toHaveCount(1);
+    expect($program->faqs[0]['q'])->toBe('Berapa lama?');
+});
+
+test('PQ-03g store rejects schedule day outside primary days', function () {
+    $this->actingAs($this->boardUser)
+        ->post(route('programs.store'), [
+            'program_name' => 'Bad Day',
+            'program_code' => 'PRG-'.uniqid(),
+            'program_price' => 1000000,
+            'schedule' => [
+                ['day' => 'Kamis', 'start' => '08:00', 'end' => '10:00'],
+            ],
+        ])
+        ->assertRedirect()
+        ->assertSessionHasErrors('schedule.0.day');
+});
+
 test('PQ-03b store program without permission returns 403', function () {
     $this->actingAs($this->regularUser)
         ->post(route('programs.store'), [
