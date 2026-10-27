@@ -167,13 +167,14 @@ class ProgramController extends Controller implements HasMiddleware
     {
         unset($data['gallery_images'], $data['remove_gallery']);
 
-        $remove = (array) $request->input('remove_gallery', []);
-        $gallery = $program?->gallery ?? [];
+        $existing = $program?->gallery ?? [];
+        // Hanya izinkan hapus path yang benar-benar milik gallery program ini (cegah arbitrary file deletion).
+        $remove = array_values(array_intersect((array) $request->input('remove_gallery', []), $existing));
 
         foreach ($remove as $path) {
             Storage::disk('public')->delete($path);
         }
-        $gallery = array_values(array_diff($gallery, $remove));
+        $gallery = array_values(array_diff($existing, $remove));
 
         foreach ((array) $request->file('gallery_images', []) as $file) {
             $gallery[] = $file->store('programs/gallery', 'public');
