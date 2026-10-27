@@ -59,11 +59,6 @@ class Program extends Model
             ->all();
     }
 
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
-
     protected static function booted(): void
     {
         static::saving(function (Program $program) {
