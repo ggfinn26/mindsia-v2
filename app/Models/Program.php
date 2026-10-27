@@ -30,6 +30,7 @@ class Program extends Model
         'benefits',
         'schedule',
         'faqs',
+        'gallery',
         'image_path',
         'receipt_template_path',
         'is_active',
@@ -43,7 +44,20 @@ class Program extends Model
         'benefits' => 'array',
         'schedule' => 'array',
         'faqs' => 'array',
+        'gallery' => 'array',
     ];
+
+    /**
+     * Resolve stored gallery paths to public URLs for display.
+     *
+     * @return list<string>
+     */
+    public function getGalleryUrlsAttribute(): array
+    {
+        return collect($this->gallery ?? [])
+            ->map(fn ($path) => Storage::url($path))
+            ->all();
+    }
 
     public function getRouteKeyName(): string
     {

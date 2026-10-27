@@ -43,6 +43,10 @@ class UpdateProgramRequest extends FormRequest
             'faqs' => ['nullable', 'array'],
             'faqs.*.q' => ['nullable', 'string', 'max:255'],
             'faqs.*.a' => ['nullable', 'string', 'max:2000'],
+            'gallery_images' => ['nullable', 'array'],
+            'gallery_images.*' => ['image', 'max:2048'],
+            'remove_gallery' => ['nullable', 'array'],
+            'remove_gallery.*' => ['string'],
         ];
     }
 }

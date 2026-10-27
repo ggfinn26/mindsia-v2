@@ -173,5 +173,32 @@
             </div>
         </div>
 
+        {{-- Galeri Suasana Kelas (per program) --}}
+        <div>
+            <label class="block text-sm font-medium mb-1" style="color: var(--dash-text-body);">Galeri Suasana Kelas</label>
+            <p class="text-xs mb-3" style="color: var(--dash-text-muted);">Foto khusus program ini, tampil di bagian "Suasana Kelas &amp; Komunitas Belajar".</p>
+
+            @if($p && ! empty($p->gallery))
+                <div class="grid grid-cols-3 sm:grid-cols-4 gap-3 mb-3">
+                    @foreach($p->gallery as $path)
+                        <label class="relative block rounded-xl overflow-hidden cursor-pointer group" style="border: 1px solid var(--dash-card-border);">
+                            <img src="{{ \Illuminate\Support\Facades\Storage::url($path) }}" alt="Foto galeri" class="w-full h-24 object-cover">
+                            <span class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors"></span>
+                            <span class="absolute top-1.5 right-1.5 flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold text-white" style="background-color: #dc2626;">
+                                <input type="checkbox" name="remove_gallery[]" value="{{ $path }}" class="rounded">
+                                Hapus
+                            </span>
+                        </label>
+                    @endforeach
+                </div>
+            @endif
+
+            <input type="file" name="gallery_images[]" multiple accept="image/*"
+                   class="w-full px-4 py-2 text-sm rounded-lg file:mr-4 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold"
+                   style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-body);" />
+            <p class="text-xs mt-1.5" style="color: var(--dash-text-muted);">Bisa pilih beberapa foto sekaligus. Centang foto di atas untuk menghapusnya saat menyimpan.</p>
+            @error('gallery_images.*')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+        </div>
+
     </div>
 </div>

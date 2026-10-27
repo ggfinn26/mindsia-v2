@@ -68,6 +68,8 @@ class ProgramController extends Controller implements HasMiddleware
             $data['receipt_template_path'] = $uploaded['file_id'];
         }
 
+        $data = $this->applyGallery($data, $request, null);
+
         Program::create($data);
 
         return redirect()->route('programs.index')->with('success', 'Program berhasil dibuat.');
@@ -109,6 +111,8 @@ class ProgramController extends Controller implements HasMiddleware
             $data['receipt_template_path'] = $uploaded['file_id'];
         }
 
+        $data = $this->applyGallery($data, $request, $program);
+
         $program->update($data);
 
         return redirect()->route('programs.show', $program)->with('success', 'Program berhasil diperbarui.');
@@ -149,6 +153,33 @@ class ProgramController extends Controller implements HasMiddleware
         if (array_key_exists('faqs', $data)) {
             $data['faqs'] = array_values(array_filter((array) $data['faqs'], fn ($row) => filled($row['q'] ?? null)));
         }
+
+        return $data;
+    }
+
+    /**
+     * Merge the per-program gallery: keep existing minus removed, append new uploads.
+     *
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    private function applyGallery(array $data, Request $request, ?Program $program): array
+    {
+        unset($data['gallery_images'], $data['remove_gallery']);
+
+        $remove = (array) $request->input('remove_gallery', []);
+        $gallery = $program?->gallery ?? [];
+
+        foreach ($remove as $path) {
+            Storage::disk('public')->delete($path);
+        }
+        $gallery = array_values(array_diff($gallery, $remove));
+
+        foreach ((array) $request->file('gallery_images', []) as $file) {
+            $gallery[] = $file->store('programs/gallery', 'public');
+        }
+
+        $data['gallery'] = $gallery;
 
         return $data;
     }

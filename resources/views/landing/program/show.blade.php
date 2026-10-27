@@ -165,16 +165,17 @@
                 </div>
                 @endif
 
-                @if($photos->isNotEmpty())
+                @php($galleryUrls = $program->gallery_urls)
+                @if(!empty($galleryUrls))
                 <div class="rounded-3xl border border-slate-200 bg-white shadow-sm" id="galeri">
                     <div class="px-5 py-4 sm:px-6 border-b border-slate-200 bg-slate-50 rounded-t-3xl flex items-center justify-between gap-3">
                         <h3 class="text-base sm:text-lg font-bold text-[#06122B]">Suasana Kelas &amp; Komunitas Belajar</h3>
-                        <span class="text-xs font-semibold text-ky-primary bg-ky-primary/10 px-3 py-1 rounded-full whitespace-nowrap">{{ $photos->count() }} Foto</span>
+                        <span class="text-xs font-semibold text-ky-primary bg-ky-primary/10 px-3 py-1 rounded-full whitespace-nowrap">{{ count($galleryUrls) }} Foto</span>
                     </div>
                     <div class="p-4 sm:p-6 grid grid-cols-2 sm:grid-cols-3 gap-3">
-                        @foreach($photos as $photo)
+                        @foreach($galleryUrls as $url)
                         <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-slate-100">
-                            <img src="{{ $photo->photo_url }}" alt="{{ $photo->title ?? 'Suasana belajar '.$program->program_name }}" loading="lazy" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700">
+                            <img src="{{ $url }}" alt="Suasana belajar {{ $program->program_name }}" loading="lazy" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700">
                         </div>
                         @endforeach
                     </div>

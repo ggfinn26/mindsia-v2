@@ -5,7 +5,9 @@ use App\Models\BranchProgramQuota;
 use App\Models\Employee;
 use App\Models\Program;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 function insertPqEmployee(string $prefix = 'PQ'): int
 {
@@ -185,6 +187,49 @@ test('PQ-03g store rejects schedule day outside primary days', function () {
         ])
         ->assertRedirect()
         ->assertSessionHasErrors('schedule.0.day');
+});
+
+test('PQ-03h store program stores uploaded gallery images', function () {
+    Storage::fake('public');
+    $code = 'PRG-'.uniqid();
+
+    $this->actingAs($this->boardUser)
+        ->post(route('programs.store'), [
+            'program_name' => 'With Gallery',
+            'program_code' => $code,
+            'program_price' => 1000000,
+            'gallery_images' => [
+                UploadedFile::fake()->image('a.jpg'),
+                UploadedFile::fake()->image('b.jpg'),
+            ],
+        ])
+        ->assertRedirect(route('programs.index'));
+
+    $program = Program::where('program_code', $code)->first();
+    expect($program->gallery)->toHaveCount(2);
+    Storage::disk('public')->assertExists($program->gallery[0]);
+});
+
+test('PQ-03i update removes selected gallery images and appends new ones', function () {
+    Storage::fake('public');
+    $program = Program::factory()->create([
+        'gallery' => ['programs/gallery/old1.jpg', 'programs/gallery/old2.jpg'],
+    ]);
+
+    $this->actingAs($this->boardUser)
+        ->put(route('programs.update', $program), [
+            'program_name' => $program->program_name,
+            'program_code' => $program->program_code,
+            'program_price' => $program->program_price,
+            'remove_gallery' => ['programs/gallery/old1.jpg'],
+            'gallery_images' => [UploadedFile::fake()->image('new.jpg')],
+        ])
+        ->assertRedirect();
+
+    $program->refresh();
+    expect($program->gallery)->toHaveCount(2)
+        ->and($program->gallery)->toContain('programs/gallery/old2.jpg')
+        ->and($program->gallery)->not->toContain('programs/gallery/old1.jpg');
 });
 
 test('PQ-03b store program without permission returns 403', function () {
