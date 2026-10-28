@@ -20,6 +20,17 @@
     --color-muted: #64748b;
     --color-border: #e2e8f0;
 
+    /* Landing / Multi-Role Enterprise Tokens */
+    --color-ky-primary: #215aac;
+    --color-ky-primary-hover: #4173c7;
+    --color-ky-secondary: #00677d;
+    --color-ky-canvas: #f9f9ff;
+    --color-ky-surface: #f7f9fc;
+    --color-ky-card: #ffffff;
+    --color-ky-text: #141b2b;
+    --color-ky-text-muted: #424751;
+    --color-ky-border: #c3c6d3;
+
     --color-primary-fixed-dim: #b4c5ff;
     --color-surface-bright: #f7f9fb;
     --color-on-primary: #ffffff;

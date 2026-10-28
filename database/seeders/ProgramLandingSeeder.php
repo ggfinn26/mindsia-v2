@@ -41,6 +41,7 @@ class ProgramLandingSeeder extends Seeder
 
         $perProgram = [
             'EM' => ['badge' => 'Program Favorit', 'target_level' => 'Active English + TOEFL', 'duration' => '3 Bulan Intensif', 'tagline' => 'Program khusus mahasiswa untuk menguasai TOEFL, Speaking, Listening, Reading, dan Writing hingga fasih dan percaya diri.'],
+            'EMP' => ['badge' => 'Program Favorit', 'target_level' => 'Active English + TOEFL', 'duration' => '3 Bulan Intensif', 'tagline' => 'Program khusus mahasiswa untuk menguasai TOEFL, Speaking, Listening, Reading, dan Writing hingga fasih dan percaya diri.'],
             'EFT' => ['badge' => 'Untuk Remaja', 'target_level' => 'Pelajar SMP - SMA', 'duration' => 'Reguler', 'tagline' => 'Program bahasa Inggris yang dirancang khusus untuk remaja dengan metode menyenangkan dan interaktif.'],
             'EFP' => ['badge' => 'English Fluency', 'target_level' => 'Percakapan Aktif', 'duration' => 'Reguler', 'tagline' => 'Bangun kelancaran dan kepercayaan diri berbahasa Inggris dalam percakapan sehari-hari.'],
             'TOEFL' => ['badge' => 'Test Preparation', 'target_level' => 'Target Score 500+', 'duration' => '3 Bulan Intensif', 'tagline' => 'Persiapan TOEFL terstruktur: Listening, Structure, dan Reading Comprehension.'],
