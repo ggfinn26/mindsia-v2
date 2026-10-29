@@ -30,10 +30,6 @@ class MemberRegistrationService
                 $this->validateDiscount($discount, $data['program_id']);
 
                 $discountAmount = $this->calculateDiscount($discount, $originalPrice);
-
-                if ($discount->discount_quota !== null) {
-                    $discount->decrement('discount_quota');
-                }
             }
 
             $installmentCount = $plan->type === 'cash' ? 1 : (int) $plan->installment_count;
@@ -63,8 +59,42 @@ class MemberRegistrationService
         });
     }
 
+    /**
+     * Konsumsi quota promo saat pembayaran pertama berhasil. Idempotent (sekali per registrasi).
+     */
+    public function consumePromoQuota(MemberRegistration $registration): void
+    {
+        if (! $registration->discount_id || $registration->promo_quota_consumed) {
+            return;
+        }
+
+        DB::transaction(function () use ($registration) {
+            $locked = MemberRegistration::whereKey($registration->id)->lockForUpdate()->first();
+
+            if (! $locked || ! $locked->discount_id || $locked->promo_quota_consumed) {
+                return;
+            }
+
+            $discount = Discount::whereKey($locked->discount_id)->lockForUpdate()->first();
+
+            if ($discount && $discount->discount_quota !== null && $discount->discount_quota > 0) {
+                $discount->decrement('discount_quota');
+            }
+
+            $locked->update(['promo_quota_consumed' => true]);
+        });
+    }
+
     private function validateDiscount(Discount $discount, int $programId): void
     {
+        if (! $discount->is_active) {
+            throw new \RuntimeException('Diskon tidak aktif.');
+        }
+
+        if ($discount->starts_at && $discount->starts_at->isFuture()) {
+            throw new \RuntimeException('Diskon belum berlaku.');
+        }
+
         if (! $discount->isValidForProgram($programId)) {
             throw new \RuntimeException('Diskon tidak berlaku untuk program ini.');
         }
@@ -81,7 +111,7 @@ class MemberRegistrationService
     private function calculateDiscount(Discount $discount, int $originalPrice): int
     {
         if ($discount->discount_type === 'percentage') {
-            return (int) round($originalPrice * $discount->discount_nominal / 100);
+            return min((int) round($originalPrice * $discount->discount_nominal / 100), $originalPrice);
         }
 
         return min($discount->discount_nominal, $originalPrice);
@@ -89,18 +119,13 @@ class MemberRegistrationService
 
     private function generateInstallments(MemberRegistration $registration, ProgramPaymentPlan $plan): void
     {
-        $count = $plan->type === 'cash' ? 1 : (int) $plan->installment_count;
         $now = now();
-        $installments = [];
+        $rows = [];
 
-        for ($i = 1; $i <= $count; $i++) {
-            $amount = $i === 1
-                ? (int) $plan->dp_amount
-                : (int) $plan->per_installment_amount;
-
-            $installments[] = [
+        foreach ($this->installmentAmounts($registration, $plan) as $index => $amount) {
+            $rows[] = [
                 'member_registration_id' => $registration->id,
-                'installment_number' => $i,
+                'installment_number' => $index + 1,
                 'amount' => $amount,
                 'payment_status' => 'unpaid',
                 'created_at' => $now,
@@ -108,6 +133,48 @@ class MemberRegistrationService
             ];
         }
 
-        MemberPayment::insert($installments);
+        MemberPayment::insert($rows);
+    }
+
+    /**
+     * Nominal tiap cicilan agar total == final_price (otoritatif), DP-first.
+     * DP menyerap diskon; jika diskon melebihi DP, sisanya dikurangi dari cicilan berikutnya.
+     *
+     * @return list<int>
+     */
+    public function installmentAmounts(MemberRegistration $registration, ProgramPaymentPlan $plan): array
+    {
+        $total = (int) $registration->final_price;
+
+        if ($plan->type === 'cash') {
+            return [$total];
+        }
+
+        $count = max(1, (int) $plan->installment_count);
+
+        if ($count === 1) {
+            return [$total];
+        }
+
+        $per = (int) $plan->per_installment_amount;
+        $tail = array_fill(0, $count - 1, $per);
+        $dp = $total - ($per * ($count - 1));
+
+        if ($dp >= 0) {
+            return array_merge([$dp], $tail);
+        }
+
+        $deficit = -$dp;
+        foreach ($tail as $i => $amount) {
+            $cut = min($amount, $deficit);
+            $tail[$i] = $amount - $cut;
+            $deficit -= $cut;
+
+            if ($deficit === 0) {
+                break;
+            }
+        }
+
+        return array_merge([0], $tail);
     }
 }
