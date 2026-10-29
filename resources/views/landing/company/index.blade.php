@@ -26,7 +26,7 @@
             </div>
             <div>
                 <div class="text-xs font-semibold text-white/40 tracking-widest uppercase mb-2">Cabang pada Tahun 2026</div>
-                <div class="text-4xl font-bold text-white" data-count-to="35">35</div>
+                <div class="text-4xl font-bold text-white" data-count-to="{{ $totalCabang }}">{{ $totalCabang }}</div>
             </div>
             <div>
                 <div class="text-xs font-semibold text-white/40 tracking-widest uppercase mb-2">Alumni</div>
@@ -67,7 +67,7 @@
                     <div class="grid sm:grid-cols-2 gap-10 mb-10">
                         <div>
                             <h4 class="font-bold text-[#06122B] mb-2">Perkembangan Pesat</h4>
-                            <p class="text-base">Berdiri sejak 2019, pada tahun 2026 kami memiliki 35 cabang yang tersebar di Banten, Jawa Barat, dan Jawa Tengah.</p>
+                            <p class="text-base">Berdiri sejak 2019, pada tahun 2026 kami memiliki {{ $totalCabang }} cabang yang tersebar di Banten, Jawa Barat, dan Jawa Tengah.</p>
                         </div>
                         <div>
                             <h4 class="font-bold text-[#06122B] mb-2">Sistem 24 HESA</h4>
@@ -241,10 +241,10 @@
         <div class="grid md:grid-cols-12 gap-12 items-end mb-16">
             <div class="md:col-span-8">
                 <h2 class="font-sans font-black text-sm text-gold tracking-widest uppercase mb-3">Jaringan Kami</h2>
-                <h3 class="font-sans font-bold text-3xl md:text-4xl text-white tracking-tight leading-tight">Tersebar di {{ $totalCabang }} Titik Cabang.</h3>
+                <h3 class="font-sans font-bold text-3xl md:text-4xl text-white tracking-tight leading-tight">Peta Penyebaran Wilayah MINDSIA</h3>
             </div>
             <div class="md:col-span-4 md:text-right text-white/60 text-lg">
-                Hadir di Regional JABALNUS (Jawa, Bali, dan Nusa).
+                {{ $totalCabang }} Cabang yang Menjangkau Berbagai Kota dan Kabupaten di Pulau Jawa
             </div>
         </div>
         
