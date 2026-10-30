@@ -21,6 +21,14 @@ Schedule::call(fn () => Artisan::call('facility:send-rent-due-soon'))
 Schedule::call(fn () => Artisan::call('attendance:finalize-missed-checkout'))
     ->name('attendance:finalize-missed-checkout')->withoutOverlapping()->dailyAt('00:05');
 
+// Jam kerja mengikuti jadwal masing-masing pegawai (diatur per posisi/role): job sering jalan, tiap pegawai baru diproses
+// ketika jam mulai (auto-hadir) atau jam selesai (alpha) jadwalnya tiba. Aman dijalankan berulang.
+Schedule::call(fn () => Artisan::call('attendance:auto-present'))
+    ->name('attendance:auto-present')->withoutOverlapping()->everyFiveMinutes();
+
+Schedule::call(fn () => Artisan::call('attendance:mark-absent'))
+    ->name('attendance:mark-absent')->withoutOverlapping()->hourlyAt(10);
+
 Schedule::call(fn () => Artisan::call('recruitment:close-expired-postings'))
     ->name('recruitment:close-expired-postings')->withoutOverlapping()->dailyAt('00:05');
 
