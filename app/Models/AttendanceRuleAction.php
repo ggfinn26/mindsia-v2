@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class AttendanceRuleAction extends Model
@@ -24,6 +25,11 @@ class AttendanceRuleAction extends Model
     public function rule(): BelongsTo
     {
         return $this->belongsTo(AttendanceRule::class, 'attendance_rule_id');
+    }
+
+    public function executions(): HasMany
+    {
+        return $this->hasMany(AttendanceRuleActionExecution::class, 'attendance_rule_action_id');
     }
 
     public function payrollAction(): HasOne

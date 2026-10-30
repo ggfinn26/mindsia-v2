@@ -8,7 +8,6 @@ use App\Models\EmployeeAttendanceMonthlyRecap;
 use App\Models\EmployeeKpiEvaluation;
 use App\Models\EmployeePayroll;
 use App\Models\EmployeeSessionAttendanceLog;
-use App\Models\EmployeeWorkAttendanceLog;
 use App\Models\LeavePaySetting;
 use App\Models\PayrollBonusCalculation;
 use App\Models\PayrollBonusConditionSnapshot;
@@ -18,8 +17,9 @@ use App\Models\PayrollPeriod;
 use App\Models\SessionSchedule;
 use App\Repositories\AttendanceRecapRepository;
 use App\Repositories\AttendanceSettingsRepository;
-use App\Repositories\HolidayRepository;
 use App\Repositories\Payroll\EmployeePayrollRepository;
+use App\Services\Attendance\AttendanceRuleEvaluator;
+use App\Services\Attendance\SessionAbsenceService;
 use App\Services\Bonus\BonusRuleResolverService;
 use Carbon\Carbon;
 use Illuminate\Support\Carbon as SupportCarbon;
@@ -37,7 +37,8 @@ class PayrollGenerationService
         private readonly PayrollNotificationService $notificationService,
         private readonly AttendanceSettingsRepository $attendanceSettings,
         private readonly AttendanceRecapRepository $recapRepo,
-        private readonly HolidayRepository $holidayRepo,
+        private readonly SessionAbsenceService $sessionAbsence,
+        private readonly AttendanceRuleEvaluator $ruleEvaluator,
     ) {}
 
     public function generate(PayrollPeriod $period): void
@@ -205,6 +206,8 @@ class PayrollGenerationService
             ]);
         }
 
+        // Evaluasi ulang aturan absensi tepat sebelum potongan dihitung: absensi bisa dikoreksi setelah job harian berjalan
+        $this->ruleEvaluator->evaluateEmployee($employee, Carbon::create($period->period_year, $period->period_month, 1));
         $this->applyAttendanceDeductions($payroll, $employee, $period, $baseSalary);
         $this->applyLeaveDeductions($payroll, $employee, $period, $baseSalary);
         $this->applyBonuses($payroll, $employee, $period, $baseSalary);
@@ -292,51 +295,12 @@ class PayrollGenerationService
         $this->createDeductionItem($payroll, $employee, 'LEAVE_DEDUCTION', $unpaidLeaveDays, $baseSalary, $scheduledDays, 'leave', 'Potongan izin tidak berbayar');
     }
 
-    /**
-     * Hari alpha sesi tutor: tanggal dalam periode yang punya sesi terjadwal tetapi tidak ada satu pun yang dihadiri.
-     * Dilewati: tanggal yang belum lewat, libur nasional, hari yang sudah tercatat sakit/izin/cuti/libur, dan (bila
-     * alpha kerja juga dipotong) hari yang sudah dihitung sebagai alpha kerja agar tidak dipotong dua kali.
-     */
+    /** Jumlah hari alpha sesi tutor pada periode payroll (definisi di SessionAbsenceService). */
     private function absentSessionDays(Employee $employee, PayrollPeriod $period, bool $excludeWorkAbsent): int
     {
         $start = Carbon::create($period->period_year, $period->period_month, 1)->startOfDay();
-        $end = $start->copy()->endOfMonth();
 
-        $sessions = SessionSchedule::where('employee_id', $employee->id)
-            ->whereHas('classSchedule', fn ($q) => $q->whereBetween('schedule_date', [$start->toDateString(), $end->toDateString()]))
-            ->with('classSchedule:id,schedule_date')
-            ->get(['id', 'class_schedule_id']);
-
-        if ($sessions->isEmpty()) {
-            return 0;
-        }
-
-        // checked_in juga dianggap hadir: tutor sudah datang walau belum difinalkan job lupa-absen-keluar
-        $attended = EmployeeSessionAttendanceLog::where('employee_id', $employee->id)
-            ->whereIn('status', ['present', 'checked_in'])
-            ->whereIn('session_schedule_id', $sessions->pluck('id'))
-            ->pluck('session_schedule_id')->flip();
-
-        $excused = ['sick', 'permission', 'leave', 'holiday'];
-        if ($excludeWorkAbsent) {
-            $excused[] = 'absent';
-        }
-
-        $workStatus = EmployeeWorkAttendanceLog::where('employee_id', $employee->id)
-            ->whereBetween('attendance_date', [$start->toDateString(), $end->toDateString()])
-            ->get(['status', 'attendance_date'])
-            ->mapWithKeys(fn ($log) => [$log->attendance_date->toDateString() => $log->status]);
-
-        $holidays = array_flip($this->holidayRepo->datesBetween($start->toDateString(), $end->toDateString()));
-        $today = now()->toDateString();
-
-        return $sessions
-            ->groupBy(fn ($session) => $session->classSchedule->schedule_date->toDateString())
-            ->filter(fn ($daySessions, $date) => $date < $today
-                && ! isset($holidays[$date])
-                && ! in_array($workStatus[$date] ?? null, $excused, true)
-                && $daySessions->every(fn ($session) => ! $attended->has($session->id)))
-            ->count();
+        return $this->sessionAbsence->analyze($employee, $start, $start->copy()->endOfMonth(), $excludeWorkAbsent)['absent']->count();
     }
 
     private function createDeductionItem(EmployeePayroll $payroll, Employee $employee, string $componentCode, int $days, float $baseSalary, int $scheduledDays, string $sourceType, string $label): void
@@ -376,6 +340,7 @@ class PayrollGenerationService
     private function applyAttendanceDeductions(EmployeePayroll $payroll, Employee $employee, PayrollPeriod $period, float $baseSalary): void
     {
         $violations = AttendanceRuleViolation::where('employee_id', $employee->id)
+            ->whereHas('rule', fn ($q) => $q->where('is_active', true))   // aturan yang dinonaktifkan tidak lagi memotong
             ->whereYear('period_start_date', $period->period_year)
             ->whereMonth('period_start_date', $period->period_month)
             ->with(['actionExecutions.action.payrollAction.payrollComponent'])
@@ -416,6 +381,10 @@ class PayrollGenerationService
                     'source_id' => $violation->id,
                     'description' => "Potongan pelanggaran absensi: {$violation->id}",
                 ]);
+
+                if ($execution->status === 'pending') {
+                    $execution->update(['status' => 'processed', 'executed_at' => now(), 'result_notes' => "Dipotong di payroll {$period->period_year}-{$period->period_month}"]);
+                }
             }
         }
     }

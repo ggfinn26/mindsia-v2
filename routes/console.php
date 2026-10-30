@@ -29,6 +29,11 @@ Schedule::call(fn () => Artisan::call('attendance:auto-present'))
 Schedule::call(fn () => Artisan::call('attendance:mark-absent'))
     ->name('attendance:mark-absent')->withoutOverlapping()->hourlyAt(10);
 
+// Aturan absensi (UI Attendance Rules) -> pelanggaran, agar Alert Merah dan dashboard kepatuhan terisi selama bulan berjalan.
+// Payroll tetap mengevaluasi ulang saat generate, jadi angka potongan selalu mengikuti absensi terakhir.
+Schedule::call(fn () => Artisan::call('attendance:evaluate-rules'))
+    ->name('attendance:evaluate-rules')->withoutOverlapping()->dailyAt('00:30');
+
 Schedule::call(fn () => Artisan::call('recruitment:close-expired-postings'))
     ->name('recruitment:close-expired-postings')->withoutOverlapping()->dailyAt('00:05');
 
