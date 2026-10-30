@@ -82,6 +82,11 @@ class LeaveDeductionPayrollTest extends TestCase
         return $employee;
     }
 
+    private function setting(Position $position, string $type, bool $paid): void
+    {
+        LeavePaySetting::create(['position_id' => $position->id, 'leave_type' => $type, 'is_paid' => $paid]);
+    }
+
     private function unpaid(Position $position, string $type): void
     {
         LeavePaySetting::create(['position_id' => $position->id, 'leave_type' => $type, 'is_paid' => false]);
@@ -284,6 +289,21 @@ class LeaveDeductionPayrollTest extends TestCase
 
         $this->assertNull($this->deduction($employee), 'Izin diatur berbayar untuk posisi ini.');
         $this->assertEquals(100_000.0, (float) $this->alphaDeduction($employee)->total_amount);
+    }
+
+    public function test_alpha_kerja_bisa_diatur_dibayar_per_posisi_lewat_pengaturan(): void
+    {
+        $paid = $this->position();
+        $this->setting($paid, 'absent', true);
+        $unpaid = $this->position();
+
+        $employeePaid = $this->employee($paid, ['total_absent' => 3]);
+        $employeeUnpaid = $this->employee($unpaid, ['total_absent' => 3]);
+
+        $this->generate();
+
+        $this->assertNull($this->alphaDeduction($employeePaid), 'Posisi ini mengatur alpha dibayar.');
+        $this->assertEquals(300_000.0, (float) $this->alphaDeduction($employeeUnpaid)->total_amount, 'Posisi lain tetap bawaan: dipotong.');
     }
 
     public function test_pengaturan_posisi_masih_bisa_menimpa_sakit_dan_cuti_menjadi_tidak_berbayar(): void

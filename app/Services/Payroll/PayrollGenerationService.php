@@ -8,6 +8,7 @@ use App\Models\EmployeeAttendanceMonthlyRecap;
 use App\Models\EmployeeKpiEvaluation;
 use App\Models\EmployeePayroll;
 use App\Models\EmployeeSessionAttendanceLog;
+use App\Models\EmployeeWorkAttendanceLog;
 use App\Models\LeavePaySetting;
 use App\Models\PayrollBonusCalculation;
 use App\Models\PayrollBonusConditionSnapshot;
@@ -17,6 +18,7 @@ use App\Models\PayrollPeriod;
 use App\Models\SessionSchedule;
 use App\Repositories\AttendanceRecapRepository;
 use App\Repositories\AttendanceSettingsRepository;
+use App\Repositories\HolidayRepository;
 use App\Repositories\Payroll\EmployeePayrollRepository;
 use App\Services\Bonus\BonusRuleResolverService;
 use Carbon\Carbon;
@@ -35,6 +37,7 @@ class PayrollGenerationService
         private readonly PayrollNotificationService $notificationService,
         private readonly AttendanceSettingsRepository $attendanceSettings,
         private readonly AttendanceRecapRepository $recapRepo,
+        private readonly HolidayRepository $holidayRepo,
     ) {}
 
     public function generate(PayrollPeriod $period): void
@@ -203,7 +206,7 @@ class PayrollGenerationService
         }
 
         $this->applyAttendanceDeductions($payroll, $employee, $period, $baseSalary);
-        $this->applyLeaveDeductions($payroll, $employee, $baseSalary);
+        $this->applyLeaveDeductions($payroll, $employee, $period, $baseSalary);
         $this->applyBonuses($payroll, $employee, $period, $baseSalary);
 
         $this->payrollRepo->updateTotals($payroll);
@@ -255,7 +258,7 @@ class PayrollGenerationService
      *  - IZIN/SAKIT/CUTI tidak berbayar: sesuai pengaturan posisi, bawaan: izin dipotong, sakit dan cuti digaji.
      * Total hari dipotong tidak melebihi hari terjadwal. Board tidak pernah dipotong.
      */
-    private function applyLeaveDeductions(EmployeePayroll $payroll, Employee $employee, float $baseSalary): void
+    private function applyLeaveDeductions(EmployeePayroll $payroll, Employee $employee, PayrollPeriod $period, float $baseSalary): void
     {
         // BOARD employees are always paid in full regardless of leave_pay_settings
         $boardRoles = ['Board', 'CEO', 'COO', 'CHRO', 'CPO', 'CFO', 'CMO'];
@@ -270,7 +273,11 @@ class PayrollGenerationService
             return;
         }
 
-        $absentDays = min((int) $payroll->days_absent, $scheduledDays);
+        // Alpha kerja lalu alpha sesi lalu izin/sakit/cuti; masing-masing bisa diatur dibayar/tidak per posisi.
+        $absentDays = LeavePaySetting::isPaidFor($positionId, 'absent') ? 0 : min((int) $payroll->days_absent, $scheduledDays);
+        $sessionAbsentDays = LeavePaySetting::isPaidFor($positionId, 'absent_session')
+            ? 0
+            : min($this->absentSessionDays($employee, $period, excludeWorkAbsent: $absentDays > 0), $scheduledDays - $absentDays);
 
         $unpaidLeaveDays = 0;
         foreach (['permission' => 'days_permission', 'sick' => 'days_sick', 'leave' => 'days_leave'] as $type => $column) {
@@ -278,10 +285,58 @@ class PayrollGenerationService
                 $unpaidLeaveDays += (int) $payroll->{$column};
             }
         }
-        $unpaidLeaveDays = min($unpaidLeaveDays, $scheduledDays - $absentDays);
+        $unpaidLeaveDays = min($unpaidLeaveDays, $scheduledDays - $absentDays - $sessionAbsentDays);
 
         $this->createDeductionItem($payroll, $employee, 'ABSENT_DEDUCTION', $absentDays, $baseSalary, $scheduledDays, 'attendance', 'Potongan alpha');
+        $this->createDeductionItem($payroll, $employee, 'ABSENT_DEDUCTION', $sessionAbsentDays, $baseSalary, $scheduledDays, 'attendance', 'Potongan alpha sesi');
         $this->createDeductionItem($payroll, $employee, 'LEAVE_DEDUCTION', $unpaidLeaveDays, $baseSalary, $scheduledDays, 'leave', 'Potongan izin tidak berbayar');
+    }
+
+    /**
+     * Hari alpha sesi tutor: tanggal dalam periode yang punya sesi terjadwal tetapi tidak ada satu pun yang dihadiri.
+     * Dilewati: tanggal yang belum lewat, libur nasional, hari yang sudah tercatat sakit/izin/cuti/libur, dan (bila
+     * alpha kerja juga dipotong) hari yang sudah dihitung sebagai alpha kerja agar tidak dipotong dua kali.
+     */
+    private function absentSessionDays(Employee $employee, PayrollPeriod $period, bool $excludeWorkAbsent): int
+    {
+        $start = Carbon::create($period->period_year, $period->period_month, 1)->startOfDay();
+        $end = $start->copy()->endOfMonth();
+
+        $sessions = SessionSchedule::where('employee_id', $employee->id)
+            ->whereHas('classSchedule', fn ($q) => $q->whereBetween('schedule_date', [$start->toDateString(), $end->toDateString()]))
+            ->with('classSchedule:id,schedule_date')
+            ->get(['id', 'class_schedule_id']);
+
+        if ($sessions->isEmpty()) {
+            return 0;
+        }
+
+        // checked_in juga dianggap hadir: tutor sudah datang walau belum difinalkan job lupa-absen-keluar
+        $attended = EmployeeSessionAttendanceLog::where('employee_id', $employee->id)
+            ->whereIn('status', ['present', 'checked_in'])
+            ->whereIn('session_schedule_id', $sessions->pluck('id'))
+            ->pluck('session_schedule_id')->flip();
+
+        $excused = ['sick', 'permission', 'leave', 'holiday'];
+        if ($excludeWorkAbsent) {
+            $excused[] = 'absent';
+        }
+
+        $workStatus = EmployeeWorkAttendanceLog::where('employee_id', $employee->id)
+            ->whereBetween('attendance_date', [$start->toDateString(), $end->toDateString()])
+            ->get(['status', 'attendance_date'])
+            ->mapWithKeys(fn ($log) => [$log->attendance_date->toDateString() => $log->status]);
+
+        $holidays = array_flip($this->holidayRepo->datesBetween($start->toDateString(), $end->toDateString()));
+        $today = now()->toDateString();
+
+        return $sessions
+            ->groupBy(fn ($session) => $session->classSchedule->schedule_date->toDateString())
+            ->filter(fn ($daySessions, $date) => $date < $today
+                && ! isset($holidays[$date])
+                && ! in_array($workStatus[$date] ?? null, $excused, true)
+                && $daySessions->every(fn ($session) => ! $attended->has($session->id)))
+            ->count();
     }
 
     private function createDeductionItem(EmployeePayroll $payroll, Employee $employee, string $componentCode, int $days, float $baseSalary, int $scheduledDays, string $sourceType, string $label): void

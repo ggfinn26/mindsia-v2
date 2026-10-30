@@ -23,10 +23,10 @@ class LeavePaySetting extends Model
     }
 
     /**
-     * Kebijakan bawaan bila posisi belum punya pengaturan: izin dipotong per hari, sakit dan cuti tetap digaji.
-     * Alpha tidak ada di sini karena selalu dipotong (bukan jenis pengajuan).
+     * Kebijakan bawaan bila posisi belum punya pengaturan: alpha (kerja dan sesi) dan izin dipotong per hari,
+     * sakit dan cuti tetap digaji. Semuanya bisa diubah per posisi lewat halaman Pengaturan Izin/Cuti.
      */
-    public const DEFAULT_PAID = ['permission' => false, 'sick' => true, 'leave' => true];
+    public const DEFAULT_PAID = ['permission' => false, 'sick' => true, 'leave' => true, 'absent' => false, 'absent_session' => false];
 
     public static function defaultPaid(string $leaveType): bool
     {
