@@ -8,6 +8,7 @@ use App\Http\Requests\Attendance\UpdateWorkScheduleRuleRequest;
 use App\Models\Employee;
 use App\Models\Position;
 use App\Models\WorkScheduleRule;
+use App\Services\AttendanceRecapRefresher;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -69,6 +70,9 @@ class WorkScheduleRuleController extends Controller implements HasMiddleware
         $validated = $request->validated();
         $workScheduleRule->update($validated);
         $this->syncWorkDays($workScheduleRule, $validated['work_days'] ?? []);
+
+        // Hari kerja/wajib-absen aturan berubah: hari terjadwal semua pegawai pemakai aturan ini ikut berubah.
+        app(AttendanceRecapRefresher::class)->refreshForRule($workScheduleRule);
 
         return redirect()->route('work-schedule-rules.show', $workScheduleRule)
             ->with('success', 'Aturan jadwal kerja berhasil diperbarui');
