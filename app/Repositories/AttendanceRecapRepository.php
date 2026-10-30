@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\Employee;
 use App\Models\EmployeeAttendanceMonthlyRecap;
 use App\Models\EmployeeWorkAttendanceLog;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Carbon;
 
 class AttendanceRecapRepository
@@ -14,7 +15,7 @@ class AttendanceRecapRepository
         private readonly HolidayRepository $holidayRepo,
     ) {}
 
-    public function upsertForEmployee(int $employeeId, Carbon $date): EmployeeAttendanceMonthlyRecap
+    public function upsertForEmployee(int $employeeId, CarbonInterface $date): EmployeeAttendanceMonthlyRecap
     {
         $year = $date->year;
         $month = $date->month;
