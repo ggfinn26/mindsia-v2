@@ -3,8 +3,10 @@
 namespace App\Http\Requests\Kpi;
 
 use App\Models\KpiEvaluatorAssignment;
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class StoreKpiEvaluationRequest extends FormRequest
 {
@@ -50,6 +52,39 @@ class StoreKpiEvaluationRequest extends FormRequest
             'period_start_date' => ['required', 'date'],
             'period_end_date' => ['required', 'date', 'after_or_equal:period_start_date'],
         ];
+    }
+
+    /**
+     * Periode wajib utuh dan sudah berakhir: bulan/kuartal/tahun penuh, bukan rentang bebas.
+     * Nilai otomatis ditarik sekali saat evaluasi dibuat; periode yang belum selesai atau tidak sejajar
+     * dengan kalender menghasilkan nilai salah (bulan/tahun salah).
+     */
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $v) {
+            if ($v->errors()->hasAny(['period_type', 'period_start_date', 'period_end_date'])) {
+                return;
+            }
+
+            $start = Carbon::parse($this->input('period_start_date'))->startOfDay();
+            $end = Carbon::parse($this->input('period_end_date'))->startOfDay();
+
+            [$months, $startMonthValid] = match ($this->input('period_type')) {
+                'monthly' => [1, true],
+                'quarterly' => [3, in_array($start->month, [1, 4, 7, 10], true)],
+                default => [12, $start->month === 1],
+            };
+
+            if ($start->day !== 1 || ! $startMonthValid || ! $end->equalTo($start->copy()->addMonthsNoOverflow($months)->subDay())) {
+                $v->errors()->add('period_start_date', 'Tanggal periode harus sesuai tipe: bulanan = 1 bulan penuh, kuartalan = Jan/Apr/Jul/Okt selama 3 bulan, tahunan = 1 Januari - 31 Desember.');
+
+                return;
+            }
+
+            if ($end->gte(today())) {
+                $v->errors()->add('period_end_date', 'Periode belum berakhir. Evaluasi hanya bisa dibuat setelah periode selesai.');
+            }
+        });
     }
 
     public function messages(): array

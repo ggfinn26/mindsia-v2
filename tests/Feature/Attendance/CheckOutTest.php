@@ -4,6 +4,7 @@ namespace Tests\Feature\Attendance;
 
 use App\Models\Branch;
 use App\Models\Employee;
+use App\Models\EmployeeAttendanceMonthlyRecap;
 use App\Models\EmployeeWorkAttendanceLog;
 use App\Models\User;
 use App\Models\WorkScheduleAssignment;
@@ -299,5 +300,64 @@ class CheckOutTest extends TestCase
         $this->actingAs($userWithoutEmployee)
             ->post(route('work-attendance.check-out'), $this->validCheckOutData())
             ->assertStatus(403);
+    }
+
+    // CO-11 — Check-out tanpa lokasi (GPS ditolak) tetap berhasil
+    public function test_check_out_tanpa_lokasi_tetap_berhasil(): void
+    {
+        $this->assignSchedule($this->employee, [
+            'start_time' => '08:00',
+            'end_time' => '17:00',
+            'early_leave_tolerance_minutes' => 15,
+        ]);
+
+        $log = $this->createCheckedInLog($this->employee);
+
+        $this->travelTo(now()->setTime(17, 0));
+
+        $this->actingAs($this->user)
+            ->post(route('work-attendance.check-out'), [])
+            ->assertSessionHasNoErrors();
+
+        $log->refresh();
+        $this->assertSame('present', $log->status);
+        $this->assertNotNull($log->check_out);
+        $this->assertNull($log->check_out_latitude);
+        $this->assertNull($log->check_out_distance_m);
+    }
+
+    // CO-12 — Lat tanpa lng ditolak (data lokasi harus lengkap atau kosong)
+    public function test_check_out_lokasi_setengah_ditolak(): void
+    {
+        $this->createCheckedInLog($this->employee);
+
+        $this->actingAs($this->user)
+            ->post(route('work-attendance.check-out'), ['check_out_latitude' => -6.2088])
+            ->assertSessionHasErrors('check_out_longitude');
+    }
+
+    // CO-13 — Lupa check-out: hari lewat jadi Hadir + flag, hari ini tidak disentuh
+    public function test_finalize_missed_checkout_hanya_untuk_hari_sebelumnya(): void
+    {
+        $kemarin = $this->createCheckedInLog($this->employee, ['attendance_date' => now()->subDay()->toDateString()]);
+        $hariIni = $this->createCheckedInLog($this->employee, ['attendance_date' => now()->toDateString()]);
+
+        $this->artisan('attendance:finalize-missed-checkout')->assertSuccessful();
+
+        $kemarin->refresh();
+        $this->assertSame('present', $kemarin->status);
+        $this->assertTrue($kemarin->is_check_out_missed);
+        $this->assertNull($kemarin->check_out);
+
+        $hariIni->refresh();
+        $this->assertSame('checked_in', $hariIni->status);
+        $this->assertFalse($hariIni->is_check_out_missed);
+
+        // Rekap bulanan (dipakai KPI) ikut menghitung hari lupa absen keluar sebagai hadir
+        $recap = EmployeeAttendanceMonthlyRecap::where('employee_id', $this->employee->id)
+            ->where('period_year', $kemarin->attendance_date->year)
+            ->where('period_month', $kemarin->attendance_date->month)
+            ->first();
+        $this->assertSame(1, (int) $recap->total_present);
     }
 }

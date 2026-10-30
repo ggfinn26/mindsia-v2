@@ -7,6 +7,9 @@ use App\Models\Employee;
 use App\Models\EmployeeAttendanceMonthlyRecap;
 use App\Models\EmployeeWorkAttendanceLog;
 use App\Models\User;
+use App\Models\WorkScheduleAssignment;
+use App\Models\WorkScheduleDay;
+use App\Models\WorkScheduleRule;
 use Carbon\Carbon;
 use Tests\TestCase;
 
@@ -197,28 +200,46 @@ class MonthlyAttendanceRecapTest extends TestCase
     }
 
     // ── MR-07: total_scheduled_working_days ──
-    // SKENARIO says "BUG: selalu 0" (GAP-80), but code calculates weekday count correctly.
+    // Dihitung dari jadwal kerja efektif pegawai (lihat ScheduledWorkingDaysTest untuk detail),
+    // bukan asumsi Senin-Jumat. Pegawai tanpa jadwal = 0 hari terjadwal.
 
-    public function test_mr07_total_scheduled_working_days_calculated(): void
+    public function test_mr07_pegawai_tanpa_jadwal_tidak_punya_hari_terjadwal(): void
     {
-        $date = now()->toDateString();
+        $this->createWorkLog($this->employee, now()->toDateString(), 'present');
 
-        $this->createWorkLog($this->employee, $date, 'present');
+        $this->assertSame(0, (int) $this->recapFor($this->employee)->total_scheduled_working_days);
+    }
 
-        $recap = EmployeeAttendanceMonthlyRecap::where('employee_id', $this->employee->id)
-            ->where('period_year', now()->year)
-            ->where('period_month', now()->month)
-            ->first();
+    public function test_mr07_hari_terjadwal_mengikuti_jadwal_pegawai(): void
+    {
+        $rule = WorkScheduleRule::factory()->create(['is_required' => true, 'is_active' => true]);
+        foreach ([1, 2, 3, 4, 5, 6] as $day) {
+            WorkScheduleDay::create(['work_schedule_rule_id' => $rule->id, 'day_of_week' => $day]);
+        }
+        WorkScheduleAssignment::create([
+            'work_schedule_rule_id' => $rule->id,
+            'assignable_type' => Employee::class,
+            'assignable_id' => $this->employee->id,
+            'effective_start_date' => now()->startOfYear()->toDateString(),
+            'is_active' => true,
+        ]);
+        $this->employee->update(['join_date' => now()->startOfYear()->toDateString()]);
 
-        $this->assertNotNull($recap);
+        $this->createWorkLog($this->employee, now()->toDateString(), 'present');
 
-        // Verify it's a weekday count (not 0 and not total days)
-        $expectedWeekdays = collect(range(1, now()->daysInMonth))
-            ->filter(fn ($day) => Carbon::create(now()->year, now()->month, $day)->isWeekday())
+        $expected = collect(range(1, now()->daysInMonth))
+            ->filter(fn ($day) => Carbon::create(now()->year, now()->month, $day)->dayOfWeekIso <= 6)
             ->count();
 
-        $this->assertEquals($expectedWeekdays, $recap->total_scheduled_working_days,
-            'total_scheduled_working_days should be weekday count for the month');
+        $this->assertSame($expected, (int) $this->recapFor($this->employee)->total_scheduled_working_days);
+    }
+
+    private function recapFor(Employee $employee): EmployeeAttendanceMonthlyRecap
+    {
+        return EmployeeAttendanceMonthlyRecap::where('employee_id', $employee->id)
+            ->where('period_year', now()->year)
+            ->where('period_month', now()->month)
+            ->firstOrFail();
     }
 
     // ── MR-08: status=present_late tidak di-aggregate (GAP-83) ──

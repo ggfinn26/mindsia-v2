@@ -231,7 +231,7 @@
                                 <td class="px-5 py-4 text-center whitespace-nowrap">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"
                                           style="background-color: {{ $badgeBg }}; color: {{ $badgeText }};">
-                                        {{ $label }}
+                                        {{ $label }}{{ $log->is_check_out_missed ? ' - Lupa Absen Keluar' : '' }}
                                     </span>
                                 </td>
                                 <td class="px-5 py-4 text-center whitespace-nowrap">

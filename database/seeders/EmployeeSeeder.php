@@ -19,7 +19,10 @@ class EmployeeSeeder extends Seeder
     // gender: M | F
     // dates: DD-MM-YYYY or '-' (permanent/unknown)
     // Board (CEO/COO/CHRO/CPO/CFO/CMO) → HQ: tidak perlu absen, data tidak terlihat bawahan
-    // CFO=same person as CEO, CMO=same as COO — separate Employee records (different code)
+    // DOUBLE POSITION: CEO juga menjabat CFO, COO juga menjabat CMO. Sistem sementara hanya mencatat satu
+    // record per orang (CEO dan COO); record CFO/CMO dihapus. Permission sama (role_id 2), jadi tidak ada akses hilang.
+    // Posisi CFO/CMO tetap ada di PositionSeeder dan bisa dipakai lagi bila double position perlu dicatat formal.
+    // placement 'hq' → cabang Kantor Pusat (branches.is_hq) agar terhitung di rekap area/region.
     // CPO=Wahyuni Amirullah (diremap dari HRR ke CPO per PEGAWAI-LIST)
     // HRP=Imra'atul Husnah (ACTIVE di CSV, tetap diinclude)
     // MO001 Fani/MO002 Wardiman adalah kode utama; Ka'ab→MO005, Upi→MO006 (resolusi duplikat)
@@ -33,8 +36,6 @@ class EmployeeSeeder extends Seeder
         ['COO',  'Muh. Aria Farhan',      'M', 'hq', 'Chief Operating Officer',          '-',          '-'],
         ['CHRO', 'Muh. Fuad Rumy',        'M', 'hq', 'Chief Human Resources Officer',    '-',          '-'],
         ['CPO',  'Wahyuni Amirullah',     'F', 'hq', 'Chief Product Officer',            '19-07-2025', '31-08-2026'],
-        ['CFO',  'Muh. Indra Fakhruddin', 'M', 'hq', 'Chief Financial Officer',          '-',          '-'],
-        ['CMO',  'Muh. Aria Farhan',      'M', 'hq', 'Chief Marketing Officer',          '-',          '-'],
 
         // HR — HQ
         ['HRP',  "Imra'atul Husnah",      'F', 'hq', 'Human Resources Personalia',       '15-09-2025', '-'],
@@ -173,7 +174,11 @@ class EmployeeSeeder extends Seeder
     private function resolveLocation(string $placement, Collection $areas, string $code): array
     {
         if ($placement === 'hq') {
-            return [null, null, null, true];
+            $hq = Branch::where('is_hq', true)->with('area')->first();
+
+            return $hq
+                ? [$hq->id, $hq->areas_id, $hq->area?->region_id, true]
+                : [null, null, null, true];
         }
 
         if (str_starts_with($placement, 'area:')) {

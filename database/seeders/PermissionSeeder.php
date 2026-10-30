@@ -91,6 +91,7 @@ class PermissionSeeder extends Seeder
             'attendance.leave.approve_hr_staff',
             'attendance.schedule_rule.manage',
             'attendance.holiday.manage',
+            'leave.pay_settings.manage',
             'attendance.policy.manage',
             'attendance.policy.index',
             'attendance.policy.create',
