@@ -12,6 +12,7 @@ use App\Models\PayrollComponent;
 use App\Models\PayrollPeriod;
 use App\Models\Position;
 use App\Services\Payroll\PayrollGenerationService;
+use Carbon\Carbon;
 use Tests\TestCase;
 
 // Siapa yang masuk payroll dan data rekap bulan mana yang dipakai.
@@ -101,7 +102,7 @@ class PayrollEligibilityTest extends TestCase
         $year = $this->period->period_year;
         $month = $this->period->period_month;
 
-        $prev = \Carbon\Carbon::create($year, $month, 1)->subMonth();
+        $prev = Carbon::create($year, $month, 1)->subMonth();
         $this->recap($employee, $prev->year, $prev->month, ['total_present' => 5, 'total_effective_working_days' => 5]);
         $this->recap($employee, $year - 1, $month, ['total_present' => 7, 'total_effective_working_days' => 7]);
         $this->recap($employee, $year, $month, ['total_present' => 18, 'total_effective_working_days' => 18]);
@@ -114,7 +115,7 @@ class PayrollEligibilityTest extends TestCase
     public function test_hanya_rekap_bulan_lain_berarti_tidak_digaji_bukan_memakai_bulan_lain(): void
     {
         $employee = $this->employee();
-        $prev = \Carbon\Carbon::create($this->period->period_year, $this->period->period_month, 1)->subMonth();
+        $prev = Carbon::create($this->period->period_year, $this->period->period_month, 1)->subMonth();
         $this->recap($employee, $prev->year, $prev->month);
 
         $this->generate();

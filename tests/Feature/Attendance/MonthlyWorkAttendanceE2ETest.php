@@ -24,6 +24,7 @@ use App\Models\User;
 use App\Models\WorkScheduleAssignment;
 use App\Models\WorkScheduleDay;
 use App\Models\WorkScheduleRule;
+use App\Services\Payroll\PayrollGenerationService;
 use App\Services\TelegramStorageService;
 use Carbon\Carbon;
 use Mockery\MockInterface;
@@ -279,7 +280,7 @@ class MonthlyWorkAttendanceE2ETest extends TestCase
         EmployeeCompensation::create(['employee_id' => $this->employee->id, 'payroll_component_id' => $base->id, 'value' => 2_500_000]);
         $period = PayrollPeriod::create(['period_year' => 2026, 'period_month' => 9, 'status' => 'finalized', 'confirmed_at' => now()]);
 
-        $service = app(\App\Services\Payroll\PayrollGenerationService::class);
+        $service = app(PayrollGenerationService::class);
         $service->generate($period);
         $service->generate($period);
 

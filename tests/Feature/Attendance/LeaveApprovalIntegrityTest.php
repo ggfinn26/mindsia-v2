@@ -14,6 +14,8 @@ use App\Models\WorkScheduleDay;
 use App\Models\WorkScheduleRule;
 use App\Repositories\HolidayRepository;
 use App\Repositories\LeaveRequestRepository;
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
 use RuntimeException;
 use Tests\TestCase;
@@ -64,7 +66,7 @@ class LeaveApprovalIntegrityTest extends TestCase
         ]);
     }
 
-    private function logs(): \Illuminate\Support\Collection
+    private function logs(): Collection
     {
         return EmployeeWorkAttendanceLog::where('employee_id', $this->employee->id)
             ->orderBy('attendance_date')->pluck('status', 'attendance_date')
@@ -217,7 +219,7 @@ class LeaveApprovalIntegrityTest extends TestCase
         $user = User::factory()->create(['employee_id' => $this->employee->id]);
         $this->repo->approve($this->request('sick', '2026-09-02', '2026-09-02'), $this->reviewer);
 
-        $this->travelTo(\Carbon\Carbon::create(2026, 9, 2, 8, 0));
+        $this->travelTo(Carbon::create(2026, 9, 2, 8, 0));
 
         $this->actingAs($user)
             ->post(route('work-attendance.check-in'), ['check_in_latitude' => -6.2088, 'check_in_longitude' => 106.8456])
@@ -243,7 +245,7 @@ class LeaveApprovalIntegrityTest extends TestCase
 
         foreach (['2026-10-31' => 'Sabtu', '2026-11-01' => 'Minggu', '2026-11-02' => 'Senin'] as $today => $label) {
             EmployeeWorkAttendanceLog::query()->delete();
-            $this->travelTo(\Carbon\Carbon::parse($today.' 10:00'));
+            $this->travelTo(Carbon::parse($today.' 10:00'));
 
             // Jumat 4, Sabtu 5, Minggu 6, Senin 7 September
             $this->repo->approve($this->request('leave', '2026-09-04', '2026-09-07'), $this->reviewer);

@@ -20,6 +20,7 @@ use App\Models\PayrollPeriod;
 use App\Models\Position;
 use App\Models\SpecialBonusRule;
 use App\Models\SpecialBonusRuleCondition;
+use App\Models\User;
 use App\Models\WorkScheduleAssignment;
 use App\Models\WorkScheduleDay;
 use App\Models\WorkScheduleRule;
@@ -61,7 +62,7 @@ class AttendanceBonusPayrollTest extends TestCase
         EmployeeCompensation::create(['employee_id' => $this->employee->id, 'payroll_component_id' => $salary->id, 'value' => 5_000_000]);
 
         // Perubahan bonus rule diaudit dan mensyaratkan user dengan employee record
-        $this->actingAs(\App\Models\User::factory()->create(['employee_id' => Employee::factory()->create(['is_active' => false])->id]));
+        $this->actingAs(User::factory()->create(['employee_id' => Employee::factory()->create(['is_active' => false])->id]));
 
         $this->period = PayrollPeriod::create(['period_year' => 2026, 'period_month' => 9, 'status' => 'finalized', 'confirmed_at' => now()]);
     }
