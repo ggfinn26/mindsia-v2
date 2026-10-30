@@ -127,6 +127,11 @@
                             </td>
                             @if ($evaluation->isDraft())
                                 <td class="px-5 py-3 text-right">
+                                    @if ($item->source_type !== null)
+                                        <span class="inline-flex items-center gap-1 text-xs font-semibold" style="color: var(--dash-text-muted);">
+                                            <span class="material-symbols-outlined text-[14px]">lock</span>Otomatis dari sistem
+                                        </span>
+                                    @else
                                     <form method="POST" action="{{ route('kpi.evaluations.items.update', [$evaluation, $item]) }}"
                                           class="inline-flex items-center gap-2">
                                         @csrf
@@ -149,6 +154,7 @@
                                             <span class="material-symbols-outlined text-[14px]">save</span>Simpan
                                         </button>
                                     </form>
+                                    @endif
                                 </td>
                             @endif
                         </tr>
