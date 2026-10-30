@@ -6,6 +6,7 @@ use App\Models\AttendancePolicy;
 use App\Models\AttendanceRule;
 use App\Models\AttendanceRuleAction;
 use App\Models\AttendanceRuleViolation;
+use App\Models\PayrollComponent;
 use App\Models\User;
 use Tests\TestCase;
 
@@ -172,17 +173,21 @@ class AttendancePolicyRulesTest extends TestCase
     public function test_ap05_update_rule_success(): void
     {
         $rule = AttendanceRule::factory()->create();
-        AttendanceRuleAction::factory()->create([
+        $notification = AttendanceRuleAction::factory()->create([
             'attendance_rule_id' => $rule->id,
             'action_type' => 'notification',
             'action_order' => 1,
         ]);
+        $component = PayrollComponent::firstOrCreate(
+            ['component_code' => 'LATE_DEDUCTION'],
+            ['component_name' => 'Potongan Terlambat', 'component_type' => 'deduction', 'calculation_method' => 'manual', 'is_active' => true],
+        );
 
         $updatedData = array_merge($this->validRuleData(), [
             'rule_name' => 'Updated Rule',
             'actions' => [
                 ['action_type' => 'notification', 'action_order' => 1],
-                ['action_type' => 'payroll_deduction', 'action_order' => 2],
+                ['action_type' => 'payroll_deduction', 'action_order' => 2, 'payroll_component_id' => $component->id, 'deduction_type' => 'fixed_amount', 'deduction_value' => 50000],
                 ['action_type' => 'mark_anomaly', 'action_order' => 3],
             ],
         ]);
@@ -195,14 +200,10 @@ class AttendancePolicyRulesTest extends TestCase
         $rule->refresh();
         $this->assertEquals('Updated Rule', $rule->rule_name);
 
-        // syncActions deletes old and creates new — old notification action should be gone
+        // Aksi yang jenisnya tidak berubah dipertahankan (id sama); aksi baru dibuat; detail potongan tersimpan
         $this->assertEquals(3, $rule->actions()->count());
-        $this->assertEquals(0, $rule->actions()->where('action_type', 'notification')->where('action_order', 1)->count()
-            + $rule->actions()->where('action_type', 'payroll_deduction')->where('action_order', 2)->count()
-            ? 0 : 1); // at least check it has the right count
-        $actionTypes = $rule->actions()->pluck('action_type')->toArray();
-        $this->assertContains('payroll_deduction', $actionTypes);
-        $this->assertContains('mark_anomaly', $actionTypes);
+        $this->assertSame($notification->id, $rule->actions()->where('action_type', 'notification')->value('id'));
+        $this->assertEquals(50000.0, (float) $rule->actions()->where('action_type', 'payroll_deduction')->first()->payrollAction->deduction_value);
     }
 
     // ── AP-06: Delete rule berhasil ──
@@ -236,8 +237,7 @@ class AttendancePolicyRulesTest extends TestCase
         $this->assertDatabaseHas('attendance_rules', ['id' => $rule->id]);
     }
 
-    // ── AP-08: Action payroll_deduction — tidak ada amount (GAP-66) ──
-    // No validation for deduction amount when action_type=payroll_deduction.
+    // ── AP-08: Action payroll_deduction tanpa komponen/jenis/nilai ditolak (GAP-66 ditutup) ──
 
     public function test_ap08_payroll_deduction_without_amount(): void
     {
@@ -249,13 +249,8 @@ class AttendancePolicyRulesTest extends TestCase
         $response = $this->actingAs($this->admin)
             ->post(route('attendance-rules.store'), $data);
 
-        $response->assertRedirect(route('attendance-rules.index'));
-
-        // GAP-66: Rule action saved without any deduction amount — no validation
-        $action = AttendanceRuleAction::where('action_type', 'payroll_deduction')->first();
-        $this->assertNotNull($action);
-        // No payroll_action record exists because there's no mechanism to create it from the form
-        $this->assertNull($action->payrollAction);
+        $response->assertSessionHasErrors(['actions.0.payroll_component_id', 'actions.0.deduction_type', 'actions.0.deduction_value']);
+        $this->assertNull(AttendanceRuleAction::where('action_type', 'payroll_deduction')->first());
     }
 
     // ── AP-09: Action warning_letter — SP tidak di-generate (GAP-8) ──

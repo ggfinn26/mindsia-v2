@@ -4,11 +4,20 @@
 @section('header_title', 'Kelola Sanksi Absen')
 
 @section('content')
+@php
+    $initialActions = old('actions', [[
+        'action_type' => '',
+        'action_order' => 1,
+        'payroll_component_id' => '',
+        'deduction_type' => 'fixed_amount',
+        'deduction_value' => '',
+    ]]);
+@endphp
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-4xl mx-auto space-y-6"
      x-data="{
-         actions: @json(old('actions', [['action_type' => '', 'action_order' => 1]])),
+         actions: @json($initialActions),
          addAction() {
-             this.actions.push({ action_type: '', action_order: this.actions.length + 1 });
+             this.actions.push({ action_type: '', action_order: this.actions.length + 1, payroll_component_id: '', deduction_type: 'fixed_amount', deduction_value: '' });
          },
          removeAction(i) {
              this.actions.splice(i, 1);
@@ -211,7 +220,7 @@
 
                 <div class="space-y-3 pt-2">
                     <template x-for="(action, i) in actions" :key="i">
-                        <div class="flex items-center gap-3 p-3.5 rounded-xl border transition-all"
+                        <div class="flex flex-wrap items-center gap-3 p-3.5 rounded-xl border transition-all"
                              style="background-color: var(--dash-nav-hover-bg); border-color: var(--dash-card-border);">
                             <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-xs font-bold shrink-0"
                                   style="background-color: var(--dash-card-bg); color: var(--dash-primary-text); border: 1px solid var(--dash-card-border);"
@@ -240,6 +249,46 @@
                                     title="Hapus Aksi">
                                 <span class="material-symbols-outlined text-[18px]">delete</span>
                             </button>
+
+                            <div x-show="action.action_type === 'payroll_deduction'" x-cloak class="basis-full grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                                <div>
+                                    <label class="block text-[11px] font-bold uppercase tracking-wider mb-1" style="color: var(--dash-text-muted);">Komponen Potongan</label>
+                                    <select :name="`actions[${i}][payroll_component_id]`" x-model="action.payroll_component_id"
+                                            :disabled="action.action_type !== 'payroll_deduction'" :required="action.action_type === 'payroll_deduction'"
+                                            class="w-full text-sm px-3.5 py-2.5 rounded-lg focus:outline-none transition-all"
+                                            style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                            onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                            onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                                        <option value="">Pilih komponen...</option>
+                                        @foreach ($deductionComponents as $component)
+                                            <option value="{{ $component->id }}">{{ $component->component_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold uppercase tracking-wider mb-1" style="color: var(--dash-text-muted);">Jenis Potongan</label>
+                                    <select :name="`actions[${i}][deduction_type]`" x-model="action.deduction_type"
+                                            :disabled="action.action_type !== 'payroll_deduction'" :required="action.action_type === 'payroll_deduction'"
+                                            class="w-full text-sm px-3.5 py-2.5 rounded-lg focus:outline-none transition-all"
+                                            style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                            onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                            onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                                        <option value="fixed_amount">Nominal tetap per pelanggaran</option>
+                                        <option value="per_minute">Per menit (nilai pelanggaran x tarif)</option>
+                                        <option value="percentage">Persen dari gaji pokok</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold uppercase tracking-wider mb-1" style="color: var(--dash-text-muted);">Nilai</label>
+                                    <input type="number" step="0.01" min="0" :name="`actions[${i}][deduction_value]`" x-model="action.deduction_value"
+                                           :disabled="action.action_type !== 'payroll_deduction'" :required="action.action_type === 'payroll_deduction'"
+                                           placeholder="mis. 1000"
+                                           class="w-full text-sm px-3.5 py-2.5 rounded-lg focus:outline-none transition-all"
+                                           style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
+                                           onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
+                                           onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
+                                </div>
+                            </div>
                         </div>
                     </template>
                 </div>
@@ -247,6 +296,11 @@
                 @error('actions')
                     <p class="text-xs mt-1" style="color: var(--dash-danger);">{{ $message }}</p>
                 @enderror
+                @foreach ($errors->get('actions.*') as $messages)
+                    @foreach ($messages as $message)
+                        <p class="text-xs mt-1" style="color: var(--dash-danger);">{{ $message }}</p>
+                    @endforeach
+                @endforeach
             </div>
 
             {{-- Footer Action Buttons --}}
