@@ -77,7 +77,7 @@
                                 @foreach($types as $typeKey => $typeLabel)
                                     @php
                                         $key = $position->id . '_' . $typeKey;
-                                        $isPaid = isset($settings[$key]) ? (bool)$settings[$key]->is_paid : true;
+                                        $isPaid = isset($settings[$key]) ? (bool)$settings[$key]->is_paid : \App\Models\LeavePaySetting::defaultPaid($typeKey);
                                     @endphp
                                     <td class="px-5 py-3.5 whitespace-nowrap text-center">
                                         <form method="POST" action="{{ route('leave-pay-settings.upsert') }}" class="inline-block">

@@ -28,7 +28,7 @@ class PayrollComponentSeeder extends Seeder
             ['component_code' => 'PPH21',              'component_name' => 'PPh 21',                      'component_type' => 'deduction', 'calculation_method' => 'manual'],
             ['component_code' => 'LATE_DEDUCTION',     'component_name' => 'Potongan Terlambat',          'component_type' => 'deduction', 'calculation_method' => 'manual'],
             ['component_code' => 'ABSENT_DEDUCTION',   'component_name' => 'Potongan Absen',              'component_type' => 'deduction', 'calculation_method' => 'manual'],
-            ['component_code' => 'LEAVE_DEDUCTION',    'component_name' => 'Potongan Cuti Tak Berbayar',  'component_type' => 'deduction', 'calculation_method' => 'daily'],
+            ['component_code' => 'LEAVE_DEDUCTION',    'component_name' => 'Potongan Izin Tak Berbayar',  'component_type' => 'deduction', 'calculation_method' => 'daily'],
         ];
 
         foreach ($components as $data) {
