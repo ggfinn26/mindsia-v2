@@ -17,6 +17,10 @@ Schedule::call(fn () => Artisan::call('facility:check-rent-overdue'))
 Schedule::call(fn () => Artisan::call('facility:send-rent-due-soon'))
     ->name('facility:send-rent-due-soon')->withoutOverlapping()->dailyAt('00:00');
 
+// Batas absen keluar 23:59: log check-in tanpa check-out kemarin jadi Hadir + is_check_out_missed (dampak KPI, bukan potongan).
+Schedule::call(fn () => Artisan::call('attendance:finalize-missed-checkout'))
+    ->name('attendance:finalize-missed-checkout')->withoutOverlapping()->dailyAt('00:05');
+
 Schedule::call(fn () => Artisan::call('recruitment:close-expired-postings'))
     ->name('recruitment:close-expired-postings')->withoutOverlapping()->dailyAt('00:05');
 

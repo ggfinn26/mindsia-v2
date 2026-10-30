@@ -104,7 +104,7 @@
             <div class="flex items-center gap-2 shrink-0">
                 {{-- Status badge --}}
                 @if($isDone)
-                    <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-emerald-50 text-emerald-700">Selesai</span>
+                    <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-emerald-50 text-emerald-700">Selesai{{ $log->is_check_out_missed ? ' - Lupa Absen Keluar' : '' }}</span>
                 @elseif($isActive)
                     <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-blue-50 text-blue-700">Sedang Mengajar</span>
                 @elseif($log && $log->status === 'absent')

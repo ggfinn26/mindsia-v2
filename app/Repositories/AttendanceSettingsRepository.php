@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\Employee;
 use App\Models\EmployeeAttendanceSetting;
 use App\Models\PositionAttendanceSetting;
+use App\Models\WorkScheduleRule;
 
 /**
  * Resolved attendance behaviour settings for a given employee.
@@ -28,6 +29,15 @@ readonly class AttendanceSettingsRepository
             earlyCheckinMinutes: $emp?->early_checkin_minutes ?? $pos?->early_checkin_minutes ?? null,
             earlyCheckoutMinutes: $emp?->early_checkout_minutes ?? $pos?->early_checkout_minutes ?? null,
         );
+    }
+
+    /**
+     * Satu aturan untuk "harus absen manual": setting pegawai/posisi DAN aturan jadwalnya sama-sama mewajibkan.
+     * Bila salah satunya tidak wajib, pegawai dicatat hadir otomatis (check-in, job auto-hadir, dan cuti memakai aturan ini).
+     */
+    public function requiresManualAttendance(Employee $employee, ?WorkScheduleRule $schedule = null): bool
+    {
+        return $this->resolve($employee)->isRequired && ($schedule?->is_required ?? true);
     }
 }
 

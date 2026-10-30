@@ -11,6 +11,9 @@ use Illuminate\Validation\ValidationException;
 
 class SessionAttendanceService
 {
+    /** Menit sebelum jam mulai sesi saat check-in mulai diizinkan. */
+    public const EARLY_CHECK_IN_MINUTES = 5;
+
     public function __construct(
         private readonly SessionAttendanceRepository $repo,
         private readonly TelegramStorageService $telegramStorage,
@@ -26,6 +29,16 @@ class SessionAttendanceService
 
         if ($existing?->isCheckedIn()) {
             throw ValidationException::withMessages(['check_in' => 'Anda sudah check-in untuk sesi ini.']);
+        }
+
+        // Check-in sesi baru dibuka EARLY_CHECK_IN_MINUTES sebelum jam mulai; lebih awal dari itu ditolak.
+        $scheduledStart = Carbon::parse($session->classSchedule->schedule_date->toDateString().' '.$session->classSchedule->start_time);
+        $opensAt = $scheduledStart->copy()->subMinutes(self::EARLY_CHECK_IN_MINUTES);
+
+        if (now()->lt($opensAt)) {
+            throw ValidationException::withMessages([
+                'check_in' => 'Belum waktunya check-in. Sesi mulai pukul '.$scheduledStart->format('H:i').', check-in dibuka pukul '.$opensAt->format('H:i').' ('.self::EARLY_CHECK_IN_MINUTES.' menit sebelum mulai).',
+            ]);
         }
 
         $lateMinutes = $this->calculateLateMinutes(now(), $session);
@@ -76,6 +89,11 @@ class SessionAttendanceService
             throw ValidationException::withMessages(['check_out' => 'Belum check-in untuk sesi ini.']);
         }
 
+        // Batas absen keluar 23:59 pada hari sesi; setelah itu sesi otomatis dicatat hadir tanpa absen keluar.
+        if (! $log->sessionSchedule?->classSchedule?->schedule_date?->isToday()) {
+            throw ValidationException::withMessages(['check_out' => 'Batas absen keluar (23:59) untuk sesi ini sudah lewat.']);
+        }
+
         $selfiePath = null;
         if (isset($data['selfie'])) {
             $uploaded = $this->telegramStorage->uploadFile(
@@ -87,18 +105,18 @@ class SessionAttendanceService
             $selfiePath = $uploaded['file_id'];
         }
 
+        // Check-out boleh dari mana saja: lokasi opsional, hanya dicatat bila ada.
+        $latitude = $data['check_out_latitude'] ?? null;
+        $longitude = $data['check_out_longitude'] ?? null;
+        $branch = $log->sessionSchedule?->classSchedule?->classRoom?->branch;
+
         return $this->repo->checkOut($log, [
-            'check_out_latitude' => $data['check_out_latitude'],
-            'check_out_longitude' => $data['check_out_longitude'],
+            'check_out_latitude' => $latitude,
+            'check_out_longitude' => $longitude,
             'check_out_selfie_telegram_file_id' => $selfiePath,
             'check_out_selfie_path' => $selfiePath,
-            'check_out_distance_m' => ($branch = $log->sessionSchedule?->classSchedule?->classRoom?->branch)
-                ? $this->haversineMeters(
-                    $data['check_out_latitude'],
-                    $data['check_out_longitude'],
-                    $branch->latitude,
-                    $branch->longitude,
-                )
+            'check_out_distance_m' => $latitude !== null && $longitude !== null && $branch
+                ? $this->haversineMeters((float) $latitude, (float) $longitude, (float) $branch->latitude, (float) $branch->longitude)
                 : null,
             'check_out_notes' => $data['check_out_notes'] ?? null,
         ]);
