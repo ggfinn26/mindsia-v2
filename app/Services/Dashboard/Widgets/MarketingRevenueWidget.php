@@ -40,7 +40,7 @@ class MarketingRevenueWidget implements WidgetDataProviderInterface
 
         $byEmployee = MarketingPerformance::whereMonth('period_month', $currentMonth)
             ->whereYear('period_year', $currentYear)
-            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
+            ->when($branchId, fn ($q) => $q->whereHas('employee', fn ($e) => $e->where('branch_id', $branchId)))
             ->with('employee:id,full_name')
             ->get()
             ->map(fn ($mp) => [
@@ -67,7 +67,7 @@ class MarketingRevenueWidget implements WidgetDataProviderInterface
         $now = Carbon::now();
 
         $performances = MarketingPerformance::whereYear('period_year', $now->year)
-            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
+            ->when($branchId, fn ($q) => $q->whereHas('employee', fn ($e) => $e->where('branch_id', $branchId)))
             ->with('employee:id,full_name')
             ->orderBy('period_year')
             ->orderBy('period_month')

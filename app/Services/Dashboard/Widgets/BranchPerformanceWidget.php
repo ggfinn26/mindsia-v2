@@ -38,7 +38,7 @@ class BranchPerformanceWidget implements WidgetDataProviderInterface
 
         $newMembers = MemberRegistration::whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear)
-            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
+            ->when($branchId, fn ($q) => $q->whereHas('memberData', fn ($r) => $r->where('branch_id', $branchId)))
             ->count();
 
         $activeClasses = MemberClass::where('status', 'active')

@@ -23,7 +23,7 @@ class HiringMetricsWidget implements WidgetDataProviderInterface
 
         $baseQuery = JobApplication::whereMonth('applied_at', $currentMonth)
             ->whereYear('applied_at', $currentYear)
-            ->when($branchId, fn ($q) => $q->whereHas('jobPosting', fn ($j) => $j->where('branch_id', $branchId)));
+            ->when($branchId, fn ($q) => $q->whereHas('posting', fn ($j) => $j->where('branch_id', $branchId)));
 
         $applied = (clone $baseQuery)->count();
         $screened = (clone $baseQuery)->where('status', '!=', 'applied')->count();
@@ -67,13 +67,13 @@ class HiringMetricsWidget implements WidgetDataProviderInterface
         $now = Carbon::now();
 
         $applications = JobApplication::whereYear('applied_at', $now->year)
-            ->when($branchId, fn ($q) => $q->whereHas('jobPosting', fn ($j) => $j->where('branch_id', $branchId)))
-            ->with(['applicant', 'jobPosting'])
+            ->when($branchId, fn ($q) => $q->whereHas('posting', fn ($j) => $j->where('branch_id', $branchId)))
+            ->with(['applicant', 'posting'])
             ->get();
 
         return $applications->map(fn ($a) => [
             'applicant' => $a->applicant?->full_name ?? '-',
-            'position' => $a->jobPosting?->title ?? '-',
+            'position' => $a->posting?->title ?? '-',
             'source' => $a->application_source,
             'status' => $a->status,
             'applied_at' => $a->applied_at?->format('Y-m-d'),

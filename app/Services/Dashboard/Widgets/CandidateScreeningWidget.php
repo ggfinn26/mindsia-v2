@@ -22,7 +22,7 @@ class CandidateScreeningWidget implements WidgetDataProviderInterface
         $currentYear = $now->year;
 
         $screeningQuery = JobApplication::where('status', 'screening')
-            ->when($branchId, fn ($q) => $q->whereHas('jobPosting', fn ($j) => $j->where('branch_id', $branchId)));
+            ->when($branchId, fn ($q) => $q->whereHas('posting', fn ($j) => $j->where('branch_id', $branchId)));
 
         $inScreening = (clone $screeningQuery)->count();
 
@@ -30,7 +30,7 @@ class CandidateScreeningWidget implements WidgetDataProviderInterface
             ->where('stage', 'screening')
             ->whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear))
-            ->when($branchId, fn ($q) => $q->whereHas('jobPosting', fn ($j) => $j->where('branch_id', $branchId)))
+            ->when($branchId, fn ($q) => $q->whereHas('posting', fn ($j) => $j->where('branch_id', $branchId)))
             ->count();
 
         $passedScreening = JobApplication::whereHas('stages', fn ($q) => $q
@@ -38,7 +38,7 @@ class CandidateScreeningWidget implements WidgetDataProviderInterface
             ->where('result', 'passed')
             ->whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear))
-            ->when($branchId, fn ($q) => $q->whereHas('jobPosting', fn ($j) => $j->where('branch_id', $branchId)))
+            ->when($branchId, fn ($q) => $q->whereHas('posting', fn ($j) => $j->where('branch_id', $branchId)))
             ->count();
 
         $passRate = $totalScreenedThisMonth > 0
@@ -48,13 +48,13 @@ class CandidateScreeningWidget implements WidgetDataProviderInterface
         $psikotestCompleted = ApplicantPsikotest::whereMonth('psikotest_date', $currentMonth)
             ->whereYear('psikotest_date', $currentYear)
             ->whereNotNull('psikotest_score')
-            ->when($branchId, fn ($q) => $q->whereHas('application.jobPosting', fn ($j) => $j->where('branch_id', $branchId)))
+            ->when($branchId, fn ($q) => $q->whereHas('application.posting', fn ($j) => $j->where('branch_id', $branchId)))
             ->count();
 
         $avgPsikotestScore = ApplicantPsikotest::whereMonth('psikotest_date', $currentMonth)
             ->whereYear('psikotest_date', $currentYear)
             ->whereNotNull('psikotest_score')
-            ->when($branchId, fn ($q) => $q->whereHas('application.jobPosting', fn ($j) => $j->where('branch_id', $branchId)))
+            ->when($branchId, fn ($q) => $q->whereHas('application.posting', fn ($j) => $j->where('branch_id', $branchId)))
             ->avg('psikotest_score') ?? 0;
 
         return [
@@ -76,13 +76,13 @@ class CandidateScreeningWidget implements WidgetDataProviderInterface
         $applications = JobApplication::whereHas('stages', fn ($q) => $q
             ->where('stage', 'screening')
             ->whereYear('created_at', $now->year))
-            ->when($branchId, fn ($q) => $q->whereHas('jobPosting', fn ($j) => $j->where('branch_id', $branchId)))
-            ->with(['applicant', 'jobPosting', 'psikotest'])
+            ->when($branchId, fn ($q) => $q->whereHas('posting', fn ($j) => $j->where('branch_id', $branchId)))
+            ->with(['applicant', 'posting', 'psikotest'])
             ->get();
 
         return $applications->map(fn ($a) => [
             'applicant' => $a->applicant?->full_name ?? '-',
-            'position' => $a->jobPosting?->title ?? '-',
+            'position' => $a->posting?->title ?? '-',
             'status' => $a->status,
             'psikotest_score' => $a->psikotest?->psikotest_score ?? '-',
             'screening_result' => $a->stages->where('stage', 'screening')->first()?->result ?? '-',

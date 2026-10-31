@@ -29,7 +29,7 @@ class ProgramFinancialPerformanceWidget implements WidgetDataProviderInterface
                 ->whereYear('paid_at', $currentYear)
                 ->whereHas('registration', fn ($r) => $r
                     ->where('program_id', $program->id)
-                    ->when($branchId, fn ($bq) => $bq->where('branch_id', $branchId)))
+                    ->when($branchId, fn ($bq) => $bq->whereHas('memberData', fn ($md) => $md->where('branch_id', $branchId))))
                 ->sum('amount');
 
             $members = MemberPayment::where('payment_status', 'paid')
@@ -37,7 +37,7 @@ class ProgramFinancialPerformanceWidget implements WidgetDataProviderInterface
                 ->whereYear('paid_at', $currentYear)
                 ->whereHas('registration', fn ($r) => $r
                     ->where('program_id', $program->id)
-                    ->when($branchId, fn ($bq) => $bq->where('branch_id', $branchId)))
+                    ->when($branchId, fn ($bq) => $bq->whereHas('memberData', fn ($md) => $md->where('branch_id', $branchId))))
                 ->distinct('member_registration_id')
                 ->count();
 
@@ -70,7 +70,7 @@ class ProgramFinancialPerformanceWidget implements WidgetDataProviderInterface
                 ->whereYear('paid_at', $now->year)
                 ->whereHas('registration', fn ($r) => $r
                     ->where('program_id', $program->id)
-                    ->when($branchId, fn ($bq) => $bq->where('branch_id', $branchId)))
+                    ->when($branchId, fn ($bq) => $bq->whereHas('memberData', fn ($md) => $md->where('branch_id', $branchId))))
                 ->sum('amount');
 
             return [

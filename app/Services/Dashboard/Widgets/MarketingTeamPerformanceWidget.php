@@ -23,13 +23,13 @@ class MarketingTeamPerformanceWidget implements WidgetDataProviderInterface
 
         $performances = MarketingPerformance::where('period_month', $currentMonth)
             ->where('period_year', $currentYear)
-            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
+            ->when($branchId, fn ($q) => $q->whereHas('employee', fn ($e) => $e->where('branch_id', $branchId)))
             ->with('employee:id,full_name')
             ->get();
 
         $targets = MarketingTarget::where('period_month', $currentMonth)
             ->where('period_year', $currentYear)
-            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
+            ->when($branchId, fn ($q) => $q->whereHas('employee', fn ($e) => $e->where('branch_id', $branchId)))
             ->get()
             ->keyBy('employee_id');
 
@@ -71,13 +71,13 @@ class MarketingTeamPerformanceWidget implements WidgetDataProviderInterface
 
         $performances = MarketingPerformance::where('period_month', $currentMonth)
             ->where('period_year', $currentYear)
-            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
+            ->when($branchId, fn ($q) => $q->whereHas('employee', fn ($e) => $e->where('branch_id', $branchId)))
             ->with('employee:id,full_name')
             ->get();
 
         $targets = MarketingTarget::where('period_month', $currentMonth)
             ->where('period_year', $currentYear)
-            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
+            ->when($branchId, fn ($q) => $q->whereHas('employee', fn ($e) => $e->where('branch_id', $branchId)))
             ->get()
             ->keyBy('employee_id');
 

@@ -22,7 +22,7 @@ class RecruitmentPipelineWidget implements WidgetDataProviderInterface
 
         $query = JobApplication::whereMonth('applied_at', $currentMonth)
             ->whereYear('applied_at', $currentYear)
-            ->when($branchId, fn ($q) => $q->whereHas('jobPosting', fn ($j) => $j->where('branch_id', $branchId)));
+            ->when($branchId, fn ($q) => $q->whereHas('posting', fn ($j) => $j->where('branch_id', $branchId)));
 
         $totalApplications = (clone $query)->count();
 
@@ -42,7 +42,7 @@ class RecruitmentPipelineWidget implements WidgetDataProviderInterface
         $prevMonth = $now->copy()->subMonth();
         $prevTotal = JobApplication::whereMonth('applied_at', $prevMonth->month)
             ->whereYear('applied_at', $prevMonth->year)
-            ->when($branchId, fn ($q) => $q->whereHas('jobPosting', fn ($j) => $j->where('branch_id', $branchId)))
+            ->when($branchId, fn ($q) => $q->whereHas('posting', fn ($j) => $j->where('branch_id', $branchId)))
             ->count();
 
         $trend = $prevTotal > 0
@@ -66,13 +66,13 @@ class RecruitmentPipelineWidget implements WidgetDataProviderInterface
         $now = Carbon::now();
 
         $applications = JobApplication::whereYear('applied_at', $now->year)
-            ->when($branchId, fn ($q) => $q->whereHas('jobPosting', fn ($j) => $j->where('branch_id', $branchId)))
-            ->with(['applicant', 'jobPosting'])
+            ->when($branchId, fn ($q) => $q->whereHas('posting', fn ($j) => $j->where('branch_id', $branchId)))
+            ->with(['applicant', 'posting'])
             ->get();
 
         return $applications->map(fn ($a) => [
             'applicant' => $a->applicant?->full_name ?? '-',
-            'position' => $a->jobPosting?->title ?? '-',
+            'position' => $a->posting?->title ?? '-',
             'source' => $a->application_source,
             'status' => $a->status,
             'applied_at' => $a->applied_at?->format('Y-m-d'),
