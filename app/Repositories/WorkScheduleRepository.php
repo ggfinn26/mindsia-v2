@@ -58,12 +58,18 @@ class WorkScheduleRepository
             $date = $day->toDateString();
 
             foreach ($levels as $type => $id) {
-                $assignment = $assignments->first(fn ($a) => $a->assignable_type === $type
+                // Satu level boleh punya beberapa jadwal (mis. Senin-Jumat dan Sabtu dengan jam berbeda): pilih yang
+                // aturannya berlaku di hari itu, bukan sekadar assignment pertama yang rentang tanggalnya cocok.
+                $candidates = $assignments->filter(fn ($a) => $a->assignable_type === $type
                     && (int) $a->assignable_id === (int) $id
+                    && $a->workScheduleRule
                     && $a->effective_start_date->toDateString() <= $date
                     && ($a->effective_end_date === null || $a->effective_end_date->toDateString() >= $date));
 
-                if ($assignment?->workScheduleRule && (! $respectWorkDays || $assignment->workScheduleRule->isActiveOnDate($date))) {
+                $assignment = $candidates->first(fn ($a) => $a->workScheduleRule->isActiveOnDate($date))
+                    ?? ($respectWorkDays ? null : $candidates->first());
+
+                if ($assignment) {
                     $resolved[$date] = $assignment->workScheduleRule;
 
                     break;

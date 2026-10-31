@@ -227,8 +227,8 @@
                                         :style="type === opt.value
                                             ? 'background-color: var(--dash-nav-hover-bg); color: var(--dash-primary-text);'
                                             : 'color: var(--dash-text-body);'"
-                                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
-                                        onmouseout="if(type !== opt.value) this.style.backgroundColor='transparent'"
+                                        @mouseover="$el.style.backgroundColor = 'var(--dash-nav-hover-bg)'"
+                                        @mouseout="$el.style.backgroundColor = type === opt.value ? 'var(--dash-nav-hover-bg)' : 'transparent'"
                                         x-text="opt.label"></li>
                                 </template>
                             </ul>
