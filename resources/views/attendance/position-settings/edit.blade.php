@@ -64,7 +64,7 @@
                     </div>
                     <input type="hidden" name="is_session_required" value="0">
                     <input type="checkbox" name="is_session_required" value="1"
-                           {{ old('is_session_required', $setting->is_session_required ?? false) ? 'checked' : '' }}
+                           {{ old('is_session_required', $setting->is_session_required ?? true) ? 'checked' : '' }}
                            class="w-4 h-4 rounded">
                 </label>
             </div>

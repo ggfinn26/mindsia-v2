@@ -7,6 +7,7 @@ use App\Models\ClassRoom;
 use App\Models\ClassSchedule;
 use App\Models\Employee;
 use App\Models\EmployeeAttendanceMonthlyRecap;
+use App\Models\EmployeeAttendanceSetting;
 use App\Models\EmployeeCompensation;
 use App\Models\EmployeePayroll;
 use App\Models\EmployeeSessionAttendanceLog;
@@ -17,6 +18,7 @@ use App\Models\LeavePaySetting;
 use App\Models\PayrollComponent;
 use App\Models\PayrollPeriod;
 use App\Models\Position;
+use App\Models\PositionAttendanceSetting;
 use App\Models\Program;
 use App\Models\SessionSchedule;
 use App\Models\WorkScheduleAssignment;
@@ -208,6 +210,32 @@ class SessionAbsentDeductionPayrollTest extends TestCase
     public function test_pengaturan_posisi_alpha_sesi_dibayar_menonaktifkan_potongan(): void
     {
         $this->setting('absent_session', true);
+        $this->makeSession('2026-09-02');
+
+        $this->assertNull($this->sessionDeduction());
+    }
+
+    public function test_posisi_yang_tidak_wajib_absen_sesi_tidak_dipotong_alpha_sesi(): void
+    {
+        PositionAttendanceSetting::create(['position_id' => $this->position->id, 'is_required' => true, 'is_session_required' => false, 'attendance_scope' => 'branch']);
+        $this->makeSession('2026-09-02');
+
+        $this->assertNull($this->sessionDeduction());
+    }
+
+    public function test_posisi_wajib_absen_sesi_atau_tanpa_setting_tetap_dipotong(): void
+    {
+        $this->makeSession('2026-09-02');
+        $this->assertSame([1, 100_000.0], $this->sessionDeduction());
+
+        PositionAttendanceSetting::create(['position_id' => $this->position->id, 'is_required' => true, 'is_session_required' => true, 'attendance_scope' => 'branch']);
+        $this->assertSame([1, 100_000.0], $this->sessionDeduction());
+    }
+
+    public function test_pengaturan_pegawai_menimpa_pengaturan_posisi_untuk_absen_sesi(): void
+    {
+        PositionAttendanceSetting::create(['position_id' => $this->position->id, 'is_required' => true, 'is_session_required' => true, 'attendance_scope' => 'branch']);
+        EmployeeAttendanceSetting::create(['employee_id' => $this->tutor->id, 'is_required' => true, 'is_session_required' => false, 'attendance_scope' => 'branch']);
         $this->makeSession('2026-09-02');
 
         $this->assertNull($this->sessionDeduction());

@@ -6,6 +6,7 @@ use App\Models\Employee;
 use App\Models\EmployeeSessionAttendanceLog;
 use App\Models\EmployeeWorkAttendanceLog;
 use App\Models\SessionSchedule;
+use App\Repositories\AttendanceSettingsRepository;
 use App\Repositories\HolidayRepository;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
@@ -15,12 +16,16 @@ use Illuminate\Support\Collection;
  */
 class SessionAbsenceService
 {
-    public function __construct(private readonly HolidayRepository $holidayRepo) {}
+    public function __construct(
+        private readonly HolidayRepository $holidayRepo,
+        private readonly AttendanceSettingsRepository $settingsRepo,
+    ) {}
 
     /**
      * Tanggal yang punya sesi terjadwal, dan di antaranya tanggal alpha: tidak satu pun sesi dihadiri.
      * Dikecualikan dari alpha: tanggal yang belum lewat, libur nasional, hari yang tercatat sakit/izin/cuti/libur di log
      * kerja, dan (bila $excludeWorkAbsent) hari yang sudah dihitung sebagai alpha kerja agar tidak dihitung dua kali.
+     * Pegawai yang tidak wajib absen sesi (setting pegawai/posisi) tidak punya alpha sesi.
      * Sesi berstatus checked_in dianggap hadir (tutor sudah datang walau belum difinalkan job lupa-absen-keluar).
      *
      * @return array{dates: Collection<int, string>, absent: Collection<int, string>}
@@ -36,7 +41,7 @@ class SessionAbsenceService
             ->with('classSchedule:id,schedule_date')
             ->get(['id', 'class_schedule_id']);
 
-        if ($sessions->isEmpty()) {
+        if ($sessions->isEmpty() || ! $this->settingsRepo->resolve($employee)->isSessionRequired) {
             return ['dates' => collect(), 'absent' => collect()];
         }
 
