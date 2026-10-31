@@ -25,7 +25,7 @@ class PermissionAuditCommand extends Command
         'attendance.adjustment.create' => ['/attendance-recaps'],
         'attendance.document_signature.manage' => ['/attendance/document-signature'],
         'attendance.holiday.manage' => ['/holidays'],
-        'attendance.policy.manage' => ['/attendance-policies'],
+        'attendance.policy.manage' => ['/attendance-policies', '/attendance/position-settings'],
         'attendance.rule.manage' => ['/attendance-rules'],
         'attendance.schedule_rule.manage' => ['/work-schedule-rules'],
         // auth.user.force_reset_password — route dengan path param, skip untuk GET test
