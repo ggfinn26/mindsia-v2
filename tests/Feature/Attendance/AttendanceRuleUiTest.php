@@ -309,4 +309,37 @@ class AttendanceRuleUiTest extends TestCase
         $this->update($rule, ['is_active' => 0]);
         $this->assertSame(0.0, $deductionOf(), 'Aturan nonaktif tidak lagi memotong.');
     }
+
+    // ---- markup form ---------------------------------------------------------------------------------------------------
+
+    public function test_data_awal_alpine_tidak_memutus_atribut_x_data_di_halaman_tambah_dan_ubah(): void
+    {
+        $rule = $this->createRule();
+
+        foreach ([route('attendance-rules.create'), route('attendance-rules.edit', $rule)] as $url) {
+            $html = $this->actingAs($this->hr)->get($url)->assertOk()->getContent();
+
+            // Kutip ganda mentah dari JSON di dalam x-data="..." memutus atribut dan membocorkan teks ke halaman.
+            $this->assertStringNotContainsString('actions: [{"', $html, $url);
+            $this->assertStringContainsString('actions: JSON.parse(', $html, $url);
+        }
+    }
+
+    public function test_komponen_bpjs_dan_pajak_tidak_bisa_jadi_potongan_sanksi_absen(): void
+    {
+        $bpjs = PayrollComponent::firstOrCreate(['component_code' => 'BPJS_KESEHATAN'], ['component_name' => 'BPJS Kesehatan', 'component_type' => 'deduction', 'calculation_method' => 'manual', 'is_active' => true]);
+        $pph = PayrollComponent::firstOrCreate(['component_code' => 'PPH21'], ['component_name' => 'PPh 21', 'component_type' => 'deduction', 'calculation_method' => 'manual', 'is_active' => true]);
+        $before = AttendanceRule::count();
+
+        foreach ([$bpjs, $pph] as $component) {
+            $this->actingAs($this->hr)->post(route('attendance-rules.store'), $this->payload(actions: [$this->deductionAction(['payroll_component_id' => $component->id])]))
+                ->assertSessionHasErrors('actions.0.payroll_component_id');
+        }
+        $this->assertSame($before, AttendanceRule::count());
+
+        $html = $this->actingAs($this->hr)->get(route('attendance-rules.create'))->assertOk()->getContent();
+        $this->assertStringContainsString('Potongan Terlambat', $html);
+        $this->assertStringNotContainsString('BPJS Kesehatan', $html);
+        $this->assertStringNotContainsString('PPh 21', $html);
+    }
 }

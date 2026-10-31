@@ -19,6 +19,9 @@ use Throwable;
 
 class AttendanceRuleController extends Controller implements HasMiddleware
 {
+    /** Potongan wajib (BPJS, pajak) bukan sanksi disiplin, jadi tidak boleh dipilih sebagai komponen potongan aturan. */
+    private const STATUTORY_COMPONENT_CODES = ['BPJS_KESEHATAN', 'PPH21'];
+
     public static function middleware(): array
     {
         return [
@@ -133,7 +136,8 @@ class AttendanceRuleController extends Controller implements HasMiddleware
     /** @return Collection<int, PayrollComponent> */
     private function deductionComponents()
     {
-        return PayrollComponent::where('component_type', 'deduction')->active()->orderBy('component_name')->get(['id', 'component_name', 'component_code']);
+        return PayrollComponent::where('component_type', 'deduction')->whereNotIn('component_code', self::STATUTORY_COMPONENT_CODES)
+            ->active()->orderBy('component_name')->get(['id', 'component_name', 'component_code']);
     }
 
     /** Aksi Potongan Gaji wajib punya komponen potongan, jenis, dan nilai (persen maksimal 100). */
@@ -150,6 +154,8 @@ class AttendanceRuleController extends Controller implements HasMiddleware
 
             if (! $component || $component->component_type !== 'deduction') {
                 $errors["actions.{$i}.payroll_component_id"] = 'Pilih komponen potongan untuk aksi Potongan Gaji.';
+            } elseif (in_array($component->component_code, self::STATUTORY_COMPONENT_CODES, true)) {
+                $errors["actions.{$i}.payroll_component_id"] = 'Komponen BPJS dan pajak tidak boleh dipakai sebagai sanksi absen.';
             }
             if (empty($action['deduction_type'])) {
                 $errors["actions.{$i}.deduction_type"] = 'Pilih jenis potongan.';

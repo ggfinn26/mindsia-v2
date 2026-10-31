@@ -19,7 +19,7 @@
 @endphp
 <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-4xl mx-auto space-y-6"
      x-data="{
-         actions: @json($initialActions),
+         actions: {{ Illuminate\Support\Js::from($initialActions) }},
          addAction() {
              this.actions.push({ action_type: '', action_order: this.actions.length + 1, payroll_component_id: '', deduction_type: 'fixed_amount', deduction_value: '' });
          },

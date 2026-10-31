@@ -87,17 +87,17 @@
                 <table class="w-full text-sm text-left">
                     <thead>
                         <tr style="background-color: var(--dash-nav-hover-bg); border-bottom: 1px solid var(--dash-card-border);">
-                            <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold"
+                            <th class="px-4 py-3.5 uppercase tracking-wider text-[11px] font-bold"
                                 style="color: var(--dash-text-muted);">Nama Aturan</th>
-                            <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold"
+                            <th class="px-4 py-3.5 uppercase tracking-wider text-[11px] font-bold"
                                 style="color: var(--dash-text-muted);">Tipe Absensi</th>
-                            <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold"
+                            <th class="px-4 py-3.5 uppercase tracking-wider text-[11px] font-bold"
                                 style="color: var(--dash-text-muted);">Pemicu</th>
-                            <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold"
+                            <th class="px-4 py-3.5 uppercase tracking-wider text-[11px] font-bold"
                                 style="color: var(--dash-text-muted);">Aksi Sanksi</th>
-                            <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold"
+                            <th class="px-4 py-3.5 uppercase tracking-wider text-[11px] font-bold"
                                 style="color: var(--dash-text-muted);">Status</th>
-                            <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold text-right"
+                            <th class="px-4 py-3.5 uppercase tracking-wider text-[11px] font-bold text-right"
                                 style="color: var(--dash-text-muted);">Aksi</th>
                         </tr>
                     </thead>
@@ -122,19 +122,19 @@
                             <tr style="border-bottom: 1px solid var(--dash-card-border);"
                                 onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
                                 onmouseout="this.style.backgroundColor='transparent'">
-                                <td class="px-5 py-3.5 font-medium" style="color: var(--dash-text-heading);">
+                                <td class="px-4 py-3.5 font-medium" style="color: var(--dash-text-heading);">
                                     <div class="flex items-center gap-2">
                                         <span class="material-symbols-outlined text-[18px]" style="color: var(--dash-primary);">policy</span>
                                         <span class="font-semibold">{{ $rule->rule_name }}</span>
                                     </div>
                                 </td>
-                                <td class="px-5 py-3.5 whitespace-nowrap text-sm" style="color: var(--dash-text-body);">
+                                <td class="px-4 py-3.5 whitespace-nowrap text-sm" style="color: var(--dash-text-body);">
                                     <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium"
                                           style="background-color: var(--dash-nav-hover-bg); border: 1px solid var(--dash-card-border); color: var(--dash-text-heading);">
                                         {{ $rule->attendance_type === 'work_schedule' ? 'Kerja Harian' : 'Sesi/Kelas' }}
                                     </span>
                                 </td>
-                                <td class="px-5 py-3.5 text-sm" style="color: var(--dash-text-body);">
+                                <td class="px-4 py-3.5 text-sm" style="color: var(--dash-text-body);">
                                     <div class="flex flex-col gap-0.5">
                                         <span class="font-medium" style="color: var(--dash-text-heading);">
                                             {{ $triggerLabels[$rule->trigger_type] ?? $rule->trigger_type }}
@@ -144,7 +144,7 @@
                                         </span>
                                     </div>
                                 </td>
-                                <td class="px-5 py-3.5 text-sm" style="color: var(--dash-text-body);">
+                                <td class="px-4 py-3.5 text-sm" style="color: var(--dash-text-body);">
                                     <div class="flex flex-wrap gap-1.5">
                                         @forelse ($rule->actions->sortBy('action_order') as $action)
                                             <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium"
@@ -157,7 +157,7 @@
                                         @endforelse
                                     </div>
                                 </td>
-                                <td class="px-5 py-3.5 whitespace-nowrap text-sm">
+                                <td class="px-4 py-3.5 whitespace-nowrap text-sm">
                                     @if ($rule->is_active)
                                         <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold"
                                               style="background-color: #f0fdf4; color: #059669;">
@@ -172,7 +172,7 @@
                                         </span>
                                     @endif
                                 </td>
-                                <td class="px-5 py-3.5 whitespace-nowrap text-right">
+                                <td class="px-4 py-3.5 whitespace-nowrap text-right">
                                     <div class="inline-flex items-center gap-2 justify-end">
                                         <a href="{{ route('attendance-rules.edit', $rule->id) }}"
                                            class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors"
