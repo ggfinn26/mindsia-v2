@@ -231,4 +231,40 @@ class SessionAbsentDeductionPayrollTest extends TestCase
 
         $this->assertNull($this->sessionDeduction($tutor));
     }
+
+    /** @return array{work: int, session: int} jumlah hari pada baris potongan alpha kerja dan alpha sesi */
+    private function deductionDays(): array
+    {
+        app(PayrollGenerationService::class)->generate($this->period);
+        $payroll = EmployeePayroll::where('payroll_period_id', $this->period->id)->where('employee_id', $this->tutor->id)->firstOrFail();
+
+        return [
+            'work' => (int) $payroll->items()->where('description', 'like', 'Potongan alpha:%')->value('quantity'),
+            'session' => (int) $payroll->items()->where('description', 'like', 'Potongan alpha sesi%')->value('quantity'),
+        ];
+    }
+
+    public function test_alpha_kerja_saja_hari_itu_sesi_dihadiri_dipotong_sebagai_alpha_kerja(): void
+    {
+        $this->attend($this->makeSession('2026-09-02'));
+        $this->workLog('2026-09-02', 'absent');
+
+        $this->assertSame(['work' => 1, 'session' => 0], $this->deductionDays());
+    }
+
+    public function test_alpha_sesi_saja_hari_itu_hadir_kerja_tetap_dipotong_alpha_sesi(): void
+    {
+        $this->makeSession('2026-09-02');
+        $this->workLog('2026-09-02', 'present');
+
+        $this->assertSame(['work' => 0, 'session' => 1], $this->deductionDays());
+    }
+
+    public function test_alpha_kerja_dan_alpha_sesi_di_hari_berbeda_dipotong_masing_masing(): void
+    {
+        $this->workLog('2026-09-02', 'absent');
+        $this->makeSession('2026-09-03');
+
+        $this->assertSame(['work' => 1, 'session' => 1], $this->deductionDays());
+    }
 }
