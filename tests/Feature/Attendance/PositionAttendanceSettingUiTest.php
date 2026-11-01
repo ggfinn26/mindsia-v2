@@ -69,4 +69,13 @@ class PositionAttendanceSettingUiTest extends TestCase
 
         $this->assertDatabaseHas('position_attendance_settings', ['position_id' => $this->position->id, 'is_required' => 0, 'is_session_required' => 0]);
     }
+
+    public function test_posisi_boleh_hadir_otomatis_menurut_jadwal_tanpa_absen_manual_dan_tanpa_sesi(): void
+    {
+        $this->actingAs($this->userWithPermission())->put(route('attendance.position-settings.update', $this->position), [
+            'is_required' => 0, 'is_session_required' => 0, 'attendance_scope' => 'anywhere',
+        ])->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('position_attendance_settings', ['position_id' => $this->position->id, 'is_required' => 0, 'is_session_required' => 0]);
+    }
 }
