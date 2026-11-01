@@ -168,7 +168,7 @@ class MonthlyAttendanceRecapTest extends TestCase
 
         // Create 3 present logs on different dates (unique constraint: employee_id + attendance_date)
         for ($i = 0; $i < 3; $i++) {
-            $date = now()->subDays($i)->toDateString();
+            $date = now()->startOfMonth()->addDays($i)->toDateString();
             $this->createWorkLog($this->employee, $date, 'present');
         }
 
@@ -185,9 +185,9 @@ class MonthlyAttendanceRecapTest extends TestCase
 
     public function test_mr06_total_late_calculated_correctly(): void
     {
-        // Create 2 present logs with late_minutes > 0 on different dates
-        $this->createWorkLog($this->employee, now()->subDays(1)->toDateString(), 'present', lateMinutes: 30);
-        $this->createWorkLog($this->employee, now()->subDays(2)->toDateString(), 'present', lateMinutes: 15);
+        // Tanggal dipatok di awal bulan ini agar tidak melompat ke bulan lalu saat tes jalan di tanggal 1-2.
+        $this->createWorkLog($this->employee, now()->startOfMonth()->toDateString(), 'present', lateMinutes: 30);
+        $this->createWorkLog($this->employee, now()->startOfMonth()->addDay()->toDateString(), 'present', lateMinutes: 15);
 
         $recap = EmployeeAttendanceMonthlyRecap::where('employee_id', $this->employee->id)
             ->where('period_year', now()->year)
