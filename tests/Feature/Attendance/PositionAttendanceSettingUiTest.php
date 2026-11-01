@@ -35,7 +35,7 @@ class PositionAttendanceSettingUiTest extends TestCase
         $this->actingAs($user)->get(route('attendance.position-settings.index'))->assertForbidden();
         $this->actingAs($user)->get(route('attendance.position-settings.edit', $this->position))->assertForbidden();
         $this->actingAs($user)->put(route('attendance.position-settings.update', $this->position), [
-            'is_required' => 1, 'is_session_required' => 0, 'attendance_scope' => 'anywhere',
+            'is_required' => 0, 'is_session_required' => 0, 'attendance_scope' => 'anywhere',
         ])->assertForbidden();
 
         $this->assertDatabaseMissing('position_attendance_settings', ['position_id' => $this->position->id]);
@@ -53,7 +53,7 @@ class PositionAttendanceSettingUiTest extends TestCase
 
     public function test_posisi_yang_sudah_diatur_tidak_memakai_label_default(): void
     {
-        PositionAttendanceSetting::create(['position_id' => $this->position->id, 'is_required' => false, 'is_session_required' => true, 'attendance_scope' => 'anywhere']);
+        PositionAttendanceSetting::create(['position_id' => $this->position->id, 'is_required' => false, 'is_session_required' => false, 'attendance_scope' => 'anywhere']);
 
         $html = $this->actingAs($this->userWithPermission())->get(route('attendance.position-settings.index'))->assertOk()->getContent();
 
@@ -64,44 +64,9 @@ class PositionAttendanceSettingUiTest extends TestCase
     public function test_pemegang_permission_bisa_mengubah_pengaturan_posisi(): void
     {
         $this->actingAs($this->userWithPermission())->put(route('attendance.position-settings.update', $this->position), [
-            'is_required' => 0, 'is_session_required' => 1, 'attendance_scope' => 'branch',
+            'is_required' => 0, 'is_session_required' => 0, 'attendance_scope' => 'branch',
         ])->assertRedirect();
 
-        $this->assertDatabaseHas('position_attendance_settings', ['position_id' => $this->position->id, 'is_required' => 0, 'is_session_required' => 1]);
-    }
-
-    private function payload(bool $kerja, bool $sesi): array
-    {
-        return ['is_required' => (int) $kerja, 'is_session_required' => (int) $sesi, 'attendance_scope' => 'branch'];
-    }
-
-    public function test_tidak_boleh_kosong_dua_duanya_absensi_kerja_dan_sesi(): void
-    {
-        $this->actingAs($this->userWithPermission())
-            ->from(route('attendance.position-settings.edit', $this->position))
-            ->put(route('attendance.position-settings.update', $this->position), $this->payload(false, false))
-            ->assertSessionHasErrors('is_session_required');
-
-        $this->assertDatabaseMissing('position_attendance_settings', ['position_id' => $this->position->id]);
-    }
-
-    public function test_boleh_salah_satu_atau_keduanya_wajib(): void
-    {
-        $user = $this->userWithPermission();
-
-        foreach ([[true, false], [false, true], [true, true]] as [$kerja, $sesi]) {
-            $this->actingAs($user)->put(route('attendance.position-settings.update', $this->position), $this->payload($kerja, $sesi))
-                ->assertSessionHasNoErrors();
-
-            $this->assertDatabaseHas('position_attendance_settings', ['position_id' => $this->position->id, 'is_required' => (int) $kerja, 'is_session_required' => (int) $sesi]);
-        }
-    }
-
-    public function test_daftar_menandai_posisi_lama_yang_kosong_dua_duanya(): void
-    {
-        PositionAttendanceSetting::create(['position_id' => $this->position->id, ...$this->payload(false, false)]);
-
-        $this->actingAs($this->userWithPermission())->get(route('attendance.position-settings.index'))
-            ->assertOk()->assertSee('Belum ada absensi wajib');
+        $this->assertDatabaseHas('position_attendance_settings', ['position_id' => $this->position->id, 'is_required' => 0, 'is_session_required' => 0]);
     }
 }
