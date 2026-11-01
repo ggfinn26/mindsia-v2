@@ -22,7 +22,6 @@ use App\Services\Dashboard\Widgets\CandidateScreeningWidget;
 use App\Services\Dashboard\Widgets\CashFlowWidget;
 use App\Services\Dashboard\Widgets\ClassScheduleUtilizationWidget;
 use App\Services\Dashboard\Widgets\ComparableWidget;
-use App\Services\Dashboard\Widgets\CompliancePoliciesWidget;
 use App\Services\Dashboard\Widgets\ContractStatusWidget;
 use App\Services\Dashboard\Widgets\CostAnalysisWidget;
 use App\Services\Dashboard\Widgets\CostControlWidget;
@@ -112,7 +111,6 @@ class DashboardWidgetService
         $this->registerProvider(new HiringMetricsWidget);
         $this->registerProvider(new EmployeeDirectoryWidget);
         $this->registerProvider(new LeaveAttendanceWidget);
-        $this->registerProvider(new CompliancePoliciesWidget);
 
         // Marketing & Growth
         $this->registerProvider(new MarketingRevenueWidget);

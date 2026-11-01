@@ -43,7 +43,7 @@
                            style="border: 1px solid var(--dash-card-border);">
                         <div>
                             <p class="text-sm font-medium" style="color: var(--dash-text-heading);">Wajib absen manual</p>
-                            <p class="text-xs mt-0.5" style="color: var(--dash-text-muted);">Posisi ini harus check-in dan check-out setiap hari kerja</p>
+                            <p class="text-xs mt-0.5" style="color: var(--dash-text-muted);">Aktif: check-in dan check-out manual setiap hari kerja. Mati: tetap mengikuti jadwal kerja, dicatat hadir otomatis (tanpa absen manual)</p>
                         </div>
                         <input type="hidden" name="is_required" value="0">
                         <input type="checkbox" name="is_required" value="1"
@@ -64,7 +64,7 @@
                     </div>
                     <input type="hidden" name="is_session_required" value="0">
                     <input type="checkbox" name="is_session_required" value="1"
-                           {{ old('is_session_required', $setting->is_session_required ?? false) ? 'checked' : '' }}
+                           {{ old('is_session_required', $setting->is_session_required ?? true) ? 'checked' : '' }}
                            class="w-4 h-4 rounded">
                 </label>
             </div>

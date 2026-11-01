@@ -37,7 +37,7 @@ class NotificationDispatchService
             'member_id' => $isEmployee ? null : $recipient->id,
             'notification_type' => $template->type,
             'channel' => $channel ?? 'unknown',
-            'payload' => $payload,
+            'payload' => $payload + ['body' => $renderedBody, 'subject' => $renderedSubject],
             'notification_status' => 'pending',
             'attempts' => 0,
         ]);
@@ -71,7 +71,7 @@ class NotificationDispatchService
             'member_id' => null,
             'notification_type' => 'email',
             'channel' => $emailAddress,
-            'payload' => $payload,
+            'payload' => $payload + ['body' => $renderedBody, 'subject' => $renderedSubject],
             'notification_status' => 'pending',
             'attempts' => 0,
         ]);

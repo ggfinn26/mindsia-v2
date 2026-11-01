@@ -114,6 +114,14 @@ document.addEventListener("alpine:init", () => {
                 return;
             }
 
+            if (!this.notes.trim()) {
+                this.error =
+                    this.actionType === "check-in"
+                        ? "Isi dulu apa yang akan dikerjakan hari ini."
+                        : "Isi dulu apa yang sudah dikerjakan hari ini.";
+                return;
+            }
+
             this.step = "submitting";
             this.error = "";
 
@@ -126,9 +134,7 @@ document.addEventListener("alpine:init", () => {
             if (this.capturedBlob) {
                 fd.append("selfie", this.capturedBlob, "selfie.jpg");
             }
-            if (this.notes.trim()) {
-                fd.append(`${prefix}_notes`, this.notes.trim());
-            }
+            fd.append(`${prefix}_notes`, this.notes.trim());
 
             try {
                 const resp = await fetch(this.actionUrl, {

@@ -18,7 +18,7 @@ class LeadStatusWidget implements WidgetDataProviderInterface
         $branchId = $filters['branch_id'] ?? null;
         $now = Carbon::now();
 
-        $byStatus = ProspectiveMember::when($branchId, fn ($q) => $q->where('branch_id', $branchId))
+        $byStatus = ProspectiveMember::when($branchId, fn ($q) => $q->whereHas('socialization', fn ($s) => $s->where('branch_id', $branchId)))
             ->selectRaw('status, COUNT(*) as count')
             ->groupBy('status')
             ->pluck('count', 'status')
@@ -30,11 +30,11 @@ class LeadStatusWidget implements WidgetDataProviderInterface
 
         $newThisMonth = ProspectiveMember::whereMonth('created_at', $now->month)
             ->whereYear('created_at', $now->year)
-            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
+            ->when($branchId, fn ($q) => $q->whereHas('socialization', fn ($s) => $s->where('branch_id', $branchId)))
             ->count();
 
         $followUpPending = ProspectiveMember::where('status', 'follow_up')
-            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
+            ->when($branchId, fn ($q) => $q->whereHas('socialization', fn ($s) => $s->where('branch_id', $branchId)))
             ->count();
 
         return [
@@ -50,16 +50,16 @@ class LeadStatusWidget implements WidgetDataProviderInterface
     public function getExportData(array $filters = []): array
     {
         $branchId = $filters['branch_id'] ?? null;
-        $prospects = ProspectiveMember::when($branchId, fn ($q) => $q->where('branch_id', $branchId))
-            ->with('branch:id,branch_name')
+        $prospects = ProspectiveMember::when($branchId, fn ($q) => $q->whereHas('socialization', fn ($s) => $s->where('branch_id', $branchId)))
+            ->with('socialization.branch:id,branch_name')
             ->orderBy('created_at', 'desc')
             ->get();
 
         return $prospects->map(fn ($p) => [
             'name' => $p->full_name ?? '-',
-            'phone' => $p->phone ?? '-',
+            'phone' => $p->whatsapp_number ?? '-',
             'status' => $p->status,
-            'branch' => $p->branch?->branch_name ?? '-',
+            'branch' => $p->socialization?->branch?->branch_name ?? '-',
             'created_at' => $p->created_at?->format('Y-m-d'),
         ])->toArray();
     }

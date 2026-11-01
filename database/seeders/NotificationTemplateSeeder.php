@@ -16,6 +16,18 @@ class NotificationTemplateSeeder extends Seeder
                 'subject' => 'Konfirmasi Pembayaran Cicilan ke-{{installment_number}} – {{program_name}}',
                 'body' => $this->paymentConfirmedBody(),
             ],
+            [
+                'template_key' => 'attendance.log.check_in',
+                'type' => 'telegram',
+                'subject' => null,
+                'body' => "{{nama_pegawai}} telah melakukan absen {{jenis_absen}} pada jam {{jam}} dengan status {{status}}.\nStatus yang akan dikerjakan: {{catatan}}",
+            ],
+            [
+                'template_key' => 'attendance.log.check_out',
+                'type' => 'telegram',
+                'subject' => null,
+                'body' => "{{nama_pegawai}} telah melakukan absen {{jenis_absen}} pada jam {{jam}} dengan status {{status}}.\nStatus yang sudah dikerjakan hari ini: {{catatan}}",
+            ],
         ];
 
         foreach ($templates as $tpl) {

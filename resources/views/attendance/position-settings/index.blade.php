@@ -52,7 +52,7 @@
                             </td>
                             <td class="px-5 py-4 text-center">
                                 @if(!$s)
-                                    <span class="text-xs" style="color: var(--dash-text-faint);">Pilih...</span>
+                                    <span class="text-xs" style="color: var(--dash-text-faint);">Manual (default)</span>
                                 @elseif($s->is_required)
                                     <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium" style="background-color:#f0fdf4;color:#059669;">Manual</span>
                                 @else
@@ -61,7 +61,7 @@
                             </td>
                             <td class="px-5 py-4 text-center">
                                 @if(!$s)
-                                    <span class="text-xs" style="color: var(--dash-text-faint);">Pilih...</span>
+                                    <span class="text-xs" style="color: var(--dash-text-faint);">Ya (default)</span>
                                 @elseif($s->is_session_required)
                                     <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium" style="background-color:#f0fdf4;color:#059669;">Ya</span>
                                 @else
@@ -70,7 +70,7 @@
                             </td>
                             <td class="px-5 py-4 text-center text-xs" style="color: var(--dash-text-body);">
                                 @if(!$s)
-                                    <span style="color: var(--dash-text-faint);">Pilih...</span>
+                                    <span style="color: var(--dash-text-faint);">Cabang (default)</span>
                                 @else
                                     {{ match($s->attendance_scope) {
                                         'branch'   => 'Cabang Sendiri',

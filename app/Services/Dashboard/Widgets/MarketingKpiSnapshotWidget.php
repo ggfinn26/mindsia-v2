@@ -22,7 +22,7 @@ class MarketingKpiSnapshotWidget implements WidgetDataProviderInterface
 
         $snapshots = MarketingKpiSnapshot::where('period_month', $currentMonth)
             ->where('period_year', $currentYear)
-            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
+            ->when($branchId, fn ($q) => $q->whereHas('employee', fn ($e) => $e->where('branch_id', $branchId)))
             ->with('employee:id,full_name')
             ->orderBy('mpi_score', 'desc')
             ->get();
@@ -55,14 +55,14 @@ class MarketingKpiSnapshotWidget implements WidgetDataProviderInterface
 
         $snapshots = MarketingKpiSnapshot::where('period_month', $now->month)
             ->where('period_year', $now->year)
-            ->when($branchId, fn ($q) => $q->where('branch_id', $branchId))
-            ->with('employee:id,full_name', 'branch:id,branch_name')
+            ->when($branchId, fn ($q) => $q->whereHas('employee', fn ($e) => $e->where('branch_id', $branchId)))
+            ->with('employee:id,full_name')
             ->orderBy('mpi_score', 'desc')
             ->get();
 
         return $snapshots->map(fn ($s) => [
             'employee' => $s->employee?->full_name ?? '-',
-            'branch' => $s->branch?->branch_name ?? '-',
+            'branch' => $s->branch_name_snapshot ?? '-',
             'total_score' => $s->mpi_score,
             'grade' => $s->grade,
         ])->toArray();

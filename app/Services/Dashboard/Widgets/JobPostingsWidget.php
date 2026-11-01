@@ -43,7 +43,7 @@ class JobPostingsWidget implements WidgetDataProviderInterface
 
         $totalApplications = JobApplication::whereMonth('applied_at', $currentMonth)
             ->whereYear('applied_at', $currentYear)
-            ->when($branchId, fn ($q) => $q->whereHas('jobPosting', fn ($j) => $j->where('branch_id', $branchId)))
+            ->when($branchId, fn ($q) => $q->whereHas('posting', fn ($j) => $j->where('branch_id', $branchId)))
             ->count();
 
         return [

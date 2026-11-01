@@ -7,6 +7,7 @@ use App\Models\ClassRoom;
 use App\Models\ClassSchedule;
 use App\Models\Employee;
 use App\Models\EmployeeAttendanceMonthlyRecap;
+use App\Models\EmployeeAttendanceSetting;
 use App\Models\EmployeeCompensation;
 use App\Models\EmployeePayroll;
 use App\Models\EmployeeSessionAttendanceLog;
@@ -17,6 +18,7 @@ use App\Models\LeavePaySetting;
 use App\Models\PayrollComponent;
 use App\Models\PayrollPeriod;
 use App\Models\Position;
+use App\Models\PositionAttendanceSetting;
 use App\Models\Program;
 use App\Models\SessionSchedule;
 use App\Models\WorkScheduleAssignment;
@@ -213,6 +215,32 @@ class SessionAbsentDeductionPayrollTest extends TestCase
         $this->assertNull($this->sessionDeduction());
     }
 
+    public function test_posisi_yang_tidak_wajib_absen_sesi_tidak_dipotong_alpha_sesi(): void
+    {
+        PositionAttendanceSetting::create(['position_id' => $this->position->id, 'is_required' => true, 'is_session_required' => false, 'attendance_scope' => 'branch']);
+        $this->makeSession('2026-09-02');
+
+        $this->assertNull($this->sessionDeduction());
+    }
+
+    public function test_posisi_wajib_absen_sesi_atau_tanpa_setting_tetap_dipotong(): void
+    {
+        $this->makeSession('2026-09-02');
+        $this->assertSame([1, 100_000.0], $this->sessionDeduction());
+
+        PositionAttendanceSetting::create(['position_id' => $this->position->id, 'is_required' => true, 'is_session_required' => true, 'attendance_scope' => 'branch']);
+        $this->assertSame([1, 100_000.0], $this->sessionDeduction());
+    }
+
+    public function test_pengaturan_pegawai_menimpa_pengaturan_posisi_untuk_absen_sesi(): void
+    {
+        PositionAttendanceSetting::create(['position_id' => $this->position->id, 'is_required' => true, 'is_session_required' => true, 'attendance_scope' => 'branch']);
+        EmployeeAttendanceSetting::create(['employee_id' => $this->tutor->id, 'is_required' => true, 'is_session_required' => false, 'attendance_scope' => 'branch']);
+        $this->makeSession('2026-09-02');
+
+        $this->assertNull($this->sessionDeduction());
+    }
+
     public function test_total_potongan_tidak_melebihi_hari_terjadwal_dan_alpha_kerja_didahulukan(): void
     {
         $tutor = $this->employee(recap: ['total_absent' => 20]);
@@ -230,5 +258,41 @@ class SessionAbsentDeductionPayrollTest extends TestCase
         $this->makeSession('2026-09-02', $tutor);
 
         $this->assertNull($this->sessionDeduction($tutor));
+    }
+
+    /** @return array{work: int, session: int} jumlah hari pada baris potongan alpha kerja dan alpha sesi */
+    private function deductionDays(): array
+    {
+        app(PayrollGenerationService::class)->generate($this->period);
+        $payroll = EmployeePayroll::where('payroll_period_id', $this->period->id)->where('employee_id', $this->tutor->id)->firstOrFail();
+
+        return [
+            'work' => (int) $payroll->items()->where('description', 'like', 'Potongan alpha:%')->value('quantity'),
+            'session' => (int) $payroll->items()->where('description', 'like', 'Potongan alpha sesi%')->value('quantity'),
+        ];
+    }
+
+    public function test_alpha_kerja_saja_hari_itu_sesi_dihadiri_dipotong_sebagai_alpha_kerja(): void
+    {
+        $this->attend($this->makeSession('2026-09-02'));
+        $this->workLog('2026-09-02', 'absent');
+
+        $this->assertSame(['work' => 1, 'session' => 0], $this->deductionDays());
+    }
+
+    public function test_alpha_sesi_saja_hari_itu_hadir_kerja_tetap_dipotong_alpha_sesi(): void
+    {
+        $this->makeSession('2026-09-02');
+        $this->workLog('2026-09-02', 'present');
+
+        $this->assertSame(['work' => 0, 'session' => 1], $this->deductionDays());
+    }
+
+    public function test_alpha_kerja_dan_alpha_sesi_di_hari_berbeda_dipotong_masing_masing(): void
+    {
+        $this->workLog('2026-09-02', 'absent');
+        $this->makeSession('2026-09-03');
+
+        $this->assertSame(['work' => 1, 'session' => 1], $this->deductionDays());
     }
 }

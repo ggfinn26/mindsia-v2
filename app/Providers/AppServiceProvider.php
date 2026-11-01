@@ -17,6 +17,9 @@ use App\Models\KpiBonusRuleTier;
 use App\Models\MarketingBonusRule;
 use App\Models\MarketingBonusRuleTier;
 use App\Models\MarketingPerformance;
+use App\Models\MarketingTarget;
+use App\Models\MarketingTargetDefault;
+use App\Models\MarketingTargetGlobalDefault;
 use App\Models\MemberPayment;
 use App\Models\MemberSupportTicket;
 use App\Models\ProspectiveMember;
@@ -138,6 +141,9 @@ class AppServiceProvider extends ServiceProvider
             ProspectiveMember::registerModelEvent($event, Closure::fromCallable([$snapshotObserver, 'prospectiveMemberSaved']));
             MarketingPerformance::registerModelEvent($event, Closure::fromCallable([$snapshotObserver, 'marketingPerformanceSaved']));
             MemberPayment::registerModelEvent($event, Closure::fromCallable([$snapshotObserver, 'paymentSaved']));
+            MarketingTarget::registerModelEvent($event, Closure::fromCallable([$snapshotObserver, 'employeeTargetSaved']));
+            MarketingTargetDefault::registerModelEvent($event, Closure::fromCallable([$snapshotObserver, 'defaultTargetSaved']));
+            MarketingTargetGlobalDefault::registerModelEvent($event, Closure::fromCallable([$snapshotObserver, 'defaultTargetSaved']));
         }
     }
 }

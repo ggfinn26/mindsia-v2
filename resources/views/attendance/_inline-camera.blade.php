@@ -45,7 +45,8 @@
     <textarea x-model="notes" rows="2" maxlength="500"
               class="block w-full rounded-xl text-sm px-3 py-2 focus:outline-none resize-none"
               style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-body);"
-              placeholder="Catatan opsional..."></textarea>
+              required
+              :placeholder="actionType === 'check-in' ? 'Wajib diisi: apa yang akan dikerjakan hari ini?' : 'Wajib diisi: apa yang sudah dikerjakan hari ini?'"></textarea>
 </div>
 
 {{-- Error --}}

@@ -100,11 +100,11 @@ class SessionAttendancePayrollE2ETest extends TestCase
     {
         $this->at($day, $hour, $minute);
         $this->actingAs($this->tutorUser)
-            ->post(route('session-attendance.check-in', $this->sessions[$date]->id), ['check_in_latitude' => self::LAT, 'check_in_longitude' => self::LNG])
+            ->post(route('session-attendance.check-in', $this->sessions[$date]->id), ['check_in_notes' => 'Catatan tes', 'check_in_latitude' => self::LAT, 'check_in_longitude' => self::LNG])
             ->assertSessionHasNoErrors();
     }
 
-    private function checkOut(string $date, int $day, int $hour, int $minute, array $data = ['check_out_latitude' => self::LAT, 'check_out_longitude' => self::LNG]): void
+    private function checkOut(string $date, int $day, int $hour, int $minute, array $data = ['check_out_notes' => 'Catatan tes', 'check_out_latitude' => self::LAT, 'check_out_longitude' => self::LNG]): void
     {
         $this->at($day, $hour, $minute);
         $this->actingAs($this->tutorUser)
@@ -143,7 +143,7 @@ class SessionAttendancePayrollE2ETest extends TestCase
         $this->checkOut('2026-09-02', 2, 13, 5);
         // 3 Sep: terlambat 15 menit (jadwal 11:00 + toleransi 15), check-out tanpa lokasi (GPS ditolak)
         $this->checkIn('2026-09-03', 3, 11, 30);
-        $this->checkOut('2026-09-03', 3, 13, 0, []);
+        $this->checkOut('2026-09-03', 3, 13, 0, ['check_out_notes' => 'Catatan tes']);
         // 4 Sep: check-in tapi lupa check-out
         $this->checkIn('2026-09-04', 4, 11, 0);
         // 8 dan 9 Sep: tidak hadir sama sekali
@@ -208,7 +208,7 @@ class SessionAttendancePayrollE2ETest extends TestCase
 
         $this->at(5, 8, 0);
         $this->actingAs($this->tutorUser)
-            ->post(route('session-attendance.check-out', $this->sessions['2026-09-04']->id), ['check_out_latitude' => self::LAT, 'check_out_longitude' => self::LNG]);
+            ->post(route('session-attendance.check-out', $this->sessions['2026-09-04']->id), ['check_out_notes' => 'Catatan tes', 'check_out_latitude' => self::LAT, 'check_out_longitude' => self::LNG]);
 
         $this->assertNull($this->logOf('2026-09-04')->check_out, 'Batas absen keluar 23:59: tidak bisa check-out di hari berikutnya.');
     }
@@ -220,7 +220,7 @@ class SessionAttendancePayrollE2ETest extends TestCase
 
         $this->at(2, 10, 55);
         $this->actingAs($this->tutorUser)
-            ->post(route('session-attendance.check-in', $foreign->id), ['check_in_latitude' => self::LAT, 'check_in_longitude' => self::LNG])
+            ->post(route('session-attendance.check-in', $foreign->id), ['check_in_notes' => 'Catatan tes', 'check_in_latitude' => self::LAT, 'check_in_longitude' => self::LNG])
             ->assertStatus(404);
     }
 }

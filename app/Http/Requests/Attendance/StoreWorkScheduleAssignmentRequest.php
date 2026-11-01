@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests\Attendance;
 
+use App\Models\WorkScheduleRule;
+use App\Services\Attendance\WorkScheduleOverlapChecker;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class StoreWorkScheduleAssignmentRequest extends FormRequest
 {
@@ -45,6 +48,28 @@ class StoreWorkScheduleAssignmentRequest extends FormRequest
                     }
                 }
             }
+
+            if ($validator->errors()->isEmpty()) {
+                $this->rejectOverlappingAssignments($validator);
+            }
         });
+    }
+
+    private function rejectOverlappingAssignments(Validator $validator): void
+    {
+        $newRule = WorkScheduleRule::with('workDays')->find($this->input('work_schedule_rule_id'));
+        if (! $this->boolean('is_active', true) || ! $newRule) {
+            return;
+        }
+
+        $checker = app(WorkScheduleOverlapChecker::class);
+        $message = $checker->firstConflict(
+            (string) $this->input('assignable_type'), (array) $this->input('assignable_id'), $newRule->setting_name,
+            $checker->daysOf($newRule), $this->input('effective_start_date'), $this->input('effective_end_date'), $newRule->id,
+        );
+
+        if ($message) {
+            $validator->errors()->add('assignable_id', $message);
+        }
     }
 }

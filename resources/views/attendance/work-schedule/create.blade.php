@@ -228,6 +228,21 @@
                 </div>
             </div>
 
+            {{-- Terapkan ke (opsional): langsung pilih siapa yang memakai jadwal ini --}}
+            <div class="px-6 pb-6 pt-2 border-t" style="border-color: var(--dash-card-border);" x-data="workScheduleAssign()">
+                <div class="flex items-center gap-2 mb-1 pt-4">
+                    <span class="material-symbols-outlined text-[20px]" style="color: var(--dash-primary-text);">person_add</span>
+                    <h3 class="font-jakarta text-sm font-bold" style="color: var(--dash-text-heading);">Terapkan ke (opsional)</h3>
+                </div>
+                <p class="text-xs mb-4" style="color: var(--dash-text-muted);">
+                    Pilih role, posisi, atau pegawai yang memakai jadwal ini. Dikosongkan pun bisa; jadwal baru berlaku setelah ditugaskan.
+                    Prioritas: Pegawai &gt; Posisi &gt; Role.
+                </p>
+                <div class="space-y-4">
+                    @include('attendance.work-schedule._assignment-fields', ['prefix' => 'assign_', 'optional' => true])
+                </div>
+            </div>
+
             {{-- Form Actions --}}
             <div class="px-6 py-4 flex items-center justify-end gap-3 border-t"
                  style="border-color: var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">

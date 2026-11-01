@@ -86,7 +86,7 @@ class SessionAttendanceTest extends TestCase
     private function validCheckInData(): array
     {
         return [
-            'check_in_latitude' => -6.2088,
+            'check_in_notes' => 'Catatan tes', 'check_in_latitude' => -6.2088,
             'check_in_longitude' => 106.8456,
         ];
     }
@@ -94,7 +94,7 @@ class SessionAttendanceTest extends TestCase
     private function validCheckOutData(): array
     {
         return [
-            'check_out_latitude' => -6.2088,
+            'check_out_notes' => 'Catatan tes', 'check_out_latitude' => -6.2088,
             'check_out_longitude' => 106.8456,
         ];
     }
@@ -223,7 +223,7 @@ class SessionAttendanceTest extends TestCase
     {
         // Send far-away lat/lng (Jakarta vs far location)
         $farData = [
-            'check_in_latitude' => -7.7,
+            'check_in_notes' => 'Catatan tes', 'check_in_latitude' => -7.7,
             'check_in_longitude' => 110.3,
         ];
 
@@ -243,7 +243,7 @@ class SessionAttendanceTest extends TestCase
     public function test_sa07_check_in_outside_radius(): void
     {
         $farData = [
-            'check_in_latitude' => -7.0,
+            'check_in_notes' => 'Catatan tes', 'check_in_latitude' => -7.0,
             'check_in_longitude' => 110.0,
         ];
 
@@ -345,7 +345,7 @@ class SessionAttendanceTest extends TestCase
 
         // Check-out with far-away coordinates
         $farData = [
-            'check_out_latitude' => -7.0,
+            'check_out_notes' => 'Catatan tes', 'check_out_latitude' => -7.0,
             'check_out_longitude' => 110.0,
         ];
 

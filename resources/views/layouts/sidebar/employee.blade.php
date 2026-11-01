@@ -121,28 +121,31 @@
 @endcan
 
 <!-- 1.4 Presensi -->
-@canany(['attendance.recap.view', 'attendance.leave.review', 'attendance.verify_adjust.view', 'attendance.schedule.manage', 'attendance.holiday.manage', 'attendance.policy_rules.manage', 'leave.pay_settings.manage'])
+@canany(['attendance.recap.view', 'attendance.leave.review', 'attendance.adjustment.create', 'attendance.schedule_rule.manage', 'attendance.holiday.manage', 'attendance.rule.manage', 'attendance.policy.manage', 'leave.pay_settings.manage'])
 <div class="pt-4 pb-2">
     <p class="px-3 text-[11px] font-bold uppercase tracking-wider font-jakarta" style="color: var(--dash-nav-section);">Presensi</p>
 </div>
-<x-dashboard.nav-group title="Absensi" icon="how_to_reg" :active="request()->routeIs('attendance-recaps.*') || request()->routeIs('leave-requests.manage') || request()->routeIs('work-attendance.manage') || request()->routeIs('work-schedule-rules.*') || request()->routeIs('holidays.*') || request()->routeIs('attendance-rules.*') || request()->routeIs('leave-pay-settings.*') || (request()->is('attendance*') && !request()->is('attendance/check-in-out*') && !request()->is('attendance/leave-request*') && !request()->is('attendance/my-recap*'))">
+<x-dashboard.nav-group title="Absensi" icon="how_to_reg" :active="request()->routeIs('attendance-recaps.*') || request()->routeIs('leave-requests.manage') || request()->routeIs('work-attendance.manage') || request()->routeIs('work-schedule-rules.*') || request()->routeIs('holidays.*') || request()->routeIs('attendance-rules.*') || request()->routeIs('attendance.position-settings.*') || request()->routeIs('leave-pay-settings.*') || (request()->is('attendance*') && !request()->is('attendance/check-in-out*') && !request()->is('attendance/leave-request*') && !request()->is('attendance/my-recap*'))">
     @can('attendance.recap.view')
     <x-dashboard.nav-item href="{{ route('attendance-recaps.index') }}" :active="request()->routeIs('attendance-recaps.*')" :isChild="true">Rekap Absensi Pegawai</x-dashboard.nav-item>
     @endcan
     @can('attendance.leave.review')
     <x-dashboard.nav-item href="{{ route('leave-requests.manage') }}" :active="request()->routeIs('leave-requests.manage')" :isChild="true">Review Izin/Sakit/Cuti</x-dashboard.nav-item>
     @endcan
-    @can('attendance.verify_adjust.view')
+    @can('attendance.adjustment.create')
     <x-dashboard.nav-item href="{{ route('work-attendance.manage') }}" :active="request()->routeIs('work-attendance.manage')" :isChild="true">Verifikasi & Koreksi</x-dashboard.nav-item>
     @endcan
-    @can('attendance.schedule.manage')
+    @can('attendance.schedule_rule.manage')
     <x-dashboard.nav-item href="{{ route('work-schedule-rules.index') }}" :active="request()->routeIs('work-schedule-rules.*')" :isChild="true">Aturan Jadwal Kerja</x-dashboard.nav-item>
     @endcan
     @can('attendance.holiday.manage')
     <x-dashboard.nav-item href="{{ route('holidays.index') }}" :active="request()->routeIs('holidays.*')" :isChild="true">Hari Libur</x-dashboard.nav-item>
     @endcan
-    @can('attendance.policy_rules.manage')
+    @canany(['attendance.rule.manage', 'attendance.policy.manage'])
     <x-dashboard.nav-item href="{{ route('attendance-rules.index') }}" :active="request()->routeIs('attendance-rules.*')" :isChild="true">Kelola Sanksi Absen</x-dashboard.nav-item>
+    @endcanany
+    @can('attendance.policy.manage')
+    <x-dashboard.nav-item href="{{ route('attendance.position-settings.index') }}" :active="request()->routeIs('attendance.position-settings.*')" :isChild="true">Pengaturan Absensi Posisi</x-dashboard.nav-item>
     @endcan
     @can('leave.pay_settings.manage')
     <x-dashboard.nav-item href="{{ route('leave-pay-settings.index') }}" :active="request()->routeIs('leave-pay-settings.*')" :isChild="true">Pengaturan Izin/Cuti</x-dashboard.nav-item>

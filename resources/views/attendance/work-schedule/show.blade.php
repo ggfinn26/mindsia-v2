@@ -174,11 +174,11 @@
         </div>
     </div>
 
-    {{-- Penugasan Jadwal (Assignments) --}}
+    {{-- Siapa yang Memakai Jadwal Ini --}}
     <div class="space-y-4">
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="font-jakarta text-lg font-bold" style="color: var(--dash-text-heading);">Penugasan Jadwal (Assignments)</h2>
+                <h2 class="font-jakarta text-lg font-bold" style="color: var(--dash-text-heading);">Siapa yang Memakai Jadwal Ini</h2>
                 <p class="text-xs mt-0.5" style="color: var(--dash-text-muted);">
                     Aturan ini dapat ditugaskan secara hierarkis (Prioritas: Pegawai > Posisi > Role).
                 </p>
@@ -192,173 +192,20 @@
                  x-data="workScheduleAssign()">
                 <div class="flex items-center gap-2 mb-4 pb-3 border-b" style="border-color: var(--dash-card-border);">
                     <span class="material-symbols-outlined text-[20px]" style="color: var(--dash-primary-text);">person_add</span>
-                    <h3 class="font-jakarta text-sm font-bold" style="color: var(--dash-text-heading);">Tambah Penugasan Baru</h3>
+                    <h3 class="font-jakarta text-sm font-bold" style="color: var(--dash-text-heading);">Tambah Pemakai Jadwal</h3>
                 </div>
 
                 <form action="{{ route('work-schedule-assignments.store') }}" method="POST" class="space-y-4">
                     @csrf
                     <input type="hidden" name="work_schedule_rule_id" value="{{ $rule->id }}">
-                    <input type="hidden" name="assignable_type" :value="type">
-
-                    {{-- Step 1: Pilih target --}}
-                    <div class="relative max-w-xs" @click.outside="open = false">
-                        <label class="block text-sm font-semibold mb-1.5" style="color: var(--dash-text-body);">
-                            Target Penugasan <span class="text-red-500">*</span>
-                        </label>
-                        <div @click="open = !open"
-                             class="w-full px-3.5 py-2.5 rounded-lg text-sm border flex justify-between items-center cursor-pointer transition-all min-h-[42px]"
-                             :style="open
-                                 ? 'background-color: var(--dash-input-bg); border-color: var(--dash-primary); box-shadow: 0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent);'
-                                 : 'background-color: var(--dash-input-bg); border-color: var(--dash-input-border);'">
-                            <span class="truncate block pr-2"
-                                  :style="type ? 'color: var(--dash-text-heading); font-weight: 500;' : 'color: var(--dash-text-muted);'"
-                                  x-text="typeLabel || 'Pilih target...'"></span>
-                            <span class="material-symbols-outlined text-[18px] transition-transform duration-200"
-                                  style="color: var(--dash-text-muted);"
-                                  :class="open ? 'rotate-180' : ''">expand_more</span>
-                        </div>
-                        <div x-show="open" x-transition
-                             class="absolute z-50 w-full mt-1.5 rounded-xl shadow-xl border overflow-hidden"
-                             style="background-color: var(--dash-card-bg); border-color: var(--dash-card-border);">
-                            <ul class="py-1">
-                                <template x-for="opt in options" :key="opt.value">
-                                    <li @click="pick(opt.value, opt.label)"
-                                        class="px-4 py-2.5 text-xs font-semibold cursor-pointer transition-colors"
-                                        :style="type === opt.value
-                                            ? 'background-color: var(--dash-nav-hover-bg); color: var(--dash-primary-text);'
-                                            : 'color: var(--dash-text-body);'"
-                                        onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
-                                        onmouseout="if(type !== opt.value) this.style.backgroundColor='transparent'"
-                                        x-text="opt.label"></li>
-                                </template>
-                            </ul>
-                        </div>
-                    </div>
-
-                    {{-- Step 2: Checklist options --}}
-                    <template x-if="type === 'role'">
-                        <div class="rounded-xl border overflow-hidden"
-                             style="border-color: var(--dash-card-border); background-color: var(--dash-card-bg);">
-                            <div class="flex items-center justify-between px-4 py-2.5 border-b"
-                                 style="background-color: var(--dash-nav-hover-bg); border-color: var(--dash-card-border);">
-                                <span class="text-xs font-bold uppercase tracking-wider" style="color: var(--dash-text-heading);">Daftar Role</span>
-                                <button type="button"
-                                        @click="$el.closest('[x-data]').querySelectorAll('input[name=\'assignable_id[]\']').forEach(i => i.checked = true)"
-                                        class="text-xs font-semibold hover:underline"
-                                        style="color: var(--dash-primary-text);">
-                                    Pilih Semua
-                                </button>
-                            </div>
-                            <div class="divide-y max-h-56 overflow-y-auto" style="border-color: var(--dash-card-border);">
-                                @foreach($roles as $role)
-                                    <label class="flex items-center gap-3 px-4 py-2.5 cursor-pointer transition-colors"
-                                           onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
-                                           onmouseout="this.style.backgroundColor='transparent'">
-                                        <input type="checkbox" name="assignable_id[]" value="{{ $role->id }}"
-                                               class="w-4 h-4 rounded cursor-pointer"
-                                               style="accent-color: var(--dash-primary);">
-                                        <span class="text-sm font-medium" style="color: var(--dash-text-body);">{{ $role->name }}</span>
-                                    </label>
-                                @endforeach
-                            </div>
-                        </div>
-                    </template>
-
-                    <template x-if="type === 'position'">
-                        <div class="rounded-xl border overflow-hidden"
-                             style="border-color: var(--dash-card-border); background-color: var(--dash-card-bg);">
-                            <div class="flex items-center justify-between px-4 py-2.5 border-b"
-                                 style="background-color: var(--dash-nav-hover-bg); border-color: var(--dash-card-border);">
-                                <span class="text-xs font-bold uppercase tracking-wider" style="color: var(--dash-text-heading);">Daftar Posisi</span>
-                                <button type="button"
-                                        @click="$el.closest('[x-data]').querySelectorAll('input[name=\'assignable_id[]\']').forEach(i => i.checked = true)"
-                                        class="text-xs font-semibold hover:underline"
-                                        style="color: var(--dash-primary-text);">
-                                    Pilih Semua
-                                </button>
-                            </div>
-                            <div class="divide-y max-h-56 overflow-y-auto" style="border-color: var(--dash-card-border);">
-                                @foreach($positions as $position)
-                                    <label class="flex items-center gap-3 px-4 py-2.5 cursor-pointer transition-colors"
-                                           onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
-                                           onmouseout="this.style.backgroundColor='transparent'">
-                                        <input type="checkbox" name="assignable_id[]" value="{{ $position->id }}"
-                                               class="w-4 h-4 rounded cursor-pointer"
-                                               style="accent-color: var(--dash-primary);">
-                                        <span class="text-sm font-medium" style="color: var(--dash-text-body);">{{ $position->position_name }}</span>
-                                    </label>
-                                @endforeach
-                            </div>
-                        </div>
-                    </template>
-
-                    <template x-if="type === 'employee'">
-                        <div class="rounded-xl border overflow-hidden"
-                             style="border-color: var(--dash-card-border); background-color: var(--dash-card-bg);">
-                            <div class="flex items-center justify-between px-4 py-2.5 border-b"
-                                 style="background-color: var(--dash-nav-hover-bg); border-color: var(--dash-card-border);">
-                                <span class="text-xs font-bold uppercase tracking-wider" style="color: var(--dash-text-heading);">Daftar Pegawai</span>
-                                <button type="button"
-                                        @click="$el.closest('[x-data]').querySelectorAll('input[name=\'assignable_id[]\']').forEach(i => i.checked = true)"
-                                        class="text-xs font-semibold hover:underline"
-                                        style="color: var(--dash-primary-text);">
-                                    Pilih Semua
-                                </button>
-                            </div>
-                            <div class="divide-y max-h-56 overflow-y-auto" style="border-color: var(--dash-card-border);">
-                                @foreach($employees as $employee)
-                                    <label class="flex items-center gap-3 px-4 py-2.5 cursor-pointer transition-colors"
-                                           onmouseover="this.style.backgroundColor='var(--dash-nav-hover-bg)'"
-                                           onmouseout="this.style.backgroundColor='transparent'">
-                                        <input type="checkbox" name="assignable_id[]" value="{{ $employee->id }}"
-                                               class="w-4 h-4 rounded cursor-pointer"
-                                               style="accent-color: var(--dash-primary);">
-                                        <span class="text-sm font-medium" style="color: var(--dash-text-body);">{{ $employee->full_name }}</span>
-                                    </label>
-                                @endforeach
-                            </div>
-                        </div>
-                    </template>
-
-                    {{-- Step 3: Tanggal Berlaku & Aktif --}}
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-                        <div>
-                            <label class="block text-sm font-semibold mb-1.5" style="color: var(--dash-text-body);">
-                                Berlaku Mulai <span class="text-red-500">*</span>
-                            </label>
-                            <input type="date" name="effective_start_date" required value="{{ now()->toDateString() }}"
-                                   class="w-full text-sm px-3.5 py-2.5 rounded-lg focus:outline-none transition-all"
-                                   style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
-                                   onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
-                                   onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-semibold mb-1.5" style="color: var(--dash-text-body);">
-                                Berlaku Sampai <span class="text-xs font-normal" style="color: var(--dash-text-muted);">(kosong = selamanya)</span>
-                            </label>
-                            <input type="date" name="effective_end_date"
-                                   class="w-full text-sm px-3.5 py-2.5 rounded-lg focus:outline-none transition-all"
-                                   style="background-color: var(--dash-input-bg); border: 1px solid var(--dash-input-border); color: var(--dash-text-heading);"
-                                   onfocus="this.style.borderColor='var(--dash-primary)'; this.style.boxShadow='0 0 0 2px color-mix(in srgb, var(--dash-primary) 20%, transparent)'"
-                                   onblur="this.style.borderColor='var(--dash-input-border)'; this.style.boxShadow='none'">
-                        </div>
-                    </div>
-
-                    <div class="pt-1">
-                        <label class="inline-flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" name="is_active" id="is_active" value="1" checked
-                                   class="w-4 h-4 rounded cursor-pointer"
-                                   style="accent-color: var(--dash-primary);">
-                            <span class="text-sm font-semibold" style="color: var(--dash-text-heading);">Aktifkan penugasan ini sekarang</span>
-                        </label>
-                    </div>
+                    @include('attendance.work-schedule._assignment-fields', ['prefix' => ''])
 
                     <div class="pt-2">
                         <button type="submit"
                                 class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90"
                                 style="background-color: var(--dash-primary);">
                             <span class="material-symbols-outlined text-[18px]">add</span>
-                            Simpan Penugasan
+                            Terapkan Jadwal
                         </button>
                     </div>
                 </form>
@@ -371,14 +218,14 @@
             <div class="px-6 py-4 flex items-center gap-2 border-b"
                  style="border-color: var(--dash-card-border); background-color: var(--dash-nav-hover-bg);">
                 <span class="material-symbols-outlined text-[20px]" style="color: var(--dash-primary-text);">assignment_ind</span>
-                <h3 class="font-jakarta text-sm font-bold" style="color: var(--dash-text-heading);">Daftar Penugasan Aktif & Riwayat</h3>
+                <h3 class="font-jakarta text-sm font-bold" style="color: var(--dash-text-heading);">Pemakai Jadwal Aktif & Riwayat</h3>
             </div>
 
             @if ($rule->assignments->isEmpty())
                 <div class="px-6 py-10 text-center">
                     <span class="material-symbols-outlined text-[42px] block mx-auto mb-2"
                           style="color: var(--dash-text-faint);">person_off</span>
-                    <p class="text-sm font-semibold" style="color: var(--dash-text-heading);">Belum ada penugasan</p>
+                    <p class="text-sm font-semibold" style="color: var(--dash-text-heading);">Belum ada yang memakai jadwal ini</p>
                     <p class="text-xs mt-1" style="color: var(--dash-text-muted);">Aturan ini belum di-assign ke role, posisi, maupun pegawai manapun.</p>
                 </div>
             @else

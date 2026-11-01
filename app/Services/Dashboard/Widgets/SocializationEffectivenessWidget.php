@@ -36,7 +36,7 @@ class SocializationEffectivenessWidget implements WidgetDataProviderInterface
 
         $converted = MemberRegistration::whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear)
-            ->when($branchId, fn ($q) => $q->whereHas('member', fn ($mq) => $mq->where('branch_id', $branchId)))
+            ->when($branchId, fn ($q) => $q->whereHas('memberData', fn ($mq) => $mq->where('branch_id', $branchId)))
             ->count();
 
         $conversionRate = $attended > 0

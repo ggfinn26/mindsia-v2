@@ -2,7 +2,6 @@
 
 // use App\Http\Controllers\Admin\AttendanceLogController;
 use App\Http\Controllers\Admin\Attendance\LeavePaySettingController;
-use App\Http\Controllers\Admin\AttendancePolicyController;
 use App\Http\Controllers\Admin\AttendanceRecapController;
 use App\Http\Controllers\Admin\AttendanceRuleController;
 use App\Http\Controllers\Admin\Bonus\BonusRuleChangeHistoryController;
@@ -733,7 +732,6 @@ Route::domain($sub('employee'))
         Route::delete('work-schedule-assignments/{workScheduleAssignment}', [WorkScheduleAssignmentController::class, 'destroy'])->name('work-schedule-assignments.destroy');
         Route::resource('holidays', HolidayController::class)->except(['show']);
         // Route::resource('attendance-logs', AttendanceLogController::class);
-        Route::resource('attendance-policies', AttendancePolicyController::class);
         Route::resource('attendance-rules', AttendanceRuleController::class);
         Route::get('attendance/position-settings', [PositionAttendanceSettingController::class, 'index'])->name('attendance.position-settings.index');
         Route::get('attendance/position-settings/{position}/edit', [PositionAttendanceSettingController::class, 'edit'])->name('attendance.position-settings.edit');

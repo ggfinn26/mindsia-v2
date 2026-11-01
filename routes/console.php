@@ -29,6 +29,11 @@ Schedule::call(fn () => Artisan::call('attendance:auto-present'))
 Schedule::call(fn () => Artisan::call('attendance:mark-absent'))
     ->name('attendance:mark-absent')->withoutOverlapping()->hourlyAt(10);
 
+// Aturan absensi (UI Attendance Rules) -> pelanggaran, agar Alert Merah dan dashboard kepatuhan terisi selama bulan berjalan.
+// Payroll tetap mengevaluasi ulang saat generate, jadi angka potongan selalu mengikuti absensi terakhir.
+Schedule::call(fn () => Artisan::call('attendance:evaluate-rules'))
+    ->name('attendance:evaluate-rules')->withoutOverlapping()->dailyAt('00:30');
+
 Schedule::call(fn () => Artisan::call('recruitment:close-expired-postings'))
     ->name('recruitment:close-expired-postings')->withoutOverlapping()->dailyAt('00:05');
 
@@ -47,3 +52,7 @@ Schedule::call(fn () => Artisan::call('socialization:await-validation'))
 // tidak pernah diimplementasi (command + job rujuk method hantu, error 13x/hari).
 // Storage = local disk primary, Telegram cuma backup async, jadi polling fallback ini
 // belum dibutuhkan. Re-enable kalau method-nya sudah ditulis + ditest.
+
+// Antrian (log absen ke Telegram, email, dll) diproses lewat cron schedule:run; hosting tidak menjalankan daemon queue:work.
+Schedule::command('queue:work --queue=default,telegram-backup --stop-when-empty --max-time=50 --tries=3')
+    ->name('queue:work')->withoutOverlapping()->everyMinute();

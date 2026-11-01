@@ -23,7 +23,7 @@ class InterviewScheduleWidget implements WidgetDataProviderInterface
 
         $query = ApplicantInterviewSchedule::whereMonth('scheduled_at', $currentMonth)
             ->whereYear('scheduled_at', $currentYear)
-            ->when($branchId, fn ($q) => $q->whereHas('application.jobPosting', fn ($j) => $j->where('branch_id', $branchId)));
+            ->when($branchId, fn ($q) => $q->whereHas('application.posting', fn ($j) => $j->where('branch_id', $branchId)));
 
         $totalInterviews = (clone $query)->count();
 
@@ -34,7 +34,7 @@ class InterviewScheduleWidget implements WidgetDataProviderInterface
             ->toArray();
 
         $upcoming = ApplicantInterviewSchedule::where('scheduled_at', '>=', $now)
-            ->when($branchId, fn ($q) => $q->whereHas('application.jobPosting', fn ($j) => $j->where('branch_id', $branchId)))
+            ->when($branchId, fn ($q) => $q->whereHas('application.posting', fn ($j) => $j->where('branch_id', $branchId)))
             ->count();
 
         $completed = (clone $query)->whereHas('evaluation')->count();
@@ -42,7 +42,7 @@ class InterviewScheduleWidget implements WidgetDataProviderInterface
         $byDecision = ApplicantInterviewEvaluation::whereHas('schedule', fn ($q) => $q
             ->whereMonth('scheduled_at', $currentMonth)
             ->whereYear('scheduled_at', $currentYear)
-            ->when($branchId, fn ($bq) => $bq->whereHas('application.jobPosting', fn ($j) => $j->where('branch_id', $branchId))))
+            ->when($branchId, fn ($bq) => $bq->whereHas('application.posting', fn ($j) => $j->where('branch_id', $branchId))))
             ->selectRaw('decision, COUNT(*) as count')
             ->groupBy('decision')
             ->pluck('count', 'decision')
@@ -64,7 +64,7 @@ class InterviewScheduleWidget implements WidgetDataProviderInterface
         $now = Carbon::now();
 
         $schedules = ApplicantInterviewSchedule::whereYear('scheduled_at', $now->year)
-            ->when($branchId, fn ($q) => $q->whereHas('application.jobPosting', fn ($j) => $j->where('branch_id', $branchId)))
+            ->when($branchId, fn ($q) => $q->whereHas('application.posting', fn ($j) => $j->where('branch_id', $branchId)))
             ->with(['application.applicant', 'interviewer', 'evaluation'])
             ->get();
 

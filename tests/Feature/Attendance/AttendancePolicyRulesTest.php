@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Attendance;
 
-use App\Models\AttendancePolicy;
 use App\Models\AttendanceRule;
 use App\Models\AttendanceRuleAction;
 use App\Models\AttendanceRuleViolation;
+use App\Models\PayrollComponent;
 use App\Models\User;
 use Tests\TestCase;
 
@@ -18,78 +18,7 @@ class AttendancePolicyRulesTest extends TestCase
         parent::setUp();
 
         $this->admin = User::factory()->create();
-        $this->admin->givePermissionTo(['attendance.policy.manage', 'attendance.rule.manage']);
-    }
-
-    // ─────────────── Attendance Policy CRUD ───────────────
-
-    // ── AP-01 (implicit): AttendancePolicy store works ──
-    // The SKENARIO doesn't have a specific AP-01 for policy, but the controller has full CRUD.
-
-    private function validPolicyData(): array
-    {
-        return [
-            'policy_name' => 'Test Policy',
-            'attendance_scope' => 'branch',
-            'is_active' => true,
-            'work_is_required' => true,
-            'work_late_tolerance_minutes' => 15,
-            'work_early_leave_tolerance_minutes' => 10,
-            'session_is_required' => true,
-            'session_late_tolerance_minutes' => 10,
-        ];
-    }
-
-    public function test_attendance_policy_store_success(): void
-    {
-        $response = $this->actingAs($this->admin)
-            ->post(route('attendance-policies.store'), $this->validPolicyData());
-
-        $response->assertRedirect(route('attendance-policies.index'));
-        $response->assertSessionHas('success');
-
-        $policy = AttendancePolicy::first();
-        $this->assertNotNull($policy);
-        $this->assertEquals('Test Policy', $policy->policy_name);
-        $this->assertNotNull($policy->workScheduleConfig);
-        $this->assertNotNull($policy->sessionConfig);
-        $this->assertEquals(15, $policy->workScheduleConfig->late_tolerance_minutes);
-        $this->assertEquals(10, $policy->sessionConfig->late_tolerance_minutes);
-    }
-
-    public function test_attendance_policy_update_success(): void
-    {
-        $policy = AttendancePolicy::factory()->create();
-
-        $response = $this->actingAs($this->admin)
-            ->put(route('attendance-policies.update', $policy), array_merge($this->validPolicyData(), [
-                'policy_name' => 'Updated Policy',
-            ]));
-
-        $response->assertRedirect(route('attendance-policies.index'));
-        $policy->refresh();
-        $this->assertEquals('Updated Policy', $policy->policy_name);
-    }
-
-    public function test_attendance_policy_delete_success(): void
-    {
-        $policy = AttendancePolicy::factory()->create();
-
-        $response = $this->actingAs($this->admin)
-            ->delete(route('attendance-policies.destroy', $policy));
-
-        $response->assertRedirect(route('attendance-policies.index'));
-        $this->assertDatabaseMissing('attendance_policies', ['id' => $policy->id]);
-    }
-
-    public function test_attendance_policy_store_without_permission(): void
-    {
-        $user = User::factory()->create();
-
-        $response = $this->actingAs($user)
-            ->post(route('attendance-policies.store'), $this->validPolicyData());
-
-        $response->assertForbidden();
+        $this->admin->givePermissionTo('attendance.rule.manage');
     }
 
     // ─────────────── Attendance Rule CRUD ───────────────
@@ -172,17 +101,21 @@ class AttendancePolicyRulesTest extends TestCase
     public function test_ap05_update_rule_success(): void
     {
         $rule = AttendanceRule::factory()->create();
-        AttendanceRuleAction::factory()->create([
+        $notification = AttendanceRuleAction::factory()->create([
             'attendance_rule_id' => $rule->id,
             'action_type' => 'notification',
             'action_order' => 1,
         ]);
+        $component = PayrollComponent::firstOrCreate(
+            ['component_code' => 'LATE_DEDUCTION'],
+            ['component_name' => 'Potongan Terlambat', 'component_type' => 'deduction', 'calculation_method' => 'manual', 'is_active' => true],
+        );
 
         $updatedData = array_merge($this->validRuleData(), [
             'rule_name' => 'Updated Rule',
             'actions' => [
                 ['action_type' => 'notification', 'action_order' => 1],
-                ['action_type' => 'payroll_deduction', 'action_order' => 2],
+                ['action_type' => 'payroll_deduction', 'action_order' => 2, 'payroll_component_id' => $component->id, 'deduction_type' => 'fixed_amount', 'deduction_value' => 50000],
                 ['action_type' => 'mark_anomaly', 'action_order' => 3],
             ],
         ]);
@@ -195,14 +128,10 @@ class AttendancePolicyRulesTest extends TestCase
         $rule->refresh();
         $this->assertEquals('Updated Rule', $rule->rule_name);
 
-        // syncActions deletes old and creates new — old notification action should be gone
+        // Aksi yang jenisnya tidak berubah dipertahankan (id sama); aksi baru dibuat; detail potongan tersimpan
         $this->assertEquals(3, $rule->actions()->count());
-        $this->assertEquals(0, $rule->actions()->where('action_type', 'notification')->where('action_order', 1)->count()
-            + $rule->actions()->where('action_type', 'payroll_deduction')->where('action_order', 2)->count()
-            ? 0 : 1); // at least check it has the right count
-        $actionTypes = $rule->actions()->pluck('action_type')->toArray();
-        $this->assertContains('payroll_deduction', $actionTypes);
-        $this->assertContains('mark_anomaly', $actionTypes);
+        $this->assertSame($notification->id, $rule->actions()->where('action_type', 'notification')->value('id'));
+        $this->assertEquals(50000.0, (float) $rule->actions()->where('action_type', 'payroll_deduction')->first()->payrollAction->deduction_value);
     }
 
     // ── AP-06: Delete rule berhasil ──
@@ -236,8 +165,7 @@ class AttendancePolicyRulesTest extends TestCase
         $this->assertDatabaseHas('attendance_rules', ['id' => $rule->id]);
     }
 
-    // ── AP-08: Action payroll_deduction — tidak ada amount (GAP-66) ──
-    // No validation for deduction amount when action_type=payroll_deduction.
+    // ── AP-08: Action payroll_deduction tanpa komponen/jenis/nilai ditolak (GAP-66 ditutup) ──
 
     public function test_ap08_payroll_deduction_without_amount(): void
     {
@@ -249,13 +177,8 @@ class AttendancePolicyRulesTest extends TestCase
         $response = $this->actingAs($this->admin)
             ->post(route('attendance-rules.store'), $data);
 
-        $response->assertRedirect(route('attendance-rules.index'));
-
-        // GAP-66: Rule action saved without any deduction amount — no validation
-        $action = AttendanceRuleAction::where('action_type', 'payroll_deduction')->first();
-        $this->assertNotNull($action);
-        // No payroll_action record exists because there's no mechanism to create it from the form
-        $this->assertNull($action->payrollAction);
+        $response->assertSessionHasErrors(['actions.0.payroll_component_id', 'actions.0.deduction_type', 'actions.0.deduction_value']);
+        $this->assertNull(AttendanceRuleAction::where('action_type', 'payroll_deduction')->first());
     }
 
     // ── AP-09: Action warning_letter — SP tidak di-generate (GAP-8) ──

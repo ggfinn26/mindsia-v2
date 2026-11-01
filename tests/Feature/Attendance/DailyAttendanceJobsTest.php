@@ -308,7 +308,7 @@ class DailyAttendanceJobsTest extends TestCase
         $this->auto();
 
         $this->at(1, 9, 30);
-        $this->actingAs($user)->post(route('work-attendance.check-in'), ['check_in_latitude' => -6.2, 'check_in_longitude' => 106.8])->assertSessionHasNoErrors();
+        $this->actingAs($user)->post(route('work-attendance.check-in'), ['check_in_notes' => 'Catatan tes', 'check_in_latitude' => -6.2, 'check_in_longitude' => 106.8])->assertSessionHasNoErrors();
 
         $log = $this->log($employee, '2026-09-01');
         $this->assertSame(['present', '08:00'], [$log->status, $log->check_in->format('H:i')]);
@@ -472,7 +472,7 @@ class DailyAttendanceJobsTest extends TestCase
         $this->assertSame('absent', $this->statusOn($employee, '2026-09-01'));
 
         $this->at(1, 17, 40);
-        $this->actingAs($user)->post(route('work-attendance.check-in'), ['check_in_latitude' => -6.2088, 'check_in_longitude' => 106.8456])->assertSessionHasNoErrors();
+        $this->actingAs($user)->post(route('work-attendance.check-in'), ['check_in_notes' => 'Catatan tes', 'check_in_latitude' => -6.2088, 'check_in_longitude' => 106.8456])->assertSessionHasNoErrors();
 
         $this->assertSame('checked_in', $this->statusOn($employee, '2026-09-01'));
         $this->assertSame(0, (int) $this->recap($employee)->total_absent);

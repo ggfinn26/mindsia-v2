@@ -14,7 +14,6 @@ class StoreSocializationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'branch_id' => ['required', 'exists:branches,id'],
             'institution_id' => ['nullable', 'exists:institutions,id'],
             'location_name' => ['nullable', 'string', 'max:255'],
             'schedule_date' => ['required', 'date', 'after_or_equal:today'],

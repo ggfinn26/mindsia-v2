@@ -24,7 +24,7 @@ readonly class AttendanceSettingsRepository
 
         return new ResolvedAttendanceSettings(
             isRequired: $emp?->is_required ?? $pos?->is_required ?? true,
-            isSessionRequired: $emp?->is_session_required ?? $pos?->is_session_required ?? false,
+            isSessionRequired: $emp?->is_session_required ?? $pos?->is_session_required ?? true,
             attendanceScope: $emp?->attendance_scope ?? $pos?->attendance_scope ?? 'branch',
             earlyCheckinMinutes: $emp?->early_checkin_minutes ?? $pos?->early_checkin_minutes ?? null,
             earlyCheckoutMinutes: $emp?->early_checkout_minutes ?? $pos?->early_checkout_minutes ?? null,
