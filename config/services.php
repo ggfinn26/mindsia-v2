@@ -39,6 +39,7 @@ return [
         'bot_token' => env('TELEGRAM_BOT_TOKEN'),
         'chat_id' => env('GROUP_STORAGE'),
         'log_chat_id' => env('GROUP_LOG'),
+        'attendance_chat_id' => env('TELEGRAM_ATTENDANCE_CHAT_ID'),
     ],
 
 ];

@@ -65,7 +65,7 @@ class CheckOutTest extends TestCase
     private function validCheckOutData(): array
     {
         return [
-            'check_out_latitude' => -6.2088,
+            'check_out_notes' => 'Catatan tes', 'check_out_latitude' => -6.2088,
             'check_out_longitude' => 106.8456,
         ];
     }
@@ -186,7 +186,7 @@ class CheckOutTest extends TestCase
         // Send coordinates far from branch
         $this->actingAs($this->user)
             ->post(route('work-attendance.check-out'), [
-                'check_out_latitude' => -6.5971,
+                'check_out_notes' => 'Catatan tes', 'check_out_latitude' => -6.5971,
                 'check_out_longitude' => 106.8060,
             ])
             ->assertRedirect();
@@ -316,7 +316,7 @@ class CheckOutTest extends TestCase
         $this->travelTo(now()->setTime(17, 0));
 
         $this->actingAs($this->user)
-            ->post(route('work-attendance.check-out'), [])
+            ->post(route('work-attendance.check-out'), ['check_out_notes' => 'Catatan tes'])
             ->assertSessionHasNoErrors();
 
         $log->refresh();
@@ -332,7 +332,7 @@ class CheckOutTest extends TestCase
         $this->createCheckedInLog($this->employee);
 
         $this->actingAs($this->user)
-            ->post(route('work-attendance.check-out'), ['check_out_latitude' => -6.2088])
+            ->post(route('work-attendance.check-out'), ['check_out_notes' => 'Catatan tes', 'check_out_latitude' => -6.2088])
             ->assertSessionHasErrors('check_out_longitude');
     }
 

@@ -99,10 +99,10 @@ class MonthlyWorkAttendanceE2ETest extends TestCase
     {
         $this->at(9, $day, $hour, $minute);
 
-        return $this->actingAs($this->user)->post(route('work-attendance.check-in'), ['check_in_latitude' => $lat, 'check_in_longitude' => $lng]);
+        return $this->actingAs($this->user)->post(route('work-attendance.check-in'), ['check_in_notes' => 'Catatan tes', 'check_in_latitude' => $lat, 'check_in_longitude' => $lng]);
     }
 
-    private function checkOut(int $day, int $hour, int $minute, array $data = ['check_out_latitude' => self::LAT, 'check_out_longitude' => self::LNG])
+    private function checkOut(int $day, int $hour, int $minute, array $data = ['check_out_notes' => 'Catatan tes', 'check_out_latitude' => self::LAT, 'check_out_longitude' => self::LNG])
     {
         $this->at(9, $day, $hour, $minute);
 
@@ -132,7 +132,7 @@ class MonthlyWorkAttendanceE2ETest extends TestCase
         $this->checkOut(1, 16, 0)->assertSessionHasNoErrors();
         // Rabu 2: telat 10 menit, check-out tanpa lokasi (GPS ditolak)
         $this->checkIn(2, 7, 55)->assertSessionHasNoErrors();
-        $this->checkOut(2, 16, 5, [])->assertSessionHasNoErrors();
+        $this->checkOut(2, 16, 5, ['check_out_notes' => 'Catatan tes'])->assertSessionHasNoErrors();
         // Kamis 3: check-in, lupa check-out
         $this->checkIn(3, 7, 30)->assertSessionHasNoErrors();
         // Jumat 4 00:05: scheduler memfinalkan hari kemarin; lalu check-in dari lokasi jauh ditolak, dari kantor diterima

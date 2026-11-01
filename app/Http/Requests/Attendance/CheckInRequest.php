@@ -17,7 +17,12 @@ class CheckInRequest extends FormRequest
             'check_in_latitude' => ['required', 'numeric', 'between:-90,90'],
             'check_in_longitude' => ['required', 'numeric', 'between:-180,180'],
             'selfie' => ['nullable', 'image', 'max:5120'],
-            'check_in_notes' => ['nullable', 'string', 'max:500'],
+            'check_in_notes' => ['required', 'string', 'max:500'],
         ];
+    }
+
+    public function messages(): array
+    {
+        return ['check_in_notes.required' => 'Isi dulu apa yang akan dikerjakan hari ini.'];
     }
 }

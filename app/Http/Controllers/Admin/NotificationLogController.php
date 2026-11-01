@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Notification\ResendNotificationRequest;
+use App\Jobs\SendAttendanceTelegramLogJob;
 use App\Jobs\SendEmailNotificationJob;
 use App\Jobs\SendTelegramNotificationJob;
 use App\Repositories\Notification\NotificationLogRepository;
@@ -32,7 +33,9 @@ class NotificationLogController extends Controller
 
         match ($log->notification_type) {
             'email' => dispatch(new SendEmailNotificationJob($log, null, $log->payload['body'] ?? '')),
-            'telegram' => dispatch(new SendTelegramNotificationJob($log, $log->payload['body'] ?? '')),
+            'telegram' => ($log->payload['kind'] ?? null) === 'attendance_log'
+                ? dispatch(new SendAttendanceTelegramLogJob($log))
+                : dispatch(new SendTelegramNotificationJob($log, $log->payload['body'] ?? '')),
             default => null,
         };
 

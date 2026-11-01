@@ -67,7 +67,7 @@ class CheckInTest extends TestCase
     {
         // Coordinates near branch location (within radius)
         return [
-            'check_in_latitude' => -6.2088,
+            'check_in_notes' => 'Catatan tes', 'check_in_latitude' => -6.2088,
             'check_in_longitude' => 106.8456,
         ];
     }
@@ -245,7 +245,7 @@ class CheckInTest extends TestCase
         // Coordinates far from branch (Jakarta → Bogor ~60km)
         $this->actingAs($this->user)
             ->post(route('work-attendance.check-in'), [
-                'check_in_latitude' => -6.5971,
+                'check_in_notes' => 'Catatan tes', 'check_in_latitude' => -6.5971,
                 'check_in_longitude' => 106.8060,
             ])
             ->assertSessionHasErrors('check_in_latitude');
@@ -271,7 +271,7 @@ class CheckInTest extends TestCase
         // Koordinat jauh dari cabang; client tidak bisa mengirim distance sendiri
         $this->actingAs($this->user)
             ->post(route('work-attendance.check-in'), [
-                'check_in_latitude' => -6.5971,
+                'check_in_notes' => 'Catatan tes', 'check_in_latitude' => -6.5971,
                 'check_in_longitude' => 106.8060,
                 'check_in_distance_m' => 0,
             ])
@@ -300,7 +300,7 @@ class CheckInTest extends TestCase
 
         $this->actingAs($this->user)
             ->post(route('work-attendance.check-in'), [
-                'check_in_latitude' => -6.5971,
+                'check_in_notes' => 'Catatan tes', 'check_in_latitude' => -6.5971,
                 'check_in_longitude' => 106.8060,
             ])
             ->assertSessionHasNoErrors();

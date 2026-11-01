@@ -94,14 +94,14 @@ class DailyAttendanceJobsE2ETest extends TestCase
     {
         $this->travelTo(Carbon::create(2026, 9, $day, $hour, $minute));
 
-        return $this->actingAs($this->manualUser)->post(route('work-attendance.check-in'), ['check_in_latitude' => self::LAT, 'check_in_longitude' => self::LNG]);
+        return $this->actingAs($this->manualUser)->post(route('work-attendance.check-in'), ['check_in_notes' => 'Catatan tes', 'check_in_latitude' => self::LAT, 'check_in_longitude' => self::LNG]);
     }
 
     private function manualCheckOut(int $day, int $hour, int $minute)
     {
         $this->travelTo(Carbon::create(2026, 9, $day, $hour, $minute));
 
-        return $this->actingAs($this->manualUser)->post(route('work-attendance.check-out'), []);
+        return $this->actingAs($this->manualUser)->post(route('work-attendance.check-out'), ['check_out_notes' => 'Catatan tes']);
     }
 
     private function statusOf(Employee $employee, string $date): ?string

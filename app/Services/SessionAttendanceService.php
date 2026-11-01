@@ -6,6 +6,7 @@ use App\Models\Employee;
 use App\Models\EmployeeSessionAttendanceLog;
 use App\Models\SessionSchedule;
 use App\Repositories\SessionAttendanceRepository;
+use App\Services\Attendance\AttendanceTelegramLogger;
 use Carbon\Carbon;
 use Illuminate\Validation\ValidationException;
 
@@ -66,7 +67,7 @@ class SessionAttendanceService
             $selfiePath = $uploaded['file_id'];
         }
 
-        return $this->repo->checkIn($session, [
+        $log = $this->repo->checkIn($session, [
             'check_in_latitude' => $data['check_in_latitude'],
             'check_in_longitude' => $data['check_in_longitude'],
             'check_in_selfie_telegram_file_id' => $selfiePath,
@@ -77,6 +78,10 @@ class SessionAttendanceService
             'is_location_anomaly' => $isAnomaly,
             'anomaly_notes' => $isAnomaly ? "Jarak {$distanceM}m dari kantor" : null,
         ]);
+
+        app(AttendanceTelegramLogger::class)->send($employee, 'masuk', $lateMinutes > 0 ? 'telat' : 'tepat waktu', $data['check_in_notes'] ?? null, $selfiePath, 'sesi ');
+
+        return $log;
     }
 
     public function checkOut(Employee $employee, int $sessionScheduleId, array $data): EmployeeSessionAttendanceLog
@@ -110,7 +115,7 @@ class SessionAttendanceService
         $longitude = $data['check_out_longitude'] ?? null;
         $branch = $log->sessionSchedule?->classSchedule?->classRoom?->branch;
 
-        return $this->repo->checkOut($log, [
+        $checkedOut = $this->repo->checkOut($log, [
             'check_out_latitude' => $latitude,
             'check_out_longitude' => $longitude,
             'check_out_selfie_telegram_file_id' => $selfiePath,
@@ -120,6 +125,12 @@ class SessionAttendanceService
                 : null,
             'check_out_notes' => $data['check_out_notes'] ?? null,
         ]);
+
+        $classSchedule = $log->sessionSchedule->classSchedule;
+        $leftEarly = now()->lt(Carbon::parse($classSchedule->schedule_date->toDateString().' '.$classSchedule->end_time));
+        app(AttendanceTelegramLogger::class)->send($employee, 'keluar', $leftEarly ? 'kecepatan' : 'tepat waktu', $data['check_out_notes'] ?? null, $selfiePath, 'sesi ');
+
+        return $checkedOut;
     }
 
     private function haversineMeters(float $lat1, float $lng1, float $lat2, float $lng2): int

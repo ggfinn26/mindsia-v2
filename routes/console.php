@@ -52,3 +52,7 @@ Schedule::call(fn () => Artisan::call('socialization:await-validation'))
 // tidak pernah diimplementasi (command + job rujuk method hantu, error 13x/hari).
 // Storage = local disk primary, Telegram cuma backup async, jadi polling fallback ini
 // belum dibutuhkan. Re-enable kalau method-nya sudah ditulis + ditest.
+
+// Antrian (log absen ke Telegram, email, dll) diproses lewat cron schedule:run; hosting tidak menjalankan daemon queue:work.
+Schedule::command('queue:work --stop-when-empty --max-time=50 --tries=3')
+    ->name('queue:work')->withoutOverlapping()->everyMinute();

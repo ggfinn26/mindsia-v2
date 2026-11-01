@@ -222,7 +222,7 @@ class LeaveApprovalIntegrityTest extends TestCase
         $this->travelTo(Carbon::create(2026, 9, 2, 8, 0));
 
         $this->actingAs($user)
-            ->post(route('work-attendance.check-in'), ['check_in_latitude' => -6.2088, 'check_in_longitude' => 106.8456])
+            ->post(route('work-attendance.check-in'), ['check_in_notes' => 'Catatan tes', 'check_in_latitude' => -6.2088, 'check_in_longitude' => 106.8456])
             ->assertSessionHasErrors('check_in');
 
         $log = EmployeeWorkAttendanceLog::where('employee_id', $this->employee->id)->whereDate('attendance_date', '2026-09-02')->first();

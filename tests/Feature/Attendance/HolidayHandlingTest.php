@@ -230,7 +230,7 @@ class HolidayHandlingTest extends TestCase
         EmployeeAttendanceSetting::create(['employee_id' => $this->employee->id, 'is_required' => false, 'is_session_required' => false, 'attendance_scope' => 'anywhere']);
 
         $this->travelTo(Carbon::create(2026, 9, 10, 8, 0));
-        $this->actingAs($user)->post(route('work-attendance.check-in'), ['check_in_latitude' => -6.2088, 'check_in_longitude' => 106.8456])
+        $this->actingAs($user)->post(route('work-attendance.check-in'), ['check_in_notes' => 'Catatan tes', 'check_in_latitude' => -6.2088, 'check_in_longitude' => 106.8456])
             ->assertSessionHasErrors('date');
 
         $this->assertDatabaseMissing('employee_work_attendance_logs', ['employee_id' => $this->employee->id]);
@@ -241,12 +241,12 @@ class HolidayHandlingTest extends TestCase
         $user = User::factory()->create(['employee_id' => $this->employee->id]);
 
         $this->travelTo(Carbon::create(2026, 9, 10, 7, 30));
-        $this->actingAs($user)->post(route('work-attendance.check-in'), ['check_in_latitude' => -6.2088, 'check_in_longitude' => 106.8456])->assertSessionHasNoErrors();
+        $this->actingAs($user)->post(route('work-attendance.check-in'), ['check_in_notes' => 'Catatan tes', 'check_in_latitude' => -6.2088, 'check_in_longitude' => 106.8456])->assertSessionHasNoErrors();
 
         $this->holiday('2026-09-10');
 
         $this->travelTo(Carbon::create(2026, 9, 10, 16, 0));
-        $this->actingAs($user)->post(route('work-attendance.check-out'), [])->assertSessionHasNoErrors();
+        $this->actingAs($user)->post(route('work-attendance.check-out'), ['check_out_notes' => 'Catatan tes'])->assertSessionHasNoErrors();
         $this->assertSame('present', EmployeeWorkAttendanceLog::where('employee_id', $this->employee->id)->value('status'));
     }
 

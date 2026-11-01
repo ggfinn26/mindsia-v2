@@ -10,6 +10,7 @@ use App\Repositories\AttendanceSettingsRepository;
 use App\Repositories\HolidayRepository;
 use App\Repositories\WorkAttendanceRepository;
 use App\Repositories\WorkScheduleRepository;
+use App\Services\Attendance\AttendanceTelegramLogger;
 use Carbon\Carbon;
 use Illuminate\Validation\ValidationException;
 
@@ -112,7 +113,7 @@ class AttendanceService
             );
         }
 
-        return $this->attendanceRepo->checkIn($employee->id, $employee->branch_id, [
+        $log = $this->attendanceRepo->checkIn($employee->id, $employee->branch_id, [
             'check_in_latitude' => $data['check_in_latitude'],
             'check_in_longitude' => $data['check_in_longitude'],
             'check_in_selfie_telegram_file_id' => $selfiePath,
@@ -123,6 +124,10 @@ class AttendanceService
             'is_location_anomaly' => false,
             'anomaly_notes' => null,
         ]);
+
+        app(AttendanceTelegramLogger::class)->send($employee, 'masuk', $lateMinutes > 0 ? 'telat' : 'tepat waktu', $data['check_in_notes'] ?? null, $selfiePath);
+
+        return $log;
     }
 
     public function checkOut(Employee $employee, array $data): EmployeeWorkAttendanceLog
@@ -164,7 +169,7 @@ class AttendanceService
             )[0]
             : null;
 
-        return $this->attendanceRepo->checkOut($log, [
+        $checkedOut = $this->attendanceRepo->checkOut($log, [
             'check_out_latitude' => $data['check_out_latitude'] ?? null,
             'check_out_longitude' => $data['check_out_longitude'] ?? null,
             'check_out_selfie_telegram_file_id' => $selfiePath,
@@ -173,6 +178,12 @@ class AttendanceService
             'check_out_notes' => $data['check_out_notes'] ?? null,
             'early_leave_minutes' => $earlyLeaveMinutes,
         ]);
+
+        // Keluar sebelum jam selesai (masih dalam toleransi) berstatus "kecepatan"; toleransi 0 = harus tepat di jamnya.
+        $leftEarly = $schedule && now()->lt(Carbon::parse("{$today} {$schedule->end_time}"));
+        app(AttendanceTelegramLogger::class)->send($employee, 'keluar', $leftEarly ? 'kecepatan' : 'tepat waktu', $data['check_out_notes'] ?? null, $selfiePath);
+
+        return $checkedOut;
     }
 
     /**
