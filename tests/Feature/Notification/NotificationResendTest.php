@@ -76,4 +76,18 @@ class NotificationResendTest extends TestCase
         $this->assertSame('Halo Sari, jadwal Selasa', $log->payload['body']);
         $this->assertSame('Sari', $log->payload['nama']);
     }
+
+    public function test_notifikasi_telegram_ke_pegawai_dikirim_ke_chat_id_akun_pegawai(): void
+    {
+        $template = $this->telegramTemplate();
+        $employee = Employee::factory()->create();
+        User::factory()->create(['employee_id' => $employee->id, 'telegram_chat_id' => '555123']);
+
+        app(NotificationDispatchService::class)->send($template->template_key, $employee->fresh(), ['nama' => 'Sari', 'hari' => 'Selasa']);
+
+        $log = NotificationLog::firstOrFail();
+        $this->assertSame('555123', $log->channel);
+        $this->assertSame('sent', $log->notification_status);
+        Http::assertSent(fn ($r) => str_contains($r->url(), 'sendMessage') && $r['chat_id'] === '555123' && $r['text'] === 'Halo Sari, jadwal Selasa');
+    }
 }
