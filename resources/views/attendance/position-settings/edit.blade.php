@@ -12,6 +12,8 @@
         </div>
     </div>
 
+    <p class="text-sm" style="color: var(--dash-text-muted);">Minimal salah satu wajib: absensi jadwal kerja atau absensi sesi. Boleh keduanya.</p>
+
     @if($errors->any())
         <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium"
              style="background-color: #fee2e2; border-color: #fca5a5; color: #dc2626;">

@@ -49,6 +49,9 @@
                         <tr style="border-bottom: 1px solid var(--dash-card-border);">
                             <td class="px-6 py-4 font-medium" style="color: var(--dash-text-heading);">
                                 {{ $position->position_name }}
+                                @if($s && ! $s->is_required && ! $s->is_session_required)
+                                    <p class="mt-1 text-xs font-semibold" style="color: #dc2626;">Belum ada absensi wajib - buka Edit dan pilih minimal satu</p>
+                                @endif
                             </td>
                             <td class="px-5 py-4 text-center">
                                 @if(!$s)

@@ -45,6 +45,13 @@ class PositionAttendanceSettingController extends Controller implements HasMiddl
             'early_checkout_minutes' => ['nullable', 'integer', 'min:0', 'max:480'],
         ]);
 
+        // Posisi harus wajib absen di jadwal kerja, di sesi, atau keduanya; tidak boleh kosong dua-duanya.
+        if (! $data['is_required'] && ! $data['is_session_required']) {
+            return back()->withInput()->withErrors([
+                'is_session_required' => 'Minimal satu harus wajib: absensi jadwal kerja atau absensi sesi. Boleh keduanya.',
+            ]);
+        }
+
         PositionAttendanceSetting::updateOrCreate(
             ['position_id' => $position->id],
             $data,
