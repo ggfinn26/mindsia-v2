@@ -144,5 +144,25 @@ class BranchDataSeeder extends Seeder
                 }
             }
         }
+
+        // Kantor Pusat: cabang nyata (is_hq) di Area Pusat, Region 2 (Jawa Barat), agar rekap area/region
+        // menghitung pegawai HQ. Koordinat 0,0 sengaja: lokasi HQ dilewati di AttendanceService::resolveLocation.
+        $jabarRegion = Region::where('name', 'Region 2')->firstOrFail();
+        $hqArea = Area::firstOrCreate(['region_id' => $jabarRegion->id, 'name' => 'Area Pusat']);
+        Branch::updateOrCreate(
+            ['code_branches' => 'HQ.'],
+            [
+                'areas_id' => $hqArea->id,
+                'branch_name' => 'Kantor Pusat',
+                'is_hq' => true,
+                'is_active' => true,
+                'latitude' => 0,
+                'longitude' => 0,
+                'radius_meters' => 0,
+                'address' => '-',
+                'whatsapp' => '08xxxxxxxx',
+                'instagram' => 'Mindsia',
+            ]
+        );
     }
 }

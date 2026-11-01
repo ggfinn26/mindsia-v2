@@ -34,10 +34,16 @@ class AttendanceService
 
         $schedule = $this->scheduleRepo->resolveForEmployee($employee->id, $today);
 
-        // Auto-present: no manual check-in needed
-        if (! $settings->isRequired) {
+        // Auto-present: no manual check-in needed (setting ATAU aturan jadwal tidak mewajibkan absen)
+        if (! $this->settingsRepo->requiresManualAttendance($employee, $schedule)) {
             if (! $employee->branch_id) {
                 throw ValidationException::withMessages(['employee' => 'Pegawai belum memiliki cabang. Hubungi HR.']);
+            }
+
+            // Job auto-hadir mungkin sudah mencatat hari ini; jangan ditimpa
+            $already = $this->attendanceRepo->findForDate($employee->id, $today);
+            if ($already?->status === 'present') {
+                return $already;
             }
 
             return $this->attendanceRepo->checkIn($employee->id, $employee->branch_id, [
@@ -60,6 +66,15 @@ class AttendanceService
         }
 
         $existing = $this->attendanceRepo->findForDate($employee->id, $today);
+
+        // Hari ini sudah ditetapkan izin/sakit/cuti (pengajuan disetujui): jangan ditimpa jadi hadir.
+        $leaveLabels = ['sick' => 'sakit', 'permission' => 'izin', 'leave' => 'cuti'];
+        if ($existing && isset($leaveLabels[$existing->status])) {
+            throw ValidationException::withMessages([
+                'check_in' => "Hari ini Anda tercatat {$leaveLabels[$existing->status]}. Check-in tidak diperlukan.",
+            ]);
+        }
+
         if ($existing?->isCheckedIn()) {
             throw ValidationException::withMessages(['check_in' => 'Anda sudah melakukan check-in hari ini.']);
         }
@@ -83,6 +98,12 @@ class AttendanceService
             (float) $data['check_in_longitude'],
         );
 
+        if ($isAnomaly) {
+            throw ValidationException::withMessages([
+                'check_in_latitude' => "Anda berada di luar area absensi ({$distanceM} m dari lokasi kantor). Check-in ditolak.",
+            ]);
+        }
+
         $selfiePath = null;
         if (isset($data['selfie'])) {
             $selfiePath = $this->telegramStorage->uploadPhoto(
@@ -99,8 +120,8 @@ class AttendanceService
             'check_in_distance_m' => $distanceM,
             'check_in_notes' => $data['check_in_notes'] ?? null,
             'late_minutes' => $lateMinutes,
-            'is_location_anomaly' => $isAnomaly,
-            'anomaly_notes' => $isAnomaly ? "Jarak {$distanceM}m dari kantor" : null,
+            'is_location_anomaly' => false,
+            'anomaly_notes' => null,
         ]);
     }
 
@@ -134,15 +155,18 @@ class AttendanceService
             );
         }
 
-        [$distanceM] = $this->resolveLocation(
-            $employee, $settings->attendanceScope,
-            (float) $data['check_out_latitude'],
-            (float) $data['check_out_longitude'],
-        );
+        // Check-out boleh dari mana saja: lokasi opsional dan hanya dicatat, tidak pernah memblokir.
+        $distanceM = isset($data['check_out_latitude'], $data['check_out_longitude'])
+            ? $this->resolveLocation(
+                $employee, $settings->attendanceScope,
+                (float) $data['check_out_latitude'],
+                (float) $data['check_out_longitude'],
+            )[0]
+            : null;
 
         return $this->attendanceRepo->checkOut($log, [
-            'check_out_latitude' => $data['check_out_latitude'],
-            'check_out_longitude' => $data['check_out_longitude'],
+            'check_out_latitude' => $data['check_out_latitude'] ?? null,
+            'check_out_longitude' => $data['check_out_longitude'] ?? null,
             'check_out_selfie_telegram_file_id' => $selfiePath,
             'check_out_selfie_path' => $selfiePath,
             'check_out_distance_m' => $distanceM,
@@ -165,6 +189,7 @@ class AttendanceService
 
         if ($scope === 'area' && $employee->area_id) {
             $branches = Branch::where('areas_id', $employee->area_id)
+                ->where('is_hq', false)
                 ->whereNotNull('latitude')->whereNotNull('longitude')
                 ->get();
 
@@ -188,7 +213,7 @@ class AttendanceService
         }
 
         // Default: branch scope
-        if (! $employee->branch) {
+        if (! $employee->branch || $employee->branch->is_hq) {
             return [null, false];
         }
 

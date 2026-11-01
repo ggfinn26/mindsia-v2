@@ -30,8 +30,8 @@ class SessionAttendanceTest extends TestCase
     {
         parent::setUp();
 
-        // Freeze time at 10:00 UTC to avoid midnight-crossing issues with start_time
-        Carbon::setTestNow(Carbon::create(2026, 9, 23, 10, 0, 0, 'UTC'));
+        // Freeze 10:56 (zona waktu aplikasi): tidak melintasi tengah malam dan di dalam jendela check-in 5 menit sebelum start_time 11:00
+        Carbon::setTestNow(Carbon::create(2026, 9, 23, 10, 56, 0, config('app.timezone')));
 
         $this->branch = Branch::factory()->create([
             'latitude' => -6.2088,
@@ -425,5 +425,41 @@ class SessionAttendanceTest extends TestCase
             ->post(route('session-attendance.verify', $log->id));
 
         $response->assertForbidden();
+    }
+
+    // ── SA-15: check-in sesi tidak boleh lebih awal dari 5 menit sebelum jam mulai ──
+
+    public function test_sa15_check_in_terlalu_awal_ditolak(): void
+    {
+        $this->actingAs($this->user);
+        Carbon::setTestNow(Carbon::create(2026, 9, 23, 10, 54, 0, config('app.timezone')));
+
+        $this->post(route('session-attendance.check-in', $this->session->id), $this->validCheckInData())
+            ->assertSessionHasErrors('check_in');
+
+        $this->assertNull(EmployeeSessionAttendanceLog::where('session_schedule_id', $this->session->id)->first());
+    }
+
+    public function test_sa15b_check_in_tepat_lima_menit_sebelum_mulai_diizinkan(): void
+    {
+        $this->actingAs($this->user);
+        Carbon::setTestNow(Carbon::create(2026, 9, 23, 10, 55, 0, config('app.timezone')));
+
+        $this->post(route('session-attendance.check-in', $this->session->id), $this->validCheckInData())
+            ->assertSessionHasNoErrors();
+
+        $log = EmployeeSessionAttendanceLog::where('session_schedule_id', $this->session->id)->first();
+        $this->assertSame(['checked_in', 0], [$log->status, $log->late_minutes]);
+    }
+
+    public function test_sa15c_pesan_penolakan_menyebut_jam_check_in_dibuka(): void
+    {
+        $this->actingAs($this->user);
+        Carbon::setTestNow(Carbon::create(2026, 9, 23, 8, 0, 0, config('app.timezone')));
+
+        $response = $this->post(route('session-attendance.check-in', $this->session->id), $this->validCheckInData());
+
+        $response->assertSessionHasErrors('check_in');
+        $this->assertStringContainsString('10:55', $response->getSession()->get('errors')->getBag('default')->first('check_in'));
     }
 }

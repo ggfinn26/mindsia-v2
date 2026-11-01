@@ -15,7 +15,7 @@ class UpdateLeavePaySettingRequest extends FormRequest
     {
         return [
             'position_id' => ['required', 'exists:positions,id'],
-            'leave_type' => ['required', 'in:permission,sick,leave'],
+            'leave_type' => ['required', 'in:permission,sick,leave,absent,absent_session'],
             'is_paid' => ['required', 'boolean'],
         ];
     }

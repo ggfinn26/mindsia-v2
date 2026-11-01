@@ -24,6 +24,7 @@ class Branch extends Model
         'longitude',
         'radius_meters',
         'is_active',
+        'is_hq',
         'ma_pic_employee_id',
     ];
 
@@ -31,6 +32,7 @@ class Branch extends Model
         'latitude' => 'float',
         'longitude' => 'float',
         'is_active' => 'boolean',
+        'is_hq' => 'boolean',
     ];
 
     public function area(): BelongsTo

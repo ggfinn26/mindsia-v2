@@ -71,6 +71,17 @@ class KpiEvaluationTest extends TestCase
             'created_by_employee_id' => $this->evaluatorId,
         ]);
 
+        // Template siap evaluasi: total bobot aktif 100 dan target > 0 (syarat KpiEvaluationService)
+        KpiTemplateIndicator::create([
+            'kpi_template_id' => $this->template->id,
+            'indicator_code' => 'IND-BASE',
+            'indicator_name' => 'Base',
+            'target_value' => 100,
+            'weight' => 100,
+            'sequence_number' => 1,
+            'is_active' => true,
+        ]);
+
         KpiEvaluatorAssignment::create([
             'evaluator_employee_id' => $this->evaluatorId,
             'evaluatee_employee_id' => $this->evaluateeId,
@@ -88,8 +99,8 @@ class KpiEvaluationTest extends TestCase
             'evaluator_employee_id' => $this->evaluatorId,
             'kpi_template_id' => $this->template->id,
             'period_type' => 'monthly',
-            'period_start_date' => now()->startOfMonth(),
-            'period_end_date' => now()->endOfMonth(),
+            'period_start_date' => now()->subMonthNoOverflow()->startOfMonth(),
+            'period_end_date' => now()->subMonthNoOverflow()->endOfMonth(),
             'status' => 'draft',
             'total_score' => 0,
             'employee_name_snapshot' => 'KPI Evaluatee',
@@ -104,8 +115,8 @@ class KpiEvaluationTest extends TestCase
                 'employee_id' => $this->evaluateeId,
                 'kpi_template_id' => $this->template->id,
                 'period_type' => 'monthly',
-                'period_start_date' => now()->startOfMonth()->toDateString(),
-                'period_end_date' => now()->endOfMonth()->toDateString(),
+                'period_start_date' => now()->subMonthNoOverflow()->startOfMonth()->toDateString(),
+                'period_end_date' => now()->subMonthNoOverflow()->endOfMonth()->toDateString(),
             ])
             ->assertRedirect();
 
@@ -124,8 +135,8 @@ class KpiEvaluationTest extends TestCase
                 'employee_id' => $this->evaluateeId,
                 'kpi_template_id' => $this->template->id,
                 'period_type' => 'monthly',
-                'period_start_date' => now()->startOfMonth()->toDateString(),
-                'period_end_date' => now()->endOfMonth()->toDateString(),
+                'period_start_date' => now()->subMonthNoOverflow()->startOfMonth()->toDateString(),
+                'period_end_date' => now()->subMonthNoOverflow()->endOfMonth()->toDateString(),
             ])
             ->assertStatus(403);
     }
@@ -140,8 +151,8 @@ class KpiEvaluationTest extends TestCase
                 'employee_id' => $this->evaluateeId,
                 'kpi_template_id' => $this->template->id,
                 'period_type' => 'monthly',
-                'period_start_date' => now()->startOfMonth()->toDateString(),
-                'period_end_date' => now()->endOfMonth()->toDateString(),
+                'period_start_date' => now()->subMonthNoOverflow()->startOfMonth()->toDateString(),
+                'period_end_date' => now()->subMonthNoOverflow()->endOfMonth()->toDateString(),
             ])
             ->assertSessionHasErrors('employee_id');
     }
@@ -223,6 +234,7 @@ class KpiEvaluationTest extends TestCase
                 'indicator_name_snapshot' => $code,
                 'weight_snapshot' => 50,
                 'target_value' => 100,
+                'actual_value' => $score * 2,
                 'score' => $score,
                 'achievement_percentage' => $score * 2,
             ]);
@@ -256,5 +268,45 @@ class KpiEvaluationTest extends TestCase
         $this->actingAs($this->otherUser)
             ->post("/kpi/evaluations/{$eval->id}/finalize", [])
             ->assertStatus(403);
+    }
+
+    // KE-10: periode tidak utuh atau belum berakhir ditolak (cegah bulan/tahun salah)
+    public function test_periode_tidak_utuh_atau_belum_berakhir_ditolak(): void
+    {
+        $lastMonth = now()->subMonthNoOverflow();
+
+        $cases = [
+            'bulanan di tengah bulan' => ['monthly', '2026-09-05', '2026-10-04', 'period_start_date'],
+            'bulanan melintasi dua bulan' => ['monthly', '2026-08-01', '2026-09-30', 'period_start_date'],
+            'kuartalan bukan awal kuartal' => ['quarterly', '2026-08-01', '2026-10-31', 'period_start_date'],
+            'tahunan tidak penuh' => ['yearly', '2025-02-01', '2026-01-31', 'period_start_date'],
+            'bulan berjalan belum berakhir' => ['monthly', now()->startOfMonth()->toDateString(), now()->endOfMonth()->toDateString(), 'period_end_date'],
+            'bulan depan' => ['monthly', now()->addMonthNoOverflow()->startOfMonth()->toDateString(), now()->addMonthNoOverflow()->endOfMonth()->toDateString(), 'period_end_date'],
+        ];
+
+        foreach ($cases as $label => [$type, $start, $end, $errorKey]) {
+            $this->actingAs($this->evaluatorUser)
+                ->post('/kpi/evaluations', [
+                    'employee_id' => $this->evaluateeId,
+                    'kpi_template_id' => $this->template->id,
+                    'period_type' => $type,
+                    'period_start_date' => $start,
+                    'period_end_date' => $end,
+                ])
+                ->assertSessionHasErrors($errorKey, "Kasus '{$label}' seharusnya ditolak.");
+        }
+
+        $this->assertDatabaseCount('employee_kpi_evaluations', 0);
+
+        // Kuartal dan tahun penuh yang sudah lewat diterima
+        $this->actingAs($this->evaluatorUser)
+            ->post('/kpi/evaluations', [
+                'employee_id' => $this->evaluateeId,
+                'kpi_template_id' => $this->template->id,
+                'period_type' => 'quarterly',
+                'period_start_date' => '2025-07-01',
+                'period_end_date' => '2025-09-30',
+            ])
+            ->assertSessionHasNoErrors();
     }
 }

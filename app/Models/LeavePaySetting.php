@@ -22,13 +22,24 @@ class LeavePaySetting extends Model
         return $this->belongsTo(Position::class);
     }
 
-    /** Returns whether this leave type is paid for the given position. Defaults to true if no setting exists. */
+    /**
+     * Kebijakan bawaan bila posisi belum punya pengaturan: alpha (kerja dan sesi) dan izin dipotong per hari,
+     * sakit dan cuti tetap digaji. Semuanya bisa diubah per posisi lewat halaman Pengaturan Izin/Cuti.
+     */
+    public const DEFAULT_PAID = ['permission' => false, 'sick' => true, 'leave' => true, 'absent' => false, 'absent_session' => false];
+
+    public static function defaultPaid(string $leaveType): bool
+    {
+        return self::DEFAULT_PAID[$leaveType] ?? true;
+    }
+
+    /** Apakah jenis ini dibayar untuk posisi itu: pengaturan posisi bila ada, kalau tidak kebijakan bawaan. */
     public static function isPaidFor(int $positionId, string $leaveType): bool
     {
         $setting = static::where('position_id', $positionId)
             ->where('leave_type', $leaveType)
             ->first();
 
-        return $setting ? $setting->is_paid : true;
+        return $setting ? $setting->is_paid : self::defaultPaid($leaveType);
     }
 }

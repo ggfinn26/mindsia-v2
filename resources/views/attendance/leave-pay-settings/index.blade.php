@@ -56,6 +56,10 @@
                                 style="color: var(--dash-text-muted);">Sakit</th>
                             <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold text-center"
                                 style="color: var(--dash-text-muted);">Cuti</th>
+                            <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold text-center"
+                                style="color: var(--dash-text-muted);">Alpha</th>
+                            <th class="px-5 py-3.5 uppercase tracking-wider text-[11px] font-bold text-center"
+                                style="color: var(--dash-text-muted);">Alpha Sesi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y" style="border-color: var(--dash-card-border);">
@@ -65,6 +69,8 @@
                                     'permission' => 'Izin',
                                     'sick'       => 'Sakit',
                                     'leave'      => 'Cuti',
+                                    'absent'     => 'Alpha',
+                                    'absent_session' => 'Alpha Sesi',
                                 ];
                             @endphp
                             <tr style="border-bottom: 1px solid var(--dash-card-border);"
@@ -77,7 +83,7 @@
                                 @foreach($types as $typeKey => $typeLabel)
                                     @php
                                         $key = $position->id . '_' . $typeKey;
-                                        $isPaid = isset($settings[$key]) ? (bool)$settings[$key]->is_paid : true;
+                                        $isPaid = isset($settings[$key]) ? (bool)$settings[$key]->is_paid : \App\Models\LeavePaySetting::defaultPaid($typeKey);
                                     @endphp
                                     <td class="px-5 py-3.5 whitespace-nowrap text-center">
                                         <form method="POST" action="{{ route('leave-pay-settings.upsert') }}" class="inline-block">
@@ -108,7 +114,7 @@
     </div>
 
     <p class="text-xs" style="color: var(--dash-text-muted);">
-        Klik badge status untuk toggle. Perubahan berlaku mulai periode payroll berikutnya.
+        Klik badge status untuk toggle. Bawaan: alpha, alpha sesi, dan izin dipotong per hari; sakit dan cuti dibayar. Perubahan berlaku mulai periode payroll berikutnya.
     </p>
 </div>
 @endsection

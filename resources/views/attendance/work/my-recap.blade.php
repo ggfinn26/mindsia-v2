@@ -282,7 +282,7 @@
                                     </td>
                                     <td class="px-5 py-3.5 text-center">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"
-                                              style="{{ $badgeStyle }}">{{ $label }}</span>
+                                              style="{{ $badgeStyle }}">{{ $label }}{{ $log->is_check_out_missed ? ' - Lupa Absen Keluar' : '' }}</span>
                                     </td>
                                 </tr>
                             @empty

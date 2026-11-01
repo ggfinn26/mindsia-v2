@@ -230,8 +230,8 @@ class CheckInTest extends TestCase
         ]);
     }
 
-    // CI-06 — Check-in di luar radius → anomaly
-    public function test_check_in_di_luar_radius_anomaly(): void
+    // CI-06 — Check-in di luar radius → ditolak
+    public function test_check_in_di_luar_radius_ditolak(): void
     {
         $this->assignSchedule($this->employee, [
             'start_time' => '08:00',
@@ -248,15 +248,15 @@ class CheckInTest extends TestCase
                 'check_in_latitude' => -6.5971,
                 'check_in_longitude' => 106.8060,
             ])
-            ->assertRedirect();
+            ->assertSessionHasErrors('check_in_latitude');
 
-        $this->assertDatabaseHas('employee_work_attendance_logs', [
+        $this->assertDatabaseMissing('employee_work_attendance_logs', [
             'employee_id' => $this->employee->id,
-            'is_location_anomaly' => true,
+            'attendance_date' => now()->toDateString(),
         ]);
     }
 
-    // CI-07 — Distance dari client bisa dimanipulasi (GAP-53)
+    // CI-07 — Jarak dihitung server dari koordinat, bukan dari client (GAP-53)
     public function test_check_in_server_computes_distance_not_client(): void
     {
         $this->assignSchedule($this->employee, [
@@ -268,22 +268,48 @@ class CheckInTest extends TestCase
 
         $this->travelTo(now()->setTime(8, 10));
 
-        // Send coordinates far from branch — server should detect anomaly
+        // Koordinat jauh dari cabang; client tidak bisa mengirim distance sendiri
+        $this->actingAs($this->user)
+            ->post(route('work-attendance.check-in'), [
+                'check_in_latitude' => -6.5971,
+                'check_in_longitude' => 106.8060,
+                'check_in_distance_m' => 0,
+            ])
+            ->assertSessionHasErrors('check_in_latitude');
+
+        $this->assertDatabaseMissing('employee_work_attendance_logs', [
+            'employee_id' => $this->employee->id,
+            'attendance_date' => now()->toDateString(),
+        ]);
+    }
+
+    // CI-07b — Pegawai di cabang HQ tidak divalidasi lokasinya
+    public function test_check_in_pegawai_cabang_hq_tidak_divalidasi_lokasi(): void
+    {
+        $hq = Branch::factory()->create(['is_hq' => true, 'latitude' => 0, 'longitude' => 0, 'radius_meters' => 0]);
+        $this->employee->update(['branch_id' => $hq->id]);
+
+        $this->assignSchedule($this->employee, [
+            'start_time' => '08:00',
+            'end_time' => '17:00',
+            'late_tolerance_minutes' => 15,
+            'is_required' => true,
+        ]);
+
+        $this->travelTo(now()->setTime(8, 10));
+
         $this->actingAs($this->user)
             ->post(route('work-attendance.check-in'), [
                 'check_in_latitude' => -6.5971,
                 'check_in_longitude' => 106.8060,
             ])
-            ->assertRedirect();
+            ->assertSessionHasNoErrors();
 
-        $log = EmployeeWorkAttendanceLog::where('employee_id', $this->employee->id)
-            ->where('attendance_date', now()->toDateString())
-            ->first();
-
-        // Server-computed distance should reflect actual distance (not client-submitted)
-        $this->assertNotNull($log);
-        $this->assertTrue($log->check_in_distance_m > 500, 'GAP-53: Server harus hitung jarak sendiri, distance > radius');
-        $this->assertTrue($log->is_location_anomaly, 'GAP-53: Anomali harus terdeteksi oleh server');
+        $this->assertDatabaseHas('employee_work_attendance_logs', [
+            'employee_id' => $this->employee->id,
+            'branch_id' => $hq->id,
+            'is_location_anomaly' => false,
+        ]);
     }
 
     // CI-08 — Employee tanpa branch (GAP-56)

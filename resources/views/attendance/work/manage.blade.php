@@ -169,7 +169,7 @@
                             @endphp
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"
                                   style="background-color: {{ $statusStyles['bg'] }}; color: {{ $statusStyles['text'] }};">
-                                {{ $statusStyles['label'] }}
+                                {{ $statusStyles['label'] }}{{ $log->is_check_out_missed ? ' - Lupa Absen Keluar' : '' }}
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-center text-sm">

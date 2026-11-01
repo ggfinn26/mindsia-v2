@@ -7,6 +7,7 @@ use App\Models\EmployeeLeaveRequest;
 use App\Models\EmployeeWorkAttendanceLog;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 // ponytail: constructor injected — Laravel resolves via service container automatically
@@ -34,8 +35,24 @@ class LeaveRequestRepository
             ->paginate(25);
     }
 
+    /** Hanya pengajuan pending yang boleh diproses; menolak/membatalkan yang sudah disetujui meninggalkan log cuti yatim. */
+    private function assertPending(EmployeeLeaveRequest $request): void
+    {
+        if (! $request->isPending()) {
+            throw ValidationException::withMessages([
+                'status' => 'Pengajuan ini sudah diproses (status: '.$request->status.').',
+            ]);
+        }
+    }
+
     public function create(Employee $employee, array $data): EmployeeLeaveRequest
     {
+        if (! $employee->branch_id) {
+            throw ValidationException::withMessages([
+                'employee' => 'Pegawai belum memiliki cabang. Hubungi HR.',
+            ]);
+        }
+
         $overlapping = EmployeeLeaveRequest::where('employee_id', $employee->id)
             ->whereIn('status', ['pending', 'approved'])
             ->where('start_date', '<=', $data['end_date'])
@@ -57,21 +74,28 @@ class LeaveRequestRepository
 
     public function approve(EmployeeLeaveRequest $request, Employee $reviewer): EmployeeLeaveRequest
     {
-        $request->update([
-            'status' => 'approved',
-            'reviewed_by_employee_id' => $reviewer->id,
-            'reviewed_at' => now(),
-        ]);
+        $this->assertPending($request);
 
-        // Each updateOrCreate below fires EmployeeWorkAttendanceLogObserver::updated
-        // which handles recap refresh automatically
-        $this->applyLeaveToAttendanceLogs($request);
+        // Atomik: status disetujui dan log absensinya harus berhasil bersama-sama atau tidak sama sekali.
+        return DB::transaction(function () use ($request, $reviewer) {
+            $request->update([
+                'status' => 'approved',
+                'reviewed_by_employee_id' => $reviewer->id,
+                'reviewed_at' => now(),
+            ]);
 
-        return $request;
+            // Each updateOrCreate below fires EmployeeWorkAttendanceLogObserver::updated
+            // which handles recap refresh automatically
+            $this->applyLeaveToAttendanceLogs($request);
+
+            return $request;
+        });
     }
 
     public function reject(EmployeeLeaveRequest $request, Employee $reviewer, string $reason): EmployeeLeaveRequest
     {
+        $this->assertPending($request);
+
         $request->update([
             'status' => 'rejected',
             'reviewed_by_employee_id' => $reviewer->id,
@@ -84,6 +108,8 @@ class LeaveRequestRepository
 
     public function cancel(EmployeeLeaveRequest $request): EmployeeLeaveRequest
     {
+        $this->assertPending($request);
+
         $request->update(['status' => 'cancelled']);
 
         return $request;
@@ -119,8 +145,9 @@ class LeaveRequestRepository
             if (! $schedule) {
                 $hasAssignmentOnDate = $this->scheduleRepo->hasAnyActiveAssignment($request->employee_id, $date);
                 $today = now()->toDateString();
+                // Aturan yang berlaku sekarang, tanpa memeriksa apakah HARI INI hari kerja (hari ini bisa Sabtu/Minggu)
                 $currentSchedule = $date !== $today
-                    ? $this->scheduleRepo->resolveForEmployee($request->employee_id, $today)
+                    ? ($this->scheduleRepo->resolveForPeriod($request->employee, $today, $today, respectWorkDays: false)[$today] ?? null)
                     : null;
 
                 if ($hasAssignmentOnDate || ($currentSchedule && ! $currentSchedule->isActiveOnDate($date))) {

@@ -518,7 +518,8 @@ class PayrollGenerateTest extends TestCase
     public function test_gp_totals_calculated_correctly(): void
     {
         $period = $this->createFinalizedPeriod();
-        $employee = $this->createActiveEmployeeWithRecap($period->period_year, $period->period_month);
+        // Tanpa alpha: tes ini menguji total, bukan potongan alpha (lihat LeaveDeductionPayrollTest)
+        $employee = $this->createActiveEmployeeWithRecap($period->period_year, $period->period_month, ['total_absent' => 0]);
 
         $earningComponent = $this->createComponent('BASE_SALARY', 'earning', 'fixed');
         $deductionComponent = $this->createComponent('INSURANCE', 'deduction', 'fixed');

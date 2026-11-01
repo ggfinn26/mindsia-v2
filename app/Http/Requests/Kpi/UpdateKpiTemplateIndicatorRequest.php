@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests\Kpi;
 
+use App\Models\KpiTemplateIndicator;
 use App\Services\Kpi\KpiDataSourceService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class UpdateKpiTemplateIndicatorRequest extends FormRequest
 {
@@ -29,5 +31,24 @@ class UpdateKpiTemplateIndicatorRequest extends FormRequest
             'data_source_type' => ['nullable', 'string', Rule::in(KpiDataSourceService::ALLOWED_SOURCES)],
             'is_active' => ['boolean'],
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function ($v) {
+            if (! $this->boolean('is_active', true)) {
+                return;
+            }
+
+            $othersTotal = KpiTemplateIndicator::where('kpi_template_id', $this->route('kpiTemplate')->id)
+                ->where('is_active', true)
+                ->where('id', '!=', $this->route('indicator')->id)
+                ->sum('weight');
+            $newWeight = (float) $this->input('weight', 0);
+
+            if ($othersTotal + $newWeight > 100) {
+                $v->errors()->add('weight', "Total bobot indikator aktif akan melebihi 100 (indikator lain: {$othersTotal}, bobot ini: {$newWeight}).");
+            }
+        });
     }
 }

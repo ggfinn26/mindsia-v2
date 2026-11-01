@@ -8,6 +8,7 @@ use App\Models\BudgetEstimateItem;
 use App\Models\ClassRoom;
 use App\Models\Employee;
 use App\Models\EmployeeWorkAttendanceLog;
+use App\Models\Holiday;
 use App\Models\Institution;
 use App\Models\JobPermintaan;
 use App\Models\JobPosting;
@@ -27,12 +28,14 @@ use App\Models\SpecialBonusRuleCondition;
 use App\Models\Survey;
 use App\Models\ToeflMedia;
 use App\Models\ToeflTest;
+use App\Models\WorkScheduleAssignment;
 use App\Observers\AuditObserver;
 use App\Observers\Bonus\BonusChildObserver;
 use App\Observers\Bonus\BonusRuleObserver;
 use App\Observers\BudgetEstimateItemObserver;
 use App\Observers\ClassRoomObserver;
 use App\Observers\EmployeeWorkAttendanceLogObserver;
+use App\Observers\HolidayObserver;
 use App\Observers\JobPermintaanObserver;
 use App\Observers\JobPostingObserver;
 use App\Observers\MarketingSnapshotObserver;
@@ -41,6 +44,7 @@ use App\Observers\ReimbursementItemObserver;
 use App\Observers\SurveyObserver;
 use App\Observers\ToeflMediaObserver;
 use App\Observers\ToeflTestObserver;
+use App\Observers\WorkScheduleAssignmentObserver;
 use App\Repositories\Bonus\BonusRuleChangeHistoryRepository;
 use App\Services\Alerts\EmployeeAlertProvider;
 use App\Services\Alerts\FacilityAlertProvider;
@@ -95,6 +99,8 @@ class AppServiceProvider extends ServiceProvider
         }
         ClassRoom::observe(ClassRoomObserver::class);
         EmployeeWorkAttendanceLog::observe(EmployeeWorkAttendanceLogObserver::class);
+        Holiday::observe(HolidayObserver::class);
+        WorkScheduleAssignment::observe(WorkScheduleAssignmentObserver::class);
         $historyRepo = app(BonusRuleChangeHistoryRepository::class);
 
         // Register bonus observers using direct event listeners since BonusRuleObserver

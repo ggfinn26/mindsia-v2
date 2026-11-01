@@ -31,6 +31,7 @@ class PermissionLabels
             'attendance.adjustment.create' => ['label' => 'Buat Penyesuaian Absensi', 'description' => null],
             'attendance.document_signature.manage' => ['label' => 'Kelola Tanda Tangan Dokumen Absensi', 'description' => null],
             'attendance.holiday.manage' => ['label' => 'Kelola Hari Libur', 'description' => null],
+            'leave.pay_settings.manage' => ['label' => 'Kelola Pengaturan Izin/Cuti/Alpha', 'description' => 'Atur izin, sakit, cuti, alpha, dan alpha sesi dibayar atau dipotong per posisi'],
             'attendance.leave.approve_hr_staff' => ['label' => 'Setujui Cuti', 'description' => 'Hak approve cuti tingkat HR/Staff'],
             'attendance.leave.review' => ['label' => 'Tinjau Pengajuan Cuti', 'description' => null],
             'attendance.policy.create' => ['label' => 'Buat Kebijakan Absensi', 'description' => null],

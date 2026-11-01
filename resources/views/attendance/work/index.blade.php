@@ -301,7 +301,7 @@
                              style="background-color: {{ $statusConfig['dot'] }};"></div>
                         <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold"
                               style="background-color: {{ $statusConfig['bg'] }}; color: {{ $statusConfig['text'] }};">
-                            {{ $statusConfig['label'] }}
+                            {{ $statusConfig['label'] }}{{ $log->is_check_out_missed ? ' - Lupa Absen Keluar' : '' }}
                         </span>
                         <div class="ml-auto text-right">
                             <p class="text-xs font-medium font-mono"
