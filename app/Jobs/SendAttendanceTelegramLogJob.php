@@ -66,7 +66,7 @@ class SendAttendanceTelegramLogJob implements ShouldQueue
             return null;
         }
 
-        foreach ([Storage::path($path), public_path($path)] as $candidate) {
+        foreach ([Storage::path($path), Storage::disk('public')->path($path), public_path($path)] as $candidate) {
             if (is_file($candidate)) {
                 return $candidate;
             }

@@ -50,7 +50,7 @@ class PushTelegramBackupJob implements ShouldBeUniqueUntilProcessing, ShouldQueu
             return;
         }
 
-        if (! file_exists(Storage::path($this->storagePath)) && ! file_exists(public_path($this->storagePath))) {
+        if (! $this->resolveLocalPath()) {
             $record->markFailed('Local file not found: '.$this->storagePath);
             Log::error('PushTelegramBackup: local file missing', ['path' => $this->storagePath]);
 
@@ -67,10 +67,24 @@ class PushTelegramBackupJob implements ShouldBeUniqueUntilProcessing, ShouldQueu
             });
     }
 
+    /**
+     * Cari file di disk local, disk public (tempat foto disimpan), lalu public_path.
+     */
+    private function resolveLocalPath(): ?string
+    {
+        foreach ([Storage::path($this->storagePath), Storage::disk('public')->path($this->storagePath), public_path($this->storagePath)] as $path) {
+            if (file_exists($path)) {
+                return $path;
+            }
+        }
+
+        return null;
+    }
+
     protected function uploadToTelegram(TelegramFile $record, TelegramStorageService $storage): void
     {
         try {
-            $localPath = Storage::path($this->storagePath);
+            $localPath = $this->resolveLocalPath() ?? Storage::path($this->storagePath);
 
             if (! file_exists($localPath)) {
                 $localPath = public_path($this->storagePath);

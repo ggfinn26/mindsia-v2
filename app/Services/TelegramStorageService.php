@@ -9,6 +9,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Intervention\Image\Drivers\Gd\Driver as GdDriver;
 use Intervention\Image\Encoders\WebpEncoder;
 use Intervention\Image\ImageManager;
@@ -45,7 +46,7 @@ class TelegramStorageService
         $storagePath = $this->convertAndStore($file, $directory);
         $originalFilename = $file->getClientOriginalName();
 
-        $this->dispatchBackup($storagePath, $originalFilename, 'photo', $caption);
+        $this->dispatchBackup($storagePath, $originalFilename, 'photo', $caption, 'public');
 
         return $storagePath;
     }
@@ -170,16 +171,15 @@ class TelegramStorageService
             $image->scaleDown(width: 1200); // ponytail: cap resolusi sebelum encode — cegah OOM di foto HP beresolusi tinggi
             $webp = $image->encode(new WebpEncoder(quality: 85));
 
-            $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME).'.webp';
-            $path = "{$directory}/{$filename}";
+            // Nama unik: nama dari klien (mis. selfie.jpg dari kamera) sama untuk semua orang dan saling menimpa.
+            $path = "{$directory}/".Str::uuid().'.webp';
 
             Storage::disk('public')->put($path, (string) $webp);
 
             return $path;
         }
 
-        $filename = $file->getClientOriginalName();
-        $path = "{$directory}/{$filename}";
+        $path = "{$directory}/".Str::uuid().'-'.$file->getClientOriginalName();
 
         Storage::disk('public')->put($path, file_get_contents($file->getRealPath()));
 

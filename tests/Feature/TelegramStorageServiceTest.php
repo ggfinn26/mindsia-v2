@@ -40,7 +40,20 @@ it('converts image to webp and stores locally', function () {
     $result = app(TelegramStorageService::class)->uploadPhoto($file, 'Test caption');
 
     expect($result)->toEndWith('.webp')
-        ->and(Storage::exists($result))->toBeTrue();
+        ->and(Storage::disk('public')->exists($result))->toBeTrue();
+});
+
+it('gives each upload a unique path even when the client filename is identical', function () {
+    $service = app(TelegramStorageService::class);
+
+    $first = $service->uploadPhoto(UploadedFile::fake()->image('selfie.jpg', 100, 100), 'A');
+    $second = $service->uploadPhoto(UploadedFile::fake()->image('selfie.jpg', 100, 100), 'B');
+
+    expect($first)->not->toBe($second)
+        ->and(Storage::disk('public')->exists($first))->toBeTrue()
+        ->and(Storage::disk('public')->exists($second))->toBeTrue();
+
+    Storage::disk('public')->delete([$first, $second]);
 });
 
 it('stores gif as-is without conversion', function () {
@@ -49,7 +62,7 @@ it('stores gif as-is without conversion', function () {
     $result = app(TelegramStorageService::class)->uploadPhoto($file, 'Gif test');
 
     expect($result)->toEndWith('.gif')
-        ->and(Storage::exists($result))->toBeTrue();
+        ->and(Storage::disk('public')->exists($result))->toBeTrue();
 });
 
 it('stores webp as-is without conversion', function () {
@@ -64,7 +77,7 @@ it('stores webp as-is without conversion', function () {
     $result = app(TelegramStorageService::class)->uploadPhoto($file, 'WebP test');
 
     expect($result)->toEndWith('.webp')
-        ->and(Storage::exists($result))->toBeTrue();
+        ->and(Storage::disk('public')->exists($result))->toBeTrue();
 
     @unlink($tmpPath);
 });
