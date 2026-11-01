@@ -33,7 +33,6 @@ enum WidgetKey: string
     case HiringMetrics = 'hiring_metrics';
     case EmployeeDirectory = 'employee_directory';
     case LeaveAttendance = 'leave_attendance';
-    case CompliancePolicies = 'compliance_policies';
 
     // Marketing & Growth
     case MarketingRevenue = 'marketing_revenue';
@@ -115,7 +114,6 @@ enum WidgetKey: string
             self::HiringMetrics => 'Hiring Metrics',
             self::EmployeeDirectory => 'Employee Directory',
             self::LeaveAttendance => 'Leave & Attendance',
-            self::CompliancePolicies => 'Compliance & Policies',
             self::MarketingRevenue => 'Marketing Revenue',
             self::MemberAcquisition => 'Member Acquisition',
             self::LeadStatus => 'Lead Status',
@@ -172,7 +170,7 @@ enum WidgetKey: string
             self::SdmHeadcount, self::PayrollSummary, self::RecruitmentPipeline,
             self::EmployeeDevelopment, self::JobPostings, self::CandidateScreening,
             self::InterviewSchedule, self::OnboardingStatus, self::HiringMetrics,
-            self::EmployeeDirectory, self::LeaveAttendance, self::CompliancePolicies => 'hr',
+            self::EmployeeDirectory, self::LeaveAttendance => 'hr',
             self::MarketingRevenue, self::MemberAcquisition, self::LeadStatus,
             self::MarketingTeamPerformance, self::SocializationEffectiveness,
             self::MarketingKpiSnapshot, self::MarketingProgress => 'marketing',
@@ -227,7 +225,6 @@ enum WidgetKey: string
             self::HiringMetrics => 'analytics',
             self::EmployeeDirectory => 'badge',
             self::LeaveAttendance => 'event_busy',
-            self::CompliancePolicies => 'gavel',
             // Marketing & Growth
             self::MarketingRevenue => 'campaign',
             self::MemberAcquisition => 'person_add',

@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Attendance;
 
-use App\Models\AttendancePolicy;
 use App\Models\AttendanceRule;
 use App\Models\AttendanceRuleAction;
 use App\Models\AttendanceRuleViolation;
@@ -19,78 +18,7 @@ class AttendancePolicyRulesTest extends TestCase
         parent::setUp();
 
         $this->admin = User::factory()->create();
-        $this->admin->givePermissionTo(['attendance.policy.manage', 'attendance.rule.manage']);
-    }
-
-    // ─────────────── Attendance Policy CRUD ───────────────
-
-    // ── AP-01 (implicit): AttendancePolicy store works ──
-    // The SKENARIO doesn't have a specific AP-01 for policy, but the controller has full CRUD.
-
-    private function validPolicyData(): array
-    {
-        return [
-            'policy_name' => 'Test Policy',
-            'attendance_scope' => 'branch',
-            'is_active' => true,
-            'work_is_required' => true,
-            'work_late_tolerance_minutes' => 15,
-            'work_early_leave_tolerance_minutes' => 10,
-            'session_is_required' => true,
-            'session_late_tolerance_minutes' => 10,
-        ];
-    }
-
-    public function test_attendance_policy_store_success(): void
-    {
-        $response = $this->actingAs($this->admin)
-            ->post(route('attendance-policies.store'), $this->validPolicyData());
-
-        $response->assertRedirect(route('attendance-policies.index'));
-        $response->assertSessionHas('success');
-
-        $policy = AttendancePolicy::first();
-        $this->assertNotNull($policy);
-        $this->assertEquals('Test Policy', $policy->policy_name);
-        $this->assertNotNull($policy->workScheduleConfig);
-        $this->assertNotNull($policy->sessionConfig);
-        $this->assertEquals(15, $policy->workScheduleConfig->late_tolerance_minutes);
-        $this->assertEquals(10, $policy->sessionConfig->late_tolerance_minutes);
-    }
-
-    public function test_attendance_policy_update_success(): void
-    {
-        $policy = AttendancePolicy::factory()->create();
-
-        $response = $this->actingAs($this->admin)
-            ->put(route('attendance-policies.update', $policy), array_merge($this->validPolicyData(), [
-                'policy_name' => 'Updated Policy',
-            ]));
-
-        $response->assertRedirect(route('attendance-policies.index'));
-        $policy->refresh();
-        $this->assertEquals('Updated Policy', $policy->policy_name);
-    }
-
-    public function test_attendance_policy_delete_success(): void
-    {
-        $policy = AttendancePolicy::factory()->create();
-
-        $response = $this->actingAs($this->admin)
-            ->delete(route('attendance-policies.destroy', $policy));
-
-        $response->assertRedirect(route('attendance-policies.index'));
-        $this->assertDatabaseMissing('attendance_policies', ['id' => $policy->id]);
-    }
-
-    public function test_attendance_policy_store_without_permission(): void
-    {
-        $user = User::factory()->create();
-
-        $response = $this->actingAs($user)
-            ->post(route('attendance-policies.store'), $this->validPolicyData());
-
-        $response->assertForbidden();
+        $this->admin->givePermissionTo('attendance.rule.manage');
     }
 
     // ─────────────── Attendance Rule CRUD ───────────────

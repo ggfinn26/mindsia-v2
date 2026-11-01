@@ -77,7 +77,6 @@ class DashboardWidgetConfigSeeder extends Seeder
             ['widget_key' => 'payroll_summary', 'order' => 3],
             ['widget_key' => 'leave_attendance', 'order' => 4],
             ['widget_key' => 'employee_development', 'order' => 5],
-            ['widget_key' => 'compliance_policies', 'order' => 6],
             ['widget_key' => 'comparable', 'order' => 7],
         ],
         'Director Operasional' => [
