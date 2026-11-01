@@ -41,9 +41,11 @@ class SendAttendanceTelegramLogJob implements ShouldQueue
 
         try {
             $photo = $this->photoFile();
+            $topic = config('services.telegram.attendance_topic_id');
+            $thread = $topic ? ['message_thread_id' => $topic] : [];
             $response = $photo
-                ? Http::attach('photo', fopen($photo, 'r'), 'selfie.jpg')->post("https://api.telegram.org/bot{$botToken}/sendPhoto", ['chat_id' => $chatId, 'caption' => mb_substr($body, 0, 1024)])
-                : Http::post("https://api.telegram.org/bot{$botToken}/sendMessage", ['chat_id' => $chatId, 'text' => $body]);
+                ? Http::attach('photo', fopen($photo, 'r'), 'selfie.jpg')->post("https://api.telegram.org/bot{$botToken}/sendPhoto", ['chat_id' => $chatId, 'caption' => mb_substr($body, 0, 1024)] + $thread)
+                : Http::post("https://api.telegram.org/bot{$botToken}/sendMessage", ['chat_id' => $chatId, 'text' => $body] + $thread);
 
             if (! $response->successful()) {
                 throw new \RuntimeException('Telegram API error: '.$response->body());

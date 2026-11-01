@@ -144,6 +144,16 @@ class AttendanceTelegramLogTest extends TestCase
         Http::assertNotSent(fn ($r) => str_contains((string) ($r['text'] ?? ''), 'telah melakukan absen'));
     }
 
+    public function test_topik_grup_dipakai_bila_diatur(): void
+    {
+        config(['services.telegram.attendance_topic_id' => '777']);
+        $this->schedule();
+
+        $this->checkIn('08:00');
+
+        Http::assertSent(fn ($r) => str_contains((string) ($r['text'] ?? ''), 'telah melakukan absen') && (string) $r['message_thread_id'] === '777');
+    }
+
     public function test_catatan_wajib_diisi_saat_masuk_dan_keluar(): void
     {
         $this->schedule();

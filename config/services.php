@@ -40,6 +40,7 @@ return [
         'chat_id' => env('GROUP_STORAGE'),
         'log_chat_id' => env('GROUP_LOG'),
         'attendance_chat_id' => env('TELEGRAM_ATTENDANCE_CHAT_ID'),
+        'attendance_topic_id' => env('TELEGRAM_ATTENDANCE_TOPIC_ID'),
     ],
 
 ];
