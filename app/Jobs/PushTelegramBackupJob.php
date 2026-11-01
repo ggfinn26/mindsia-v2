@@ -10,7 +10,7 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\ThrottlesExceptions;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Storage;
 
 class PushTelegramBackupJob implements ShouldBeUniqueUntilProcessing, ShouldQueue
@@ -28,6 +28,14 @@ class PushTelegramBackupJob implements ShouldBeUniqueUntilProcessing, ShouldQueu
         public ?string $caption = null,
     ) {
         $this->onQueue('telegram-backup');
+    }
+
+    /**
+     * Antrean penuh dilepas tiap menit (release menambah attempts), jadi batasi pakai waktu, bukan jumlah percobaan.
+     */
+    public function retryUntil(): \DateTimeInterface
+    {
+        return now()->addHours(6);
     }
 
     public function uniqueId(): string
@@ -57,14 +65,17 @@ class PushTelegramBackupJob implements ShouldBeUniqueUntilProcessing, ShouldQueu
             return;
         }
 
-        // Rate limit: max 20 messages per minute to same group
-        Redis::throttle('telegram-backup')
-            ->allow(20)->every(60)
-            ->then(function () use ($record, $storage) {
-                $this->uploadToTelegram($record, $storage);
-            }, function () {
-                $this->release(60);
-            });
+        // Rate limit: max 20 messages per minute to same group (cache store, tanpa Redis)
+        $allowed = RateLimiter::attempt(
+            'telegram-backup',
+            20,
+            fn () => $this->uploadToTelegram($record, $storage),
+            60,
+        );
+
+        if (! $allowed) {
+            $this->release(60);
+        }
     }
 
     /**

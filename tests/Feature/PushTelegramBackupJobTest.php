@@ -2,9 +2,10 @@
 
 use App\Jobs\PushTelegramBackupJob;
 use App\Models\TelegramFile;
+use App\Services\TelegramStorageService;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Queue;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Storage;
 
 // PushTelegramBackupJob — async backup to Telegram with retry & rate limiting
@@ -20,13 +21,7 @@ beforeEach(function () {
 it('skips if TelegramFile record not found', function () {
     $job = new PushTelegramBackupJob(99999, 'documents/test.pdf', 'test.pdf');
 
-    // Mock Redis throttle to execute immediately
-    Redis::shouldReceive('throttle')->andReturnSelf();
-    Redis::shouldReceive('allow')->andReturnSelf();
-    Redis::shouldReceive('every')->andReturnSelf();
-    Redis::shouldReceive('then')->andReturnUsing(fn ($callback) => $callback());
-
-    $job->handle(app(\App\Services\TelegramStorageService::class));
+    $job->handle(app(TelegramStorageService::class));
 
     Http::assertNothingSent();
 });
@@ -36,7 +31,7 @@ it('skips if record is already uploaded', function () {
 
     $job = new PushTelegramBackupJob($file->id, $file->storage_path, $file->original_filename);
 
-    $job->handle(app(\App\Services\TelegramStorageService::class));
+    $job->handle(app(TelegramStorageService::class));
 
     Http::assertNothingSent();
     expect($file->fresh()->backup_status)->toBe('uploaded');
@@ -50,7 +45,7 @@ it('marks as failed when local file does not exist', function () {
 
     $job = new PushTelegramBackupJob($file->id, 'nonexistent/file.pdf', 'file.pdf');
 
-    $job->handle(app(\App\Services\TelegramStorageService::class));
+    $job->handle(app(TelegramStorageService::class));
 
     $fresh = $file->fresh();
     expect($fresh->backup_status)->toBe('failed')
@@ -81,14 +76,9 @@ it('uploads photo to Telegram and marks as uploaded', function () {
         ], 200),
     ]);
 
-    Redis::shouldReceive('throttle')->andReturnSelf();
-    Redis::shouldReceive('allow')->andReturnSelf();
-    Redis::shouldReceive('every')->andReturnSelf();
-    Redis::shouldReceive('then')->andReturnUsing(fn ($callback) => $callback());
-
     $job = new PushTelegramBackupJob($file->id, $path, 'photo.webp', caption: 'Test photo');
 
-    $job->handle($service = app(\App\Services\TelegramStorageService::class));
+    $job->handle($service = app(TelegramStorageService::class));
 
     $fresh = $file->fresh();
     // Debug: show actual error if not uploaded
@@ -124,14 +114,9 @@ it('uploads document to Telegram and marks as uploaded', function () {
         ], 200),
     ]);
 
-    Redis::shouldReceive('throttle')->andReturnSelf();
-    Redis::shouldReceive('allow')->andReturnSelf();
-    Redis::shouldReceive('every')->andReturnSelf();
-    Redis::shouldReceive('then')->andReturnUsing(fn ($callback) => $callback());
-
     $job = new PushTelegramBackupJob($file->id, $path, 'doc.pdf', caption: 'Test doc');
 
-    $job->handle(app(\App\Services\TelegramStorageService::class));
+    $job->handle(app(TelegramStorageService::class));
 
     $fresh = $file->fresh();
     expect($fresh->backup_status)->toBe('uploaded')
@@ -157,14 +142,9 @@ it('marks as failed when Telegram API returns error', function () {
         ], 400),
     ]);
 
-    Redis::shouldReceive('throttle')->andReturnSelf();
-    Redis::shouldReceive('allow')->andReturnSelf();
-    Redis::shouldReceive('every')->andReturnSelf();
-    Redis::shouldReceive('then')->andReturnUsing(fn ($callback) => $callback());
-
     $job = new PushTelegramBackupJob($file->id, $path, 'fail.pdf');
 
-    $job->handle(app(\App\Services\TelegramStorageService::class));
+    $job->handle(app(TelegramStorageService::class));
 
     $fresh = $file->fresh();
     expect($fresh->backup_status)->toBe('failed')
@@ -184,4 +164,24 @@ it('uses telegram-backup queue', function () {
     $job = new PushTelegramBackupJob(1, 'test.pdf', 'test.pdf');
 
     expect($job->queue)->toBe('telegram-backup');
+});
+
+it('does not upload when the per-minute rate limit is used up', function () {
+    $path = 'test-backup-ratelimit.webp';
+    Storage::put($path, str_repeat("\x00", 100));
+    $file = TelegramFile::factory()->create(['storage_path' => $path, 'mime_type' => 'image/webp', 'backup_status' => 'pending']);
+
+    RateLimiter::clear('telegram-backup');
+    foreach (range(1, 20) as $i) {
+        RateLimiter::hit('telegram-backup', 60);
+    }
+
+    Http::fake();
+    (new PushTelegramBackupJob($file->id, $path, 'photo.webp'))->handle(app(TelegramStorageService::class));
+
+    Http::assertNothingSent();
+    expect($file->fresh()->backup_status)->toBe('pending');
+
+    Storage::delete($path);
+    RateLimiter::clear('telegram-backup');
 });

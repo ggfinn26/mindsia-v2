@@ -54,5 +54,5 @@ Schedule::call(fn () => Artisan::call('socialization:await-validation'))
 // belum dibutuhkan. Re-enable kalau method-nya sudah ditulis + ditest.
 
 // Antrian (log absen ke Telegram, email, dll) diproses lewat cron schedule:run; hosting tidak menjalankan daemon queue:work.
-Schedule::command('queue:work --stop-when-empty --max-time=50 --tries=3')
+Schedule::command('queue:work --queue=default,telegram-backup --stop-when-empty --max-time=50 --tries=3')
     ->name('queue:work')->withoutOverlapping()->everyMinute();
