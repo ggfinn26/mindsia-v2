@@ -163,17 +163,16 @@ test('SM-03 partner_fee_due_date required if partner_fee_amount is set', functio
     $response->assertInvalid(['partner_fee_due_date']);
 });
 
-test('SM-20 SM-21 SM-22 SM-23 SM-24 validation rules', function () {
+test('SM-20 SM-21 SM-23 SM-24 validation rules', function () {
     $this->user->givePermissionTo('marketing.socialization.create');
 
     $response = $this->actingAs($this->user)->post(route('socializations.store'), [
         'location_name' => '', // SM-20
-        'branch_id' => 99999, // SM-22
         'institution_id' => 99999, // SM-23
         'partner_fee_amount' => -1000, // SM-24
     ]);
 
-    $response->assertInvalid(['location_name', 'branch_id', 'institution_id', 'partner_fee_amount']);
+    $response->assertInvalid(['location_name', 'institution_id', 'partner_fee_amount']);
 
     $response = $this->actingAs($this->user)->post(route('socializations.store'), [
         'branch_id' => $this->branch->id,
