@@ -3,7 +3,9 @@
 namespace App\Observers;
 
 use App\Models\Employee;
+use App\Models\MarketingKpiSnapshot;
 use App\Models\MarketingPerformance;
+use App\Models\MarketingTarget;
 use App\Models\MemberPayment;
 use App\Models\ProspectiveMember;
 use App\Services\Marketing\MarketingSnapshotService;
@@ -57,5 +59,44 @@ class MarketingSnapshotObserver
 
         $paidAt = $payment->paid_at ?? now();
         $this->triggerForEmployee($employeeId, (int) $paidAt->month, (int) $paidAt->year);
+    }
+
+    /**
+     * Target pegawai berubah: hitung ulang snapshot periodenya, kecuali sudah final.
+     */
+    public function employeeTargetSaved(MarketingTarget $target): void
+    {
+        if ($this->isFinalized($target->employee_id, $target->period_month, $target->period_year)) {
+            return;
+        }
+
+        $this->triggerForEmployee($target->employee_id, $target->period_month, $target->period_year);
+    }
+
+    /**
+     * Target default posisi/global berubah: hitung ulang periode berjalan untuk
+     * semua pegawai yang sudah punya snapshot belum final di periode itu.
+     */
+    public function defaultTargetSaved(): void
+    {
+        $month = now()->month;
+        $year = now()->year;
+
+        MarketingKpiSnapshot::query()
+            ->where('period_month', $month)
+            ->where('period_year', $year)
+            ->whereNull('finalized_at')
+            ->distinct()
+            ->pluck('employee_id')
+            ->each(fn (int $employeeId) => $this->triggerForEmployee($employeeId, $month, $year));
+    }
+
+    private function isFinalized(int $employeeId, int $month, int $year): bool
+    {
+        return MarketingKpiSnapshot::where('employee_id', $employeeId)
+            ->where('period_month', $month)
+            ->where('period_year', $year)
+            ->whereNotNull('finalized_at')
+            ->exists();
     }
 }

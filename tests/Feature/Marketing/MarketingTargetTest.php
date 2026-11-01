@@ -1,7 +1,9 @@
 <?php
 
 use App\Models\Employee;
+use App\Models\MarketingKpiSnapshot;
 use App\Models\User;
+use App\Repositories\Marketing\MarketingTargetRepository;
 use Illuminate\Support\Facades\DB;
 
 /** Direct DB insert for employee (with full geo chain) — avoids factory FK deadlock under RefreshDatabase */
@@ -137,4 +139,40 @@ test('MT-07 setPositionDefault with permission stores marketing_target_defaults 
         'period_year' => 2026,
         'classes_target' => 8,
     ]);
+});
+
+it('regenerates the snapshot when an employee target changes', function () {
+    $employee = Employee::factory()->create();
+    $month = now()->month;
+    $year = now()->year;
+
+    app(MarketingTargetRepository::class)->setEmployeeTarget([
+        'employee_id' => $employee->id, 'period_month' => $month, 'period_year' => $year,
+        'classes_target' => 3, 'omzet_target' => 1000000, 'created_by_employee_id' => $employee->id,
+    ]);
+    $latest = fn () => MarketingKpiSnapshot::where('employee_id', $employee->id)
+        ->where('period_month', $month)->where('period_year', $year)->latest('id')->first();
+    expect((float) $latest()->omzet_target)->toBe(1000000.0);
+
+    app(MarketingTargetRepository::class)->setEmployeeTarget([
+        'employee_id' => $employee->id, 'period_month' => $month, 'period_year' => $year,
+        'classes_target' => 5, 'omzet_target' => 2500000, 'created_by_employee_id' => $employee->id,
+    ]);
+    expect((float) $latest()->omzet_target)->toBe(2500000.0);
+    expect($latest()->classes_target)->toBe(5);
+});
+
+it('does not regenerate a finalized snapshot when the target changes', function () {
+    $employee = Employee::factory()->create();
+    $month = now()->month;
+    $year = now()->year;
+    $repo = app(MarketingTargetRepository::class);
+
+    $repo->setEmployeeTarget(['employee_id' => $employee->id, 'period_month' => $month, 'period_year' => $year, 'classes_target' => 3, 'omzet_target' => 1000000, 'created_by_employee_id' => $employee->id]);
+    MarketingKpiSnapshot::where('employee_id', $employee->id)->update(['finalized_at' => now()]);
+    $before = MarketingKpiSnapshot::where('employee_id', $employee->id)->count();
+
+    $repo->setEmployeeTarget(['employee_id' => $employee->id, 'period_month' => $month, 'period_year' => $year, 'classes_target' => 9, 'omzet_target' => 9000000, 'created_by_employee_id' => $employee->id]);
+
+    expect(MarketingKpiSnapshot::where('employee_id', $employee->id)->count())->toBe($before);
 });
